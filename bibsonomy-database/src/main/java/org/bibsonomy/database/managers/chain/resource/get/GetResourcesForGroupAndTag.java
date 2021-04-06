@@ -47,8 +47,11 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Miranda Grahl
  * @param <R> 
- * @param <P> 
+ * @param <P>
+ *
+ * @deprecated
  */
+@Deprecated
 public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
@@ -72,7 +75,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if ((group == null) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
-			return new ArrayList<Post<R>>();
+			return new ArrayList<>();
 		}
 		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -291,5 +292,30 @@ public class TagUtils {
 		
 		// all done
 		return mergedList.subList(0, Math.min(mergedList.size(), limit));
+	}
+
+	/**
+	 * creates frequent tags
+	 * @param tagNames
+	 * @return
+	 */
+	public static List<Tag> createFrequentTags(final String... tagNames) {
+		final List<Tag> tags = new ArrayList<>();
+		for (String tagName : tagNames) {
+			tags.add(createFrequentTag(tagName));
+		}
+		return tags;
+	}
+
+	/**
+	 * @param tagName
+	 * @return creates a frequent tag
+	 */
+	public static Tag createFrequentTag(final String tagName) {
+		final Tag tag = new Tag();
+		tag.setName(tagName);
+		tag.setGlobalcount(1000000);
+		tag.setUsercount(1000000);
+		return tag;
 	}
 }

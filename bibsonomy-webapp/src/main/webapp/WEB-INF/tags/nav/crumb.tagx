@@ -18,13 +18,13 @@
 	</c:if>
 	<li class="${ (not empty active and active) ? 'active' : ''}">
 		<c:if test="${empty href and not empty leadingIcon}">
-			<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />
+			<span class="fas ${leadingIcon}"><!--  --></span><c:out value=" " />
 		</c:if>
 		<c:choose>
 			<c:when test="${not empty href}">
 				<a href="${href}">
 					<c:if test="${not empty leadingIcon}">
-						<span class="fa ${leadingIcon}"><!--  --></span><c:out value=" " />
+						<span class="fas ${leadingIcon}"><!--  --></span><c:out value=" " />
 					</c:if>
 					<c:out value="${name}" />
 				</a>

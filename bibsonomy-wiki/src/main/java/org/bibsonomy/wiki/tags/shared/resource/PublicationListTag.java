@@ -28,12 +28,12 @@ package org.bibsonomy.wiki.tags.shared.resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
@@ -121,8 +121,6 @@ public class PublicationListTag extends SharedTag {
 		final Map<String, String> tagAttributes = this.getAttributes();
 		String tags;
 		
-		
-		
 		if (!tagAttributes.containsKey(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
 							// dependency to database module only for accessing
@@ -161,7 +159,14 @@ public class PublicationListTag extends SharedTag {
 		 * FIXME: We want these working in a different way. We want the
 		 * publication's year, not the BibSonomy year of the posting.
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, this.maxQuerySize);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(this.getGroupingEntity())
+				.setGroupingName(requestedName)
+				.setTags(Arrays.asList(tags.split(" ")))
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(this.maxQuerySize, 0);
+
+		List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 		BibTexUtils.removeDuplicates(posts);
 
 		/*
@@ -242,9 +247,7 @@ public class PublicationListTag extends SharedTag {
 			}
 			renderedHTML.append("<div id='publications'>" + this.layoutRenderer.renderLayout(layout, posts, true) + "</div>"); // class='entry
 																																// bibtex'
-		} catch (final LayoutRenderingException e) {
-			log.error(e.getMessage());
-		} catch (final IOException e) {
+		} catch (final LayoutRenderingException | IOException e) {
 			log.error(e.getMessage());
 		}
 	}
@@ -254,7 +257,7 @@ public class PublicationListTag extends SharedTag {
 
 		// TODO: Mehrere moegliche Layouts einbinden
 		// (<a
-		// href='/export/").append(this.getGroupingEntity().toString()).append("/").append(requestedName).append("/").append(tags).append("'
+		// href='/export/").append(this.getGrouping().toString()).append("/").append(requestedName).append("/").append(tags).append("'
 		// title='show all export formats (including RSS, CVS, ...)''>all
 		// formats</a>):
 		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' " + "style='font-size:80%;'>" + this.messageSource.getMessage("bibtex.citation_format", new Object[] {}, this.locale) + ": <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");

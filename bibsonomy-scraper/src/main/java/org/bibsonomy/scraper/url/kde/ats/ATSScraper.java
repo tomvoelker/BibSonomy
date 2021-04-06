@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.scraper.url.kde.ats;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,40 +34,28 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.XmlUtils;
-import org.w3c.dom.Document;
 
 /**
  * @author clemens
  */
-public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
+public class ATSScraper extends LiteratumScraper implements CitedbyScraper {
+
 	private static final Log log = LogFactory.getLog(ATSScraper.class);
 	
 	private static final String SITE_NAME = "American Thoracic Society Journals";
-	private static final String SITE_URL = "http://www.atsjournals.org/";
-	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "atsjournals.org"),AbstractUrlScraper.EMPTY_PATTERN));
-	private static final String BIBTEX_URL = "http://www.atsjournals.org/action/downloadCitation?doi=";
-	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
-	private static final int ID_GROUP = 0;
-	
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection abstractInFull\"><p.*?>(.*?)</p></div>");	
+	private static final String SITE_HOST = "atsjournals.org";	
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern CITEDBY = Pattern.compile("<div class=\"citedByEntry\">(.*)</div></div>");
 	
-	private static String extractId(final String url) {
-		final Matcher matcher = ID_PATTERN.matcher(url);
-		if (matcher.find()) {
-			return matcher.group(ID_GROUP);
-		}
-		return null;
-	}
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -81,7 +68,7 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 
 	@Override
@@ -89,44 +76,11 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 		return URL_PATTERNS;
 	}
 
-	private static String abstractParser(URL url){
-		try {			
-			final String cookie = WebUtils.getCookies(url);
-			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url.toString(),cookie));
-			if (m.find()) {
-				Document temp = XmlUtils.getDOM(m.group(1));			
-				return XmlUtils.getText(temp);
-			}
-		} catch (Exception e) {
-			log.error("error while getting abstract " + url, e);
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return BibTexUtils.addFieldIfNotContained(bibtex,"abstract",abstractParser(scrapingContext.getUrl()));
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url, String cookies) {
-		final String id = extractId(url.toString());
-		return BIBTEX_URL + id;
-	}
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
-	 */
 	@Override
 	public boolean scrapeCitedby(ScrapingContext sc) throws ScrapingException {
 		try{
-			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl().toString()));
-			if(m.find()) {
+			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl()));
+			if (m.find()) {
 				sc.setCitedBy(m.group(1));
 				return true;
 			}			

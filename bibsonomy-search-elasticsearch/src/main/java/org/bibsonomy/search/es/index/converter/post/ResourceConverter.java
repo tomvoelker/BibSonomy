@@ -26,6 +26,17 @@
  */
 package org.bibsonomy.search.es.index.converter.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -36,14 +47,6 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Converter;
 
-import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * abstract class to convert the model to the ES mapping
@@ -64,7 +67,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Post<R> convert(final Map<String, Object> source, Set<String> allowdUsersForDoc) {
+	public Post<R> convert(final Map<String, Object> source, Set<String> allowedUsersForDoc) {
 		final Post<R> post = new Post<>();
 		
 		if (source.containsKey(Fields.SYSTEM_URL)) {
@@ -72,10 +75,10 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 			post.setSystemUrl(systemUrl);
 		}
 		
-		post.setDate(parseDate(source, Fields.DATE));
-		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
+		post.setDate(ElasticsearchUtils.parseDate(source, Fields.DATE));
+		post.setChangeDate(ElasticsearchUtils.parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
-		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
+		final boolean loadDocuments = allowedUsersForDoc.contains(userName);
 		fillUser(post, userName);
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
@@ -90,6 +93,13 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		resource.setInterHash((String) source.get(Fields.Resource.INTERHASH));
 		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
 		resource.setTitle((String) source.get(Fields.Resource.TITLE));
+
+		if (source.containsKey(Fields.ALL_USERS)) {
+			final List<String> userNames = (List<String>) source.get(Fields.ALL_USERS);
+			final List<User> users = userNames.stream().map(User::new).collect(Collectors.toList());
+			post.setUsers(users);
+		}
+
 		post.setResource(resource);
 		
 		this.convertResourceInternal(post, source, loadDocuments);
@@ -156,16 +166,6 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 
 	/**
 	 * @param source
-	 * @param key
-	 * @return the date
-	 */
-	protected static Date parseDate(Map<String, Object> source, String key) {
-		final String dateAsString = (String) source.get(key);
-		return ElasticsearchUtils.parseDate(dateAsString);
-	}
-
-	/**
-	 * @param source
 	 * @param post
 	 */
 	protected void convertPostInternal(Map<String, Object> source, Post<R> post) {
@@ -184,11 +184,18 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		fillIndexDocumentUser(post, jsonDocument);
 		
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
-		
+
+		// add users that also posted this post
+		final List<User> users = post.getUsers();
+		if (present(users)) {
+			final List<String> userNames = users.stream().map(User::getName).collect(Collectors.toList());
+			jsonDocument.put(Fields.ALL_USERS, userNames);
+		}
+
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
 		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());
 		
-		this.convertResourceInternal(jsonDocument, post.getResource());
+		this.convertResourceInternal(jsonDocument, post);
 		this.convertPostInternal(post, jsonDocument);
 		return jsonDocument;
 	}
@@ -239,19 +246,24 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 
 	/**
 	 * @param jsonDocument
-	 * @param resource
+	 * @param post
 	 */
-	protected void convertResourceInternal(Map<String, Object> jsonDocument, R resource) {
-		jsonDocument.put(Fields.Resource.TITLE, resource.getTitle());
-		jsonDocument.put(Fields.Sort.TITLE, BibTexUtils.cleanBibTex(resource.getTitle().toLowerCase()));
+	protected void convertResourceInternal(final Map<String, Object> jsonDocument, Post<R> post) {
+		final R resource = post.getResource();
+		final String title = resource.getTitle();
+		jsonDocument.put(Fields.Resource.TITLE, title);
+		// check if title is present, maybe we have old invalid posts in the database
+		if (present(title)) {
+			jsonDocument.put(Fields.Sort.TITLE, BibTexUtils.cleanBibTex(title.toLowerCase()));
+		}
 		jsonDocument.put(Fields.Resource.INTRAHASH, resource.getIntraHash());
 		jsonDocument.put(Fields.Resource.INTERHASH, resource.getInterHash());
-		this.convertResource(jsonDocument, resource);
+		this.convertResource(jsonDocument, post);
 	}
 
 	/**
 	 * @param jsonDocument
-	 * @param resource
+	 * @param post
 	 */
-	protected abstract void convertResource(Map<String, Object> jsonDocument, R resource);
+	protected abstract void convertResource(Map<String, Object> jsonDocument, Post<R> post);
 }

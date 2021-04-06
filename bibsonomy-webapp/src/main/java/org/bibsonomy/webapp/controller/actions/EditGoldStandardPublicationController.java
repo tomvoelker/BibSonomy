@@ -34,13 +34,15 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -51,6 +53,8 @@ import org.springframework.validation.Errors;
  * @author dzo
  */
 public class EditGoldStandardPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
+
+	private MailUtils mailUtils;
 
 	@Override
 	protected View getPostView() {
@@ -90,8 +94,26 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
+	protected void createOrUpdateSuccess(PostPublicationCommand command, User loginUser, Post<BibTex> post) {
+		super.createOrUpdateSuccess(command, loginUser, post);
+
+		// Send update notifcation to all related persons, if update
+		if (present(command.getIntraHashToUpdate()) && present(post.getResourcePersonRelations())) {
+			for (ResourcePersonRelation relation : post.getResourcePersonRelations()) {
+				if (present(relation.getPerson().getEmail())) {
+					this.mailUtils.sendGoldStandardPublicationUpdateNotification(post, relation.getPerson().getMainName().toString(), relation.getPerson().getEmail(), requestLogic.getLocale());
+				}
+			}
+		}
+	}
+
+	@Override
+	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer, boolean update) {
+		final String redirectUrl = present(referer) ? referer : this.urlGenerator.getResourceUrl(post.getResource());
+
+		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
+		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");
+		return view;
 	}
 
 	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
@@ -99,7 +121,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			return null;
 		}
 
-		final Post<BibTex> gold = new Post<BibTex>();
+		final Post<BibTex> gold = new Post<>();
 
 		final GoldStandardPublication goldP = new GoldStandardPublication();
 		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
@@ -141,7 +163,10 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		return new GoldStandardPostValidator<BibTex>();
 	}
 
-	
+	public void setMailUtils(MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setRecommendationFeedback(org.bibsonomy.model.User, org.bibsonomy.model.Post, int)
 	 */

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.nowpublishers;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,7 +35,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #285 #286
 
- * @author Mohammed Abed
+ * @author rja
  */
 @Category(RemoteTest.class)
 public class NowPublishersScraperTest {
@@ -44,7 +45,9 @@ public class NowPublishersScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_285");
+		final String url = "http://www.nowpublishers.com/article/Details/INR-043";
+		final String resultFile = "NowPublishersScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, NowPublishersScraper.class, resultFile);
 	}
 	
 	/**
@@ -52,6 +55,8 @@ public class NowPublishersScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_286");
+		final String url = "http://www.nowpublishers.com/article/Details/INR-012";
+		final String resultFile = "NowPublishersScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NowPublishersScraper.class, resultFile);
 	}
 }

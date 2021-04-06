@@ -37,6 +37,7 @@ public enum BootstrapButtonStyle {
 	
 	defaultStyle("btn-default"),
 	primary("btn-primary"),
+	secondary("btn-secondary"),
 	success("btn-success"),
 	info("btn-info"),
 	warning("btn-warning"),

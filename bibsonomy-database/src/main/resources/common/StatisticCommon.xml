@@ -1,5 +1,10 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="StatisticCommon">
+
+	<resultMap id="statisticOnlyCount" class="statistics">
+		<result property="count" column="count" javaType="int" />
+	</resultMap>
+
 	<sql id="statisticRestrictions">
 		<dynamic prepend="WHERE">
 			<include refid="statisticDateRestriction" />

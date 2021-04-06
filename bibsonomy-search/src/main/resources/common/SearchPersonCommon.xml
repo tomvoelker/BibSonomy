@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchPersonCommon">
+
+	<resultMap id="simplePost" class="post" groupBy="contentId">
+		<result property="contentId" column="content_id" />
+		<result property="resource" resultMap="SearchPersonCommon.simplePublication" />
+	</resultMap>
+
+	<resultMap id="simplePublication" class="bibtex" groupBy="interHash">
+		<result property="interHash"	column="interHash"		javaType="string" />
+	</resultMap>
+
+	<resultMap id="simplePerson" class="person" groupBy="personChangeId">
+		<result property="personChangeId"	column="person_change_id"		javaType="int" />
+		<result property="personId"			column="person_id" 			javaType="string" />
+		<result property="college"			column="college"			javaType="string" />
+	</resultMap>
+
+	<resultMap id="simplePersonWithoutId" class="person"  groupBy="personId">
+		<result property="personId"			column="person_id" 			javaType="string" />
+		<result property="college"			column="college"			javaType="string" />
+	</resultMap>
+
+	<resultMap id="person" class="person" groupBy="personChangeId" extends="SearchPersonCommon.simplePerson">
+		<result property="academicDegree"	column="academic_degree"	javaType="string" />
+		<result property="orcid"			column="orcid"				javaType="string" />
+		<result property="college"			column="college"			javaType="string" />
+		<result property="user"				column="user_name"			javaType="string"/>
+		<result property="email"			column="email"				javaType="string"/>
+		<result property="homepage"			column="homepage"			javaType="url"/>
+		<result property="gender"			column="gender"				javaType="gender" />
+		<result property="names"			resultMap="SearchPersonCommon.personName"/>
+		<result property="changeDate"		column="log_changed_at"		javaType="date" />
+	</resultMap>
+
+	<resultMap id="personName" class="personName" groupBy="personNameChangeId">
+		<result property="personNameChangeId" column="person_name_change_id" javaType="int" />
+		<result property="firstName"		column="first_name"			javaType="string" />
+		<result property="lastName"			column="last_name"			javaType="string" />
+		<result property="isMain"			column="is_main"			javaType="boolean" />
+	</resultMap>
+
+	<resultMap id="simplePersonResourceRelation" class="personResourceRelation" groupBy="personRelChangeId">
+		<result property="personRelChangeId"	column="person_relation_change_id"	javaType="int" />
+		<result property="person"				resultMap="SearchPersonCommon.simplePerson" />
+	</resultMap>
+
+	<resultMap id="personResourceRelationWithoutPost" class="personResourceRelation" groupBy="personRelChangeId" extends="simplePersonResourceRelation">
+		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
+		<result property="changedAt"			column="log_changed_at"		javaType="date" />
+		<result property="personIndex"			column="person_index"		javaType="int" />
+	</resultMap>
+
+	<resultMap id="simplePersonResourceRelationWithoutPost" class="personResourceRelation" groupBy="personRelChangeId">
+		<result property="personRelChangeId"	column="person_relation_change_id"	javaType="int" />
+		<result property="relationType"			column="relator_code"		javaType="personResourceRelationType" />
+		<result property="changedAt"			column="log_changed_at"		javaType="date" />
+		<result property="personIndex"			column="person_index"		javaType="int" />
+		<result property="person"				resultMap="SearchPersonCommon.simplePersonWithoutId" />
+	</resultMap>
+
+	<resultMap id="simplePersonResourceRelationWithSimplePost" class="personResourceRelation" extends="simplePersonResourceRelationWithoutPost">
+		<result property="post"		resultMap="SearchPersonCommon.simplePost" />
+	</resultMap>
+
+	<resultMap id="personResourceRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="personResourceRelationWithoutPost">
+		<result property="post"		resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" />
+		<result property="person"	resultMap="SearchPersonCommon.simplePerson" />
+	</resultMap>
+
+	<sql id="personFields">
+		pn.person_change_id AS person_name_change_id, pn.first_name, pn.last_name, pn.is_main
+	</sql>
+
+	<sql id="personResourceRelationColumns">
+		ppr.person_id, ppr.relator_code, ppr.person_index, ppr.person_change_id AS person_relation_change_id, ppr.log_changed_at
+	</sql>
+
+	<sql id="personResourceRelationExtendedColumns">
+		<include refid="personResourceRelationColumns" />, per.college AS college
+	</sql>
+
+	<sql id="personResourceRelationWithPostColumns">
+		<include refid="personResourceRelationColumns" />, per.person_change_id, per.college AS college, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings, NULL AS other_user_name
+	</sql>
+
+	<!-- FIXME: move to other file -->
+	<select id="getLastPersonChangeId" resultClass="int">
+		SELECT value
+			FROM ids
+		WHERE name = 17
+	</select>
+
+	<select id="getLastPersonChangeLogDate" resultClass="date">
+		SELECT MAX(log_date) FROM
+		(
+			SELECT MAX(log_changed_at) AS log_date
+			FROM log_person
+			UNION
+			SELECT MAX(log_date) AS log_date
+			FROM log_person_name
+		) AS g
+	</select>
+
+</sqlMap>

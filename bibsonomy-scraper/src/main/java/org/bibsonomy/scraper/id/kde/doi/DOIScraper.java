@@ -62,7 +62,7 @@ public class DOIScraper implements Scraper {
 	
 	@Override
 	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
+		return Collections.singletonList(this);
 	}
 
 	/**
@@ -136,21 +136,17 @@ public class DOIScraper implements Scraper {
 	}
 
 	/**
-	 * @param scrapingContext
 	 * @param selection
-	 * @return
-	 * @throws MalformedURLException
 	 */
-	private static boolean selectionContainsDOI(final String selection)
-			throws MalformedURLException {
+	private static boolean selectionContainsDOI(final String selection) throws MalformedURLException {
 		return DOIUtils.isSupportedSelection(selection) || DOIUtils.isDOIURL(new URL(selection));
 	}
 	
 	@Override
-	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+	public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
 		try {
 			return DOIUtils.isDOIURL(scrapingContext.getUrl()) || selectionContainsDOI(scrapingContext.getSelectedText());
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			log.info("selected text is not a url", e);
 		}
 		return false;

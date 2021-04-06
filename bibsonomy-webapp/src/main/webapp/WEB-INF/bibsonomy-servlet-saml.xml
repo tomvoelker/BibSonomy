@@ -299,6 +299,8 @@
 	<!-- adding the updated url comparator TODO: remove with the spring security saml update (use the  parserPool, velocityEngine constructor of HTTP*Bind)-->
 	<bean id="urlComparator" class="org.bibsonomy.webapp.util.spring.security.saml.util.URLComparator" />
 
+	<alias name="${auth.saml.binding.post}" alias="postBinding" />
+
 	<bean id="httpDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPPostDecoder">
 		<constructor-arg ref="parserPool" />
 		<constructor-arg ref="urlComparator" />
@@ -310,9 +312,24 @@
 	</bean>
 
 	<!-- Bindings, encoders and decoders used for creating and parsing messages -->
-	<bean id="postBinding" class="org.springframework.security.saml.processor.HTTPPostBinding">
+	<bean id="postBindingSaml1" class="org.springframework.security.saml.processor.HTTPPostBinding">
 		<constructor-arg ref="httpDecoder" />
 		<constructor-arg ref="httpEncoder" />
+	</bean>
+
+	<bean id="httpDecoderSaml2" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPPostDecoderSaml2">
+		<constructor-arg ref="parserPool" />
+		<constructor-arg ref="urlComparator" />
+	</bean>
+
+	<bean id="httpEncoderSaml2" class="org.opensaml.saml2.binding.encoding.HTTPPostEncoder">
+		<constructor-arg ref="velocityEngine" />
+		<constructor-arg value="/templates/saml2-post-binding.vm" />
+	</bean>
+
+	<bean id="postBindingSaml2" class="org.springframework.security.saml.processor.HTTPPostBinding">
+		<constructor-arg ref="httpDecoderSaml2" />
+		<constructor-arg ref="httpEncoderSaml2" />
 	</bean>
 
 	<bean id="redirectDecoder" class="org.bibsonomy.webapp.util.spring.security.saml.util.HTTPRedirectDeflateDecoder">

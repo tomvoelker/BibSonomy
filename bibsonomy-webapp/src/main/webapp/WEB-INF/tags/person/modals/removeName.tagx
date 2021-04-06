@@ -1,0 +1,30 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <fmt:message key="person.show.close" var="textClose" />
+
+    <div class="modal fade" id="removeName" tabindex="-1" role="dialog" aria-labelledby="removeNameLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+                    <h4 class="modal-title"><fmt:message key="person.show.modalDeleteNameHeader" /></h4>
+                </div>
+
+                <div class="modal-body">
+                    <p><fmt:message key="person.show.modalDeleteNameContent" /> <br/> <strong id='modalRemoveNameText'>&#160;</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <form action="" method="post" class='form-inline' id='removeNameForm'>
+                        <input type="hidden" name="ckey" value="${ckey}"/>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+                        <input type='hidden' name='formPersonNameId' id='formPersonNameId' value=''/>&#160;
+                        <button type="button" class="btn btn-primary" id='btnRemoveNameSubmit'><fmt:message key="person.show.deleteNameButton" /></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</jsp:root>

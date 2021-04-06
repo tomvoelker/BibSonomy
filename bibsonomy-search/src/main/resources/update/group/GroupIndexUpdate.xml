@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GroupUpdate">
+
+	<select id="getUpdatedAndNewGroups" resultMap="SearchGroupCommon.fullGroup" parameterClass="searchParam">
+		SELECT <include refid="groupColumns" />
+		FROM
+			<!-- check for new groups -->
+			(SELECT `group`
+			FROM groupids
+				WHERE `group` >= #lastContentId# AND `group` >= 3
+			UNION
+			<!-- check for updated groups -->
+			SELECT `group`
+			FROM log_groupids
+				WHERE log_date >= #lastLogDate#
+					AND log_reason != 1
+			LIMIT #limit#
+			OFFSET #offset#) AS lg
+		JOIN groupids g USING (`group`)
+		LEFT JOIN groupids gg ON (g.parent = gg.`group`)
+		LEFT JOIN user u ON (u.user_name = g.group_name)
+	</select>
+
+	<select id="getDeletedGroups" resultMap="SearchGroupCommon.simpleGroup">
+		SELECT lg.`group`, lg.group_name
+		FROM log_groupids lg
+		WHERE log_date >= #lastLogDate#
+			AND log_reason = 1
+	</select>
+</sqlMap>

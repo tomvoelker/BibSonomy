@@ -32,17 +32,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -57,7 +53,7 @@ import org.bibsonomy.webapp.view.Views;
  * 
  * @author daill
  */
-public class AuthorPageController extends SingleResourceListControllerWithTags implements MinimalisticController<AuthorResourceCommand>{
+public class AuthorPageController extends SingleResourceListControllerWithTags implements MinimalisticController<AuthorResourceCommand> {
 	private static final Log log = LogFactory.getLog(AuthorPageController.class);
 
 	@Override
@@ -89,7 +85,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
 			// remove them from the query
-			authorQuery = this.removeSystemtagsFromQuery(authorQuery, sysTags);
+			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
 			// add them to the tags list
 			requTags.addAll(sysTags);
 		}
@@ -99,20 +95,18 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final String sysAuthor = SystemTagsUtil.buildSystemTagString(AuthorSystemTag.NAME, authorQuery);
 		requTags.add(sysAuthor);
 		sysTags.add(sysAuthor);
-		
+
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
-		
+
+		// build sort criteria list
+		this.buildSortCriteria(command);
+
 		int totalNumPosts = 0;
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.preProcessForSearchIndexSort(command);
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, command.getScope(), null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
-			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
-				this.postProcessAndSortList(command, resourceType);
-			}
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, command.getScope(), null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			totalNumPosts += listCommand.getTotalCount();
 		}
 		

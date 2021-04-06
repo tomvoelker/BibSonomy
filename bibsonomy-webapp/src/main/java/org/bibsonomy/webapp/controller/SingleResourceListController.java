@@ -32,9 +32,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -59,7 +59,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * 
 	 * @param cmd
 	 */
-	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {						
+	protected void postProcessAndSortList(final SimpleResourceViewCommand cmd, final Class<? extends Resource> resourceType) {
 		if (resourceType == BibTex.class) {
 			postProcessAndSortList(cmd, cmd.getBibtex().getList());
 		}
@@ -70,21 +70,12 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		}
 	}
 
-	protected void preProcessForSearchIndexSort(final TagResourceViewCommand command) {
-		// set order, default to rank if sort page attribute unknown or equals 'relevance'
-		command.setSortKey(SortKey.getByName(command.getSortPage()));
-		// set sorting criteriums list
+	protected void buildSortCriteria(final TagResourceViewCommand command) {
+		// build sort criteria list from the sortkeys and sortorders in command
 		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
 		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
-		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
-		command.setSortCriteriums(sortCriteriums);
-
-		// set the scope/searchtype
-		if (command.isEsIndex()) {
-			command.setScope(SearchType.SEARCHINDEX);
-		} else {
-			command.setScope(SearchType.LOCAL);
-		}
+		List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+		command.setSortCriteria(sortCriteria);
 	}
 
 	/** 
@@ -92,7 +83,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * FIXME: cmd unused
 	 */
 	protected List<Tag> getConceptsForSidebar(final SimpleResourceViewCommand cmd, final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		final List<Tag> concepts = new ArrayList<Tag>();
+		final List<Tag> concepts = new ArrayList<>();
 		for (final String requTag : requTags) {
 			final Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
 			if (present(conceptDetails)) {

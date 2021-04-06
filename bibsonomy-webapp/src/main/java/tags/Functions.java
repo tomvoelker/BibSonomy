@@ -33,16 +33,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
@@ -52,16 +44,7 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
-import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.EndnoteUtils;
@@ -89,6 +72,8 @@ import org.pegdown.PegDownProcessor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
+
+import javax.swing.text.html.HTMLDocument;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -565,45 +550,6 @@ public class Functions {
 	}
 
 	/**
-	 * TODO: remove!? Compares two strings word-based. (Maybe usefull in
-	 * future!)
-	 * 
-	 * @param newValue
-	 *        and oldValue
-	 * @return The difference between two strings. (inserted: green, deleted:
-	 *         red, not_changed)
-	 */
-	/*
-	 * public static String compareString(String newValue, String oldValue) {
-	 * 
-	 * 
-	 * if(newValue == null){
-	 * newValue=" ";
-	 * }
-	 * if(oldValue == null){
-	 * oldValue =" ";
-	 * }
-	 * diff_match_patch dmp = new diff_match_patch();
-	 * 
-	 * //split the texts based on words
-	 * LinesToCharsResult a = dmp.diff_linesToWords(newValue, oldValue);
-	 * 
-	 * String lineText1 = a.chars1;
-	 * String lineText2 = a.chars2;
-	 * List<String> lineArray = a.lineArray;
-	 * 
-	 * LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
-	 * 
-	 * dmp.diff_charsToLines(diffs, lineArray);
-	 * 
-	 * //cleans the result so that be more human readable.
-	 * dmp.diff_cleanupSemantic(diffs);
-	 * 
-	 * //applies appropriate colors to the result. (red, green)
-	 * return dmp.diff_prettyHtml(diffs);
-	 * }
-	 */
-	/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 
 	 * @param value
@@ -982,7 +928,7 @@ public class Functions {
 	public static <T extends Enum<T>> T convertToEnum(final String className, final String value) throws ClassNotFoundException {
 		@SuppressWarnings("unchecked")
 		final Class<T> enumClass = (Class<T>) Class.forName(className);
-		return new StringToEnumConverter<T>(enumClass).convert(value);
+		return new StringToEnumConverter<>(enumClass).convert(value);
 	}
 
 	/**
@@ -1060,17 +1006,4 @@ public class Functions {
 		}
 		return false;
 	}
-	
-	/**
-	 * Returns a formatted orcid
-	 * @param orcid
-	 * @return
-	 */
-	public static String beatifyOrcid(String orcid) {
-		if (orcid.length() == 16) {
-			return orcid.substring(0, 4) + "-" + orcid.substring(4, 8) + "-" + orcid.substring(8, 12) + "-" + orcid.substring(12, 16);
-		}
-		return orcid;
-	}
-
 }

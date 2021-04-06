@@ -53,8 +53,10 @@
 		
 		<form class="form-horizontal" role="form" >
 			<div class="form-group" id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
-				<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
-				<export:formats />
+				<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>
+				<div class="col-sm-9">
+					<export:formats />
+				</div>
 			</div>
 			<div class="form-group" id="exportOptions" method='POST'>
 				<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	

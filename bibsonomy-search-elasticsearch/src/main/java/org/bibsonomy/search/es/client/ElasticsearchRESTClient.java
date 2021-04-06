@@ -27,14 +27,14 @@
 package org.bibsonomy.search.es.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import com.carrotsearch.hppc.cursors.ObjectCursor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
-import org.bibsonomy.search.es.util.SortingUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -44,6 +44,8 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -64,6 +66,8 @@ import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -71,16 +75,15 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -141,33 +144,43 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+	public boolean insertNewDocument(String indexName, String id, IndexData indexData) {
 		return this.secureCall(() -> {
-			final IndexRequest indexRequest = buildIndexRequest(indexName, type, id, jsonDocument);
+			final IndexRequest indexRequest = buildIndexRequest(indexName, id, indexData);
 			final IndexResponse response = this.client.index(indexRequest, this.buildRequestOptions());
-			return response.getResult() == DocWriteResponse.Result.CREATED;
+			final boolean created = response.getResult() == DocWriteResponse.Result.CREATED;
+			final boolean updated = response.getResult() == DocWriteResponse.Result.UPDATED;
+			if (!created && !updated) {
+				LOG.error(response.status());
+			}
+			return created;
 		}, false, "error while inserting new document");
 	}
 
-	private static IndexRequest buildIndexRequest(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+	private static IndexRequest buildIndexRequest(String indexName, String id, IndexData indexData) {
 		final IndexRequest indexRequest = new IndexRequest();
-		indexRequest.index(indexName);
-		indexRequest.type(type); // TODO: remove with es 7
-		indexRequest.id(id);
-		indexRequest.source(jsonDocument);
-		return indexRequest;
+		return indexRequest.index(indexName)
+								.routing(indexData.getRouting())
+								.type(indexData.getType()) // TODO: remove with es 7
+								.id(id)
+								.source(indexData.getSource());
 	}
 
 	@Override
-	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+	public boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 			// convert each document to a indexrequest object and add all to the request
-			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName, type, entity.getKey(), entity.getValue()));
+			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName,entity.getKey(), entity.getValue()));
+
 			indexRequests.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
-			return !bulkResponse.hasFailures();
+			final boolean hasFailures = bulkResponse.hasFailures();
+			if (hasFailures) {
+				LOG.error("error while insert new documents into index '" + indexName + "':" + bulkResponse.buildFailureMessage());
+			}
+			return !hasFailures;
 		}, false, "error while inserting new documents into index " + indexName);
 	}
 
@@ -181,7 +194,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName, String syncStateForIndexName) {
+	public <S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);
@@ -190,7 +203,7 @@ public class ElasticsearchRESTClient implements ESClient {
 			if (!response.isExists()) {
 				throw new IllegalStateException("no index sync state found for " + indexName);
 			}
-			return ElasticsearchUtils.deserializeSearchIndexState(response.getSourceAsMap());
+			return converter.convert(response.getSourceAsMap(), null);
 		}, null, "error getting search index sync state for index " + syncStateForIndexName);
 	}
 
@@ -273,12 +286,37 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, List<SortCriterium> sortCriteriums, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+	public boolean updateDocuments(String indexName, List<Pair<String, UpdateData>> updates) {
 		return this.secureCall(() -> {
-			final SearchRequest searchRequest = new SearchRequest();
-			searchRequest.searchType(SearchType.DEFAULT);
-			searchRequest.types(type);
-			searchRequest.indices(indexName);
+			final BulkRequest bulkRequest = new BulkRequest();
+
+			final Stream<UpdateRequest> updateRequestStream = updates.stream().map(entry -> buildUpdateRequest(indexName, entry.getFirst(), entry.getSecond()));
+			updateRequestStream.forEach(bulkRequest::add);
+
+			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
+			return !bulkResponse.hasFailures();
+		}, false, "error while updating documents " + updates.stream().map(Pair::getFirst).collect(Collectors.joining(", ")));
+	}
+
+	private UpdateRequest buildUpdateRequest(final String index, String id, UpdateData updateData) {
+		final UpdateRequest updateRequest = new UpdateRequest(index, updateData.getType(), id);
+		updateRequest.routing(updateData.getRouting());
+		updateRequest.script(updateData.getScript());
+		return updateRequest;
+	}
+
+	private static SearchRequest createSearchRequest(final String indexName, String type) {
+		final SearchRequest searchRequest = new SearchRequest();
+		searchRequest.searchType(SearchType.DEFAULT);
+		searchRequest.types(type);
+		searchRequest.indices(indexName);
+		return searchRequest;
+	}
+
+	@Override
+	public SearchHits search(String indexName, String type, QueryBuilder queryBuilder, HighlightBuilder highlightBuilder, final List<Pair<String, SortOrder>> orders, int offset, int limit, Float minScore, Set<String> fieldsToRetrieve) {
+		return this.secureCall(() -> {
+			final SearchRequest searchRequest = createSearchRequest(indexName, type);
 
 			final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			searchSourceBuilder.query(queryBuilder);
@@ -295,16 +333,32 @@ public class ElasticsearchRESTClient implements ESClient {
 				searchSourceBuilder.fetchSource(fieldsToRetrieve.iterator().next(), null);
 			}
 
-			if (present(sortCriteriums)) {
-				List<Pair<String, SortOrder>> sortParameters = SortingUtils.buildSortParameters(sortCriteriums, type);
-				for (Pair<String, SortOrder> param : sortParameters) {
+			if (present(orders)) {
+				for (final Pair<String, SortOrder> param : orders) {
 					searchSourceBuilder.sort(param.getFirst(), param.getSecond());
 				}
 			}
+
 			searchRequest.source(searchSourceBuilder);
 			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());
 			return search.getHits();
 		}, null, "error while searching");
+	}
+
+	@Override
+	public Aggregations aggregate(String indexName, String type, QueryBuilder queryBuilder, AggregationBuilder aggregationBuilder) {
+		return this.secureCall(() -> {
+			final SearchRequest searchRequest = createSearchRequest(indexName, type);
+
+			final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(queryBuilder);
+			searchSourceBuilder.aggregation(aggregationBuilder);
+			searchSourceBuilder.size(0);
+			searchRequest.source(searchSourceBuilder);
+
+			final SearchResponse search = this.client.search(searchRequest, this.buildRequestOptions());
+			return search.getAggregations();
+		}, null, "error while aggregating");
 	}
 
 	@Override
@@ -360,20 +414,40 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete) {
-		if (!present(idsToDelete)) {
+	public boolean deleteDocuments(final String indexName, final List<DeleteData> documentsToDelete) {
+		if (!present(documentsToDelete)) {
 			// nothing to delete
 			return true;
 		}
+
+		LOG.debug("deleting the following documents " + documentsToDelete.stream().map(DeleteData::getId).collect(Collectors.joining(", ")) + " from index " + indexName);
+
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
-			final Stream<DeleteRequest> deleteRequestsStream = idsToDelete.stream().map(id -> new DeleteRequest().id(id).type(type).index(indexName));
+			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream().map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
 			deleteRequestsStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
-			return !bulkResponse.hasFailures();
+			final boolean hasFailures = bulkResponse.hasFailures();
+			if (hasFailures) {
+				LOG.error("error deleting documents in the fulltext index '" + indexName + "': " + bulkResponse.buildFailureMessage());
+			}
+			return !hasFailures;
 		}, false, "error deleting documents from index");
+	}
+
+	@Override
+	public Settings getIndexSettings(final String indexName) {
+		return this.secureCall(() -> {
+			final GetSettingsRequest settingsRequest = new GetSettingsRequest();
+			settingsRequest.indices(indexName);
+			final GetSettingsResponse settingsResponse = this.client.indices().getSettings(settingsRequest, this.buildRequestOptions());
+
+			final ImmutableOpenMap<String, Settings> indexToSettings = settingsResponse.getIndexToSettings();
+			final Iterator<ObjectCursor<Settings>> iterator = indexToSettings.values().iterator();
+			return iterator.next().value;
+		}, null, "error while getting index settings");
 	}
 
 	@Override

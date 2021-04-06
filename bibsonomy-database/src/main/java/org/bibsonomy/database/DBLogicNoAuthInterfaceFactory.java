@@ -40,20 +40,23 @@ import org.bibsonomy.model.logic.LogicInterface;
  * 
  * @author Dominik Benz
  */
-public class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFactory {
+public abstract class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 	
 	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
+		final DBLogic logic = this.buildLogic();
 		if (loginName != null) {
 			/*
 			 * In this case we don't fill the user object completely, but set
 			 * it's name such that the user is seen as logged in (users which
 			 * are not logged in cause a user object with empty name).
 			 */
-			return new DBLogic(new User(loginName), this.getDbSessionFactory(), this.bibtexReader);
+			logic.setLoginUser(new User(loginName));
+			return logic;
 		}
 		// guest access
-		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader);
+		logic.setLoginUser(new User());
+		return logic;
 	}
 
 }

@@ -26,63 +26,93 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
-import java.util.Collections;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpException;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
-/**
- * Scraper for IEEE Explore
+/** Scraper for IEEE Explore
  * @author rja
+ *
  */
 public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
-
 	private static final String SITE_NAME 	= "IEEEXplore Standards";
-	private static final String SITE_URL  	= "https://ieeexplore.ieee.org/";
+	private static final String SITE_URL  	= "http://ieeexplore.ieee.org/";
 	private static final String info 		= "This scraper creates a BibTeX entry for the standards at " + href(SITE_URL, SITE_NAME)+".";
 	private static final String DOWNLOAD_URL = SITE_URL + "xpl/downloadCitations";
-
-
 
 	private static final String IEEE_HOST        	 	  = "ieeexplore.ieee.org";
 	private static final String IEEE_STANDARDS_PATH   	  = "xpl";
 
 	private static final Pattern PATTERN1 = Pattern.compile("arnumber=([^&]*)");
 
-	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(
-					new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*"))
-	);
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
+
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
+	}
+
+
+	@Override
+	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+
+		final Matcher matcher = PATTERN1.matcher(sc.getUrl().toString());
+		if (matcher.find()) {
+			final String id = matcher.group(1);
+			final String bibtex = getBibTeX(sc, id);
+
+			if (ValidationUtils.present(bibtex)) {
+				// add downloaded bibtex to result 
+				sc.setBibtexResult(bibtex);
+				return true;
+			} 
+		} 
+		return false;
+	}
+	
+	/**
+	 * @param sc
+	 * @param id
+	 * @return the resulting BibTeX
+	 * @throws InternalFailureException
+	 */
 	protected static String getBibTeX(final ScrapingContext sc, final String id) throws InternalFailureException {
 		// using own client because I do not want to configure any client to allow circular redirects
-		final RequestConfig.Builder builder = WebUtils.getDefaultRequestConfig();
-		builder.setCircularRedirectsAllowed(true);
-		final HttpClient client = WebUtils.getHttpClient();
+		final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
+		defaultRequestConfig.setCircularRedirectsAllowed(true);
+		final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
 
 		try {
 			// better get the page first
 			final String url = sc.getUrl().toExternalForm();
-			WebUtils.getContentAsString(client, url);
+			WebUtils.getContentAsString(client, url, null, null, null);
 
-			final String postData = "citations-format=citation-abstract&download-format=download-bibtex&recordIds=" + UrlUtils.safeURIEncode(id);
+			// FIXME: this is copief from IEEEXploreBookScraper -> merge both scrapers?
+			//create a post method
+			//			final PostMethod method = new PostMethod(DOWNLOAD_URL);
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
+			postData.add(new BasicNameValuePair("citations-format", "citation-abstract"));
+			postData.add(new BasicNameValuePair("fromPage", ""));
+			postData.add(new BasicNameValuePair("download-format", "download-bibtex"));
+			postData.add(new BasicNameValuePair("recordIds", id));
 
 			// now get bibtex
 			String bibtex = WebUtils.getContentAsString(client, DOWNLOAD_URL, null, postData, null);
@@ -97,32 +127,19 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 				return bibtex.trim();
 			}
 			return null;
-		} catch (IOException | HttpException ex) {
+		} catch (MalformedURLException ex) {
+			throw new InternalFailureException(ex);
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
 
-	@Override
-	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		final Matcher matcher = PATTERN1.matcher(sc.getUrl().toString());
-		if (matcher.find()) {
-			final String id = matcher.group(1);
-			final String bibtex = getBibTeX(sc, id);
-
-			if (present(bibtex)) {
-				// add downloaded bibtex to result
-				sc.setBibtexResult(bibtex);
-				return true;
-			}
-		}
-		return false;
-	}
 
 	@Override
 	public String getInfo() {
 		return info;
 	}
+
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

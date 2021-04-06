@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.database.managers.chain.resource.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -44,11 +43,14 @@ import org.bibsonomy.model.Resource;
 
 /**
  * Returns a list of resources for a given group.
- * 
+ *
  * @author Miranda Grahl
  * @param <R> 
- * @param <P> 
+ * @param <P>
+ *
+ * @deprecated
  */
+@Deprecated
 public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
@@ -68,12 +70,12 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if (!present(group) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
-			return new ArrayList<Post<R>>();			
+			return new ArrayList<>();
 		}
-		
-		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getRequestedGroupName(), param.getGroups(), param.getSearchType(),
-				param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(),
-				param.getSortCriteriums(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+
+		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getUserName(),
+				HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(), param.getLimit(),
+				param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

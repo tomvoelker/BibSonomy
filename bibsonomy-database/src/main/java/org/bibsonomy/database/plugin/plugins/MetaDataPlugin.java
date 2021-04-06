@@ -28,6 +28,7 @@ package org.bibsonomy.database.plugin.plugins;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.MetaDataPluginKey;
 import org.bibsonomy.database.params.metadata.PostParam;
@@ -35,6 +36,10 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This plugin allows the saving of specific data.
@@ -44,21 +49,24 @@ import org.bibsonomy.model.Resource;
 public class MetaDataPlugin extends AbstractDatabasePlugin {
 
 	@Override
-	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
+	public List<JobInformation> onPublicationInsert(final Post<? extends BibTex> post, User loggedinUser, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
 			final PostParam param = createParam(post, MetaDataPluginKey.COPY_PUBLICATION);
 			this.insert("logPostCopy", param, session);
 		}
+		return Collections.emptyList();
 	}
 
 	@Override
-	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public List<JobInformation> onBookmarkInsert(final Post<? extends Resource> post, User logginUser, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
 			final PostParam param = createParam(post, MetaDataPluginKey.COPY_BOOKMARK);
 			this.insert("logPostCopy", param, session);
 		}
+
+		return Collections.emptyList();
 	}
 	
 	private static PostParam createParam(final Post<? extends Resource> post, final MetaDataPluginKey key) {

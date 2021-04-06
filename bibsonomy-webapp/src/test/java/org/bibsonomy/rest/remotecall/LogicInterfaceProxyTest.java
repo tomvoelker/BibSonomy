@@ -29,30 +29,17 @@ package org.bibsonomy.rest.remotecall;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -66,12 +53,16 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
-import org.bibsonomy.rest.AuthenticationHandler;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
@@ -82,6 +73,7 @@ import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.file.ServerFileLogic;
 import org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic;
 import org.easymock.EasyMock;
@@ -99,6 +91,21 @@ import org.junit.Test;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.MultipartFilter;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Tests remote calls via an LogicInterface remote proxy.
@@ -145,7 +152,12 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	
 	private LogicInterface clientLogic;
 	private LogicInterface serverLogic;
-	
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		return new ArrayList<>(); //FIXME (AD) implement stub
+	}
+
 	/**
 	 * MultipartFilter that does not require a SpringContext
 	 * @author Jens Illig
@@ -187,7 +199,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			try {
 				final BasicAuthenticationHandler handler = new BasicAuthenticationHandler();
 				handler.setLogicFactory(new MockLogicFactory());
-				restServlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(handler));
+				restServlet.setAuthenticationHandlers(Arrays.asList(handler));
 			} catch (final Exception e) {
 				throw new RuntimeException("problem while instantiating " + MockLogicFactory.class.getName(), e);
 			}
@@ -241,7 +253,11 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
+	private static List<String> convertToHashes(List<JobResult> list) {
+		return list.stream().map(JobResult::getId).collect(Collectors.toList());
+	}
+
 	private static void assertLogin() {
 		assertEquals(LOGIN_USER_NAME, MockLogicFactory.getRequestedLoginName());
 		assertEquals(API_KEY, MockLogicFactory.getRequestedApiKey());
@@ -266,8 +282,8 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		EasyMock.reset(this.serverLogic);
 	}
 	
-	private static interface Checker<T> {
-		public boolean check(T obj);
+	private interface Checker<T> {
+		boolean check(T obj);
 	}
 	
 	private static class CheckerDelegatingMatcher<T> implements IArgumentMatcher {
@@ -336,7 +352,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		 * @return the next argument
 		 */
 		public static <T> T eq(final T a, final String... excludeProperties) {
-			EasyMock.reportMatcher(new PropertyEqualityArgumentMatcher<T>(a, excludeProperties));
+			EasyMock.reportMatcher(new PropertyEqualityArgumentMatcher<>(a, excludeProperties));
 			return a;
 		}
 	}
@@ -359,7 +375,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		 */
 		group.setPrivlevel(null); 
 		
-		EasyMock.expect(this.serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
+		EasyMock.expect(this.serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "id"))).andReturn(group.getName() + "-new");
 		EasyMock.replay(this.serverLogic);
 		assertEquals(group.getName() + "-new", this.clientLogic.createGroup(group));
 		EasyMock.verify(this.serverLogic);
@@ -372,7 +388,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void createPostTestBookmark() {
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(ModelUtils.generatePost(Bookmark.class));
 		this.createPosts(posts);
 	}
@@ -381,26 +397,27 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void createPostTestPublication() {
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(ModelUtils.generatePost(BibTex.class));
 		this.createPosts(posts);
 	}
-	
+
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
+	public List<JobResult> createPosts(final List<Post<?>> posts) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
-				
-		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
+
+		final List<JobResult> singletonList = Collections.singletonList(JobResult.buildSuccess(post.getResource().getIntraHash()));
 
 		EasyMock.expect(this.serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, IGNORE1))).andReturn(singletonList);
 		EasyMock.replay(this.serverLogic);
-		assertEquals(singletonList, this.clientLogic.createPosts(posts));
+		final List<JobResult> clientList = this.clientLogic.createPosts(posts);
+		assertEquals(convertToHashes(singletonList), convertToHashes(clientList));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return null;
 	}
-	
+
 	/**
 	 * runs the test defined by {@link #createUser(User)} with a certain argument
 	 */
@@ -486,7 +503,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #getGroupDetails(String)} with a certain argument
+	 * runs the test defined by {@link #getGroupDetails(String, boolean)} with a certain argument
 	 */
 	@Test
 	public void getGroupDetailsTest() {
@@ -503,7 +520,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		 */
 		returnedGroupExpectation.setPrivlevel(null); 
 		
-		final List<User> users = new ArrayList<User>();
+		final List<User> users = new ArrayList<>();
 		users.add(ModelUtils.getUser());
 		users.get(0).setName("Nr1");
 		users.add(ModelUtils.getUser());
@@ -518,49 +535,49 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		EasyMock.replay(this.serverLogic);
 		final Group returnedGroup = this.clientLogic.getGroupDetails(groupName, false);
 
-		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
+		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*|.*id"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return returnedGroup;
 	}
 	
 	/**
-	 * runs the test defined by {@link #getGroups(boolean, String, int, int)} with certain arguments
+	 * runs the test defined by {@link #getGroups(GroupQuery)} with certain arguments
 	 */
 	@Test
 	public void getGroupsTest() {
-		this.getGroups(false, null, 64, 129);
+		final GroupQuery groupQuery = GroupQuery.builder().start(64).end(219).build();
+		this.getGroups(groupQuery);
 	}
-	
+
 	@Override
-	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
-		final List<Group> expectedList = new ArrayList<Group>();
+	public List<Group> getGroups(GroupQuery query) {
+		final List<Group> expectedList = new ArrayList<>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
 		expectedList.get(0).setGroupId(42);
 		/*
-		 * FIXME: remove this line. It is here only, because privlevel is not included 
+		 * FIXME: remove this line. It is here only, because privlevel is not included
 		 * in the XML and hence not transported to the serverLogic.
 		 */
-		expectedList.get(0).setPrivlevel(null); 
+		expectedList.get(0).setPrivlevel(null);
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(1).setName("Group2");
 		expectedList.get(0).setGroupId(23);
 		/*
-		 * FIXME: remove this line. It is here only, because privlevel is not included 
+		 * FIXME: remove this line. It is here only, because privlevel is not included
 		 * in the XML and hence not transported to the serverLogic.
 		 */
 		expectedList.get(1).setPrivlevel(null);
-		
-		EasyMock.expect(this.serverLogic.getGroups(false, null, start, end)).andReturn(expectedList);
+		EasyMock.expect(this.serverLogic.getGroups(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedList);
 		EasyMock.replay(this.serverLogic);
-		final List<Group> returnedGroups = this.clientLogic.getGroups(false,null, start, end);
-		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
+		final List<Group> returnedGroups = this.clientLogic.getGroups(query);
+		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.id"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return returnedGroups;
 	}
-	
+
 	/**
 	 * runs the test defined by {@link #getPostDetails(String, String)} with certain arguments
 	 */
@@ -577,16 +594,12 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		
 		try {
 			EasyMock.expect(this.serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedPublicationPost);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ObjectMovedException ex) {
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
 			// ignore
 		}
 		try {
 			EasyMock.expect(this.serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ObjectMovedException ex) {
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
 			// ignore
 		}
 		EasyMock.replay(this.serverLogic);
@@ -594,18 +607,14 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		Post<? extends org.bibsonomy.model.Resource> returnedPublicationPost = null;
 		try {
 			returnedPublicationPost = this.clientLogic.getPostDetails(resourceHash,userName);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ObjectMovedException ex) {
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
 			// ignore
 		}
 		CommonModelUtils.assertPropertyEquality(expectedPublicationPost, returnedPublicationPost, 5, null, IGNORE3);
 		Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = null;
 		try {
 			returnedBookmarkPost = this.clientLogic.getPostDetails(resourceHash,userName);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ObjectMovedException ex) {
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
 			// ignore
 		}
 		CommonModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, IGNORE3);
@@ -615,19 +624,30 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, SortKey, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
+	 * runs the test with arguments as used for the getBookmarkByTagName query
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, SearchType.LOCAL,null,  SortKey.NONE, null, null, 7, 1264);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setTags(Arrays.asList("bla", "blub"))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(7, 1264);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, SortKey, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
+	 * runs the test with arguments as used for the getPublicationForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		this.getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 1);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.GROUP)
+						.setGroupingName("testGroup")
+						.setTags(Arrays.asList("blub", "bla"))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 1);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	/**
@@ -635,38 +655,65 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getPostsTestPublicationByTagWithUmlaut() {
-		this.getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 1);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setTags(Collections.singletonList("blüb"))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 5);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, SortKey, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query
+	 * runs the test with arguments as used for the getPublicationByHashForUser query
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 5);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+						.setGroupingName("testUser")
+						.setHash(ModelUtils.getBibTex().getIntraHash())
+						.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.FOLKRANK))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 5);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 	
 	@Test
 	public void getPostsTestWithSearchAndSortKey() {
-		this.getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.LOCAL, null, SortKey.FOLKRANK, null, null, 0, 5);
+		// FIXME: search with folkrank sort does not make sense
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.search("search")
+						.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.FOLKRANK))
+						.setScope(QueryScope.LOCAL)
+						.fromTo(0, 5);
+		this.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
-	
+
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final SortKey sortKey, final Date startDate, final Date endDate, final int start, final int end) {
-		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
+	public <R extends Resource> List<Post<R>> getPosts(final PostQuery<R> query) {
+		// set some default values of the rest server
+		if (query.getTags() == null) {
+			query.setTags(Collections.emptyList());
+		}
+		if (query.getSortCriteria() == null) {
+			query.setSortCriteria(Collections.emptyList());
+		}
+
+		final Class<R> resourceType = query.getResourceClass();
+		final List<Post<R>> expectedPosts = new ArrayList<>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		if (resourceType == org.bibsonomy.model.Resource.class) {
-			expectedPosts.add( (Post) ModelUtils.generatePost(Bookmark.class));
-			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
+			expectedPosts.add((Post) ModelUtils.generatePost(Bookmark.class));
+			expectedPosts.add((Post) ModelUtils.generatePost(BibTex.class));
 		}
-		
-		EasyMock.expect(this.serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search,searchType, filters, sortKey, null, null, start, end)).andReturn(expectedPosts);
+
+		EasyMock.expect(this.serverLogic.getPosts(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedPosts);
 		EasyMock.replay(this.serverLogic);
 
-		final List<Post<T>> returnedPosts = this.clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, sortKey, null, null, start, end);
+		final List<Post<R>> returnedPosts = this.clientLogic.getPosts(query);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
@@ -694,7 +741,6 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		return returned;
 	}
 
-	
 	/**
 	 * runs the test defined by {@link #getTags(Class, GroupingEntity, String, String, List, String, SortKey, int, int, String, TagSimilarity)} with certain arguments
 	 */
@@ -773,7 +819,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		final String groupName = group.getName();
 		switch (operation) {
 		case ADD_MEMBER:
-			EasyMock.expect(this.serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+			EasyMock.expect(this.serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "id"),
 					PropertyEqualityArgumentMatcher.eq(operation),
 					PropertyEqualityArgumentMatcher.eq(membership))).andReturn("OK");
 			EasyMock.replay(this.serverLogic);
@@ -782,7 +828,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			assertLogin();
 			break;
 		case REMOVE_MEMBER:
-			EasyMock.expect(this.serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+			EasyMock.expect(this.serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "id"),
 					PropertyEqualityArgumentMatcher.eq(operation),
 					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName);
 			EasyMock.replay(this.serverLogic);
@@ -798,7 +844,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			 */
 			group.setPrivlevel(null); 
 			
-			EasyMock.expect(this.serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"),
+			EasyMock.expect(this.serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId", "id"),
 					PropertyEqualityArgumentMatcher.eq(operation, ""),
 					PropertyEqualityArgumentMatcher.eq(membership))).andReturn(groupName + "-new");
 			EasyMock.replay(this.serverLogic);
@@ -816,7 +862,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void updatePostTestPublication() {
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(ModelUtils.generatePost(BibTex.class));
 
 		this.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
@@ -827,26 +873,25 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void updatePostTestBookmark() {
-		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		final List<Post<?>> posts = new LinkedList<>();
 		posts.add(ModelUtils.generatePost(Bookmark.class));
 		
 		this.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 	}
 	
 	@Override
-	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+	public List<JobResult> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
 		
-		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
+		final List<JobResult> singletonList = Collections.singletonList(JobResult.buildSuccess(post.getResource().getIntraHash()));
 		
 		EasyMock.expect(this.serverLogic.updatePosts(PropertyEqualityArgumentMatcher.eq(posts, IGNORE1), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(singletonList);
 		EasyMock.replay(this.serverLogic);
-		assertEquals(singletonList, this.clientLogic.updatePosts(posts, operation));
+		assertEquals(convertToHashes(singletonList), convertToHashes(this.clientLogic.updatePosts(posts, operation)));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return null;
-		
 	}
 
 	/**
@@ -929,37 +974,33 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	
 	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
-		EasyMock.expect(this.serverLogic.createConcept(CheckerDelegatingMatcher.check(new Checker<Tag>() {
-			@Override
-			public boolean check(final Tag obj) {
-				assertEquals(concept.getName(), obj.getName());
-				assertNotNull(obj.getSubTags());
-				assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
-				for (int i = 0; i < concept.getSubTags().size(); ++i) {
-					final Tag origSubTag = concept.getSubTags().get(i);
-					final Tag foundSubTag = obj.getSubTags().get(i);
-					assertEquals(origSubTag.getName(), foundSubTag.getName());
-					assertNotNull(foundSubTag.getSuperTags());
-					assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
-					for (int x = 0; x < origSubTag.getSuperTags().size(); ++x) {
-						assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
-					}
+		EasyMock.expect(this.serverLogic.createConcept(CheckerDelegatingMatcher.check(obj -> {
+			assertEquals(concept.getName(), obj.getName());
+			assertNotNull(obj.getSubTags());
+			assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
+			for (int i = 0; i < concept.getSubTags().size(); ++i) {
+				final Tag origSubTag = concept.getSubTags().get(i);
+				final Tag foundSubTag = obj.getSubTags().get(i);
+				assertEquals(origSubTag.getName(), foundSubTag.getName());
+				assertNotNull(foundSubTag.getSuperTags());
+				assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
+				for (int x = 0; x < origSubTag.getSuperTags().size(); ++x) {
+					assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
 				}
-				assertNotNull(obj.getSuperTags());
-				assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
-				for (int i = 0; i < concept.getSuperTags().size(); ++i) {
-					final Tag origSuperTag = concept.getSuperTags().get(i);
-					final Tag foundSuperTag = obj.getSuperTags().get(i);
-					assertEquals(origSuperTag.getName(), foundSuperTag.getName());
-					assertNotNull(foundSuperTag.getSubTags());
-					assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
-					for (int x = 0; x < origSuperTag.getSubTags().size(); ++x) {
-						assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
-					}
-				}
-				return true;
 			}
-			
+			assertNotNull(obj.getSuperTags());
+			assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
+			for (int i = 0; i < concept.getSuperTags().size(); ++i) {
+				final Tag origSuperTag = concept.getSuperTags().get(i);
+				final Tag foundSuperTag = obj.getSuperTags().get(i);
+				assertEquals(origSuperTag.getName(), foundSuperTag.getName());
+				assertNotNull(foundSuperTag.getSubTags());
+				assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
+				for (int x = 0; x < origSuperTag.getSubTags().size(); ++x) {
+					assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
+				}
+			}
+			return true;
 		}), EasyMock.eq(grouping), EasyMock.eq(groupingName))).andReturn(concept.getName());;
 		EasyMock.replay(this.serverLogic);
 		assertEquals(concept.getName(), this.clientLogic.createConcept(concept, grouping, groupingName));
@@ -1000,18 +1041,5 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return returned;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType,
-			final GroupingEntity grouping, final String groupingName, final List<String> tags,
-			final String hash, final String search, final SearchType searchType, final String regex,
-			final TagSimilarity relation, final SortKey sortKey, final Date startDate, final Date endDate,
-			final int start, final int end) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

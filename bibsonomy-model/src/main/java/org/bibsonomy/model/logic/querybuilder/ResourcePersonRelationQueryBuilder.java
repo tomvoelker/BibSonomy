@@ -26,17 +26,19 @@
  */
 package org.bibsonomy.model.logic.querybuilder;
 
-import java.util.List;
-
-import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 
 /**
- * TODO: add documentation to this class
+ * builder for a {@link ResourcePersonRelationQuery}
  *
  * @author jensi
+ * @author ada
+ * @author dzo
  */
-public abstract class ResourcePersonRelationQueryBuilder {
+public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuilder<ResourcePersonRelationQueryBuilder> {
+
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
@@ -44,14 +46,9 @@ public abstract class ResourcePersonRelationQueryBuilder {
 	private String interhash;
 	private Integer authorIndex;
 	private String personId;
-	private Order order;
+	private PersonResourceRelationOrder order;
 	private boolean groupByInterhash;
-	
-	
-	public static enum Order {
-		publicationYear
-	}
-	
+
 	/**
 	 * @param withPersons whether to initialize the person references in the result objects
 	 * @return this builder
@@ -99,7 +96,7 @@ public abstract class ResourcePersonRelationQueryBuilder {
 		return this;
 	}
 	
-	public ResourcePersonRelationQueryBuilder orderBy(Order order) {
+	public ResourcePersonRelationQueryBuilder orderBy(PersonResourceRelationOrder order) {
 		this.order = order;
 		return this;
 	}
@@ -108,60 +105,18 @@ public abstract class ResourcePersonRelationQueryBuilder {
 		this.groupByInterhash = groupByInterhash;
 		return this;
 	}
-	
-	/**
-	 * @return the withPersons
-	 */
-	public boolean isWithPersons() {
-		return this.withPersons;
-	}
-	
-	public abstract List<ResourcePersonRelation> getIt();
 
-	public String getInterhash() {
-		return this.interhash;
-	}
-	
 	/**
-	 * @return the relationType
+	 * builds the query
+	 * @return the query
 	 */
-	public PersonResourceRelationType getRelationType() {
-		return this.relationType;
-	}
-	
-	/**
-	 * @return the authorIndex
-	 */
-	public Integer getAuthorIndex() {
-		return this.authorIndex;
-	}
-	
-	/**
-	 * @return the withPosts
-	 */
-	public boolean isWithPosts() {
-		return this.withPosts;
-	}
-	
-	/**
-	 * @return the personId
-	 */
-	public String getPersonId() {
-		return this.personId;
+	public ResourcePersonRelationQuery build() {
+		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
+						relationType, interhash, authorIndex, personId, order, groupByInterhash);
 	}
 
-	public Order getOrder() {
-		return this.order;
-	}
-	
-	/**
-	 * @return the groupByInterhash
-	 */
-	public boolean isGroupByInterhash() {
-		return this.groupByInterhash;
-	}
-
-	public boolean isWithPersonsOfPosts() {
-		return this.withPersonsOfPosts;
+	@Override
+	protected ResourcePersonRelationQueryBuilder builder() {
+		return this;
 	}
 }

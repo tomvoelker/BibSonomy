@@ -50,10 +50,7 @@
 	
 	<bean id="oauthLogicFactory" class="org.bibsonomy.database.ReadOnlyAwareShindigDBLogicUserInterfaceFactory">
 		<constructor-arg>
-			<bean class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
-				<property name="dbSessionFactory" ref="dbSessionFactory" />
-				<property name="bibtexReader" ref="bibtexReader"/>
-			</bean>
+			<bean class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory" parent="abstractLogicInterfaceFactory" />
 		</constructor-arg>
 		<constructor-arg value="${system.mode.readOnly}" />
 	</bean>

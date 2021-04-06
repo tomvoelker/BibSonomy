@@ -31,7 +31,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexState;
@@ -42,7 +44,6 @@ import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,19 +55,18 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticsearchIndexGenerator<T> {
+public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
-
 	private final ESClient client;
-
 	private final URI systemId;
 
 	private final IndexGenerationLogic<T> generationLogic;
+	private final DatabaseInformationLogic<S> databaseInformationLogic;
 
-	private final Converter<T, Map<String, Object>, ?> converter;
+	private final Converter<S, Map<String, Object>, Object> indexSyncStateConverter;
 
-	private final EntityInformationProvider<T> entityInformationProvider;
+	protected final EntityInformationProvider<T> entityInformationProvider;
 
 	private boolean generating = false;
 
@@ -75,19 +75,40 @@ public class ElasticsearchIndexGenerator<T> {
 	private int writtenEntities;
 	private String indexName;
 
+	@FunctionalInterface
+	protected interface Generator<E> {
+		List<E> getEntites(int lastContenId, int limit);
+	}
+
 	/**
-	 * default construtor with all required fields
+	 * an entity is added to the index iff the provided index voter votes for the entity
+	 *
+	 * (maybe an implementation wants to check that the entity was already added)
+	 *
+	 * @param <E>
+	 */
+	protected class IndexVoter<E> {
+		public boolean indexEntity(final E entity) {
+			return true;
+		}
+	}
+
+	/**
+	 * default constructor
+	 *  @param client
 	 * @param systemId
-	 * @param client
 	 * @param generationLogic
+	 * @param databaseInformationLogic
+	 * @param indexSyncStateConverter
 	 * @param entityInformationProvider
 	 */
-	public ElasticsearchIndexGenerator(URI systemId, ESClient client, IndexGenerationLogic<T> generationLogic, EntityInformationProvider<T> entityInformationProvider) {
+	public ElasticsearchIndexGenerator(ESClient client, URI systemId, IndexGenerationLogic<T> generationLogic, DatabaseInformationLogic<S> databaseInformationLogic, Converter<S, Map<String, Object>, Object> indexSyncStateConverter, EntityInformationProvider<T> entityInformationProvider) {
 		this.client = client;
 		this.systemId = systemId;
 		this.generationLogic = generationLogic;
+		this.databaseInformationLogic = databaseInformationLogic;
+		this.indexSyncStateConverter = indexSyncStateConverter;
 		this.entityInformationProvider = entityInformationProvider;
-		this.converter = this.entityInformationProvider.getConverter();
 	}
 
 	/**
@@ -101,9 +122,16 @@ public class ElasticsearchIndexGenerator<T> {
 		this.indexCreated(indexName);
 
 		// reset info fields
+		this.reset();
+	}
+
+	/**
+	 * resets the index, e.g. after success or after failture
+	 */
+	public void reset() {
 		this.indexName = null;
-		this.writtenEntities = 0;
 		this.numberOfEntities = 0;
+		this.writtenEntities = 0;
 		this.generating = false;
 	}
 
@@ -130,6 +158,10 @@ public class ElasticsearchIndexGenerator<T> {
 		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
 	}
 
+	protected int retrieveNumberOfEntities() {
+		return this.generationLogic.getNumberOfEntities();
+	}
+
 	/**
 	 * inserts the posts form the database into the index
 	 */
@@ -138,56 +170,71 @@ public class ElasticsearchIndexGenerator<T> {
 
 		// number of post entries to calculate progress
 		// FIXME: the number of posts is wrong
-		this.numberOfEntities = this.generationLogic.getNumberOfEntities();
+		this.numberOfEntities = this.retrieveNumberOfEntities();
 		LOG.info("Number of post entries: " + this.numberOfEntities);
 
 		// initialize variables
-		final SearchIndexSyncState newState = this.generationLogic.getDbState();
+		// FIXME: introduce a index state for each entity
+		final S newState = this.databaseInformationLogic.getDbState();
 		newState.setMappingVersion(BasicUtils.VERSION);
-		if (newState.getLast_log_date() == null) {
-			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
-		}
 
-		LOG.info("Start writing entites to index");
+		this.insertDataIntoIndex(indexName);
+		this.writeMetaInfoToIndex(indexName, newState);
+	}
+
+	protected void insertDataIntoIndex(String indexName) {
+		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> ElasticsearchIndexGenerator.this.generationLogic.getEntities(lastContenId, limit), this.entityInformationProvider, new IndexVoter<>());
+	}
+
+	protected final <E> void insertDataIntoIndex(String indexName, Generator<E> generator, EntityInformationProvider<E> entityInformationProvider, final IndexVoter<E> indexVoter) {
+		LOG.info("Start writing entities to index");
+
+		final Converter<E, Map<String, Object>, ?> converter = entityInformationProvider.getConverter();
 
 		// read block wise all posts
-		List<T> entityList = null;
+		List<E> entityList;
 		int skip = 0;
 		int lastContenId = -1;
-		int entityListSize = 0;
+		int entityListSize;
+		final Map<String, IndexData> docsToWrite = new HashMap<>();
 		do {
-			entityList = this.generationLogic.getEntites(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
+			entityList = generator.getEntites(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
 			entityListSize = entityList.size();
 			skip += entityListSize;
 			LOG.info("Read " + skip + " entries.");
-			final Map<String, Map<String, Object>> docsToWrite = new HashMap<>();
+
 			// cycle through all posts of currently read block
-			for (final T entity : entityList) {
-				final Map<String, Object> convertedEntity = this.converter.convert(entity);
+			for (final E entity : entityList) {
+				if (indexVoter.indexEntity(entity)) {
+					final Map<String, Object> convertedEntity = converter.convert(entity);
 
-				docsToWrite.put(this.entityInformationProvider.getEntityId(entity), convertedEntity);
+					final IndexData indexData = new IndexData();
+					indexData.setSource(convertedEntity);
+					indexData.setType(entityInformationProvider.getType());
+					indexData.setRouting(entityInformationProvider.getRouting(entity));
 
-				if (docsToWrite.size() > ESConstants.BULK_INSERT_SIZE) {
-					this.clearQueue(indexName, docsToWrite);
+					docsToWrite.put(entityInformationProvider.getEntityId(entity), indexData);
+
+					if (docsToWrite.size() > ESConstants.BULK_INSERT_SIZE) {
+						this.clearQueue(indexName, docsToWrite);
+					}
 				}
 			}
 
 			this.clearQueue(indexName, docsToWrite);
 
 			if (entityListSize > 0) {
-				lastContenId = this.entityInformationProvider.getContentId(entityList.get(entityListSize - 1));
+				lastContenId = entityInformationProvider.getContentId(entityList.get(entityListSize - 1));
 			}
 		} while (entityListSize == SearchDBInterface.SQL_BLOCKSIZE);
-
-		this.writeMetaInfoToIndex(indexName, newState);
 	}
 
 	/**
 	 * @param docsToWrite
 	 */
-	private void clearQueue(final String indexName, final Map<String, Map<String, Object>> docsToWrite) {
+	private void clearQueue(final String indexName, final Map<String, IndexData> docsToWrite) {
 		if (present(docsToWrite)) {
-			this.client.insertNewDocuments(indexName, this.entityInformationProvider.getType(), docsToWrite);
+			this.client.updateOrCreateDocuments(indexName, docsToWrite);
 			this.writtenEntities += docsToWrite.size();
 			docsToWrite.clear();
 		}
@@ -196,17 +243,20 @@ public class ElasticsearchIndexGenerator<T> {
 	/**
 	 * @param newState
 	 */
-	private void writeMetaInfoToIndex(final String indexName, final SearchIndexSyncState newState) {
-		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(newState);
+	private void writeMetaInfoToIndex(final String indexName, final S newState) {
+		final Map<String, Object> values = this.indexSyncStateConverter.convert(newState);
 
 		final String systemIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
-		final boolean inserted = this.client.insertNewDocument(systemIndexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, indexName, values);
+		final IndexData systemIndexData = new IndexData();
+		systemIndexData.setSource(values);
+		systemIndexData.setType(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+		final boolean inserted = this.client.insertNewDocument(systemIndexName, indexName, systemIndexData);
 
 		if (!inserted) {
-			throw new RuntimeException("failed to save systeminformation for index " + indexName);
+			throw new RuntimeException("failed to save system information for index " + indexName);
 		}
 
-		LOG.info("updated systeminformation of index " + indexName + " to " + values);
+		LOG.info("updated system information of index " + indexName + " to " + values);
 	}
 
 	/**
@@ -214,7 +264,6 @@ public class ElasticsearchIndexGenerator<T> {
 	 */
 	private void indexCreated(final String indexName) {
 		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
-
 		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
 	}
 

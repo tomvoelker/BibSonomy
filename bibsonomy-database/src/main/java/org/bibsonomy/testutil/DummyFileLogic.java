@@ -42,7 +42,7 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 public class DummyFileLogic implements FileLogic {
 
 	@Override
-	public void saveProfilePictureForUser(String username, UploadedFile pictureFile) throws Exception {
+	public void saveProfilePictureForUser(String username, UploadedFile pictureFile) {
 		// TODO Auto-generated method stub
 
 	}
@@ -57,6 +57,11 @@ public class DummyFileLogic implements FileLogic {
 	public File getProfilePictureForUser(String username) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean hasProfilePicture(String username) {
+		return false;
 	}
 
 	@Override

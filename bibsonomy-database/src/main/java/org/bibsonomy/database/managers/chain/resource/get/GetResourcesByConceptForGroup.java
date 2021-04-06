@@ -43,8 +43,11 @@ import org.bibsonomy.model.Resource;
  * @author Stefan Stützer
  * @author dzo
  * @param <R> the resource
- * @param <P> 
+ * @param <P>
+ *
+ * @deprecated
  */
+@Deprecated
 public class GetResourcesByConceptForGroup<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override

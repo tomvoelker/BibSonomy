@@ -26,54 +26,7 @@
  */
 package org.bibsonomy.database.managers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupRole;
-import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.PostAccess;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
-import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
-import org.bibsonomy.common.errors.UpdatePostErrorMessage;
-import org.bibsonomy.common.exceptions.ObjectMovedException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.database.common.AbstractDatabaseManager;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.common.enums.MetaDataPluginKey;
-import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.Chain;
-import org.bibsonomy.database.params.LoggingParam;
-import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.params.metadata.PostParam;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.systemstags.SystemTagsExtractor;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
-import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
-import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
-import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.database.validation.DatabaseModelValidator;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.metadata.PostMetaData;
-import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PostUtils;
-import org.bibsonomy.model.util.SimHash;
-import org.bibsonomy.model.validation.ModelValidator;
-import org.bibsonomy.database.services.ResourceSearch;
-import org.bibsonomy.util.ReflectionUtils;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,7 +38,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.SortCriteria;
+import org.bibsonomy.common.enums.Filter;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostAccess;
+import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.QueryScope;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
+import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.information.JobInformation;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.common.enums.MetaDataPluginKey;
+import org.bibsonomy.database.common.params.beans.TagIndex;
+import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.LoggingParam;
+import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.database.params.metadata.PostParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
+import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.validation.DatabaseModelValidator;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SystemTag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.metadata.PostMetaData;
+import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
+import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.model.validation.ModelValidator;
+import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.util.ReflectionUtils;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -344,38 +347,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 
 		return this.postList("get" + this.resourceClassName + "ByTagNames", param, session);
-	}
-
-	/**
-	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/>
-	 * <br/>
-	 *
-	 * On the <em>/tag</em> page only public entries are shown (groupType must
-	 * be set to public) which have all of the given tags attached. On the
-	 * <em>/viewable/</em> page only posts are shown which are set viewable to
-	 * the given group and which have all of the given tags attached.
-	 *
-	 * @param groupId
-	 * @param tagIndex
-	 * @param searchType
-	 * @param sortKey
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return a list of posts
-	 *
-	 */
-	public List<Post<R>> getPostsByTagNames(final int groupId, final List<TagIndex> tagIndex, final SearchType searchType, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
-		if(SearchType.FEDERATED == searchType){
-			final List<String> tagIndexNames = new ArrayList<String>();
-			for(final TagIndex tag:tagIndex){
-				tagIndexNames.add(tag.getTagName());
-			}
-			return this.resourceSearch.getPosts(null, null, null, null, null, searchType, null, null, null, null, tagIndexNames, null, null, null, null, sortKey, limit, offset, null);
-
-		}
-
-		return this.getPostsByTagNames(groupId, tagIndex, sortKey, limit, offset, session);
 	}
 
 	/**
@@ -659,35 +630,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * get list of posts from resource searcher
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationName
-	 * @param allowedGroups
-	 * @param searchType
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param sortCriteriums
-	 * @param limit
-	 * @param offset
+	 * @param loggedinUser
+	 * @param query
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final List<SortCriterium> sortCriteriums, final int limit, final int offset) {
-		if (present(this.resourceSearch)) {
-			if (present(searchType)){
-				return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchType, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, sortCriteriums, limit, offset, null);
-			}
-			log.error("no search type or resource type is set");
-		}
-
-		log.error("no resource searcher is set");
-		return new LinkedList<Post<R>>();
+	public List<Post<R>> getPostsByResourceSearch(final User loggedinUser, final PostSearchQuery<R> query) {
+		return this.resourceSearch.getPosts(loggedinUser, query);
 	}
 
 	/**
@@ -709,12 +657,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own posts, which are private, public or for friends;
 			// he as full access to his/her own posts
-			return this.getPostsForUser(loginUserName, loginUserName, HashID.INTER_HASH, groupId, new LinkedList<Integer>(), PostAccess.FULL, null, limit, offset, null, session);
+			return this.getPostsForUser(loginUserName, loginUserName, HashID.INTER_HASH, groupId, new LinkedList<>(), PostAccess.FULL, null, limit, offset, null, session);
 		}
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
-		param.setRequestedGroupName(requestedGroupName); // only set to avoid
-		// the JOIN with the group table and directly show the group name
+		/*
+		 * we only set the group name here to avoid
+		 * the JOIN with the group table and directly show the group name
+		 */
+		param.setRequestedGroupName(requestedGroupName);
 		param.setGroupId(groupId);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
@@ -744,7 +695,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsViewableByTag(final String requestedGroupName, final String loginUserName, final List<TagIndex> tagIndex, final int groupId, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own posts; has full access to his/her own posts
-			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, PostAccess.FULL, filters, systemTags, session);
+			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.emptyList(), limit, offset, PostAccess.FULL, filters, systemTags, session);
 		}
 
 		final P param = this.createParam(loginUserName, loginUserName, limit, offset);
@@ -756,40 +707,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		return this.postList("get" + this.resourceClassName + "ViewableByTag", param, session);
 	}
-
-
-	/**
-	 * Prepares queries which show all posts of all users belonging to the
-	 * group. This is an aggregated view of all posts of the group members
-	 *
-	 * @param groupId
-	 * @param requestedGroupName
-	 * @param visibleGroupIDs
-	 * @param searchType
-	 * @param loginUserName
-	 * @param simHash
-	 * @param postAccess
-	 * @param filters
-	 * @param sortCriteriums
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final String requestedGroupName, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		switch(searchType) {
-			case FEDERATED:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
-			case SEARCHINDEX:
-				return this.resourceSearch.getPosts(loginUserName, null, requestedGroupName, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
-			case LOCAL:
-			default:
-				return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
-		}
-
-	}
-
 
 	/**
 	 * <em>/group/EineGruppe</em><br/>
@@ -938,56 +855,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ForGroupByTag", param, session);
 	}
 
-	protected List<Post<R>> getPostsForUser(final P param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.postList("get" + this.resourceClassName + "ForUser", param, session);
-	}
-
 	/**
 	 * <em>/user/MaxMustermann</em><br/>
 	 * <br/>
 	 *
-	 * This method prepares queries which retrieve all posts for a given
-	 * user name (requestedUserName). Additionally the group to be shown can be
-	 * restricted. The queries are built in a way, that not only public posts
-	 * are retrieved, but also friends or private or other groups, depending
-	 * upon if userName is allowed to see them.
-	 *
-	 * ATTENTION! in case of a given groupId it is NOT checked if the user
-	 * actually belongs to this group.
-	 *
-	 * @param loginUserName
-	 * @param requestedUserName
-	 * @param searchType
-	 * @param simHash
-	 * @param groupId
-	 * @param visibleGroupIDs
-	 * @param postAccess TODO
-	 * @param filters
-	 * @param sortCriteriums
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, List<SortCriterium> sortCriteriums, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		switch(searchType) {
-			case FEDERATED:
-				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, SortKey.NONE, limit, offset, systemTags);
-			case SEARCHINDEX:
-				return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, sortCriteriums, limit, offset, systemTags);
-			case LOCAL:
-			default:
-				return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
-		}
-	}
-
-	/**
-	 * <em>/user/MaxMustermann</em><br/>
-	 * <br/>
-	 *
-	 * This method prepares queries which retrieve all posts for a given
+	 * This method prepares queries using the database, which retrieve all posts for a given
 	 * user name (requestedUserName). Additionally the group to be shown can be
 	 * restricted. The queries are built in a way, that not only public posts
 	 * are retrieved, but also friends or private or other groups, depending
@@ -1021,6 +893,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.getPostsForUser(param, session);
 	}
 
+	protected List<Post<R>> getPostsForUser(final P param, final DBSession session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.postList("get" + this.resourceClassName + "ForUser", param, session);
+	}
+
 	/**
 	 * Returns the number of posts for a given user.
 	 *
@@ -1040,8 +917,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
-		// groups
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForUserCount", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
@@ -1063,8 +939,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroups(visibleGroupIDs);
 
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set
-		// groups
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "WithDiscussionsCount", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
@@ -1369,7 +1244,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * neither public nor private ... ... get the groups
 			 * from the grouptas table
 			 */
-			post.setGroups(new HashSet<Group>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
+			post.setGroups(new HashSet<>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
 		}
 
 		return post;
@@ -1383,7 +1258,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * .model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
+	public JobResult createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
@@ -1391,7 +1266,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemtags perform before create
 			 */
-			final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
+			final List<ExecutableSystemTag> systemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), new HashSet<>());
 			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performBeforeCreate(post, session);
 			}
@@ -1406,7 +1281,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> postInDB = null;
 			try {
-				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<>(), session);
 			} catch(final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for hashes
@@ -1427,42 +1302,52 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 				session.commitTransaction();
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
+
+			/*
+			 * the job results containing all information
+			 */
+			final JobResult jobResult = JobResult.buildSuccess(post.getResource().getIntraHash());
+
 			/*
 			 * ALWAYS get a new contentId
 			 */
 			post.setContentId(this.generalDb.getNewId(ConstantID.IDS_CONTENT_ID, session));
+
 			/*
-			 * on update, do a delete first ...
+			 * insert the post
 			 */
-			this.insertPost(post, session);
+			final List<JobInformation> jobInformation = this.insertPost(post, loggedinUser, false, session);
+			jobResult.setInfo(jobInformation);
+
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
-			this.createdPost(post, session);
+			this.createdPost(post, loggedinUser, session);
+
 			/*
 			 * systemTags perform after create
 			 */
-			for (final ExecutableSystemTag systemTag: systemTags) {
+			for (final ExecutableSystemTag systemTag : systemTags) {
 				systemTag.performAfterCreate(post, session);
 			}
 			session.commitTransaction();
+			return jobResult;
 		} finally {
 			session.endTransaction();
 		}
-		return true;
 	}
 
 	/**
 	 * this method is called after a post and his tags were saved to the
 	 * database
 	 * and before the executable system tags are called
-	 *
-	 * @param post
+	 *  @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	protected void createdPost(final Post<R> post, final DBSession session) {
+	protected void createdPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		// noop
 	}
 
@@ -1476,7 +1361,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
+	public JobResult updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		if (!present(oldHash)) {
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 		}
@@ -1486,13 +1371,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		// If the post owner is a group where the executingUser is an moderator
 		// or higher, we fake updating the post as the post owner (= group user)
 		if (present(postOwner) && !postOwner.equals(executingUser)) {
-			final Group postOwnerGroup = this.groupDb.getGroupMembers(executingUser, postOwner, false, true, session);
+			final Group postOwnerGroup = this.groupDb.getGroup(executingUser, postOwner, false, true, session);
 			if (present(postOwnerGroup) && this.permissionDb.isAdminOrHasGroupRoleOrHigher(loginUser, postOwner, GroupRole.MODERATOR)) {
 				executingUser = postOwner;
 			}
 		}
 		
 		session.beginTransaction();
+		final R resource = post.getResource();
 		try {
 			/*
 			 * the resource with the "old" intrahash, that was sent
@@ -1502,7 +1388,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			// if yes, check if a post exists with the old intrahash
 			try {
-				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
+				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<>(), session);
 			} catch(final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for
@@ -1522,13 +1408,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				/*
 				 * not found -> throw exception
 				 */
-				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, resource.getIntraHash());
 				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				// we have to commit to adjust counters in session otherwise
 				// we will not get the DatabaseException from the session
 				session.commitTransaction();
 				log.warn("Added UpdatePostErrorMessage (" + this.resourceClassName + " with hash " + oldHash + " does not exist for user " + postOwner + ")");
-				return false;
+				return JobResult.buildFailure(Collections.singletonList(errorMessage));
 			}
 
 			/*
@@ -1546,7 +1432,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * hash already exists.
 			 */
 			if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
-				post.getResource().recalculateHashes();
+				resource.recalculateHashes();
 			}
 
 			/*
@@ -1560,7 +1446,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * the current intra hash of the resource
 			 */
-			final String intraHash = post.getResource().getIntraHash();
+			final String intraHash = resource.getIntraHash();
 
 			/*
 			 * get posts with the intrahash of the given post to check for
@@ -1568,7 +1454,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			Post<R> newPostInDB = null;
 			try {
-				newPostInDB = this.getPostDetails(executingUser, intraHash, postOwner, new ArrayList<Integer>(), session);
+				newPostInDB = this.getPostDetails(executingUser, intraHash, postOwner, new ArrayList<>(), session);
 			} catch (final ObjectMovedException ex) {
 				/*
 				 * getPostDetails() throws a ObjectMovedException for hashes
@@ -1598,13 +1484,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 * the new one - resulting
 					 * in two posts with the same (new hash)
 					 */
-					final ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-					session.addError(post.getResource().getIntraHash(), errorMessage);
+					final ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, resource.getIntraHash());
+					session.addError(resource.getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise
 					// we will not get the DatabaseException from the session
 					session.commitTransaction();
-					return false;
-
+					return JobResult.buildFailure(Collections.singletonList(errorMessage));
 				}
 			}
 
@@ -1634,7 +1519,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		} finally {
 			session.endTransaction();
 		}
-		return true;
+		// note: the intrahash might have changed after the recalculation of the hashes!
+		return JobResult.buildSuccess(resource.getIntraHash());
 	}
 
 	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
@@ -1704,14 +1590,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * insert new post
 			 */
-			this.insertPost(post, session);
+			this.insertPost(post, loggedinUser, true, session);
 
 			/*
 			 * add the tags
 			 */
 			this.tagDb.insertTags(post, session);
 
-			this.updatedPost(post, session);
+			this.updatedPost(post, loggedinUser, session);
 
 			session.commitTransaction();
 		} finally {
@@ -1722,11 +1608,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * called after a post was updated (only if updateOperation
 	 * {@link PostUpdateOperation#UPDATE_ALL}
-	 *
-	 * @param post
+	 *  @param post
+	 * @param loggedinUser
 	 * @param session
 	 */
-	protected void updatedPost(final Post<R> post, final DBSession session) {
+	protected void updatedPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		// noop
 	}
 
@@ -1785,7 +1671,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	//
 	// /*
 	// * Updates GroupID of the post*/
-	// final P param = this.getInsertParam(post, session);
+	// final P param = this.createInsertParam(post, session);
 	// this.updateGroupsOfPost(param, session);
 	//
 	// /*
@@ -1812,7 +1698,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	//
 	// //Updates bibtex key
 	//
-	// final P param = this.getInsertParam(post, session);
+	// final P param = this.createInsertParam(post, session);
 	// this.updatePostBibTexKey(param, session);
 	//
 	// session.commitTransaction();
@@ -1831,23 +1717,44 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * inserts a post into the database
-	 *
-	 * @param post		the post to insert
-	 * @param session
+	 * @param post    the post to insert
+	 * @param loggedinUser the current loggedin user
+	 * @param isUpdate flag iff the post is created while a post is actually updated
+	 * @param session the session
 	 */
-	private void insertPost(final Post<R> post, final DBSession session) {
+	private List<JobInformation> insertPost(final Post<R> post, final User loggedinUser, boolean isUpdate, final DBSession session) {
+		final LinkedList<JobInformation> jobInformation = new LinkedList<>();
 		if (session.hasErrorsForKey(PostUtils.getKeyForPost(post))) {
 			// one or more errors occurred in this method
 			// => we don't want to go deeper into the process with these kinds
 			// of errors
 			log.error("Added MissingFieldErrorMessage for post " + post.getResource().getIntraHash());
-			return;
+			return jobInformation;
 		}
 
-		final P param = this.getInsertParam(post, session);
+		final P param = this.createInsertParam(post);
+
+		if (!isUpdate) {
+			// inform the plugins
+			final List<JobInformation> pluginJobInfo = this.onPostInsert(post, loggedinUser, session);
+			jobInformation.addAll(pluginJobInfo);
+		}
+
 		// insert
 		this.insertPost(param, session);
+		return jobInformation;
 	}
+
+	/**
+	 * called before a post is created
+	 *
+	 * @param post
+	 * @param loggedinUser
+	 * @param session
+	 *
+	 * @return the job informations generated by the plugins
+	 */
+	protected abstract List<JobInformation> onPostInsert(final Post<R> post, final User loggedinUser, final DBSession session);
 
 	/**
 	 * @param post
@@ -1857,7 +1764,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private boolean validateModel(final Post<R> post, final DBSession session) {
 		final List<ErrorMessage> validationErrors = this.modelValidator.validatePost(post);
 
-		final String errorKey = this.getErrorKeyForPost(post);
+		final String errorKey = getErrorKeyForPost(post);
 		for (final ErrorMessage errorMessage : validationErrors) {
 			session.addError(errorKey, errorMessage);
 		}
@@ -2084,11 +1991,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * @param post
-	 * @param session
+	 * @param post the post that will be created
 	 * @return new param for insert a resource
 	 */
-	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
+	protected abstract P createInsertParam(final Post<? extends R> post);
 
 	/**
 	 * @param chain the chain to set
@@ -2132,8 +2038,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * sets the post of the leavingUser that are only visible to the group to
 	 * the private group
 	 *
-	 * FIXME: as soon as we support multiple groups per post this logic must be
-	 * adapted
+	 * FIXME: as soon as we support multiple groups per post this logic must be adapted
 	 *
 	 * @param leavingUser
 	 * @param groupId

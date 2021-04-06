@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="additionalText" type="java.lang.String" required="false"/>
 	
 	<c:choose>
 		<c:when test="${empty enforceCommunityPost or not enforceCommunityPost}">
@@ -23,5 +24,9 @@
 	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
 	<a class="${buttonClasses}" href="${url}" title="${postHistoryTitle}">
 		<span class="fa fa-list-ol"><!--  --></span>
+		<c:if test="${not empty additionalText}">
+			<c:out value=" " />
+			<span>${additionalText}</span>
+		</c:if>
 	</a>
 </jsp:root>

@@ -27,7 +27,8 @@
 package org.bibsonomy.model.logic.exception;
 
 /**
- * Abstract base class for exceptions arising from logical constraints on the business logic. This is handy for checking the model state in the logic layer and properly reacting in the controller and view. 
+ * Abstract base class for exceptions arising from logical constraints on the business logic.
+ * This is handy for checking the model state in the logic layer and properly reacting in the controller and view.
  *
  * @author jensi
  */

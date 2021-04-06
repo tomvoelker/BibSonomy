@@ -26,11 +26,11 @@
  */
 package org.bibsonomy.rest.strategy.users;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.posts.AbstractListOfPostsStrategy;
 import org.bibsonomy.util.SortUtils;
@@ -62,10 +62,17 @@ public class GetUserPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		List<SortCriterium> sortCriteriums = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
-		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null,
-				this.search, this.searchType, null, sortCriteriums, null, null,
-				this.getView().getStartValue(), this.getView().getEndValue());
+		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.USER)
+				.setGroupingName(this.userName)
+				.setTags(this.tags)
+				.search(this.search)
+				.setScope(this.searchType)
+				.setSortCriteria(sortCriteria)
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
+		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(this.resourceType));
 	}
 
 }

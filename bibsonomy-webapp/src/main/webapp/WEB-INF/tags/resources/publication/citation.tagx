@@ -49,7 +49,15 @@
 					</c:when>
 					<c:otherwise>
 						<li>
-							<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
+
+							<c:choose>
+								<c:when test="${isCommunityPost}">
+									<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation, null)}?formatEmbedded=true&amp;items=1" />
+								</c:when>
+								<c:otherwise>
+									<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
+								</c:otherwise>
+							</c:choose>
 
 							<!-- encoding ID jquery friendly, because CUSTOM files have format "CUSTOM_USERNAME_LAYOUTNAME.CSL" which jquery strongly dislikes -->
 							<a class="favouriteLayoutDisplayName" data-source="${citation.source}" data-style="${citation.style}" data-toggle="tab" href="#citation_${fn:replace(fn:replace(citation.style, '.CSL', ''), ' ', '-')}" data-formatUrl="${exportUrl}">

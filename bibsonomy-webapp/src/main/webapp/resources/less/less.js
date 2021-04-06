@@ -10,8 +10,6 @@
  /** * @license Apache v2
  */
 
-
-
 (function (window, undefined) {//
 // Stub out `require` in the browser
 //

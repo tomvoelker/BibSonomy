@@ -36,7 +36,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
-import org.bibsonomy.database.services.ResourceSearch;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * interface encapsulating database access for {@link ResourceSearch}
@@ -46,10 +48,10 @@ import org.bibsonomy.database.services.ResourceSearch;
  * 
  * @param <R> resource type
  */
-public interface SearchDBInterface<R extends Resource> extends DatabaseInformationLogic {
+public interface SearchDBInterface<R extends Resource> extends DatabaseInformationLogic<DefaultSearchIndexSyncState> {
 	
 	/** the max entries to fetch from the database into memory */
-	public static final int SQL_BLOCKSIZE = 10000;
+	public static final int SQL_BLOCKSIZE = 100;
 
 	/** 
 	 * @param userName

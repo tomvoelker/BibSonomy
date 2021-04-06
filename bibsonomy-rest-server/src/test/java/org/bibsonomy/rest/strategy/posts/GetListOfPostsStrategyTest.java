@@ -44,12 +44,9 @@ import org.junit.Test;
  */
 public class GetListOfPostsStrategyTest extends AbstractContextTest {
 
-	/**
-	 * @throws Exception  
-	 */
 	@Test
-	public void testGetListOfPostsStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/api/posts", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, new HashMap<String, String>(), null);
+	public void testGetListOfPostsStrategy() {
+		final Context ctx = new Context(HttpMethod.GET, "/api/posts", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, new HashMap<>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 

@@ -157,13 +157,20 @@ public abstract class Strategy {
 		if (present(this.context.getStringAttribute("friend", null))) {
 			return GroupingEntity.FRIEND;
 		}
+		if (present(this.context.getStringAttribute("person", null))) {
+			return GroupingEntity.PERSON;
+		}
 		return GroupingEntity.ALL;
 	}
 
 	protected LogicInterface getLogic() {
 		return this.context.getLogic();
 	}
-	
+
+	protected LogicInterface getAdminLogic() {
+		return this.context.getAdminLogic();
+	}
+
 	protected UrlRenderer getUrlRenderer() {
 		return this.context.getUrlRenderer();
 	}

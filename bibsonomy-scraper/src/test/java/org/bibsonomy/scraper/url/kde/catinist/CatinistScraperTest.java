@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.catinist;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,15 +41,20 @@ public class CatinistScraperTest {
 	 * starts URL test with id url_313
 	 */
 	@Test
-	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_313");
+	public void urlTest1Run() {
+		final String url = "http://www.refdoc.fr/Detailnotice?cpsidt=3620772";
+		// http://www.refdoc.fr/Detailnotice/exportnotice?typeExport=BIB&idarticle=16263823
+		final String resultFile = "CatInistScraperUnitURLTest.bib";
+		assertScraperResult(url, null, CatinistScraper.class, resultFile);
 	}
 	
 	/**
 	 * starts URL test with id url_354
 	 */
 	@Test
-	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_354");
+	public void urlTest2Run() {
+		final String url = "http://www.refdoc.fr/Detailnotice?cpsidt=3620772";
+		final String resultFile = "CatInistScraperUnitURLTest.bib";
+		assertScraperResult(url, null, CatinistScraper.class, resultFile);
 	}
 }

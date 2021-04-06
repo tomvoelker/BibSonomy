@@ -94,7 +94,12 @@ public class ServerFileLogic implements FileLogic {
 	public File getProfilePictureForUser(String username) {
 		return this.profileFileLogic.getProfilePictureForUser(username);
 	}
-	
+
+	@Override
+	public boolean hasProfilePicture(String username) {
+		return this.profileFileLogic.hasProfilePicture(username);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.services.filesystem.JabRefFileLogic#writeJabRefLayout(java.lang.String, org.bibsonomy.model.util.file.UploadedFile, org.bibsonomy.common.enums.LayoutPart)

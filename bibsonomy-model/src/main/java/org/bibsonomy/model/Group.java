@@ -36,16 +36,15 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.model.cris.Linkable;
 
 /**
  * A group groups users.
  */
-public class Group implements Serializable {
+public class Group implements Linkable, Serializable {
 	private static final long serialVersionUID = -4364391580208670647L;
 
-	/**
-	 * The internal id of this group.
-	 */
+	/** The internal id of this group. */
 	private int groupId = GroupID.INVALID.getId();
 
 	/**
@@ -105,12 +104,27 @@ public class Group implements Serializable {
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
 
+	// (ada) Why does group have a reference to group request!?
 	/** stores information regarding the group request */
 	private GroupRequest groupRequest;
 	
 	private List<GroupMembership> memberships;
 	private List<GroupMembership> pendingMemberships;
-	
+
+	/**
+	 * The parent group.
+	 */
+	private Group parent;
+
+	/** a list of all subgroups. */
+	private List<Group> subgroups;
+
+	/** flag that signals if this group is an organization. */
+	private boolean organization;
+
+	/** the id of the group in an external source (e.g. the database of the university) */
+	private String internalId;
+
 	/**
 	 * default constructor
 	 */
@@ -149,7 +163,25 @@ public class Group implements Serializable {
 		this.sharedDocuments = false;
 		this.allowJoin = false;
 	}
-	
+
+	/**
+	 * Gets this groups parent group if it is set.
+	 *
+	 * @return the parent group if set, <code>null</code> otherwise.
+	 */
+	public Group getParent() {
+		return parent;
+	}
+
+	/**
+	 * Sets this groups parent group.
+	 *
+	 * @param parent the parent group.
+	 */
+	public void setParent(Group parent) {
+		this.parent = parent;
+	}
+
 	/**
 	 * @return groupId
 	 */
@@ -197,7 +229,7 @@ public class Group implements Serializable {
 	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
-			this.posts = new LinkedList<Post<? extends Resource>>();
+			this.posts = new LinkedList<>();
 		}
 		return this.posts;
 	}
@@ -326,6 +358,67 @@ public class Group implements Serializable {
 	}
 
 	/**
+	 * Gets all direct subgroups for this group.
+	 *
+	 * @return a list of all subgroups for this group.
+	 */
+	public List<Group> getSubgroups() {
+		return subgroups;
+	}
+
+
+	/**
+	 * Sets the subgroups for this group.
+	 *
+	 * @param subgroups a list with subgroups (groups that have this object as a parent).
+	 */
+	public void setSubgroups(List<Group> subgroups) {
+		this.subgroups = subgroups;
+	}
+
+	/**
+	 * signals whether the group should be treated as an organization.
+	 *
+	 * @return <code>true</code> iff this group is an organization
+	 */
+	public boolean isOrganization() {
+		return organization;
+	}
+
+	/**
+	 * Sets the organization flag.
+	 *
+	 * @param organization <code>true</code> iff this group is an organization
+	 */
+	public void setOrganization(boolean organization) {
+		this.organization = organization;
+	}
+
+	/**
+	 * @return the internalId
+	 */
+	public String getInternalId() {
+		return internalId;
+	}
+
+	/**
+	 * @param internalId the internalId to set
+	 */
+	public void setInternalId(String internalId) {
+		this.internalId = internalId;
+	}
+
+	@Override
+	public String getLinkableId() {
+		return this.name;
+	}
+
+	@Override
+	public Integer getId() {
+		return this.groupId;
+	}
+
+	/**
 	 * Compares two groups. Two groups are equal, if their groupId is equal.
 	 * 
 	 * @param other
@@ -432,7 +525,7 @@ public class Group implements Serializable {
 		this.pendingMemberships = pendingMemberships;
 	}
 	
-	// TODO: move to utils class
+	// TODO: move to utils class, remove all dependencies
 	public GroupMembership getGroupMembershipForUser(String username) {
 		for (GroupMembership g : this.getMemberships()) {
 			if (g.getUser().getName().equals(username)) {
@@ -448,8 +541,10 @@ public class Group implements Serializable {
 		
 		return null;
 	}
-	
-	
+
+	/**
+	 * @return the group level permissions of this group
+	 */
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
 		if (this.groupLevelPermissions == null) {
 			this.groupLevelPermissions = new HashSet<>();

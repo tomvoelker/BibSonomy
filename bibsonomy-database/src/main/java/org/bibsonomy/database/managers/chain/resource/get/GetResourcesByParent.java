@@ -42,11 +42,12 @@ import org.bibsonomy.util.ValidationUtils;
  * @param <R> the resource
  * @param <P> the param
  */
+@Deprecated // TODO: replace with new query based chain
 public class GetResourcesByParent<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P>  {
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsWithHistory(param.getHash(),param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		return this.databaseManager.getPostsWithHistory(param.getHash(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -59,14 +60,14 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		final String doi = exportDOIFromSourceCode(url.toString());
-		if (doi != null) {
+		final String doi = exportDOIFromSourceCode(url);
+		if (ValidationUtils.present(doi)) {
 			return DOWNLOAD_URL + doi;
 		}
 		return null;
 	}
 
-	private static String exportDOIFromSourceCode(String url) throws ScrapingException {
+	private static String exportDOIFromSourceCode(URL url) throws ScrapingException {
 		try {
 			final Matcher m = DOI.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {

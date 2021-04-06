@@ -44,7 +44,10 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
+ * 
+ *  acquired by Taylor and Francis?
  */
+@Deprecated
 public class InformaWorldScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Informaworld";
@@ -87,10 +90,10 @@ public class InformaWorldScraper extends AbstractUrlScraper {
 				if (bibResult != null) {
 					sc.setBibtexResult(bibResult);
 					return true;
-				} else
-					throw new ScrapingFailureException("getting BibTeX failed");
-			}else
-				throw new ScrapingFailureException("cookie is missing");
+				} 
+				throw new ScrapingFailureException("getting BibTeX failed");
+			}
+			throw new ScrapingFailureException("cookie is missing");
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}

@@ -29,7 +29,9 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,9 +51,11 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
@@ -67,6 +71,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return PermissionDatabaseManager
 	 */
+	@Deprecated // use spring config
 	public static PermissionDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -75,6 +80,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDb;
 	
 	private int maxQuerySize;
+	private Map<String, String> specialUserTagMap = Collections.emptyMap();
 
 	private PermissionDatabaseManager() {
 		this.groupDb = GroupDatabaseManager.getInstance();
@@ -187,7 +193,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 */
 		for (final Group group : commonGroups) {
 			/* check if user is admin */
-			Group trueGroup =  this.groupDb.getGroupMembers(userName, group.getName(), true, false, session);
+			Group trueGroup =  this.groupDb.getGroup(userName, group.getName(), true, false, session);
 			GroupMembership adminMembership = GroupUtils.getGroupMembershipForUser(trueGroup, userName, false);
 			if (present(adminMembership) && adminMembership.getGroupRole().hasRole(GroupRole.ADMINISTRATOR)) {
 				return true;
@@ -348,15 +354,26 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return GroupID.isSpecialGroup(groupName);
 	}
 
+
 	/**
-	 * @param userName
-	 * @param groupName
-	 * @param session
-	 * @return if the given user is a member of the specified group
+	 * Checks whether the user <code>username</code> is a member of <code>groupName</code> or one of its parents.
+	 *
+	 * @param userName a username.
+	 * @param groupName a group name.
+	 * @param session a db session.
+	 *
+	 * @return <code>true</code> if the user is a member of <code>groupName</code> or one of its parents, <code>false</code> otherwise.
 	 */
 	public boolean isMemberOfGroup(final String userName, final String groupName, final DBSession session) {
-		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
-		return groupID.intValue() != GroupID.INVALID.getId();
+		// check if user is member of the group
+		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session); //TODO: introduce a new method in groupdbmanager
+		if (groupID.intValue() != GroupID.INVALID.getId()) {
+			return true;
+		} else {
+			// additionally check if the user is a member of one of the parent groups.
+			List<Integer> parentGroupIds = this.groupDb.getParentGroupsWhereUserIsMember(groupName, userName, session);
+			return parentGroupIds.size() > 0;
+		}
 	}
 
 	/**
@@ -537,13 +554,11 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * some special users like 'dblp' are not allowed)
 		 */
 		if (relation.isInternal()) {
-			if (!present(targetUser.getName())) {
+			final String targetUserName = targetUser.getName();
+			if (!present(targetUserName)) {
 				throw new ValidationException("error.relationship_with_nonexisting_user");
 			}
-			if (UserUtils.isDBLPUser(targetUser)) {
-				throw new ValidationException("error.relationship_with_dblp");
-			}
-			if (UserUtils.isSpecialUser(targetUser)) {
+			if (this.isSpecialUser(targetUserName)) {
 				throw new ValidationException("error.relationship_with_special_user");
 			}
 			if (loginUser.isSpammer()) {
@@ -600,6 +615,22 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * @param userName the name of the user
+	 * @return <code>true</code> iff the user is a special user
+	 */
+	public boolean isSpecialUser(final String userName) {
+		return this.specialUserTagMap.containsKey(userName);
+	}
+
+	/**
+	 * @param userName
+	 * @return the tags for this special user
+	 */
+	public List<Tag> getTagsForSpecialUser(final String userName) {
+		return Collections.singletonList(TagUtils.createFrequentTag(this.specialUserTagMap.get(userName)));
+	}
+
+	/**
 	 * @return the maxQuerySize
 	 */
 	public int getMaxQuerySize() {
@@ -611,5 +642,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setMaxQuerySize(int maxQuerySize) {
 		this.maxQuerySize = maxQuerySize;
+	}
+
+	/**
+	 * @param specialUserTagMap the specialUserTagMap to set
+	 */
+	public void setSpecialUserTagMap(Map<String, String> specialUserTagMap) {
+		this.specialUserTagMap = specialUserTagMap;
 	}
 }

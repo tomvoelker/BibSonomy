@@ -1,0 +1,68 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <fmt:message key="person.show.close" var="textClose" />
+    <fmt:message key="person.show.addThesisButton" var="textAddThesisButton" />
+    <fmt:message key="person.show.newThesisButton" var="textNewThesisButton" />
+
+    <fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
+    <bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
+        <jsp:attribute name="modalBody">
+            <form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
+                <input type="hidden" name="ckey" value="${ckey}"/>
+                <fieldset>
+                    <div id="person-scroll-menu" class="form-group">
+                        <label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
+                        <fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
+                        <input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for='addSupervisedThesisRole' class="control-label">
+                            <fmt:message key="person.show.modal.addSupervisedThesis.role">
+                                <fmt:param><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/> <c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></fmt:param>
+                            </fmt:message>
+                        </label>
+                        <select id="addSupervisedThesisRole" name="formPersonRole" class="form-control">
+                            <c:forEach var="role" items="${command.availableRoles}">
+                                <c:choose>
+                                    <c:when test="${(role != 'AUTHOR') and (role != 'EDITOR') and (role != 'DOCTOR_VATER')}">
+                                        <option value="${role}"><fmt:message key="person.show.${role.relatorCode}" /></option>
+                                    </c:when>
+                                    <c:when test="${role == 'DOCTOR_VATER'}">
+                                    <option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option>
+                                    </c:when>
+                                </c:choose>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </fieldset>
+                <!-- set via autocomplete -->
+                <input type='hidden' name='formInterHash' value=''/>
+                <input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
+                <!-- set statically -->
+                <input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+                <input type="hidden" name='formAction' value='addThesis' />
+            </form>
+        </jsp:attribute>
+        <jsp:attribute name="modalFooter">
+            <form action="/editPublication" method="post">
+                <input type="hidden" name="ckey" value="${ckey}"/>
+                <input type="hidden" name='personId' value='${command.person.personId}'/>
+                <input type="hidden" name='personRole' value='ADVISOR'/><!-- TODO: this should be selectable via a dropdown button -->
+                <input type="hidden" name='post.resource.entrytype' value='phdThesis'/>
+                <input type="hidden" name='formAction' value='newThesis'/>
+                <input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+            </form>
+            <form action="#">
+                <input type="hidden" name="ckey" value="${ckey}"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+                <input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' onclick="javascript:$('#addSupervisedThesisForm').submit(); return false;" />
+            </form>
+        </jsp:attribute>
+    </bs:modal>
+</jsp:root>

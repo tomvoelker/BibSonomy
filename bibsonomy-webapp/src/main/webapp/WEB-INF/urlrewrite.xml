@@ -22,7 +22,7 @@
 		<from>^(/resources/.+)$</from>
 		<to last="true">$1</to>
 	</rule>
-		
+
 	<!-- store all parameters -->
 	<!--
 		We need it before the /export rule, otherwise we won't get the 
@@ -635,6 +635,52 @@
 		<to type="redirect" last="true">/group/$1</to>
 	</rule>
 
+	<!-- /organizations -->
+	<rule>
+		<name>redirect /organizations</name>
+		<from>^/+organizations$</from>
+		<to last="true">/groups?organizations=true</to>
+	</rule>
+	<!-- /organization/ORGANIZATION -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION</name>
+		<from>^/+organization/+([^/]+)$</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<to last="true">/organization</to>
+	</rule>
+	<rule>
+		<name>redirect group/GROUP/</name>
+		<from>^/+group/+([^/]+)/$</from>
+		<to type="redirect" last="true">/group/$1</to>
+	</rule>
+
+	<!-- /organization/ORGANIZATION/projects -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION/projects</name>
+		<from>^/+organization/+([^/]+)/projects$</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<set type="parameter" name="subPage">PROJECTS</set>
+		<to last="true">/organization</to>
+	</rule>
+
+	<!-- /organization/ORGANIZATION/persons -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION/persons</name>
+		<from>^/+organization/+([^/]+)/persons</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<set type="parameter" name="subPage">PERSONS</set>
+		<to last="true">/organization</to>
+	</rule>
+
+	<!-- /organization/ORGANIZATION/publications -->
+	<rule>
+		<name>redirect /organization/ORGANIZATION/publications</name>
+		<from>^/+organization/+([^/]+)/publications</from>
+		<set type="parameter" name="requestedOrganizationName">${unescapePath:$1}</set>
+		<set type="parameter" name="subPage">PUBLICATIONS</set>
+		<to last="true">/organization</to>
+	</rule>
+
 	<!-- redirect for tag formular on /relevantfor/group/GROUP/TAG page -->
 	<rule>
 		<name>redirect /relevantfor/group/GROUP/TAG</name>
@@ -892,7 +938,7 @@
 	<rule><!--/[32]/USERNAME -->
 		<name>/history/RSCTYPE/HASH/USER</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="requestedType">${unescapePath:$1}</set>
+		<set type="parameter" name="resourceClass">${unescapePath:$1}</set>
 		<set type="parameter" name="requestedHash">${unescapePath:$2}</set>
 		<set type="parameter" name="requestedUser">${unescapePath:$3}</set>
 		<to last="true">/history</to>
@@ -902,7 +948,7 @@
 	<rule>
 		<name>/history/RSCTYPE/HASH</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})$</from>
-		<set type="parameter" name="requestedType">${unescapePath:$1}</set>
+		<set type="parameter" name="resourceClass">${unescapePath:$1}</set>
 		<set type="parameter" name="requestedHash">${unescapePath:$2}</set>
 		<to last="true">/history</to>
 	</rule>
@@ -1044,7 +1090,24 @@
 		<set type="parameter" name="activationCode">${unescapePath:$1}</set>
 		<to last="true">/activate</to>
 	</rule>
-	
+
+	<!-- /project/PROJECT_ID -->
+	<rule>
+		<name>/project/PROJECT_ID</name>
+		<from>^/+project/+(.*)$</from>
+		<set type="parameter" name="requestedProjectId">${unescapePath:$1}</set>
+		<to>/project</to>
+	</rule>
+
+	<!-- statisitcs for distinct values -->
+	<rule>
+		<name>/statistics/CLASS/FIELD</name>
+		<from>^/+statistics/+([^/]+)/+([^/]+)$</from>
+		<set type="parameter" name="clazz">${unescapePath:$1}</set>
+		<set type="parameter" name="field">${unescapePath:$2}</set>
+		<to>/statistics/distinctFieldValues</to>
+	</rule>
+
 	<!-- ############## help ############### -->
 	<rule>
 		<name>Images below /help/</name>

@@ -60,5 +60,6 @@
 		<property name="rendererFactory" ref="rendererFactory" />
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="authenticationHandlers" ref="authenticationHandlers" />
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 </beans>

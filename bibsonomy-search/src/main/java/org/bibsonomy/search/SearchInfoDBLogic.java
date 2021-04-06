@@ -38,10 +38,11 @@ import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagemen
 import org.bibsonomy.database.common.DBSession;
 
 /**
- * 
+ * logic to get some basic simple information of
  * @author dzo
  */
 public class SearchInfoDBLogic extends AbstractDatabaseManagerWithSessionManagement implements SearchInfoLogic {
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.SearchInfoLogic#getFriendsForUser(java.lang.String)
 	 */
@@ -62,8 +63,11 @@ public class SearchInfoDBLogic extends AbstractDatabaseManagerWithSessionManagem
 	 */
 	@Override
 	public List<String> getGroupMembersByGroupName(final String groupName) {
-		try (final DBSession session = this.openSession()) {
-			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session);
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session); //TODO (AD) query for parent memberships
+		} finally {
+			session.close();
 		}
 	}
 
@@ -86,13 +90,20 @@ public class SearchInfoDBLogic extends AbstractDatabaseManagerWithSessionManagem
 		}
 	}
 
+	@Override
+	public Set<String> getPersonsOfOrganization(String organizationName) {
+		try (final DBSession session = this.openSession()) {
+			final List<String> personIds = this.queryForList("getPersonsForOrganization", organizationName, String.class, session);
+			return new HashSet<>(personIds);
+		}
+	}
+
 	/**
 	 * @param userName
 	 * @param session
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private List<String> getUserNamesThatShareDocumentsAsList(String userName, final DBSession session) {
-		return (List<String>) this.queryForList("getDocumentUsers", userName, session);
+		return this.queryForList("getDocumentUsers", userName, String.class, session);
 	}
 }

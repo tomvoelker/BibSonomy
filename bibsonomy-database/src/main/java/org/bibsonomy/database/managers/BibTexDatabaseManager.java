@@ -29,7 +29,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +44,13 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.RepositoryParam;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -58,16 +58,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
-import org.bibsonomy.database.services.ResourceSearch;
 
 /**
- * Used to create, read, update and delete BibTexs from the database.
+ * Used to create, read, update and delete {@link BibTex} from the database.
  * 
- * FIXME: why do some methods use loginUserName and some methods not? Shouldn't
- * all methods need loginUserName?
+ * FIXME: why do some methods use loginUserName and some methods not? Shouldn't all methods need loginUserName?
  * 
  * @author Miranda Grahl
  * @author Jens Illig
@@ -88,8 +85,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	public static BibTexDatabaseManager getInstance() {
 		return singleton;
 	}
-	
-	private ResourceSearch<BibTex> publicationSearch;
 
 	/** database manager */
 	private UserDatabaseManager userDb;
@@ -454,11 +449,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void createdPost(final Post<BibTex> post, final DBSession session) {
-		super.createdPost(post, session);
+	protected void createdPost(final Post<BibTex> post, User loggedinUser, final DBSession session) {
+		super.createdPost(post, loggedinUser, session);
 		
 		this.handleExtraUrls(post, session);
-		this.handleDocuments(post, session);
+		this.handleDocuments(post, loggedinUser, session);
 	}
 
 	/**
@@ -475,13 +470,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void updatedPost(final Post<BibTex> post, final DBSession session) {
-		super.updatedPost(post, session);
+	protected void updatedPost(final Post<BibTex> post, User loggedinUser, final DBSession session) {
+		super.updatedPost(post, loggedinUser, session);
 		
-		this.handleDocuments(post, session);
+		this.handleDocuments(post, loggedinUser, session);
 	}
 
-	private void handleDocuments(final Post<BibTex> post, final DBSession session) {
+	private void handleDocuments(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
 		final List<Document> documents = post.getResource().getDocuments();
 		if (present(documents)) {
 			for (final Document document : documents) {
@@ -496,7 +491,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 						savedDocument.setFileName(document.getFileName());
 						final String savedFileHash = savedDocument.getFileHash();
 						final String savedMD5Hash = savedDocument.getMd5hash();
-						this.docDb.addDocument(username, post.getContentId(), savedFileHash, savedDocument.getFileName(), savedMD5Hash, session);
+						this.docDb.addDocument(username, post.getContentId(), savedFileHash, savedDocument.getFileName(), savedMD5Hash, loggedinUser, session);
 						document.setFileHash(savedFileHash);
 						document.setMd5hash(savedMD5Hash);
 						// TODO: delete file?
@@ -511,6 +506,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 	private void insertScraperMetadata(final ScraperMetadata scraperMetadata, final DBSession session) {
 		this.insert("insertScraperMetadata", scraperMetadata, session);
+	}
+
+	@Override
+	protected List<JobInformation> onPostInsert(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
+		return this.plugins.onPublicationInsert(post, loggedinUser, session);
 	}
 
 	/*
@@ -559,11 +559,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org
+	 * org.bibsonomy.database.managers.PostDatabaseManager#createInsertParam(org
 	 * .bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected BibTexParam getInsertParam(final Post<? extends BibTex> post, final DBSession session) {
+	protected BibTexParam createInsertParam(final Post<? extends BibTex> post) {
 		final BibTexParam insert = this.getNewParam();
 		insert.setResource(post.getResource());
 		insert.setRequestedContentId(post.getContentId());
@@ -577,9 +577,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final int groupId = post.getGroups().iterator().next().getGroupId();
 		insert.setGroupId(groupId);
 
-		// inform plugin
-		// FIXME: why calling the plugins in the create insert param method, not expected here!
-		this.plugins.onPublicationInsert(post, session);
 		return insert;
 	}
 
@@ -671,7 +668,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 	protected void performUpdateRepositorys(final Post<BibTex> post, final Post<BibTex> oldPost, final DBSession session) {
 		final RepositoryParam param = new RepositoryParam();
-
 		param.setUserName(post.getUser().getName());
 		param.setInterHash(post.getResource().getInterHash());
 		param.setIntraHash(post.getResource().getIntraHash());
@@ -686,25 +682,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRepositoryName(post.getRepositorys().get(0).getId());
 
 		this.insert("insertRepository", param, session);
-	}
-
-	/**
-	 * @param options
-	 * @return
-	 */
-	public List<Post<BibTex>> getPublicationSuggestion(PublicationSuggestionQueryBuilder options) {
-		if (this.publicationSearch != null) {
-			return this.publicationSearch.getPublicationSuggestions(options);
-		}
-		log.warn("no publicationSearch available for publication suggestions");
-		return new ArrayList<>();
-	}
-	/**
-	 *
-	 * @param publicationSearch the publicationSearch to set
-	 */
-	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
-		this.publicationSearch = publicationSearch;
 	}
 
 	/**

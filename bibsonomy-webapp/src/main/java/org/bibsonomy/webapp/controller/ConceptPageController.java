@@ -31,13 +31,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ConceptResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -117,15 +113,13 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		pageTitle.append(StringUtils.implodeStringCollection(requTags, " "));
 		command.setPageTitle(pageTitle.toString());
+
+		// build sort criteria list
+		this.buildSortCriteria(command);
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
-			this.preProcessForSearchIndexSort(command);
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
-				this.postProcessAndSortList(command, resourceType);
-			}
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 		}	
 		
 		// retrieve concepts

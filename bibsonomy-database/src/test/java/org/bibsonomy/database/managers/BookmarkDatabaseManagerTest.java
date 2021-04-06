@@ -27,7 +27,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.testutil.Assert.assertTagsByName;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -339,7 +339,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	public void testGetPostsByHashForUser() {
 		// This bookmark is a private bookmark of testuser1
 		final String requBibtex = "294a9e1d594297e7bb9da9e11229c5d7";
-		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<>();
 		List<Post<Bookmark>> post = bookmarkDb.getPostsByHashForUser(null, requBibtex, TESTUSER2_NAME, visibleGroupIDs, null, this.dbSession);
 		assertEquals(0, post.size());
 		
@@ -384,15 +384,15 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		 * testuser1 is also member of group 4
 		 */
 		// get all posts of testuser1 (and testuser2) which are public or friends + private posts of testuser1
-		final List<Integer> visibleGroupIDsUser2 = new LinkedList<Integer>();
+		final List<Integer> visibleGroupIDsUser2 = new LinkedList<>();
 		visibleGroupIDsUser2.add(PUBLIC_GROUP_ID);
 		visibleGroupIDsUser2.add(TESTGROUP1_ID); // both users are members of group 3
 		
-		final List<Integer> visibleGroupIDsUser1 = new LinkedList<Integer>(visibleGroupIDsUser2);
+		final List<Integer> visibleGroupIDsUser1 = new LinkedList<>(visibleGroupIDsUser2);
 		visibleGroupIDsUser1.add(TESTGROUP2_ID); // user 1 is also member of group 4
 		
 		final List<Post<Bookmark>> posts = bookmarkDb.getPostsForGroup(TESTGROUP1_ID, visibleGroupIDsUser1, TESTUSER1_NAME, HashID.INTRA_HASH, null, null, 20, 0, null, this.dbSession);
-		assertEquals(10, posts.size());
+		assertEquals(11, posts.size());
 
 		// get all posts of testuser1 (and testuser2) which are public or friends + private posts of testuser1
 		final List<Post<Bookmark>> posts2 = bookmarkDb.getPostsForGroup(TESTGROUP2_ID, visibleGroupIDsUser1, TESTUSER1_NAME, HashID.INTRA_HASH, null, null, 10, 0, null, this.dbSession);
@@ -400,7 +400,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 
 		// get all posts of testuser2 (and testuser1) which are public or friends or group posts of testuser1
 		final List<Post<Bookmark>> posts3 = bookmarkDb.getPostsForGroup(TESTGROUP1_ID, visibleGroupIDsUser2, TESTUSER2_NAME, HashID.INTRA_HASH, null, null, 10, 0, null, this.dbSession);
-		assertEquals(7, posts3.size());
+		assertEquals(8, posts3.size());
 
 		// get all posts by testuser1, testuser2, which are public or friends no group posts
 		final List<Post<Bookmark>> posts4 = bookmarkDb.getPostsForGroup(TESTGROUP2_ID, visibleGroupIDsUser2, TESTUSER2_NAME, HashID.INTRA_HASH, null, null, 10, 0, null, this.dbSession);
@@ -422,7 +422,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
 		final String requestedUserName = "";
 		final String loginUserName = "";
-		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<>();
 		
 		final int count1 = bookmarkDb.getPostsForGroupCount(requestedUserName, loginUserName, TESTGROUP1_ID, visibleGroupIDs, this.dbSession);
 		assertEquals(3, count1);
@@ -574,7 +574,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		// no oldIntraHash and no update
 		bookmarkDb.createPost(toInsert, toInsert.getUser(), this.dbSession);
 		final String userName = toInsert.getUser().getName();
-		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, Bookmark.class, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
+		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, Bookmark.class, null, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate" });
@@ -608,7 +608,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Test
 	public void getContentIDForBookmark() {
-		assertThat(bookmarkDb.getContentIdForPost("20592a292e53843965c1bb42bfd51876", TESTUSER2_NAME, this.dbSession), equalTo(6));
+		assertThat(bookmarkDb.getContentIdForPost("20592a292e53843965c1bb42bfd51876", TESTUSER2_NAME, this.dbSession), is(6));
 	}
 	
 	/**
@@ -636,7 +636,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	}
 
 	/**
-	 * tests testGetPostssByConceptForGroup
+	 * tests testGetPostsByConceptForGroup
 	 * 
 	 * visibleGroupIDs must only be set, if ( groupId == -1 && userName != null ) && userName != requestedUserName
 	 * requestedUserName must be set

@@ -43,7 +43,7 @@ import org.bibsonomy.util.WebUtils;
  *
  * @author Johannes
  */
-public class BioRxivScraper extends GenericBibTeXURLScraper{
+public class BioRxivScraper extends GenericBibTeXURLScraper {
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	private static final String SITE_NAME = "bioRxiv";
 	private static final String SITE_HOST = "biorxiv.org";
@@ -59,7 +59,7 @@ public class BioRxivScraper extends GenericBibTeXURLScraper{
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		try {
 			// using url gives a FileNotFoundException, url.toString() doesn't
-			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final String content = WebUtils.getContentAsString(url, cookies);
 			final Matcher m = BIBTEX_PATTERN.matcher(content);
 			if (m.find()) {
 				return SITE_URL + m.group(1);

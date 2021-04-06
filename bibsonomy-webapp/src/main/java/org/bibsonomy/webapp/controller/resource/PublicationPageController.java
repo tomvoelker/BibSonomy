@@ -38,6 +38,8 @@ import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -45,6 +47,11 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller that is responsible for the community view of a publication
+ *
+ * - /bibtex/INTERHASH
+ * - /publication/INTERHASH
+ *
  * @author dzo
  */
 public class PublicationPageController extends AbstractResourcePageController<BibTex, GoldStandardPublication> {
@@ -66,7 +73,7 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 		
 		if ("html".equals(command.getFormat()) && !present(title) && GroupingEntity.ALL.equals(groupingEntity)) {
 			this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, null, null, 1);
-			final List<Post<BibTex>> posts = command.getListCommand(this.getResourceClass()).getList();
+			final List<Post<BibTex>> posts = command.getBibtex(this.getResourceClass()).getList();
 			if (present(posts)) {
 				final Post<BibTex> firstPost = posts.get(0);
 				final BibTex publication = firstPost.getResource();
@@ -120,7 +127,7 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 	 * @param loginUser
 	 */
 	@Override
-	protected void handleDiskussionItems(Post<GoldStandardPublication> goldStandard, User loginUser) {
+	protected void handleDiscussionItems(Post<GoldStandardPublication> goldStandard, User loginUser) {
 		// if creating first discussion item on normal post
 		if (!present(goldStandard)) {
 			return;
@@ -135,6 +142,20 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 				}
 			}
 			discussionItems.clear();
+		}
+	}
+
+	@Override
+	protected void loadResourceSpecificData(String goldHash, Post<GoldStandardPublication> goldStandard) {
+		/*
+		 * TODO: maybe should be done when retrieving the community post
+		 * set the resource relations for the goldstandard
+		 */
+		if (present(goldStandard)) {
+			final ResourcePersonRelationQuery query = new ResourcePersonRelationQueryBuilder()
+							.byPersonId(goldHash)
+							.build();
+			goldStandard.setResourcePersonRelations(this.logic.getResourceRelations(query));
 		}
 	}
 

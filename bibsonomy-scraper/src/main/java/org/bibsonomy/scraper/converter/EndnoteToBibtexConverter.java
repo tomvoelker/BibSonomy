@@ -129,9 +129,9 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 	 * @param entry
 	 * @return The processed string.
 	 */
-	public String processEntry(String entry){
+	public String processEntry(String entry) {
 
-		final SortedMap<String,String> map = new TreeMap<String,String>();
+		final SortedMap<String,String> map = new TreeMap<>();
 
 		/*
 		 * Handle abstract first
@@ -149,9 +149,9 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 			// build new entry without abstract
 			entry = entryToAbstract + entryAfterAbstract;
 		}
-		if(abstractEntry != null)
+		if (abstractEntry != null) {
 			map.put("abstract", abstractEntry);
-
+		}
 		/*
 		 * Go through all other fields
 		 */
@@ -160,12 +160,12 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 			final Matcher eachLineMatcher = LINE_PATTERN.matcher(entry);
 
 			//process each line
-			while (eachLineMatcher.find()){
+			while (eachLineMatcher.find()) {
 
 				// the content of this line's field
 				String tempData = eachLineMatcher.group(3).trim();
 
-				if (tempData == null){
+				if (tempData == null) {
 					continue;
 				}
 				final String tempLine = eachLineMatcher.group(0).trim();

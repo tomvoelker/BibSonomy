@@ -34,7 +34,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -78,6 +78,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByConceptForGroup(java.lang.String, java.util.List, java.lang.String, java.util.List, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
+	@Ignore // group posts are requested using the full text search
 	public abstract void testGetPostsByConceptForGroup();
 
 	/**

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.nejm;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,9 @@ public class NEJMScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		UnitTestRunner.runSingleTest("url_215");
+		final String url = "http://www.nejm.org/doi/full/10.1056/NEJMra1100109";
+		final String resultFile = "NEJMScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, NEJMScraper.class, resultFile);
 	}
 }
 

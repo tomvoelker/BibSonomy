@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ProjectUpdate">
+
+	<select id="getUpdatedAndNewProjects" resultMap="SearchProjectCommon.fullProject">
+		SELECT <include refid="projectColumns" />, pp.project_id AS parent_project_id
+		FROM
+			(
+				SELECT *
+				FROM projects p
+				WHERE p.id > #lastContentId#
+				LIMIT #limit#
+				OFFSET #offset#
+			) AS p
+		LEFT JOIN projects pp ON (p.parent_id = pp.id)
+	</select>
+
+	<select id="getDeletedProjects" resultMap="SearchProjectCommon.simpleProject">
+		SELECT <include refid="projectColumns" />
+		FROM log_projects p
+		WHERE p.log_date >= #lastLogDate#
+		AND p.new_id = -1
+	</select>
+
+</sqlMap>

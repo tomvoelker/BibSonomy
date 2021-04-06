@@ -1,0 +1,24 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:jsp="http://java.sun.com/JSP/Page">
+
+    <jsp:directive.attribute name="orcid" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="returnUrl" type="java.lang.Boolean" required="false"/>
+
+    <c:if test="${not empty orcid}">
+        <c:set var="formattedId" value="${fn:substring(orcid, 0, 4)}-${fn:substring(orcid, 4, 8)}-${fn:substring(orcid, 8, 12)}-${fn:substring(orcid, 12, 16)}" />
+        <c:choose>
+            <c:when test="${returnUrl}">
+                <div itemscope="itemscope" itemtype="https://schema.org/Person">
+                    <a itemprop="sameAs" content="https://orcid.org/${formattedId}" href="https://orcid.org/${formattedId}">
+                        <c:out value="${formattedId}" />
+                    </a>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <c:out value="${formattedId}" />
+            </c:otherwise>
+        </c:choose>
+    </c:if>
+</jsp:root>

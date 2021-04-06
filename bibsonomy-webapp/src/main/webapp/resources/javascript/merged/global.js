@@ -40,4 +40,5 @@ includeJavaScript("/resources/javascript/addToSpheres.js");
 includeJavaScript("/resources/javascript/logging.js");
 includeJavaScript("/resources/clipboard/clipboard.js");
 /* the following scripts are for development only */
+includeJavaScript("/resources/less/less_settings.js");
 includeJavaScript("/resources/less/less.js");

@@ -38,10 +38,10 @@ import org.bibsonomy.model.util.file.UploadedFile;
 public interface ProfilePictureLogic {
 	
 	/** the profile picture file extension */
-	public static final String FILE_EXTENSION = ".jpg";
+	String FILE_EXTENSION = ".jpg";
 	
 	/** all allowed file extensions for upload */
-	public static final Collection<String> PICTURE_EXTENSIONS = Arrays.asList("png", FILE_EXTENSION, "jpeg");
+	Collection<String> PICTURE_EXTENSIONS = Arrays.asList("png", FILE_EXTENSION, "jpeg");
 	
 	/**
 	 * saves a profile picture for the provided username
@@ -49,17 +49,23 @@ public interface ProfilePictureLogic {
 	 * @param pictureFile
 	 * @throws Exception TODO
 	 */
-	public void saveProfilePictureForUser(final String username, final UploadedFile pictureFile) throws Exception;
+	void saveProfilePictureForUser(final String username, final UploadedFile pictureFile) throws Exception;
 		
 	/**
 	 * deletes the profile picture of user (identified by username)
 	 * @param username
 	 */
-	public void deleteProfilePictureForUser(final String username);
+	void deleteProfilePictureForUser(final String username);
 	
 	/**
 	 * @param username
 	 * @return the profile picture
 	 */
-	public File getProfilePictureForUser(final String username);
+	File getProfilePictureForUser(final String username);
+
+	/**
+	 * @param username
+	 * @return <code>true</code> iff the specified user has a profile picture that is visible to the logged in user
+	 */
+	boolean hasProfilePicture(final String username);
 }

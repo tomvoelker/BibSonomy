@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -51,6 +51,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.services.Pingback;
@@ -211,16 +212,21 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 					log.warn("neither publications nor bookmarks found for intrahash '" + intraHash + "' when a postOwner was given: " + postUserName);
 				}
 			}
+
+			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+			postQueryBuilder.setGrouping(GroupingEntity.ALL)
+					.setHash(interHash)
+					.entriesStartingAt(1, 0);
 			
 			// If no post could be found for postUserName, find any post, that is visible to the loginUser
 			if (!present(originalPost)) {
-				final List<Post<Bookmark>> bookmarkPosts = this.logic.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), interHash, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 1);
+				final List<Post<Bookmark>> bookmarkPosts = this.logic.getPosts(postQueryBuilder.createPostQuery(Bookmark.class));
 				if (present(bookmarkPosts)) {
 					// Fixme: choose a public post if possible
 					originalPost = bookmarkPosts.get(0);
 				} else {
 					// Fixme: choose a public post if possible
-					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), interHash, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 1);
+					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 					if (present(publicationPosts)) {
 						originalPost = publicationPosts.get(0);
 					}
@@ -232,7 +238,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			}
 			
 			// we have found an original Post and now transform it into a goldstandard post
-			final Post<Resource> newGoldStandardPost = new Post<Resource>();
+			final Post<Resource> newGoldStandardPost = new Post<>();
 			final Class<? extends Resource> resourceClass = originalPost.getResource().getClass();
 			if (BibTex.class.isAssignableFrom(resourceClass)) {
 				final GoldStandardPublication goldStandardPublication = new GoldStandardPublication();
@@ -250,7 +256,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			} else {
 				throw new UnsupportedResourceTypeException(resourceClass + " not supported.");
 			}
-			this.logic.createPosts(Collections.<Post<? extends Resource>>singletonList(newGoldStandardPost));
+			this.logic.createPosts(Collections.singletonList(newGoldStandardPost));
 			
 			goldStandardPost = newGoldStandardPost;
 		} else {

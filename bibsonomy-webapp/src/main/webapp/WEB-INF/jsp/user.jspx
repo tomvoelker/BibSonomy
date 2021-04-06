@@ -17,14 +17,18 @@
 		  xmlns:adminUser="urn:jsptagdir:/WEB-INF/tags/admin/users"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 
-	<c:set var="esIndex" value="${command.isEsIndex()}"/>
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
-		<jsp:attribute name="content">
-			<rc:sortWarningHeader esIndex="${esIndex}" requPathAndQuery="${requPathAndQuery}"/>
-		</jsp:attribute>
+	<layout:resourceLayout
+			pageTitle="${command.pageTitle}"
+			command="${command}"
+			requPath="${requPath}"
+			requQueryString="${requQueryString}"
+			activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}"
+			showSortInfo="${true}"
+			sortPage="${command.sortPage}"
+			indexUse="${command.indexUse}">
 		<jsp:attribute name="heading">
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">
@@ -125,7 +129,18 @@
 			</sidebar:sidebarItem>
 			
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
-			
+
+            <!-- Claimed person -->
+            <c:if test="${not empty command.claimedPerson}">
+				<sidebar:sidebarItem textKey="settings.sidebar.claimedPerson">
+					<jsp:attribute name="content">
+						<a href="${relativeUrlGenerator.getPersonUrl(command.claimedPerson.personId)}">
+							${mtl:cleanBibtex(command.claimedPerson.mainName.firstName)} ${mtl:cleanBibtex(command.claimedPerson.mainName.lastName)}
+						</a>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+
 			<c:if test="${isAdmin}">
 				<sidebar:sidebarItem textKey="user.details">
 					<jsp:attribute name="content">

@@ -117,7 +117,7 @@ public class XmlUtils {
 	 */
 	public static Document getDOM(final URL inputURL, final boolean xmlTags) throws IOException {
 		// use the connection to get the input encoding of the webpage
-		final HttpURLConnection connection = WebUtils.createConnnection(inputURL);
+		final HttpURLConnection connection = WebUtils.createConnection(inputURL);
 		
 		// TODO: maybe we should check for the correct content type? Before parsing video/image data
 		final String contentType = connection.getContentType();

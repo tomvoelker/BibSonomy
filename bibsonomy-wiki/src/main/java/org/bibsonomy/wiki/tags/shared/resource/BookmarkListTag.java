@@ -27,10 +27,10 @@
 package org.bibsonomy.wiki.tags.shared.resource;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.wiki.tags.SharedTag;
 
@@ -88,7 +88,13 @@ public class BookmarkListTag extends SharedTag {
  		}
  		
  		// TODO: Remove duplicates, if rendered for group
- 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, SortKey.NONE, null, null, 0, this.maxQuerySize);
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+ 		postQueryBuilder.setGrouping(this.getGroupingEntity())
+				.setGroupingName(this.getRequestedName())
+				.setTags(Arrays.asList(tags.split(" ")))
+				.setScope(QueryScope.LOCAL)
+				.entriesStartingAt(this.maxQuerySize, 0);
+		List<Post<Bookmark>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(Bookmark.class));
 
  		if (tagAttributes.get(LIMIT) != null) {
 			try {

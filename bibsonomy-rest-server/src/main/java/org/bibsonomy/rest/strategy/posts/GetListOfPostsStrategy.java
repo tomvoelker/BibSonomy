@@ -26,17 +26,12 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriterium;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.BookmarkUtils;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
@@ -54,36 +49,23 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, null, null);
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with
-		// a smarter parameter object to keep parameter lists and sorting clear)
-		if ((resourceType != null) && BibTex.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) resourceType);
-			if (searchType != SearchType.SEARCHINDEX) {
-				BibTexUtils.sortBibTexList(bibtexList, sortKeys, sortOrders);
-			}
-			return bibtexList;
-		} else if ((resourceType != null) && Bookmark.class.isAssignableFrom(resourceType)) {
-			final List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) resourceType);
-			if (searchType != SearchType.SEARCHINDEX) {
-				BookmarkUtils.sortBookmarkList(bookmarkList, sortKeys, sortOrders);
-			}
-			return bookmarkList;
-		}
-
-		// return other resource types without ordering
-		return getList(resourceType);
-	}
-
-	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
-		List<SortCriterium> sortCriteriums = new LinkedList<>();
-		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
-				this.tags, this.hash, this.search, this.searchType, null, sortCriteriums, null, null,
-				getView().getStartValue(), getView().getEndValue());
+		final PostQuery<?> query = new PostQuery<>(this.resourceType);
+		query.setGrouping(this.grouping);
+		query.setGroupingName(this.groupingValue);
+		query.setTags(this.tags);
+		query.setHash(this.hash);
+		query.setSearch(this.search);
+		query.setScope(this.searchType);
+		query.setSortCriteria(this.sortCriteria);
+		final ViewModel view = this.getView();
+		query.setStart(view.getStartValue());
+		query.setEnd(view.getEndValue());
+		return this.getLogic().getPosts(query);
 	}
 }

@@ -26,97 +26,27 @@
  */
 package org.bibsonomy.webapp.command;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
 import org.bibsonomy.model.Group;
 
-
 /**
- * Bean for list of groups.
+ * command for list of groups.
  * 
  * @author Folke Eisterlehner
  */
-public class GroupsListCommand extends BaseCommand {
-	private List<Group> list;
-	
-	// TODO: (bootstrap) remove strAlphabet and alphabet (only used in old layout)
-	// dirty hack: alphabet for direct access in group list
-	private String strAlphabet = "#ABCDEFGHIJKLMNOPQRSTUVWXYZα"; 
-	private char[] alphabet = strAlphabet.toCharArray();
-	
-	private String format = "html";
-	
-	/** callback function for JSON outputs */
-	private String callback = "";
-		
-	/**
-	 * @return the callback
-	 */
-	public String getCallback() {
-		return this.callback;
-	}
+public class GroupsListCommand extends EntitySearchAndFilterCommand {
+	private final ListCommand<Group> groups = new ListCommand<>(this);
 
-	/**
-	 * @param callback the callback to set
-	 */
-	public void setCallback(final String callback) {
-		this.callback = callback;
-	}
-	
-	/**
-	 * @return The requested format.
-	 * 
-	 */
-	public String getFormat() {
-		if (present(this.format)) {
-			return this.format;
-		}
-		
-		/*
-		 * the default is html
-		 * */
-		return "html";
-	}
-	
-	/**
-	 * @param format
-	 */
-	public void setFormat(final String format) {
-		this.format = format;
-	}
-	
-	/**
-	 * stores the data if a new group is requested.
-	 */
+	/** stores the data if a new group is requested. */
 	private Group requestedGroup;
 
-	/**
-	 * @return the alphabet
-	 */
-	public String getStrAlphabet() {
-		return this.strAlphabet;
-	}
+	/** filter for only showing organizations */
+	private Boolean organizations;
 
 	/**
-	 * @return the alphabet
+	 * @return the groups
 	 */
-	public char[] getAlphabet() {
-		return this.alphabet;
-	}
-	
-	/**
-	 * @return the sublistlist on the current page
-	 */
-	public List<Group> getList() {
-		return this.list;
-	}
-	/**
-	 * @param list the sublistlist on the current page
-	 */
-	public void setList(List<Group> list) {
-		this.list = list;
+	public ListCommand<Group> getGroups() {
+		return this.groups;
 	}
 
 	/**
@@ -131,5 +61,19 @@ public class GroupsListCommand extends BaseCommand {
 	 */
 	public void setRequestedGroup(Group requestedGroup) {
 		this.requestedGroup = requestedGroup;
-	}	
+	}
+
+	/**
+	 * @return the organizations
+	 */
+	public Boolean getOrganizations() {
+		return organizations;
+	}
+
+	/**
+	 * @param organizations the organizations to set
+	 */
+	public void setOrganizations(Boolean organizations) {
+		this.organizations = organizations;
+	}
 }

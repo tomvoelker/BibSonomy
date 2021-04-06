@@ -234,9 +234,36 @@
 						<property name="controllerBeanName" value="privatenoteController" />
 						<property name="allowedFields">
 							<list>
-								<value>intraHash</value>
 								<value>ckey</value>
+								<value>intraHash</value>
 								<value>privateNote</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/cris/projectpersonlinks">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="projectPersonLinkController" />
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>projectId</value>
+								<value>personId</value>
+								<value>linkType</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<entry key="/ajax/person/publications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personPublicationAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+								<value>pageSize</value>
+								<value>page</value>
+								<value>size</value>
 							</list>
 						</property>
 					</bean>
@@ -318,5 +345,12 @@
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
 	
 	<bean id="privatenoteController" class="org.bibsonomy.webapp.controller.ajax.PrivateNoteAjaxController" scope="request" parent="ajaxController" />
+
+	<bean id="projectPersonLinkController" class="org.bibsonomy.webapp.controller.cris.ajax.ProjectPersonLinkAjaxController" scope="request" parent="ajaxController" />
+	
+	<bean id="personPublicationAjaxController" class="org.bibsonomy.webapp.controller.ajax.PersonPublicationAjaxController" scope="request" parent="ajaxController">
+		<property name="adminLogic" ref="adminLogic" />
+	</bean>
+
 	
 </beans>

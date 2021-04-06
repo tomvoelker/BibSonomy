@@ -39,18 +39,18 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * Scraper for Oxford University Press (Oxford Academic)
- * 
+ *
  * @author rja
  *
  */
 public class OxfordUniversityPressScraper extends GenericBibTeXURLScraper {
-	
+
 	private static final String HOST = "academic.oup.com";
-	
+
 	private static final String SITE_NAME = "Oxford Academic";
 	private static final String SITE_URL = "https://" + HOST + "/";
-	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	private static final String PATH     = "/rev/article";
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String PATH = "/rev/article";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH + ".*")));
 
@@ -81,7 +81,7 @@ public class OxfordUniversityPressScraper extends GenericBibTeXURLScraper {
 		if (present(path)) {
 			final String[] pathParts = path.split("/");
 			final String id = pathParts[Math.min(pathParts.length - 1, 6)];
-			return SITE_URL + "/rev/downloadcitation/" +  id + "?format=bibtex";
+			return SITE_URL + "/Citation/Download?resourceId=" + id + "&resourceType=3&citationFormat=2";
 		}
 		return null;
 	}

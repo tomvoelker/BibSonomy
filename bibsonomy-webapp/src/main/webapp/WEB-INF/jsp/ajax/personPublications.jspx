@@ -1,0 +1,25 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<c:choose>
+		<c:when test="${command.personPostsStyleSettings gt 0}">
+			<c:forEach var="post" items="${command.myownPosts}">
+				<per:simplePostView post="${post}" />
+			</c:forEach>
+		</c:when>
+		<c:otherwise>
+			<c:forEach var="relation" items="${command.otherPubs}">
+				<per:simplePubView relation="${relation}"
+								   buttons="${true}"
+								   personId="${command.person.personId}"
+								   onlyLinkAuthorsWithPersons="${not empty command.context.loginUser.name}" />
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>
+
+</jsp:root>

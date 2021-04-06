@@ -102,7 +102,7 @@ public class AmazonScraper extends AbstractUrlScraper {
 		
 		// try to extract isbn and use the worldcat scraper
 		try {
-			final String content = WebUtils.getContentAsString(sc.getUrl().toString());
+			final String content = WebUtils.getContentAsString(sc.getUrl());
 			final Matcher m = ISBN.matcher(content);
 			
 			String isbn;

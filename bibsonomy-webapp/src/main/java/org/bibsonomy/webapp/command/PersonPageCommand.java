@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +41,8 @@ import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.cris.Project;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 
@@ -61,7 +62,15 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private String formSelectedName;
 
-	
+	/** Properties if deleting or adding relations */
+	private String type;
+
+	private String interhash;
+
+	private String index;
+
+
+	private String pubToDelete;
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
@@ -89,32 +98,51 @@ public class PersonPageCommand extends BaseCommand {
 	private int formPersonIndex = -1;
 	
 	private int formMatchId;
-	private String formResponseString;	
-	
+	private String formResponseString;
+
+	private boolean hasPicture;
+
+	/** if true only persons of the configured cris system are displayed */
+	private boolean limitResultsToCRISCollege;
+
+	private boolean showProjects;
+
+	private List<Project> projects;
+
 	private String formAction;
 	
 	private Person person;
 	private Post<? extends Resource> post;
-	
-	private List<Post<?>> thesis;
-	private List<Post<?>> advisedThesis;
-	private List<Post<?>> allPosts;
+
+	private int personPostsPerPage;
+	private PersonPostsStyle personPostsStyle;
+	private String personPostsLayout;
+	private List<Post<BibTex>> myownPosts;
+
+	private List<ResourcePersonRelation> thesis;
+	private List<ResourcePersonRelation> advisedThesis;
+	private List<ResourcePersonRelation> allPosts;
 	
 	@Deprecated // FIXME: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
-	private List<Post<?>> otherPubs;
-	private List<Post<?>> otherAdvisedPubs;
+	private List<ResourcePersonRelation> otherPubs;
+	private List<ResourcePersonRelation> otherAdvisedPubs;
 	
-	private List<Post<BibTex>> similarAuthorPubs;
+	private List<ResourcePersonRelation> similarAuthorPubs;
 	
 	private List<PersonMatch> personMatchList;
 	
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
 	private List<PhDRecommendation> phdAdvisorRecForPerson;
 	private String okHintKey;
-	
+
+	private Integer start = 0;
+	private Integer end;
+	private Integer prevStart;
+
+
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
 
@@ -169,7 +197,7 @@ public class PersonPageCommand extends BaseCommand {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	
+
 	/**
 	 * @return String
 	 */
@@ -213,44 +241,86 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
+	 * @return personPostsStyle the person posts style setting
+	 */
+	public PersonPostsStyle getPersonPostsStyle() {
+		return personPostsStyle;
+	}
+
+	/**
+	 * @param personPostsStyle the person posts style setting
+	 */
+	public void setPersonPostsStyle(PersonPostsStyle personPostsStyle) {
+		this.personPostsStyle = personPostsStyle;
+	}
+
+	/**
+	 * @return personPostsLayout the selected CSL-layout for person posts
+	 */
+	public String getPersonPostsLayout() {
+		return personPostsLayout;
+	}
+
+	/**
+	 * @param personPostsLayout set the CSL-layout for person posts
+	 */
+	public void setPersonPostsLayout(String personPostsLayout) {
+		this.personPostsLayout = personPostsLayout;
+	}
+
+	/**
+	 * @return the list of 'myown'-tagged posts by linked user
+	 */
+	public List<Post<BibTex>> getMyownPosts() {
+		return myownPosts;
+	}
+
+	/**
+	 * @param myownPosts the list of 'myown'-tagged posts by linked user
+	 */
+	public void setMyownPosts(List<Post<BibTex>> myownPosts) {
+		this.myownPosts = myownPosts;
+	}
+
+	/**
 	 * @return the thesis
 	 */
-	public List<Post<?>> getThesis() {
+	public List<ResourcePersonRelation> getThesis() {
 		return this.thesis;
 	}
 
 	/**
 	 * @param thesis the thesis to set
 	 */
-	public void setThesis(List<Post<?>> thesis) {
+	public void setThesis(List<ResourcePersonRelation> thesis) {
 		this.thesis = thesis;
 	}
 
 	/**
 	 * @return the advisedThesis
 	 */
-	public List<Post<?>> getAdvisedThesis() {
+	public List<ResourcePersonRelation> getAdvisedThesis() {
 		return this.advisedThesis;
 	}
 
 	/**
 	 * @param advisedThesis the advisedThesis to set
 	 */
-	public void setAdvisedThesis(List<Post<?>> advisedThesis) {
+	public void setAdvisedThesis(List<ResourcePersonRelation> advisedThesis) {
 		this.advisedThesis = advisedThesis;
 	}
 
 	/**
 	 * @return the allPosts
 	 */
-	public List<Post<?>> getAllPosts() {
+	public List<ResourcePersonRelation> getAllPosts() {
 		return this.allPosts;
 	}
 
 	/**
 	 * @param allPosts the allPosts to set
 	 */
-	public void setAllPosts(List<Post<?>> allPosts) {
+	public void setAllPosts(List<ResourcePersonRelation> allPosts) {
 		this.allPosts = allPosts;
 	}
 
@@ -469,37 +539,23 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param otherAuthorPosts
 	 */
-	public void setOtherPubs(List<Post<?>> otherAuthorPosts) {
+	public void setOtherPubs(List<ResourcePersonRelation> otherAuthorPosts) {
 		this.otherPubs = otherAuthorPosts;
 	}
 
-	public List<Post<?>> getOtherPubs() {
+	public List<ResourcePersonRelation> getOtherPubs() {
 		return this.otherPubs;
 	}
 
 	/**
-	 * @param otherAdvisorPosts
+	 * @param otherAdvisedPubs
 	 */
-	public void setOtherAdvisedPubs(List<Post<?>> otherAdvisedPubs) {
+	public void setOtherAdvisedPubs(List<ResourcePersonRelation> otherAdvisedPubs) {
 		this.otherAdvisedPubs = otherAdvisedPubs;
 	}
 
-	public List<Post<?>> getOtherAdvisedPubs() {
+	public List<ResourcePersonRelation> getOtherAdvisedPubs() {
 		return this.otherAdvisedPubs;
-	}
-
-	/**
-	 * @param actionKeyCreateAndLinkPerson
-	 */
-	public void setOkHintKey(String okHintKey) {
-		this.okHintKey = okHintKey;
-	}
-	
-	/**
-	 * @return the okHintKey
-	 */
-	public String getOkHintKey() {
-		return this.okHintKey;
 	}
 
 	/**
@@ -533,14 +589,14 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the similarAuthorPubs
 	 */
-	public List<Post<BibTex>> getSimilarAuthorPubs() {
+	public List<ResourcePersonRelation> getSimilarAuthorPubs() {
 		return this.similarAuthorPubs;
 	}
 
 	/**
 	 * @param similarAuthorPubs the similarAuthorPubs to set
 	 */
-	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
+	public void setSimilarAuthorPubs(List<ResourcePersonRelation> similarAuthorPubs) {
 		this.similarAuthorPubs = similarAuthorPubs;
 	}
 
@@ -614,4 +670,137 @@ public class PersonPageCommand extends BaseCommand {
 		this.phdAdvisorRecForPerson = phdAdvisorRecForPerson;
 	}
 
+	/**
+	 * @return
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 */
+	public void setType (String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getInterhash() {
+		return interhash;
+	}
+
+	/**
+	 * @param interhash
+	 */
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index
+	 */
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
+	/**
+	 * @return the hasPicture
+	 */
+	public boolean isHasPicture() {
+		return hasPicture;
+	}
+
+	/**
+	 * @param hasPicture the hasPicture to set
+	 */
+	public void setHasPicture(boolean hasPicture) {
+		this.hasPicture = hasPicture;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isShowProjects() {
+		return showProjects;
+	}
+
+	/**
+	 * @param showProjects
+	 */
+	public void setShowProjects(boolean showProjects) {
+		this.showProjects = showProjects;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	/**
+	 * @param projects
+	 */
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
+	}
+
+	/**
+	 * @return the limitResultsToCRISCollege
+	 */
+	public boolean isLimitResultsToCRISCollege() {
+		return limitResultsToCRISCollege;
+	}
+
+	/**
+	 * @param limitResultsToCRISCollege the limitResultsToCRISCollege to set
+	 */
+	public void setLimitResultsToCRISCollege(boolean limitResultsToCRISCollege) {
+		this.limitResultsToCRISCollege = limitResultsToCRISCollege;
+	}
+
+	/**
+	 * Number of publications displayed per page on the person page
+	 * @return
+	 */
+	public int getPersonPostsPerPage() {
+		return personPostsPerPage;
+	}
+
+	public void setPersonPostsPerPage(int personPostsPerPage) {
+		this.personPostsPerPage = personPostsPerPage;
+	}
+
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
+
+	public Integer getPrevStart() {
+		return prevStart;
+	}
+
+	public void setPrevStart(Integer prevStart) {
+		this.prevStart = prevStart;
+	}
 }

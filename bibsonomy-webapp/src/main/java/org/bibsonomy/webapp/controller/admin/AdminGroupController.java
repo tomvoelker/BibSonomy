@@ -28,7 +28,6 @@ package org.bibsonomy.webapp.controller.admin;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,18 +36,15 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminGroupOperation;
-import org.bibsonomy.common.enums.GroupCreationMode;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.MailUtils;
@@ -172,10 +168,12 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 
 		// load the pending groups
-		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
+		final GroupQuery groupQuery = GroupQuery.builder().pending(true).end(Integer.MAX_VALUE).build();
+		command.setPendingGroups(this.logic.getGroups(groupQuery));
 		
 		// TODO: move extracting of the username to the view
-		final List<Group> allGroups = this.logic.getGroups(false, null, 0, Integer.MAX_VALUE);
+		final GroupQuery allGroupsQuery = GroupQuery.builder().end(Integer.MAX_VALUE).build();
+		final List<Group> allGroups = this.logic.getGroups(allGroupsQuery);
 		final List<String> allGroupnames = new LinkedList<>();
 		for (final Group group : allGroups) {
 			allGroupnames.add(group.getName());
@@ -183,9 +181,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		command.setAllGroupNames(allGroupnames);
 		
 		// get all deleted groups
-		//final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
-		
-		//final List<User> allDeletedGroups = this.logic.getUsers(null, GroupingEntity.GROUP, null, null, null, null, null, null, 0, 12);
 		final List<User> allDeletedGroups = logic.getDeletedGroupUsers(0, Integer.MAX_VALUE);	
 		final List<String> allDeletedGroupNames = new LinkedList<>();
 		
@@ -204,7 +199,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	private void updateGroupPermissions(final AdminGroupViewCommand command) {
 		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
 		if (present(dbGroup) && GroupID.INVALID.getId() != dbGroup.getGroupId()) {
-			dbGroup.setGroupLevelPermissions(new HashSet<GroupLevelPermission>());
+			dbGroup.setGroupLevelPermissions(new HashSet<>());
 			if (command.isCommunityPostInspectionPermission()) {
 				dbGroup.addGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION);
 				command.setCommunityPostInspectionPermission(false);

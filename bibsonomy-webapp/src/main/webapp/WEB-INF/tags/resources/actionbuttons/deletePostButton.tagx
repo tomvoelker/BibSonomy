@@ -11,6 +11,7 @@
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="additionalText" type="java.lang.String" required="false"/>
 	
 	<c:set var="loginUserName" value="${loginUser.name}" /> 
 	
@@ -55,6 +56,10 @@
 	<c:set var="buttonClasses" value="${buttonClasses}${disabled ? ' disabled' : ''}" />
 	<a class="${buttonClasses} confirmdelete" href="${relativeUrlGenerator.getDeleteUrlOfPost(post, command.context.ckey)}" title="${deleteTitle}" data-type="post">
 		<span class="fa fa-times"><!--  --></span>
+		<c:if test="${not empty additionalText}">
+			<c:out value=" " />
+			<span>${additionalText}</span>
+		</c:if>
 		<span class="sr-only"><fmt:message key="post.actions.delete"/></span>
 	</a>
 </jsp:root>

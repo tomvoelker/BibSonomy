@@ -33,14 +33,13 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -80,8 +79,13 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		final String action = command.getAction();
 		if (present(action)) {
 			if (GET_SENT_REPOSITORIES.equals(action)) {
-				// TODO: adapt limit to get all posts
-				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), SortKey.NONE, null, null, 0, this.maxQuerySize);
+				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+				postQueryBuilder.setGrouping(GroupingEntity.USER)
+						.setGroupingName(command.getContext().getLoginUser().getName())
+						.setScope(QueryScope.LOCAL)
+						.setFilters(Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY))
+						.entriesStartingAt(this.maxQuerySize, 0); // TODO: adapt limit to get all posts
+				final List<Post<BibTex>> posts = logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 
 				// TODO: implement this
 				/*

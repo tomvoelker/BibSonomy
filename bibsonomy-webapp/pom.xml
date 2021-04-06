@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.10.0-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -54,7 +54,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by our webresource-maven-plugin
 						are overwritten by this plugin -->
-					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
+					<!-- <warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -74,6 +74,7 @@
 									<directory>${project.source.webapp.resourcedir}</directory>
 									<excludes>
 										<exclude>javascript/citeproc/xmle4x.js</exclude>
+										<exclude>jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js</exclude>
 									</excludes>
 									<includes>
 										<include>**/*.js</include>
@@ -414,6 +415,11 @@
 			<artifactId>httpclient</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<exclusions>
@@ -685,7 +691,6 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sksamuel.diff</groupId>
@@ -731,6 +736,10 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.3</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-exporter</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>

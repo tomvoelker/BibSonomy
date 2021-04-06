@@ -26,15 +26,17 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
@@ -48,10 +50,6 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for Grouppages
@@ -99,14 +97,17 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			this.supportedResources.remove(Bookmark.class);
 		}
 
+		// build sort criteria list
+		this.buildSortCriteria(command);
+
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.preProcessForSearchIndexSort(command);
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
-			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+
+			// secondary sorting, if not using search index
+			if (command.getScope() != QueryScope.SEARCHINDEX) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 

@@ -51,13 +51,26 @@ public enum Views implements View {
 	HOMEPAGE("home"),
 
 	/**
+	 * the cris homepage (currently a static welcome page)
+	 */
+	CRIS_HOMEPAGE("cris/home"),
+
+	/**
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
-	
+
+	/** the person overview page */
 	PERSON_INTRO("persons"),
+
+	/** the details page of a person */
 	PERSON_SHOW("person/show"),
+
+	/** the person disambiguation page */
 	DISAMBIGUATION("disambiguation"),
+
+	/** the auto link page after post creation */
+	AUTOLINK("person/autolink"),
 
 	/**
 	 * the page where a user can change his personal settings
@@ -174,6 +187,11 @@ public enum Views implements View {
 	URLPAGE("url"),
 
 	/**
+	 * publications overview page
+	 */
+	PUBLICATIONS_OVERVIEW("cris/publications"),
+
+	/**
 	 * publication page shows all publications with the given inter-/intrahash
 	 */
 	PUBLICATIONPAGE("publicationpage"),
@@ -269,6 +287,26 @@ public enum Views implements View {
 	 */
 	REPORTING("reporting"),
 
+	/**
+	 * reporting download
+	 */
+	REPORTING_DOWNLOAD("reportDownloadView"),
+
+	/**
+	 * projects reporting
+	 */
+	PROJECTS_REPORTING("reporting/projects"),
+
+	/**
+	 * publication reporting
+	 */
+	PUBLICATIONS_REPORTING("reporting/publications"),
+
+	/**
+	 * person reporting
+	 */
+	PERSONS_REPORTING("reporting/persons"),
+
 	/* *****************************************************
 	 * OpenSocial Views ****************************************************
 	 */
@@ -312,6 +350,11 @@ public enum Views implements View {
 	 * posts
 	 */
 	AJAX_POSTS("ajax/posts"),
+
+	/**
+	 * posts
+	 */
+	AJAX_PERSON_PUBLICATIONS("ajax/personPublications"),
 
 	/**
 	 * spammer predictions
@@ -442,6 +485,11 @@ public enum Views implements View {
 	EDIT_GOLD_STANDARD_PUBLICATION("actions/post/editGoldStandardPublication"),
 
 	/**
+	 * the dialog to edit a project
+	 */
+	EDIT_PROJECT("actions/projects/editProject"),
+
+	/**
 	 * The dialog to enter a URL for posting (small dialog).
 	 */
 	POST_BOOKMARK("actions/post/postBookmark"),
@@ -496,6 +544,11 @@ public enum Views implements View {
 	 * edit tags
 	 */
 	EDIT_TAGS("actions/edit/edittags"),
+
+	/**
+	 * report page
+	 */
+	REPORT("report"),
 
 	/* *****************************************************
 	 * OpenSocial views
@@ -742,7 +795,22 @@ public enum Views implements View {
 	/**
 	 * group request page
 	 */
-	GROUPREQUEST("groupRequest");
+	GROUPREQUEST("groupRequest"),
+
+	/**
+	 * page listing all projects
+	 */
+	PROJECT_PAGE("projects"),
+
+	/**
+	 * detail page for organizations
+	 */
+	ORGANIZATION_PAGE("organizationdetails"),
+
+	/**
+	 * page displaying all project details
+	 */
+	PROJECT_DETAILS_PAGE("projects/details");
 
 	/*
 	 * both bookmarks and publications

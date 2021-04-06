@@ -26,116 +26,35 @@
  */
 package org.bibsonomy.scraper.url.kde.annualreviews;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
  * Scraper for arjournals.annualreviews.org
  * 
  * @author tst
  */
-public class AnnualreviewsScraper extends AbstractUrlScraper {
+public class AnnualreviewsScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Annual Reviews";
-	private static final String SITE_URL = "http://www.annualreviews.org/";
-	private static final String INFO = "Supports journals from " + href(SITE_URL, SITE_NAME);
-
-	/**
-	 * HOST from anualreviews
-	 */
-	private static final String HOST = "www.annualreviews.org";
-
-	/**
-	 * path and query for download url
-	 */
-	private static final String DOWNLOAD_PATH_AND_QUERY = "/action/downloadCitation?format=bibtex&include=abs&doi=";
-
-	private static final Pattern doiPattern = Pattern.compile("/doi/(?:(?:abs)|(?:full))/(.*)");
-	private static final Pattern doiPatternQuery = Pattern.compile("doi=([^&]*)");
-
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final String SITE_HOST = "www.annualreviews.org";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "Supports journals from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	public String getInfo() {
-		return INFO;
-	}
-
-	@Override
-	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		String doi = null;
-		String bibtex = null;
-
-		// get doi from path
-		Matcher doiMatcher = doiPattern.matcher(sc.getUrl().getPath());
-		if (doiMatcher.find()) {
-			doi = doiMatcher.group(1);
-		}
-
-		// check if doi is in path
-		if (doi != null) {
-			bibtex = download(doi, sc);
-		} else {
-
-			// get doi from query
-
-			doiMatcher = doiPatternQuery.matcher(sc.getUrl().getQuery());
-			if (doiMatcher.find()) {
-				doi = doiMatcher.group(1);
-			}
-
-			if (doi != null) {
-				bibtex = download(doi, sc);
-			} else {
-				throw new PageNotSupportedException("This page arjournals.annualreviews.org is not supported.");
-			}
-		}
-
-		if (bibtex != null) {
-			sc.setBibtexResult(bibtex);
-			return true;
-		} else {
-			throw new ScrapingFailureException("Bibtex download failed. Can't scrape any bibtex.");
-		}
-
-	}
-
-	/**
-	 * Get a bibtex reference by its doi from arjournals.annualreviews.org
-	 * 
-	 * @param doi
-	 * @return reference as bibtex
-	 * @throws ScrapingException
-	 */
-	private String download(final String doi, final ScrapingContext sc) throws ScrapingException {
-		String bibtex = null;
-		final String downloadUrl = "http://" + HOST + DOWNLOAD_PATH_AND_QUERY + doi;
-
-		try {
-			bibtex = WebUtils.getContentAsString(downloadUrl);
-		} catch (final IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		return bibtex;
+		return SITE_INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
 	@Override
@@ -145,7 +64,7 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 
 	@Override
 	public String getSupportedSiteURL() {
-		return "http://www.annualreviews.org";
+		return SITE_URL;
 	}
 
 }

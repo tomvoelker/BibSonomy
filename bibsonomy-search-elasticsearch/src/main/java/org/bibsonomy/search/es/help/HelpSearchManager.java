@@ -52,6 +52,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -88,7 +89,7 @@ public class HelpSearchManager implements HelpSearch {
 	private static final String HEADER_FIELD = "header";
 	private static final String CONTENT_FIELD = "content";
 	private static final String PATH_FIELD = "path";
-	
+
 	private static final String HELP_PAGE_TYPE = "help_page";
 	
 	private static final Mapping<XContentBuilder> MAPPING = new Mapping<>();
@@ -182,7 +183,7 @@ public class HelpSearchManager implements HelpSearch {
 						this.client.createIndex(indexName, MAPPING, SETTINGS);
 					}
 
-					final Map<String, Map<String, Object>> jsonDocuments = new HashMap<>();
+					final Map<String, IndexData> jsonDocuments = new HashMap<>();
 
 					try (final Stream<Path> filePaths = Files.walk(languageFolder).filter(path -> path.toString().toLowerCase().endsWith(HelpUtils.FILE_SUFFIX))) {
 						filePaths.forEach(filePath -> {
@@ -199,9 +200,12 @@ public class HelpSearchManager implements HelpSearch {
 									final Map<String, Object> doc = new HashMap<>();
 									doc.put(HEADER_FIELD, fileName);
 									doc.put(CONTENT_FIELD, content);
-									final String value = relativePath.toString();
-									doc.put(PATH_FIELD, value);
-									jsonDocuments.put(value + "/" + fileName, doc);
+									final String relativePathString = relativePath.toString();
+									doc.put(PATH_FIELD, relativePathString);
+									final IndexData value = new IndexData();
+									value.setType(HELP_PAGE_TYPE);
+									value.setSource(doc);
+									jsonDocuments.put(value + "/" + fileName, value);
 								}
 							} catch (final Exception e) {
 								log.error("cannot parse file " + fileName, e);
@@ -214,7 +218,7 @@ public class HelpSearchManager implements HelpSearch {
 					// finally update the index by deleting all pages and reinsert them again
 					this.client.deleteDocuments(indexName, HELP_PAGE_TYPE, (QueryBuilder) null);
 					if (present(jsonDocuments)) {
-						this.client.insertNewDocuments(indexName, HELP_PAGE_TYPE, jsonDocuments);
+						this.client.insertNewDocuments(indexName, jsonDocuments);
 					}
 				});
 			} catch (final IOException e) {

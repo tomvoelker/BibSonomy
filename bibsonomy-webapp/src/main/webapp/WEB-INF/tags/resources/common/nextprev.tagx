@@ -14,7 +14,10 @@
 		<c:set var="isFirstPage" value="${listView.curPage.start == 0}" />
 		
 		<c:set var="unknownNumberOfPages" value="${empty listView.totalCountAsInteger}" />
-		
+		<c:set var="unknownPaginationLimit" value="${empty listView.paginationLimit}" />
+
+		<c:set var="paginationLimit" value="${listView.paginationLimit}" />
+
 		<c:choose>
 			<c:when test="${unknownNumberOfPages}">
 				<c:set var="isLastPage" value="${listView.numCurrentItems != listView.entriesPerPage}" />
@@ -75,14 +78,20 @@
 		<!-- ********** NEXT PAGES ************** -->
 		<c:if test="${not empty listView.nextPages and listView.totalCount > 0}">
 			<c:forEach var="page" items="${listView.nextPages}">
-				<c:url var="nextPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}"/>
-				<li><a class="listnav" href="${fn:escapeXml(nextPagesUrl)}">${page.number}</a></li>
+				<c:set var="exceedsPaginationLimit" value="${not unknownPaginationLimit and page.start >= paginationLimit}" />
+				<c:if test="${not exceedsPaginationLimit}">
+					<c:url var="nextPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}"/>
+					<li><a class="listnav" href="${fn:escapeXml(nextPagesUrl)}">${page.number}</a></li>
+				</c:if>
 			</c:forEach>
 		</c:if>
+
+		<c:set var="lastExceedsPaginationLimit" value="${not unknownPaginationLimit and listView.last >= paginationLimit}" />
+		<c:set var="nextExceedsPaginationLimit" value="${not unknownPaginationLimit and listView.nextPage.start >= paginationLimit}" />
 		
 		<!-- ********** NEXT ************** -->
 		<c:choose>
-			<c:when test="${not isLastPage}">
+			<c:when test="${not isLastPage and not nextExceedsPaginationLimit}">
 				<c:url var="nextUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.nextPage.start)}" />
 				<fmt:message var="gotoNext" key="goto.next"/>
 				<li><a class="listnav" href="${fn:escapeXml(nextUrl)}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a></li>
@@ -98,8 +107,8 @@
 		
 		<!-- ********** LAST ************** -->
 		<c:choose>
-			<c:when test="${not isLastPage and not unknownNumberOfPages}">
-				<c:url var="lastUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.last)}" />
+			<c:when test="${not isLastPage and not unknownNumberOfPages and not lastExceedsPaginationLimit}">
+				<c:url var="lastUrl" value="/${mtl:setParam(requPathAndQuery, listViewStartParamName, listView.last)}" />
 				<fmt:message var="gotoLast" key="goto.last"/>
 				<li><a class="listnav" href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a></li>
 			</c:when>

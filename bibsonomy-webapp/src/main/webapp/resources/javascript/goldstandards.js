@@ -4,12 +4,98 @@
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
 
-$(function() {
-	$('div.related-publications-container').each(function(index, container) {
-		if ($(container).find('ul>li').length == 0 && $(container).find('input').length == 0) {
-			$(container).hide();
+/**
+ * Loads the select2 combobox layout selection
+ * @param formatUrl
+ * @param element
+ * @returns
+ */
+function loadLayoutSelect(formatUrl, element) {
+	$.ajax({
+		url: formatUrl, 
+		dataType: "html", 
+		success: function(data) {
+			$("#goldstandard-quick-cite-select").html(data).find("select").addClass("form-control input-sm");
+			$("#goldstandard-quick-cite").hide();
+			openSelect2(element);
 		}
 	});
+	return;
+}
+
+/**
+ * Opens the select2 element
+ * @param element
+ * @returns
+ */
+function openSelect2(element) {
+	if ($(element).next().find('#selectAllStyles').hasClass("select2-hidden-accessible")) {
+		$(element).next().find('#selectAllStyles').removeAttr("onchange")
+			.bind("change", function(){ asd(this.value); });
+		$(element).next().find('#selectAllStyles').select2('open');
+	}
+}
+
+function asd(link) {
+	link_parts = link.split("/");
+
+	switch (link_parts[1]) {
+		case "bib":
+			$("#sidebar-quick-cite-box-modal .modal-body").html($("#sidebar-quick-cite-box-bibtex").html());
+			$("#sidebar-quick-cite-box-modal").modal("show");
+			break;
+		case "csl":
+		case "layout":
+			if (link_parts[2] == "endnote") {
+				$("#sidebar-quick-cite-box-modal .modal-body").html($("#sidebar-quick-cite-box-endnote").html());
+				$("#sidebar-quick-cite-box-modal").modal("show");
+			} else {
+				self.location = link
+			}
+			break;
+		case "csl-layout":
+			// load CSL via AJAX
+			csl_style = link_parts[2];
+			csl_url = "/csl/bibtex/" + link_parts[4];
+			container = $("#sidebar-quick-cite-box-modal .modal-body");
+			$(container).empty();
+
+			$.ajax({
+				url: csl_url,
+				success: function(data) {
+					//callback
+					renderCSL(data, csl_style, container, false);
+					$("#sidebar-quick-cite-box-modal").modal("show");
+				}
+			});
+			break;
+		default:
+			alert("Error during CSL rendering;");
+	}
+}
+
+function ajaxLoadLayout(link) {
+	$.ajax({
+		url: link,
+		success: function(data) {
+			modal_body = data;
+			//modal_body = "<textarea readonly=\"readonly\" rows=\"15\" style=\"width:100%;font-size:80%;border:none;\">" + data + "</textarea>";
+			$("#sidebar-quick-cite-box-modal .modal-body").html(modal_body);
+			$("#sidebar-quick-cite-box-modal").modal("show");
+		}
+	});
+}
+
+
+$(function() {
+
+	initNewClipboard("#sidebar-quick-cite-box-modal-clipboard-button", "#sidebar-quick-cite-box-modal .modal-body");
+
+	// remove the dummy element and replace it by select2 combobox layout selection
+	$("#goldstandard-quick-cite").click(function() {
+		loadLayoutSelect($(this).data("formaturl"), this);
+	})
+	
 	
 	// init title autocomplete
 	var publicationSource = new Bloodhound({

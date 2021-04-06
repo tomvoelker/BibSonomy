@@ -18,6 +18,7 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
 	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="requQueryString" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
@@ -46,6 +47,10 @@
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
 	<jsp:directive.attribute name="additionalResourceContent" fragment="true" required="false" />
+
+	<jsp:directive.attribute name="showSortInfo" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	<!--+
 		|
@@ -143,11 +148,15 @@
 					<resources:bibtexs listView="${command.bibtex}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
-							requPath="${excapedRequestPath}" 
+							requPath="${excapedRequestPath}"
+							requQueryString="${requQueryString}"
 							widthClassName="${publicationsWidthClass}"
 							isClipboard="${isClipboard}"
 							showBookmark="${showBookmark}"
 							showPublication="${showPublication}"
+						    showSortInfo="${showSortInfo}"
+						    sortPage="${sortPage}"
+						    indexUse="${indexUse}"
 							additionalSorting="${additionalSorting}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">

@@ -78,7 +78,7 @@ public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 	/**
 	 * @return the attributeExtractor
 	 */
-	public UserAttributeMapping<SAMLCredential,?> getAttributeExtractor() {
+	public UserAttributeMapping<SAMLCredential, ?> getAttributeExtractor() {
 		return this.attributeExtractor;
 	}
 

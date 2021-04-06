@@ -27,14 +27,16 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.webapp.command.HomepageCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -54,6 +56,8 @@ public class HomepageController extends SingleResourceListController implements 
 	private String newsGroup = "kde";
 	private String newsTag = "bibsonomynews";
 
+	private boolean crisEnabled;
+
 	/*
 	 * on the homepage, only 50 tags are shown in the tag cloud
 	 */
@@ -61,9 +65,19 @@ public class HomepageController extends SingleResourceListController implements 
 
 	@Override
 	public View workOn(final HomepageCommand command) {
+		final RequestWrapperContext context = command.getContext();
+		final boolean userLoggedin = context.isUserLoggedIn();
+
+		/*
+		 * if the user is not logged in show a static cris home
+		 */
+		if (!userLoggedin && this.crisEnabled) {
+			return Views.CRIS_HOMEPAGE;
+		}
+
 		final String format = command.getFormat();
 		this.startTiming(format);
-		
+
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 		
@@ -77,8 +91,8 @@ public class HomepageController extends SingleResourceListController implements 
 			 * admins may see as many posts as they like 
 			 */
 			final int entriesPerPage;
-			if (command.getContext().isUserLoggedIn()) {
-				if (Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+			if (userLoggedin) {
+				if (Role.ADMIN.equals(context.getLoginUser().getRole())) {
 					entriesPerPage = listCommand.getEntriesPerPage();
 				} else {
 					entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN;
@@ -97,7 +111,13 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts)
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null,SearchType.LOCAL, null, SortKey.NONE, null, null, 0, 3));
+			final PostQuery<Bookmark> query = new PostQuery<>(Bookmark.class);
+			query.setGrouping(GroupingEntity.GROUP);
+			query.setGroupingName(this.newsGroup);
+			query.setTags(Arrays.asList(this.newsTag));
+			query.setStart(0);
+			query.setEnd(3);
+			command.setNews(this.logic.getPosts(query));
 			this.endTiming();
 			
 			return Views.HOMEPAGE;
@@ -136,4 +156,10 @@ public class HomepageController extends SingleResourceListController implements 
 		this.newsTag = newsTag;
 	}
 
+	/**
+	 * @param crisEnabled the crisEnabled to set
+	 */
+	public void setCrisEnabled(boolean crisEnabled) {
+		this.crisEnabled = crisEnabled;
+	}
 }

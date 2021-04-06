@@ -46,6 +46,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
@@ -103,23 +104,59 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		/*
 		 * if there are errors, show them
 		 */
-		if (this.errors.hasErrors()){
+		if (this.errors.hasErrors()) {
 			return Views.ERROR;
 		}
+		/*
+		 * determine the redirect url based on the referer
+		 */
+		final String redirect = getRedirectUrl(this.requestLogic.getReferer(), owner, resourceHash);
+		/*
+		 * go back where we've come from
+		 */
+		final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes(redirect);
+		redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "post.actions.delete.success");
+		return redirectView;
+	}
 
+	private String getRedirectUrl(final String referer, final String owner, final String resourceHash) {
 		/*
 		 * redirect to the user page when the user is coming from the page of
 		 * the resource.
 		 */
-		final String referer = this.requestLogic.getReferer();
 		if (this.urlGenerator.matchesResourcePage(referer, owner, resourceHash)) {
-			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(owner));
+			return this.urlGenerator.getUserUrlByUserName(owner);
 		}
 
-		/*
-		 * go back where we've come from
-		 */
-		return new ExtendedRedirectView(referer);
+		// else use the referer
+		return referer;
+	}
+
+	private boolean canDeletePost(final User loginUser, final String postOwner) {
+		// community post
+		if (!present(postOwner)) {
+			return Role.ADMIN.equals(loginUser.getRole());
+		}
+
+		// if the loginUser is the postOwner
+		if (loginUser.getName().equals(postOwner)) {
+			return true;
+		}
+
+		// is the postOwner a group user?
+		final Group group = this.logic.getGroupDetails(postOwner, false);
+		if (group == null) {
+			return false;
+		}
+
+		// is loginUser a member of this group?
+		final GroupMembership membership = group.getGroupMembershipForUser(loginUser.getName());
+		if (membership == null) {
+			return false;
+		}
+
+		// does loginUser occupy a sufficiently high role for this operation?
+		return membership.getGroupRole().hasRole(GroupRole.MODERATOR);
 	}
 
 	/**
@@ -158,32 +195,5 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	@Required
 	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
-	}
-
-	private boolean canDeletePost(final User loginUser, final String postOwner) {
-		// community post
-		if (!present(postOwner)) {
-			return Role.ADMIN.equals(loginUser.getRole());
-		}
-		
-		// if the loginUser is the postOwner
-		if (loginUser.getName().equals(postOwner)) {
-			return true;
-		}
-
-		// is the postOwner a group user?
-		final Group group = this.logic.getGroupDetails(postOwner, false);
-		if (group == null) {
-			return false;
-		}
-
-		// is loginUser a member of this group?
-		final GroupMembership membership = group.getGroupMembershipForUser(loginUser.getName());
-		if (membership == null) {
-			return false;
-		}
-
-		// does loginUser occupy a sufficiently high role for this operation?
-		return membership.getGroupRole().hasRole(GroupRole.MODERATOR);
 	}
 }

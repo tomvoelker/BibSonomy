@@ -29,11 +29,11 @@ package org.bibsonomy.rest.strategy.clipboard;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 
@@ -53,7 +53,13 @@ public class GetClipboardStrategy extends GetUserPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(BibTex.class, GroupingEntity.CLIPBOARD, this.userName, null, null, null, SearchType.LOCAL, null, SortKey.NONE, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.CLIPBOARD)
+				.setGroupingName(this.userName)
+				.setScope(QueryScope.LOCAL)
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
+		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 	}
 
 }

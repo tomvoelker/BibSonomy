@@ -43,7 +43,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -56,6 +55,7 @@ import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -67,11 +67,11 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.database.services.ResourceSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to retrieve tags from the database.
@@ -93,6 +93,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
 	private final DatabasePluginRegistry plugins;
+	private PermissionDatabaseManager permissionDatabaseManager;
 
 	/** interface to a resource searcher for building an tag cloud */
 	private ResourceSearch<BibTex> publicationSearch;
@@ -103,6 +104,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return a singleton instance of the TagDatabaseManager
 	 */
+	@Deprecated // use spring config
 	public static TagDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -368,7 +370,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 		tagParam.setChangeDate(changeDate);
 
-		final List<Integer> groups = new ArrayList<Integer>();
+		final List<Integer> groups = new ArrayList<>();
 		/*
 		 * copy the groups' ids into the param
 		 */
@@ -488,7 +490,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				 * check,
 				 * if we have something like that already.
 				 */
-				final List<Integer> groups = new ArrayList<Integer>();
+				final List<Integer> groups = new ArrayList<>();
 				for (final Group group : post.getGroups()) {
 					groups.add(group.getGroupId());
 				}
@@ -503,7 +505,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		if (log.isDebugEnabled()) {
-
 			/*
 			 * test: check tags
 			 */
@@ -655,7 +656,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
-		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, Resource.class, null, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
 
 		param.setLimit(10000);
 		param.setOffset(0);
@@ -690,64 +691,50 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
-		if (UserUtils.isSpecialUser(param.getRequestedUserName())) {
-			/*
-			 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
-			 * will be returned anyways), but return that directly
-			 */
-			return UserUtils.getTagsOfSpecialUser(param.getRequestedUserName());
+		final String requestedUserName = param.getRequestedUserName();
+		/*
+		 * we have some import users with many posts -> get tags query for these users is slow so return instead only
+		 * one tag
+		 */
+		if (this.permissionDatabaseManager.isSpecialUser(requestedUserName)) {
+			return this.permissionDatabaseManager.getTagsForSpecialUser(requestedUserName);
 		}
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByUser", param, Tag.class, session);
 	}
 
-
-
 	/**
 	 * returns all tags assigned to posts which are matching the given query
-	 * @param resouceClass 
-	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param allowedGroups
-	 * @param searchType 
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param bibtexkey 
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param limit
-	 * @param offset
+	 *
+	 * @param resourceClass
+	 * @param loggedinUser
+	 * @param query
 	 * @return a list of tags
 	 */
-	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resouceClass, final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resourceClass, User loggedinUser, final PostSearchQuery<?> query) {
+		final int limit = BasicQueryUtils.calcLimit(query);
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
-			if (Resource.class.equals(resouceClass)) {
-				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-				final List<Tag> publicationTags = this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			if (Resource.class.equals(resourceClass)) {
+				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(loggedinUser,  query);
+				final List<Tag> publicationTags = this.publicationSearch.getTags(loggedinUser, query);
 				final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, SortKey.POPULAR, SortKey.POPULAR, limit);
 				return retVal;
 			}
 			
-			if (BibTex.class.equals(resouceClass)) {
-				return this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			if (BibTex.class.equals(resourceClass)) {
+				return this.publicationSearch.getTags(loggedinUser, query);
 			}
 			
-			if (Bookmark.class.equals(resouceClass)) {
-				return this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			if (Bookmark.class.equals(resourceClass)) {
+				return this.bookmarkSearch.getTags(loggedinUser, query);
 			}
 			
 			throw new UnsupportedResourceTypeException();
 		}
 
 		log.error("no resource searcher is set");
-		return new LinkedList<Tag>();
+		return new LinkedList<>();
 	}
 
 	/**
@@ -809,7 +796,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsForGroup(final TagParam param, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(param.getTagIndex())) {
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		}
 		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
 	}
@@ -829,7 +816,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsForUser(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		}
 		final TagParam param = new TagParam();
 		param.setUserName(loginUserName);
@@ -856,7 +843,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final List<TagIndex> tagIndex, final SortKey sortKey, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
-			return new ArrayList<Tag>();
+			return new ArrayList<>();
 		}
 		
 		final TagParam param = new TagParam();
@@ -1184,5 +1171,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setChain(final Chain<List<Tag>, TagParam> chain) {
 		this.chain = chain;
+	}
+
+	/**
+	 * @param permissionDatabaseManager the permissionDatabaseManager to set
+	 */
+	public void setPermissionDatabaseManager(PermissionDatabaseManager permissionDatabaseManager) {
+		this.permissionDatabaseManager = permissionDatabaseManager;
 	}
 }

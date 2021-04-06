@@ -35,6 +35,7 @@ import java.util.TimeZone;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
+import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.user.settings.LayoutSettings;
 
@@ -100,7 +101,17 @@ public class UserSettings implements Serializable {
 	 * the default language for i18n
 	 */
 	private String defaultLanguage;
-	
+
+	/**
+	 * style for person's page posts
+	 */
+	private PersonPostsStyle personPostsStyle = PersonPostsStyle.GOLDSTANDARD;
+
+	/**
+	 * layout for person's page posts
+	 */
+	private String personPostsLayout = "";
+
 	/**
 	 * The timeZone the user lives in. Used for rendering posts in the HTML 
 	 * output. 
@@ -245,6 +256,35 @@ public class UserSettings implements Serializable {
 	}
 
 	/**
+	 * @return style for person's page posts
+	 */
+	public PersonPostsStyle getPersonPostsStyle() {
+		return personPostsStyle;
+	}
+
+	/**
+	 * @param personPostsStyle style for person's page posts
+	 */
+	public void setPersonPostsStyle(PersonPostsStyle personPostsStyle) {
+		this.personPostsStyle = personPostsStyle;
+	}
+
+	/**
+	 * @return layout for person's page posts
+	 */
+	public String getPersonPostsLayout() {
+		return personPostsLayout;
+	}
+
+
+	/**
+	 * @param personPostsLayout layout for person's page posts
+	 */
+	public void setPersonPostsLayout(String personPostsLayout) {
+		this.personPostsLayout = personPostsLayout;
+	}
+
+	/**
 	 * @param logLevel the logLevel to set
 	 */
 	public void setLogLevel(final int logLevel) {
@@ -357,4 +397,5 @@ public class UserSettings implements Serializable {
 	public void setFavouriteLayouts(final List<FavouriteLayout> favouriteLayouts) {
 		this.favouriteLayouts = favouriteLayouts;
 	}
+
 }

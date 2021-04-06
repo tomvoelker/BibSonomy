@@ -97,10 +97,9 @@ public class CSHLPScraper extends GenericBibTeXURLScraper {
 		return null;
 	}
 	
-	private String getDownloadURLForHost(URL url, String cookies) throws ScrapingException{
+	private static String getDownloadURLForHost(URL url, String cookies) throws ScrapingException{
 		try {
-			// using url gives a FileNotFoundException, url.toString() doesn't
-			final String content = WebUtils.getContentAsString(url.toString(), cookies);
+			final String content = WebUtils.getContentAsString(url, cookies);
 			final Matcher m = BIBTEX_PATTERN.matcher(content);
 			if (m.find()) {
 				if (url.getHost().contains(CANCERRES_AACJOURNALS_HOST)) {

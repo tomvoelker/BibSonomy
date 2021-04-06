@@ -47,12 +47,12 @@ import org.bibsonomy.model.statistics.StatisticsValues;
  */
 public class SimpleResourceViewCommand extends ResourceViewCommand implements BibtexViewCommand, LayoutViewCommand {
 	// TODO: rename to bookmarks
-	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
+	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<>(this);
 	// TODO: rename to publications
-	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
+	private ListCommand<Post<BibTex>> bibtex = new ListCommand<>(this);
 	
-	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
-	private ListCommand<Post<GoldStandardBookmark>>	goldStandardBookmarks = new ListCommand<Post<GoldStandardBookmark>>(this);
+	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<>(this);
+	private ListCommand<Post<GoldStandardBookmark>>	goldStandardBookmarks = new ListCommand<>(this);
 	
 	// TODO: move to DiscussedViewCommand ?
 	private StatisticsValues discussionsStatistic;

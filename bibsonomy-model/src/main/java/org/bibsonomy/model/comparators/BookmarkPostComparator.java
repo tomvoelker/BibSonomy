@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.model.comparators;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Bookmark;
@@ -63,7 +63,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 	 */
 	@Override
 	public int compare(final Post<? extends Bookmark> post1, final Post<? extends Bookmark> post2) {
-		for (final SortCriterium crit : this.sortCriteria) {
+		for (final SortCriteria crit : this.sortCriteria) {
 			try {
 				// posting date
 				if (SortKey.DATE.equals(crit.getSortKey())) {

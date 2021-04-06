@@ -26,20 +26,17 @@
  */
 package org.bibsonomy.rest.strategy.groups;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Reader;
-import java.util.List;
-
-import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+
+import java.io.ByteArrayOutputStream;
+import java.io.Reader;
+import java.util.Collection;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -60,29 +57,15 @@ public class AddUserToGroupStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		/*
-		 * parse users
-		 */
-		final List<User> users = this.getRenderer().parseUserList(this.doc);
-		/*
-		 * create empty group with desired name
-		 */
+		final Collection<GroupMembership> groupMemberships = this.getRenderer().parseGroupMemberships(this.doc);
 		final Group group = new Group(this.groupName);
-		/*
-		 * add users to group
-		 */
-		try {
-			// TODO: Convert this to the new group concept, aka you can't just
-			// add users. (dzo: what about admins?)
-			for (final User u : users) {
-				this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_MEMBER, new GroupMembership(u, GroupRole.USER, false));
+		for (GroupMembership groupMembership : groupMemberships) {
+			try {
+				this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_MEMBER, groupMembership);
+			} catch (Exception e) {
+				throw new BadRequestOrResponseException(e);
 			}
-		} catch (ValidationException ve) {
-			throw new BadRequestOrResponseException(ve.getMessage());
 		}
-		/*
-		 * no exception -> assume success
-		 */
-		this.getRenderer().serializeGroupId(this.writer, this.groupName); // serializeOK(this.writer);
+		this.getRenderer().serializeGroupId(this.writer, this.groupName);
 	}
 }

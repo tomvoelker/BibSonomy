@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GroupInformation">
+
+	<select id="getLastGroupId" resultClass="int">
+		SELECT value FROM ids WHERE name = 20
+	</select>
+
+	<select id="getLastGroupLogDate" resultClass="Date">
+		SELECT MAX(log_date) FROM log_groupids lg
+	</select>
+
+</sqlMap>

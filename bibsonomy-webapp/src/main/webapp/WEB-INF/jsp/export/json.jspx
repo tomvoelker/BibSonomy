@@ -34,6 +34,9 @@
       "User" : {
          "pluralLabel" : "Users"
       },
+      "Group" : {
+         "pluralLabel" : "Groups"
+      },
       "Sphere" : {
          "pluralLabel" : "Spheres"
       }
@@ -126,10 +129,10 @@
      	 </c:forEach>
       </mtl:exists>
 		<!-- groups -->
-		<mtl:exists path="command.list">
-	     	 <c:if test="${isCommaNecessary and not empty command.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+		<mtl:exists path="command.groups">
+	     	 <c:if test="${isCommaNecessary and not empty command.groups.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
 		    <!-- groups -->
-		    <json:groups groups="${command.list}" />
+		    <json:groups groups="${command.groups.list}" />
 		</mtl:exists>
 	  <!-- friends -->
       <mtl:exists path="command.userFriends">

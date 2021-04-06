@@ -5,8 +5,6 @@
 	All aliases are collected here, because they must not exist twice (i.e. their names).
 -->
 <sqlMap namespace="TypeAliasesSearch">
-
-	
 	<!-- search model types -->
 	<typeAlias alias="searchPost"       type="org.bibsonomy.search.SearchPost" />
 	

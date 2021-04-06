@@ -29,6 +29,7 @@ package org.bibsonomy.rest.renderer.impl;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -39,12 +40,9 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabRefConfig;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.*;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.data.DataAccessor;
@@ -150,12 +148,122 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
+	public Collection<GroupMembership> parseGroupMemberships(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
+	public Person parsePerson(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Person> parsePersons(final Reader reader) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Project parseProject(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Project> parseProjects(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public CRISLink parseCRISLink(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePerson(Writer writer, Person person, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersons(Writer writer, List<Person> persons, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeProject(Writer writer, Project project, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeProjects(Writer writer, List<Project> projects, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeCRISLink(Writer writer, CRISLink crisLink, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersonMatch(Writer writer, PersonMatch match, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeResourcePersonRelation(Writer writer, ResourcePersonRelation resourcePersonRelation, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeResourcePersonRelations(Writer writer, List<ResourcePersonRelation> relations) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeProjectId(Writer writer, String projectId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeCRISLinkId(Writer writer, String linkId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializePersonId(Writer writer, String personId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ResourcePersonRelation parseResourcePersonRelation(Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<ResourcePersonRelation> parseResourcePersonRelations(Reader reader) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String parseUserId(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String parsePersonId(final Reader reader) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String parseProjectId(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -208,9 +316,7 @@ public class JabrefLayoutRenderer implements Renderer {
 		try {
 			writer.append(renderer.renderLayout(layout, posts, embeddedLayout));
 			writer.flush();
-		} catch (final LayoutRenderingException ex) {
-			throw new InternServerException(ex);
-		} catch (final IOException ex) {
+		} catch (final LayoutRenderingException | IOException ex) {
 			throw new InternServerException(ex);
 		}
 	}

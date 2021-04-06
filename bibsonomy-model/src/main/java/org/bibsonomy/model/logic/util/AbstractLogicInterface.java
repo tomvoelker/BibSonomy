@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -46,7 +46,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
@@ -57,7 +57,6 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -72,12 +71,21 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.Query;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -95,11 +103,16 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  */
 public abstract class AbstractLogicInterface implements LogicInterface {
 
+	/** the action to do iff the method is not implemented */
+	protected void doDefaultAction() {
+		// noop
+	}
+
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
 	 */
 	@Override
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
+	public void createResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		this.doDefaultAction();
 	}
 
@@ -107,7 +120,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
-	public void removeResourceRelation(int resourceRelationId) {
+	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
 		this.doDefaultAction();
 	}
 
@@ -115,8 +128,9 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
 	 */
 	@Override
-	public void createOrUpdatePerson(Person person) {
+	public String createPerson(Person person) {
 		this.doDefaultAction();
+		return null;
 	}
 	
 	/*
@@ -136,11 +150,9 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		this.doDefaultAction();
 		return null;
 	}
-	
-	/**
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByUser(String)
-	 */
-	public Person getPersonByUser(String userName) {
+
+	@Override
+	public Person getPersonByAdditionalKey(String key, String value) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -161,38 +173,14 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		this.doDefaultAction();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
 	@Override
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+	public List<Person> getPersons(PersonQuery query) {
 		this.doDefaultAction();
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
-	 */
 	@Override
-	public ResourcePersonRelationQueryBuilder getResourceRelations() {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.util.Set, org.bibsonomy.common.SortCriterium, java.util.Date, java.util.Date, int, int)
-	 */
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, List<SortCriterium> sortOrder, Date startDate, Date endDate, int start, int end) {
+	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -227,7 +215,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(List<Post<? extends Resource>> posts) {
+	public List<JobResult> createPosts(List<Post<? extends Resource>> posts) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -236,7 +224,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List, org.bibsonomy.common.enums.PostUpdateOperation)
 	 */
 	@Override
-	public List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
+	public List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -251,19 +239,10 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#createRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override
-	public void createRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
+	public void createResourceRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
 		this.doDefaultAction();
 	}
 
@@ -271,7 +250,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.GoldStandardPostLogicInterface#deleteRelations(java.lang.String, java.util.Set, org.bibsonomy.model.enums.GoldStandardRelation)
 	 */
 	@Override
-	public void deleteRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
+	public void deleteResourceRelations(String postHash, Set<String> references, GoldStandardRelation relation) {
 		this.doDefaultAction();
 	}
 
@@ -507,10 +486,10 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(query)
 	 */
 	@Override
-	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
+	public List<Group> getGroups(GroupQuery query) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -534,10 +513,10 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.QueryScope, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.common.enums.SortKey, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -942,17 +921,13 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	public void unlinkUser(String username) {
 		this.doDefaultAction();
 	}
-	
-	/** the action to do iff the method is not implemented */
-	protected void doDefaultAction() {
-		// noop
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */
 	@Override
 	public List<PersonMatch> getPersonMatches(String personID) {
+		this.doDefaultAction();
 		return null;
 	}
 	
@@ -960,18 +935,18 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#denieMerge(org.bibsonomy.model.PersonMatch)
 	 */
 	@Override
-	public void denieMerge(PersonMatch match) {
+	public void denyPersonMerge(PersonMatch match) {
 		this.doDefaultAction();
-		
 	}
 	
 	@Override
 	public boolean acceptMerge(PersonMatch match) {
+		this.doDefaultAction();
 		return false;
 	}
 	
 	@Override
-	public PersonMatch getPersonMatch(int matchID) {
+	public PersonMatch getPersonMergeRequest(int matchID) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -980,17 +955,80 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#conflictMerge(int, org.json.JSONArray)
 	 */
 	@Override
-	public Boolean conflictMerge(int formMatchId, Map<String, String> map) {
-		// TODO Auto-generated method stub
+	public Boolean mergePersonsWithConflicts(int formMatchId, Map<String, String> map) {
+		this.doDefaultAction();
 		return null;
 	}
-	
-	/* 
-	 * PhD Advisor Recommendations for a person
-	 */
+
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public Statistics getStatistics(Query query) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public List<Project> getProjects(ProjectQuery builder) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public Project getProjectDetails(String projectId) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult createProject(final Project project) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult updateProject(String projectId, Project project) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult deleteProject(String projectId) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult createCRISLink(CRISLink link) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult updateCRISLink(CRISLink link) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public JobResult deleteCRISLink(Linkable source, Linkable target) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public <R> R getMetaData(MetaDataQuery<R> query) {
+		this.doDefaultAction();
+		return null;
+	}
+
 	@Override
 	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
-		// TODO Auto-generated method stub
+		this.doDefaultAction();
 		return null;
 	}
 }

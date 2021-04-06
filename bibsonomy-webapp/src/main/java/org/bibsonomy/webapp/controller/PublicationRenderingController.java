@@ -42,7 +42,6 @@ import org.bibsonomy.common.exceptions.RestException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.model.util.data.DualDataWrapper;
@@ -73,7 +72,7 @@ public class PublicationRenderingController implements MinimalisticController<Pu
 	@Override
 	public PublicationRendererCommand instantiateCommand() {
 		final PublicationRendererCommand postPublicationCommand = new PublicationRendererCommand();
-		postPublicationCommand.setPost(new Post<BibTex>());
+		postPublicationCommand.setPost(new Post<>());
 		postPublicationCommand.getPost().setResource(new BibTex());
 		return postPublicationCommand;
 	}
@@ -116,9 +115,7 @@ public class PublicationRenderingController implements MinimalisticController<Pu
 				 * Parse the BibTeX snippet
 				 */
 				posts = parser.parseBibTeXPosts(snippet);
-			} catch (final ParseException ex) {
-				errors.reject("error.upload.failed.parse", ex.getMessage());
-			} catch (final IOException ex) {
+			} catch (final ParseException | IOException ex) {
 				errors.reject("error.upload.failed.parse", ex.getMessage());
 			}
 		} else if (present(command.getFile())) {
@@ -146,10 +143,10 @@ public class PublicationRenderingController implements MinimalisticController<Pu
 		List<Post<BibTex>> posts;
 		Collection<? extends BibTex> bibTexs;
 		bibTexs = reader.read(new ImportResource(data));
-		posts = new ArrayList<Post<BibTex>>(bibTexs.size());
+		posts = new ArrayList<>(bibTexs.size());
 		for (BibTex b : bibTexs) {
-			Post<BibTex> p = new Post<BibTex>();
-			p.setTags(Collections.<Tag>emptySet());
+			Post<BibTex> p = new Post<>();
+			p.setTags(Collections.emptySet());
 			p.setResource(b);
 			posts.add(p);
 		}
@@ -172,13 +169,6 @@ public class PublicationRenderingController implements MinimalisticController<Pu
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
-	}
-
-	/**
-	 * @return the mimeTypeReaders
-	 */
-	public Map<String, BibTexReader> getBibtexReaders() {
-		return this.bibtexReaders;
 	}
 
 	/**

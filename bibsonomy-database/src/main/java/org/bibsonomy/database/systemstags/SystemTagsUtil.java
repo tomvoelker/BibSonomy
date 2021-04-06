@@ -30,7 +30,7 @@ import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.executable.ForFriendTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Tag;
 
 import java.util.Collection;

@@ -43,6 +43,10 @@
 	display:none;
 }
 
+.page-header {
+	margin-top: 0px;
+}
+
 .page-header .form-group {
 	margin: 0;
 }
@@ -92,10 +96,6 @@ h1 .personPageFormPlaceholder {
 .personPageLockedForm {	
 	padding: 0 5px 0 0;
 	cursor: pointer;
-}
-
-.collapsingOverflow {
-	overflow: hidden;	
 }
 
 table.personOtherPublicationTable {
@@ -209,7 +209,15 @@ a.personPageShowAdditionalRoleFields {
 .simplePubEntry {
 	padding: 0 0 4px 0;
 	border-bottom: 1px solid #eee;
+	position: relative;
 }
+
+.simplePubEntry-buttons {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
 
 .simpleMatchEntry {
 	padding: 0 0 4px 0;
@@ -243,6 +251,15 @@ a.personPageShowAdditionalRoleFields {
 
 .simplePubFirstLine {
 	width: 100%;
+}
+
+.simplePubFirstLinePaddingRight {
+	padding: 0 80px 0 0;
+}
+
+.simplePubAuthorPaddingRight {
+	padding: 0 80px 0 0;
+	display: inline-block;
 }
 
 .simpleMatchFirstLine {
@@ -325,3 +342,34 @@ a.personPageShowAdditionalRoleFields {
 	border-bottom: none;
 }
 
+#organization-persons {
+
+  div.row {
+	margin-bottom: 40px;
+  }
+
+  .person-default-icon {
+	// TODO: check why we need this margin for the default icon
+	margin-top: 13px;
+
+	> span {
+	  color: #000000;
+	  text-align: center;
+	  font-size: 4em;
+	}
+  }
+
+  img.media-object.img-thumbnail {
+	max-width: 65px;
+	max-height: 72px;
+  }
+}
+
+.person-nav-link {
+	font-size: 32px;
+	line-height: 12px;
+}
+
+a.person-nav-link:hover {
+	text-decoration: none;
+}

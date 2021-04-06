@@ -33,14 +33,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -150,6 +148,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			throw new ObjectNotFoundException(groupingName);
 		}
 
+		// build sort criteria list
+		this.buildSortCriteria(command);
+
+		// set query scope for resource lists
+		QueryScope resourceScope = command.getScope();
+		// when sortkey is not present or set to date we still want to use the local scope regardless of flag, since supported by database
+		if (command.isIndexUse() && (present(command.getSortCriteria()) && SortUtils.getFirstSortKey(command.getSortCriteria()) != SortKey.DATE)) {
+			resourceScope = QueryScope.SEARCHINDEX;
+		}
+
 		int totalNumPosts = 0;
 
 		// retrieve and set the requested resource lists, along with total
@@ -157,11 +165,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.preProcessForSearchIndexSort(command);
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteriums(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, resourceScope, command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
-			// secondary sorting, if not using elasticsearch index
-			if (!command.isEsIndex()) {
+			// secondary sorting, if not using search index
+			if (resourceScope != QueryScope.SEARCHINDEX) {
 				this.postProcessAndSortList(command, resourceType);
 			}
 

@@ -28,12 +28,19 @@ package org.bibsonomy.model.logic;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for person entity logic.
@@ -42,60 +49,135 @@ import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder
  */
 public interface PersonLogicInterface {
 
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
+	/**
+	 * gets the person by the person id
+	 * @param idType
+	 * @param id
+	 * @return
+	 */
+	Person getPersonById(final PersonIdType idType, final String id);
 
 	/**
-	 * FIXME: remove database id TODO_PERSONS
-	 * removes a resource relation
-	 * @param resourceRelationId
+	 * gets the person by any additional key and value
+	 * @param keyName
+	 * @param keyValue
+	 * @return
 	 */
-	public void removeResourceRelation(int resourceRelationId);
+	Person getPersonByAdditionalKey(final String keyName, final String keyValue);
 
 	/**
 	 * sets id for new persons
-	 * 
+	 *
 	 * @param person the person to be saved or updated
 	 */
-	public void createOrUpdatePerson(Person person);
-	
-	public Person getPersonById(PersonIdType idType, String id);
-	
-	/**
-	 * Returns the Person claimed by a given UserName
-	 * @param userName	the name of the user
-	 * @return	a Person object in case the user has claimed a person, null otherwise
-	 */
-	public Person getPersonByUser(String userName);
-	
-	/**
-	 * FIXME: remove database id TODO_PERSONS
-	 * removes a person name from a specific person
-	 * @param personNameId
-	 */
-	public void removePersonName(Integer personNameId);
+	String createPerson(final Person person);
 
-	/**
-	 * @param withPersonId
-	 */
-	public void createPersonName(PersonName withPersonId);
-	
-	/**
-	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
-	 * @return a builder object fo optional parameters
-	 */
-	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString);
-
-	/**
-	 * @return a querybuilder object by which options for the query can be specified
-	 */
-	public ResourcePersonRelationQueryBuilder getResourceRelations();
-
-	
 	/**
 	 * Updates the given person
 	 * @param person		the person to update
 	 * @param operation		the desired update operation
 	 */
-	public void updatePerson(final Person person, final PersonUpdateOperation operation);
+	void updatePerson(final Person person, final PersonUpdateOperation operation);
+
+	/**
+	 * stores the specified person relation
+	 * @param resourcePersonRelation
+	 * @throws ResourcePersonAlreadyAssignedException
+	 */
+	void createResourceRelation(final ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
+
+	/**
+	 * removes a resource relation
+	 *
+	 * @param personId
+	 * @param interHash
+	 * @param index
+	 * @param type
+	 */
+	void removeResourceRelation(final String personId, final String interHash, final int index, final PersonResourceRelationType type);
+
+	/**
+	 * @param withPersonId
+	 */
+	@Deprecated // use update person
+	void createPersonName(PersonName withPersonId);
+
+	/**
+	 * FIXME: remove database id
+	 *
+	 * removes a person name from a specific person
+	 * @param personNameId
+	 */
+	@Deprecated // use update person
+	void removePersonName(final Integer personNameId);
+
+	/**
+	 * retrieves persons
+	 * @param query the query specifying what person should be returned
+	 * @return the persons
+	 */
+	List<Person> getPersons(final PersonQuery query);
+
+	/**
+	 * Retrieves a list with resource - person relations according to the query.
+	 *
+	 * @param query the query.
+	 *
+	 * @return a list of resource - person relations.
+	 */
+	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
+
+	/**
+	 * @param username
+	 */
+	@Deprecated // FIXME: add to update person logic
+	void unlinkUser(String username);
+
+	/**
+	 * TODO: add documentation
+	 *
+	 * @param personID the id of the person
+	 * @return
+	 */
+	List<PersonMatch> getPersonMatches(final String personID);
+
+	/**
+	 * TODO: add documentation
+	 * FIXME: do not use database ids in the logic!!!!!!!!
+	 *
+	 * @param matchID
+	 * @return
+	 */
+	PersonMatch getPersonMergeRequest(int matchID);
+
+	/**
+	 * TODO: add documentation
+	 *
+	 * @param match
+	 */
+	void denyPersonMerge(final PersonMatch match);
+
+	/**
+	 * TODO: add documentation
+	 *
+	 * @param match
+	 * @return
+	 */
+	boolean acceptMerge(final PersonMatch match);
+
+	/**
+	 * TODO: add
+	 *
+	 * @param formMatchId
+	 * @param map
+	 * @return
+	 */
+	Boolean mergePersonsWithConflicts(final int formMatchId, final Map<String, String> map);
+
+	/**
+	 * @param personID
+	 * @return
+	 */
+	List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID);
 
 }

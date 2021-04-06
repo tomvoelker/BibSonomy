@@ -26,16 +26,16 @@
  */
 package org.bibsonomy.database.params;
 
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.RatingAverage;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.logic.query.PostQuery;
 
 import java.util.List;
 
-/** 
+/**
  * Super class for parameter objects that are about resources.
  * 
  * @param <T> resource (e.g. Bookmark, Publication, etc.)
@@ -43,14 +43,29 @@ import java.util.List;
  * @author Jens Illig
  */
 public class ResourceParam<T extends Resource> extends GenericParam {
-	
+
+	private PostQuery<T> query;
+
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;
 
 	protected T resource;
 	protected GoldStandardRelation relation;
 	protected ResourcePersonRelation personRelation;
-	protected List<SortCriterium> sortCriteriums;
-	
+	protected List<SortCriteria> sortCriteria;
+
+	/**
+	 * @return the query
+	 */
+	public PostQuery<T> getQuery() {
+		return query;
+	}
+
+	/**
+	 * @param query the query to set
+	 */
+	public void setQuery(PostQuery<T> query) {
+		this.query = query;
+	}
 
 	/**
 	 * @return the relation between the posts
@@ -101,11 +116,11 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 		this.personRelation = personRelation;
 	}
 
-	public List<SortCriterium> getSortCriteriums() {
-		return sortCriteriums;
+	public List<SortCriteria> getSortCriteria() {
+		return sortCriteria;
 	}
 
-	public void setSortCriteriums(List<SortCriterium> sortCriteriums) {
-		this.sortCriteriums = sortCriteriums;
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 }

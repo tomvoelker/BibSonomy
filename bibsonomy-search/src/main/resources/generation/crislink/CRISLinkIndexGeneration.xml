@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CRISLinkGeneration">
+
+	<select id="getCRISLinksPROJECT_PERSON" resultMap="SearchCRISLinkCommon.fullCRISLinkProjectPerson">
+		SELECT <include refid="crisLinkColumns" />, <include refid="crisProjectColumns" />, <include refid="crisPersonColumns" />
+		FROM
+			(
+				SELECT * FROM cris_links cl
+				WHERE cl.id > #lastContentId#
+				AND cl.source_type = #sourceType.id#
+				AND cl.target_type = #targetType.id#
+				ORDER BY cl.id ASC
+				LIMIT #limit#
+			) AS cl
+		LEFT JOIN person per ON (cl.target_id = per.person_change_id)
+		LEFT JOIN person_name pn USING (person_id)
+		LEFT JOIN projects p ON (cl.source_id = p.id)
+	</select>
+
+	<select id="getCRISLinksCount" resultClass="int">
+		SELECT count(*)
+		FROM cris_links c
+		WHERE c.source_type = #sourceType.id#
+		AND c.target_type = #targetType.id#
+	</select>
+</sqlMap>

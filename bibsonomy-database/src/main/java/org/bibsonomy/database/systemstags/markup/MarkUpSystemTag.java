@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.database.systemstags.markup;
 
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 
 /**

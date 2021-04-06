@@ -28,6 +28,7 @@ package org.bibsonomy.search.es;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -54,17 +55,49 @@ public final class ESConstants {
 	/** settings of each created index */
 	public static final String SETTINGS;
 
-	/** fielddata */
-	public static final String FIELDDATA = "fielddata";
-
 	/** normalizer attribute */
 	public static final String NORMALIZER = "normalizer";
 
-	/** analyzer attribute */
-	public static final String ANALYZER = "analyzer";
-
 	/** the registered lowercase normalizer */
 	public static final String LOWERCASE_NORMALIZER = "lowercase_normalizer";
+
+	/** normalizer for sorting fields */
+	public static final String SORT_NORMALIZER = "sort_normalizer";
+
+	/** the standard analyser to be used for text */
+	public static final String STANDARD_TEXT_ANALYSER = "text_analyzer";
+
+	/** the standard ngram analyser to be used for text */
+	public static final String STANDARD_TEXT_NGRAM_ANALYSER = "text_ngram_analyzer";
+
+	/** the standard analyzer that must be used for fields indexed with an edge ngram filter */
+	public static final String STANDARD_ANALYSER = "standard";
+
+	private static final String NGRAM_TOKENIZER = "ngram_tokenizer";
+
+	/** the edge ngram field of a field */
+	public static final String NGRAM_SUFFIX = "ngram";
+
+	/** the raw version of a field */
+	public static final String RAW_SUFFIX = "raw";
+
+	/**
+	 * returns the standard ngram field for the parent field
+	 * @param fieldName
+	 * @return the field name for the ngram subfield
+	 */
+	public static final String getNgramField(final String fieldName) {
+		return fieldName + "." + NGRAM_SUFFIX;
+	}
+
+	/**
+	 * returns the row field of the parent field (e.g. useful for sorting)
+	 * @param fieldName
+	 * @return the field name for the raw subfield
+	 */
+	public static final String getRawField(final String fieldName) {
+		return fieldName + "." + RAW_SUFFIX;
+	}
 
 	static {
 		try {
@@ -76,6 +109,11 @@ public final class ESConstants {
 									.field("type", "custom")
 									.array("char_filter")
 									.array("filter", "lowercase")
+								.endObject()
+								.startObject(SORT_NORMALIZER)
+									.field("type", "custom")
+									.field("char_filter", Collections.emptyList())
+									.field("filter", Arrays.asList("lowercase", "asciifolding"))
 								.endObject()
 							.endObject()
 							.startObject("char_filter")
@@ -100,12 +138,25 @@ public final class ESConstants {
 									.field("preserve_original", true)
 								.endObject()
 							.endObject()
+							.startObject("tokenizer")
+								.startObject(NGRAM_TOKENIZER)
+									.field("type", "edge_ngram")
+									.field("min_gram", 1)
+									.field("max_gram", 5)
+								.endObject()
+							.endObject()
 							.startObject("analyzer")
-								.startObject("default")
+								.startObject(STANDARD_TEXT_ANALYSER)
 									.field("type", "custom")
 									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
-									.field("tokenizer", "standard")
-									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "standard"))
+									.field("tokenizer", STANDARD_ANALYSER)
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
+								.endObject()
+								.startObject(STANDARD_TEXT_NGRAM_ANALYSER)
+									.field("type", "custom")
+									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
+									.field("tokenizer", NGRAM_TOKENIZER)
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase"))
 								.endObject()
 							.endObject()
 						.endObject()
@@ -119,12 +170,18 @@ public final class ESConstants {
 	 * some constants for index settings
 	 */
 	public interface IndexSettings {
+		/** analyzer */
+		String ANALYZER = "analyzer";
 		/** properties field key */
 		String PROPERTIES = "properties";
 		/** flag to copy the field also to the other fields */
 		String COPY_TO = "copy_to";
 		/** boost the field (search in _all field) */
 		String BOOST_FIELD = "boost";
+		/** subfields */
+		String FIELDS = "fields";
+		/** relation field */
+		String RELATION_FIELD = "relations";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -133,6 +190,8 @@ public final class ESConstants {
 		String NESTED_TYPE = "nested";
 		/** date type */
 		String DATE_TYPE = "date";
+		/** join type */
+		String JOIN_TYPE = "join";
 		/** the type field */
 		String TYPE_FIELD = "type";
 		/** the index field */
@@ -147,6 +206,8 @@ public final class ESConstants {
 		String NOT_INDEXED = "false";
 		/** set to false to disable indexing */
 		String ENABLED = "enabled";
+		/** the analyser to use for the search queries */
+		String SEARCH_ANALYSER = "search_analyzer";
 	}
 	
 	/** Index type for the system information */
@@ -171,9 +232,11 @@ public final class ESConstants {
 	public static final int BULK_INSERT_SIZE = 1000;
 
 	/** contains all field information */
-	public static final class Fields {
+	public interface Fields {
 		/** the name of the user of the post */
-		public static final String USER_NAME = "user_name";
+		String USER_NAME = "user_name";
+		/** list of all users that posted this post (with the same interhash) */
+		String ALL_USERS = "all_users";
 		/** the groups of the post */
 		public static final String GROUPS = "groups";
 		/** the tags of the post */
@@ -213,7 +276,11 @@ public final class ESConstants {
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
 			String PERSON_NAME = "name";
-			
+			String PERSON_ID = "person_id";
+			String PERSON_COLLEGE = "person_college";
+			String OTHER_PERSON_RESOURCE_RELATIONS = "other_relations";
+			String PERSON_RELATION_TYPE = "relation_type";
+
 			String SCHOOL = "school";
 			/** the publication's year */
 			String YEAR = "year";
@@ -260,7 +327,7 @@ public final class ESConstants {
 			String ISSN = "issn";
 			/** the isbn (special misc field) */
 			String ISBN = "isbn";
-			
+
 			/** BEGIN additional special MISC fields until another solution is found **/
 			/** the project (special misc field) */
 			String PROJECT = "project";
@@ -269,7 +336,7 @@ public final class ESConstants {
 			/** the orcid (special misc field) */
 			String ORCID = "orcid";
 			/** END additional special MISC fields until another solution is found **/
-			
+
 			/** the language */
 			String LANGUAGE = "language";
 			/** a list of special misc fields */

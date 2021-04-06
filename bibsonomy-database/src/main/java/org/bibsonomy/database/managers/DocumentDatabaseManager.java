@@ -113,7 +113,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param md5hash
 	 * @param session
 	 */
-	public void addDocument(final String userName, final int contentId, final String fileHash, final String fileName, final String md5hash, final DBSession session) {
+	public void addDocument(final String userName, final int contentId, final String fileHash, final String fileName, final String md5hash, final User loggedinUser, final DBSession session) {
 		try {
 			session.beginTransaction();
 
@@ -136,7 +136,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 
 			if (contentId == DEFAULT_CONTENT_ID && fileName.toLowerCase().endsWith(CslFileLogic.LAYOUT_FILE_EXTENSION)) {
 				userSettings.getFavouriteLayouts().add(new FavouriteLayout(FavouriteLayoutSource.CSL, CSLUtils.CUSTOM_PREFIX + userName + " " + fileName));
-				this.userDatabaseManager.updateUserSettingsForUser(user, session);
+				this.userDatabaseManager.updateUserSettingsForUser(user, loggedinUser, session);
 			}
 
 			session.commitTransaction();
@@ -272,7 +272,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param fileHash
 	 * @param session
 	 */
-	public void deleteDocumentWithNoPost(final int contentId, final String userName, final String fileHash, final DBSession session) {
+	public void deleteDocumentWithNoPost(final int contentId, final String userName, final String fileHash, final User loggedinUser, final DBSession session) {
 		try {
 			session.beginTransaction();
 
@@ -308,7 +308,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 			}
 			if (foundLayout != null) {
 				userSettings.getFavouriteLayouts().remove(foundLayout);
-				this.userDatabaseManager.updateUserSettingsForUser(user, session);
+				this.userDatabaseManager.updateUserSettingsForUser(user, loggedinUser, session);
 			}
 
 			session.commitTransaction();

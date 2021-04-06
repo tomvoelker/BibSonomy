@@ -35,9 +35,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
+import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
 import java.util.Collections;
 import java.util.Date;
@@ -50,7 +51,7 @@ import java.util.Map;
  *
  * @param <R>
  */
-public class PostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>> {
+public class PostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>>, DatabaseInformationLogic<DefaultSearchIndexSyncState> {
 	protected Class<R> resourceClass;
 	private GeneralDatabaseManager generalDatabaseManager;
 	protected PersonDatabaseManager personDatabaseManager;
@@ -63,7 +64,7 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	}
 
 	@Override
-	public List<Post<R>> getEntites(final int lastContentId, final int max) {
+	public List<Post<R>> getEntities(final int lastContentId, final int max) {
 		final SearchParam param = new SearchParam();
 		param.setLastContentId(lastContentId);
 		param.setLimit(max);
@@ -106,8 +107,8 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	}
 
 	@Override
-	public SearchIndexSyncState getDbState() {
-		final SearchIndexSyncState newState = new SearchIndexSyncState();
+	public DefaultSearchIndexSyncState getDbState() {
+		final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState();
 		newState.setLast_tas_id(this.getLastTasId());
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());

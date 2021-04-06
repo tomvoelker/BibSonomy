@@ -20,7 +20,7 @@
 	<import resource="classpath:TestDatabaseContext.xml"/>
 	<import resource="classpath:SearchTestContext.xml" />
 	
-	<alias name="elasticsearchPublicationSearch" alias="personSearch" />
+	<alias name="elasticsearchPersonSearch" alias="personSearch" />
 	
 	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
 	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />

@@ -18,10 +18,14 @@
 	
 	<!-- get given group's members -->
 	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
-		SELECT g.user_name 
-		FROM group_memberships g 
-		JOIN groupids gn USING (`group`)
-		WHERE gn.group_name = #groupName#
+		SELECT gm.user_name FROM `groupids` g
+		   JOIN `group_hierarchy` gh ON (gh.parent_group_id = g.group)
+		   JOIN `group_memberships` gm ON (gm.group = gh.child_group_id)
+	    WHERE g.group_name = #groupName#
+	    UNION
+	    SELECT g.user_name FROM group_memberships g
+	       JOIN  groupids gn USING (`group`)
+	    WHERE gn.group_name = #groupName#
 	</select>
 	
 	<!-- get all friends of the given user -->
@@ -42,6 +46,16 @@
 			AND other.user_shared_documents
 			AND g.sharedDocuments = 1
 			AND other.user_name != #userName#
+	</select>
+
+	<select id="getPersonsForOrganization" resultClass="string" parameterClass="string">
+		SELECT person_id
+		FROM person p
+		JOIN cris_links c ON (c.target_id = p.person_change_id)
+		JOIN groupids g ON (c.source_id = g.`group`)
+		WHERE g.group_name = #name#
+		AND c.source_type = 4
+		AND c.target_type = 2
 	</select>
 
 	<!-- get list of all publications for given user -->

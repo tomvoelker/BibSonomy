@@ -26,32 +26,27 @@
  */
 package org.bibsonomy.scraper.url.kde.morganclaypool;
 
-import java.net.URL;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
  * @author Haile
  */
-public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
+public class MorganClaypoolScraper extends LiteratumScraper {
 	private static final String SITE_NAME = "Morgan & Claypool Publisher";
-	private static final String SITE_URL = "http://www.morganclaypool.com/";
-	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String SITE_HOST = "www.morganclaypool.com";
+	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
 
-	private static final Pattern BIBTEX_DOI = Pattern.compile("[abs/|doi=](\\d.*)");
-	private static final String BIBTEX_PATH = "/action/downloadCitation/showCitFormats?format=bibtex&doi=";
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern, Pattern>>();
-
-	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?www.morganclaypool.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
+			Pattern.compile(".*" + SITE_HOST), 
+			AbstractUrlScraper.EMPTY_PATTERN
+			));
 
 	@Override
 	public String getSupportedSiteName() {
@@ -65,22 +60,12 @@ public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public String getInfo() {
-		return INFO;
+		return SITE_INFO;
 	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
-	}
-
-	@Override
-	public String getDownloadURL(final URL url, String cookies) throws ScrapingException {
-		final Matcher m = BIBTEX_DOI.matcher(url.toString());
-		if (m.find()) {
-			return "http://" + url.getHost().toString() + BIBTEX_PATH + m.group(1);
-		}
-		
-		return null;
 	}
 
 }

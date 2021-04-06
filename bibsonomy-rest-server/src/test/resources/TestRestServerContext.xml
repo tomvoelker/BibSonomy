@@ -24,4 +24,9 @@
 	</bean>
 	
 	<bean id="testLogicFactory" class="org.bibsonomy.rest.database.TestDBLogicInterfaceFactory" />
+
+	<!-- FIXME: the role is not set to admin -->
+	<bean id="adminLogic" class="org.bibsonomy.rest.database.TestDBLogic">
+		<constructor-arg value="admin" />
+	</bean>
 </beans>

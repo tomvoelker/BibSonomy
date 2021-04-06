@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="entriesPerPage" type="java.lang.Integer" required="true" />
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
@@ -61,10 +62,10 @@
 			<!--  entries per page -->
 			<c:if test="${not disableListNavigation}">
 				<c:if test="${isBookmark}">
-					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
+					<rc:itemcount entriesPerPage="${entriesPerPage}" entryType="${resourceType}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
 				<c:if test="${isPublication}">
-					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
+					<rc:itemcount entriesPerPage="${entriesPerPage}" entryType="${resourceType}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
 			</c:if>
 		</ul>
@@ -77,7 +78,7 @@
 		<div class="btn-group">
 			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 			<ul class="dropdown-menu">
-				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" sortPageOrder="${sortPageOrder}" isBibtex="${isPublication}" additionalSorting="${additionalSorting}"/>
+				<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" sortPageOrder="${sortPageOrder}" isBibtex="${isPublication}" additionalSorting="${additionalSorting}"/>
 				<li class="divider"><!-- keep me --></li>
 				<c:if test="${isPublication}">
 					<fmt:message var="helpLink" key="post.meta.helplink"/>

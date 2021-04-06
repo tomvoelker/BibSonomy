@@ -28,10 +28,12 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -53,8 +55,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	private final int start;
 	private final int end;
-	private SortKey sortKey;
-	private SortOrder sortOrder;
+	private List<SortCriteria> sortCriteria;
 	private String search;
 	private Class<? extends Resource> resourceType;
 	private List<String> tags;
@@ -143,17 +144,11 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	}
 
 	/**
-	 * @param sortKey	the sort key to set
+	 * @param sortCriteria
+	 * 				the sort criteriums to set
 	 */
-	public void setSortKey(SortKey sortKey) {
-		this.sortKey = sortKey;
-	}
-
-	/**
-	 * @param sortOrder	the sort order to set
-	 */
-	public void setSortOrder(SortOrder sortOrder) {
-		this.sortOrder = sortOrder;
+	public void setSortCriteriums(final List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 
 	/**
@@ -181,7 +176,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			return;
 		}
 		
-		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortKey, this.sortOrder, this.start, this.end);
+		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortCriteria, this.start, this.end);
 		if (log.isDebugEnabled()) {
 			log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		}

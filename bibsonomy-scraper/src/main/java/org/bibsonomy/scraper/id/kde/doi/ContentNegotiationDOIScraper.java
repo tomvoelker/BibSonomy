@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -60,8 +61,8 @@ import bibtex.parser.ParseException;
 public class ContentNegotiationDOIScraper implements Scraper {
 
 	private static final String SITE_NAME = "ContentNegotiationDOIScraper";
-	private static final String SITE_URL = "http://www.doi.org/";
-	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given " + AbstractUrlScraper.href("http://www.doi.org/", "DOI") +
+	private static final String SITE_URL = "https://www.doi.org/";
+	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given " + AbstractUrlScraper.href(SITE_URL, "DOI") +
 			", if no URL scraper matched the previously redirected page.";
 	
 	/**
@@ -76,10 +77,10 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		 */
 		final URL url = scrapingContext.getDoiURL();
 		final URL originalUrl = scrapingContext.getUrl();
-		String bibtexResult = "";
+		String bibtexResult = null;
 		
-		if ((url != null) && DOIUtils.isDOIURL(url)) {
-			bibtexResult = this.getBibTexByCN(url);
+		if (ValidationUtils.present(url) && DOIUtils.isDOIURL(url)) {
+			bibtexResult = getBibTexByCN(url);
 		}
 		
 		/*
@@ -87,8 +88,8 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		 *             a DOI URL which was not redirected (should not happen in fact of the DOI
 		 *             scraper should have redirected the current URL)
 		 */
-		else if ((originalUrl != null) && DOIUtils.isDOIURL(originalUrl)) {
-			bibtexResult = this.getBibTexByCN(originalUrl);
+		else if (ValidationUtils.present(originalUrl) && DOIUtils.isDOIURL(originalUrl)) {
+			bibtexResult = getBibTexByCN(originalUrl);
 		}
 		
 		/*
@@ -98,7 +99,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		else if(DOIUtils.isSupportedSelection(scrapingContext.getSelectedText())) {
 			final String doi = DOIUtils.extractDOI(scrapingContext.getSelectedText());
 			try {
-				bibtexResult = this.getBibTexByCN(DOIUtils.getURL(doi));
+				bibtexResult = getBibTexByCN(DOIUtils.getURL(doi));
 			} catch (final MalformedURLException ex) {
 				throw new InternalFailureException(ex);
 			}
@@ -120,14 +121,14 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	 * @param url the URL to request
 	 * @return the resulting BibTex
 	 */
-	private String getBibTexByCN(final URL url) throws InternalFailureException{
+	private static String getBibTexByCN(final URL url) throws InternalFailureException{
 		// create request with content negotiation
 		final HttpGet getBibTexMethod = new HttpGet(url.toExternalForm());
 		getBibTexMethod.addHeader("Accept", "application/x-bibtex");
 
 		// send request to dx.doi.org and receive resulting bibtex
 		try {
-			final String content = WebUtils.getContentAsString(getBibTexMethod);
+			final String content = WebUtils.getContentAsString(WebUtils.getHttpClient(), getBibTexMethod);
 			/*
 			 * Unfortunately, content negotiation does not always work (TODO: why?). 
 			 * Hence, we here check, if we really got BibTeX.
@@ -141,7 +142,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			}
 			
 			return content;
-		} catch (final HttpException | IOException ex) {
+		} catch (HttpException | IOException ex) {
 			throw new InternalFailureException(ex);
 		} catch (final ParseException e) {
 			throw new InternalFailureException("Server did not return BibTeX during content negotiation. Scraping not supported.");
@@ -155,7 +156,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 
 	@Override
 	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
+		return Collections.singletonList(this);
 	}
 	
 	/**

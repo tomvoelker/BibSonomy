@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -255,6 +254,7 @@ public class BibTexUtils {
 
 	/** collection */
 	public static final String COLLECTION = "collection";	
+
 	/**
 	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types 
 	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
@@ -382,27 +382,34 @@ public class BibTexUtils {
 		appendOpenURL(openurl, "auinit1", auinit1);
 		// genres == entrytypes
 		final String entryType = bib.getEntrytype().toLowerCase();
-		if (entryType.equals("journal")) {
-			appendOpenURL(openurl, "genre", "journal");
-			appendOpenURL(openurl, "title", bib.getTitle());
-		} else if (entryType.equals(BOOK)) {
-			appendOpenURL(openurl, "genre", BOOK);
-			appendOpenURL(openurl, "title", bib.getTitle());
-		} else if (entryType.equals(ARTICLE)) {
-			appendOpenURL(openurl, "genre", ARTICLE);
-			appendOpenURL(openurl, "title", bib.getJournal());
-			appendOpenURL(openurl, "atitle", bib.getTitle());
-		} else if (entryType.equals(INBOOK)) {
-			appendOpenURL(openurl, "genre", "bookitem");
-			appendOpenURL(openurl, "title", bib.getBooktitle());
-			appendOpenURL(openurl, "atitle", bib.getTitle());
-		} else if (entryType.equals(PROCEEDINGS)) {
-			appendOpenURL(openurl, "genre", "proceeding");
-			appendOpenURL(openurl, "title", bib.getBooktitle());
-			appendOpenURL(openurl, "atitle", bib.getTitle());
-		} else {
-			appendOpenURL(openurl, "title", bib.getBooktitle());
-			appendOpenURL(openurl, "atitle", bib.getTitle());
+		switch (entryType) {
+			case "journal":
+				appendOpenURL(openurl, "genre", "journal");
+				appendOpenURL(openurl, "title", bib.getTitle());
+				break;
+			case BOOK:
+				appendOpenURL(openurl, "genre", BOOK);
+				appendOpenURL(openurl, "title", bib.getTitle());
+				break;
+			case ARTICLE:
+				appendOpenURL(openurl, "genre", ARTICLE);
+				appendOpenURL(openurl, "title", bib.getJournal());
+				appendOpenURL(openurl, "atitle", bib.getTitle());
+				break;
+			case INBOOK:
+				appendOpenURL(openurl, "genre", "bookitem");
+				appendOpenURL(openurl, "title", bib.getBooktitle());
+				appendOpenURL(openurl, "atitle", bib.getTitle());
+				break;
+			case PROCEEDINGS:
+				appendOpenURL(openurl, "genre", "proceeding");
+				appendOpenURL(openurl, "title", bib.getBooktitle());
+				appendOpenURL(openurl, "atitle", bib.getTitle());
+				break;
+			default:
+				appendOpenURL(openurl, "title", bib.getBooktitle());
+				appendOpenURL(openurl, "atitle", bib.getTitle());
+				break;
 		}
 		appendOpenURL(openurl, "volume", bib.getVolume());
 		appendOpenURL(openurl, "issue", bib.getNumber());
@@ -547,7 +554,6 @@ public class BibTexUtils {
 		return buffer.toString();
 	}
 
-	
 	/**
 	 * @param value
 	 * @return
@@ -555,7 +561,6 @@ public class BibTexUtils {
 	private static String addBibTeXBrackets(final String value) {
 		return DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
 	}
-
 
 	/**
 	 * Some BibTeX styles translate month abbreviations into (language specific) 
@@ -570,7 +575,6 @@ public class BibTexUtils {
 		if (month != null && BIBTEX_MONTHS.containsKey(month.toLowerCase().trim())) return month;
 		return addBibTeXBrackets(month);
 	}
-
 
 	/**
 	 * Tries to extract the month number from the given string. The following 
@@ -783,8 +787,6 @@ public class BibTexUtils {
 		return "";
 	}
 
-
-
 	/**
 	 * Cleans up a string containing LaTeX markup
 	 * 
@@ -890,7 +892,7 @@ public class BibTexUtils {
 	 * @param publicationList
 	 */
 	public static void mergeDuplicates(final List<Post<BibTex>> publicationList) {
-		Map<String,Post<BibTex>> hashToPost = new HashMap<String, Post<BibTex>>();
+		Map<String,Post<BibTex>> hashToPost = new HashMap<>();
 		for (Post<BibTex> post : publicationList) {
 			// add merged:USERNAME tag to indicate all users who own the post
 			post.addTag(MERGED_PREFIX + post.getUser().getName());
@@ -1103,9 +1105,9 @@ public class BibTexUtils {
 	 * @return the return value of the callable
 	 */
 	public static <T> T runWithRemovedOrReplacedDummyValues(Collection<Post<BibTex>> bibs, boolean replace, Callable<T> r) {
-		final List<String> years = new ArrayList<String>();
-		final List<List<PersonName>> authors = new ArrayList<List<PersonName>>();
-		final List<List<PersonName>> editors = new ArrayList<List<PersonName>>();
+		final List<String> years = new ArrayList<>();
+		final List<List<PersonName>> authors = new ArrayList<>();
+		final List<List<PersonName>> editors = new ArrayList<>();
 		
 		for (Post<BibTex> pb : bibs) {
 			final BibTex b = pb.getResource();
@@ -1143,7 +1145,7 @@ public class BibTexUtils {
 		if (persons == null) {
 			return persons;
 		}
-		List<PersonName> rVal = new ArrayList<PersonName>();
+		List<PersonName> rVal = new ArrayList<>();
 		for (PersonName p : persons) {
 			if (dummyValue.equals(p.getFirstName())) {
 				if (replace) {

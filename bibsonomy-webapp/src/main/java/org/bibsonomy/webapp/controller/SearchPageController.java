@@ -28,15 +28,13 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -81,7 +79,7 @@ public class SearchPageController extends SingleResourceListController implement
 			} catch (IllegalArgumentException e){
 				command.setSortKey(SortKey.RANK);
 			}
-			this.preProcessForSearchIndexSort(command);
+			this.buildSortCriteria(command);
 
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
@@ -131,9 +129,7 @@ public class SearchPageController extends SingleResourceListController implement
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
 				command.setSortKey(SortKey.DATE);
-				List<SortCriterium> sortCriteriumsNoSearch = new ArrayList<>();
-				sortCriteriumsNoSearch.add(new SortCriterium(command.getSortKey(), SortOrder.DESC));
-				command.setSortCriteriums(sortCriteriumsNoSearch);
+				command.setSortCriteria(SortUtils.singletonSortCriteria(command.getSortKey(), SortOrder.DESC));
 			}
 
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
@@ -141,14 +137,14 @@ public class SearchPageController extends SingleResourceListController implement
 				maximumTags = 1000;
 			}
 			
-			final SearchType searchType = command.getScope();
+			final QueryScope queryScope = command.getScope();
 			final List<String> requestedTags = command.getRequestedTagsList();
 	
 			// retrieve and set the requested resource lists
 			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 	
-				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType,
-								null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(),
+				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, queryScope,
+								null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(),
 								command.getListCommand(resourceType).getEntriesPerPage());
 
 				// remove duplicates depending on command settings
@@ -169,7 +165,7 @@ public class SearchPageController extends SingleResourceListController implement
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
 				// fill the tag cloud with all tag assignments of the relevant documents
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, searchType);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, queryScope);
 				this.endTiming();
 				return Views.SEARCHPAGE;
 			}
