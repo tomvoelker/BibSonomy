@@ -31,7 +31,11 @@ pipeline {
       steps {
         script {
           if (env.BRANCH_NAME == 'master') {
-            configFileProvider(
+            withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
+              sh "mvn clean install"
+            }
+            // FIXME: currently the artifactory
+            /*configFileProvider(
                [configFile(fileId: 'bibsonomy', variable: 'MAVEN_SETTINGS')]) {
 
                rtMavenRun (
@@ -40,7 +44,7 @@ pipeline {
                    goals: 'clean install -s $MAVEN_SETTINGS',
                    deployerId: "MAVEN_DEPLOYER"
                )
-            }
+            }*/
           } else {
             withMaven(maven: 'Maven 3.6.3', mavenSettingsConfig: 'bibsonomy') {
               sh "mvn clean install"
@@ -50,7 +54,7 @@ pipeline {
       }
       post {
         always {
-          archive "**/target/**/*"
+          archiveArtifacts "**/target/**/*"
           junit '**/target/surefire-reports/*.xml'
         }
         changed {
@@ -68,6 +72,7 @@ pipeline {
         )
       }
     }
+    /* TODO see artifactory
     stage ('Trigger PUMA build') {
       when {
         branch 'master'
@@ -75,7 +80,7 @@ pipeline {
       steps {
         build wait: false, job: 'puma/master'
       }
-    }
+    }*/
     stage ('Deploy BibLicious Webapp') {
       when {
         branch 'master'
