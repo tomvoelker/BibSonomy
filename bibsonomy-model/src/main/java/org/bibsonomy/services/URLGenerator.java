@@ -113,6 +113,8 @@ public class URLGenerator {
 	private static final String DISAMBIGUATION_PREFIX = "person";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
+	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
+	private static final String GOLDSTANDARD_PUBLICATION_PREFIX = "goldstandardpublication";
 	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
 	private static final String ORGANIZATIONS = "organizations";
@@ -664,7 +666,7 @@ public class URLGenerator {
 	 * @return
 	 */
 	private String getHistoryUrlForCommunityBookmark(final String hash) {
-		return this.getUrl(this.projectHome + HISTORY_PREFIX + "/" + BOOKMARK_PREFIX + "/" + hash);
+		return this.getUrl(this.projectHome + HISTORY_PREFIX + "/" + GOLDSTANDARD_BOOKMARK_PREFIX + "/" + hash);
 	}
 
 	/**
@@ -672,7 +674,7 @@ public class URLGenerator {
 	 * @return
 	 */
 	private String getHistoryUrlForCommunityPublication(final String hash) {
-		return this.getUrl(this.projectHome + HISTORY_PREFIX + "/" + PUBLICATION_PREFIX + "/" + hash);
+		return this.getUrl(this.projectHome + HISTORY_PREFIX+ "/" + GOLDSTANDARD_PUBLICATION_PREFIX  + "/" + hash);
 	}
 
 	/**
