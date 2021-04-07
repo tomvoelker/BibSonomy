@@ -10,126 +10,124 @@
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="searchPlaceholderKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="hidePrefixMenu" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="hidePrefixMenu" type="java.lang.Boolean" required="false"/>
 
-    <fmt:message var="searchPlaceholder" key="${searchPlaceholderKey}" />
-    <fmt:message var="yearLabel" key="search.extended.field.year" />
+    <!-- TODO fix lists -->
+    <c:set var="entrytypes"
+           value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,masterthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
+    <c:set var="searchfields"
+           value="author,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+
+    <fmt:message var="searchPlaceholder" key="${searchPlaceholderKey}"/>
+    <fmt:message var="yearLabel" key="search.extended.field.year"/>
 
     <div class="jumbotron search">
-        <h2><fmt:message key="${headerMessageKey}" /></h2>
-        <form class="form-search" action="${requPathAndQuery}">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <fontawesome:icon icon="search"/>
-                </span>
-                <input class="form-control form-control-lg form-control-borderless" type="search"
-                       id="extendedSearchInput" name="search" placeholder="${searchPlaceholder}" value="${command.requestedSearch}" />
-                <div class="input-group-btn">
-                    <button class="btn btn-primary"><fmt:message key="navi.search"/></button>
+        <div class="row">
+            <h2 style="padding: 0px 15px;"><fmt:message key="${headerMessageKey}"/></h2>
+            <hr/>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-12">
+                <form class="form-search" action="${requPathAndQuery}">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon"><fontawesome:icon icon="search"/></span>
+                        <input class="form-control form-control-borderless" type="search"
+                               id="extendedSearchInput" name="search" placeholder="${searchPlaceholder}"
+                               value="${command.requestedSearch}"/>
+                        <div class="input-group-addon">
+                            <button class="btn btn-primary"><fmt:message key="navi.search"/></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- filters -->
+        <div class="form-group row">
+            <!-- search attribute field -->
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span id="filterSelectionField"><span class="unselected"><!-- keep me --></span>
+                                <fmt:message key="search.extended.field"/>
+                            </span> <span class="caret"><!-- keep me  --></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <c:forEach var="field" items="${fn:split(searchfields, ',')}">
+                                <li><a onclick="return switchSelection('Field', '${field}', this)"
+                                       class="dropdown-item"><fmt:message key="search.extended.field.${field}"/></a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                    <input class="form-control" type="text" id="filterValueField"/>
                 </div>
             </div>
-        </form>
-        <!-- filters -->
-        <!-- Expanding button -->
-        <div style="margin: 5px 0;">
-            <a data-toggle="collapse" href="#collapseExtendedSearch" role="button" aria-expanded="true" aria-controls="collapseExample">
-                <fmt:message key="search.extended.expand"/> <fontawesome:icon icon="angle-double-down"/>
-            </a>
-        </div>
-        <div class="collapse.show collapse in" id="collapseExtendedSearch" aria-expanded="true">
-                <!-- filter header -->
-                <h4><fmt:message key="search.extended.filters"/></h4>
-                <hr/>
 
-                <!-- year range -->
-                <div class="input-group col-md-4">
+            <!-- year range -->
+            <div class="col-md-3">
+                <div class="input-group">
                     <div class="input-group-addon">
                         <span class="input-group-text" style="background-color: #eee;"><fmt:message key="search.extended.from"/>:</span>
                     </div>
-                    <input type="text" class="form-control" id="filterValueYearFrom" placeholder="${yearLabel}" aria-label="${yearLabel}" />
+                    <input type="text" class="form-control" id="filterValueYearFrom" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
                 </div>
-                <div class="input-group col-md-4">
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
                     <div class="input-group-addon">
                         <span class="input-group-text" style="background-color: #eee;"><fmt:message key="search.extended.to"/>:</span>
                     </div>
-                    <input type="text" class="form-control" id="filterValueYearTo" placeholder="${yearLabel}" aria-label="${yearLabel}" />
+                    <input type="text" class="form-control" id="filterValueYearTo" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
                 </div>
-
-                <!-- entrytypes -->
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="filterSelectionEntrytype"><span class="unselected"><!-- keep me --></span><fmt:message key="search.extended.entrytype"/></span> <span class="caret"><!--  --></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <!-- entrytypes -->
+            <div class="col-md-6">
+                <div class="btn-group btn-block">
+                    <button class="btn btn-default btn-block dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span id="filterSelectionEntrytype"><span class="unselected"><!-- keep me --></span>
+                        <fmt:message key="search.extended.entrytype"/>
+                    </span> <span class="caret"><!-- keepme --></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a onclick="return switchSelection('Entrytype', 'article', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.article"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'book', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.book"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'booklet', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.booklet"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'collection', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.collection"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'conference', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.conference"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'dataset', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.dataset"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'electronic', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.electronic"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'inbook', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.inbook"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'incollection', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.incollection"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'inproceedings', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.inproceedings"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'manual', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.manual"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'masterthesis', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.masterthesis"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'misc', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.misc"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'patent', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.patent"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'periodical', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.periodical"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'phdthesis', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.phdthesis"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'preamble', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.preamble"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'presentation', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.presentation"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'proceedings', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.proceedings"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'standard', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.standard"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'techreport', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.techreport"/></a></li>
-                        <li><a onclick="return switchSelection('Entrytype', 'unpublished', this)" class="dropdown-item"><fmt:message key="search.extended.entrytype.unpublished"/></a></li>
+                        <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
+                            <li><a onclick="return switchSelection('Entrytype', '${entrytype}', this)"
+                                   class="dropdown-item"><fmt:message
+                                    key="search.extended.entrytype.${entrytype}"/></a>
+                            </li>
+                        </c:forEach>
                     </ul>
                 </div>
+            </div>
 
-                <!-- field -->
-                <div class="input-group col-md-6">
-                    <div class="input-group-addon">
-                        <a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown">
-                            <span id="filterSelectionField"><span class="unselected"><!-- keep me --></span><fmt:message key="search.extended.field"/></span> <span class="caret"><!--  --></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a onclick="return switchSelection('Field', 'author', this)" class="dropdown-item"><fmt:message key="search.extended.field.author"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'user', this)" class="dropdown-item"><fmt:message key="search.extended.field.user"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'group', this)" class="dropdown-item"><fmt:message key="search.extended.field.group"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'additionalKey', this)" class="dropdown-item"><fmt:message key="search.extended.field.additionalKey"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'publisher', this)" class="dropdown-item"><fmt:message key="search.extended.field.publisher"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'institution', this)" class="dropdown-item"><fmt:message key="search.extended.field.institution"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'organization', this)" class="dropdown-item"><fmt:message key="search.extended.field.organization"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'school', this)" class="dropdown-item"><fmt:message key="search.extended.field.school"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'doi', this)" class="dropdown-item"><fmt:message key="search.extended.field.doi"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'isbn', this)" class="dropdown-item"><fmt:message key="search.extended.field.isbn"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'issn', this)" class="dropdown-item"><fmt:message key="search.extended.field.issn"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'journal', this)" class="dropdown-item"><fmt:message key="search.extended.field.journal"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'series', this)" class="dropdown-item"><fmt:message key="search.extended.field.series"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'edition', this)" class="dropdown-item"><fmt:message key="search.extended.field.edition"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'volume', this)" class="dropdown-item"><fmt:message key="search.extended.field.volume"/></a></li>
-                            <li><a onclick="return switchSelection('Field', 'language', this)" class="dropdown-item"><fmt:message key="search.extended.field.language"/></a></li>
-                        </ul>
-                    </div>
-                    <input class="form-control" type="text" size="20" id="filterValueField"/>
-                </div>
-
-                <!-- and/or operator for search syntax -->
-                <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filterOperator">
-                    <label class="btn btn-primary active">
+            <!-- and/or operator for search syntax -->
+            <div class="col-md-3">
+                <div class="btn-group btn-block btn-group-toggle" data-toggle="buttons" id="filterOperator" style="display: flex;">
+                    <label class="btn btn-default active" style="flex: 1;">
                         <input type="radio" value="AND" autocomplete="off" checked="checked"/> <fmt:message key="search.extended.and"/>
                     </label>
-                    <label class="btn btn-primary">
-                        <input type="radio" value="OR" autocomplete="off" /> <fmt:message key="search.extended.or"/>
+                    <label class="btn btn-default" style="flex: 1;">
+                        <input type="radio" value="OR" autocomplete="off"/> <fmt:message key="search.extended.or"/>
                     </label>
                     <!--
-                    <label class="btn btn-primary">
+                    <label class="btn btn-primary" style="flex: 1;">
                         <input type="radio" value="NOT" autocomplete="off" /> <fmt:message key="search.extended.not"/>
                     </label>
                     -->
                 </div>
+            </div>
 
-                <button type="button" class="btn btn-primary btn-block" onclick="addFilter()"><fmt:message key="search.extended.add"/></button>
+            <!-- add filter button -->
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary btn-block" onclick="addFilter()">
+                    <fmt:message key="search.extended.add"/>
+                </button>
+            </div>
         </div>
-        </div>
+    </div>
 </jsp:root>

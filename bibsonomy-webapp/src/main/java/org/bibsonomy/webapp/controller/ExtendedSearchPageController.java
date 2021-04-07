@@ -29,9 +29,9 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.SortCriterium;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -39,7 +39,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.webapp.command.ExtendedSearchViewCommand;
-import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -80,7 +79,7 @@ public class ExtendedSearchPageController extends SingleResourceListController i
 			} catch (IllegalArgumentException e){
 				command.setSortKey(SortKey.RANK);
 			}
-			this.preProcessForSearchIndexSort(command);
+			this.buildSortCriteria(command);
 
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
@@ -131,9 +130,9 @@ public class ExtendedSearchPageController extends SingleResourceListController i
 			// no search given, but a grouping, reset the order to added
 			if (!present(search)){
 				command.setSortKey(SortKey.DATE);
-				List<SortCriterium> sortCriteriumsNoSearch = new ArrayList<>();
-				sortCriteriumsNoSearch.add(new SortCriterium(command.getSortKey(), SortOrder.DESC));
-				command.setSortCriteriums(sortCriteriumsNoSearch);
+				List<SortCriteria> sortCriteriaNoSearch = new ArrayList<>();
+				sortCriteriaNoSearch.add(new SortCriteria(command.getSortKey(), SortOrder.DESC));
+				command.setSortCriteria(sortCriteriaNoSearch);
 			}
 
 			// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum
@@ -141,13 +140,13 @@ public class ExtendedSearchPageController extends SingleResourceListController i
 				maximumTags = 1000;
 			}
 
-			final SearchType searchType = command.getScope();
+			final QueryScope queryScope = command.getScope();
 			final List<String> requestedTags = command.getRequestedTagsList();
 
 			// retrieve and set the requested resource lists
 			final Class<? extends Resource> resourceType = BibTex.class;
-			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, searchType,
-					null, command.getSortCriteriums(), command.getStartDate(), command.getEndDate(),
+			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, queryScope,
+					null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(),
 					command.getListCommand(resourceType).getEntriesPerPage());
 
 			// remove duplicates depending on command settings
@@ -165,7 +164,7 @@ public class ExtendedSearchPageController extends SingleResourceListController i
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
 				// fill the tag cloud with all tag assignments of the relevant documents
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, searchType);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, queryScope);
 				this.endTiming();
 				return Views.EXTENDEDSEARCHPAGE;
 			}
@@ -196,4 +195,5 @@ public class ExtendedSearchPageController extends SingleResourceListController i
 	public void setErrors(Errors errors) {
 
 	}
+
 }
