@@ -422,14 +422,14 @@ public class URLGeneratorTest {
 		resource.setInterHash("hash");
 		post.setResource(resource);
 		
-		assertEquals(projectHome + "history/bibtex/hash" , ug.getHistoryUrlForPost(post));
+		assertEquals(projectHome + "history/goldstandardpublication/hash" , ug.getHistoryUrlForPost(post));
 		
 		final Post<GoldStandardBookmark> post2 = new Post<GoldStandardBookmark>();
 		final GoldStandardBookmark resource2 = new GoldStandardBookmark();
 		resource2.setInterHash("hash");
 		resource2.setIntraHash("hash");
 		post2.setResource(resource2);
-		assertEquals(projectHome + "history/url/hash" , ug.getHistoryUrlForPost(post2));
+		assertEquals(projectHome + "history/goldstandardbookmark/hash" , ug.getHistoryUrlForPost(post2));
 	}
 
 	/**
