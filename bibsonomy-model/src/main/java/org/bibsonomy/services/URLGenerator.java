@@ -936,35 +936,37 @@ public class URLGenerator {
 
 	/**
 	 * Returns the URL which represents a post. Depending on the type of the
-	 * resource, this forwarded to {@link #getBookmarkUrl(Bookmark, User)} and
-	 * {@link #getPublicationUrl(BibTex, User)}.
+	 * resource, this forwarded either to the community method or
+	 * to {@link #getBookmarkUrl(Bookmark, User)} and {@link #getPublicationUrl(BibTex, User)}.
 	 * 
 	 * @param post
 	 *            - The post for which the URL should be constructed.
 	 * @return The URL representing the given post.
 	 */
 	public String getPostUrl(final Post<? extends Resource> post) {
-		return getPostUrl(post, post.getUser());
-	}
-
-	/**
-	 * Returns the URL which represents a post. Depending on the type of the
-	 * resource, this forwarded to {@link #getBookmarkUrl(Bookmark, User)} and
-	 * {@link #getPublicationUrl(BibTex, User)}.
-	 *
-	 * @param post
-	 *            - The post for which the URL should be constructed.
-	 * @return The URL representing the given post.
-	 */
-	public String getPostUrl(final Post<? extends Resource> post, User user) {
 		final Resource resource = post.getResource();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			return this.getCommunityPostUrl(resource);
+		}
+
+		final User user = post.getUser();
 		if (resource instanceof Bookmark) {
 			return this.getBookmarkUrl(((Bookmark) resource), user);
 		} else if (resource instanceof BibTex) {
 			return this.getPublicationUrl(((BibTex) resource), user);
-		} else {
-			throw new UnsupportedResourceTypeException();
 		}
+
+		throw new UnsupportedResourceTypeException();
+	}
+
+	private String getCommunityPostUrl(final Resource resource) {
+		if (resource instanceof Bookmark) {
+			return this.getBookmarkUrl((Bookmark) resource, (User) null);
+		} else if (resource instanceof BibTex) {
+			return this.getPublicationUrl((BibTex) resource, (User) null);
+		}
+
+		throw new UnsupportedResourceTypeException();
 	}
 	
 	/**
@@ -1012,8 +1014,6 @@ public class URLGenerator {
 
 		throw new UnsupportedResourceTypeException(resource.getClass() + " not supported");
 	}
-
-
 
 	/**
 	 * @param favl

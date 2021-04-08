@@ -179,23 +179,14 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-
-						<c:choose>
-							<c:when test="${isGoldStandard}">
-								<c:set var="historyBackUrl" value="${relativeUrlGenerator.getPostUrl(newestPost, null)}" />
-							</c:when>
-							<c:otherwise>
-								<c:set var="historyBackUrl" value="${relativeUrlGenerator.getPostUrl(newestPost)}" />
-							</c:otherwise>
-						</c:choose>
+						<c:set var="historyBackUrl" value="${relativeUrlGenerator.getPostUrl(newestPost)}" />
 						<a id="backToPostBtn" class="${buttonClasses} visible" title="${backToPostBtnMsg}" href="${historyBackUrl}">
 							<fmt:message key="history.backToPost"/>
 						</a>
 						
 						<div id="historyBorder">
-							<span> </span>
+							<span><!--keep me --></span>
 						</div> <!-- border -->
-
 
 						<c:choose>
 							<c:when test="${fn:length(listView.list) gt 1}">
