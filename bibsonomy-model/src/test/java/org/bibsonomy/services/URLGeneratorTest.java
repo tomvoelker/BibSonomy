@@ -42,6 +42,8 @@ import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.junit.Test;
 
+import java.awt.print.Book;
+
 /**
  * @author rja
  */
@@ -418,14 +420,32 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetHistoryUrlForPost() throws Exception {
+	public void testGetHistoryUrlForPost() {
+		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
+		final BibTex resource = post.getResource();
+
+		resource.setIntraHash("hash");
+		post.setResource(resource);
+		
+		assertEquals(projectHome + "history/bibtex/hash/" + post.getUser().getName() , ug.getHistoryUrlForPost(post));
+		
+		final Post<Bookmark> post2 = ModelUtils.generatePost(Bookmark.class);
+		final Bookmark resource2 = new Bookmark();
+		resource2.setInterHash("hash");
+		resource2.setIntraHash("hash");
+		post2.setResource(resource2);
+		assertEquals(projectHome + "history/url/hash/" + post2.getUser().getName() , ug.getHistoryUrlForPost(post2));
+	}
+
+	@Test
+	public void testGetHistoryUrlForPost___forGoldStandard() {
 		final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
 		final GoldStandardPublication resource = new GoldStandardPublication();
 		resource.setInterHash("hash");
 		post.setResource(resource);
-		
+
 		assertEquals(projectHome + "history/goldstandardpublication/hash" , ug.getHistoryUrlForPost(post));
-		
+
 		final Post<GoldStandardBookmark> post2 = new Post<GoldStandardBookmark>();
 		final GoldStandardBookmark resource2 = new GoldStandardBookmark();
 		resource2.setInterHash("hash");
