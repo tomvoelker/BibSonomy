@@ -6,11 +6,20 @@
 		margin: 0;
 		position: relative;
 
+		.content-header-entrytype {
+			font-size: 14px;
+			font-variant: small-caps;
+			margin: 0 0 5px 0;
+			padding-right: 200px;
+			text-transform: capitalize;
+		}
+
 		h1 {
 			font-size: 100%;
 			word-break: break-all;
-			margin-top: 25px;
+			margin-top: 0;
 			margin-bottom: 5px;
+			padding-right: 200px;
 		}
 		
 		h2 {
@@ -43,25 +52,35 @@
 				background-color: #5cb85c;
 				border-color: #4cae4c;
 			}
-
 		}
 
-		.content-header-additional-info-item {
-			display: inline-block;
-			float: right;
+		.content-header-metric-buttons {
+			position: absolute;
+			top: 0;
+			right: 30px;
+			width: 180px;
 
-			.content-header-additional-info-count {
-				font-size: 18px;
+			.content-header-additional-info-item {
+				display: inline-block;
+				float: right;
+
+				.content-header-additional-info-count {
+					font-size: 18px;
+				}
+				.content-header-additional-info-description {
+					font-size: 12px;
+					padding-left: 3px;
+				}
 			}
-			.content-header-additional-info-description {
-				font-size: 12px;
-				padding-left: 3px;
+
+			.content-header-additional-info-item.btn {
+				padding: 2px 5px 1px 5px !important;
+				margin: 0 0 0 10px;
 			}
 		}
 
-		.content-header-additional-info-item.btn {
-			padding: 2px 5px 1px 5px !important;
-		}
+
+
 
 	}
 
@@ -107,6 +126,12 @@
 
 		.sidebar-links a {
 			margin: 0 5px 5px 0;
+		}
+
+		#sidebar-quick-cite-box-modal {
+			.modal-header {
+				display: none;
+			}
 		}
 	}
 

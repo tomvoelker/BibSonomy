@@ -65,6 +65,10 @@
 				+-->
 			<div class="content-header" id="info">
 
+				<div class="content-header-entrytype">
+					<bib:entrytype publication="${goldstandard}" />
+				</div>
+
 				<h1 itemprop="name">
 					<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
 				</h1>
@@ -79,8 +83,6 @@
 							  publishedIn="${publishedIn}"/>
 				</h2>
 
-
-
 				<div class="content-header-buttons">
 					<c:if test="${post.approved}">
 						<fmt:message key="goldStandard.approved.title" var="approved"/>
@@ -90,7 +92,10 @@
 					</c:if>
 
 					<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
+				</div>
 
+
+				<div class="content-header-metric-buttons">
 					<!-- Addition Info Badges -->
 
 					<!-- In collection of users -->
@@ -153,9 +158,8 @@
 						</c:if>
 
 					</c:if>
-
-					<div class="clearfix"><!-- keep me --></div>
 				</div>
+
 			</div>
 
 			<!--+
@@ -363,6 +367,8 @@
 							</div>
 						</c:if>
 
+
+						<!-- Referenced and Referencing posts (Admin only) -->
 						<c:if test="${not hasRelatedPublication and isAdmin}">
 							<h3>
 								<span class="fa fa-link"><!-- keep me --></span>
@@ -443,7 +449,7 @@
 							</div>
 						</div>
 
-						<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="TODO blabla">
+						<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="">
 							<jsp:attribute name="modalBody">
 								...
 							</jsp:attribute>
@@ -481,8 +487,6 @@
 						</div>
 
 
-
-
 						<!-- Search on... -->
 						<h3>
 							<span class="fa fa-search"><!-- keep me --></span>
@@ -507,36 +511,12 @@
 								</c:otherwise>
 							</c:choose>
 						</c:if>
-
-
 					</div>
-
-
 
 				</div>
 			</div>
 
 
-
-
-
-			<!-- users that have this resource in their collection -->
-			<!-- DISABLED - now shown in the sidebar -->
-			<!--<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>-->
-
-
-
-
-
-
-
 		</div>
-
-
-		<!--<sidebar:sidebarTagCloudItem requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />-->
-		<!-- users that have this resource in their collection -->
-		<!--<sidebar:sidebarGoldStandardUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${postToShow.resource.interHash}"/>-->
-		<!--<sidebar:sidebarGoldStandardTagCount cmd="${command.tagcloud}" />-->
-
 	</div>
 </jsp:root>
