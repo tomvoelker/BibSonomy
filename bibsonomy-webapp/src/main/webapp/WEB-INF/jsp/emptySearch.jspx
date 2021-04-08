@@ -38,7 +38,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<parts:extendedSearch headerMessageKey="search.extended.header" searchPlaceholderKey="navi.search.hint"
-										requPathAndQuery="${requPathAndQuery}" emptySearch="${true}" />
+										  formAction="/redirect" emptySearch="${true}" />
 				</div>
 			</div>
 		</jsp:attribute>

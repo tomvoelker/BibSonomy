@@ -7,7 +7,7 @@
 
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="searchPlaceholderKey" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="emptySearch" type="java.lang.Boolean" required="false"/>
 
     <!-- TODO fix lists -->
@@ -37,7 +37,7 @@
 
         <div class="form-group row">
             <div class="col-md-12">
-                <form class="form-search" action="${requPathAndQuery}">
+                <form class="form-search" action="${formAction}" method="get">
                     <div class="input-group input-group-lg">
                         <span class="input-group-addon"><fontawesome:icon icon="search"/></span>
                         <input class="form-control form-control-borderless" type="search"
@@ -54,7 +54,7 @@
         <!-- filters -->
         <div class="form-group row">
             <!-- search attribute field -->
-            <div class="col-md-6">
+            <div id="inputGroupField" class="col-md-8">
                 <div class="input-group">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -74,21 +74,32 @@
                 </div>
             </div>
 
-            <!-- year range -->
-            <div class="col-md-3">
+            <!-- year -->
+            <div id="inputGroupYear" class="col-md-4">
                 <div class="input-group">
                     <div class="input-group-addon">
-                        <span class="input-group-text" style="background-color: #eee;"><fmt:message key="search.extended.from"/>:</span>
+                        <fmt:message key="search.extended.field.year"/>:
                     </div>
-                    <input type="text" class="form-control" id="filterValueYearFrom" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
+                    <input type="text" class="form-control" id="filterValueYear"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="expandYearRange()"><fontawesome:icon icon="plus"/></button>
+                    </span>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div id="inputGroupFromYear" class="col-md-3 hidden">
                 <div class="input-group">
                     <div class="input-group-addon">
-                        <span class="input-group-text" style="background-color: #eee;"><fmt:message key="search.extended.to"/>:</span>
+                        <fmt:message key="search.extended.from"/>:
                     </div>
-                    <input type="text" class="form-control" id="filterValueYearTo" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
+                    <input type="text" class="form-control" id="filterValueFromYear" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
+                </div>
+            </div>
+            <div id="inputGroupToYear" class="col-md-3 hidden">
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <fmt:message key="search.extended.to"/>:
+                    </div>
+                    <input type="text" class="form-control" id="filterValueToYear" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
                 </div>
             </div>
         </div>

@@ -1,8 +1,3 @@
-const unique_keys = [
-    'year:from',
-    'year:to'
-]
-
 const invalid_keys = [
     'entrytypes'
 ]
@@ -18,6 +13,14 @@ function toggleExtendedSearch(focusTarget) {
     var val = input.value; //store the value of the element
     input.value = ''; //clear the value of the element
     input.value = val;
+}
+
+function expandYearRange() {
+    $("#inputGroupField").removeClass("col-md-8").addClass("col-md-6");
+    $("#inputGroupYear").toggleClass("hidden");
+    $("#filterValueYear").val("")
+    $("#inputGroupFromYear").toggleClass("hidden");
+    $("#inputGroupToYear").toggleClass("hidden");
 }
 
 function switchSelection(type, value, selection) {
@@ -36,14 +39,18 @@ function addFilter() {
     var query = input.value;
 
     // filters
-    const yearFrom = document.getElementById('filterValueYearFrom').value;
-    if (validateYear(yearFrom)) {
-        query = appendFilter(query, operator, 'year:from', yearFrom);
-    }
+    const year = document.getElementById('filterValueYear').value;
+    const fromYear = document.getElementById('filterValueFromYear').value;
+    const toYear = document.getElementById('filterValueToYear').value;
 
-    const yearTo = document.getElementById('filterValueYearTo').value;
-    if (validateYear(yearFrom)) {
-        query = appendFilter(query, operator, 'year:to', yearTo);
+    if (validateYear(year)) {
+        // check if it's simple year input
+        query = appendFilter(query, operator, 'year', year);
+    } else {
+        // else append year range
+        if (validateYear(fromYear) || validateYear(toYear)) {
+            query = appendFilter(query, operator, 'year',  fromYear + '-' + toYear);
+        }
     }
 
     const entrytype = document.getElementById('filterSelectionEntrytype').children[0].innerText;
@@ -80,12 +87,6 @@ function appendFilter(query, operator, key, value) {
         return query;
     }
 
-    // check, if a unique key is already in query
-    if (unique_keys.includes(key) && query.includes(key + ':')) {
-        // TODO replace value
-        return query;
-    }
-
     if (operator === 'OR') {
         return '(' + query + ')' + ' ' +  operator + ' ' + term
     }
@@ -94,5 +95,5 @@ function appendFilter(query, operator, key, value) {
 }
 
 function validateYear(year) {
-    return !isNaN(year);
+    return year !== '' && !isNaN(year);
 }
