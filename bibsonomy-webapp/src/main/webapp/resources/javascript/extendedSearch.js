@@ -7,6 +7,19 @@ const invalid_keys = [
     'entrytypes'
 ]
 
+function toggleExtendedSearch(focusTarget) {
+    $("#search").toggleClass("hidden");
+    $("#extendedSearch").toggleClass("hidden");
+    // set focus
+    var input = document.getElementById(focusTarget);
+    input.focus();
+
+    // move cursor to end TODO maybe there is a better way
+    var val = input.value; //store the value of the element
+    input.value = ''; //clear the value of the element
+    input.value = val;
+}
+
 function switchSelection(type, value, selection) {
     const id = 'filterSelection' + type;
     var filterSelection = document.getElementById(id);

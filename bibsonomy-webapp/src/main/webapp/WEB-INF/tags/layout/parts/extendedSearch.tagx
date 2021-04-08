@@ -3,28 +3,36 @@
           xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:spring="http://www.springframework.org/tags">
+          xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="searchPlaceholderKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="hidePrefixMenu" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="emptySearch" type="java.lang.Boolean" required="false"/>
 
     <!-- TODO fix lists -->
-    <c:set var="entrytypes"
-           value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,masterthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
-    <c:set var="searchfields"
-           value="author,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+    <c:set var="entrytypes" value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,masterthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
+    <c:set var="searchfields" value="author,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+
+    <c:if test="${not emptySearch}">
+        <c:set var="hideExtSearch" value="hidden"/>
+    </c:if>
 
     <fmt:message var="searchPlaceholder" key="${searchPlaceholderKey}"/>
     <fmt:message var="yearLabel" key="search.extended.field.year"/>
 
-    <div class="jumbotron search">
+    <div id="extendedSearch" class="jumbotron search ${hideExtSearch}">
         <div class="row">
-            <h2 style="padding: 0px 15px;"><fmt:message key="${headerMessageKey}"/></h2>
-            <hr/>
+            <div class="col-md-10">
+                <h2><fmt:message key="${headerMessageKey}"/></h2>
+            </div>
+            <div class="col-md-2" style="padding-top: 20px;">
+                <c:if test="${not emptySearch}">
+                    <button class="btn btn-default pull-right" onclick="toggleExtendedSearch('inpf')">
+                        <fontawesome:icon icon="angle-double-up"/>
+                    </button>
+                </c:if>
+            </div>
         </div>
 
         <div class="form-group row">
@@ -97,8 +105,7 @@
                     <ul class="dropdown-menu">
                         <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
                             <li><a onclick="return switchSelection('Entrytype', '${entrytype}', this)"
-                                   class="dropdown-item"><fmt:message
-                                    key="search.extended.entrytype.${entrytype}"/></a>
+                                   class="dropdown-item"><fmt:message key="search.extended.entrytype.${entrytype}"/></a>
                             </li>
                         </c:forEach>
                     </ul>

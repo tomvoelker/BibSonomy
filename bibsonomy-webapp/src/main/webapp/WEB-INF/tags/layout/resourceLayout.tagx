@@ -118,9 +118,6 @@
 			
 			<export:modal />
 
-			<!-- additional resource content, example for extended search bar above result -->
-			<jsp:invoke fragment="additionalResourceContent" />
-
 			<!-- bibtex/bookmark lists -->
 			<div class="row">
 				<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">

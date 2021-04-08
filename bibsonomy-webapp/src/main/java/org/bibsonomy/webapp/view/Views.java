@@ -270,9 +270,9 @@ public enum Views implements View {
 	SEARCHPAGE("search"),
 
 	/**
-	 * extended search page
+	 * empty search page
 	 */
-	EXTENDEDSEARCHPAGE("extendedSearch"),
+	EMPTYSEARCHPAGE("emptySearch"),
 
 	/**
 	 * relevant-for page
