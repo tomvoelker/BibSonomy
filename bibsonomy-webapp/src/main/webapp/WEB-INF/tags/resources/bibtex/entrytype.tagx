@@ -1,0 +1,104 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+
+	<c:if test="${not empty publication.entrytype}">
+		<c:choose>
+			<c:when test="${publication.entrytype eq 'article'}">
+				<fmt:message key="post.resource.entrytype.article.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'book'}">
+				<fmt:message key="post.resource.entrytype.book.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'booklet'}">
+				<fmt:message key="post.resource.entrytype.booklet.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'conference'}">
+				<fmt:message key="post.resource.entrytype.conference.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'dataset'}">
+				<fmt:message key="post.resource.entrytype.dataset.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'electronic'}">
+				<fmt:message key="post.resource.entrytype.electronic.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'inbook'}">
+				<fmt:message key="post.resource.entrytype.inbook.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'incollection'}">
+				<fmt:message key="post.resource.entrytype.incollection.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'inproceedings'}">
+				<fmt:message key="post.resource.entrytype.inproceedings.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'manual'}">
+				<fmt:message key="post.resource.entrytype.manual.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'mastersthesis'}">
+				<fmt:message key="post.resource.entrytype.mastersthesis.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'misc'}">
+				<fmt:message key="post.resource.entrytype.misc.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'patent'}">
+				<fmt:message key="post.resource.entrytype.patent.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'periodical'}">
+				<fmt:message key="post.resource.entrytype.periodical.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'phdthesis'}">
+				<fmt:message key="post.resource.entrytype.phdthesis.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'presentation'}">
+				<fmt:message key="post.resource.entrytype.preprint.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'proceedings'}">
+				<fmt:message key="post.resource.entrytype.proceedings.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'standard'}">
+				<fmt:message key="post.resource.entrytype.standard.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'techreport'}">
+				<fmt:message key="post.resource.entrytype.techreport.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'unpublished'}">
+				<fmt:message key="post.resource.entrytype.unpublished.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'preprint'}">
+				<fmt:message key="post.resource.entrytype.preprint.title"/>
+			</c:when>
+
+			<c:when test="${publication.entrytype eq 'collection'}">
+				<fmt:message key="post.resource.entrytype.collection.title"/>
+			</c:when>
+
+			<!-- do nothing-->
+			<c:otherwise>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+</jsp:root>
