@@ -940,16 +940,28 @@ public class URLGenerator {
 	 * {@link #getPublicationUrl(BibTex, User)}.
 	 * 
 	 * @param post
-	 *            - The post for which the URL should be constructed. User and
-	 *            resources must not be null.
+	 *            - The post for which the URL should be constructed.
 	 * @return The URL representing the given post.
 	 */
 	public String getPostUrl(final Post<? extends Resource> post) {
+		return getPostUrl(post, post.getUser());
+	}
+
+	/**
+	 * Returns the URL which represents a post. Depending on the type of the
+	 * resource, this forwarded to {@link #getBookmarkUrl(Bookmark, User)} and
+	 * {@link #getPublicationUrl(BibTex, User)}.
+	 *
+	 * @param post
+	 *            - The post for which the URL should be constructed.
+	 * @return The URL representing the given post.
+	 */
+	public String getPostUrl(final Post<? extends Resource> post, User user) {
 		final Resource resource = post.getResource();
 		if (resource instanceof Bookmark) {
-			return this.getBookmarkUrl(((Bookmark) resource), post.getUser());
+			return this.getBookmarkUrl(((Bookmark) resource), user);
 		} else if (resource instanceof BibTex) {
-			return this.getPublicationUrl(((BibTex) resource), post.getUser());
+			return this.getPublicationUrl(((BibTex) resource), user);
 		} else {
 			throw new UnsupportedResourceTypeException();
 		}
