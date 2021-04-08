@@ -61,8 +61,22 @@ $(document).ready(function () {
 		submitForm($(this).parents('td'));
 	});
 	
-	$('a[id = backToPostBtn]').click(function() {	
-		window.location.href = window.location.href.replace("history/", "");
+	$('a[id = backToPostBtn]').click(function() {
+		var isPub = $('input[name = isPub]').val();
+		var isGoldStandard = $('input[name = isGoldStandard]').val();
+
+		if(isGoldStandard=="true"){
+			if (isPub=="true") {
+				link = window.location.href.replace("goldstandardpublication", "bibtex");
+				window.location.href = link.replace("history/", "");
+			} else {
+				link = window.location.href.replace("goldstandardbookmark", "url");
+				window.location.href = link.replace("history/", "");
+			}
+		}
+		else{
+			window.location.href = window.location.href.replace("history/", "");
+		}
 	});
 });
 
