@@ -74,6 +74,7 @@ public class GetTagsByResourceSearch extends TagChainElement {
 		query.setTitleSearchTerms(param.getTitle());
 		query.setSearch(param.getSearch());
 		query.setGrouping(getGroupingEntity(param));
+		query.setGroupingName(getGroupingName(param));
 		query.setBibtexKey(param.getBibtexKey());
 		query.setScope(param.getQueryScope());
 		query.setTags(tags);
@@ -93,6 +94,17 @@ public class GetTagsByResourceSearch extends TagChainElement {
 		}
 
 		return GroupingEntity.ALL;
+	}
+
+	private static String getGroupingName(TagParam param) {
+		switch (param.getGrouping()) {
+			case USER:
+				return param.getRequestedUserName();
+			case GROUP:
+				return param.getRequestedGroupName();
+			default:
+				return null;
+		}
 	}
 
 	@Override
