@@ -49,7 +49,7 @@ function addFilter() {
     } else {
         // else append year range
         if (validateYear(fromYear) || validateYear(toYear)) {
-            query = appendFilter(query, operator, 'year',  fromYear + '-' + toYear);
+            query = appendFilter(query, operator, 'year',  `[${fromYear} TO ${toYear}]`);
         }
     }
 
