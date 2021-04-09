@@ -54,8 +54,6 @@ import org.springframework.validation.Errors;
  */
 public class EditGoldStandardPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 
-	private MailUtils mailUtils;
-
 	@Override
 	protected View getPostView() {
 		return Views.EDIT_GOLD_STANDARD_PUBLICATION;
@@ -91,20 +89,6 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		}
 
 		return convertToGoldStandard(post);
-	}
-
-	@Override
-	protected void createOrUpdateSuccess(PostPublicationCommand command, User loginUser, Post<BibTex> post) {
-		super.createOrUpdateSuccess(command, loginUser, post);
-
-		// Send update notifcation to all related persons, if update
-		if (present(command.getIntraHashToUpdate()) && present(post.getResourcePersonRelations())) {
-			for (ResourcePersonRelation relation : post.getResourcePersonRelations()) {
-				if (present(relation.getPerson().getEmail())) {
-					this.mailUtils.sendGoldStandardPublicationUpdateNotification(post, relation.getPerson().getMainName().toString(), relation.getPerson().getEmail(), requestLogic.getLocale());
-				}
-			}
-		}
 	}
 
 	@Override
@@ -161,10 +145,6 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	@Override
 	protected PostValidator<BibTex> getValidator() {
 		return new GoldStandardPostValidator<BibTex>();
-	}
-
-	public void setMailUtils(MailUtils mailUtils) {
-		this.mailUtils = mailUtils;
 	}
 
 	/* (non-Javadoc)

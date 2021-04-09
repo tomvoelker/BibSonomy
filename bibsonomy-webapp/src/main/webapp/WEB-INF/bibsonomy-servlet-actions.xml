@@ -968,8 +968,6 @@
 	
 	<bean id="editGoldStandardPublicationController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardPublicationController" scope="request" parent="editPostController">
 		<property name="scraper" ref="kdeScraperChain"/>
-		<!-- to send update notifications -->
-		<property name="mailUtils" ref="mailUtils"/>
 	</bean>
 	
 	<bean id="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">
