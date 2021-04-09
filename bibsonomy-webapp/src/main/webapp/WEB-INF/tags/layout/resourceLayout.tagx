@@ -46,8 +46,6 @@
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
-	<jsp:directive.attribute name="additionalResourceContent" fragment="true" required="false" />
-
 	<jsp:directive.attribute name="showSortInfo" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
