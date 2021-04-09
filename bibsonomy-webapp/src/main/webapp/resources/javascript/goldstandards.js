@@ -92,11 +92,10 @@ $(function() {
 	initNewClipboard("#sidebar-quick-cite-box-modal-clipboard-button", "#sidebar-quick-cite-box-modal .modal-body");
 
 	// remove the dummy element and replace it by select2 combobox layout selection
-	$("#goldstandard-quick-cite").click(function() {
+	$("#goldstandard-quick-cite").focus(function() {
 		loadLayoutSelect($(this).data("formaturl"), this);
 	})
-	
-	
+
 	// init title autocomplete
 	var publicationSource = new Bloodhound({
 		datumTokenizer: function (datum) {

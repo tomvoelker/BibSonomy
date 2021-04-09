@@ -60,10 +60,6 @@ $(document).ready(function () {
 		
 		submitForm($(this).parents('td'));
 	});
-	
-	$('a[id = backToPostBtn]').click(function() {	
-		window.location.href = window.location.href.replace("history/", "");
-	});
 });
 
 

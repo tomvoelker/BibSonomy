@@ -13,33 +13,28 @@
 	<c:if test="${command.context.userLoggedIn}">
 
 		<c:if test="${not loginUser.spammer}">
-			<c:choose>
-				<c:when test="${not communityPostExists}">
-					<fmt:message var="additionalText" key="post.actions.copy"/>
-					<buttons:copyPostButton
-						userLoggedIn="${true}"
-						post="${post}"
-						resourceType="${resourceType}"
-						buttonClasses="${buttonClasses}"
-						titleKey="post.actions.edit.gold.title"
-						forceCommunityCreate="${true}"
-						icon="copy" 
-						additionalText="${additionalText}"
-						/>
-				</c:when>
-				<c:otherwise>
-					<fmt:message var="additionalText" key="post.actions.edit"/>
-					<buttons:editPostButton
-						post="${post}"
-						resourceType="${resourceType}"
-						buttonClasses="${buttonClasses}"
-						enforceCommunityPost="${true}"
-						additionalText="${additionalText}"
-						/>
-				</c:otherwise>
-			</c:choose>
+			<fmt:message var="additionalTextCopy" key="post.actions.copy"/>
+			<buttons:copyPostButton
+				userLoggedIn="${true}"
+				post="${post}"
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"
+				titleKey="post.actions.copy.title"
+				forceCommunityCreate="${true}"
+				icon="copy"
+				additionalText="${additionalTextCopy}"
+				/>
+
+			<fmt:message var="additionalText" key="post.actions.edit"/>
+			<buttons:editPostButton
+				post="${post}"
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"
+				enforceCommunityPost="${true}"
+				additionalText="${additionalText}"
+				/>
 		</c:if>
-		
+
 		<c:if test="${communityPostExists}">
 			<fmt:message var="additionalText" key="post.actions.history"/>
 			<buttons:historyButton

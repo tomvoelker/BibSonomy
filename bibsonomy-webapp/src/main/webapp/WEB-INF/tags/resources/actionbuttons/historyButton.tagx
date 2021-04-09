@@ -10,9 +10,13 @@
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="additionalText" type="java.lang.String" required="false"/>
-	
+
+	<c:if test="${empty enforceCommunityPost}">
+		<c:set var="enforceCommunityPost" value="false" />
+	</c:if>
+
 	<c:choose>
-		<c:when test="${empty enforceCommunityPost or not enforceCommunityPost}">
+		<c:when test="${enforceCommunityPost}">
 			<c:set var="url" value="${relativeUrlGenerator.getHistoryUrlForPost(post)}" />
 		</c:when>
 		<c:otherwise>

@@ -113,6 +113,8 @@ public class URLGenerator {
 	private static final String DISAMBIGUATION_PREFIX = "person";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
+	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
+	private static final String GOLDSTANDARD_PUBLICATION_PREFIX = "goldstandardpublication";
 	private static final String GROUPS = "groups";
 	private static final String GROUP_PREFIX = "group";
 	private static final String ORGANIZATIONS = "organizations";
@@ -664,7 +666,7 @@ public class URLGenerator {
 	 * @return
 	 */
 	private String getHistoryUrlForCommunityBookmark(final String hash) {
-		return this.getUrl(this.projectHome + HISTORY_PREFIX + "/" + BOOKMARK_PREFIX + "/" + hash);
+		return this.getUrl(this.projectHome + HISTORY_PREFIX + "/" + GOLDSTANDARD_BOOKMARK_PREFIX + "/" + hash);
 	}
 
 	/**
@@ -672,7 +674,7 @@ public class URLGenerator {
 	 * @return
 	 */
 	private String getHistoryUrlForCommunityPublication(final String hash) {
-		return this.getUrl(this.projectHome + HISTORY_PREFIX + "/" + PUBLICATION_PREFIX + "/" + hash);
+		return this.getUrl(this.projectHome + HISTORY_PREFIX+ "/" + GOLDSTANDARD_PUBLICATION_PREFIX  + "/" + hash);
 	}
 
 	/**
@@ -934,23 +936,37 @@ public class URLGenerator {
 
 	/**
 	 * Returns the URL which represents a post. Depending on the type of the
-	 * resource, this forwarded to {@link #getBookmarkUrl(Bookmark, User)} and
-	 * {@link #getPublicationUrl(BibTex, User)}.
+	 * resource, this forwarded either to the community method or
+	 * to {@link #getBookmarkUrl(Bookmark, User)} and {@link #getPublicationUrl(BibTex, User)}.
 	 * 
 	 * @param post
-	 *            - The post for which the URL should be constructed. User and
-	 *            resources must not be null.
+	 *            - The post for which the URL should be constructed.
 	 * @return The URL representing the given post.
 	 */
 	public String getPostUrl(final Post<? extends Resource> post) {
 		final Resource resource = post.getResource();
-		if (resource instanceof Bookmark) {
-			return this.getBookmarkUrl(((Bookmark) resource), post.getUser());
-		} else if (resource instanceof BibTex) {
-			return this.getPublicationUrl(((BibTex) resource), post.getUser());
-		} else {
-			throw new UnsupportedResourceTypeException();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			return this.getCommunityPostUrl(resource);
 		}
+
+		final User user = post.getUser();
+		if (resource instanceof Bookmark) {
+			return this.getBookmarkUrl(((Bookmark) resource), user);
+		} else if (resource instanceof BibTex) {
+			return this.getPublicationUrl(((BibTex) resource), user);
+		}
+
+		throw new UnsupportedResourceTypeException();
+	}
+
+	private String getCommunityPostUrl(final Resource resource) {
+		if (resource instanceof Bookmark) {
+			return this.getBookmarkUrl((Bookmark) resource, (User) null);
+		} else if (resource instanceof BibTex) {
+			return this.getPublicationUrl((BibTex) resource, (User) null);
+		}
+
+		throw new UnsupportedResourceTypeException();
 	}
 	
 	/**
@@ -998,8 +1014,6 @@ public class URLGenerator {
 
 		throw new UnsupportedResourceTypeException(resource.getClass() + " not supported");
 	}
-
-
 
 	/**
 	 * @param favl

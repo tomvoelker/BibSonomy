@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -41,6 +42,8 @@ import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.junit.Test;
 
+import java.awt.print.Book;
+
 /**
  * @author rja
  */
@@ -50,14 +53,14 @@ public class URLGeneratorTest {
 	private static URLGenerator ug = new URLGenerator(projectHome);
 	
 	@Test
-	public void testGetAbsoluteUrl() throws Exception {
+	public void testGetAbsoluteUrl() {
 		final String ext = "user/jaescke";
 		final String expected = projectHome + ext;
 		assertEquals(expected, ug.getAbsoluteUrl(ext));
 	}
 
 	@Test
-	public void testGetAdminUrlByString() throws Exception {
+	public void testGetAdminUrlByString() {
 		//test without username
 		String expected = projectHome + "admin";
 		assertEquals(expected, ug.getAdminUrlByName(""));
@@ -68,19 +71,19 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetAuthorUrlByName() throws Exception {
+	public void testGetAuthorUrlByName() {
 		final String expected = projectHome + "author/jaeschke";
 		assertEquals(expected, ug.getAuthorUrlByName("jaeschke"));
 	}
 	
 	@Test
-	public void testGetClipboardUrl() throws Exception {
+	public void testGetClipboardUrl() {
 		final String expected = projectHome + "clipboard";
 		assertEquals(expected, ug.getClipboardUrl());
 	}
 	
 	@Test
-	public void testGetBookmarkUrl() throws Exception {
+	public void testGetBookmarkUrl() {
 		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
 		final Bookmark bm = post.getResource();
 		final User user = post.getUser();
@@ -92,7 +95,6 @@ public class URLGeneratorTest {
 		//Test with user
 		expected = projectHome + "url/" + bm.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName());
 		assertEquals(expected, ug.getBookmarkUrl(bm, user));
-		
 	}
 	
 	@Test
@@ -102,7 +104,7 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
-	public void testGetBookmarkUrlByIntraHash() throws Exception {
+	public void testGetBookmarkUrlByIntraHash() {
 		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();
 		
 		final String expected = projectHome + "url/" + bm.getIntraHash();
@@ -110,7 +112,7 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetBookmarkUrlByIntraHashAndUsername() throws Exception {
+	public void testGetBookmarkUrlByIntraHashAndUsername() {
 		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
 		final Bookmark bm = post.getResource();
 		final String userName = post.getUser().getName();
@@ -120,7 +122,7 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetConceptsUrlByString() throws Exception {
+	public void testGetConceptsUrlByString() {
 		// test without username
 		String expected = projectHome + "concepts";
 		assertEquals(expected, ug.getConceptsUrlByString(""));
@@ -131,19 +133,19 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetConceptUrlByUserNameAndTagName() throws Exception {
+	public void testGetConceptUrlByUserNameAndTagName() {
 		final String expected = projectHome + "concept/user/jaescke/kde";
 		assertEquals(expected, ug.getConceptUrlByUserNameAndTagName("jaescke", "kde"));
 	}
 
 	@Test
-	public void testGetFollowersUrl() throws Exception {
+	public void testGetFollowersUrl() {
 		final String expected = projectHome + "followers";
 		assertEquals(expected, ug.getFollowersUrl());
 	}
 
 	@Test
-	public void testGetFriendUrlByUserName() throws Exception {
+	public void testGetFriendUrlByUserName() {
 		final String expected = projectHome + "friend/jaescke";
 		assertEquals(expected, ug.getFriendUrlByUserName("jaescke"));
 	}
@@ -215,6 +217,8 @@ public class URLGeneratorTest {
 		final Post<Bookmark> bPost = ModelUtils.generatePost(Bookmark.class);
 		assertEquals(projectHome + "url/" + bPost.getResource().getIntraHash() + "/" + bPost.getUser().getName(), ug.getPostUrl(bPost));
 
+		final Post<GoldStandardPublication> goldStandardPublicationPost = ModelUtils.generatePost(GoldStandardPublication.class);
+		assertEquals(projectHome + "bibtex/" + HashID.INTER_HASH.getId() + post.getResource().getInterHash(), ug.getPostUrl(goldStandardPublicationPost));
 	}
 
 	@Test
@@ -416,20 +420,38 @@ public class URLGeneratorTest {
 	}
 
 	@Test
-	public void testGetHistoryUrlForPost() throws Exception {
+	public void testGetHistoryUrlForPost() {
+		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
+		final BibTex resource = post.getResource();
+
+		resource.setIntraHash("hash");
+		post.setResource(resource);
+		
+		assertEquals(projectHome + "history/bibtex/hash/" + post.getUser().getName() , ug.getHistoryUrlForPost(post));
+		
+		final Post<Bookmark> post2 = ModelUtils.generatePost(Bookmark.class);
+		final Bookmark resource2 = new Bookmark();
+		resource2.setInterHash("hash");
+		resource2.setIntraHash("hash");
+		post2.setResource(resource2);
+		assertEquals(projectHome + "history/url/hash/" + post2.getUser().getName() , ug.getHistoryUrlForPost(post2));
+	}
+
+	@Test
+	public void testGetHistoryUrlForPost___forGoldStandard() {
 		final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
 		final GoldStandardPublication resource = new GoldStandardPublication();
 		resource.setInterHash("hash");
 		post.setResource(resource);
-		
-		assertEquals(projectHome + "history/bibtex/hash" , ug.getHistoryUrlForPost(post));
-		
+
+		assertEquals(projectHome + "history/goldstandardpublication/hash" , ug.getHistoryUrlForPost(post));
+
 		final Post<GoldStandardBookmark> post2 = new Post<GoldStandardBookmark>();
 		final GoldStandardBookmark resource2 = new GoldStandardBookmark();
 		resource2.setInterHash("hash");
 		resource2.setIntraHash("hash");
 		post2.setResource(resource2);
-		assertEquals(projectHome + "history/url/hash" , ug.getHistoryUrlForPost(post2));
+		assertEquals(projectHome + "history/goldstandardbookmark/hash" , ug.getHistoryUrlForPost(post2));
 	}
 
 	/**
