@@ -37,7 +37,7 @@
 		<jsp:attribute name="sidebar">
 			<parts:tagsAndConceptsForSidebar />
 
-			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.sortKey}"/>
 			
 			<sidebar:conceptsItem 
 				cmd="${command.concepts}" 
