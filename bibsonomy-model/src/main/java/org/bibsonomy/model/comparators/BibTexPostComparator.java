@@ -77,72 +77,49 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	public int compare(final Post<? extends BibTex> post1, final Post<? extends BibTex> post2) {
 		for (final SortCriteria crit : this.sortCriteria) {
 			try {
-				// author
-				if (SortKey.AUTHOR.equals(crit.getSortKey())) {
-					// if author not present, take editor
-					final List<PersonName> personList1 = (present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor());
-					final List<PersonName> personList2 = (present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor());
-					return this.compareAuthor(personList1, personList2, crit.getSortOrder());
-				}
-				// year
-				/**
-				 * FIXME: Years are now sorted alphabetically instead of
-				 * numerically. This means that the year 411 will be more recent
-				 * than the year 2014. Sorting numerically is not completely
-				 * trivial as we must deal with non-numerical values for year.
-				 */
-				else if (SortKey.YEAR.equals(crit.getSortKey())) {
-					return this.compareYear(post1.getResource().getYear(), post2.getResource().getYear(), crit.getSortOrder());
-				}
-				// month
-				else if (SortKey.MONTH.equals(crit.getSortKey())) {
-					return this.compareMonth(post1.getResource().getMonth(), post2.getResource().getMonth(), crit.getSortOrder());
-				}
-				// day
-				else if (SortKey.DAY.equals(crit.getSortKey())) {
-					return this.compareDay(post1.getResource().getDay(), post2.getResource().getDay(), crit.getSortOrder());
-				}
-				// editor
-				else if (SortKey.EDITOR.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.getSortOrder());
-				}
-				// entrytype
-				else if (SortKey.ENTRYTYPE.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.getSortOrder());
-				}
-				// title
-				else if (SortKey.TITLE.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.getSortOrder());
-				}
-				// booktitle
-				else if (SortKey.BOOKTITLE.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.getSortOrder());
-				}
-				// school
-				else if (SortKey.SCHOOL.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.getSortOrder());
-				}
-				// posting date
-				else if (SortKey.DATE.equals(crit.getSortKey())) {
-					return this.compare(post1.getDate(), post2.getDate(), crit.getSortOrder());
-				}
-				// note
-				else if (SortKey.NOTE.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(post1.getResource().getNote(), post2.getResource().getNote(), crit.getSortOrder());
-				}
-				// ranking
-				else if (SortKey.RANK.equals(crit.getSortKey())) {
-					return this.compare(post1.getRanking(), post2.getRanking(), crit.getSortOrder());
-				}
-				// number
-				else if (SortKey.NUMBER.equals(crit.getSortKey())) {
-					return this.compareNumber(post1.getResource().getNumber(), post2.getResource().getNumber(), crit.getSortOrder());
-				} else {
-					return 0;
+				switch (crit.getSortKey()) {
+					case AUTHOR:
+						// if author not present, take editor
+						final List<PersonName> personList1 = (present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor());
+						final List<PersonName> personList2 = (present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor());
+						return this.compareAuthor(personList1, personList2, crit.getSortOrder());
+					case YEAR:
+						/**
+						 * FIXME: Years are now sorted alphabetically instead of
+						 * numerically. This means that the year 411 will be more recent
+						 * than the year 2014. Sorting numerically is not completely
+						 * trivial as we must deal with non-numerical values for year.
+						 */
+						return this.compareYear(post1.getResource().getYear(), post2.getResource().getYear(), crit.getSortOrder());
+					case MONTH:
+						return this.compareMonth(post1.getResource().getMonth(), post2.getResource().getMonth(), crit.getSortOrder());
+					case DAY:
+						return this.compareDay(post1.getResource().getDay(), post2.getResource().getDay(), crit.getSortOrder());
+					case PUBDATE:
+						return this.comparePubDate(post1.getResource(), post2.getResource(), crit.getSortOrder());
+					case EDITOR:
+						return this.normalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.getSortOrder());
+					case ENTRYTYPE:
+						return this.normalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.getSortOrder());
+					case TITLE:
+						return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.getSortOrder());
+					case BOOKTITLE:
+						return this.normalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.getSortOrder());
+					case SCHOOL:
+						return this.normalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.getSortOrder());
+					case DATE:
+						return this.compare(post1.getDate(), post2.getDate(), crit.getSortOrder());
+					case NOTE:
+						return this.normalizeAndCompare(post1.getResource().getNote(), post2.getResource().getNote(), crit.getSortOrder());
+					case RANK:
+						return this.compare(post1.getRanking(), post2.getRanking(), crit.getSortOrder());
+					case NUMBER:
+						return this.compareNumber(post1.getResource().getNumber(), post2.getResource().getNumber(), crit.getSortOrder());
+					default:
+						return 0;
 				}
 			} catch (final SortKeyIsEqualException ignore) {
-				// the for-loop will jump to the next sort criterium in this
-				// case
+				// the for-loop will jump to the next sort criterium in this case
 			}
 		}
 		return 0;
@@ -313,6 +290,29 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		} catch (final NumberFormatException ex) {
 			// otherwise compare them lexicographically
 			return this.normalizeAndCompare(month1number, month2number, order);
+		}
+	}
+
+	private int comparePubDate(final BibTex bib1, final BibTex bib2, final SortOrder order) throws SortKeyIsEqualException {
+		String pubDate1 = bib1.getYear();
+		String pubDate2 = bib2.getYear();
+
+		// add months if present on both resources
+		if (present(bib1.getMonth()) && present(bib2.getMonth())) {
+			pubDate1 += BibTexUtils.getMonthAsNumber(bib1.getMonth());
+			pubDate2 += BibTexUtils.getMonthAsNumber(bib2.getMonth());
+
+			// try to add day, if month is set
+			if (present(bib1.getDay()) && present(bib2.getDay())) {
+				pubDate1 += bib1.getDay();
+				pubDate2 += bib2.getDay();
+			}
+		}
+		try {
+			return this.compare(Integer.parseInt(pubDate1), Integer.parseInt(pubDate2), order);
+		} catch (final NumberFormatException ex) {
+			// otherwise compare them lexicographically
+			return this.normalizeAndCompare(pubDate1, pubDate2, order);
 		}
 	}
 

@@ -65,19 +65,15 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 	public int compare(final Post<? extends Bookmark> post1, final Post<? extends Bookmark> post2) {
 		for (final SortCriteria crit : this.sortCriteria) {
 			try {
-				// posting date
-				if (SortKey.DATE.equals(crit.getSortKey())) {
-					return this.compare(post1.getDate(), post2.getDate(), crit.getSortOrder());
-				}
-				// title 
-				else if (SortKey.TITLE.equals(crit.getSortKey())) {
-					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.getSortOrder());
-				}
-				// ranking
-				else if (SortKey.RANK.equals(crit.getSortKey())) {
-					return this.compare(post1.getRanking(), post2.getRanking(), crit.getSortOrder());
-				} else {
-					return 0;
+				switch (crit.getSortKey()) {
+					case DATE:
+						return this.compare(post1.getDate(), post2.getDate(), crit.getSortOrder());
+					case TITLE:
+						return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.getSortOrder());
+					case RANK:
+						return this.compare(post1.getRanking(), post2.getRanking(), crit.getSortOrder());
+					default:
+						return 0;
 				}
 			} catch (final SortKeyIsEqualException ignore) {
 				// the for-loop will jump to the next sort criterium in this case
