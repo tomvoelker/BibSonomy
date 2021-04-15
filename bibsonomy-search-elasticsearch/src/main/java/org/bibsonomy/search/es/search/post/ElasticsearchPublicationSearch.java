@@ -39,7 +39,6 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.search.es.util.ESSortUtils;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -170,6 +169,8 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 					sortParameters.add(new Pair<>("sort_" + sortKey.toString().toLowerCase(), esSortOrder));
 					break;
 				case YEAR:
+					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
+					break;
 				case PUBDATE:
 					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
 					sortParameters.add(new Pair<>(Fields.Publication.MONTH, esSortOrder));
