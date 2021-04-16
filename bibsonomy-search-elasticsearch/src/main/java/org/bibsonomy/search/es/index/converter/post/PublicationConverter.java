@@ -364,11 +364,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Sort.SCHOOL, BibTexUtils.cleanBibTex(resource.getSchool()));
 		jsonDocument.put(Fields.Sort.INSTITUTION, BibTexUtils.cleanBibTex(resource.getInstitution()));
 		jsonDocument.put(Fields.Sort.ORGANIZATION, BibTexUtils.cleanBibTex(resource.getOrganization()));
+		if (present(resource.getEditor())) {
+			String eds = BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor()));
+			jsonDocument.put(Fields.Sort.EDITOR, eds);
+			// adding editors as authors first as fallback, when publication has no authors
+			jsonDocument.put(Fields.Sort.AUTHOR, eds);
+		}
 		if (present(resource.getAuthor())) {
 			jsonDocument.put(Fields.Sort.AUTHOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getAuthor())));
-		}
-		if (present(resource.getEditor())) {
-			jsonDocument.put(Fields.Sort.EDITOR, BibTexUtils.cleanBibTex(convertToPersonIndex(resource.getEditor())));
 		}
 	}
 
