@@ -167,10 +167,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, resourceScope, command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
-			// secondary sorting, if not using search index
-			if (resourceScope != QueryScope.SEARCHINDEX) {
-				this.postProcessAndSortList(command, resourceType);
-			}
+			this.postProcessAndSortList(command, resourceType);
 
 			/*
 			 * set the post counts

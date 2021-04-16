@@ -118,10 +118,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
 
-			// secondary sorting, if not using search index
-			if (resourceScope != QueryScope.SEARCHINDEX) {
-				this.postProcessAndSortList(command, resourceType);
-			}
+			this.postProcessAndSortList(command, resourceType);
 		}
 		
 		/*

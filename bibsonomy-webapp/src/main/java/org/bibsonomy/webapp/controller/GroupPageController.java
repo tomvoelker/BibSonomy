@@ -106,10 +106,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
-			// secondary sorting, if not using search index
-			if (command.getScope() != QueryScope.SEARCHINDEX) {
-				this.postProcessAndSortList(command, resourceType);
-			}
+			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) {
