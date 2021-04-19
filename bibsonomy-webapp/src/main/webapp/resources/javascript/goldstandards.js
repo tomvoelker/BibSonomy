@@ -31,12 +31,12 @@ function loadLayoutSelect(formatUrl, element) {
 function openSelect2(element) {
 	if ($(element).next().find('#selectAllStyles').hasClass("select2-hidden-accessible")) {
 		$(element).next().find('#selectAllStyles').removeAttr("onchange")
-			.bind("change", function(){ asd(this.value); });
+			.bind("change", function(){ ajaxLoadLayout(this.value); });
 		$(element).next().find('#selectAllStyles').select2('open');
 	}
 }
 
-function asd(link) {
+function ajaxLoadLayout(link) {
 	link_parts = link.split("/");
 
 	switch (link_parts[1]) {
@@ -73,19 +73,6 @@ function asd(link) {
 			alert("Error during CSL rendering;");
 	}
 }
-
-function ajaxLoadLayout(link) {
-	$.ajax({
-		url: link,
-		success: function(data) {
-			modal_body = data;
-			//modal_body = "<textarea readonly=\"readonly\" rows=\"15\" style=\"width:100%;font-size:80%;border:none;\">" + data + "</textarea>";
-			$("#sidebar-quick-cite-box-modal .modal-body").html(modal_body);
-			$("#sidebar-quick-cite-box-modal").modal("show");
-		}
-	});
-}
-
 
 $(function() {
 
