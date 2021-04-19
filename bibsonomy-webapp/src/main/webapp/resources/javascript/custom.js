@@ -44,7 +44,7 @@ $(function() {
 	/*
 	 * publication details abstract and description more link
 	 */
-	var defaultMaxChars = 350;
+	var defaultMaxChars = 650;
 	dots = "&hellip;";
 	moretext = "";
 	lesstext = "";
