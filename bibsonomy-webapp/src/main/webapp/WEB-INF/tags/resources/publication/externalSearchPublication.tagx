@@ -30,7 +30,7 @@
 		
 		<c:url var="dnbUrl"
 			value="https://portal.dnb.de/opac.htm">
-			<c:param name="query" value="tit all '${externalQueryString}'" />
+			<c:param name="query" value='tit all "${externalQueryString}"' />
 			<c:param name="method" value="simpleSearch" />
 			<c:param name="cqlMode" value="true" />
 		</c:url>
