@@ -2,31 +2,34 @@ const invalid_keys = [
     'entrytypes'
 ]
 
+const AND = 'AND';
+const OR = 'OR';
+const NOT = 'NOT';
+
 function toggleExtendedSearch(focusTarget) {
-    $("#search").toggleClass("hidden");
-    $("#extendedSearch").toggleClass("hidden");
+    $('#search').toggleClass('hidden');
+    $('#extendedSearch').toggleClass('hidden');
     // set focus
-    var input = document.getElementById(focusTarget);
+    var input = $(focusTarget);
     input.focus();
 
-    // move cursor to end TODO maybe there is a better way
-    var val = input.value; //store the value of the element
-    input.value = ''; //clear the value of the element
-    input.value = val;
+    // move cursor to end
+    var inputValue = input.val();
+    input.val('').val(inputValue);
 }
 
 function expandYearRange() {
-    $("#inputGroupField").removeClass("col-md-8").addClass("col-md-6");
-    $("#inputGroupYear").toggleClass("hidden");
-    $("#filterValueYear").val("")
-    $("#inputGroupFromYear").toggleClass("hidden");
-    $("#inputGroupToYear").toggleClass("hidden");
+    $('#inputGroupField').removeClass('col-md-8').addClass('col-md-6');
+    $('#inputGroupYear').toggleClass('hidden');
+    $('#filterValueYear').val('');
+    $('#inputGroupFromYear').toggleClass('hidden');
+    $('#inputGroupToYear').toggleClass('hidden');
 }
 
 function switchSelection(type, value, selection) {
-    const id = 'filterSelection' + type;
-    var filterSelection = document.getElementById(id);
-    filterSelection.innerHTML = '<span style="display:none;">' + value + '</span>' + selection.innerText;
+    const id = '#filterSelection' + type;
+    var filterSelection = $(id);
+    filterSelection.html('<span style="display:none;">' + value + '</span>' + selection.innerText);
 }
 
 function addFilter() {
@@ -35,13 +38,13 @@ function addFilter() {
     const operator = $('#filterOperator label.active input').val();
 
     // search
-    const input = document.getElementById('extendedSearchInput');
-    var query = input.value;
+    const input = $('#extendedSearchInput');
+    var query = input.val();
 
     // filters
-    const year = document.getElementById('filterValueYear').value;
-    const fromYear = document.getElementById('filterValueFromYear').value;
-    const toYear = document.getElementById('filterValueToYear').value;
+    const year = $('#filterValueYear').val();
+    const fromYear = $('#filterValueFromYear').val();
+    const toYear = $('#filterValueToYear').val();
 
     if (validateYear(year)) {
         // check if it's simple year input
@@ -49,27 +52,24 @@ function addFilter() {
     } else {
         // else append year range
         if (validateYear(fromYear) || validateYear(toYear)) {
-            query = appendFilter(query, operator, 'year',  `[${fromYear} TO ${toYear}]`);
+            query = appendFilter(query, operator, 'year', '[' + fromYear + ' TO ' + toYear + ']');
         }
     }
 
-    const entrytype = document.getElementById('filterSelectionEntrytype').children[0].innerText;
+    const entrytype = $('#filterSelectionEntrytype').children().first().text();
     query = appendFilter(query, operator, 'entrytype', entrytype);
 
 
-    const field = document.getElementById('filterSelectionField').children[0].innerText;
-    const fieldValue = document.getElementById('filterValueField').value;
+    const field = $('#filterSelectionField').children().first().text();
+    const fieldValue = $('#filterValueField').val();
     query = appendFilter(query, operator, field, fieldValue);
 
-    input.value = query;
+    input.val(query);
 }
 
 function appendFilter(query, operator, key, value) {
 
-    if (key == null || value == null) {
-        return query;
-    }
-
+    // check, if empty key or value
     if (key === '' || value === '') {
         return query;
     }
@@ -81,17 +81,45 @@ function appendFilter(query, operator, key, value) {
     }
 
     const term = key + ':' + value;
+
+    // just append filter term, if query is empty
+    if (query === '') {
+        return term;
+    }
+
     // check, if term is already in the search
     if (query.includes(term)) {
         // returns previous search to avoid duplicate terms
         return query;
     }
 
-    if (operator === 'OR') {
-        return '(' + query + ')' + ' ' +  operator + ' ' + term
+    switch(operator) {
+        case AND:
+            return appendFilterAnd(query, term, key);
+        case OR:
+            return appendFilterOr(query, term);
+        default:
+            return query;
+    }
+}
+
+function appendFilterAnd(query, term, key) {
+    var keyIndex = query.indexOf(key + ':');
+    if (keyIndex >= 0) {
+        // replace filter term on this key, since using AND
+        var nextSpaceIndex = query.indexOf(' ', keyIndex)
+        if (nextSpaceIndex < 0) {
+            nextSpaceIndex = query.length;
+        }
+        var oldTerm = query.substr(keyIndex, nextSpaceIndex - keyIndex);
+        return query.replace(oldTerm, term);
     }
 
-    return query + ' ' +  operator + ' ' + term;
+    return query + ' ' + AND + ' ' + term;
+}
+
+function appendFilterOr(query, term) {
+    return '(' + query + ')' + ' ' + OR + ' ' + term;
 }
 
 function validateYear(year) {

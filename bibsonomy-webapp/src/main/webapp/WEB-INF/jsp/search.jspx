@@ -58,7 +58,7 @@
 			</c:choose>
 			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/redirect" formInputName="search" formInputValue="${command.requestedSearch}">
 				<jsp:attribute name="extraButtons">
-					<a class="btn btn-default" id="expandSearchButton" onclick="toggleExtendedSearch('extendedSearchInput')">
+					<a class="btn btn-default" id="expandSearchButton" onclick="toggleExtendedSearch('#extendedSearchInput')">
 						<fontawesome:icon icon="angle-double-down"/>
 					</a>
 				</jsp:attribute>
