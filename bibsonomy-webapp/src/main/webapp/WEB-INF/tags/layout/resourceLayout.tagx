@@ -46,9 +46,8 @@
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
-	<jsp:directive.attribute name="showSortInfo" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="showSortInfoHeadline" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	<!--+
 		|
@@ -149,9 +148,8 @@
 							isClipboard="${isClipboard}"
 							showBookmark="${showBookmark}"
 							showPublication="${showPublication}"
-						    showSortInfo="${showSortInfo}"
 						    sortPage="${sortPage}"
-						    indexUse="${indexUse}"
+							showSortInfoHeadline="${showSortInfoHeadline}"
 							additionalSorting="${additionalSorting}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">

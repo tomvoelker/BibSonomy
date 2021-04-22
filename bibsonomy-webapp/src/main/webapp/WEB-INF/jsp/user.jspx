@@ -26,9 +26,8 @@
 			requPath="${requPath}"
 			requQueryString="${requQueryString}"
 			activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}"
-			showSortInfo="${true}"
-			sortPage="${command.sortPage}"
-			indexUse="${command.indexUse}">
+			showSortInfoHeadline="${true}"
+			sortPage="${command.sortPage}">
 		<jsp:attribute name="heading">
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL' and command.scope.name() ne 'SEARCHINDEX'}">

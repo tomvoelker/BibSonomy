@@ -27,9 +27,8 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
 
-	<jsp:directive.attribute name="showSortInfo" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="indexUse" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="showSortInfoHeadline" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" />
 
@@ -97,8 +96,8 @@
 					&amp;nbsp;
 				</c:if>
 
-				<c:if test="${showSortInfo}">
-					<rc:sortingInfo requPathAndQuery="/${requPath}${requQueryString}" indexUse="${indexUse}" sortPage="${sortPage}"/>
+				<c:if test="${showSortInfoHeadline}">
+					<rc:sortInfoHeadline requPathAndQuery="/${requPath}${requQueryString}" resourceType="${listView.resourcetype}" useIndex="${listView.useIndex}" sortPage="${sortPage}"/>
 				</c:if>
 				
 				<c:if test="${empty showPageOptions or showPageOptions}">

@@ -66,11 +66,6 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/** the specified list of sort criteria */
 	private List<SortCriteria> sortCriteria = new LinkedList<>();
 
-	/**
-	 * Use the search index for retrieving and sorting listed posts
-	 */
-	private boolean indexUse = true;
-
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
 	
@@ -176,21 +171,6 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	public void setSortCriteria(List<SortCriteria> sortCriteria) {
 		this.sortCriteria = sortCriteria;
-	}
-
-	/**
-	 * @return indexUse
-	 */
-	public boolean isIndexUse() {
-		return this.indexUse;
-	}
-
-	/**
-	 * Set wether to use search index for retrieving and sorting posts.
-	 * @param 	indexUse		use search index?
-	 */
-	public void setIndexUse(boolean indexUse) {
-		this.indexUse = indexUse;
 	}
 
 	/**

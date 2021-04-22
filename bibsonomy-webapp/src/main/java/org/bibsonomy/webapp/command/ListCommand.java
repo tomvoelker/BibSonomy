@@ -55,6 +55,9 @@ public class ListCommand<T> {
 	/** this number tells us the pagination limit of the system that is */
 	private Integer paginationLimit = null;
 	private List<T> list;
+
+	/** Use the search index for retrieving and sorting this list */
+	private boolean useIndex = true;
 	
 	/**
 	 * Constructor
@@ -315,4 +318,13 @@ public class ListCommand<T> {
 	public void setPaginationLimit(Integer paginationLimit) {
 		this.paginationLimit = paginationLimit;
 	}
+
+	public boolean isUseIndex() {
+		return useIndex;
+	}
+
+	public void setUseIndex(boolean useIndex) {
+		this.useIndex = useIndex;
+	}
+
 }
