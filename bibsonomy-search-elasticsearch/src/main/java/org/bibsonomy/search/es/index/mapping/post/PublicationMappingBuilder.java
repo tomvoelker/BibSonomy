@@ -138,6 +138,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 					.startObject(Fields.Publication.PERSON_NAME)
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.TEXT_TYPE)
 						.field(ESConstants.IndexSettings.ANALYZER, ESConstants.STANDARD_TEXT_ANALYSER)
+						.array(ESConstants.IndexSettings.COPY_TO, Fields.Publication.ALL_EDITORS)
 					.endObject()
 					.startObject(Fields.Publication.PERSON_ID)
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)

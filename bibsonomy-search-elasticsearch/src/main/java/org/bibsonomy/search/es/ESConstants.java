@@ -272,6 +272,8 @@ public final class ESConstants {
 
 			/** field that contains all authors */
 			String ALL_AUTHORS = "author";
+			/** field that contains all editors */
+			String ALL_EDITORS = "editor";
 
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
