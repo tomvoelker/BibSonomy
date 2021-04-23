@@ -27,12 +27,13 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.HomepageCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -117,6 +118,7 @@ public class HomepageController extends SingleResourceListController implements 
 			query.setTags(Arrays.asList(this.newsTag));
 			query.setStart(0);
 			query.setEnd(3);
+			query.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC));
 			command.setNews(this.logic.getPosts(query));
 			this.endTiming();
 			
