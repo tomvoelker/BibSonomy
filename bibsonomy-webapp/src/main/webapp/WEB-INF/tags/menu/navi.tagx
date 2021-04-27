@@ -16,6 +16,8 @@
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
 
+	<c:set var="showPopularNav" value="${properties['system.nav.popular']}" />
+
 	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
@@ -251,7 +253,7 @@
 					<!--+
 						| popular
 						+-->
-					<c:if test="${not showCRISNavBar}">
+					<c:if test="${not showCRISNavBar and showPopularNav}">
 						<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
