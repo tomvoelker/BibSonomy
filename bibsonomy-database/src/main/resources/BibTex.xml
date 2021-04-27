@@ -351,7 +351,7 @@
 	</select>
 
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPostWithPickStatus" parameterClass="bibtexParam">
-		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" />, IF(col.content_id IS NULL, FALSE, TRUE) AS picked 
+		SELECT t.tag_name, h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" />, g.*, IF(col.content_id IS NULL, FALSE, TRUE) AS picked
 		  FROM (SELECT * FROM bibtex t1
 		      WHERE simhash$simHash$ = #hash#
 		            <include refid="inGroups"/>
