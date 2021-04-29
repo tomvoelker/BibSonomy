@@ -19,6 +19,11 @@
 					   requPath="${requPath}"
 					   activeTab="publications"
 					   showPageOptions="${true}">
+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+		</jsp:attribute>
+
 		<jsp:attribute name="heading">
 			<!-- nothing to display -->
 		</jsp:attribute>
@@ -26,8 +31,9 @@
 		<jsp:attribute name="content">
 			<div class="row">
 				<div class="col-md-12">
-					<parts:searchHeader headerMessageKey="publications.header" searchPlaceholderKey="publications.search"
-										requPathAndQuery="${requPathAndQuery}" command="${command}" hidePrefixMenu="${true}"/>
+					<parts:extendedSearch headerMessageKey="publications.header" searchPlaceholderKey="publications.search"
+										  formAction="${requPathAndQuery}" formInputValue="${command.search}"
+										  enableReset="${true}" alwaysShow="${true}"/>
 				</div>
 			</div>
 			<div class="row">

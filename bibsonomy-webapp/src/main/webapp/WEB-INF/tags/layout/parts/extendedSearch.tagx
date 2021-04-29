@@ -8,18 +8,22 @@
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="searchPlaceholderKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
-    <jsp:directive.attribute name="emptySearch" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="alwaysShow" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="enableReset" type="java.lang.Boolean" required="false"/>
 
     <!-- TODO fix lists -->
     <c:set var="entrytypes" value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,masterthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
-    <c:set var="searchfields" value="author,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+    <c:set var="searchfields" value="title,author,editor,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
 
-    <c:if test="${not emptySearch}">
+    <c:if test="${not alwaysShow}">
         <c:set var="hideExtSearch" value="hidden"/>
     </c:if>
 
     <fmt:message var="searchPlaceholder" key="${searchPlaceholderKey}"/>
-    <fmt:message var="yearLabel" key="search.extended.field.year"/>
+    <fmt:message var="fieldPlaceholder" key="search.extended.field.placeholder"/>
+    <fmt:message var="yearPlaceholder" key="search.extended.year.placeholder"/>
+    <fmt:message var="yearLabel" key="search.extended.year"/>
 
     <div id="extendedSearch" class="jumbotron search ${hideExtSearch}">
         <div class="row">
@@ -27,7 +31,7 @@
                 <h2><fmt:message key="${headerMessageKey}"/></h2>
             </div>
             <div class="col-md-2" style="padding-top: 20px;">
-                <c:if test="${not emptySearch}">
+                <c:if test="${not alwaysShow}">
                     <button class="btn btn-default pull-right" onclick="toggleExtendedSearch('#inpf')">
                         <fontawesome:icon icon="angle-double-up"/>
                     </button>
@@ -37,14 +41,19 @@
 
         <div class="form-group row">
             <div class="col-md-12">
-                <form class="form-search" action="${formAction}" method="get">
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-addon"><fontawesome:icon icon="search"/></span>
+                <form class="form-search" id="extendedSearchForm" action="${formAction}" method="get">
+                    <div class="input-group">
+                        <span class="input-group-addon"><fontawesome:icon icon="search" size="2x"/></span>
                         <input class="form-control form-control-borderless" type="search"
                                id="extendedSearchInput" name="search" placeholder="${searchPlaceholder}"
-                               value="${command.requestedSearch}"/>
-                        <div class="input-group-addon">
-                            <button class="btn btn-primary"><fmt:message key="navi.search"/></button>
+                               value="${fn:escapeXml(formInputValue)}"/>
+                        <div class="input-group-btn">
+                            <c:if test="${enableReset}">
+                                <div class="btn bg-white" onclick="resetExtendedSearch()">
+                                    <fontawesome:icon icon="times" />
+                                </div>
+                            </c:if>
+                            <button class="btn btn-primary" style="margin-left: 1px;"><fmt:message key="navi.search" /></button>
                         </div>
                     </div>
                 </form>
@@ -70,7 +79,7 @@
                             </c:forEach>
                         </ul>
                     </div>
-                    <input class="form-control" type="text" id="filterValueField"/>
+                    <input class="form-control" type="text" id="filterValueField" placeholder="${fieldPlaceholder}"/>
                 </div>
             </div>
 
@@ -78,9 +87,9 @@
             <div id="inputGroupYear" class="col-md-4">
                 <div class="input-group">
                     <div class="input-group-addon">
-                        <fmt:message key="search.extended.field.year"/>:
+                        <fmt:message key="search.extended.year"/>:
                     </div>
-                    <input type="text" class="form-control" id="filterValueYear"/>
+                    <input type="text" class="form-control" id="filterValueYear" placeholder="${yearPlaceholder}" aria-label="${yearLabel}"/>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="expandYearRange()"><fontawesome:icon icon="plus"/></button>
                     </span>

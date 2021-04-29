@@ -6,6 +6,11 @@ const AND = 'AND';
 const OR = 'OR';
 const NOT = 'NOT';
 
+function resetExtendedSearch() {
+    $('#extendedSearchInput').val('');
+    $('#extendedSearchForm').submit();
+}
+
 function toggleExtendedSearch(focusTarget) {
     $('#search').toggleClass('hidden');
     $('#extendedSearch').toggleClass('hidden');

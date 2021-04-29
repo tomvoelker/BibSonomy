@@ -15,9 +15,16 @@
 							 src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
 					</c:when>
 					<c:otherwise>
-						<div class="img-thumbnail person-default-icon">
-							<fontawesome:icon icon="user" size="4x"/>
-						</div>
+						<c:choose>
+							<c:when test="${properties['system.cris']}">
+								<div class="img-thumbnail" style="min-width: 65px;"><!-- keep me--></div>
+							</c:when>
+							<c:otherwise>
+								<div class="img-thumbnail person-default-icon">
+									<fontawesome:icon icon="user" size="4x"/>
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 			</div>
