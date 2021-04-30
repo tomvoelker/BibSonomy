@@ -16,8 +16,8 @@
 					</c:when>
 					<c:otherwise>
 						<c:choose>
-							<c:when test="${properties['system.cris']}">
-								<div class="img-thumbnail" style="min-width: 65px;"><!-- keep me--></div>
+							<c:when test="${properties['project.profile.default.show']}">
+								<div class="img-thumbnail no-thumbnail"><!-- keep me --></div>
 							</c:when>
 							<c:otherwise>
 								<div class="img-thumbnail person-default-icon">
