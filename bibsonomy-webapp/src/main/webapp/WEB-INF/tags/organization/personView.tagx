@@ -6,23 +6,31 @@
 >
 
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
+	<jsp:directive.attribute name="personsWithProfilePicture" type="java.util.List" required="false"/>
+
 	<div class="col-md-4">
 		<div class="media">
 			<div class="media-left media-middle">
 				<c:choose>
 					<c:when test="${not empty person.user}">
-						<img class="media-object img-thumbnail"
-							 src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
+						<c:choose>
+							<c:when test="${properties['persons.profile.image.default'] or empty personsWithProfilePicture or personsWithProfilePicture.contains(person.user)}">
+								<img class="media-object img-thumbnail" src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
+							</c:when>
+							<c:otherwise>
+								<div class="img-thumbnail no-thumbnail"><!-- keep me --></div>
+							</c:otherwise>
+						</c:choose>
 					</c:when>
 					<c:otherwise>
 						<c:choose>
-							<c:when test="${properties['project.profile.default.show']}">
-								<div class="img-thumbnail no-thumbnail"><!-- keep me --></div>
-							</c:when>
-							<c:otherwise>
+							<c:when test="${properties['persons.profile.image.default']}">
 								<div class="img-thumbnail person-default-icon">
 									<fontawesome:icon icon="user" size="4x"/>
 								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="img-thumbnail no-thumbnail"><!-- keep me --></div>
 							</c:otherwise>
 						</c:choose>
 					</c:otherwise>

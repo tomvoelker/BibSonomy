@@ -72,6 +72,6 @@
 
     <hr class="option-result-divider"/>
 
-    <person:personList listCommand="${personListCommand}" showPagination="${true}" />
+    <person:personList listCommand="${personListCommand}" showPagination="${true}" personsWithProfilePicture="${command.personsWithProfilePicture}"/>
 
 </jsp:root>

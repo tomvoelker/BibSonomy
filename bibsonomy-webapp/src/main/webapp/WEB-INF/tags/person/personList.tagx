@@ -12,6 +12,7 @@
 
     <jsp:directive.attribute name="listCommand" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
     <jsp:directive.attribute name="showPagination" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="personsWithProfilePicture" type="java.util.List" required="false"/>
 
     <c:if test="${empty showPagination}">
         <c:set var="showPagination" value="${false}" />
@@ -25,14 +26,14 @@
                 <c:forEach var="i" begin="0" end="${listLength - 1}" step="3">
                     <div class="row">
                         <c:set var="person" value="${personList[i]}"/>
-                        <organization:personView person="${person}"/>
+                        <organization:personView person="${person}" personsWithProfilePicture="${personsWithProfilePicture}"/>
                         <c:if test="${i + 1 lt listLength}">
                             <c:set var="person" value="${personList[i + 1]}"/>
-                            <organization:personView person="${person}"/>
+                            <organization:personView person="${person}" personsWithProfilePicture="${personsWithProfilePicture}"/>
                         </c:if>
                         <c:if test="${i + 2 lt listLength}">
                             <c:set var="person" value="${personList[i + 2]}"/>
-                            <organization:personView person="${person}"/>
+                            <organization:personView person="${person}" personsWithProfilePicture="${personsWithProfilePicture}"/>
                         </c:if>
                     </div>
                 </c:forEach>

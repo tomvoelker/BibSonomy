@@ -4,6 +4,8 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.webapp.command.EntitySearchAndFilterCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 
+import java.util.List;
+
 /**
  * command for the person overview page
  *
@@ -15,6 +17,8 @@ public class PersonsPageCommand extends EntitySearchAndFilterCommand {
 
 	/** if true all persons are displayed (also persons that are not associated with the configured college */
 	private boolean showAllPersons;
+
+	private List<String> personsWithProfilePicture;
 
 	/**
 	 * @return the persons
@@ -35,5 +39,13 @@ public class PersonsPageCommand extends EntitySearchAndFilterCommand {
 	 */
 	public void setShowAllPersons(boolean showAllPersons) {
 		this.showAllPersons = showAllPersons;
+	}
+
+	public List<String> getPersonsWithProfilePicture() {
+		return personsWithProfilePicture;
+	}
+
+	public void setPersonsWithProfilePicture(List<String> personsWithProfilePicture) {
+		this.personsWithProfilePicture = personsWithProfilePicture;
 	}
 }
