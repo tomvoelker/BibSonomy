@@ -9,7 +9,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonOrder;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
-import org.bibsonomy.util.ProfileUtils;
+import org.bibsonomy.services.filesystem.ProfilePictureLogic;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.PersonsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -28,7 +28,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 
 	private LogicInterface logicInterface;
 	private String crisCollege;
-	private ProfileUtils profileUtils;
+	private ProfilePictureLogic profilePictureLogic;
 
 	@Override
 	public PersonsPageCommand instantiateCommand() {
@@ -61,7 +61,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		List<String> personsWithProfilePicture = new ArrayList<>();
 		for (Person person : persons) {
 			String username = person.getUser();
-			if (present(username) && profileUtils.hasProfilePicture(username)) {
+			if (present(username) && profilePictureLogic.hasProfilePicture(username)) {
 				personsWithProfilePicture.add(username);
 			}
 		}
@@ -84,7 +84,8 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		this.crisCollege = crisCollege;
 	}
 
-	public void setProfileUtils(ProfileUtils profileUtils) {
-		this.profileUtils = profileUtils;
+	public void setProfilePictureLogic(ProfilePictureLogic profilePictureLogic) {
+		this.profilePictureLogic = profilePictureLogic;
 	}
+
 }

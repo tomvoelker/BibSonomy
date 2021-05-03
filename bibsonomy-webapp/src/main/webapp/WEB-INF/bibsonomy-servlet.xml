@@ -210,10 +210,6 @@
 		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
-	<bean id="profileUtils" class="org.bibsonomy.util.ProfileUtils" scope="singleton">
-		<constructor-arg value="${project.picture.path}" />
-	</bean>
-
 	<!--  #################### interceptors #################### -->
 	<bean id="localeChangeInterceptor" class="org.bibsonomy.webapp.util.spring.i18n.LocaleChangeInterceptor">
 		<property name="paramName" value="lang" />
@@ -1255,7 +1251,7 @@
 	<bean id="personsPageController" class="org.bibsonomy.webapp.controller.cris.PersonsPageController" scope="request">
 		<property name="logicInterface" ref="logic" />
 		<property name="crisCollege" value="${system.cris.college}" />
-		<property name="profileUtils" ref="profileUtils" />
+		<property name="profilePictureLogic" ref="profileFileLogic" />
 	</bean>
 	
 	<!--  #################### static views #################### -->
