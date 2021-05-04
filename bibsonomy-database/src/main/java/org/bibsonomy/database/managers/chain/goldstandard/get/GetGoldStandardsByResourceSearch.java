@@ -47,7 +47,13 @@ public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Res
 
 	@Override
 	protected List<Post<R>> handle(final QueryAdapter<PostQuery<R>> param, final DBSession session) {
-		final PostSearchQuery<?> searchQuery = new PostSearchQuery<>(param.getQuery());
+		final PostSearchQuery<?> searchQuery;
+        // TODO is there a better way to not lose PostSearchQuery fields like year or systags?
+        if (param.getQuery() instanceof PostSearchQuery<?>) {
+            searchQuery = (PostSearchQuery<?>) param.getQuery();
+        } else {
+            searchQuery = new PostSearchQuery<>(param.getQuery());
+        }
 		final User loggedinUser = param.getLoggedinUser();
 		return this.databaseManager.getSearch().getPosts(loggedinUser, searchQuery);
 	}

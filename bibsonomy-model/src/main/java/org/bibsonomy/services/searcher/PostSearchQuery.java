@@ -52,6 +52,7 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 		this.setCollege(other.getCollege());
 		this.setStart(other.getStart());
 		this.setEnd(other.getEnd());
+		this.setSortCriteria(other.getSortCriteria());
 	}
 
 	private List<String> requestedRelationNames;
