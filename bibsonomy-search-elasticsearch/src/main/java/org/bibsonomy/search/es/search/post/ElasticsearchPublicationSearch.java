@@ -228,10 +228,11 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			 * but only show posts of users that share documents with the loggedin user
 			 */
 			if (filters.contains(FilterEntity.JUST_PDF)) {
-				final ExistsQueryBuilder docFieldExists = QueryBuilders.existsQuery(Fields.Publication.DOCUMENTS);
+				final QueryBuilder docSearchQuery = QueryBuilders.existsQuery(Fields.Publication.DOCUMENTS);
+				final NestedQueryBuilder docFieldExists = QueryBuilders.nestedQuery(Fields.Publication.DOCUMENTS, docSearchQuery, ScoreMode.Total);
 				final BoolQueryBuilder docFilter = QueryBuilders.boolQuery();
 				docFilter.must(docFieldExists);
-				usersThatShareDocs.stream().map(user -> QueryBuilders.matchQuery(Fields.USER_NAME, user)).forEach(docFilter::must);
+				usersThatShareDocs.stream().map(user -> QueryBuilders.matchQuery(Fields.USER_NAME, user)).forEach(docFilter::should);
 				filterBuilder.must(docFilter);
 			}
 		}

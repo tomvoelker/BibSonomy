@@ -371,7 +371,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		
 		this.buildResourceSpecificQuery(mainQueryBuilder, loggedinUserName, postQuery);
 
-		final QueryBuilder mainFilterBuilder = this.buildFilter(loggedinUser, allowedGroups, postQuery);
+		final QueryBuilder mainFilterBuilder = this.buildFilter(loggedinUser, usersThatShareDocs, postQuery);
 		if (!present(mainFilterBuilder)) {
 			return null;
 		}
