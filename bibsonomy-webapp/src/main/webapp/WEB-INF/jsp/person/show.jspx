@@ -32,6 +32,7 @@
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}" />
 
 	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}" />
+	<c:set var="showProjectLinks" value="${properties['system.cris.project.links']}" />
 
 	<layout:paneLayout pageTitle="${title}"
 					   headerLogoClass="publications"
@@ -179,27 +180,28 @@
 				<ul class="nav nav-pills">
 					<c:choose>
 						<c:when test="${useCRISView}" >
-							<c:if test="${showPublicationTab}">
-								<li class="active">
-									<a href="#publications" role="tab" data-toggle="pill">
-										<strong>
-											<fontawesome:icon icon="book" spaceAfter="5" />
-											<fmt:message key="person.show.publications" />
-										</strong>
-									</a>
-								</li>
+							<c:if test="${showProjectLinks}">
+								<c:if test="${showPublicationTab}">
+									<li class="active">
+										<a href="#publications" role="tab" data-toggle="pill">
+											<strong>
+												<fontawesome:icon icon="book" spaceAfter="5" />
+												<fmt:message key="person.show.publications" />
+											</strong>
+										</a>
+									</li>
+								</c:if>
+								<c:if test="${true}">
+									<li class="${showPublicationTab ? '' : 'active' }">
+										<a href="#projects" role="tab" data-toggle="pill">
+											<strong>
+												<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+												<fmt:message key="person.show.projects" />
+											</strong>
+										</a>
+									</li>
+								</c:if>
 							</c:if>
-							<c:if test="${true}">
-								<li class="${showPublicationTab ? '' : 'active' }">
-									<a href="#projects" role="tab" data-toggle="pill">
-										<strong>
-											<fontawesome:icon icon="project-diagram" spaceAfter="5" />
-											<fmt:message key="person.show.projects" />
-										</strong>
-									</a>
-								</li>
-							</c:if>
-
 						</c:when>
 						<c:otherwise>
 							<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
@@ -260,20 +262,22 @@
 								</c:choose>
 							</div>
 							<!-- Projects tab content-->
-							<div id="projects" class="tab-pane fade ${showPublicationTab ? '' : 'in active'}">
-								<h2>
-									<fontawesome:icon icon="project-diagram" spaceAfter="5" />
-									<fmt:message key="person.show.projects" />
-								</h2>
-								<c:choose>
-									<c:when test="${fn:length(command.person.crisLinks) gt 0}">
-										<per:projects command="${command}" />
-									</c:when>
-									<c:otherwise>
-										<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-									</c:otherwise>
-								</c:choose>
-							</div>
+							<c:if test="${showProjectLinks}">
+								<div id="projects" class="tab-pane fade ${showPublicationTab ? '' : 'in active'}">
+									<h2>
+										<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+										<fmt:message key="person.show.projects" />
+									</h2>
+									<c:choose>
+										<c:when test="${fn:length(command.person.crisLinks) gt 0}">
+											<per:projects command="${command}" />
+										</c:when>
+										<c:otherwise>
+											<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+										</c:otherwise>
+									</c:choose>
+								</div>
+							</c:if>
 						</div>
 					</c:when>
 					<c:otherwise>
