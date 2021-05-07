@@ -103,10 +103,10 @@ public class ProlaScraper extends GenericBibTeXURLScraper implements ReferencesS
 	private static String abstractParser(URL url){
 		try{
 			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
-			if(m.find()) {
+			if (m.find()) {
 				return m.group(1);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.error("error while getting abstract for " + url, e);
 		}
 		return null;

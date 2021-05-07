@@ -59,11 +59,11 @@ public class AAAIScraper extends AbstractUrlScraper {
 	
 	private static final Pattern PRE_PATTERN = Pattern.compile("<pre[^>]*>(.+?)</pre>", Pattern.DOTALL);
 	
-	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<>();
 
 	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(PAPER_VIEW_PATH_FRAGMENT)));
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(ARTICLE_VIEW_PATH_FRAGMENT)));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(PAPER_VIEW_PATH_FRAGMENT)));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(ARTICLE_VIEW_PATH_FRAGMENT)));
 	}
 
 	@Override

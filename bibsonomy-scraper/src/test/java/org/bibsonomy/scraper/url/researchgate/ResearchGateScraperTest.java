@@ -6,6 +6,10 @@ import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+/**
+ * tests for the research gate scraper
+ * @author dzo
+ */
 @Category(RemoteTest.class)
 public class ResearchGateScraperTest {
 
