@@ -75,11 +75,26 @@
 						</form:label>
 						<div class="col-sm-9">
 							<form:select cssClass="form-control" path="user.settings.personPostsLayout">
+								<form:option value="DEFAULT">
+									<fmt:message key="settings.person.style.default" />
+								</form:option>
                                 <c:forEach var="favl" items="${user.settings.favouriteLayouts}" varStatus="counter">
-                                    <form:option value="${favl.source}/${favl.style}">
-                                        <mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
-                                    </form:option>
+									<!-- we ignore basic styles and Jabref styles, only CSL as we are using citeproc -->
+									<c:if test="${favl.source eq 'CSL'}">
+										<form:option value="CUSTOM/${favl.style}">
+											<mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
+										</form:option>
+									</c:if>
                                 </c:forEach>
+
+								<c:forEach var="style" items="${command.personPageCslFiles}" varStatus="counter">
+									<c:set var="name" value="${style.name}"/>
+									<c:set var="cslId" value="${style.id}"/>
+
+									<form:option value="${fn:substringBefore(cslId, '.csl')}">
+										${displayName}
+									</form:option>
+								</c:forEach>
 							</form:select>
 						</div>
 					</div>

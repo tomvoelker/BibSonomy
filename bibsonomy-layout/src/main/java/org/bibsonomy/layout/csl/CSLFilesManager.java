@@ -31,13 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -232,6 +226,36 @@ public class CSLFilesManager {
 	public Map<String, CSLStyle> getCslFiles() {
 		return Collections.unmodifiableMap(this.cslFiles);
 	}
+
+
+
+	public List<CSLStyle> getStandardCslStyles() {
+		List<CSLStyle> cslStyles = new ArrayList<CSLStyle>() {{
+			add(getStyleByName("apa"));
+			add(getStyleByName("elsevier-harvard"));
+			add(getStyleByName("acm-siggraph"));
+			add(getStyleByName("vancouver"));
+			add(getStyleByName("chicago-fullnote-bibliography-with-ibid"));
+			add(getStyleByName("oscola"));
+			add(getStyleByName("modern-language-association"));
+			add(getStyleByName("ieee"));
+			add(getStyleByName("turabian-fullnote-bibliography"));
+			add(getStyleByName("american-medical-association"));
+			add(getStyleByName("american-chemical-society"));
+			add(getStyleByName("taylor-and-francis-national-library-of-medicine"));
+			add(getStyleByName("iso690-author-date-en"));
+			add(getStyleByName("american-anthropological-association"));
+			add(getStyleByName("american-political-science-association"));
+			add(getStyleByName("american-institute-of-physics"));
+			add(getStyleByName("frontiers"));
+			add(getStyleByName("din-1505-2-numeric"));
+		}};
+
+		return cslStyles;
+	}
+
+
+
 
 	/**
 	 * reloads the user layouts for the user

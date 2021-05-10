@@ -28,11 +28,17 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import de.undercouch.citeproc.LocaleProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.layout.citeproc.CSLUtils;
+import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
+import org.bibsonomy.layout.citeproc.renderer.LanguageFile;
+import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -83,6 +89,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * FIXME: this controller is a mess, please replace it with separate controllers for editing and viewing
@@ -110,6 +117,28 @@ public class PersonPageController extends SingleResourceListController implement
 	private String crisCollege;
 
 	private LogicInterface adminLogic;
+
+
+	// TMP TEST
+	private AdhocRenderer renderer;
+	private CSLFilesManager cslFilesManager;
+
+	public CSLFilesManager getCslFilesManager() {
+		return cslFilesManager;
+	}
+
+	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
+		this.cslFilesManager = cslFilesManager;
+	}
+
+	public AdhocRenderer getRenderer() {
+		return renderer;
+	}
+
+	public void setRenderer(AdhocRenderer renderer) {
+		this.renderer = renderer;
+	}
+
 
 
 	@Override
@@ -619,7 +648,16 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
 
-		fillCommandWithPersonResourceRelations(this.adminLogic, this.logic, command, person, 0, command.getPersonPostsPerPage());
+		// extract user settings
+		// Get the linked user's person posts style settings
+		final User user = adminLogic.getUserDetails(person.getUser());
+		final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+		final String personPostsLayout = user.getSettings().getPersonPostsLayout();
+		command.setPersonPostsLayout(personPostsLayout);
+		command.setPersonPostsStyle(personPostsStyle);
+
+
+		fillCommandWithPersonResourceRelations(this.logic, command, person, 0, command.getPersonPostsPerPage());
 
 		final List<PersonMatch> personMatches = this.logic.getPersonMatches(personId);
 		command.setPersonMatchList(personMatches);
@@ -640,10 +678,86 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setSimilarAuthorPubs(similarAuthorRelations);
 
+
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
+		/// TODO: rework this whole block
+		// TMP TEST
+
+		if (!present(personPostsLayout) || personPostsLayout.startsWith("DEFAULT")) {
+			return Views.PERSON_SHOW;
+		}
+
+		Map<String, String> renderedPosts;
+
+		// convert posts
+		List<Post<? extends BibTex>> postsToConvert = new ArrayList<>();
+		if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
+			postsToConvert.addAll(command.getMyownPosts());
+		} else {
+			postsToConvert.addAll(command.getOtherPubs().stream()
+					.map(ResourcePersonRelation::getPost)
+					.collect(Collectors.toList()));
+		}
+
+		// the prefix is set in settings->person
+		String prefix = "CUSTOM/";
+		CSLStyle cslStyle;
+
+		if (personPostsLayout.startsWith("CUSTOM/")) {
+			cslStyle = cslFilesManager.getStyleByName(personPostsLayout.substring(prefix.length()));
+		} else {
+			cslStyle = cslFilesManager.getStyleByName(personPostsLayout);
+		}
+
+		if (!present(cslStyle)) {
+			// TODO DEFAULT STYLE?? - or just keep old way of displying?
+			throw new RuntimeException("FU");
+		}
+
+		LanguageFile localeProvider = new LanguageFile();
+		// TODO SET LANGUAGE
+		localeProvider.setLocale(cslFilesManager.getLocaleFile("en-US"));
+
+		try {
+			renderedPosts = AdhocRenderer.renderPosts(postsToConvert , cslStyle.getContent(), localeProvider, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			renderedPosts = new HashMap<>();
+		}
+
+		command.setRenderedPosts(renderedPosts);
+
+		if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
+			Map<String, String> myOwnPostsRendered = new HashMap<>();
+			for (Post<BibTex> post: command.getMyownPosts()) {
+				String renderedPost = renderedPosts.get(post.getResource().getIntraHash());
+
+				// CSL replacements
+				renderedPost = CSLUtils.replacePlaceholdersFromCSLRendering(renderedPost, post, urlGenerator);
+
+				myOwnPostsRendered.put(post.getResource().getIntraHash(), renderedPost);
+			}
+			command.setMyownPostsRendered(myOwnPostsRendered);
+		} else {
+			for (ResourcePersonRelation resourcePersonRelation: command.getOtherPubs()) {
+				String renderedPost = renderedPosts.get(resourcePersonRelation.getPost().getResource().getIntraHash());
+
+				// CSL replacements
+				renderedPost = CSLUtils.replacePlaceholdersFromCSLRendering(renderedPost, resourcePersonRelation.getPost(), urlGenerator);
+
+				resourcePersonRelation.setRenderedPost(renderedPost);
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
+
 		return Views.PERSON_SHOW;
 	}
 
-	public static void fillCommandWithPersonResourceRelations(final LogicInterface adminLogic, final LogicInterface logic, final PersonPageCommand command, Person person, final int defaultStart, final int defaultPostsPerPage) {
+	public static void fillCommandWithPersonResourceRelations(final LogicInterface logic, final PersonPageCommand command, Person person, final int defaultStart, final int defaultPostsPerPage) {
 		final User authenticatedUser = logic.getAuthenticatedUser();
 		final int listItemcount = authenticatedUser.getSettings().getListItemcount();
 		command.setPersonPostsPerPage(listItemcount);
@@ -678,11 +792,6 @@ public class PersonPageController extends SingleResourceListController implement
 
 		final String linkedUser = person.getUser();
 		if (present(linkedUser)) {
-			// Get the linked user's person posts style settings
-			final User user = adminLogic.getUserDetails(person.getUser());
-			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
-
-			command.setPersonPostsStyle(personPostsStyle);
 
 			// Get 'myown' posts of the linked user
 			final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()

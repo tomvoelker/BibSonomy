@@ -16,4 +16,8 @@
 		<property name="logic" ref="adminLogic" />
 	</bean>
 
+	<bean id="CSLAdhocRenderer" class="org.bibsonomy.layout.citeproc.renderer.AdhocRenderer">
+	</bean>
+
+
 </beans>

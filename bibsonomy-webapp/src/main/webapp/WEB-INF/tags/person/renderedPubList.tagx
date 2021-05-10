@@ -1,0 +1,124 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <jsp:directive.attribute name="publications" type="java.util.List" required="true" />
+    <jsp:directive.attribute name="hideHeadline" type="java.lang.Boolean" required="false" />
+
+    <jsp:directive.attribute name="buttons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
+    <jsp:directive.attribute name="addPub" type="java.lang.Boolean" required="false" description="If true, user can add the publication. If false, user can delete it. Dependand from buttons."/>
+
+    <c:if test="${empty buttons}">
+        <c:set var="buttons" value="${false}" />
+    </c:if>
+
+    <c:if test="${empty hideHeadline}">
+        <c:set var="hideHeadline" value="${false}" />
+    </c:if>
+
+    <div style="clear: both;">
+        <c:if test="${not hideHeadline}">
+            <h3 class="list-headline">
+
+                <fmt:message key="person.show.otherPub" />
+
+                <div class="pull-right btn-group dropdown-align-right all-resources-menu">
+                    <div class="btn-group">
+                        <bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header"><fmt:message key="post.meta.sort.criterion" /></li>
+                            <li class="sort-selection">
+                                <a data-div="otherPublications" data-sort="year" data-ordering="DESC" class="pubSort">
+                                    <fontawesome:icon icon="clock-o" spaceAfter="5"/><fmt:message key="sort.year"/><span class="sort-arrow fa-space-before-5"><!--keep me--></span>
+                                </a>
+                            </li>
+                            <li class="sort-selection">
+                                <a data-div="otherPublications" data-sort="title" data-ordering="ASC" class="pubSort">
+                                    <fontawesome:icon icon="heading" spaceAfter="5"/><fmt:message key="sort.title"/><span class="sort-arrow fa-space-before-5"><!--keep me--></span>
+                                </a>
+                            </li>
+                            <li class="sort-selection">
+                                <a data-div="otherPublications" data-sort="author" data-ordering="ASC" class="pubSort">
+                                    <fontawesome:icon icon="user" spaceAfter="5"/><fmt:message key="sort.author"/><span class="sort-arrow fa-space-before-5"><!--keep me--></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </h3>
+        </c:if>
+
+        <div id="otherPublications">
+
+            <c:forEach var="publicaton" items="${publications}">
+
+                <c:set var="post" value="${publicaton.post}"/>
+
+                <c:if test="${empty buttons}">
+                    <c:set var="buttons" value="${false}" />
+                </c:if>
+
+                <c:choose>
+                    <c:when test="${buttons}">
+                        <c:set var="pubDivClass" value="simplePubFirstLine simplePubFirstLinePaddingRight"/>
+                        <c:set var="authorsDivClass" value="simplePubAuthor simplePubAuthorPaddingRight"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="pubDivClass" value="simplePubFirstLine"/>
+                        <c:set var="authorsDivClass" value="simplePubAuthor"/>
+                    </c:otherwise>
+                </c:choose>
+
+                <div class="simplePubEntry"
+                     data-year="${mtl:getDate('', '', post.resource.year, locale)}"
+                     data-author="${post.resource.author}"
+                     data-title="${mtl:cleanBibtex(post.resource.title)}">
+
+                    <c:set var="loggedinUserName" value="${command.context.loginUser.name}" />
+
+                    <c:if test="${buttons and not empty loggedinUserName}">
+                        <div class="simplePubEntry-buttons btn-group">
+                            <c:if test="${empty post.user or post.user.name eq loggedinUserName}">
+                                <buttons:editPostButton post="${post}" resourceType="publication" buttonClasses="btn btn-default btn-xs" referer="${relativeUrlGenerator.getPersonUrl(personId)}" />
+                            </c:if>
+                            <c:choose>
+                                <c:when test="${addPub}">
+                                    <button type="button" class="btn btn-default btn-xs add-button"
+                                            data-interhash="${post.resource.interHash}"
+                                            data-index="${relation.personIndex}"
+                                            data-type="${relation.relationType}">
+                                        <fontawesome:icon icon="check"/>
+                                    </button>
+                                </c:when>
+                                <c:otherwise>
+                                    <button type="button" class="btn btn-default btn-xs delete-button"
+                                            data-interhash="${post.resource.interHash}"
+                                            data-personindex="${relation.personIndex}"
+                                            data-relationtype="${relation.relationType}">
+                                        <fontawesome:icon icon="trash"/>
+                                    </button>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </c:if>
+
+                    <div class="${pubDivClass}">
+                        <c:out value="${publicaton.renderedPost}" escapeXml="false" />
+                    </div>
+
+                </div>
+
+            </c:forEach>
+
+
+        </div>
+    </div>
+
+</jsp:root>

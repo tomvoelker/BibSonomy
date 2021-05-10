@@ -244,7 +244,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * list of all csl layout files of the user
 	 */
 	private List<CSLStyle> cslFiles = null;
-	
+
+	/**
+	 * All CSL styles the system offers
+	 */
+	private List<CSLStyle> personPageCslFiles = null;
+
 
 	/**
 	 * Constructor.
@@ -992,5 +997,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setCslFiles(List<CSLStyle> cslFiles) {
 		this.cslFiles = cslFiles;
+	}
+
+	public List<CSLStyle> getPersonPageCslFiles() {
+		return personPageCslFiles;
+	}
+
+	public void setPersonPageCslFiles(List<CSLStyle> personPageCslFiles) {
+		this.personPageCslFiles = personPageCslFiles;
 	}
 }

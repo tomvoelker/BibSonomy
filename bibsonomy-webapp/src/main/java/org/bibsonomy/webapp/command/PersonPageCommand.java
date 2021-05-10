@@ -118,6 +118,7 @@ public class PersonPageCommand extends BaseCommand {
 	private PersonPostsStyle personPostsStyle;
 	private String personPostsLayout;
 	private List<Post<BibTex>> myownPosts;
+	private Map<String, String> myownPostsRendered;
 
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
@@ -147,7 +148,17 @@ public class PersonPageCommand extends BaseCommand {
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
 
 	private PersonUpdateOperation updateOperation;
-	
+
+	private Map<String, String> renderedPosts;
+
+	public Map<String, String> getRenderedPosts() {
+		return renderedPosts;
+	}
+
+	public void setRenderedPosts(Map<String, String> renderedPosts) {
+		this.renderedPosts = renderedPosts;
+	}
+
 	/**
 	 * @return the updateOperation
 	 */
@@ -802,5 +813,13 @@ public class PersonPageCommand extends BaseCommand {
 
 	public void setPrevStart(Integer prevStart) {
 		this.prevStart = prevStart;
+	}
+
+	public Map<String, String> getMyownPostsRendered() {
+		return myownPostsRendered;
+	}
+
+	public void setMyownPostsRendered(Map<String, String> myownPostsRendered) {
+		this.myownPostsRendered = myownPostsRendered;
 	}
 }

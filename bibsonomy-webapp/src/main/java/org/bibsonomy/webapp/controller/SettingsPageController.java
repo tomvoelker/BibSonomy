@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -213,7 +214,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
 
 		/*
-		 * load all uploaded csl files
+		 * load all csl files that can be used for the person page
+		 */
+		final List<CSLStyle> personPageCslFiles = this.cslFilesManager.getStandardCslStyles();
+		command.setPersonPageCslFiles(personPageCslFiles);
+
+		/*
+		 * Load cls layouts of the user
 		 */
 		final List<CSLStyle> styles = this.cslFilesManager.loadUserLayouts(loggedInUserName);
 		command.setCslFiles(styles);
