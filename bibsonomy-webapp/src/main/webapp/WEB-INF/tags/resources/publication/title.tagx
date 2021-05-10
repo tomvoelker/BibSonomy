@@ -22,11 +22,7 @@
 	<div class="media">
 		<c:if test="${showUserPicture eq true}">
 			<div class="media-left">
-				<!-- TODO: (bootstrap) introduce tagx file for this -->
-				<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
-				<a href="/user/${mtl:encodePathSegment(post.user.name)}" title="${postUserName}">
-					<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar img-circle img-responsive"/>
-				</a>
+				<user:thumbnail user="${post.user}" noname="${true}" circle="${true}" />
 			</div>
 		</c:if>
 

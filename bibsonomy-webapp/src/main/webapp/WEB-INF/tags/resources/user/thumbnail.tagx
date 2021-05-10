@@ -18,16 +18,17 @@
 		<c:set var="size" value="64" />
 	</c:if>
 	
-	<c:set var="imgClass" value="thumbnail img-responsive" />
-	<c:if test="${not empty circle and circle}">
-		<c:set var="imgClass" value="circle" />
-	</c:if>
-	
-	<a href="${relativeUrlGenerator.getUserUrlByUserName(user)}" title="${username}">
-		<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user)}" style="height: ${size}px; width: ${size}px"  class="img-${imgClass}"/>
-		<c:if test="${empty noname or not noname}">
-			<span><c:out value="${username}" /></span>
+	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(user.name, command.context.loginUser)}">
+		<c:set var="imgClass" value="thumbnail img-responsive" />
+		<c:if test="${not empty circle and circle}">
+			<c:set var="imgClass" value="circle" />
 		</c:if>
-	</a>
+		<a href="${relativeUrlGenerator.getUserUrlByUserName(user)}" title="${username}">
+			<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user)}" style="height: ${size}px; width: ${size}px"  class="img-${imgClass}"/>
+			<c:if test="${empty noname or not noname}">
+				<span><c:out value="${username}" /></span>
+			</c:if>
+		</a>
+	</c:if>
 	
 </jsp:root>

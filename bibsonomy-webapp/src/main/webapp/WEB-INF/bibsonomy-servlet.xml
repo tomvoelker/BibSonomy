@@ -296,6 +296,7 @@
 				<value>absoluteUrlGenerator</value>
 				<value>urlGeneratorFactory</value>
 				<value>systemTagFactory</value>
+				<value>gravatarStdPictureHandlerFactory</value>
 			</list>
 		</property>
 	</bean>
@@ -1251,7 +1252,6 @@
 	<bean id="personsPageController" class="org.bibsonomy.webapp.controller.cris.PersonsPageController" scope="request">
 		<property name="logicInterface" ref="logic" />
 		<property name="crisCollege" value="${system.cris.college}" />
-		<property name="profilePictureLogic" ref="profileFileLogic" />
 	</bean>
 	
 	<!--  #################### static views #################### -->

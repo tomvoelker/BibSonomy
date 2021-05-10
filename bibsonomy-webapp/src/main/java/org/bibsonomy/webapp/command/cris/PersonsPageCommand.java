@@ -18,8 +18,6 @@ public class PersonsPageCommand extends EntitySearchAndFilterCommand {
 	/** if true all persons are displayed (also persons that are not associated with the configured college */
 	private boolean showAllPersons;
 
-	private List<String> personsWithProfilePicture;
-
 	/**
 	 * @return the persons
 	 */
@@ -41,11 +39,4 @@ public class PersonsPageCommand extends EntitySearchAndFilterCommand {
 		this.showAllPersons = showAllPersons;
 	}
 
-	public List<String> getPersonsWithProfilePicture() {
-		return personsWithProfilePicture;
-	}
-
-	public void setPersonsWithProfilePicture(List<String> personsWithProfilePicture) {
-		this.personsWithProfilePicture = personsWithProfilePicture;
-	}
 }

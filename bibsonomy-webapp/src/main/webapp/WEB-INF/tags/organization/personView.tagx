@@ -6,7 +6,6 @@
 >
 
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
-	<jsp:directive.attribute name="personsWithProfilePicture" type="java.util.List" required="false"/>
 
 	<div class="col-md-4">
 		<div class="media">
@@ -14,7 +13,7 @@
 				<c:choose>
 					<c:when test="${not empty person.user}">
 						<c:choose>
-							<c:when test="${properties['persons.profile.image.default'] or empty personsWithProfilePicture or personsWithProfilePicture.contains(person.user)}">
+							<c:when test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(person.user, command.context.loginUser)}">
 								<img class="media-object img-thumbnail" src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
 							</c:when>
 							<c:otherwise>
