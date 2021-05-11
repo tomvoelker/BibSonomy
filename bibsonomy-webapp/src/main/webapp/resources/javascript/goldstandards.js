@@ -58,13 +58,21 @@ function ajaxLoadLayout(link) {
 			csl_style = link_parts[2];
 			csl_url = "/csl/bibtex/" + link_parts[4];
 			container = $("#sidebar-quick-cite-box-modal .modal-body");
-			$(container).empty();
+			container.empty();
 
 			$.ajax({
 				url: csl_url,
 				success: function(data) {
 					//callback
-					renderCSL(data, csl_style, container, false);
+					try {
+						renderCSL(data, csl_style, container, false);
+					} catch (e) {
+						if ($("#sidebar-quick-cite-box-modal .modal-body").is(':empty')) {
+							alert("jasd");
+							$("#sidebar-quick-cite-box-modal .modal-body").append("ERROR!");
+						}
+					}
+
 					$("#sidebar-quick-cite-box-modal").modal("show");
 				}
 			});

@@ -711,16 +711,25 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		if (!present(cslStyle)) {
-			// TODO DEFAULT STYLE?? - or just keep old way of displying?
-			throw new RuntimeException("FU");
+			// style not found? reset to default rendering
+			command.setPersonPostsLayout("DEFAULT");
+			return Views.PERSON_SHOW;
 		}
 
+		final String userDefaultLanguage = user.getSettings().getDefaultLanguage();
 		LanguageFile localeProvider = new LanguageFile();
-		// TODO SET LANGUAGE
-		localeProvider.setLocale(cslFilesManager.getLocaleFile("en-US"));
+		switch (userDefaultLanguage) {
+			case "de":
+				localeProvider.setLocale(cslFilesManager.getLocaleFile("de-DE"));
+				break;
+			case "en":
+			default:
+				localeProvider.setLocale(cslFilesManager.getLocaleFile("en-US"));
+				break;
+		}
 
 		try {
-			renderedPosts = AdhocRenderer.renderPosts(postsToConvert , cslStyle.getContent(), localeProvider, true);
+			renderedPosts = renderer.renderPosts(postsToConvert , cslStyle.getContent(), localeProvider, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			renderedPosts = new HashMap<>();
@@ -749,8 +758,6 @@ public class PersonPageController extends SingleResourceListController implement
 				resourcePersonRelation.setRenderedPost(renderedPost);
 			}
 		}
-
-
 		/////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////
 

@@ -386,15 +386,6 @@
 						</c:if>
 
 
-						<!-- citation box -->
-						<h3 id="export">
-							<span class="fa fa-quote-right"><!-- keep me --></span>
-							<c:out value=" "/>
-							<fmt:message key="publications.citations.headline" />
-						</h3>
-						<pub2:citation post="${post}" isCommunityPost="${true}" />
-
-
 						<c:if test="${showFolkSonomyLinks}">
 							<!--+
 								| discussion

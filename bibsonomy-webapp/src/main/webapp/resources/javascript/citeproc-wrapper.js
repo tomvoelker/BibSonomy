@@ -69,11 +69,15 @@ function renderCSL(csl, styleName, container, clearContainer) {
 				"noteIndex" : 1
 			}
 		};
-		var renderedCitation = citeproc.appendCitationCluster(citation);
 		var bibliographyEntry = citeproc.makeBibliography();
 		var output = bibliographyEntry[1];
-		for (var i = 0; i < output.length; i++) {
-			container.append(output[i]);
+
+		if (!output) {
+			container.append("Sorry, this CSL style is not working at the moment!")
+		} else {
+			for (var i = 0; i < output.length; i++) {
+				container.append(output[i]);
+			}
 		}
 	});
 }

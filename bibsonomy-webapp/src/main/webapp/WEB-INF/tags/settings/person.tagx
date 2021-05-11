@@ -68,6 +68,8 @@
 							</form:select>
 						</div>
 					</div>
+
+					<c:if test="${command.crisEnabled}">
 					<!-- SELECT PERSON'S POSTS LAYOUT -->
 					<div class="form-group clearfix">
 						<form:label cssClass="col-sm-3 control-label" path="user.settings.personPostsLayout">
@@ -78,14 +80,15 @@
 								<form:option value="DEFAULT">
 									<fmt:message key="settings.person.style.default" />
 								</form:option>
-                                <c:forEach var="favl" items="${user.settings.favouriteLayouts}" varStatus="counter">
+
+								<c:forEach var="favl" items="${user.settings.favouriteLayouts}" varStatus="counter">
 									<!-- we ignore basic styles and Jabref styles, only CSL as we are using citeproc -->
 									<c:if test="${favl.source eq 'CSL'}">
 										<form:option value="CUSTOM/${favl.style}">
 											<mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
 										</form:option>
 									</c:if>
-                                </c:forEach>
+								</c:forEach>
 
 								<c:forEach var="style" items="${command.personPageCslFiles}" varStatus="counter">
 									<c:set var="name" value="${style.name}"/>
@@ -95,9 +98,12 @@
 										${displayName}
 									</form:option>
 								</c:forEach>
+
 							</form:select>
 						</div>
 					</div>
+					</c:if>
+
 					<!-- save changes button -->
 					<p class="clearfix"><!--  --></p>
 					<div class="form-group">

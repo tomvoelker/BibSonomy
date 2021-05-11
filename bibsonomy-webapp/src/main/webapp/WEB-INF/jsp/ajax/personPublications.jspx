@@ -7,18 +7,25 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:choose>
-		<c:when test="${command.personPostsStyleSettings gt 0}">
-			<c:forEach var="post" items="${command.myownPosts}">
-				<per:simplePostView post="${post}" />
-			</c:forEach>
+		<c:when test="${command.personPostsStyle == 'MYOWN'}">
+			<c:choose>
+				<c:when test="${command.personPostsLayout == 'DEFAULT'}">
+					<per:myownPostList command="${command}" posts="${command.myownPosts}" hideHeadline="${true}"/>
+				</c:when>
+				<c:otherwise>
+					<per:renderedPostList command="${command}" publications="${command.myownPosts}" hideHeadline="${true}" buttons="${true}" />
+				</c:otherwise>
+			</c:choose>
 		</c:when>
 		<c:otherwise>
-			<c:forEach var="relation" items="${command.otherPubs}">
-				<per:simplePubView relation="${relation}"
-								   buttons="${true}"
-								   personId="${command.person.personId}"
-								   onlyLinkAuthorsWithPersons="${not empty command.context.loginUser.name}" />
-			</c:forEach>
+			<c:choose>
+				<c:when test="${command.personPostsLayout == 'DEFAULT'}">
+					<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
+				</c:when>
+				<c:otherwise>
+					<per:renderedPubList command="${command}" publications="${command.otherPubs}" hideHeadline="${true}" buttons="${true}" />
+				</c:otherwise>
+			</c:choose>
 		</c:otherwise>
 	</c:choose>
 
