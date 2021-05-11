@@ -250,6 +250,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private List<CSLStyle> personPageCslFiles = null;
 
+	private boolean crisEnabled;
+	
 
 	/**
 	 * Constructor.
@@ -1005,5 +1007,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setPersonPageCslFiles(List<CSLStyle> personPageCslFiles) {
 		this.personPageCslFiles = personPageCslFiles;
+	}
+
+
+	public boolean isCrisEnabled() {
+		return crisEnabled;
+	}
+
+	public void setCrisEnabled(boolean crisEnabled) {
+		this.crisEnabled = crisEnabled;
 	}
 }
