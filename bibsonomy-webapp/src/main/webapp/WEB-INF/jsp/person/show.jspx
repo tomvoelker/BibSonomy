@@ -370,22 +370,6 @@
 				</div>
 			</c:if>
 
-			<div class="row">
-				<h1>POSTS!</h1>
-
-<!--				<per:renderedPubList command="${command}" publications="${command.otherPubs}" />-->
-
-<!--				<c:forEach var="otherPub" items="${command.otherPubs}">-->
-<!--					<div class="simplePubEntry"-->
-<!--						 data-year="${mtl:getDate('', '', otherPub.post.resource.year, locale)}"-->
-<!--						 data-author="${otherPub.post.resource.author}"-->
-<!--						 data-title="${mtl:cleanBibtex(otherPub.post.resource.title)}">-->
-
-<!--						<c:out value="${otherPub.renderedPost}" escapeXml="false" />-->
-<!--					</div>-->
-<!--				</c:forEach>-->
-			</div>
-
 			<!-- ################################################################### -->
 			<!-- ############### Simple Pagination - TODO: Move in Future! ######### -->
 			<!-- ################################################################### -->
