@@ -118,6 +118,7 @@ import org.bibsonomy.scraper.url.kde.nature.NatureJournalScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureNewsScraper;
 import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
+import org.bibsonomy.scraper.url.kde.neurips.NeurIPSScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
 import org.bibsonomy.scraper.url.kde.nrc.NRCScraper;
 import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
@@ -268,6 +269,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ProjectmuseScraper());
 		addScraper(new SSRNScraper());
 		addScraper(new ScopusScraper());
+		addScraper(new NeurIPSScraper());
 		// 2018-03-21, rja: site does no longer host content?!
 		//addScraper(new MetapressScraper());
 		addScraper(new CiteseerxScraper());
