@@ -61,12 +61,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper</Scraper>
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_14">
-		<TestDescription>URL scraping test with standards from ieeexplore</TestDescription>
-		<URL>http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?tp=&amp;isnumber=21156&amp;arnumber=982216&amp;punumber=7718</URL>
-		<BibFile>IEEEXploreStandardsScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
 		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008</URL>

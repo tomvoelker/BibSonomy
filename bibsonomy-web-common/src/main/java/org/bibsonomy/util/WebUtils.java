@@ -40,6 +40,7 @@ import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpException;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -185,6 +186,18 @@ public class WebUtils {
 	}
 
 	/**
+	 *
+	 * @param url the URL of the content.
+	 * @param cookie a cookie which should be included in the header of the request send to the server
+	 * @param referer the referer which should be included in the header of the request send to the server
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final URL url, final String cookie, final String referer) throws IOException {
+		return getContentAsString(url.toString(), cookie, null, null, referer);
+	}
+
+	/**
 	 * Reads from a URL and writes the content into a string.
 	 *
 	 * @param url
@@ -202,7 +215,6 @@ public class WebUtils {
 
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * @param client
 	 *
 	 * @param url
 	 * @param cookie
@@ -213,7 +225,42 @@ public class WebUtils {
 	 *
 	 * @throws IOException
 	 */
+	public static String getContentAsString(final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore, final String referer) throws IOException {
+		return getContentAsString(CLIENT, url, cookie, postData, visitBefore, referer);
+	}
+
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * @param client
+	 *
+	 * @param url
+	 * @param cookie
+	 * @param postData
+	 * @param visitBefore the address that should be visited before
+	 *
+	 * @return String which holds the page content.
+	 *
+	 * @throws IOException
+	 */
 	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore) throws IOException {
+		return getContentAsString(client, url, cookie, postData, visitBefore, null);
+	}
+
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * @param client
+	 *
+	 * @param url
+	 * @param cookie
+	 * @param postData
+	 * @param visitBefore the address that should be visited before making the actual request
+	 * @param referer the referer to set when getting the content from the url
+	 *
+	 * @return String which holds the page content.
+	 *
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final HttpClient client, final String url, final String cookie, final List<NameValuePair> postData, final String visitBefore, final String referer) throws IOException {
 		if (present(visitBefore)) {
 			/*
 			 * visit URL to get cookies if needed
@@ -250,6 +297,11 @@ public class WebUtils {
 		if (present(cookie)) {
 			method.addHeader(COOKIE_HEADER_NAME, cookie);
 		}
+
+		if (present(referer)) {
+			method.addHeader(HttpHeaders.REFERER, referer);
+		}
+
 		try {
 			/*
 			 * do request
@@ -267,7 +319,8 @@ public class WebUtils {
 			/*
 			 * collect response
 			 */
-			final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+			final Header firstHeader = response.getFirstHeader(CONTENT_TYPE_HEADER_NAME);
+			final String charset = extractCharset(firstHeader.getValue());
 			final StringBuilder content = inputStreamToStringBuilder(response.getEntity().getContent(), charset);
 
 			final String string = content.toString();

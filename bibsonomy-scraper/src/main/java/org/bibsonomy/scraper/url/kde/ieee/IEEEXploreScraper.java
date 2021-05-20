@@ -45,7 +45,6 @@ public class IEEEXploreScraper extends UrlCompositeScraper {
 	public IEEEXploreScraper() {
 		addScraper(new IEEEXploreJournalProceedingsScraper());
 		addScraper(new IEEEXploreBookScraper());
-		addScraper(new IEEEXploreStandardsScraper());
 	}
 	
 	@Override

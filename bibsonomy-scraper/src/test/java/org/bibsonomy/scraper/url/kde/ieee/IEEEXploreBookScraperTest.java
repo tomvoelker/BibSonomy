@@ -28,15 +28,7 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.net.URL;
-
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -56,70 +48,8 @@ public class IEEEXploreBookScraperTest {
 	 */
 	@Test
 	public void urlTestRun1() {
-		final String url = "http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132";
+		final String url = "https://ieeexplore.ieee.org/book/5263132";
 		final String resultFile = "IEEEXploreBookScraperUnitURLTest.bib";
-		assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_157
-	 */
-	@Test
-	public void urlTestRun2() {
-		final String url = "http://ieeexplore.ieee.org/search/freesrchabstract.jsp?arnumber=5286085&isnumber=5284878&punumber=5284806&k2dockey=5286085@ieecnfs&query=%28limpens+freddy%3Cin%3Eau%29&pos=0&access=no";
-		final String resultFile = "IEEEXploreBookScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_158
-	 */
-	@Test
-	public void urlTestRun3() {
-		final String url = "http://ieeexplore.ieee.org/search/srchabstract.jsp?arnumber=4383076&isnumber=4407525&punumber=10376&k2dockey=4383076@ieeejrns&query=%28%28hotho%29%3Cin%3Eau+%29&pos=0&access=n0";
-		final String resultFile = "IEEEXploreBookScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, IEEEXploreBookScraper.class, resultFile);
-	}
-	
-	//TODO currently not working, throws NullPointerException
-	@Ignore
-	@Test
-	public void testCitedby() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5286085"));
-		
-		IEEEXploreBookScraper book = new IEEEXploreBookScraper();
-
-		assertTrue(book.scrape(sc));
-
-		assertTrue(book.scrapeCitedby(sc));
-
-		final String cby = sc.getCitedBy();
-		assertNotNull(cby);
-
-		assertTrue(cby.length() > 100);
-
-		assertEquals("{\"formulaStrippedArticleTitle\":\"Collaborative Semantic Structuring of Folksonomies\",\"title\":\"Collaborative".trim(), cby.substring(0, 106).trim());
-
-		assertTrue(cby.contains("S. Beldjoudi,"));
-	}
-	@Test
-	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5286085"));
-		
-		final IEEEXploreBookScraper book = new IEEEXploreBookScraper();
-		
-		assertTrue(book.scrape(sc));
-		
-		assertTrue(book.scrapeReferences(sc));
-		
-		final String reference = sc.getReferences();
-		
-		assertNotNull(reference);
-		
-		assertTrue(reference.length() > 100);
-		
-		assertEquals("1.", reference.trim().substring(0, 2));
-		
-		assertTrue(reference.contains("U. Bojars"));
+		assertScraperResult(url, IEEEXploreBookScraper.class, resultFile);
 	}
 }

@@ -45,7 +45,7 @@ public class IEEEComputerSocietyScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		final String url = "http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html";
+		final String url = "https://www.computer.org/csdl/proceedings-article/dexa/2006/26410603/12OmNxFJXTp";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
 	}

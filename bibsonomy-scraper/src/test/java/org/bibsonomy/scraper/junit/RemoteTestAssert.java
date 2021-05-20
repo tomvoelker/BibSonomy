@@ -106,7 +106,8 @@ public class RemoteTestAssert {
 		if (!present(bibTeX)) {
 			return bibTeX;
 		}
-		return bibTeX.replaceAll("\\r\\n", "\n").trim();
+		final String normedLineBreaks = bibTeX.replaceAll("\\r\\n", "\n").trim();
+		return normedLineBreaks.replaceAll("(?m)^[\\s&&[^\\n]]+|[\\s+&&[^\\n]]+$", "");
 	}
 
 	/**

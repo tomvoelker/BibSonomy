@@ -28,13 +28,13 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.junit.RemoteTestAssert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #13 #127 for IEEEXploreJournalProceedingsScraper
+ * Scraper URL tests for IEEEXploreJournalProceedingsScraper
  * @author tst
  *
  */
@@ -47,10 +47,8 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	@Test
 	public void urlTestRun1() {
 		final String url = "http://ieeexplore.ieee.org/document/6136685/?tp=&arnumber=6136685&contentType=Conference%20Publications&searchField%3DSearch_All%26queryText%3DEnergy%20efficient%20hierarchical%20epidemics%20in%20peer-to-peer%20systems";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
 		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest1.bib";
-		assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
 	}
 
 	/**
@@ -59,10 +57,8 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	@Test
 	public void urlTestRun2() {
 		final String url = "http://ieeexplore.ieee.org/document/4536262/?arnumber=4536262";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
 		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest2.bib";
-		assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
 	}
 	
 	/**
@@ -71,9 +67,37 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	@Test
 	public void urlTestRun3() {
 		final String url = "https://ieeexplore.ieee.org/document/6189346";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
 		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest3.bib";
-		assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_157
+	 */
+	@Test
+	public void urlTestRun4() {
+		final String url = "https://ieeexplore.ieee.org/document/5286085";
+		final String resultFile = "IEEEXploreBookScraperUnitURLTest1.bib";
+		assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_158
+	 */
+	@Test
+	public void urlTestRun5() {
+		final String url = "https://ieeexplore.ieee.org/document/4383076";
+		final String resultFile = "IEEEXploreBookScraperUnitURLTest2.bib";
+		assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_14
+	 */
+	@Test
+	public void urlTestRun() {
+		final String url = "https://ieeexplore.ieee.org/document/982216?tp=&isnumber=21156&arnumber=982216&punumber=7718";
+		final String resultFile = "IEEEXploreStandardsScraperUnitURLTest.bib";
+		RemoteTestAssert.assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
 	}
 }
