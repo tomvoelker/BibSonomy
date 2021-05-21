@@ -63,16 +63,7 @@ function ajaxLoadLayout(link) {
 			$.ajax({
 				url: csl_url,
 				success: function(data) {
-					//callback
-					try {
-						renderCSL(data, csl_style, container, false);
-					} catch (e) {
-						if ($("#sidebar-quick-cite-box-modal .modal-body").is(':empty')) {
-							alert("jasd");
-							$("#sidebar-quick-cite-box-modal .modal-body").append("ERROR!");
-						}
-					}
-
+					renderCSL(data, csl_style, container, false);
 					$("#sidebar-quick-cite-box-modal").modal("show");
 				}
 			});

@@ -61,7 +61,7 @@ function renderCSL(csl, styleName, container, clearContainer) {
 		if (clearContainer) {
 			container.empty();
 		}
-		
+
 		var citeproc = new CSL.Engine(sys, xml);
 		var citation = {
 			"citationItems" : citationItems,
@@ -69,6 +69,9 @@ function renderCSL(csl, styleName, container, clearContainer) {
 				"noteIndex" : 1
 			}
 		};
+		// this line seems to be needed
+		var renderedCitation = citeproc.appendCitationCluster(citation);
+
 		var bibliographyEntry = citeproc.makeBibliography();
 		var output = bibliographyEntry[1];
 
