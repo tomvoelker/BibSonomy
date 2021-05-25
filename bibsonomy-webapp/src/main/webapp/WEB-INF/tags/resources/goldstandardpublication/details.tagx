@@ -65,100 +65,107 @@
 				+-->
 			<div class="content-header" id="info">
 
-				<div class="content-header-entrytype">
-					<bib:entrytype publication="${goldstandard}" />
+				<div class="col-md-10">
+
+					<div class="content-header-entrytype">
+						<bib:entrytype publication="${goldstandard}" />
+					</div>
+
+					<h1 itemprop="name">
+						<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+					</h1>
+
+					<h2>
+						<!--<bib:author publication="${goldstandard}" post="${post}"/>-->
+						<bib:desc publication="${goldstandard}"
+								  post="${post}"
+								  linebreakAfterAuthors="${true}"
+								  restrictToFirstAuthors="${false}"
+								  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
+								  publishedIn="${publishedIn}"/>
+					</h2>
+
+					<div class="content-header-buttons">
+						<c:if test="${post.approved}">
+							<fmt:message key="goldStandard.approved.title" var="approved"/>
+							<div class="btn btn-success community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
+								<span class="fa fa-check-circle" ><!-- keep me --></span>
+							</div>
+						</c:if>
+
+						<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
+					</div>
+
 				</div>
 
-				<h1 itemprop="name">
-					<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
-				</h1>
+				<div class="col-md-2">
+					<div class="content-header-metric-buttons">
+						<!-- Addition Info Badges -->
 
-				<h2>
-					<!--<bib:author publication="${goldstandard}" post="${post}"/>-->
-					<bib:desc publication="${goldstandard}"
-							  post="${post}"
-							  linebreakAfterAuthors="${true}"
-							  restrictToFirstAuthors="${false}"
-							  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
-							  publishedIn="${publishedIn}"/>
-				</h2>
-
-				<div class="content-header-buttons">
-					<c:if test="${post.approved}">
-						<fmt:message key="goldStandard.approved.title" var="approved"/>
-						<div class="btn btn-success community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
-							<span class="fa fa-check-circle" ><!-- keep me --></span>
-						</div>
-					</c:if>
-
-					<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
-				</div>
-
-
-				<div class="content-header-metric-buttons">
-					<!-- Addition Info Badges -->
-
-					<!-- In collection of users -->
-					<c:if test="${showFolkSonomyLinks}">
-						<fmt:message key="goldStandard.users" var="inCollectionOf"/>
-						<a class="content-header-additional-info-item btn btn-default hidden-xs"
-						   data-toggle="tooltip"
-						   data-placement="bottom"
-						   title="${fn:escapeXml(inCollectionOf)}"
-						   href="#goldStandardPublicationUsers"
-						>
-							<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
-
-							<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
-						</a>
-					</c:if>
-
-					<!-- Tag count -->
-					<c:if test="${showFolkSonomyLinks}">
-						<fmt:message key="tags.of_resource" var="tagsTotal"/>
-						<a class="content-header-additional-info-item btn btn-default hidden-xs"
-						   data-toggle="tooltip"
-						   data-placement="bottom"
-						   title="${fn:escapeXml(tagsTotal)}"
-						   href="#goldStandardPublicationTags"
-						>
-							<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
-
-							<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
-						</a>
-					</c:if>
-
-					<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
-						<c:if test="${not empty goldstandard.references}">
-							<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
+						<!-- In collection of users -->
+						<c:if test="${showFolkSonomyLinks}">
+							<fmt:message key="goldStandard.users" var="inCollectionOf"/>
 							<a class="content-header-additional-info-item btn btn-default hidden-xs"
 							   data-toggle="tooltip"
 							   data-placement="bottom"
-							   title="${fn:escapeXml(referencesTotal)}"
-							   href="#goldStandardPublicationReferences"
+							   title="${fn:escapeXml(inCollectionOf)}"
+							   href="#goldStandardPublicationUsers"
 							>
-								<span class="content-header-additional-info-count"><c:out value="${goldstandard.references.size()}" /></span>
+								<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
 
-								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.references" /></span>
+								<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
 							</a>
 						</c:if>
 
-						<c:if test="${not empty goldstandard.referencedBy}">
-							<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
+						<!-- Tag count -->
+						<c:if test="${showFolkSonomyLinks}">
+							<fmt:message key="tags.of_resource" var="tagsTotal"/>
 							<a class="content-header-additional-info-item btn btn-default hidden-xs"
 							   data-toggle="tooltip"
 							   data-placement="bottom"
-							   title="${fn:escapeXml(referencedByTotal)}"
-							   href="#goldStandardPublicationReferences"
+							   title="${fn:escapeXml(tagsTotal)}"
+							   href="#goldStandardPublicationTags"
 							>
-								<span class="content-header-additional-info-count"><c:out value="${goldstandard.referencedBy.size()}" /></span>
+								<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
 
-								<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.citations" /></span>
+								<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
 							</a>
 						</c:if>
 
-					</c:if>
+						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+							<c:if test="${not empty goldstandard.references}">
+								<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
+								<a class="content-header-additional-info-item btn btn-default hidden-xs"
+								   data-toggle="tooltip"
+								   data-placement="bottom"
+								   title="${fn:escapeXml(referencesTotal)}"
+								   href="#goldStandardPublicationReferences"
+								>
+									<span class="content-header-additional-info-count"><c:out value="${goldstandard.references.size()}" /></span>
+
+									<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.references" /></span>
+								</a>
+							</c:if>
+
+							<c:if test="${not empty goldstandard.referencedBy}">
+								<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
+								<a class="content-header-additional-info-item btn btn-default hidden-xs"
+								   data-toggle="tooltip"
+								   data-placement="bottom"
+								   title="${fn:escapeXml(referencedByTotal)}"
+								   href="#goldStandardPublicationReferences"
+								>
+									<span class="content-header-additional-info-count"><c:out value="${goldstandard.referencedBy.size()}" /></span>
+
+									<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.citations" /></span>
+								</a>
+							</c:if>
+
+						</c:if>
+					</div>
 				</div>
+
+				<div class="clearfix"><!-- KEEP ME --></div>
 
 			</div>
 
