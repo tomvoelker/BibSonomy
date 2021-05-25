@@ -6,14 +6,20 @@ const AND = 'AND';
 const OR = 'OR';
 const NOT = 'NOT';
 
+function toggleFilters() {
+    $('#extendedFilters').slideToggle();
+    $('#expandFilterLink').toggle(0);
+    $('#hideFilterLink').toggle(0);
+}
+
 function resetExtendedSearch() {
     $('#extendedSearchInput').val('');
     $('#extendedSearchForm').submit();
 }
 
 function toggleExtendedSearch(focusTarget) {
-    $('#search').toggleClass('hidden');
-    $('#extendedSearch').toggleClass('hidden');
+    $('#search').toggle();
+    $('#extendedSearch').slideToggle();
     // set focus
     var input = $(focusTarget);
     input.focus();
