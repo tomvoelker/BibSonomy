@@ -438,6 +438,19 @@
 								</select>
 								<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
 							</div>
+
+							<div class="cust-loader">
+								<div class="loader">
+									<div class="loader--dot"><!-- KEEP ME --></div>
+									<div class="loader--dot"><!-- KEEP ME --></div>
+									<div class="loader--dot"><!-- KEEP ME --></div>
+									<div class="loader--dot"><!-- KEEP ME --></div>
+									<div class="loader--dot"><!-- KEEP ME --></div>
+									<div class="loader--dot"><!-- KEEP ME --></div>
+									<div class="loader--text"><!-- KEEP ME --></div>
+								</div>
+							</div>
+
 						</div>
 
 						<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="">

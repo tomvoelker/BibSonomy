@@ -125,7 +125,7 @@ public final class CSLUtils {
 	 *
 	 * @return the converted posts
 	 */
-	public static CSLItemDataConversionResult[] convertConcurretlyToCslItemData(final List<? extends Post<BibTex>> posts, boolean addSurroundingTextTags) {
+	public static CSLItemDataConversionResult[] convertConcurretlyToCslItemData(final List<Post<? extends BibTex>> posts, boolean addSurroundingTextTags) {
 		final Queue<CSLItemDataConversionResult> items = new LinkedBlockingQueue<>();
 		posts.parallelStream().forEach(bibTexPost -> items.add(convertToCslItemData(bibTexPost, addSurroundingTextTags)));
 		return items.toArray(new CSLItemDataConversionResult[0]);

@@ -121,8 +121,9 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 		}
 
 		if (!present(cslStyle)) {
-			// TODO DEFAULT STYLE?? - or just keep old way of displying?
-			throw new RuntimeException("FU");
+			// style not found? reset to default rendering
+			command.setPersonPostsLayout("DEFAULT");
+			return Views.AJAX_PERSON_PUBLICATIONS;
 		}
 
 		final String userDefaultLanguage = user.getSettings().getDefaultLanguage();

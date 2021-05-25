@@ -9,7 +9,7 @@
 	<c:choose>
 		<c:when test="${command.personPostsStyle == 'MYOWN'}">
 			<c:choose>
-				<c:when test="${command.personPostsLayout == 'DEFAULT'}">
+				<c:when test="${empty command.personPostsLayout or command.personPostsLayout == 'DEFAULT'}">
 					<per:myownPostList command="${command}" posts="${command.myownPosts}" hideHeadline="${true}"/>
 				</c:when>
 				<c:otherwise>
@@ -19,7 +19,7 @@
 		</c:when>
 		<c:otherwise>
 			<c:choose>
-				<c:when test="${command.personPostsLayout == 'DEFAULT'}">
+				<c:when test="${empty command.personPostsLayout or command.personPostsLayout == 'DEFAULT'}">
 					<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
 				</c:when>
 				<c:otherwise>

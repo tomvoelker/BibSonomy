@@ -34,7 +34,7 @@ public class AdhocRenderer {
 	 */
 	public static Map<String, String> renderPosts(final List<Post<? extends BibTex>> posts, final String cslTemplate, LocaleProvider localeProvider, boolean addSurroundingTextTags) {
 
-		final CSLItemData[] cslItems = Arrays.stream(CSLUtils.convertToCslItemData(posts, addSurroundingTextTags))
+		final CSLItemData[] cslItems = Arrays.stream(CSLUtils.convertConcurretlyToCslItemData(posts, addSurroundingTextTags))
 				.map(CSLUtils.CSLItemDataConversionResult::getItemData)
 				.toArray(CSLItemData[]::new);
 

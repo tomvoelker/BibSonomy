@@ -17,6 +17,8 @@ function loadLayoutSelect(formatUrl, element) {
 		success: function(data) {
 			$("#goldstandard-quick-cite-select").html(data).find("select").addClass("form-control input-sm");
 			$("#goldstandard-quick-cite").hide();
+			// hide the loader
+			$(".cust-loader").hide();
 			openSelect2(element);
 		}
 	});
@@ -79,6 +81,8 @@ $(function() {
 
 	// remove the dummy element and replace it by select2 combobox layout selection
 	$("#goldstandard-quick-cite").focus(function() {
+		// show the loader
+		$(".cust-loader").show();
 		loadLayoutSelect($(this).data("formaturl"), this);
 	})
 
