@@ -27,28 +27,25 @@
 package org.bibsonomy.scraper.url.kde.aaai;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author hagen
  */
-public class AAAIScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(AAAIScraper.class);
+public class AAAIScraper extends GenericBibTeXURLScraper {
 	
 	private static final String SITE_NAME = "Association for the Advancement of Artificial Intelligence";
 
-	private static final String SITE_URL = "http://www.aaai.org/";
+	private static final String SITE_URL = "https://www.aaai.org/";
 
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
@@ -87,37 +84,30 @@ public class AAAIScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		
-		//build download link
-		String downloadLink = scrapingContext.getUrl().toExternalForm();
-		
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		String downloadLink = url.toExternalForm();
+
 		downloadLink = downloadLink.replace(PAPER_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
 		downloadLink = downloadLink.replace(ARTICLE_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
-		downloadLink += PAPER_DOWNLOAD_PATH_SUFFIX;
-		
-		try {
-			final String exportPageContent = WebUtils.getContentAsString(downloadLink);
-			final Matcher matcher = PRE_PATTERN.matcher(exportPageContent);
-			if (matcher.find()) {
-				String bibtex = matcher.group(1);
-				//replace conference field key by booktitle
-				if (!bibtex.contains("booktitle")) {
-					bibtex = bibtex.replaceAll("conference\\*?=", "booktitle=");
-				}
-				
-				// replace entry type paper by inproceedings
-				// FIXME: are all those publications inproceedings?
-				bibtex = bibtex.replace("@paper", "@inproceedings");
-				
-				scrapingContext.setBibtexResult(bibtex);
-				return true;
+		return downloadLink + PAPER_DOWNLOAD_PATH_SUFFIX;
+	}
+
+	@Override
+	protected String postProcessScrapingResult(final ScrapingContext scrapingContext, final String content) {
+		final Matcher matcher = PRE_PATTERN.matcher(content);
+		if (matcher.find()) {
+			String bibtex = matcher.group(1);
+			//replace conference field key by booktitle
+			if (!bibtex.contains("booktitle")) {
+				bibtex = bibtex.replaceAll("conference\\*?=", "booktitle=");
 			}
-		} catch (final IOException e) {
-			log.error("error while downloading " + downloadLink, e);
+
+			// replace entry type paper by inproceedings
+			// FIXME: are all those publications inproceedings?
+			bibtex = bibtex.replace("@paper", "@inproceedings");
+			return bibtex;
 		}
-		
-		return false;
+
+		return null;
 	}
 }
