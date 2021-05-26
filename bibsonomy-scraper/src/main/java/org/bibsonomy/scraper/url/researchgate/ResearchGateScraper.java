@@ -38,7 +38,7 @@ public class ResearchGateScraper extends GenericBibTeXURLScraper {
 		final Matcher idMatcher = ID_PATTERN.matcher(path);
 		if (idMatcher.find()) {
 			final String id = idMatcher.group(1);
-			return SITE_URL + "/publicliterature.PublicationHeaderDownloadCitation.downloadCitation.html?fileType=BibTeX&citationAndAbstract=true&publicationUid=" + id;
+			return SITE_URL + "/lite.publication.PublicationDownloadCitationModal.downloadCitation.html?fileType=BibTeX&citation=citationAndAbstract&publicationUid=" + id;
 		}
 		return null;
 	}
