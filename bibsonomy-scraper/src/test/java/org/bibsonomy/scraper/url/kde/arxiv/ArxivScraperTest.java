@@ -36,7 +36,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #10 #126 #129 for ArxivScraper
  * @author tst
- *
  */
 @Category(RemoteTest.class)
 public class ArxivScraperTest {
@@ -46,9 +45,9 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		final String url = "http://arxiv.org/abs/0706.3639";
+		final String url = "https://arxiv.org/abs/0706.3639";
 		final String resultFile = "ArxivScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, ArxivScraper.class, resultFile);
+		assertScraperResult(url, ArxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -56,9 +55,9 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		final String url = "http://arxiv.org/abs/cond-mat/0508028";
+		final String url = "https://arxiv.org/abs/cond-mat/0508028";
 		final String resultFile = "ArxivScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, ArxivScraper.class, resultFile);
+		assertScraperResult(url, ArxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -66,9 +65,9 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun3(){
-		final String url = "http://arxiv.org/abs/0810.1951";
+		final String url = "https://arxiv.org/abs/0810.1951";
 		final String resultFile = "ArxivScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, ArxivScraper.class, resultFile);
+		assertScraperResult(url, ArxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -76,8 +75,8 @@ public class ArxivScraperTest {
 	 */
 	@Test
 	public void urlTestRun4(){
-		final String url = "http://arxiv.org/abs/0805.2045";
+		final String url = "https://arxiv.org/abs/0805.2045";
 		final String resultFile = "ArxivScraperUnitURLTest4.bib";
-		assertScraperResult(url, null, ArxivScraper.class, resultFile);
+		assertScraperResult(url, ArxivScraper.class, resultFile);
 	}
 }

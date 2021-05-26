@@ -51,14 +51,14 @@ public class ArxivScraper extends AbstractUrlScraper {
 	/** OAI to bibtex converter */
 	private static final OAIToBibtexConverter OAI_CONVERTER = new OAIToBibtexConverter();
 	private static final String SITE_NAME = "arXiv";
-	private static final String SITE_URL = "http://arxiv.org/";
+	private static final String SITE_URL = "https://arxiv.org/";
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String ARXIV_HOST = "arxiv.org";
 	
 	private static final Pattern PDF_SUFFIX_PATTERN = Pattern.compile("\\.pdf");
 	private static final Pattern patternID = Pattern.compile("(abs|pdf)/(.+)");
 	private static final Pattern patternVer = Pattern.compile("(.+?)v\\d+");
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -102,7 +102,7 @@ public class ArxivScraper extends AbstractUrlScraper {
 	}
 
 	/**
-	 * @param vId
+	 * @param id
 	 * @return
 	 */
 	private static String normId(final String id) {
