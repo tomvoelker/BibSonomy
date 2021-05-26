@@ -297,19 +297,6 @@
 		<BibFile>CoinsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_131">
-		<TestDescription>Citeulike test, one citation only</TestDescription>
-		<URL>http://citeulike.org/user/zwang/article/1286647</URL>
-		<BibFile>CiteulikeScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_132">
-		<TestDescription>Citeulike test, many citations</TestDescription>
-		<URL>http://citeulike.org/tag/bibsonomy</URL>
-		<BibFile>CiteulikeScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_136">
 		<TestDescription>eric Scraper url test</TestDescription>
 		<URL>http://eric.ed.gov/ERICWebPortal/custom/portlets/recordDetails/detailmini.jsp?_nfpb=true&amp;_&amp;ERICExtSearch_SearchValue_0=EJ523959&amp;ERICExtSearch_SearchType_0=no&amp;accno=EJ523959</URL>
@@ -355,12 +342,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
 		<Enabled>false</Enabled>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
-	</URLTest>
-	<URLTest id="url_156">
-		<TestDescription>Citeulike url test</TestDescription>
-		<URL>http://www.citeulike.org/article-posts/2599016</URL>
-		<BibFile>CiteulikeScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_163">
 		<TestDescription>Test for worldcat publication page</TestDescription>

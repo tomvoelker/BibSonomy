@@ -275,7 +275,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new CiteseerxScraper());
 		addScraper(new OpenrepositoryScraper());
 		addScraper(new PionScraper());
-		addScraper(new CiteulikeScraper());
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleScholarScraper());
