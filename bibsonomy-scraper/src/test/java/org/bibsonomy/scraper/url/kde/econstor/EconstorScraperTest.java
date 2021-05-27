@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.econstor;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,7 +44,7 @@ public class EconstorScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_252");
+		assertScraperResult("https://www.econstor.eu/handle/10419/64547", EconstorScraper.class, "EconstorScraperUnitURLTest.bib");
 	}
 
 }

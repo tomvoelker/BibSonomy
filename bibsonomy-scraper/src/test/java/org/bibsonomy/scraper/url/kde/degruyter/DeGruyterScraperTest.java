@@ -28,9 +28,7 @@ package org.bibsonomy.scraper.url.kde.degruyter;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,11 +41,11 @@ public class DeGruyterScraperTest {
 	
 	@Test
 	public void urlTest1() {
-		assertScraperResult("https://www.degruyter.com/view/product/429811?rskey=eDUde3&result=1", null, DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest3.bib");
+		assertScraperResult("https://www.degruyter.com/view/product/429811?rskey=eDUde3&result=1", DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest3.bib");
 	}
 	
 	@Test
 	public void urlTest2() {
-		assertScraperResult("http://www.degruyter.com/view/j/itit.2014.56.issue-5/itit-2014-1048/itit-2014-1048.xml", null, DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest2.bib");
+		assertScraperResult("http://www.degruyter.com/view/j/itit.2014.56.issue-5/itit-2014-1048/itit-2014-1048.xml", DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest2.bib");
 	}
 }

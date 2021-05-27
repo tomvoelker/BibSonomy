@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,24 +44,24 @@ public class AIFBScraperTest {
 	 * starts URL test with id url_2
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_2");
+	public void url1TestRun() {
+		assertScraperResult("https://www.aifb.kit.edu/web/Article1764", AIFBScraper.class, "AIFBScraperUnitURLTest1.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_3
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_3");
+	public void url2TestRun() {
+		assertScraperResult("https://www.aifb.kit.edu/web/Inproceedings867", AIFBScraper.class, "AIFBScraperUnitURLTest2.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_4
 	 */
 	@Test
-	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_4");
+	public void url3TestRun() {
+		assertScraperResult("https://www.aifb.kit.edu/web/Book2015", AIFBScraper.class, "AIFBScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_5");
+		assertScraperResult("https://www.aifb.kit.edu/web/Incollection2044", AIFBScraper.class, "AIFBScraperUnitURLTest4.bib");
 	}
 	
 	/**
@@ -76,22 +77,14 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_6");
+		assertScraperResult("https//www.aifb.kit.edu/web/Phdthesis74", AIFBScraper.class, "AIFBScraperUnitURLTest5.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_7
 	 */
 	@Test
-	public void url6TestRun(){
-		UnitTestRunner.runSingleTest("url_7");
-	}
-	
-	/**
-	 * starts URL test with id url_72
-	 */
-	@Test
-	public void url7TestRun(){
-		UnitTestRunner.runSingleTest("url_72");
+	public void url6TestRun() {
+		assertScraperResult("https://www.aifb.kit.edu/web/Techreport2020", AIFBScraper.class, "AIFBScraperUnitURLTest6.bib");
 	}
 }

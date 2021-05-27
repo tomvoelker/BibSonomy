@@ -4,48 +4,7 @@
 <test:Tests xmlns:test="http://www.example.org/UnitTestDataSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/UnitTestDataSchema UnitTestDataSchema.xsd ">
-	<URLTest id="url_2">
-		<TestDescription>URL test for a single aifb publication (article).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Article1764</URL>
-		<BibFile>AIFBScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_3">
-		<TestDescription>URL test for a single aifb publication (inproceeding).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Inproceedings867</URL>
-		<BibFile>AIFBScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_4">
-		<TestDescription>URL test for a single aifb publication (book).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Book2015</URL>
-		<BibFile>AIFBScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_5">
-		<TestDescription>URL test for a single aifb publication (incollection).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Incollection2044</URL>
-		<BibFile>AIFBScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_6">
-		<TestDescription>URL test for a single aifb publication (phdthesis).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Phdthesis74</URL>
-		<BibFile>AIFBScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_7">
-		<TestDescription>URL test for a single aifb publication (techreport).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Techreport2020</URL>
-		<BibFile>AIFBScraperUnitURLTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
+
 	<URLTest id="url_11">
 		<TestDescription>URL scraping test with citebase publications</TestDescription>
 		<URL>http://www.citebase.org/abstract?id=oai%3AarXiv.org%3Acs%2F0602042</URL>
@@ -123,14 +82,6 @@
 		<URL>http://www.editlib.org/index.cfm?fuseaction=Reader.ChooseCitationFormat&amp;paper_id=12795</URL>
 		<BibFile>EditLibScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.editlib.EditLibScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_72">
-		<TestDescription>URL test for a single aifb publication (unpublished).</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Unpublished3000</URL>
-		<BibFile>AIFBScraperUnitURLTest7.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>This entry has been removed</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_79">
 		<TestDescription>URL test for proceeding page from usenix.org with current layout</TestDescription>
@@ -467,12 +418,6 @@
 		<BibFile>RSCScraperUnitTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_252">
-		<TestDescription>Econstor Scraper test</TestDescription>
-		<URL>http://www.econstor.eu/handle/10419/64547</URL>
-		<BibFile>EconstorScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_253">
 		<TestDescription>Mendeley Scraper test</TestDescription>
 		<URL>http://www.mendeley.com/catalog/social-bookmarking-beispiel-bibsonomy/</URL>
@@ -619,13 +564,6 @@
 		<BibFile>SpieDigitalLibraryScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper</Scraper>
 	</URLTest>
-	<!-- TODO: where is the scraper?
-	<URLTest id="url_355">
-		<TestDescription>URL scraping test for the repec website</TestDescription>
-		<URL>https://ideas.repec.org/p/pra/mprapa/40613.html</URL>
-		<BibFile>RepecScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.repec.RepecScraper</Scraper>
-	</URLTest>-->
 	<URLTest id="url_357">
 		<TestDescription>URL scraping test for the thieme connect website</TestDescription>
 		<URL>https://www.thieme-connect.de/products/ejournals/abstract/10.1055/s-0035-1558406</URL>
@@ -662,13 +600,6 @@
 		<BibFile>LccnLocScraperScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
 	</URLTest>
-	<!-- TODO: reenable 
-	<URLTest id="url_367">
-		<TestDescription>URL scraping test for the repec website</TestDescription>
-		<URL>https://ideas.repec.org/p/pra/mprapa/71036.html</URL>
-		<BibFile>RepecScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.repec.RepecScraper</Scraper>
-	</URLTest>-->
 	<URLTest id="url_368">
 		<TestDescription>URL scraping test for the cyberleninka website (russian website)</TestDescription>
 		<URL>http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii</URL>
