@@ -20,6 +20,7 @@
 		| variables, messages
 		+-->
 	<c:set var="organization" value="${command.group}"/>
+	<c:set var="showProjectsLinks" value="${properties['system.cris.project.links']}" />
 
 	<layout:paneLayout pageTitle="${title}" command="${command}" requPath="${requPath}" showPageOptions="${true}">
 		<jsp:attribute name="heading">
@@ -84,7 +85,7 @@
 							</li>
 						</c:if>
 						<c:set var="projectCount" value="${command.projects.totalCount}" />
-						<c:if test="${projectCount gt 0}">
+						<c:if test="${projectCount gt 0 and showProjectsLinks}">
 							<li class="${subPage eq 'PROJECTS' ? 'active': ''}">
 								<a href="${relativeUrlGenerator.getOrganizationProjectsUrlByName(orgaName)}">
 									<fontawesome:icon icon="project-diagram" spaceAfter="5" />
@@ -190,7 +191,7 @@
 						</div>
 					</div>
 				</c:if>
-				<c:if test="${subPage eq 'PROJECTS'}">
+				<c:if test="${subPage eq 'PROJECTS' and showProjectsLinks}">
 					<c:if test="${projectCount gt 0}">
 						<div id="organization-projects">
 							<div class="row">
