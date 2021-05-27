@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:spring="http://www.springframework.org/tags">
 
 	<fmt:message key="navi.helpUrl" var="helpLangUrl" />
@@ -40,8 +41,8 @@
 					<c:if test="${not empty developerFooter}">
 						<dt><c:out value="${developerFooter}" /></dt>
 
-						<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="https://bibsonomy.bitbucket.io"><fmt:message key="footer.overview"/></a></dd>
-						<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
+						<dd><fontawsome:icon icon="bitbucket" fixedWidth="${true}" /><c:out value=" " /><a href="https://bibsonomy.bitbucket.io"><fmt:message key="footer.overview"/></a></dd>
+						<dd><fontawsome:icon icon="puzzle-piece" fixedWidth="${true}" /><c:out value=" " /><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
 					</c:if>
 				</div>
 			</dl>
@@ -105,22 +106,22 @@
 					<dt><fmt:message key="footer.socialMedia"/></dt>
 					<c:set var="twitter" value="${properties['project.social.twitter']}" />
 					<c:if test="${not empty twitter}">
-						<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="https://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
+						<dd><fontawsome:icon icon="twitter" fixedWidth="${true}" />&amp;nbsp;<a href="https://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
 					</c:if>
 
 					<c:set var="facebook" value="${properties['project.social.facebook']}" />
 					<c:if test="${not empty facebook}">
-						<dd><span class="fa fa-facebook"><!--  --></span>&amp;nbsp;<a href="https://facebook.com/${facebook}"><fmt:message key="footer.social.facebook"/></a></dd>
+						<dd><fontawsome:icon icon="facebook" fixedWidth="${true}" />&amp;nbsp;<a href="https://facebook.com/${facebook}"><fmt:message key="footer.social.facebook"/></a></dd>
 					</c:if>
 
 					<c:set var="youtube" value="${properties['project.social.youtube']}" />
 					<c:if test="${not empty youtube}">
-						<dd><span class="fa fa-youtube-play"><!--  --></span>&amp;nbsp;<a href="https://youtube.com/${youtube}"><fmt:message key="footer.social.youtube"/></a></dd>
+						<dd><fontawsome:icon icon="youtube-play" fixedWidth="${true}" />&amp;nbsp;<a href="https://youtube.com/${youtube}"><fmt:message key="footer.social.youtube"/></a></dd>
 					</c:if>
 
 					<c:set var="instagram" value="${properties['project.social.instagram']}" />
 					<c:if test="${not empty instagram}">
-						<dd><span class="fa fa-instagram"><!--  --></span>&amp;nbsp;<a href="https://instagram.com/${instagram}"><fmt:message key="footer.social.instagram"/></a></dd>
+						<dd><fontawsome:icon icon="instagram" fixedWidth="${true}" />&amp;nbsp;<a href="https://instagram.com/${instagram}"><fmt:message key="footer.social.instagram"/></a></dd>
 					</c:if>
 				</div>
 			</dl>
