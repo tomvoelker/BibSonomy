@@ -121,7 +121,15 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onGoldStandardUpdate(int newContentId, int contentId, String newInterhash, String interhash, DBSession session);
-	
+
+	/**
+	 * Called when a gold standard publication is successfully updated.
+	 *
+	 * @param interhash
+	 * @param session
+	 */
+	public void onGoldStandardUpdated(String interhash, User loggedinUser, DBSession session);
+
 	/**
 	 * Called when a reference of a gold standard publication will be created
 	 * @param userName

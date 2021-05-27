@@ -74,6 +74,11 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
+	public void onGoldStandardUpdated(final String interhash, User loggedinUser, final DBSession session) {
+		// noop
+	}
+
+	@Override
 	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHash_publication, final String interHash_reference, final String interHash_relation) {
 		// noop
 	}

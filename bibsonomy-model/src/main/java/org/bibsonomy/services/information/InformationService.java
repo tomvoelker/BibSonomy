@@ -39,4 +39,10 @@ public interface InformationService {
 	 * @param post
 	 */
 	public void createdPost(final String username, final Post<? extends Resource> post);
+
+	/**
+	 * @param username the user to inform
+	 * @param post
+	 */
+	public void updatedPost(final String username, final Post<? extends Resource> post);
 }

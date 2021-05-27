@@ -27,10 +27,22 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.information.InformationService;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * handles updates that are necessary when the interhash changes when a community publication is updated
@@ -41,6 +53,8 @@ import org.bibsonomy.model.User;
  * @author dzo
  */
 public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
+
+	private InformationService service;
 
 	@Override
 	public void onGoldStandardDelete(final String interhash, User loggedinUser, final DBSession session) {
@@ -84,5 +98,38 @@ public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 		 */
 		this.update("updateDiscussion", param, session);
 		this.update("updateReviewRatingCache", param, session);
+	}
+
+	@Override
+	public void onGoldStandardUpdated(final String interhash, User loggedinUser, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setHash(interhash);
+		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		// query for the post and their relations
+		Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getGoldStandardByHash", param, session);
+		List<ResourcePersonRelation> relations = this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
+		if (present(relations)) {
+			String loggedinUsername = loggedinUser.getName();
+			// Create a set of usernames, that have already been mailed
+			Set<String> usersMailed = new HashSet<>();
+			// inform all the related users, if they aren't the user updating the publication
+			for (ResourcePersonRelation relation : relations) {
+				String relationUsername = relation.getPerson().getUser();
+				if (present(relationUsername) && !usersMailed.contains(relationUsername) && !loggedinUsername.equals(relationUsername)) {
+					usersMailed.add(relationUsername);
+					service.updatedPost(relationUsername, post);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Set service to inform of changes in gold standard publications.
+	 * For example e-mailing related users.
+	 *
+	 * @param service the information service to set
+	 */
+	public void setService(InformationService service) {
+		this.service = service;
 	}
 }

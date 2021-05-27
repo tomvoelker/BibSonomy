@@ -88,7 +88,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
  */
-public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface, CRISLogicInterface {
+public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface, CRISLogicInterface, InformationLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -134,19 +134,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
 
 	/**
-	 * Returns details about a specified user
-	 *
-	 * In case of the requesting user is not logged in or he's not allowed to access <br>
-	 * the requested users data, a user containing only it's name is returned. <br>
-	 *
-	 * In case of the a non existing requested user or a deleted account, a complete empty user is returned.
-	 *
-	 * @param userName name of the user we want to get details from
-	 * @return details about a named user
-	 */
-	User getUserDetails(String userName);
-
-	/**
 	 * @param userName
 	 * @return WikiVersions
 	 */
@@ -188,16 +175,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	@Deprecated // use getUsers method
 	public List<User> getDeletedGroupUsers(int start, int end);
-
-	/**
-	 * Returns details of one group.
-	 *
-	 * @param groupName
-	 * @param pending	<code>true</code> iff you want to get group details of
-	 * 					a pending group
-	 * @return the group's details, null else
-	 */
-	public Group getGroupDetails(String groupName, boolean pending);
 
 	/**
 	 * Returns a list of tags which can be filtered.

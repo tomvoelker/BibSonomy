@@ -321,7 +321,7 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 *
 	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getUserDetails(java.lang.String)
+	 * org.bibsonomy.model.logic.InformationLogicInterface#getUserDetails(java.lang.String)
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
@@ -933,7 +933,7 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 *
 	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String
+	 * org.bibsonomy.model.logic.InformationLogicInterface#getGroupDetails(java.lang.String
 	 * )
 	 */
 	@Override

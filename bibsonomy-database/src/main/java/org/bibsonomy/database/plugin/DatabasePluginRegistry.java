@@ -108,6 +108,11 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
 		this.callAllPlugins(plugin -> plugin.onGoldStandardUpdate(oldContentId, newContentId, newInterhash, interhash, session));
 	}
+
+	@Override
+	public void onGoldStandardUpdated(final String interhash, User loggedinUser, final DBSession session) {
+		this.callAllPlugins(plugin -> plugin.onGoldStandardUpdated(interhash, loggedinUser, session));
+	}
 	
 	@Override
 	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference, final String interHashRelation) {

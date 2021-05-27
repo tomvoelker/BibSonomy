@@ -40,4 +40,9 @@ public class DummyInformationService implements InformationService {
 		// ignore
 	}
 
+	@Override
+	public void updatedPost(String username, Post<? extends Resource> post) {
+		// ignore
+	}
+
 }

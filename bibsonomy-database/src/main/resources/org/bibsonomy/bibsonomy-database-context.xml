@@ -487,7 +487,9 @@
 					<property name="clipboardDatabaseManager" ref="clipboardDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.DiscussionPlugin" />
-				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationPlugin">
+					<property name="service" ref="goldStandardInformationService"/>
+				</bean>
 				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
 				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
 					<constructor-arg ref="personDatabaseManager" />

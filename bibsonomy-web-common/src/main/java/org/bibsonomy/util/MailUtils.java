@@ -41,10 +41,8 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -414,27 +412,6 @@ public class MailUtils {
 		} catch (final MessagingException e) {
 			log.fatal("Could not send group request mail: " + e.getMessage());
 		}
-	}
-
-	public boolean sendGoldStandardPublicationUpdateNotification(final Post<BibTex> changedPost, final String personName, final String personMail, final Locale locale) {
-		final Object[] messagesParameters = new Object[]{
-				personName,
-				changedPost.getResource().getTitle(),
-				this.absoluteURLGenerator.getResourceUrl(changedPost)
-		};
-
-		final String messageSubject = messageSource.getMessage("mail.goldstandard.update.subject", messagesParameters, locale);
-		final String messageBody = messageSource.getMessage("mail.goldstandard.update.body", messagesParameters, locale);
-
-		// set the recipients
-		final String[] recipient = {personMail};
-		try {
-			sendPlainMail(recipient,  messageSubject, messageBody, projectEmail);
-			return true;
-		} catch (final MessagingException e) {
-			log.fatal("Could not send gold standard publication update notification: " + e.getMessage());
-		}
-		return false;
 	}
 
 	/**

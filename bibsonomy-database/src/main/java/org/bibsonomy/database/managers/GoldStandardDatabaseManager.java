@@ -252,6 +252,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	@Override
 	public JobResult updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		session.beginTransaction();
+		String resourceHash = "";
 		try {
 
 			/*
@@ -260,7 +261,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final R resource = post.getResource();
 			resource.recalculateHashes();
 
-			final String resourceHash = resource.getInterHash();
+			resourceHash = resource.getInterHash();
 			/*
 			 * the resource with the "old" interhash, that was sent
 			 * within the update resource request
@@ -317,6 +318,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
+			this.onGoldStandardUpdated(resourceHash, loginUser, session);
 		}
 		return JobResult.buildSuccess(post.getResource().getInterHash());
 	}
@@ -447,6 +449,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 	private void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String oldHash, final String newResourceHash, final DBSession session) {
 		this.plugins.onGoldStandardUpdate(oldContentId, newContentId, newResourceHash, oldHash, session);
+	}
+
+	private void onGoldStandardUpdated(final String resourceHash, User loggedinUser, final DBSession session) {
+		this.plugins.onGoldStandardUpdated(resourceHash, loggedinUser, session);
 	}
 
 	private void onGoldStandardDelete(final String resourceHash, User loggedinUser, final DBSession session) {

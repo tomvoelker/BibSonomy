@@ -38,7 +38,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.InformationLogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.MailUtils;
 import org.springframework.context.MessageSource;
 
@@ -51,7 +52,9 @@ public class MailInformationService implements InformationService {
 	private static final Log log = LogFactory.getLog(MailInformationService.class);
 	
 	/** the logic must be an admin logic */
-	protected LogicInterface logic;
+	protected InformationLogicInterface logic;
+
+	protected URLGenerator absoluteURLGenerator;
 	
 	private MailUtils mailer;
 	
@@ -60,10 +63,8 @@ public class MailInformationService implements InformationService {
 	private String templateKey;
 
 	private String fromAddress;
-	
-	
-	@Override
-	public void createdPost(String username, Post<? extends Resource> post) {
+
+	protected void defaultPost(String username, Post<? extends Resource> post) {
 		final User userToInform = this.logic.getUserDetails(username);
 		if (!this.userWantsToBeInformed(userToInform)) {
 			return; // user doesn't what to be informed
@@ -72,7 +73,7 @@ public class MailInformationService implements InformationService {
 		final String template = getTemplate(username, locale);
 		final StringTemplate stringTemplate = new StringTemplate(template, DefaultTemplateLexer.class);
 		this.setAttributes(stringTemplate, userToInform, post);
-		
+
 		try {
 			this.mailer.sendPlainMail(new String[]{ getMailAddress(userToInform) }, getSubject(locale), stringTemplate.toString(), this.fromAddress);
 		} catch (final MessagingException e) {
@@ -80,6 +81,17 @@ public class MailInformationService implements InformationService {
 		}
 	}
 	
+	
+	@Override
+	public void createdPost(String username, Post<? extends Resource> post) {
+		defaultPost(username, post);
+	}
+
+	@Override
+	public void updatedPost(String username, Post<? extends Resource> post) {
+		defaultPost(username, post);
+	}
+
 	/**
 	 * the subject of the mail
 	 * @param locale
@@ -129,7 +141,7 @@ public class MailInformationService implements InformationService {
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(InformationLogicInterface logic) {
 		this.logic = logic;
 	}
 	
@@ -166,5 +178,14 @@ public class MailInformationService implements InformationService {
 	 */
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
+	}
+
+	/**
+	 * must be a absolute not relative url generator
+	 *
+	 * @param absoluteURLGenerator the absoluteURLGenerator to set
+	 */
+	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {
+		this.absoluteURLGenerator = absoluteURLGenerator;
 	}
 }

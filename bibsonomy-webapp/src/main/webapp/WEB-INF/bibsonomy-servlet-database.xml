@@ -12,15 +12,33 @@
 	
 	<!-- import database context form submodule -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
-	
+
+	<!-- minimalistic logic -->
+	<bean id="informationLogic" class="org.bibsonomy.database.InformationLogic">
+		<property name="userName" value="admin"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+	</bean>
+
 	<!-- information service for reporting system tag -->
 	<bean id="reportInformationService" class="org.bibsonomy.services.information.ReportingMailInformationService">
 		<property name="messageSource" ref="messageSource" />
-		<property name="logic" ref="adminLogic" />
+		<property name="logic" ref="informationLogic" />
 		<property name="projectHome" ref="projectHome" />
 		<property name="mailer" ref="mailUtils" />
 		<property name="subjectKey" value="group.reporting.mail.subject" />
 		<property name="fromAddress" value="${project.email}" />
+	</bean>
+
+	<!-- information service for updated gold standard publication -->
+	<bean id="goldStandardInformationService" class="org.bibsonomy.services.information.GoldStandardInformationService">
+		<property name="messageSource" ref="messageSource" />
+		<property name="logic" ref="informationLogic" />
+		<property name="mailer" ref="mailUtils" />
+		<property name="subjectKey" value="mail.goldstandard.update.subject" />
+		<property name="templateKey" value="mail.goldstandard.update.body" />
+		<property name="fromAddress" value="${project.email}" />
+		<property name="crisEnabled" value="${system.cris}" />
+		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 	
 	<bean id="slaveDataSource" class="${database.datasource.class}" parent="basicDataSource">
