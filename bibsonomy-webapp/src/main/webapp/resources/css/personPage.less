@@ -6,29 +6,29 @@
 		overflow-y: auto;
 		cursor: pointer;
 	}
-	
+
 	.tt-suggestion:nth-child(2n+1) {
 		background-color: @gray-lighter;
 		border-top: @border-dropdown;
 		border-bottom: @border-dropdown;
 	}
-	
+
 	.tt-suggestion:hover {
 		background-color: @main-color-light;
 	}
-	
+
 	.response {
 		text-align: center;
   		margin: 0 20px 5px 20px;
   		padding: 3px 0;
   		border-bottom: 1px solid #ccc;
 	}
-	
-	.tooltip-inner {    
+
+	.tooltip-inner {
     	width: 300px;
     	background-color: @main-color;
-	}	
-}	
+	}
+}
 
 .simplePub {
 	border-top: @border-dropdown;
@@ -63,15 +63,15 @@
 
 .page-header .form-group .twitter-typeahead {
 	display: inline !important;
-}				
+}
 
 .person-search input.typeahead {
 	with: 90%;
 	margin-left: auto;
 	margin-right: auto;
 }
-		
-			
+
+
 .personPageFormPlaceholder {
 	display: inline-block;
 	padding: 7px 0 0 0;
@@ -82,9 +82,9 @@ h1 .personPageFormPlaceholder {
 	padding: 0;
 }
 
-.personPageFormField { 
-	display: none; 
-	padding: 0; 
+.personPageFormField {
+	display: none;
+	padding: 0;
 	margin: 0;
 }
 
@@ -93,7 +93,7 @@ h1 .personPageFormPlaceholder {
 	cursor: pointer;
 }
 
-.personPageLockedForm {	
+.personPageLockedForm {
 	padding: 0 5px 0 0;
 	cursor: pointer;
 }
@@ -354,28 +354,21 @@ a.personPageShowAdditionalRoleFields {
 #organization-persons {
 
   div.row {
-	margin-bottom: 40px;
+	margin-bottom: 20px;
+	min-height: 70px;
   }
 
-  .person-default-icon {
-	// TODO: check why we need this margin for the default icon
-	margin-top: 13px;
-
-	> span {
-	  color: #000000;
-	  text-align: center;
-	  font-size: 4em;
-	}
+  .media .media-left {
+	// set fixed width of div around thumbnail
+	min-width: 70px;
+	max-width: 70px;
   }
 
   img.media-object.img-thumbnail {
 	max-width: 65px;
 	max-height: 72px;
-  }
-
-  .no-thumbnail {
-	min-width: 65px;
 	border: none;
+	padding: 0;
   }
 }
 

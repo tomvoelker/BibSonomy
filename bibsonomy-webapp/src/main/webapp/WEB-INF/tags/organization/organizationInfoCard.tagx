@@ -9,10 +9,10 @@
 	<c:set var="groupName" value="${organization.name}" />
 	<div class="col-md-6">
 		<div class="media">
-			<div class="media-left media-middle">
+			<div class="media-left">
 				<group:groupthumbnail noname="${true}" group="${organization}" imageGroupClass="img-orga" orgaUrl="${true}" />
 			</div>
-			<div class="media-body media-middle">
+			<div class="media-body">
 				<a href="${relativeUrlGenerator.getOrganizationUrlByName(groupName)}">
 					<h4 class="media-heading">
 						<group:groupname group="${organization}" noLink="${true}" showRealname="${true}"/>
