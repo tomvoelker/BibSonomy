@@ -43,9 +43,9 @@ public class ElsevierScraperTest {
 	 */
 	@Test
 	public void urlTestRun1() {
-		final String url = "http://www.elsevier.es/es-revista-journal-of-applied-research-and-81-articulo-extensions-to-k-medoids-with-balance-90391442";
+		final String url = "https://www.elsevier.es/es-revista-journal-of-applied-research-and-81-articulo-extensions-to-k-medoids-with-balance-90391442";
 		final String resultFile = "ElsevierScraperUnitURLTest.bib";
-		assertScraperResult(url, null, ElsevierScraper.class, resultFile);
+		assertScraperResult(url, ElsevierScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,8 +53,8 @@ public class ElsevierScraperTest {
 	 */
 	@Test
 	public void urlTestRun2() {
-		final String url = "http://www.elsevier.es/es-revista-allergologia-et-immunopathologia-105-articulo-identification-of-therapeutic-targets-for-90446632?referer=buscador";
+		final String url = "https://www.elsevier.es/en-revista-allergologia-et-immunopathologia-105-articulo-identification-therapeutic-targets-for-childhood-S0301054615000580";
 		final String resultFile = "ElsevierScraper1UnitURLTest.bib";
-		assertScraperResult(url, null, ElsevierScraper.class, resultFile);
+		assertScraperResult(url, ElsevierScraper.class, resultFile);
 	}
 }

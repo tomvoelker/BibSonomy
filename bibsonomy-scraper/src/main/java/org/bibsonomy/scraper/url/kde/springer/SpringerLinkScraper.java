@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -53,17 +54,16 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	private static final Log log = LogFactory.getLog(SpringerLinkScraper.class);
 	
 	private static final String SITE_NAME = "SpringerLink";
-	private static final String SITE_URL = "http://link.springer.com/";
+	private static final String SITE_URL = "https://link.springer.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	
-	private static final String DOWNLOAD_URL = "http://citation-needed.services.springer.com/v2/references/";
+	private static final String DOWNLOAD_URL = "https://citation-needed.services.springer.com/v2/references/";
 	private static final String DOWNLOAD_TYPE = "?format=bibtex&flavour=citation";
 	private static final String SPRINGER_CITATION_HOST = "link.springer.com";
 	
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	static{
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<>(Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	));
 	
 	/**
 	 * @param doi

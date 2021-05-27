@@ -56,7 +56,7 @@ public class ACMBasicScraperTest {
 	public void urlTestRun1(){
 		final String url = "http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036";
 		final String resultFile = "ACMBasicScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class ACMBasicScraperTest {
 	public void urlTestRun2(){
 		final String url = "http://portal.acm.org/citation.cfm?id=333115.333119&amp;coll=GUIDE&amp;dl=GUIDE&amp;CFID=11052258&amp;CFTOKEN=84161555";
 		final String resultFile = "ACMBasicScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class ACMBasicScraperTest {
 	public void urlTestRun3(){
 		final String url = "http://portal.acm.org/citation.cfm?id=1105676";
 		final String resultFile = "ACMBasicScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class ACMBasicScraperTest {
 	public void urlTestRun4(){
 		final String url = "http://portal.acm.org/citation.cfm?id=553876";
 		final String resultFile = "ACMBasicScraperUnitURLTest4.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -96,14 +96,14 @@ public class ACMBasicScraperTest {
 	public void urlTestRun5(){
 		final String url = "http://portal.acm.org/beta/citation.cfm?id=359859";
 		final String resultFile = "ACMBasicScraperUnitURLTest5.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	@Test
 	public void urlTestRun6(){
 		final String url = "http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#";
 		final String resultFile = "ACMBasicScraperUnitURLTest6.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	/**
 	 * 
@@ -112,7 +112,7 @@ public class ACMBasicScraperTest {
 	public void urlTestRun7(){
 		final String url = "http://dl.acm.org/citation.cfm?id=1571977";
 		final String resultFile = "ACMBasicScraperUnitURLTest7.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	/**
@@ -122,14 +122,14 @@ public class ACMBasicScraperTest {
 	public void urlTestRun9(){
 		final String url = "https://cacm.acm.org/magazines/2015/8/189841-understanding-the-u-s-domestic-computer-science-phd-pipeline/fulltext";
 		final String resultFile = "ACMBasicScraperUnitURLTest9.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
+		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	@Test
 	public void test2() throws MalformedURLException {
 		
-		String url = "http://portal.acm.org/citation.cfm?id=500737.500755"; // abstract works
-		url = "http://portal.acm.org/citation.cfm?id=1364171"; // abstract missing
+		String url = "https://portal.acm.org/citation.cfm?id=500737.500755"; // abstract works
+		url = "https://portal.acm.org/citation.cfm?id=1364171"; // abstract missing
 		final ACMBasicScraper acm = new ACMBasicScraper();
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
 		

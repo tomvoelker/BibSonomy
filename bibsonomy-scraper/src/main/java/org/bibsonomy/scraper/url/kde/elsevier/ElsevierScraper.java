@@ -45,13 +45,13 @@ import org.bibsonomy.util.WebUtils;
 public class ElsevierScraper extends GenericRISURLScraper {
 	
 	private static final String SITE_NAME = "Elsevier";
-	private static final String SITE_URL = "http://www.elsevier.es";
+	private static final String SITE_URL = "https://www.elsevier.es";
 	private static final String HOST = "elsevier.es";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final Pattern DOWNLOAD_URL = Pattern.compile("<li class=\"rif\" ><a href='(.*)' class");
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
 	/* (non-Javadoc)

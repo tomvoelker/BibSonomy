@@ -45,9 +45,9 @@ public class SpringerScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2";
+		final String url = "https://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2";
 		final String resultFile = "SpringerScraperUnitURLTest.bib";
-		assertScraperResult(url, null, SpringerScraper.class, resultFile);
+		assertScraperResult(url, SpringerScraper.class, resultFile);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class SpringerScraperTest {
 	public void url8TestRun() {
 		final String url = "https://link.springer.com/book/10.1007/978-0-387-85820-3";
 		final String resultFile = "SpringerLinkScraperUnitURLTest9.bib";
-		assertScraperResult(url, null, SpringerScraper.class, resultFile);
+		assertScraperResult(url, SpringerScraper.class, resultFile);
 	}
 	
 	/**
@@ -67,6 +67,6 @@ public class SpringerScraperTest {
 	public void url9TestRun() {
 		final String url = "https://link.springer.com/content/pdf/10.1007%2F978-3-319-29671-5_3.pdf";
 		final String resultFile = "SpringerLinkScraperUnitURLTest10.bib";
-		assertScraperResult(url, null, SpringerScraper.class, resultFile);
+		assertScraperResult(url, SpringerScraper.class, resultFile);
 	}
 }

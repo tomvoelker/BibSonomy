@@ -53,7 +53,7 @@ public class BibSonomyScraper extends GenericBibTeXURLScraper {
 	private static final String BIBTEX_FORMAT_PATH_PREFIX = "/bib";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
+		new Pair<>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
 	);
 	
 	@Override

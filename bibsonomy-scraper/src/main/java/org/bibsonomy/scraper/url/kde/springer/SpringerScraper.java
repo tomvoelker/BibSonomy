@@ -50,7 +50,7 @@ import org.bibsonomy.util.id.ISBNUtils;
 public class SpringerScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Springer";
-	private static final String SITE_URL = "http://www.springer.com/";
+	private static final String SITE_URL = "https://www.springer.com/";
 	private static final String INFO = "Scraper for books from " + href(SITE_URL, SITE_NAME) + ".";
 
 	/** Host */
@@ -84,7 +84,7 @@ public class SpringerScraper extends AbstractUrlScraper {
 			
 			throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}

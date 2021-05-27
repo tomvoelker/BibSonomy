@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.biorxiv;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -45,9 +44,9 @@ public class BioRxivScraperTest {
 	 */
 	@Test
 	public void url1Test1Run(){		
-		final String url = "http://biorxiv.org/content/early/2016/11/30/090654";
+		final String url = "https://biorxiv.org/content/early/2016/11/30/090654";
 		final String resultFile = "BioRxivScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
+		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -55,8 +54,8 @@ public class BioRxivScraperTest {
 	 */
 	@Test
 	public void url1Test2Run(){		
-		final String url = "http://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
+		final String url = "https://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
 		final String resultFile = "BioRxivScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
+		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 }

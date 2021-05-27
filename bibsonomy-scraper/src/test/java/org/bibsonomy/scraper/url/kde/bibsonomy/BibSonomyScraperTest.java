@@ -46,7 +46,7 @@ public class BibSonomyScraperTest {
 	public void url1TestRun() {
 		final String url = "https://www.bibsonomy.org/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
 		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
+		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class BibSonomyScraperTest {
 	public void url2TestRun() {
 		final String url = "https://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
 		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
+		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class BibSonomyScraperTest {
 	public void url3TestRun() {
 		final String url = "https://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
 		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
+		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 
 	/**
@@ -76,6 +76,6 @@ public class BibSonomyScraperTest {
 	public void url4TestRun() {
 		final String url = "https://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
 		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
+		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 }

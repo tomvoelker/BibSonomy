@@ -303,14 +303,6 @@
 		<BibFile>EricScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_139">
-		<TestDescription>Test for scientificcommons.org</TestDescription>
-		<URL>http://en.scientificcommons.org/39659008</URL>
-		<BibFile>ScientificcommonsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper</Scraper>
-		<!-- Scientificcommons is down, reason why is unnknown -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
 		<URL>http://orca.cf.ac.uk/5213/</URL>
@@ -631,12 +623,6 @@
 		<URL>http://www.osti.gov/scitech/biblio/1150628-spatial-clustering-pixels-multispectral-image</URL>
 		<BibFile>OstiScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.osti.OstiScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_348">
-		<TestDescription>test for scientific.net website</TestDescription>
-		<URL>http://www.scientific.net/AMR.225-226.1032</URL>
-		<BibFile>ScientificScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.scientific.ScientificScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_349">
 		<TestDescription>test for scientific.net website</TestDescription>

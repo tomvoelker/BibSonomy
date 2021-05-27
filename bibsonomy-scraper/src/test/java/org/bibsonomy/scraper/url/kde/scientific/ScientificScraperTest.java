@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.scientific;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,7 +42,7 @@ public class ScientificScraperTest {
 	 * starts URL test with id url_348
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_348");
+	public void url1TestRun() {
+		assertScraperResult("https://www.scientific.net/AMR.225-226.1032", ScientificScraper.class, "ScientificScraperUnitURLTest1.bib");
 	}
 }

@@ -47,7 +47,7 @@ public class IEEEComputerSocietyScraperTest {
 	public void url1TestRun() {
 		final String url = "https://www.computer.org/csdl/proceedings-article/dexa/2006/26410603/12OmNxFJXTp";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
+		assertScraperResult(url, IEEEComputerSocietyScraper.class, resultFile);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class IEEEComputerSocietyScraperTest {
 	public void url2TestRun() {
 		final String url = "http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
+		assertScraperResult(url, IEEEComputerSocietyScraper.class, resultFile);
 	}
 	
 	/**
@@ -67,6 +67,6 @@ public class IEEEComputerSocietyScraperTest {
 	public void url3TestRun() {
 		final String url = "http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf";
 		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
+		assertScraperResult(url, IEEEComputerSocietyScraper.class, resultFile);
 	}
 }

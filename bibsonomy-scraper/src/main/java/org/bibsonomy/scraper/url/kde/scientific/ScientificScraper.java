@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.url.kde.scientific;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -48,13 +49,13 @@ public class ScientificScraper extends GenericBibTeXURLScraper {
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String SCIENTIFC_HOSTS = "scientific.net";
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SCIENTIFC_HOSTS),  AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<>(Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + SCIENTIFC_HOSTS),  AbstractUrlScraper.EMPTY_PATTERN)
+	));
+
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		return url.toString()+".bib";
+		return url.toString() + ".bib";
 	}
 	
 	@Override
