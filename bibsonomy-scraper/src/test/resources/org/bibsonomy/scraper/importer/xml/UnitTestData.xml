@@ -67,15 +67,6 @@
 		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_17">
-		<TestDescription>URL test for the L3S scraper</TestDescription>
-		<URL>http://www.l3s.de/web/page25g.do?kcond12g.att1=782</URL>
-		<BibFile>L3SScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.l3s.L3SScraper</Scraper>
-		<!-- New L3S web site layout not supported; publication lists on web site 
-			not in correct format, yet -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_20">
 		<TestDescription>Test for scraping publications with the ams scraper (normal publication page)</TestDescription>
 		<URL>http://www.ams.org/mathscinet/search/publdoc.html?pg1=IID&amp;s1=198275&amp;r=1</URL>
