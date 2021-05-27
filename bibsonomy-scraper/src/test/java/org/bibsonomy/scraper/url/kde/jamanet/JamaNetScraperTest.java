@@ -44,7 +44,14 @@ public class JamaNetScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://jamanetwork.com/journals/jama/fullarticle/2469891";
-		final String resultFile = "JamaNetworkScraperUnitURLTest.bib";
+		final String resultFile = "JamaNetworkScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, JamaNetScraper.class, resultFile);
+	}
+	
+	@Test
+	public void url2TestRun(){
+		final String url = "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2767009";
+		final String resultFile = "JamaNetworkScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, JamaNetScraper.class, resultFile);
 	}
 }

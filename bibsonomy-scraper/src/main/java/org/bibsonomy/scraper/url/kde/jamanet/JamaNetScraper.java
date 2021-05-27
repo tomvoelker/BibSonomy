@@ -49,7 +49,7 @@ public class JamaNetScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_URL = "http://" + HOST + "/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final String DOWNLOAD_URL = "http://jamanetwork.com/journals/jama/downloadcitation/";
+	private static final String DOWNLOAD_URL = "https://jamanetwork.com/Citation/Download";
 	private static final Pattern ID_PATERN_FROM_URL = Pattern.compile(".+?articleid=(.+)$");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -62,7 +62,7 @@ public class JamaNetScraper extends GenericBibTeXURLScraper {
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		String urlString = url.toString();
 		final String id = urlString.substring(urlString.lastIndexOf("/") +1);
-		return DOWNLOAD_URL + id + "?format=bibtex";
+		return DOWNLOAD_URL + "?resourceId=" + id + "&resourceType=3&citationFormat=2";
 	}
 	
 	/* (non-Javadoc)

@@ -46,6 +46,11 @@ public class WileyIntersienceScraperTest {
 		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest1.bib");
 	}
 
+	@Test
+	public void url2TestRun(){
+		assertScraperResult("http://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest2.bib");
+	}
+	
 	/**
 	 * starts URL test with id url_109
 	 */
