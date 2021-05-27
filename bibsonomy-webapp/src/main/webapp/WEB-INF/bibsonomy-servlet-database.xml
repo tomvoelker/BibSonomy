@@ -37,7 +37,7 @@
 		<property name="subjectKey" value="mail.goldstandard.update.subject" />
 		<property name="templateKey" value="mail.goldstandard.update.body" />
 		<property name="fromAddress" value="${project.email}" />
-		<property name="crisEnabled" value="${system.cris}" />
+		<property name="enabled" value="${goldstandard.service.mail}" />
 		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 	

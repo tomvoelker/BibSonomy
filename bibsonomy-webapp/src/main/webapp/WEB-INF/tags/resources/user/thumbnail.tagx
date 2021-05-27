@@ -18,7 +18,7 @@
 		<c:set var="size" value="64" />
 	</c:if>
 	
-	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(user.name, command.context.loginUser) or properties['persons.profile.image.default']}">
+	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(user.name, command.context.loginUser) or properties['profile.picture.default']}">
 		<c:set var="imgClass" value="thumbnail img-responsive" />
 		<c:if test="${not empty circle and circle}">
 			<c:set var="imgClass" value="circle" />

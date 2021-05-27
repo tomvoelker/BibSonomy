@@ -18,7 +18,7 @@ public class GoldStandardInformationService extends MailInformationService{
     /**
      * Current property to determine, if the given user should be notified about goldstandard changes
      */
-    private boolean crisEnabled;
+    private boolean enabled;
 
     @Override
     protected void setAttributes(StringTemplate stringTemplate, User userToInform, Post<? extends Resource> post) {
@@ -29,14 +29,14 @@ public class GoldStandardInformationService extends MailInformationService{
 
     @Override
     protected boolean userWantsToBeInformed(User userToInform) {
-        return present(this.getMailAddress(userToInform)) && this.crisEnabled;
+        return present(this.getMailAddress(userToInform)) && this.enabled;
     }
 
 
     /**
-     * @param crisEnabled
+     * @param enabled
      */
-    public void setCrisEnabled(boolean crisEnabled) {
-        this.crisEnabled = crisEnabled;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
