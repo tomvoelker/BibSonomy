@@ -98,10 +98,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_REQUEST_USER_NAME = "jaeschke";
 	private static final String TEST_REQUEST_HASH = "7d85e1092613fd7c91d6ba5dfcf4a044";
 
-	private static final List<String> DEFAULT_TAG_LIST = new LinkedList<String>(Arrays.asList("semantic"));
-	private static final Set<String> DEFAULT_TAG_SET = new HashSet<String>(DEFAULT_TAG_LIST);
+	private static final List<String> DEFAULT_TAG_LIST = new LinkedList<>(Arrays.asList("semantic"));
+	private static final Set<String> DEFAULT_TAG_SET = new HashSet<>(DEFAULT_TAG_LIST);
 
-	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<String>(Arrays.asList(TEST_USER_NAME));
+	private static final Set<String> DEFAULT_USERNAME_SET = new HashSet<>(Arrays.asList(TEST_USER_NAME));
 
 	private static final DBLogic ADMIN_LOGIC = testDatabaseContext.getBean("dbLogicPrototype", DBLogic.class);
 	private static final List<SortCriteria> SORT_CRITERIUMS_DATE = Collections.singletonList(new SortCriteria(SortKey.DATE, SortOrder.DESC));
@@ -146,7 +146,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final List<SortCriteria> sortCriteria, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
-		final Set<Integer> alreadyFound = new HashSet<Integer>();
+		final Set<Integer> alreadyFound = new HashSet<>();
 		long orderValue = Long.MAX_VALUE;
 		
 		for (final Post<? extends Resource> post : posts) {
@@ -1345,7 +1345,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertThat(retrievedGroup.isOrganization(), equalTo(true));
 	}
 
-
 	@Test(expected = AccessDeniedException.class)
 	public void testCreateOrganizationAsDefaultUser() {
 		final String groupName = "my organization";
@@ -1365,7 +1364,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 		dblogic.createGroup(organization);
 	}
-
 
 	@Test
 	public void testCreateGroupAsAdmin() {
@@ -1395,7 +1393,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertThat(retrievedGroup.isOrganization(), equalTo(false));
 	}
 
-
 	@Test
 	public void testCreateGroupAsDefaultUser() {
 		final String groupName = "my group";
@@ -1421,7 +1418,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertThat(retrievedGroup.getName(), equalTo(groupName));
 		assertThat(retrievedGroup.isOrganization(), equalTo(false));
 	}
-
 
 	@Test(expected = AccessDeniedException.class)
 	public void testUpdateOrganizationAsDefaultUser() {
@@ -1452,7 +1448,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		defaultDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
 	}
 
-
 	@Test
 	public void testUpdateOrganizationAsAdminUser() {
 		final String groupName = "my organization";
@@ -1482,7 +1477,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 		adminDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
 	}
-
 
 	@Test
 	public void testAddMemberToOrganizationAsAdminUser() {
@@ -1621,7 +1615,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		userDbLogic.updateGroup(g, GroupUpdateOperation.ADD_MEMBER, m);
 	}
 
-
 	@Test(expected=AccessDeniedException.class)
 	public void testUserJoinsOrganisationAfterInviteByUser() {
 		final String groupName = "my organization";
@@ -1662,7 +1655,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		moderatorDbLogic.updateGroup(retrievedGroup, GroupUpdateOperation.ADD_INVITED, membership);
 	}
 
-
 	@Test
 	public void testDeleteOrganizationAsAdminUser() {
 		final String groupName = "my organization";
@@ -1692,7 +1684,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		adminDbLogic.deleteGroup(groupName, false, false);
 	}
 
-
 	@Test(expected = AccessDeniedException.class)
 	public void testDeleteOrganizationAsDefaultUser() {
 		final String groupName = "my organization";
@@ -1721,7 +1712,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		dbLogic.deleteGroup(groupName, false, false);
 	}
 
-
 	@Test
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
@@ -1748,7 +1738,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertThat(g.getInternalId(), equalTo("extid1"));
 	}
 
-
 	@Test
 	public void testGetAllPendingGroups() {
 		LogicInterface logic = this.getAdminDbLogic(DBLogicTest.TEST_USER_1);
@@ -1759,7 +1748,6 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 	}
 
-
 	@Test
 	public void testGetPendingGroupsForUser() {
 		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
@@ -1768,6 +1756,4 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 		assertThat(groups.size(), equalTo(1));
 	}
-
-
 }
