@@ -63,7 +63,7 @@
 			<!--+
 				| HEADER
 				+-->
-			<div class="content-header" id="info">
+			<div class="content-header row" id="info">
 
 				<div class="col-md-10">
 
