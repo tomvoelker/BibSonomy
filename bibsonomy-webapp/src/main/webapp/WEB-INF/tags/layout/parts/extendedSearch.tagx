@@ -63,8 +63,8 @@
         <c:if test="${toggleFiltersOption}">
             <div class="row" style="text-align: right;">
                 <div class="col-md-12">
-                    <a href="#" id="expandFilterLink" onclick="toggleFilters()"><fmt:message key="search.extended.expand" /> <fontawesome:icon icon="angle-double-down" /></a>
-                    <a href="#" id="hideFilterLink" style="display: none;" onclick="toggleFilters()"><fmt:message key="search.extended.hide" /> <fontawesome:icon icon="angle-double-up" /></a>
+                    <a href="#" id="expandFilterLink" onclick="toggleFilters()"><fmt:message key="search.extended.header" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></a>
+                    <a href="#" id="hideFilterLink" style="display: none;" onclick="toggleFilters()"><fmt:message key="search.extended.hide" /> <fontawesome:icon icon="angle-double-up" fixedWidth="${true}"/></a>
                 </div>
             </div>
             <c:set var="displayFilters" value="display: none;"/>
@@ -109,7 +109,8 @@
                         </div>
                         <input type="text" class="form-control" id="filterValueYear" placeholder="${yearPlaceholder}" aria-label="${yearLabel}"/>
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" onclick="expandYearRange()"><fontawesome:icon icon="plus"/></button>
+                            <fmt:message var="yearRange" key="search.extended.range"/>
+                            <button class="btn btn-default" type="button" title="${yearRange}" onclick="expandYearRange()"><fontawesome:icon icon="plus"/></button>
                         </span>
                     </div>
                 </div>
