@@ -99,13 +99,17 @@ public class UrlUtilsTest {
 	@Test
 	public void removeParam() {
 		// remove existing parameter
-		assertEquals("http://www.test.com", UrlUtils.removeParam("http://www.test.com?lang=de", "lang"));		
+		assertEquals("http://www.test.com", UrlUtils.removeParam("http://www.test.com?lang=de", "lang"));
 		// remove existing parameter, adapt other ones (change & to ?)
 		assertEquals("http://www.test.com?param=oldValue&pi=po#anchor1", UrlUtils.removeParam("http://www.test.com?bla=blub&param=oldValue&pi=po#anchor1", "bla"));
 		// remove existing parameter, leave other ones as they are
 		assertEquals("http://www.test.com?bla=blub&pi=po#anchor1", UrlUtils.removeParam("http://www.test.com?bla=blub&param=oldValue&pi=po#anchor1", "param"));
 		// try to remove non-existent parameter when no param exists
-		assertEquals("http://www.test.123.com", UrlUtils.removeParam("http://www.test.123.com", "param"));		
+		assertEquals("http://www.test.123.com", UrlUtils.removeParam("http://www.test.123.com", "param"));
+		// remove existing parameter with empty value
+		assertEquals("http://www.test.123.com?param=oldValue", UrlUtils.removeParam("http://www.test.123.com?param=oldValue&empty=", "empty"));
+		// remove existing parameter, while one has empty value
+		assertEquals("http://www.test.123.com?empty=", UrlUtils.removeParam("http://www.test.123.com?param=oldValue&empty=", "param"));
 	}
 
 	/**

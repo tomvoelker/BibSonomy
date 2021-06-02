@@ -270,11 +270,11 @@ public class UrlUtils {
 	 */
 	public static String removeParam(final String urlString, final String paramName) {
 		if (paramName == null) return urlString;
-		if (urlString.matches(".*([&\\?])" + paramName + "\\=[^&#$]+.*")) {
+		if (urlString.matches(".*([&\\?])" + paramName + "\\=[^&#$]*.*")) {
 			// parameter is present - remove it
-			String urlWithParamRemoved = urlString.replaceAll("([&\\?])" + paramName + "\\=[^&#$]+", "");
+			String urlWithParamRemoved = urlString.replaceAll("([&\\?])" + paramName + "\\=[^&#$]*", "");
 			// make sure first param is initialized with ?
-			return urlWithParamRemoved.replaceFirst("([&\\?])([^\\=]+)\\=([^&#$]+)", "?$2=$3");
+			return urlWithParamRemoved.replaceFirst("([&\\?])([^\\=]+)\\=([^&#$]*)", "?$2=$3");
 		}
 		// parameter not present - return URL as it is
 		return urlString;

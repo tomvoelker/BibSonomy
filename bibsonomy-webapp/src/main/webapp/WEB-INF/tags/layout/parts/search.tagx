@@ -19,6 +19,7 @@
 	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
+	<jsp:directive.attribute name="hideGroup" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="scope" type="org.bibsonomy.common.enums.QueryScope" required="false" description="whether to search locally or federated"/>
 	
@@ -34,7 +35,9 @@
 						<ul class="dropdown-menu" role="menu">
 							<li><a onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></a></li>
 							<li><a onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></a></li>
-							<li><a onclick="return switchNavi('group', this);"><fmt:message key="navi.group"/></a></li>
+							<c:if test="${not hideGroup}">
+								<li><a onclick="return switchNavi('group', this);"><fmt:message key="navi.group"/></a></li>
+							</c:if>
 							<li><a onclick="return switchNavi('author', this);"><fmt:message key="navi.author"/></a></li>
 							<li><a onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></a></li>
 							<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
