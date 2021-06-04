@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.spiedigitallibrary;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,6 +42,6 @@ public class SpieDigitalLibraryScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_350");
+		assertScraperResult("http://remotesensing.spiedigitallibrary.org/article.aspx?articleid=2099648", SpieDigitalLibraryScraper.class, "SpieDigitalLibraryScraperUnitURLTest1.bib");
 	}
 }

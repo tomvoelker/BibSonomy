@@ -48,12 +48,12 @@ public class HematologyLibraryScraper extends CitationManagerScraper implements 
 	private static final String SITE_NAME = "JOURNAL OF THE AMERICAN SOCIETY OF HEMATOLOGY";
 	private static final String SITE_URL = "http://www.hematologylibrary.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "hematologylibrary.org"), 
-			Pattern.compile("/content" + ".*")
-		));
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "hematologylibrary.org"), Pattern.compile("/content" + ".*")
+	));
 
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<h2>References</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;

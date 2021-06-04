@@ -24,7 +24,7 @@ public class NeurIPSScraper extends GenericBibTeXURLScraper {
 
 	private static final Pattern HOST_PATTERN = Pattern.compile(".*" + "neurips.cc");
 	private static final Pattern PATH_PATTERN = Pattern.compile("^" + "/paper.*$");
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(HOST_PATTERN, PATH_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(HOST_PATTERN, PATH_PATTERN));
 
 	@Override
 	public String getInfo() {

@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.cshlp;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,22 +58,19 @@ public class CSHLPScraper extends GenericBibTeXURLScraper {
 	private static final String HTTP = "http://";
 	
 	private static final String CONTENT_SUBPATH = "/content/";
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CSHLP_HOST), Pattern.compile(CONTENT_SUBPATH)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + JBC_HOST), Pattern.compile(CONTENT_SUBPATH)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CANCERRES_AACJOURNALS_HOST), Pattern.compile(CONTENT_SUBPATH)));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + JIMMUNOL_HOST), Pattern.compile(CONTENT_SUBPATH)));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+					new Pair<>(Pattern.compile(".*" + CSHLP_HOST), Pattern.compile(CONTENT_SUBPATH)),
+					new Pair<>(Pattern.compile(".*" + JBC_HOST), Pattern.compile(CONTENT_SUBPATH)),
+					new Pair<>(Pattern.compile(".*" + CANCERRES_AACJOURNALS_HOST), Pattern.compile(CONTENT_SUBPATH)),
+					new Pair<>(Pattern.compile(".*" + JIMMUNOL_HOST), Pattern.compile(CONTENT_SUBPATH))
+	);
 	
 	private static final Pattern PATTERN_FROM_URL = Pattern.compile(CONTENT_SUBPATH + "(.+?)\\.");
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	
 	private static final String DOWNLOAD_URL_CSHLP_HOST = getDownloadURLForHost(CSHLP_HOST, "cshperspect");
 	private static final String DOWNLOAD_URL_JBC_HOST = getDownloadURLForHost(JBC_HOST, "jbc");
-	private static final String DOWNLOAD_URL_CANCERRES_AACJOURNALS_HOST = getDownloadURLForHost(CANCERRES_AACJOURNALS_HOST, "canres");
-	private static final String DOWNLOAD_URL_JIMMUNOL_HOST = getDownloadURLForHost(JIMMUNOL_HOST, "jimmunol");
-	
+
 	private static String getDownloadURLForHost(final String host, final String hostId) {
 		return HTTP + host + "/citmgr?type=bibtex&gca=" + hostId + ";";
 	}

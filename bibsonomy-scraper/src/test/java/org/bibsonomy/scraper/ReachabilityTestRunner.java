@@ -39,8 +39,6 @@ import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
-import org.bibsonomy.scraper.importer.IUnitTestImporter;
-import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.testutil.TestUtils;
@@ -49,6 +47,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
+ *
+ * FIXME: remove or split scraper
  * TODO: create tests based on the test data
  * Runner for reachability test for Scraper
  * 
@@ -64,20 +64,6 @@ public class ReachabilityTestRunner {
 
 	/** test context for the {@link IEScraper} */
 	public static final ScrapingContext IE_SCRAPER_TEST_CONTEXT = new ScrapingContext(null, "Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining (Chapman & Hall/Crc Data Mining and Knowledge Discovery Series), Chapman & Hall/CRC,2008.");
-
-	
-	/**
-	 * Importer which reads the tests from a external sources.
-	 */
-	private IUnitTestImporter importer = null;
-	
-	/**
-	 * Init Importer
-	 */
-	public ReachabilityTestRunner(){
-		// importer for xml + bib file sources
-		this.importer = new XMLUnitTestImporter();
-	}
 	
 	/**
 	 * This Method reads and runs the test.
@@ -85,19 +71,8 @@ public class ReachabilityTestRunner {
 	@Test
 	public void run(){
 		try {
-			if(this.importer == null) {
-				throw new Exception("no UnitTestImporter available");
-			}
-			
-			final Collection<ScraperTestData> unitTests = this.importer.getUnitTests().values();
+
 			final Collection<Scraper> compositeScrapers = new KDEScraperFactory().getScraper().getScraper();
-			
-			// check UrlScraper
-			for (final ScraperTestData testData : unitTests) {
-				final ScrapingContext context = UnitTestRunner.createScraperContext(testData);
-				final Scraper testScraper = UnitTestRunner.createScraper(testData);
-				checkScraper(compositeScrapers, context, testScraper);
-			}
 			
 			// check UnAPIScraper
 			checkScraper(compositeScrapers, new ScrapingContext(new URL("http://canarydatabase.org/record/488")), new UnAPIScraper());
@@ -129,7 +104,6 @@ public class ReachabilityTestRunner {
 			checkScraper(compositeScrapers, new ScrapingContext(TestUtils.createURL("http://mend.endojournals.org/cgi/gca?sendit=Get+All+Checked+Abstract(s)&gca=17%2F1%2F1")), new HighwireScraper());
 
 		} catch (final Exception e) {
-			ParseFailureMessage.printParseFailureMessage(e, "main class");
 			fail();
 		}
 	}

@@ -50,7 +50,9 @@ public class GoogleBooksScraper extends GenericBibTeXURLScraper {
 	
 	private static final Pattern ID_PATTERN = Pattern.compile("id=(.*)&?");
 	
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*")));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*"))
+	);
 	
 	@Override
 	public String getInfo() {

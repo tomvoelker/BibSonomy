@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.mathscinet;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,7 @@ public class MathSciNetScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_20");
+		assertScraperResult("http://www.ams.org/mathscinet/search/publdoc.html?pg1=IID&s1=198275&r=1", MathSciNetScraper.class, "MathSciNetScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -52,7 +53,7 @@ public class MathSciNetScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_21");
+		assertScraperResult("http://www.ams.org/mathscinet/search/publications.html?fmt=bibtex&pg1=MR&s1=2305904", MathSciNetScraper.class, "MathSciNetScraperUnitURLTest2.bib");
 	}
 
 }

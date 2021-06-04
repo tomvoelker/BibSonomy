@@ -49,7 +49,9 @@ public class GenomeBiologyScraper extends GenericBibTeXURLScraper {
 	private static final String info = "This Scraper parse a publication from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String GENOMEBIOLOGY_HOST = "genomebiology.biomedcentral.com";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + GENOMEBIOLOGY_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + GENOMEBIOLOGY_HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

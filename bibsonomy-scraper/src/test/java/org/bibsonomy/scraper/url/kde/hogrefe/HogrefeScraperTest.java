@@ -21,7 +21,7 @@ public class HogrefeScraperTest {
 	public void url4TestRun(){
 		final String url = "https://econtent.hogrefe.com/doi/abs/10.1027/1864-9335/a000179";
 		final String resultFile = "LiteratumScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, HogrefeScraper.class, resultFile);
+		assertScraperResult(url, HogrefeScraper.class, resultFile);
 	}
 
 }

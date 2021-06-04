@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.hematologylibrary;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -51,7 +51,7 @@ public class HematologyLibraryScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_264");
+		assertScraperResult("http://asheducationbook.hematologylibrary.org/content/2013/1/1.full", HematologyLibraryScraper.class, "HematologyLibraryScraperUnitURLTest.bib");
 	}
 	
 	@Test

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.osti;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,6 +42,6 @@ public class OstiScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_347");
+		assertScraperResult("http://www.osti.gov/scitech/biblio/1150628-spatial-clustering-pixels-multispectral-image", OstiScraper.class, "OstiScraperUnitURLTest1.bib");
 	}
 }

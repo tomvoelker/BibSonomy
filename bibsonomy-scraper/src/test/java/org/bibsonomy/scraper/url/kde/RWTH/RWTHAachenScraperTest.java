@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.RWTH;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,6 +45,6 @@ public class RWTHAachenScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_332");
+		assertScraperResult("http://publications.rwth-aachen.de/record/444986", RWTHAachenScraper.class, "RWTHAachenScraperUnitURLTest1.bib");
 	}
 }

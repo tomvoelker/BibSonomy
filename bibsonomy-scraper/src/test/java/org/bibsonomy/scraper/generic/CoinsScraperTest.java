@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.generic;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class CoinsScraperTest {
 	@Ignore
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_130");
+		assertScraperResult("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm", CoinsScraper.class, "CoinsScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -56,7 +57,7 @@ public class CoinsScraperTest {
 	@Test
 	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_299");
+		assertScraperResult("http://revista.ibict.br/ciinf/index.php/ciinf/article/view/2262/1879", CoinsScraper.class, "CoinsScraperUnitURLTest5.bib");
 	}
 	
 	/**
@@ -64,6 +65,6 @@ public class CoinsScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_333");
+		assertScraperResult("http://katalogplus.ub.uni-bielefeld.de/cgi-bin/new_titel.cgi?katkey=2014704&art=f&kat1=freitext&kat2=ti&kat3=aup&op1=AND&op2=AND&var1=clustering&var2=&var3=&vr=1&pagesize=10&sprache=GER&bestand=lok&sess=4f5e41e8d8e96721f5500fd05eed192a", CoinsScraper.class, "CoinsScraperUnitURLTest3.bib");
 	}
 }

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.stanford;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,7 +42,7 @@ public class StanfordInfoLabScraperTest {
 	 * starts URL test with id url_68
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_221");
+	public void url1TestRun() {
+		assertScraperResult("https://ilpubs.stanford.edu:8090/1015/", StanfordInfoLabScraper.class, "StanfordInfoLabScraperUnitURLTest.bib");
 	}
 }

@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.frontiersin;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,18 +45,17 @@ import org.bibsonomy.util.WebUtils;
  * @author Mohammed Abed
  */
 public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
-
 	private static final Log log = LogFactory.getLog(FRONTIERSINScraper.class);
+
 	private static final String SITE_NAME = "Cold Spting Harbor Perspetives in Biology";
 	private static final String SITE_URL = "http://cshperspectives.cshlp.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String FRONTIERSIN_HOST = "journal.frontiersin.org";
 	private static final Pattern PATTERN_FOR_BIBTEX_URL = Pattern.compile("<a data-test-id=\"article-bibtex\" href=\"(.*?)\"");
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + FRONTIERSIN_HOST), Pattern.compile("/article")));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + FRONTIERSIN_HOST), Pattern.compile("/article"))
+	);
 	
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {

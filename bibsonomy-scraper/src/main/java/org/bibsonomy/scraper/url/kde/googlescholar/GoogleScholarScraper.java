@@ -27,6 +27,7 @@
 package org.bibsonomy.scraper.url.kde.googlescholar;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -50,10 +51,9 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	private static final String PATH1 = "/citations";
 	
 	private static final Pattern ID = Pattern.compile("citation_for_view=(.+?)$");
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH1 + ".*")));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH1 + ".*"))
+	);
 	
 	@Override
 	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {

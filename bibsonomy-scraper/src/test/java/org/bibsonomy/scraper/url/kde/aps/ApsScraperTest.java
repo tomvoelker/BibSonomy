@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.aps;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,7 @@ public class ApsScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_255");
+		assertScraperResult("http://physrev.physiology.org/content/91/4/1281.short", ApsScraper.class, "ApsScraperUnitURLTest.bib");
 	}
 	
 }

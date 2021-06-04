@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.thiemeconnect;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,6 +43,6 @@ public class ThiemeConnectScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_357");
+		assertScraperResult("https://www.thieme-connect.de/products/ejournals/abstract/10.1055/s-0035-1558406", ThiemeConnectScraper.class, "ThiemeConnectScraperUnitURLTest.bib");
 	}
 }

@@ -62,7 +62,9 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	private static final Pattern EVENTARGUMENT = Pattern.compile("<input type=\"hidden\" name=\"__EVENTARGUMENT\" id=\"__EVENTARGUMENT\" value=\"(.*?)\" />");
 	private static final Pattern VIEWSTATE = Pattern.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" id=\"__VIEWSTATE\" value=\"(.*?)\" />");
 
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 

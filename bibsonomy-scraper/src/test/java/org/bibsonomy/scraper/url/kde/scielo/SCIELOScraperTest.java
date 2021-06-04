@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.scielo;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,6 +43,6 @@ public class SCIELOScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_335");
+		assertScraperResult("http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0066-782X2001001200008", SCIELOScraper.class, "SCIELOScraperUnitURLTest1.bib");
 	}
 }

@@ -59,7 +59,9 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 	private static final String SITE_URL = "http://www.mdpi.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "mdpi.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "mdpi.com"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<input type=\"hidden\" name=\"articles_ids\\[\\]\" value=\"(\\d+)\">");
 	private static final Pattern CITATION_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*)\">");
 

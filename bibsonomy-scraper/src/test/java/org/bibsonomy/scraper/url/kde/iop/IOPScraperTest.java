@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.iop;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,7 @@ public class IOPScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_16");
+		assertScraperResult("http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008", IOPScraper.class, "IOPScraperUnitURLTest1.bib");
 	}
 	
 	/*
@@ -52,7 +53,7 @@ public class IOPScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_297");
+		assertScraperResult("http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008/meta", IOPScraper.class, "IOPScraperUnitURLTest1.bib");
 	}
 	
 	/*
@@ -60,6 +61,6 @@ public class IOPScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_334");
+		assertScraperResult("http://iopscience.iop.org/article/10.1088/2041-8205/730/1/L11", IOPScraper.class, "IOPScraperUnitURLTest2.bib");
 	}
 }

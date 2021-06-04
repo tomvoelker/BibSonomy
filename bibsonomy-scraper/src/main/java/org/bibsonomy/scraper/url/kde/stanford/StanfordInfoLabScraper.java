@@ -27,7 +27,7 @@
 package org.bibsonomy.scraper.url.kde.stanford;
 
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,18 +43,16 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 public class StanfordInfoLabScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Stanford InfoLab Publication Server";
-	private static final String SITE_URL  = "http://ilpubs.stanford.edu";
+	private static final String SITE_URL  = "https://ilpubs.stanford.edu";
 
 	/**
 	 * INFO
 	 */
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "ilpubs.stanford.edu"), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "ilpubs.stanford.edu"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	
 	private static final Pattern ID_PATTERN = Pattern.compile(".*?/(\\d++)");
 
@@ -78,28 +76,12 @@ public class StanfordInfoLabScraper extends GenericBibTeXURLScraper {
 		return patterns;
 	}
 
-	/*@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		Matcher idMatcher = ID_PATTERN.matcher(scrapingContext.getUrl().toString());
-		if (!idMatcher.find()) throw new ScrapingException("Path currently not supported.");
-		String downloadURL = "http://ilpubs.stanford.edu:8090/cgi/export/" + idMatcher.group(1) + "/BibTeX/ilprints-eprint-1015.bib";
-		try {
-			URL url = new URL(downloadURL);
-			String bibtex = WebUtils.getContentAsString(url);
-			if (!present(bibtex)) return false;
-			scrapingContext.setBibtexResult(bibtex);
-		} catch (IOException ex) {
-			throw new ScrapingException(ex);
-		}
-		return false;
-	}*/
-
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		Matcher idMatcher = ID_PATTERN.matcher(url.toString());
-		if (idMatcher.find()){
-			return"http://ilpubs.stanford.edu:8090/cgi/export/" + idMatcher.group(1) + "/BibTeX/ilprints-eprint-1015.bib";
+		final Matcher idMatcher = ID_PATTERN.matcher(url.toString());
+		if (idMatcher.find()) {
+			// XXX: currently we use the http endpoint because the https endpoint does not work
+			return "http://ilpubs.stanford.edu:8090/cgi/export/" + idMatcher.group(1) + "/BibTeX/ilprints-eprint-1015.bib";
 		}
 		return  null;
 	}

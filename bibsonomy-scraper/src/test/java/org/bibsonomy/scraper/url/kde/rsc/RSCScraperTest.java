@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.rsc;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,14 +43,14 @@ public class RSCScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_223");
+		assertScraperResult("http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c", RSCScraper.class, "RSCScraperUnitTest1.bib");
 	}
 	/**
 	 * starts URL test with id url_247
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_247");
+		assertScraperResult("http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&utm_content=Google+Reader", RSCScraper.class, "RSCScraperUnitTest2.bib");
 	}
 
 }

@@ -27,14 +27,11 @@
 package org.bibsonomy.scraper.url.kde.preprints;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -48,8 +45,7 @@ import org.bibsonomy.util.WebUtils;
  *
  * @author Johannes
  */
-public class PreprintsScraper extends AbstractUrlScraper{
-	Log log = LogFactory.getLog(PreprintsScraper.class);
+public class PreprintsScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "Preprints";
 	private static final String SITE_HOST = "preprints.org";

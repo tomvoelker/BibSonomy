@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.citebase;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,7 @@ public class CiteBaseScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_11");
+		assertScraperResult("http://www.citebase.org/abstract?id=oai%3AarXiv.org%3Acs%2F0602042", CiteBaseScraper.class, "CiteBaseScraperUnitURLTest.bib");
 	}
 	
 }

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.eric;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,7 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_99");
+		assertScraperResult("http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&ERICExtSearch_SearchValue_0=star&searchtype=keyword&ERICExtSearch_SearchType_0=kw&_pageLabel=RecordDetails&objectId=0900019b802f2e44&accno=EJ786532&_nfls=false", EricScraper.class, "EricScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -52,7 +53,7 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_136");
+		assertScraperResult("http://eric.ed.gov/ERICWebPortal/custom/portlets/recordDetails/detailmini.jsp?_nfpb=true&_&ERICExtSearch_SearchValue_0=EJ523959&ERICExtSearch_SearchType_0=no&accno=EJ523959", EricScraper.class, "EricScraperUnitURLTest2.bib");
 	}
 
 }

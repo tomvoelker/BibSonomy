@@ -80,8 +80,8 @@ public class IucrScraper extends GenericBibTeXURLScraper {
 	private static final String HOST = "iucr.org";
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
-		new Pair<Pattern, Pattern>(Pattern.compile(".*scripts." + HOST), AbstractUrlScraper.EMPTY_PATTERN),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*journals." + HOST), AbstractUrlScraper.EMPTY_PATTERN)
+					new Pair<>(Pattern.compile(".*scripts." + HOST), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*journals." + HOST), AbstractUrlScraper.EMPTY_PATTERN)
 	);
 
 	/** Download link */

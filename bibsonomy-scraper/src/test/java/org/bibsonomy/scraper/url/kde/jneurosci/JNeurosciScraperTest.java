@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.jneurosci;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -49,7 +49,7 @@ public class JNeurosciScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_232");
+		assertScraperResult("http://www.jneurosci.org/content/32/42/14465.short?rss=1", JNeurosciScraper.class, "JNeurosciScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class JNeurosciScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_233");
+		assertScraperResult("http://www.jneurosci.org/content/29/13/4044.short", JNeurosciScraper.class, "JNeurosciScraperUnitURLTest2.bib");
 	}
 	
 	@Test

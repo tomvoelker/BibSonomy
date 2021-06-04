@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.url.kde.inspire;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -67,10 +68,10 @@ public class InspireScraper extends AbstractUrlScraper implements ReferencesScra
 	
 	private static final String INFO = "Gets publications from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
-	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
+
 	private static final Pattern HTML_ABSTRACT_PATTERN = Pattern.compile("(?i).*Abstract(.*)<span>(.*)</span>");
 	private static final Pattern HTML_REFERENCES_PATTERN = Pattern.compile("(?s)<div id=\'referenceinp_link_box\'>(.*)<div id='referenceinp_link_box'>");
 

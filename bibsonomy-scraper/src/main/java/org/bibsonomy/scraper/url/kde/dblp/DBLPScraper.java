@@ -62,10 +62,10 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String DBLP_PATH2  = "/dblp/";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1) , ALTERNATIVES),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST3) , ALTERNATIVES),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST4) , ALTERNATIVES)
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST1) , ALTERNATIVES),
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")),
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST3) , ALTERNATIVES),
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST4) , ALTERNATIVES)
 	);
 	
 	@Override

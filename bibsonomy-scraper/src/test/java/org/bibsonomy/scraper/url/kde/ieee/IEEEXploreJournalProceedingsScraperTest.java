@@ -100,4 +100,9 @@ public class IEEEXploreJournalProceedingsScraperTest {
 		final String resultFile = "IEEEXploreStandardsScraperUnitURLTest.bib";
 		RemoteTestAssert.assertScraperResult(url, IEEEXploreJournalProceedingsScraper.class, resultFile);
 	}
+
+	@Test
+	public void testX() {
+		assertScraperResult("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&arnumber=6136685&contentType=Conference+Publications&searchField%3DSearch_All%26queryText%3DEnergy+efficient+hierarchical+epidemics+in+peer-to-peer+systems", IEEEXploreJournalProceedingsScraper.class, "IEEEXploreJournalProceedingsScraperUnitURLTest1.bib");
+	}
 }

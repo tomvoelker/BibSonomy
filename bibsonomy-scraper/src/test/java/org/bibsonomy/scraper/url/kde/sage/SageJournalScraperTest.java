@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.sage;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,13 +43,13 @@ public class SageJournalScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_219");
+		assertScraperResult("http://jis.sagepub.com/content/38/3/297.abstract", SageJournalScraper.class, "SagepubUnitURLTest1.bib");
 	}
 	/**
 	 * starts URL test with id url_242
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_242");
+		assertScraperResult("http://cdp.sagepub.com/content/12/4/105.short", SageJournalScraper.class, "SagepubUnitURLTest2.bib");
 	}
 }

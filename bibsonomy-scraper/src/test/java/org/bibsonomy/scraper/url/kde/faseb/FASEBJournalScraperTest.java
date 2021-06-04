@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.faseb;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,7 @@ public class FASEBJournalScraperTest {
 	 */
 	@Test
 	public void urlTestRun1() {
-		UnitTestRunner.runSingleTest("url_224");
+		assertScraperResult("http://www.fasebj.org/content/early/2012/06/15/fj.12-211441.short", FASEBJournalScraper.class, "FASEBJournalScraperUnitTest.bib");
 	}
 	
 	/**
@@ -50,23 +51,15 @@ public class FASEBJournalScraperTest {
 	 */
 	@Test
 	public void urlTestRun2() {
-		UnitTestRunner.runSingleTest("url_225");
-	}
-	
-	/**
-	 * starts URL test with id url_226
-	 */
-	@Test
-	public void urlTestRun3() {
-		UnitTestRunner.runSingleTest("url_226");
+		assertScraperResult("http://www.fasebj.org/content/26/8/3100.full", FASEBJournalScraper.class, "FASEBJournalScraperUnitTest2.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_227
 	 */
 	@Test
-	public void urlTestRun4() {
-		UnitTestRunner.runSingleTest("url_227");
+	public void urlTestRun3() {
+		assertScraperResult("http://www.fasebj.org/content/15/14/2565.abstract", FASEBJournalScraper.class, "FASEBJournalScraperUnitTest3.bib");
 	}
 
 }

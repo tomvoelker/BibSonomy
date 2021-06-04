@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.asm;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -45,7 +46,7 @@ public class AsmScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_259");
+		assertScraperResult("http://aem.asm.org/content/61/10/3567", AsmScraper.class, "AsmScraperUnitURLTest.bib");
 	}
 
 }

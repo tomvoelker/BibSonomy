@@ -28,9 +28,7 @@ package org.bibsonomy.scraper.url.kde.aappublications;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -49,6 +47,6 @@ public class AappublicationsScraperTest {
 		 */
 		final String url = "http://pediatrics.aappublications.org/content/136/5/e1186";
 		final String resultFile = "AappublicationsScraperUnitURLTest.bib";
-		assertScraperResult(url, null, AappublicationsScraper.class, resultFile);
+		assertScraperResult(url, AappublicationsScraper.class, resultFile);
 	}
 }

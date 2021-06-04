@@ -100,15 +100,13 @@ public class ZfdGScraper extends AbstractUrlScraper {
 	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<h1>Abstract</h1>(([^<]|<(?!/p>))*)</p>", Pattern.DOTALL);
 	// TODO: weitere Abstracts berücksichtigen ("<div id=\"abstract_de\" class=\"abstract\"><h1>Abstract</h1>(([^<]|<(?!/p>))*)</p>" funktioniert nicht...)
 
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS; 
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + ZFDG_HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
-	static {
-		URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + ZFDG_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
 	
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-
 		final String page = sc.getPageContent();
 		final StringBuffer bibtex = new StringBuffer();
 		final Matcher matcherCoins = PATTERN_COINS.matcher(page);

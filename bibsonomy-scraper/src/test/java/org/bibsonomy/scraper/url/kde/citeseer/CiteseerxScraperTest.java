@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.citeseer;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -33,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class CiteseerxScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_112");
+		assertScraperResult("http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185", CiteseerxScraper.class, "CiteseerxScraperUnitURLTest1.bib");
 	}
 	
 	@Test

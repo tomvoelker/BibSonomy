@@ -30,7 +30,6 @@ import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import java.io.IOException;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;

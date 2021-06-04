@@ -57,7 +57,7 @@ public class HindawiScraper extends GenericEndnoteURLScraper implements Referenc
 	private static final String SITE_URL = "http://hindawi.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final String ENDNOTE_URL = "http://files.hindawi.com/journals/";
 	private static final Pattern ID_PATTERN = Pattern.compile(".*/journals/(.*\\d+)");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"/>");

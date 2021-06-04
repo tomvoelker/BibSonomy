@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.langev;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class LangevScraperTest {
 	@Test
 	@Ignore  // * this scraper is now disabled because the website http://www.isrl.uiuc.edu/ is no more availabl
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_86");
+		assertScraperResult("http://www.isrl.uiuc.edu/~amag/langev/paper/mitchener07middleEnglish.html", LangevScraper.class, "LangevScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -54,6 +55,6 @@ public class LangevScraperTest {
 	@Test
 	@Ignore // * this scraper is now disabled because the website http://www.isrl.uiuc.edu/ is no more availabl
 	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_87");
+		assertScraperResult("http://www.isrl.uiuc.edu/~amag/langev/paper/arbib06mirrorSystemEditedBook.html", LangevScraper.class, "LangevScraperUnitURLTest2.bib");
 	}
 }

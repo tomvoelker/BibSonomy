@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.cyberleninka;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,11 +48,11 @@ public class CyberleninkaScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_URL = "http://cyberleninka.ru/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String HOST = "cyberleninka.ru";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	private static final Pattern pattern = Pattern.compile(".*(n/).*");
-	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)

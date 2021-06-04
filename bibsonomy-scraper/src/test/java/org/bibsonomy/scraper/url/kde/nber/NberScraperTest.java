@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.nber;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,6 +44,6 @@ public class NberScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_90");
+		assertScraperResult("http://www.nber.org/papers/w14015", NberScraper.class, "NberScraperUnitURLTest.bib");
 	}
 }

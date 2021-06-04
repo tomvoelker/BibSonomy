@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.opac;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -45,7 +46,7 @@ public class OpacScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_65");
+		assertScraperResult("http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183", OpacScraper.class, "OpacScraperUnitURLTest.bib");
 	}
 	
 }

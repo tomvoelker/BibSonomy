@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,12 +58,10 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\" />");
 	private static final Pattern REPLACE_PATTERN = Pattern.compile("replace\\(\"(.*)\"\\)");
 	
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	
-	static{
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_OLD), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+					new Pair<>(Pattern.compile(".*" + HOST_OLD), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*" + HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

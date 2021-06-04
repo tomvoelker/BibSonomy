@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.pnas;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +34,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Ignore;
@@ -57,7 +57,7 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		UnitTestRunner.runSingleTest("url_190");
+		assertScraperResult("http://www.pnas.org/content/106/52/22480.abstract", PNASScraper.class, "PNASScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		UnitTestRunner.runSingleTest("url_191");
+		assertScraperResult("http://www.pnas.org/content/101/22/8281.abstract", PNASScraper.class, "PNASScraperUnitURLTest2.bib");
 	}
 	
 	@Test

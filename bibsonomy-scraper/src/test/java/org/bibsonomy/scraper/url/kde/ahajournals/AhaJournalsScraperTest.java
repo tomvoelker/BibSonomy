@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.ahajournals;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,18 +38,18 @@ import org.junit.experimental.categories.Category;
 @Category(RemoteTest.class)
 public class AhaJournalsScraperTest {
 	/**
-	 * starts URL test with id url_334
+	 * starts test
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_344");
+		assertScraperResult("http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract", AhaJournalsScraper.class, "AhaJournalsScraperUnitURLTest1.bib");
 	}
 	
 	/**
-	 * starts URL test with id url_342
+	 * starts test
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_342");
+		assertScraperResult("http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f", AhaJournalsScraper.class, "AhaJournalsScraperUnitURLTest2.bib");
 	}
 }

@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -54,7 +52,9 @@ public class EconstorScraper extends GenericBibTeXURLScraper {
 
 	private static final String BIBTEX_URL = "http://www.econstor.eu/dspace/bibtexexport/"; 
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "econstor.eu"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "econstor.eu"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
 	private static final Pattern ID_PATTERN = Pattern.compile("\\D*(\\d+\\D+\\d+(\\D*))");
 	private static final int ID_GROUP = 1;

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.generic;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,16 +44,16 @@ public class BibtexScraperTest {
 	 * starts URL test with id url_115
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_115");
+	public void url1TestRun() {
+		assertScraperResult("https://en.wikipedia.org/wiki/BibTeX", BibtexScraper.class, "BibtexScraperUnitURLTest1.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_216
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_216");
+	public void url2TestRun() {
+		assertScraperResult("https://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter", BibtexScraper.class, "BibtexScraperUnitURLTest2.bib");
 	}
 	
 }

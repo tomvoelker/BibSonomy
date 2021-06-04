@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.googlepatent;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,10 +47,9 @@ public class GooglePatentScraper extends GenericBibTeXURLScraper {
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String GOOGLE_PATENT_HOST = "google.com";
 	private static final Pattern URL_PATTERN = Pattern.compile("(.*)?\\?(.*)$");
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ GOOGLE_PATENT_HOST), Pattern.compile("/patents/")));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + GOOGLE_PATENT_HOST), Pattern.compile("/patents/"))
+	);
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.firstmonday;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,7 +42,7 @@ public class FirstMondayScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_263");
+		assertScraperResult("http://journals.uic.edu/ojs/index.php/fm/article/view/2874", FirstMondayScraper.class, "FirstMondayScraperUnitURLTest.bib");
 	}
 	
 }

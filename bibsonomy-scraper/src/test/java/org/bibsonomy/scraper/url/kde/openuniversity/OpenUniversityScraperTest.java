@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.openuniversity;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +44,7 @@ public class OpenUniversityScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_236");
+		assertScraperResult("http://oro.open.ac.uk/19554/", OpenUniversityScraper.class, "OpenUniversityScraperUnitURLTest1.bib");
 	}
 
 }

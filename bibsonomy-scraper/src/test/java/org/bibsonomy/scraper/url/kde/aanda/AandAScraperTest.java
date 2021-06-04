@@ -51,7 +51,7 @@ public class AandAScraperTest {
 	public void url1TestRun() {
 		final String url = "https://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html";
 		final String resultFile = "AandAScraperUnitURLTest.bib";
-		assertScraperResult(url, null, AandAScraper.class, resultFile);
+		assertScraperResult(url, AandAScraper.class, resultFile);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class AandAScraperTest {
 	public void url2TestRun() {
 		final String url = "https://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html";
 		final String resultFile = "AandAScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, AandAScraper.class, resultFile);
+		assertScraperResult(url, AandAScraper.class, resultFile);
 	}
 
 	@Test

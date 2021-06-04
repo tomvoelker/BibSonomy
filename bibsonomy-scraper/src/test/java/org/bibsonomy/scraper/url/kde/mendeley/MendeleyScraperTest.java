@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.mendeley;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,7 +42,7 @@ public class MendeleyScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		UnitTestRunner.runSingleTest("url_253");
+		assertScraperResult("http://www.mendeley.com/catalog/social-bookmarking-beispiel-bibsonomy/", MendeleyScraper.class, "MendeleyScraperUnitURLTest.bib");
 	}
 	
 	/**
@@ -49,6 +50,6 @@ public class MendeleyScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_218");
+		assertScraperResult("http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/", MendeleyScraper.class, "MendeleyScraperUnitURLTest1.bib");
 	}
 }

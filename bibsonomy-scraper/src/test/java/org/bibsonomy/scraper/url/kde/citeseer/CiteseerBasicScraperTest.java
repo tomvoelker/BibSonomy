@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.citeseer;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -46,9 +47,6 @@ public class CiteseerBasicScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_12");
+		assertScraperResult("http://citeseer.ist.psu.edu/brin98anatomy.html", CiteseerBasicScraper.class, "CiteseerBasicScraperUnitURLTest.bib");
 	}
-	
-
-	
 }

@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.googlescholar;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,7 @@ public class GoogleScholarScraperTest {
 	 * starts URL test with id url_138
 	 */
 	@Test
-	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_331");
+	public void urlTestRun1() {
+		assertScraperResult("https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1t5awvEAAAAJ&citation_for_view=1t5awvEAAAAJ:UeHWp8X0CEIC", GoogleScholarScraper.class, "GoogleScholarScraperUnitURLTest2.bib");
 	}
 }

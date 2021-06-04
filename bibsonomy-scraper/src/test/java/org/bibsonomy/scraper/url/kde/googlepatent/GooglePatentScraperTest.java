@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.googlepatent;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,7 +42,7 @@ public class GooglePatentScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_336");
+		assertScraperResult("http://www.google.com/patents/DE102009031804A1?cl=de", GooglePatentScraper.class, "GooglePatentScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -49,6 +50,6 @@ public class GooglePatentScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_337");
+		assertScraperResult("http://www.google.com/patents/DE102009031804A1?cl=en&hl=de", GooglePatentScraper.class, "GooglePatentScraperUnitURLTest2.bib");
 	}
 }

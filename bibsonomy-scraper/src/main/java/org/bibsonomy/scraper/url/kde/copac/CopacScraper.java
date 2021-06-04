@@ -28,7 +28,7 @@ package org.bibsonomy.scraper.url.kde.copac;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -51,12 +51,10 @@ public class CopacScraper extends GenericBibTeXURLScraper {
 	private static final String COPAC_HOST = "http://copac.jisc.ac.uk/";
 	private static final String HOST = "jisc.ac.uk";
 	private static final String EXPORT_BIBTEX = "&format=BibTeX&action=Export";
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
-	
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile("/search?")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + COPAC_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+					new Pair<>(Pattern.compile(".*" + HOST), Pattern.compile("/search?")),
+					new Pair<>(Pattern.compile(".*" + COPAC_HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {

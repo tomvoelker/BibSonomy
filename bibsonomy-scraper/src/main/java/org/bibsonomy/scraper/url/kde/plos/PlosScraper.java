@@ -85,18 +85,17 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 		return INFO;
 	}
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 	static { 
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_JOURNALS_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_BIOLOGY_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_MEDICINE_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_COMPUTATIONAL_BIOLOGY_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_GENETICS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_PATHOGENS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_ONE_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_JOURNALS_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_BIOLOGY_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_MEDICINE_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_COMPUTATIONAL_BIOLOGY_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_GENETICS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_PATHOGENS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_ONE_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

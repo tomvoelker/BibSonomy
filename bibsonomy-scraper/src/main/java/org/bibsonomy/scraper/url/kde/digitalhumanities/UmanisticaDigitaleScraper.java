@@ -63,8 +63,9 @@ public class UmanisticaDigitaleScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "https://umanisticadigitale.unibo.it/";
 	private static final String INFO = "Scraper for " + href(SITE_URL, SITE_NAME) + " journal.";
 	private static final String BIBTEX_PATH = "/rt/captureCite/";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "umanisticadigitale.unibo.it"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + "umanisticadigitale.unibo.it"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+(/\\d+)*?");
 	private static final Pattern PATTERN_KEYWORDS = Pattern.compile("keywords = ([^=]*),\n");
 

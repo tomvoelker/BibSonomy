@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.dlib;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +35,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class DLibScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_54");
+		assertScraperResult("http://www.dlib.org/dlib/january08/smith/01smith.html", DLibScraper.class, "DLibScraperUnitURLTest1.bib");
 	}
 		
 	/**
@@ -61,15 +61,17 @@ public class DLibScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_55");
+		assertScraperResult("http://www.dlib.org/dlib/january08/smith/01smith.html", DLibScraper.class, "DLibScraperUnitURLTest1.bib");
 	}
+
 	/**
 	 * starts URL test with id url_266
 	 */
 	@Test
 	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_266");
+		assertScraperResult("http://www.dlib.org/dlib/may08/monnich/05monnich.html", DLibScraper.class, "DLibScraperUnitURLTest2.bib");
 	}
+
 	@Test
 	public void referencesTest() throws ScrapingException, MalformedURLException{
 		ScrapingContext sc = new ScrapingContext(new URL("http://www.dlib.org/dlib/may08/monnich/05monnich.html"));

@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -45,8 +43,6 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author wla
  */
 public class FASEBJournalScraper extends GenericBibTeXURLScraper {
-
-	private final Log log = LogFactory.getLog(FASEBJournalScraper.class);
 
 	private static final String SITE_NAME = "The FASEB Journal";
 	private static final String SITE_URL = "http://www.fasebj.org";

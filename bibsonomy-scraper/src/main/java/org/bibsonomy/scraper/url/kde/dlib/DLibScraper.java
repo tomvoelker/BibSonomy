@@ -65,7 +65,9 @@ public class DLibScraper extends AbstractUrlScraper implements ReferencesScraper
 	 */
 	private static final String DLIB_HOST = "dlib.org";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + DLIB_HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + DLIB_HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
 	/*
 	 * FIXME: refactor all patterns into static Patterns

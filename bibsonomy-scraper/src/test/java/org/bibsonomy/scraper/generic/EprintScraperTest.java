@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.generic;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -45,7 +46,7 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun1(){
-		UnitTestRunner.runSingleTest("url_147");
+		assertScraperResult("http://orca.cf.ac.uk/5213/", EprintScraper.class, "EprintScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -53,7 +54,7 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun2(){
-		UnitTestRunner.runSingleTest("url_148");
+		assertScraperResult("http://eprints.bbk.ac.uk/442/", EprintScraper.class, "EprintScraperUnitURLTest2.bib");
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun3(){
-		UnitTestRunner.runSingleTest("url_149");
+		assertScraperResult("http://eprints.bbk.ac.uk/589/", EprintScraper.class, "EprintScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -69,6 +70,6 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun4(){
-		UnitTestRunner.runSingleTest("url_150");
+		assertScraperResult("http://orca.cf.ac.uk/2657//", EprintScraper.class, "EprintScraperUnitURLTest4.bib");
 	}
 }

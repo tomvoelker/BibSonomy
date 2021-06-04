@@ -29,6 +29,7 @@ package org.bibsonomy.scraper.url.kde.iop;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -65,11 +66,10 @@ public class IOPScraper extends AbstractUrlScraper {
 	 */
 	private static final Pattern PUBLICATION_ID_PATTERN = Pattern.compile("^.*?article\\/.*?\\/(.*?)($|\\/meta)");
 
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	static{
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEW_IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
-	}
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+					new Pair<>(Pattern.compile(".*" + IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN),
+					new Pair<>(Pattern.compile(".*" + NEW_IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*"))
+	);
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {

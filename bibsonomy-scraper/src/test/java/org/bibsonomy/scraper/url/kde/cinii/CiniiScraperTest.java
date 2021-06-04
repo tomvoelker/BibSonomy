@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.cinii;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,6 +43,6 @@ public class CiniiScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_345");
+		assertScraperResult("http://ci.nii.ac.jp/naid/110009888944", CiniiScraper.class, "CiniiScraperUnitURLTest.bib");
 	}
 }

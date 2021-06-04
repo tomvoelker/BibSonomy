@@ -41,14 +41,14 @@ public class HogrefeScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Hogrefe";
 	private static final String SITE_HOST = "econtent.hogrefe.com";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses publications from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String PATH_DOI_ABS = "/doi/abs/";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + SITE_HOST), 
-			Pattern.compile(PATH_DOI_ABS + ".*")
-			));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(
+					Pattern.compile(".*" + SITE_HOST),
+					Pattern.compile(PATH_DOI_ABS + ".*")
+	));
 
 	@Override
 	public String getInfo() {

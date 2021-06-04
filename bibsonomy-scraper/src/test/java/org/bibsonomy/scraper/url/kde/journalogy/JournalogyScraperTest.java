@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.journalogy;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,7 @@ public class JournalogyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_193");
+		assertScraperResult("http://academic.research.microsoft.com/Paper/13850916", JournalogyScraper.class, "JournalogyScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -50,7 +51,7 @@ public class JournalogyScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_194");
+		assertScraperResult("http://www.journalogy.org/Paper/372540", JournalogyScraper.class, "JournalogyScraperUnitURLTest2.bib");
 	}
 	
 	/**
@@ -58,6 +59,6 @@ public class JournalogyScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_195");
+		assertScraperResult("http://academic.research.microsoft.com/Publication/16088645/", JournalogyScraper.class, "JournalogyScraperUnitURLTest3.bib");
 	}
 }

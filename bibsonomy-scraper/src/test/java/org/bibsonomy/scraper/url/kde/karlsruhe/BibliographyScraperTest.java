@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +44,7 @@ public class BibliographyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_124");
+		assertScraperResult("http://liinwww.ira.uka.de/cgi-bin/bibshow?e=Uifpsz0iboecppl/qspc/fyqboefe}56124&r=bibtex&mode=intra", BibliographyScraper.class, "BibliographyScraperUnitURLTest.bib");
 	}
 
 }

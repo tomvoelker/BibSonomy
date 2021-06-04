@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.openrepository;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_117");
+		assertScraperResult("http://e-space.mmu.ac.uk/e-space/handle/2173/31869", OpenrepositoryScraper.class, "OpenrepositoryScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -52,7 +53,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_118");
+		assertScraperResult("http://hirsla.lsh.is/lsh/handle/2336/11284", OpenrepositoryScraper.class, "OpenrepositoryScraperUnitURLTest2.bib");
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_119");
+		assertScraperResult("http://arrts.gtcni.org.uk/gtcni/handle/2428/8327", OpenrepositoryScraper.class, "OpenrepositoryScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class OpenrepositoryScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_120");
+		assertScraperResult("http://eric.exeter.ac.uk/exeter/handle/10036/18938", OpenrepositoryScraper.class, "OpenrepositoryScraperUnitURLTest4.bib");
 	}
 
 }

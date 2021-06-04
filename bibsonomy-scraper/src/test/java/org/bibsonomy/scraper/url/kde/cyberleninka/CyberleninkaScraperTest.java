@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.cyberleninka;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,6 +43,6 @@ public class CyberleninkaScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_368");
+		assertScraperResult("http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii", CyberleninkaScraper.class, "CyberleninkaScraperUnitURLTest1.bib");
 	}
 }

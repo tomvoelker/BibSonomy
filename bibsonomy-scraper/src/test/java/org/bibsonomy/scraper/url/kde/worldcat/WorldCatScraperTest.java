@@ -26,13 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.worldcat;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Assert;
@@ -52,7 +52,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_59");
+		assertScraperResult("http://www.worldcat.org/oclc/37212333", WorldCatScraper.class, "WorldCatScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_60");
+		assertScraperResult("http://www.worldcat.org/oclc/85511690", WorldCatScraper.class, "WorldCatScraperUnitURLTest2.bib");
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_163");
+		assertScraperResult("http://www.worldcat.org/oclc/163641505", WorldCatScraper.class, "WorldCatScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_338");
+		assertScraperResult("http://www.worldcat.org/oclc/254138269", WorldCatScraper.class, "WorldCatScraperUnitURLTest4.bib");
 	}
 	
 	/**

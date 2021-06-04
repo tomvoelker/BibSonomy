@@ -26,7 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.jmlr;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +43,7 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_101");
+		assertScraperResult("http://jmlr.csail.mit.edu/papers/v4/petridis03a.html", JMLRScraper.class, "JMLRScraperUnitURLTest1.bib");
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_102");
+		assertScraperResult("http://jmlr.csail.mit.edu/papers/v9/henrich08a.html", JMLRScraper.class, "JMLRScraperUnitURLTest2.bib");
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_103");
+		assertScraperResult("http://jmlr.csail.mit.edu/papers/v8/list07a.html", JMLRScraper.class, "JMLRScraperUnitURLTest3.bib");
 	}
 	
 }

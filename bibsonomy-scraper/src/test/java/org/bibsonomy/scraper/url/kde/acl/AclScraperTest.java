@@ -44,10 +44,8 @@ public class AclScraperTest {
 	 * starts URL test with id url_108
 	 */
 	@Test
-	public void url1TestRun(){
-		final String url = "https://www.aclweb.org/anthology-new/W/W04/W04-1806.pdf";
-		final String resultFile = "AclScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, AandAScraper.class, resultFile);
+	public void url1TestRun() {
+		assertScraperResult("https://www.aclweb.org/anthology-new/W/W04/W04-1806.pdf", AandAScraper.class, "AclScraperUnitURLTest1.bib");
 	}
 	
 }

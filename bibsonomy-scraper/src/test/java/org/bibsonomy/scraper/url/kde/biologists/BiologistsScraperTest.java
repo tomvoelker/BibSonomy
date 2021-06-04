@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.biologists;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,14 +43,15 @@ public class BiologistsScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_234");
+		assertScraperResult("http://dev.biologists.org/content/138/23/5067.short", BiologistsScraper.class, "BiologistsScraperUnitURLTest1.bib");
 	}
+
 	/**
 	 * starts URL test with id url_243
 	 */
 	@Test
 	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_243");
+		assertScraperResult("http://jcs.biologists.org/content/125/13/3015.long", BiologistsScraper.class, "BiologistsScraperUnitURLTest2.bib");
 	}
 
 }

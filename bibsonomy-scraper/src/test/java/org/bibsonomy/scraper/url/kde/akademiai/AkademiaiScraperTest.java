@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.akademiai;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,6 +43,6 @@ public class AkademiaiScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_281");
+		assertScraperResult("http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/", AkademiaiScraper.class, "AkademiaiScraperUnitURLTest.bib");
 	}
 }
