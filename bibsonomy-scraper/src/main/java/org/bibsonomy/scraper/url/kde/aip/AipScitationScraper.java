@@ -34,21 +34,21 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.generic.LiteratumScraper;
 
-
 /**
  * Scraper for scitation.aip.org
  * 
  * @author tst
- *
  */
 public class AipScitationScraper extends LiteratumScraper {
 	private static final String SITE_NAME = "AIP Scitation";
-	private static final String SITE_HOST = "aip.scitation.org";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_HOST = "scitation.org";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + ".";
+
 	private static final Pattern hostPattern = Pattern.compile(".*" + SITE_HOST);
 	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
+
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(hostPattern, pathPattern));
 	
 	@Override
 	public String getInfo() {

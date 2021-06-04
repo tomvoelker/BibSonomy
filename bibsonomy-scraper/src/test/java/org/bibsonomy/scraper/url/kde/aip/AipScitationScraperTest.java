@@ -44,30 +44,30 @@ public class AipScitationScraperTest {
 	 * starts URL test with id url_8
 	 */
 	@Test
-	public void url1TestRun(){
-		final String url = "http://aip.scitation.org/doi/abs/10.1063/1.3680558";
+	public void url1TestRun() {
+		final String url = "https://aip.scitation.org/doi/abs/10.1063/1.3680558";
 		final String resultFile = "AipScitationScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, AipScitationScraper.class, resultFile);
+		assertScraperResult(url, AipScitationScraper.class, resultFile);
 	}
 
 	/**
 	 * starts URL test with id url_9
 	 */
 	@Test
-	public void url2TestRun(){
-		final String url = "http://aip.scitation.org/doi/full/10.1063/1.4820139";
+	public void url2TestRun() {
+		final String url = "https://aip.scitation.org/doi/full/10.1063/1.4820139";
 		final String resultFile = "AipScitationScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, AipScitationScraper.class, resultFile);
+		assertScraperResult(url, AipScitationScraper.class, resultFile);
 	}
 	
 	/**
 	 * starts URL test with id url_174
 	 */
 	@Test
-	public void url3TestRun(){
-		final String url = "http://asa.scitation.org/doi/abs/10.1121/1.2144160";
+	public void url3TestRun() {
+		final String url = "https://asa.scitation.org/doi/abs/10.1121/1.2144160";
 		final String resultFile = "AipScitationScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, AipScitationScraper.class, resultFile);
+		assertScraperResult(url, AipScitationScraper.class, resultFile);
 	}
 
 }

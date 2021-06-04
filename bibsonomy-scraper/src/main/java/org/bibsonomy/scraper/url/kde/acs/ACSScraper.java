@@ -41,10 +41,10 @@ public class ACSScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "ACS";
 	private static final String SITE_HOST = "pubs.acs.org";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
 	
-	private static final List<Pair<Pattern,Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	public String getInfo() {

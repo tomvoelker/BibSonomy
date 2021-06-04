@@ -34,22 +34,16 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL test #190 #191 for PNASScraper
- * 
- * PNAS now scraped by {@link HighwireScraper}
- * 
+ *
  * @author clemens
  */
 @Category(RemoteTest.class)
-@Deprecated
-@Ignore
 public class PNASScraperTest {
 
 	/**
@@ -57,7 +51,7 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		assertScraperResult("http://www.pnas.org/content/106/52/22480.abstract", PNASScraper.class, "PNASScraperUnitURLTest1.bib");
+		assertScraperResult("https://www.pnas.org/content/106/52/22480.abstract", PNASScraper.class, "PNASScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -65,12 +59,12 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		assertScraperResult("http://www.pnas.org/content/101/22/8281.abstract", PNASScraper.class, "PNASScraperUnitURLTest2.bib");
+		assertScraperResult("https://www.pnas.org/content/101/22/8281.abstract", PNASScraper.class, "PNASScraperUnitURLTest2.bib");
 	}
 	
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.pnas.org/content/106/52/22480.full"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://www.pnas.org/content/106/52/22480.full"));
 		PNASScraper ps = new PNASScraper();
 		assertTrue(ps.scrape(sc));
 		assertTrue(ps.scrapeReferences(sc));

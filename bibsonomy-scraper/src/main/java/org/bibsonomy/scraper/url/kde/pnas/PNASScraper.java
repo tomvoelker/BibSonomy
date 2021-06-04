@@ -37,25 +37,26 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.CitationManagerScraper;
-import org.bibsonomy.scraper.generic.HighwireScraper;
+import org.bibsonomy.scraper.generic.BibTeXLinkOnPageScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * scraper for pnas.org
  * @author clemens
- * 
- * URLs are scraped by {@link HighwireScraper}. 
- * 
  */
-@Deprecated
-public class PNASScraper extends CitationManagerScraper implements ReferencesScraper{
+public class PNASScraper extends BibTeXLinkOnPageScraper implements ReferencesScraper{
 	private static final String SITE_NAME = "PNAS";
-	private static final String SITE_URL = "http://www.pnas.org/";
+
+	private static final String HOST = "pnas.org";
+	private static final String SITE_URL = "https://" + HOST;
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "pnas.org"), AbstractUrlScraper.EMPTY_PATTERN));
+
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
 	private final static Pattern REFERENCES_PATTERN  = Pattern.compile("(?s)<h2>References</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -72,11 +73,6 @@ public class PNASScraper extends CitationManagerScraper implements ReferencesScr
 	}
 
 	@Override
-	public Pattern getDownloadLinkPattern() {
-		return DOWNLOAD_LINK_PATTERN;
-	}
-
-	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
@@ -88,14 +84,13 @@ public class PNASScraper extends CitationManagerScraper implements ReferencesScr
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try {
 			final Matcher m = REFERENCES_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if(m.find()) {
+			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch(IOException e) {
 			throw new ScrapingException(e);
 		}
-		
 		return false;
 	}
 }

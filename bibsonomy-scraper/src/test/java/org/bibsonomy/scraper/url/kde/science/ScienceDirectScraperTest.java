@@ -45,7 +45,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S0004370207000471", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest1.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S0004370207000471", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void urlTestRun2() {
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S1570826806000084", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest2.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S1570826806000084", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest2.bib");
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S138912860700179X", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest3.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S138912860700179X", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S1389128602002116", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest4.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S1389128602002116", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest4.bib");
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url5TestRun() {
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S0009261400002268", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest5.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S0009261400002268", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest5.bib");
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url6TestRun() {
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S1570826810000326", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest6.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S1570826810000326", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest6.bib");
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url7TestRun() {
-		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S0304397507000631", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest7.bib");
+		assertScraperResult("https://www.sciencedirect.com/science/article/pii/S0304397507000631", ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest7.bib");
 	}
 
 }

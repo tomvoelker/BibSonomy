@@ -47,7 +47,7 @@ public class AhaJournalsScraper extends GenericBibTeXURLScraper{
 	private static final String SITE_URL = "http://circ.ahajournals.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String AHA_JOURNALS_HOST = "circ.ahajournals.org";
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AHA_JOURNALS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}

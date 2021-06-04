@@ -55,7 +55,7 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
 	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN));
+		URL_PATTERNS.add(new Pair<>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN));
 	}
 
 	private static final Pattern BUY_OPTION_LOCATION_PATTERN = Pattern.compile("fa=buy.*?id=([\\d\\-]++)");

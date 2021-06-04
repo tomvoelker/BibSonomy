@@ -52,7 +52,7 @@ public class ProlaScraperTest {
 	public void url1TestRun(){
 		final String url = "http://pra.aps.org/abstract/PRA/v1/i1/p1_1";
 		final String resultFile = "ProlaScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, ProlaScraper.class, resultFile);
+		assertScraperResult(url, ProlaScraper.class, resultFile);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class ProlaScraperTest {
 	public void url2TestRun(){
 		final String url = "http://pra.aps.org/export/PRA/v1/i1/p1_1?type=bibtex";
 		final String resultFile = "ProlaScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, ProlaScraper.class, resultFile);
+		assertScraperResult(url, ProlaScraper.class, resultFile);
 	}
 	
 	/**
@@ -70,9 +70,7 @@ public class ProlaScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		final String url = "http://prb.aps.org/abstract/PRB/v47/i1/p558_1";
-		final String resultFile = "ProlaScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, ProlaScraper.class, resultFile);
+		assertScraperResult("http://prb.aps.org/abstract/PRB/v47/i1/p558_1", ProlaScraper.class, "ProlaScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -82,7 +80,7 @@ public class ProlaScraperTest {
 	public void url4TestRun(){
 		final String url = "http://prola.aps.org/abstract/PR/v149/i2/p674_1";
 		final String resultFile = "ProlaScraperUnitURLTest4.bib";
-		assertScraperResult(url, null, ProlaScraper.class, resultFile);
+		assertScraperResult(url, ProlaScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_271
@@ -91,7 +89,7 @@ public class ProlaScraperTest {
 	public void url5TestRun(){
 		final String url = "http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131";
 		final String resultFile = "ProlaScraperUnitURLTest5.bib";
-		assertScraperResult(url, null, ProlaScraper.class, resultFile);
+		assertScraperResult(url, ProlaScraper.class, resultFile);
 	}
 	/**
 	 * @throws Exception

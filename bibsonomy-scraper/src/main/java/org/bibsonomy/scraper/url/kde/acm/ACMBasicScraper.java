@@ -29,216 +29,93 @@ package org.bibsonomy.scraper.url.kde.acm;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpException;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.converter.CslToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
-import org.springframework.web.util.HtmlUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
- *
  * Scrapes the ACM digital library
+ *
  * @author rja
+ * @author dzo
  */
-public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
+public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements ReferencesScraper, CitedbyScraper {
 	private static final Log log = LogFactory.getLog(ACMBasicScraper.class);
 	
-	private static final String ACM_BASE_TAB_URL = "http://dl.acm.org/tab_";
+	private static final String ACM_BASE_TAB_URL = "https://dl.acm.org/tab_";
 	private static final String SITE_NAME = "ACM Digital Library";
-	private static final String SITE_URL = "http://portal.acm.org/";
+	private static final String SITE_URL = "https://dl.acm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final String CACM_DOMAIN = "cacm.acm.org";
 	
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
 		new Pair<>(
-			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
-			Pattern.compile("(/beta)?/citation.cfm.*")
-		),
-		new Pair<>(
-				Pattern.compile(".*" + "queue.acm.org"), 
-				Pattern.compile("/detail.cfm.*")
-			),
-			
-		new Pair<>(
 				Pattern.compile(".*" + CACM_DOMAIN),
 				Pattern.compile("/magazines/*")
 				),
 				
 		new Pair<>(
-				Pattern.compile(".*" + "doi.acm.org"),
+				Pattern.compile("dl.acm.org"),
 				EMPTY_PATTERN
 		)
 	);
-	
-	private static final String BROKEN_END = new String("},\n}");
-	//get the publication's id, take the part behind the dot if present
-	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=(\\d+(?:\\.(\\d+))?)");
-	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("/(\\d+(?:\\.(\\d+))?)");
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?((?s).+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
-	
-	// to get publication id for CACM
-	private static final Pattern CACM_ID = Pattern.compile("<a href=(.*?)/citation.cfm\\?id=.*?\\.(.*?)&amp\\;coll=portal");
-	
-	/** remove tags in abstract */
-	private static final String CLEANUP_ABSTRACT = "<[\\da-zA-Z\\s]*>|<\\s*/\\s*[\\da-zA-Z\\s]*>|\\r\\n|\\n";
-	
+
+	private final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
+
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		
-		try {
-			/*
-			 * extract the id from the URL
-			 */
-			final String id;
-			final String query = sc.getUrl().getQuery();
-			final Matcher matcher;
-			if (query == null) {
-				/*
-				 * for cacm journals: extract the id from the page content
-				 */
-				// TODO: maybe a separate cacm scraper?
-				if (sc.getUrl().toString().contains(CACM_DOMAIN)) {
-					matcher = CACM_ID.matcher(sc.getPageContent());
-				} else {
-					matcher = DOI_URL_ID_PATTERN.matcher(sc.getUrl().toExternalForm());
-				}
-			} else {
-				matcher = URL_PARAM_ID_PATTERN.matcher(query);
-			}
-			
-			if (matcher == null) 
-				return false;
-			
-			/*
-			 * if present take the id behind the dot
-			 */
-			if (matcher.find()) {
-				id = ((matcher.group(2) != null) ? matcher.group(2) : matcher.group(1));
-				sc.getTmpMetadata().setId(id);
-			} else {
-				return false;
-			}
-		
-			//pretty good idea to use an own client, since the session in the common client can become invalid
-			final HttpClient client = WebUtils.getHttpClient();
-			
-			/*
-			 * Scrape entries from popup BibTeX site. BibTeX entry on these
-			 * pages looks like this: <PRE id="155273">@article{155273,
-			 * author = {The Author}, title = {This is the title}...}</pre>
-			 */
-			final StringBuffer bibtexEntries = extractBibtexEntries(client, SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
-
-			final String abstrct = WebUtils.getContentAsString(client, SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id, null, null, null);
-			if (present(abstrct)) {
-				/*
-				 * extract abstract from HTML
-				 */
-				final Matcher matcher2 = ABSTRACT_PATTERN.matcher(abstrct);
-				if (matcher2.find()) {
-					final String extractedAbstract = matcher2.group(2);
-					if(extractedAbstract != null) {
-						//add abstract, remove tags and replace html entities with utf-8 pendants
-						BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", HtmlUtils.htmlUnescape(extractedAbstract.replaceAll(CLEANUP_ABSTRACT, "")));
-					}
-				} else {
-					// log if abstract is not available
-					log.info("ACMBasicScraper: Abstract not available");
-				}
-			} else {
-				// log if abstract is not available
-				log.info("ACMBasicScraper: Abstract not available");
-			}
-
-			/*
-			 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
-			 * to have broken BibTeX entries with a "," too much at the end. We remove this
-			 * here.
-			 *
-			 * Some entries have the following end: "},\n} \n" instead of the BROKEN_END String.
-			 * So we have to adjust the starting index by the additional 2 symbols.
-			 */
-			final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 2);
-			if (indexOf > 0) {
-				bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
-			}
-
-			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-			if (present(result)) {
-				sc.setBibtexResult(result);
-				return true;
-			}
-			
-			throw new ScrapingFailureException("getting bibtex failed");
-		} catch (final Exception e) {
-			throw new InternalFailureException(e);
-		}
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return "https://dl.acm.org/action/exportCiteProcCitation";
 	}
 
-	/**
-	 * This method walks through the dom of the given url
-	 * and tries to extract the bibtex entries.
-	 * 
-	 * Structure is:
-	 * 
-	 * ...
-	 * <PRE>
-	 * 	Bibtex Entry
-	 * </PRE>
-	 * ...
-	 * 
-	 * 
-	 * @param siteUrl
-	 * @param path
-	 * @return extracted bibtex entries
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws HttpException
-	 * @throws URISyntaxException
-	 */
-	private static StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException, HttpException, URISyntaxException{
-		final StringBuffer bibtexEntries = new StringBuffer();
-		
-		//get content for siteUrl
-		final String siteContent = WebUtils.getContentAsString(client, siteUrl + path, null, null, null);
+	@Override
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
+		final String doi = DOIUtils.extractDOI(url.getPath());
 
-		// create a DOM with each
-		final Document doc = XmlUtils.getDOM(siteContent);
+		return Arrays.asList(
+						new BasicNameValuePair("dois", doi),
+						new BasicNameValuePair("targetFile", "custom-bibtex"),
+						new BasicNameValuePair("format", "bibTex")
+		);
+	}
 
-		// fetch the nodelist
-		final NodeList pres = doc.getElementsByTagName("pre");
+	@Override
+	protected boolean retrieveCookiesFromSite() {
+		return true;
+	}
 
-		// and extract the bibtex entry
-		for (int i = 0; i < pres.getLength(); i++) {
-			final Node currNode = pres.item(i);
-			bibtexEntries.append(XmlUtils.getText(currNode));
+	@Override
+	protected String convert(final String downloadResult) {
+		// this is a json containing the csl style and also the items to render,
+		// so extract the csl entries from the json response
+		final JSONObject json = (JSONObject) JSONSerializer.toJSON(downloadResult);
+		final JSONObject cslEntries = json.getJSONArray("items").getJSONObject(0);
+		final Optional<Object> firstKey = cslEntries.keySet().stream().findFirst();
+		if (firstKey.isPresent()) {
+			final Object key = firstKey.get();
+			final JSONObject cslEntry = cslEntries.getJSONObject(key.toString());
+			return this.cslToBibtexConverter.toBibtex(cslEntry);
 		}
-
-		return bibtexEntries;
+		return null;
 	}
 
 	@Override
@@ -251,12 +128,10 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 		return patterns; 
 	}
 
-
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
 
 	@Override
 	public String getSupportedSiteURL() {
@@ -282,7 +157,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static boolean scrapeMetaData(ScrapingContext scrapingContext, final String kind) {
 		final HttpClient client = WebUtils.getHttpClient();
 		final String id = scrapingContext.getTmpMetadata().getId();
-		try{
+		try {
 			final String uri = ACM_BASE_TAB_URL + kind +  ".cfm?id=" + id;
 			final String reference = WebUtils.getContentAsString(client, uri, null, null, null);
 			if (present(reference)) {
@@ -290,7 +165,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 				scrapingContext.setCitedBy(reference);
 				return true;
 			}
-		} catch(Exception e) {
+		} catch(final Exception e) {
 			log.warn("error while scraping references by for " + scrapingContext.getUrl(), e);
 		}
 		return false;

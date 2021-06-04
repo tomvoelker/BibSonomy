@@ -45,13 +45,13 @@ import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 public class AkademiaiScraper extends GenericRISURLScraper {
 
 	private static final String SITE_NAME = "Akademiai Kiado";
-	private static final String SITE_URL = "http://www.akademiai.com/home/main.mpx";
+	private static final String SITE_URL = "https://www.akademiai.com/home/main.mpx";
 	private static final String INFO =  "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final String RIS_URL  = "http://www.akademiai.com/export.mpx?code=";
+	private static final String RIS_URL  = "https://www.akademiai.com/export.mpx?code=";
 	private static final Pattern URL_PATTERN = Pattern.compile(".*/content/(.*?)/");
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "akademiai.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "akademiai.com"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()

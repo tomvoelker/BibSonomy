@@ -47,8 +47,10 @@ public class BioMedCentralScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
 	private static final Pattern PATH_PATTERN = Pattern.compile("/articles/(.+)(\\?.*)?$");
 
-	private static final String INFO = "This scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), Pattern.compile("/articles/.*")));
+	private static final String INFO = "This scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + SITE_HOST), Pattern.compile("/articles/.*"))
+	);
 
 	@Override
 	public String getInfo() {

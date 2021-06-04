@@ -31,5 +31,5 @@ package org.bibsonomy.scraper.converter;
  */
 public interface BibtexConverter {
 	
-	public String toBibtex(final String citation);
+	String toBibtex(final String citation);
 }

@@ -42,10 +42,11 @@ public class AsmScraper extends CitationManagerScraper {
 	private static final String SITE_NAME = "American Society for Microbiology";
 	private static final String SITE_URL = "http://journals.asm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "asm.org"), 
-			Pattern.compile("/content" + ".*")
-		));
+
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(
+					Pattern.compile(".*" + "asm.org"),
+					Pattern.compile("/content" + ".*")
+	));
 
 	@Override
 	public String getSupportedSiteName() {

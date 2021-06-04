@@ -28,17 +28,21 @@ package org.bibsonomy.scraper.url.kde.aaai;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.UrlUtils;
 
 /**
+ * scrapes BibTeX from AAAI website
+ *
+ * TODO: fix wrong bibtex format
+ *
  * @author hagen
  */
 public class AAAIScraper extends GenericBibTeXURLScraper {
@@ -47,21 +51,15 @@ public class AAAIScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_URL = "https://www.aaai.org/";
 
-	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
-	
-	private static final String PAPER_VIEW_PATH_FRAGMENT = "paper/view";
-	private static final String ARTICLE_VIEW_PATH_FRAGMENT = "article/view";
-	private static final String DOWNLOAD_PATH_FRAGMENT = "rt/captureCite";
-	private static final String PAPER_DOWNLOAD_PATH_SUFFIX = "/0/BibtexCitationPlugin";
-	
-	private static final Pattern PRE_PATTERN = Pattern.compile("<pre[^>]*>(.+?)</pre>", Pattern.DOTALL);
-	
-	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<>();
+	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME) + ".";
 
-	static {
-		PATTERNS.add(new Pair<>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(PAPER_VIEW_PATH_FRAGMENT)));
-		PATTERNS.add(new Pair<>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(ARTICLE_VIEW_PATH_FRAGMENT)));
-	}
+	private static final String ARTICLE_VIEW_PATH_FRAGMENT = "index.php/.*/article/view.*";
+
+	private static final List<Pair<Pattern,Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*aaai.org"), Pattern.compile(ARTICLE_VIEW_PATH_FRAGMENT))
+	);
+
+	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
 	@Override
 	public String getSupportedSiteName() {
@@ -85,27 +83,14 @@ public class AAAIScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		String downloadLink = url.toExternalForm();
+		final String path = url.getPath();
 
-		downloadLink = downloadLink.replace(PAPER_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
-		downloadLink = downloadLink.replace(ARTICLE_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
-		return downloadLink + PAPER_DOWNLOAD_PATH_SUFFIX;
-	}
-
-	@Override
-	protected String postProcessScrapingResult(final ScrapingContext scrapingContext, final String content) {
-		final Matcher matcher = PRE_PATTERN.matcher(content);
+		final Matcher matcher = ID_PATTERN.matcher(path);
 		if (matcher.find()) {
-			String bibtex = matcher.group(1);
-			//replace conference field key by booktitle
-			if (!bibtex.contains("booktitle")) {
-				bibtex = bibtex.replaceAll("conference\\*?=", "booktitle=");
-			}
-
-			// replace entry type paper by inproceedings
-			// FIXME: are all those publications inproceedings?
-			bibtex = bibtex.replace("@paper", "@inproceedings");
-			return bibtex;
+			// find out the correct journal / conference
+			final String[] paths = path.split("/index.php");
+			final String[] subPaths = paths[1].split("/");
+			return UrlUtils.getHostWithProtocol(url) + "/index.php/" + subPaths[1] + "/citationstylelanguage/download/bibtex?submissionId=" + matcher.group();
 		}
 
 		return null;

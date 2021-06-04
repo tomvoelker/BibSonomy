@@ -66,7 +66,8 @@ public class RemoteTestAssert {
 	}
 
 	/**
-	 * calls the specified scraper with the 
+	 * calls the specified scraper with the provided url and selection and tests the returned result of the scraper
+	 * with the contents of the provided result file
 	 * @param url
 	 * @param selection
 	 * @param scraperClass

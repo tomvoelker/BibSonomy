@@ -26,65 +26,94 @@
  */
 package org.bibsonomy.scraper.converter;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.util.ValidationUtils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
+import org.bibsonomy.model.util.BibTexUtils;
 
 /**
+ * converter to convert JSON CSL entries to BibTeX
+ *
+ * FIXME: does not work for all BibTeX types
+ *
  * @author Mohammed Abed
  */
 public class CslToBibtexConverter implements BibtexConverter {
+	// FIXME: remove pair unused
+	private final Map<String, Pair<String, String>> entryTypeMap = new HashMap<>();
 
-	private final Map<String, Pair<String, String>> entryTypeMap = new HashMap<String, Pair<String, String>>();
-	// these fields are handled by mapField()
-	private final Map<String, String> fieldMap = new HashMap<String, String>();
-	// these fields need to be handled specially
-	private final Set<String> specialFields = new HashSet<String>();
+	private final Map<String, String> fieldMap = new HashMap<>();
+
+	private final Map<String, Map<String, String>> entryTypeSpecificMapping = new HashMap<>();
 	
 	public CslToBibtexConverter() {
+		this.entryTypeMap.put("book", new Pair<>(BibTexUtils.BOOK, "booktitle"));
+		this.entryTypeMap.put("statute", new Pair<>("book", "booktitle"));
 
-		this.entryTypeMap.put("book", new Pair<String, String>("book", "booktitle"));
-		this.entryTypeMap.put("statute", new Pair<String, String>("book", "booktitle"));
+		this.entryTypeMap.put("journal", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("case", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("computer_program", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("generic", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("journal_article", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("magazine_article", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("newspaper_article", new Pair<>("article", "journal"));
+		this.entryTypeMap.put("working_paper", new Pair<>("article", "journal"));
 
-		this.entryTypeMap.put("journal", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("case", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("computer_program", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("generic", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("journal_article", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("magazine_article", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("newspaper_article", new Pair<String, String>("article", "journal"));
-		this.entryTypeMap.put("working_paper", new Pair<String, String>("article", "journal"));
+		this.entryTypeMap.put("book_section", new Pair<>(BibTexUtils.INBOOK, "booktitle"));
+		this.entryTypeMap.put("thesis", new Pair<>(BibTexUtils.PHD_THESIS, "booktitle"));
+		this.entryTypeMap.put("article", new Pair<>(BibTexUtils.ARTICLE, ""));
 
-		this.entryTypeMap.put("book_section", new Pair<String, String>("inbook", "booktitle"));
-		this.entryTypeMap.put("thesis", new Pair<String, String>("phdthesis", "booktitle"));
-		this.entryTypeMap.put("conference_proceedings", new Pair<String, String>("inproceedings", "booktitle"));
-		this.entryTypeMap.put("report", new Pair<String, String>("techreport", "booktitle"));
-	
+		this.entryTypeMap.put("conference_proceedings", new Pair<>("inproceedings", "booktitle"));
+		this.entryTypeMap.put("paper_conference", new Pair<>(BibTexUtils.INPROCEEDINGS, ""));
+		this.entryTypeMap.put("report", new Pair<>("techreport", "booktitle"));
+
+		// some general field mappings
 		this.fieldMap.put("title", "title");
+		this.fieldMap.put("abstract", "abstract");
+		this.fieldMap.put("DOI", "doi");
+		this.fieldMap.put("ISBN", "isbn");
+		this.fieldMap.put("ISSN", "issn");
+		this.fieldMap.put("pages", "pages");
+		this.fieldMap.put("page", "pages");
+		this.fieldMap.put("publisher-place", "address");
+		this.fieldMap.put("event-place", "location");
+		this.fieldMap.put("URL", "url");
+		this.fieldMap.put("website", "url");
+		this.fieldMap.put("keyword", "keywords");
+
+		// TODO: I think these fields are entry type specific
 		this.fieldMap.put("volume", "volume");
 		this.fieldMap.put("issue", "number");
 		this.fieldMap.put("publisher", "publisher");
-		this.fieldMap.put("pages", "pages");
-	
-		this.specialFields.add("authors");
-		this.specialFields.add("editors");
-		this.specialFields.add("published_in");
-		this.specialFields.add("type");
-		this.specialFields.add("year");
-		this.specialFields.add("identifiers");
-		this.specialFields.add("url");
-		this.specialFields.add("website");
-		
+
+		final Map<String, String> inproceedingsEntryType = new HashMap<>();
+		inproceedingsEntryType.put("container-title", "booktitle");
+		inproceedingsEntryType.put("collection-title", "series");
+		this.entryTypeSpecificMapping.put(BibTexUtils.INPROCEEDINGS, inproceedingsEntryType);
+
+		final Map<String, String> inbookEntryTypeMappings = new HashMap<>();
+		inbookEntryTypeMappings.put("container-title", "booktitle");
+		inbookEntryTypeMappings.put("published_in", "booktitle"); // TODO: is this standard? Added to get the test working
+		this.entryTypeSpecificMapping.put(BibTexUtils.INBOOK, inbookEntryTypeMappings);
+
+		final Map<String, String> articleEntryTypeMappings = new HashMap<>();
+		articleEntryTypeMappings.put("container-title", "journal");
+		articleEntryTypeMappings.put("number-of-pages", "numpages");
+		articleEntryTypeMappings.put("source", "issue_date");
+		this.entryTypeSpecificMapping.put(BibTexUtils.ARTICLE, articleEntryTypeMappings);
+
+		// FIXME: add more entry type specific mappings
 	}
 
 	/**
@@ -94,12 +123,136 @@ public class CslToBibtexConverter implements BibtexConverter {
 	 * @return
 	 */
 	private Pair<String, String> getEntryType(final String type) {
-		if (entryTypeMap.containsKey(type)) {
-			return entryTypeMap.get(type);
+		final String lowerCaseType = type.toLowerCase();
+		if (entryTypeMap.containsKey(lowerCaseType)) {
+			return entryTypeMap.get(lowerCaseType);
 		}
-		return new Pair<String,String>("misc", "booktitle");
+
+		return new Pair<>("misc", "booktitle");
 	}
 
+	/**
+	 * converts csl entry to bibtex representation
+	 * @param cslEntry
+	 * @return
+	 */
+	public String toBibtex(final JSONObject cslEntry) {
+		final Pair<String, String> entryTypeTitle = getEntryType(cslEntry.getString("type"));
+		final String entryType = entryTypeTitle.getFirst();
+
+		final String authors = getAuthors(cslEntry);
+		final String editors = getPersons(cslEntry, "editors");
+		final String year = extractYear(cslEntry);
+
+		final String citationKey = getCitationKey(authors, editors, year);
+
+		final StringBuilder result = new StringBuilder("@");
+		result.append(entryType).append("{").append(citationKey).append(",\n");
+
+		if (present(authors)) {
+			result.append(getBibTeX("author", authors));
+		}
+
+		if (present(editors)) {
+			result.append(getBibTeX("editor", editors));
+		}
+
+		if (present(year)) {
+			result.append(getBibTeX("year", year));
+		}
+
+		// get all identifiers from the csl entry
+		if (cslEntry.has("identifiers")) {
+			final JSONObject identifiers = cslEntry.getJSONObject("identifiers");
+
+			final Set<Object> keys = identifiers.keySet();
+			for (final Object key : keys) {
+				final String keyAsString = key.toString();
+				final String value = identifiers.getString(keyAsString);
+				result.append(getBibTeX(keyAsString, value));
+			}
+		}
+
+		result.append(getFieldIfPresent(CslToBibtexConverter::extractMonth, cslEntry, "month"));
+		result.append(getFieldIfPresent(CslToBibtexConverter::extractDay, cslEntry, "day"));
+
+		// apply general mapping
+		applyMapping(cslEntry, this.fieldMap, result);
+
+		// apply entry type specific mapping
+		if (this.entryTypeSpecificMapping.containsKey(entryType)) {
+			final Map<String, String> fieldMapping = this.entryTypeSpecificMapping.get(entryType);
+			applyMapping(cslEntry, fieldMapping, result);
+		}
+
+		result.append("}");
+		return result.toString();
+	}
+
+	private String getFieldIfPresent(Function<JSONObject, String> valueExtractor, JSONObject cslEntry, String fieldName) {
+		final String value = valueExtractor.apply(cslEntry);
+		if (present(value)) {
+			return getBibTeX(fieldName, value);
+		}
+		return "";
+	}
+
+	private void applyMapping(final JSONObject cslEntry, final Map<String, String> mapping, final StringBuilder result) {
+		mapping.forEach((key, value1) -> {
+			if (cslEntry.has(key)) {
+				final String valueToCopy = cslEntry.getString(key);
+				result.append(getBibTeX(value1, valueToCopy));
+			}
+		});
+	}
+
+	private static String extractDay(final JSONObject cslEntry) {
+		final Optional<JSONArray> issued = extractIssued(cslEntry);
+		if (issued.isPresent()) {
+			final JSONArray jsonArray = issued.get();
+			if (jsonArray.size() > 2) {
+				return jsonArray.getString(2);
+			}
+		}
+		return "";
+	}
+
+	private static String extractMonth(final JSONObject cslEntry) {
+		final Optional<JSONArray> issued = extractIssued(cslEntry);
+		if (issued.isPresent()) {
+			final JSONArray jsonArray = issued.get();
+			if (jsonArray.size() > 1) {
+				return jsonArray.getString(1);
+			}
+		}
+		return "";
+	}
+
+	private static String extractYear(final JSONObject cslEntry) {
+		if (cslEntry.has("year")) {
+			return cslEntry.getString("year");
+		}
+		final Optional<JSONArray> issued = extractIssued(cslEntry);
+		return issued.map(x -> x.getString(0)).orElse("");
+	}
+
+	private static Optional<JSONArray> extractIssued(JSONObject cslEntry) {
+		if (cslEntry.has("issued")) {
+			final JSONObject issued = cslEntry.getJSONObject("issued");
+			if (issued.has("date-parts")) {
+				final JSONArray dateParts = issued.getJSONArray("date-parts");
+				return Optional.of(dateParts.getJSONArray(0));
+			}
+		}
+		return Optional.empty();
+	}
+
+	private String getAuthors(final JSONObject cslEntry) {
+		if (cslEntry.has("author")) {
+			return getPersons(cslEntry, "author");
+		}
+		return getPersons(cslEntry, "authors");
+	}
 
 	/** Function is to convert csl format to bibtex
 	 * 
@@ -107,90 +260,18 @@ public class CslToBibtexConverter implements BibtexConverter {
 	 * @return The resulting BibTeX string.
 	 */
 	@Override
-	public String toBibtex(final String cslCitation)  throws JSONException {
-
+	public String toBibtex(final String cslCitation) throws JSONException {
 		final String jsonRead = cslCitation.replaceAll("\\/","/");
-
 		final JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonRead);  
 
-
-		final Pair<String, String> entryTypeTitle = getEntryType(json.getString("type"));
-		final String entryType = entryTypeTitle.getFirst(); 
-		final String lblTitle = entryTypeTitle.getSecond();
-
-		final StringBuilder authors = getPersons(json, "authors");
-		final StringBuilder editors = getPersons(json, "editors");
-		final int year = json.has("year") ? json.getInt("year") : 0;
-
-		final String citationKey = getCitationKey(authors, editors, year);
-
-
-		final StringBuilder result = new StringBuilder("@");
-		result.append(entryType).append("{").append(citationKey).append(",\n");
-
-		// handle standard fields
-		mapFields(json, result);
-		
-		// append special fields
-		if (json.has("identifiers")) {
-			mapFields(json.getJSONObject("identifiers"), result);
-		}
-		if (json.has("published_in")) {
-			result.append(getBibTeX(lblTitle, json.getString("published_in")));
-		}
-		if (ValidationUtils.present(authors)) {
-			result.append(getBibTeX("author", authors));
-		}
-		if (ValidationUtils.present(editors)) {
-			result.append(getBibTeX("editor", editors));
-		}
-		if (json.has("website")) {
-			result.append(getBibTeX("url", json.getString("website")));
-		} else if (json.has("url")) {
-			result.append(getBibTeX("url", json.getString("url")));
-		}
-		if (year != 0) {
-			result.append(getBibTeX("year", Integer.toString(year)));
-		}	    
-		result.append("}");
-		return result.toString();		
+		return this.toBibtex(json);
 	}
 	
 	private String getBibTeX(final String key, final CharSequence value) {
-		return("  " + key + " = {" + value + "},\n");
+		return "  " + key + " = {" + value + "},\n";
 	}
-	
 
-	private void mapFields(final JSONObject json, final StringBuilder result) {
-		@SuppressWarnings("rawtypes")
-		final Iterator keys = json.keys();
-		while (keys.hasNext()) {
-			final String key = (String)keys.next();
-			final String value = json.getString(key);
-			
-			final String field = mapField(key, value);
-			if (ValidationUtils.present(field)) {
-				result.append(field);
-			}
-		}
-	}
-	
-	private String mapField(final String key, final String value) {
-		// ignore special fields
-		if (!this.specialFields.contains(key)) {
-			final String bibtexKey;
-			if (this.fieldMap.containsKey(key)) {
-				bibtexKey = this.fieldMap.get(key);
-			} else {
-				bibtexKey = key;
-			}
-			return getBibTeX(bibtexKey, value);
-		}
-		return null;
-	}
-	
-	
-	private String getFirstSurname(final StringBuilder s) {
+	private String getFirstSurname(final String s) {
 		final int indexOfComma = s.indexOf(",");
 		if (indexOfComma > 0) {
 			return s.substring(0, indexOfComma);
@@ -198,7 +279,7 @@ public class CslToBibtexConverter implements BibtexConverter {
 		return "";
 	}
 	
-	private String getCitationKey(final StringBuilder authors, final StringBuilder editors, final int year) {
+	private String getCitationKey(final String authors, final String editors, final String year) {
 		final String name;
 		if (authors.length() > 0) {
 			name = getFirstSurname(authors);
@@ -210,27 +291,48 @@ public class CslToBibtexConverter implements BibtexConverter {
 		return name + year;
 	}
 	
-	private String getString(final JSONObject input, final String key, final String defaultValue) {
-		if (input.has(key)) {
-			return input.getString(key);
-		}
-		return defaultValue;
-	}
-	
-	private StringBuilder getPersons(final JSONObject json, final String key) {
+	private static String getPersons(final JSONObject json, final String key) {
 		final StringBuilder fullName = new StringBuilder();
 		if (json.has(key)) {
 			final JSONArray persons = json.getJSONArray(key);
-			if (ValidationUtils.present(persons)) {
+			if (present(persons)) {
 				for (final Object author : persons) {
 					if (fullName.length() > 0) {
 						fullName.append(" and ");
 					} 
 					final JSONObject person = (JSONObject) author;
-					fullName.append(getString(person, "surname", "")).append(", ").append(getString(person, "forename", ""));
+
+					fullName.append(parsePersonName(person));
 				}
 			}
 		}
-		return fullName;
+		return fullName.toString();
+	}
+
+	private static String parsePersonName(final JSONObject person) {
+		final StringBuilder personName = new StringBuilder();
+		final boolean hasFamilyName = person.has("family");
+		final boolean hasSurName = person.has("surname");
+		final boolean hasLastName = hasFamilyName || hasSurName;
+		if (hasFamilyName) {
+			personName.append(person.get("family"));
+		} else if (hasSurName) {
+			personName.append(person.get("surname"));
+		}
+
+		boolean hasGivenName = person.has("given");
+		boolean hasForeName = person.has("forename");
+		final boolean hasFirstName = hasGivenName || hasForeName;
+		if (hasFirstName && hasLastName) {
+			personName.append(", ");
+		}
+
+		if (hasGivenName) {
+			personName.append(person.get("given"));
+		} else if (hasForeName) {
+			personName.append(person.get("forename"));
+		}
+
+		return personName.toString();
 	}
 }

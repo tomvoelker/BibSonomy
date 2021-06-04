@@ -60,7 +60,6 @@ public class PionScraper extends AbstractUrlScraper {
 	}
 
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-		// log message
 		log.debug("Observed Scraper called: PionScraper is called with " + sc.getUrl().toString());
 
 		// TODO: throw exception or not?

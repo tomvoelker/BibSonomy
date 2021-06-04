@@ -45,10 +45,10 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  */
 public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 	
-	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";
+	private static final String SCIENCE_CITATION_HOST = "sciencedirect.com";
 	
 	private static final String SITE_NAME = "ScienceDirect";
-	private static final String SITE_URL = "http://www." + SCIENCE_CITATION_HOST;
+	private static final String SITE_URL = "https://www." + SCIENCE_CITATION_HOST;
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
 

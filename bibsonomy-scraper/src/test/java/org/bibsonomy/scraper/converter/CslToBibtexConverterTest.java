@@ -36,7 +36,7 @@ import org.bibsonomy.testutil.TestUtils;
  */
 public class CslToBibtexConverterTest {
 
-	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/";
+	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/csl2bibtex/";
 	
 	/**
 	 * another CSL to BibTeX test
@@ -50,6 +50,17 @@ public class CslToBibtexConverterTest {
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib").trim();
 		final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
 		final String bibTeX = cslToBibtexConverter.toBibtex(csl);
-		assertEquals (expectedBibTeX, bibTeX);
+		assertEquals(expectedBibTeX, bibTeX);
+	}
+
+	@Test
+	public void testCSLToBibTexACMConvert() throws IOException {
+		final String csl = TestUtils.readEntryFromFile(PATH_TO_FILES + "csl2bibtex2.json");
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csl2bibtex2.bib").trim();
+		final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
+		final String bibTeX = cslToBibtexConverter.toBibtex(csl);
+		assertEquals(expectedBibTeX, bibTeX);
 	}
 }

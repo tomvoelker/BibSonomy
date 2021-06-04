@@ -38,23 +38,23 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
- * Scraper for aclweb.org, given URL must be show on a PDF
- * 
- * TODO: Problem is that bibtex is only for few papers available 
- * TODO: add
+ * Scraper for aclweb.org
+ *
  * @author tst
  */
 public class AclScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Association for Computational Linguistics";
 
-	private static final String SITE_URL = "http://aclweb.org/";
+	private static final String SITE_URL = "https://aclweb.org/";
 
-	private static final String INFO = "Scraper for (PDF) references from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aclweb.org");
-	private static final Pattern pathPattern = Pattern.compile("^" + "/anthology-new" + ".*\\.pdf$");
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
+	private static final Pattern pathPattern = Pattern.compile("^/anthology.*");
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
+					new Pair<>(hostPattern, pathPattern)
+	);
 
 	@Override
 	public String getInfo() {
@@ -81,9 +81,13 @@ public class AclScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		final String downloadUrl = url.toString();
-		// replace .pdf with .bib
-		return downloadUrl.substring(0, downloadUrl.length() - 4) + ".bib";
+		// replace pdf link
+		String downloadUrl = url.toString().replaceAll(".pdf", "");
+		// replace trailing slash
+		if (downloadUrl.endsWith("/")) {
+			downloadUrl = downloadUrl.substring(0, downloadUrl.length() - 1);
+		}
+		return downloadUrl + ".bib";
 	}
 
 	@Override

@@ -46,7 +46,12 @@ public class AappublicationsScraperTest {
 		 * FIXME this throws a ParseException, other urls don't
 		 */
 		final String url = "http://pediatrics.aappublications.org/content/136/5/e1186";
-		final String resultFile = "AappublicationsScraperUnitURLTest.bib";
+		final String resultFile = "aappublications/AappublicationsScraperUnitURLTest1.bib";
 		assertScraperResult(url, AappublicationsScraper.class, resultFile);
+	}
+
+	@Test
+	public void testNeoReviews() {
+		assertScraperResult("https://neoreviews.aappublications.org/content/22/6/e360", AappublicationsScraper.class, "aappublications/AappublicationsScraperUnitURLTest2.bib");
 	}
 }

@@ -30,9 +30,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -76,11 +78,12 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			}
 			
 			final String downloadURL = this.getDownloadURL(url, cookies);
+			final List<NameValuePair> postData = this.getDownloadData(url, cookies);
 			if (downloadURL == null) {
 				throw new ScrapingFailureException("can't get download URL for " + url);
 			}
 			
-			final String downloadResult = WebUtils.getContentAsString(new URL(downloadURL), cookies, url.toString());
+			final String downloadResult = WebUtils.getContentAsString(downloadURL, cookies, postData, null, url.toString());
 			String bibtex = this.convert(downloadResult);
 			
 			/*
@@ -100,7 +103,17 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 		}
 		return false;
 	}
-	
+
+	/**
+	 * returns a list of name value pairs
+	 * @param url
+	 * @param cookies
+	 * @return
+	 */
+	protected List<NameValuePair> getDownloadData(final URL url, final String cookies) {
+		return null;
+	}
+
 	/**
 	 * @return iff cookies from the site should be used
 	 */

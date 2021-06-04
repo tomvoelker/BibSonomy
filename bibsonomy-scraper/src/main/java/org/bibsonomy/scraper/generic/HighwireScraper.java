@@ -42,11 +42,11 @@ import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * 
+ * FIXME: add documentation to this scraper
  */
 public class HighwireScraper implements Scraper {
 	private static final String SITE_NAME = "Highwire Scraper Collection";
-	private static final String SITE_URL = "http://highwire.stanford.edu/lists/allsites.dtl";
+	private static final String SITE_URL = "https://highwire.stanford.edu/lists/allsites.dtl";
 	private static final String INFO 	= "This scraper parses a publication page from one of these <a href=\"http://highwire.stanford.edu/lists/allsites.dtl\">journals hosted by Highwire Press</a>  " +
 			"and extracts the adequate BibTeX entry.";
 
@@ -71,7 +71,6 @@ public class HighwireScraper implements Scraper {
 			 * 
 			 * If not, this scraper can't do anything and hence returns false. It does NOT 
 			 * throw an exception because the IEScraper might do its job.
-			 * 
 			 */
 			String pageContent;
 			try {
