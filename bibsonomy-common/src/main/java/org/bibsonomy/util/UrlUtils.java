@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.BitSet;
@@ -502,6 +503,14 @@ public class UrlUtils {
 		url = url.toLowerCase();
 
 		return url;
+	}
+
+	/**
+	 * @param url
+	 * @return the url without path and query parameters
+	 */
+	public static String getHostWithProtocol(URL url) {
+		return url.getProtocol() + "://" + url.getHost();
 	}
 
 	/**

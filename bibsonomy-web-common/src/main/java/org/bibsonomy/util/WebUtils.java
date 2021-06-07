@@ -320,7 +320,7 @@ public class WebUtils {
 			 * collect response
 			 */
 			final Header firstHeader = response.getFirstHeader(CONTENT_TYPE_HEADER_NAME);
-			final String charset = extractCharset(firstHeader.getValue());
+			final String charset = getCharset(firstHeader);
 			final StringBuilder content = inputStreamToStringBuilder(response.getEntity().getContent(), charset);
 
 			final String string = content.toString();
@@ -493,6 +493,14 @@ public class WebUtils {
 			}
 		}
 		return result.toString();
+	}
+
+	private static String getCharset(final Header header) {
+		if (header == null) {
+			return StringUtils.CHARSET_UTF_8;
+		}
+
+		return extractCharset(header.getValue());
 	}
 
 	/**
