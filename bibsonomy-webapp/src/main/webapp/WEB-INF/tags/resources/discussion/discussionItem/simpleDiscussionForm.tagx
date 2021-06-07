@@ -6,7 +6,8 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
-	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user">
 
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
@@ -51,9 +52,7 @@
 			<c:set var="colspan" value="12" />
 			<c:if test="${empty discussionItem}">
 				<div class="media-left">
-					<a>
-						<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object img-circle simple-user-pic"/>
-					</a>
+					<user:thumbnail user="${command.context.loginUser}" noname="${true}" circle="${true}" />
 				</div>
 			</c:if>
 			<div class="media-body">

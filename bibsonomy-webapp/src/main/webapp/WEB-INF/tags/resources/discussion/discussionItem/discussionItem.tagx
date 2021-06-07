@@ -18,19 +18,17 @@
 
 	<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
-	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
-	
 	<div class="media-left">
 		<c:choose>
 			<c:when test="${anonymous and not ownDiscussionItem}">
-				<a>
-					<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture img-circle" />
-				</a>
+				<c:if test="${properties['profile.picture.default']}">
+					<a>
+						<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture img-circle" />
+					</a>
+				</c:if>
 			</c:when>
 			<c:otherwise>
-				<a href="/user/${fn:escapeXml(discussionItemUserName)}" title="${displayUserName}">
-					<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object img-circle commentPicture"/>
-				</a>
+				<user:thumbnail user="${discussionItem.user}" noname="${true}" circle="${true}" size="44" />
 			</c:otherwise>
 		</c:choose>
 	</div>
