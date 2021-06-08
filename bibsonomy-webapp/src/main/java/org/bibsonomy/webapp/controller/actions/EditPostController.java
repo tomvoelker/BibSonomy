@@ -50,8 +50,8 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
@@ -67,6 +67,7 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
@@ -121,7 +122,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected URLGenerator urlGenerator;
 
 	private int maxQuerySize;
-	
+
 	/**
 	 * Returns an instance of the command the controller handles.
 	 *
@@ -419,7 +420,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected String getHttpsReferrer(final COMMAND command) {
 		return null;
 	}
-	
+
 	/**
 	 * TODO: this could be configured using Spring!
 	 * @return the view to show
@@ -784,8 +785,24 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
+		return new ExtendedRedirectView(getRedirectUrl(post, referer));
+	}
 
-		return new ExtendedRedirectView(referer);
+	/*
+	 * With HTTPS the referrer is no longer useful, since it does not contain
+	 * the full path. Thus, we better redirect to the post's URL.
+	 */
+	private String getRedirectUrl(final Post<RESOURCE> post, final String referer) {
+		final String url = ResourceUtils.getLinkAddress(post);
+		/*
+		 * For HTTPS use the URL instead of the referer, when the referer
+		 * is a prefix of the URL. 
+		 */
+		if (present(url) && url.toLowerCase().startsWith("https") && referer.startsWith(url)) {
+			// FIXME: maybe we should avoid redirecting to PDFs?
+			return url;
+		}
+		return referer;
 	}
 
 	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
@@ -1077,26 +1094,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * is resource already owned by the user?
 		 */
-		final Post<RESOURCE> dbPost = this.getPostDetails(resource.getIntraHash(), loginUserName);
+		 final Post<RESOURCE> dbPost = this.getPostDetails(resource.getIntraHash(), loginUserName);
 
-		if (dbPost != null) {
-			log.debug("set diff post");
-			/*
-			 * already posted; warn user
-			 */
-			this.setDuplicateErrorMessage(dbPost, this.errors);
+		 if (dbPost != null) {
+			 log.debug("set diff post");
+			 /*
+			  * already posted; warn user
+			  */
+			 this.setDuplicateErrorMessage(dbPost, this.errors);
 
-			// set intraHash, diff post and set dbPost as post of command
-			command.setIntraHashToUpdate(resource.getIntraHash());
+			 // set intraHash, diff post and set dbPost as post of command
+			 command.setIntraHashToUpdate(resource.getIntraHash());
 
-			command.setDiffPost(post);
+			 command.setDiffPost(post);
 
-			this.populateCommandWithPost(command, dbPost);
+			 this.populateCommandWithPost(command, dbPost);
 
-			return true;
-		}
+			 return true;
+		 }
 
-		return false;
+		 return false;
 	}
 
 	/**

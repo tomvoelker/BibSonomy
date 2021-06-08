@@ -30,13 +30,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.UrlUtils;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.malethan.pingback.Link;
@@ -75,7 +73,7 @@ public class SimplePingback implements Pingback {
 		/*
 		 * extract URL
 		 */
-		final String linkAddress = getLinkAddress(post);
+		final String linkAddress = ResourceUtils.getLinkAddress(post);
 		if (present(linkAddress)) {
 			final Link link = linkLoader.loadLink(linkAddress);
 			if (link.isSuccess()) {
@@ -97,29 +95,7 @@ public class SimplePingback implements Pingback {
 		return null; 
 	}
 
-	/**
-	 * Extracts a URL from the post. Easy for bookmarks, a little more difficult
-	 * for publications.
-	 * 
-	 * @param post
-	 * @return
-	 */
-	private String getLinkAddress(final Post<? extends Resource> post) {
-		final Resource resource = post.getResource();
-		if (resource instanceof Bookmark) {
-			return ((Bookmark) resource).getUrl();
-		} else if (resource instanceof BibTex) {
-			final BibTex bibtex = (BibTex) resource;
 
-			final String url = bibtex.getUrl();
-			if (present(url)) return UrlUtils.cleanBibTeXUrl(url);
-			bibtex.serializeMiscFields();
-
-			final String ee = bibtex.getMiscField("ee");
-			if (present(ee)) return UrlUtils.cleanBibTeXUrl(ee);
-		}
-		return null;
-	}
 
 	private String sendPingback(final Post<? extends Resource> post, final Link link) {
 		try {
