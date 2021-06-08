@@ -317,10 +317,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		do {
 			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 			postQueryBuilder.setGrouping(GroupingEntity.INBOX)
-					.setGroupingName(loginUserName)
-					.setScope(QueryScope.LOCAL)
-					.setHash(hash)
-					.entriesStartingAt(this.maxQuerySize, startCount);
+			.setGroupingName(loginUserName)
+			.setScope(QueryScope.LOCAL)
+			.setHash(hash)
+			.entriesStartingAt(this.maxQuerySize, startCount);
 			tmp = this.logic.getPosts(postQueryBuilder.createPostQuery((Class<RESOURCE>) this.instantiateResource().getClass()));
 			dbPosts.addAll(tmp);
 			startCount += this.maxQuerySize;
@@ -483,11 +483,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 				postQueryBuilder.setGrouping(GroupingEntity.USER)
-						.setGroupingName(this.getGrouping(postOwner))
-						.setHash(intraHashToUpdate)
-						.setScope(QueryScope.LOCAL)
-						.setFilters(Sets.asSet(FilterEntity.HISTORY))
-						.entriesStartingAt(compareVersion + 1, compareVersion);
+				.setGroupingName(this.getGrouping(postOwner))
+				.setHash(intraHashToUpdate)
+				.setScope(QueryScope.LOCAL)
+				.setFilters(Sets.asSet(FilterEntity.HISTORY))
+				.entriesStartingAt(compareVersion + 1, compareVersion);
 				@SuppressWarnings("unchecked")
 				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(postQueryBuilder.createPostQuery(dbPost.getResource().getClass())).get(0);
 
@@ -796,9 +796,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final String url = ResourceUtils.getLinkAddress(post);
 		/*
 		 * For HTTPS use the URL instead of the referer, when the referer
-		 * is a prefix of the URL. 
+		 * is a prefix of the URL.
 		 */
-		if (present(url) && url.toLowerCase().startsWith("https") && referer.startsWith(url)) {
+		if (referer.toLowerCase().startsWith("https") && present(url) && url.startsWith(referer)) {
 			// FIXME: maybe we should avoid redirecting to PDFs?
 			return url;
 		}
