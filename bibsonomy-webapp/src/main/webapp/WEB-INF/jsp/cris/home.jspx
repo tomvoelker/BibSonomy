@@ -16,7 +16,7 @@
                            noSidebar="${true}">
 
         <jsp:attribute name="content">
-			<h1><fmt:message key="cris.home.header" /></h1>
+			<h1 class="text-center"><fmt:message key="cris.home.header" /></h1>
 			<img class="img-responsive" src="/resources_puma/image/cris_home_header.jpg" id="cris-home-logo" />
 			<div class="row">
 				<div class="col-md-12">
