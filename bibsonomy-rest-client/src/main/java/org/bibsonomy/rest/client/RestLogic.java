@@ -64,7 +64,6 @@ import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -277,10 +276,13 @@ public class RestLogic extends AbstractLogicInterface {
 		restQuery.setResourceType(query.getResourceClass());
 		restQuery.setTags(query.getTags());
 		restQuery.setSearch(query.getSearch());
-		restQuery.setSortCriteriums(query.getSortCriteria());
+		restQuery.setSortCriteria(query.getSortCriteria());
 		restQuery.setUserName(this.getAuthenticatedUser().getName());
+		restQuery.setSearchType(query.getScope());
 		return (List) execute(restQuery);
 	}
+
+
 
 	@Override
 	public Tag getTagDetails(final String tagName) {

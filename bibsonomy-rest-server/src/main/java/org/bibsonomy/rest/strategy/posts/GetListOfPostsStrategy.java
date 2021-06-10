@@ -49,7 +49,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria);
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria, this.searchType);
 	}
 
 	@SuppressWarnings("unchecked")

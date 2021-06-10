@@ -5,6 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -83,6 +84,7 @@ public class RestLogicTest extends TestCase {
 				.setGrouping(GroupingEntity.ALL)
 				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
+				.setScope(QueryScope.SEARCHINDEX)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -101,6 +103,7 @@ public class RestLogicTest extends TestCase {
 				.setGrouping(GroupingEntity.ALL)
 				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
+				.setScope(QueryScope.SEARCHINDEX)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -119,6 +122,7 @@ public class RestLogicTest extends TestCase {
 				.setGrouping(GroupingEntity.ALL)
 				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
+				.setScope(QueryScope.SEARCHINDEX)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -151,6 +155,7 @@ public class RestLogicTest extends TestCase {
 				.setGroupingName("hotho")
 				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
+				.setScope(QueryScope.SEARCHINDEX)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -182,6 +187,7 @@ public class RestLogicTest extends TestCase {
 				.setGroupingName("kde")
 				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
+				.setScope(QueryScope.SEARCHINDEX)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
@@ -213,6 +219,7 @@ public class RestLogicTest extends TestCase {
 				.setTags(Arrays.asList("myown"))
 				.end(100)
 				.setSortCriteria(SortUtils.singletonSortCriteria(sortKey, sortOrder))
+				.setScope(QueryScope.SEARCHINDEX)
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
