@@ -308,7 +308,7 @@
 			LEFT JOIN user u ON (u.user_name = i.group_name)
 			LEFT JOIN groupids pt ON (i.parent = pt.group)
 			LEFT JOIN user upt ON (upt.user_name = pt.group_name)
-		WHERE gh.parent_group_id IN
+		WHERE gh.child_group_id IN
 		<iterate open="(" close=")" conjunction=",">
 			#[]#
 		</iterate>
