@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import java.io.IOException;
-
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
@@ -38,6 +36,8 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.io.IOException;
 
 /**
  * @author Christian, lsc
@@ -84,10 +84,14 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 			} catch (final LayoutRenderingException | IOException e) {
 				// ignore because reasons 
 			}
+
+			// also load user custom layouts
+			cslFilesManager.loadUserLayouts(context.getLoginUser().getName())
+					.forEach(command::addCustomCslLayout);
 		}
 
-		command.addLayoutMap(this.layouts.getLayoutMap());
 		command.setCslLayoutMap(cslFilesManager.getCslFiles());
+		command.addLayoutMap(this.layouts.getLayoutMap());
 
 		if (command.getFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;

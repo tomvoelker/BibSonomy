@@ -41,13 +41,15 @@ public class ExportPageCommand extends ResourceViewCommand {
 
 	private Map<String, Layout> layoutMap;
 	private Map<String, CSLStyle> cslLayoutMap;
-	
+	private Map<String, CSLStyle> customCslLayoutMap;
+
 	/**
 	 * default constructor
 	 */
 	public ExportPageCommand() {
 		this.layoutMap = new TreeMap<>();
 		this.cslLayoutMap = new TreeMap<>();
+		this.customCslLayoutMap = new TreeMap<>();
 	}
 
 	/**
@@ -88,5 +90,35 @@ public class ExportPageCommand extends ResourceViewCommand {
 	 */
 	public void setCslLayoutMap(final Map<String, CSLStyle> map) {
 		this.cslLayoutMap = map;
-	}	
+	}
+
+	/**
+	 * adds a layout to the csl layout map
+	 * @param cslStyle
+	 */
+	public void addCslLayout(CSLStyle cslStyle) {
+		this.cslLayoutMap.put(cslStyle.getDisplayName(), cslStyle);
+	}
+
+
+	public void setLayoutMap(Map<String, Layout> layoutMap) {
+		this.layoutMap = layoutMap;
+	}
+
+	/**
+	 * adds a layout to the custom csl layout map
+	 * @param cslStyle
+	 */
+	public void addCustomCslLayout(CSLStyle cslStyle) {
+		this.customCslLayoutMap.put(cslStyle.getDisplayName(), cslStyle);
+	}
+
+
+	public Map<String, CSLStyle> getCustomCslLayoutMap() {
+		return customCslLayoutMap;
+	}
+
+	public void setCustomCslLayoutMap(Map<String, CSLStyle> customCslLayoutMap) {
+		this.customCslLayoutMap = customCslLayoutMap;
+	}
 }

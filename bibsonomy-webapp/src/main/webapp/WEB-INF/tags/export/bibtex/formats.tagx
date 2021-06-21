@@ -19,6 +19,11 @@
 	</script>
 	<select id="selectAllStyles" data-placeholder="${placeholderText}" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
 		<option><!-- keep me! --></option>
+
+		<c:forEach var="customLayout" items="${command.customCslLayoutMap}">
+			<option value='/csl-layout/${fn:substringBefore(customLayout.value.id,".csl")}/${pathAndQueryString}'><c:out value="${customLayout.value.displayName}"/></option>
+		</c:forEach>
+
 		<c:forEach var="mapEntry" items="${command.layoutMap}">
 			<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
 				<c:choose>
@@ -45,12 +50,7 @@
 		<c:forEach var="mapEntry" items="${command.cslLayoutMap}">
 			<option value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'><c:out value="${mapEntry.value.displayName}"/></option>	
 		</c:forEach>
-		
-		
-		<c:if test="/layout/custom/${pathAndQueryString}">
-			<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
-			<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-		</c:if>
+
 		<c:forEach var="mapEntry" items="${command.layoutMap}">
 			<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
 				<c:choose>
