@@ -68,7 +68,9 @@
 				<div class="col-md-10">
 
 					<div class="content-header-entrytype">
-						<bib:entrytype publication="${goldstandard}" />
+						<div class="content-header-entrytype-badge">
+							<bib:entrytype publication="${goldstandard}" />
+						</div>
 					</div>
 
 					<h1 itemprop="name">
@@ -85,6 +87,7 @@
 								  publishedIn="${publishedIn}"/>
 					</h2>
 
+					<c:if test="${command.context.userLoggedIn}">
 					<div class="content-header-buttons">
 						<c:if test="${post.approved}">
 							<fmt:message key="goldStandard.approved.title" var="approved"/>
@@ -95,6 +98,7 @@
 
 						<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
 					</div>
+					</c:if>
 
 				</div>
 
