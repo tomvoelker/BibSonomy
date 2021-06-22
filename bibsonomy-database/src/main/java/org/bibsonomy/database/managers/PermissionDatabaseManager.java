@@ -503,7 +503,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		for (final Group group : loginUser.getGroups()) {
 			if (group.getName().equals(groupName)) {
-				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true).getGroupRole();
+				final GroupMembership groupMembershipForUser = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true);
+				if (!present(groupMembershipForUser)) {
+					/*
+					 * FIXME: this is caused by the transitive group membership of the user in the parent groups she
+					 * is a member of, please discuss: Should we use the lowest group role possible as the group role of the user?
+					 */
+					return false;
+				}
+				final GroupRole actualRole = groupMembershipForUser.getGroupRole();
 				if (present(actualRole)) {
 					return actualRole.hasRole(minimumRole);
 				}

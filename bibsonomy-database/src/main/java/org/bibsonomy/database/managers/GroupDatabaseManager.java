@@ -452,7 +452,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 			if (present(groupids)) {
 				List<Group> subgroups = this.queryForList("getSubgroupsTransitively", groupids, Group.class, session);
 
-
 				for (Group subgroup : subgroups) {
 					if (groupsForUser.stream().noneMatch(group -> group.getGroupId() == subgroup.getGroupId())) {
 						groupsForUser.add(subgroup);
