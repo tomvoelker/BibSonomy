@@ -304,7 +304,7 @@
 	<select id="getSubgroupsTransitively" resultMap="GroupCommon.group_extended_with_parent" parameterClass="list">
 		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
 			FROM group_hierarchy gh
-			LEFT JOIN groupids i ON (gh.child_group_id = i.group)
+			LEFT JOIN groupids i ON (gh.parent_group_id = i.group)
 			LEFT JOIN user u ON (u.user_name = i.group_name)
 			LEFT JOIN groupids pt ON (i.parent = pt.group)
 			LEFT JOIN user upt ON (upt.user_name = pt.group_name)
