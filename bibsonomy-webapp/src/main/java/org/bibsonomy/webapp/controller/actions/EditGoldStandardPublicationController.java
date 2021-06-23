@@ -76,9 +76,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		Post<BibTex> post = null;
 		try {
 			post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ObjectMovedException ex) {
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
 			// ignore
 		}
 
@@ -89,10 +87,22 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		return convertToGoldStandard(post);
 	}
 
+	private String getRedirectUrl(final Post<BibTex> post, final Post<BibTex> oldPost, final String referer) {
+		// check if the
+		if (present(referer)) {
+			if (present(oldPost) && referer.matches(".*/bibtex/.+") && !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
+				return this.urlGenerator.getPostUrl(post);
+			}
+
+			return referer;
+		}
+
+		return this.urlGenerator.getPostUrl(post);
+	}
+
 	@Override
-	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer, boolean update) {
-		// final String redirectUrl = present(referer) ? referer : this.urlGenerator.getResourceUrl(post.getResource());
-		final String redirectUrl = this.urlGenerator.getResourceUrl(post.getResource());
+	protected View finalRedirect(final String userName, final Post<BibTex> post, final Post<BibTex> oldPost, final String referer, boolean update) {
+		final String redirectUrl = this.getRedirectUrl(post, oldPost, referer);
 
 		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");

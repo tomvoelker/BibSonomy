@@ -452,15 +452,16 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
+		 * get the old post from the database
+		 */
+		final Post<RESOURCE> dbPost = this.getPostDetails(intraHashToUpdate, postOwnerName);
+
+		/*
 		 * we're editing an existing post
 		 */
 		if (!context.isValidCkey()) {
 			log.debug("no valid ckey found -> assuming first call, populating form");
-			/*
-			 * ckey is invalid, so this is probably the first call --> get post
-			 * from DB
-			 */
-			final Post<RESOURCE> dbPost = this.getPostDetails(intraHashToUpdate, postOwnerName);
+
 			if (dbPost == null) {
 				/*
 				 * invalid intra hash: post could not be found
@@ -507,6 +508,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			return this.getEditPostView(command, postOwner);
 		}
+
 		log.debug("ckey given, so parse tags, validate post, update post");
 		/*
 		 * ckey is given, so user is already editing the post -> parse tags
@@ -519,8 +521,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * post has changed -> check, if new post has already been posted
 			 */
-			final Post<RESOURCE> dbPost = this.getPostDetails(post.getResource().getIntraHash(), postOwnerName);
-			if (dbPost != null) {
+			final Post<RESOURCE> newPostInDB = this.getPostDetails(post.getResource().getIntraHash(), postOwnerName);
+			if (newPostInDB != null) {
 				log.debug("user already owns this post ... handling update");
 				/*
 				 * post exists -> warn user
@@ -541,7 +543,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		post.getResource().setIntraHash(command.getIntraHashToUpdate());
 
-		;
 		try {
 			/*
 			 * update post in DB
@@ -565,7 +566,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * send final redirect
 			 */
-			return this.finalRedirect(command, post, updateResults, postOwnerName, true);
+			return this.finalRedirect(command, post, dbPost, updateResults, postOwnerName, true);
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, postOwner, post, ex, "update");
 		}
@@ -764,17 +765,27 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * @param userName  the logged in user?
 	 * @param post    the saved post
+	 * @param oldPost the old post in the database (null if a post is created)
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
 	 * @param update
 	 * @return the redirect view
 	 */
-	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer, boolean update) {
+	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final Post<RESOURCE> oldPost, final String referer, boolean update) {
+		/*
+		 * check if hash has change and the referer is a publication page
+		 * -> redirect to the publication page with the new hash
+		 */
+		if (present(oldPost)) {
+			// FIXME: move url checking to urlgenerator or another central place
+			if (present(referer) && (referer.matches(".*/bibtex/.+") || referer.matches(".*/url/.+")) && !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
+				return new ExtendedRedirectView(this.urlGenerator.getPostUrl(post));
+			}
+		}
+
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
-		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
-		 * has changed, we should redirect to the corresponding new page
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			// if the userName/postOwner is a group user, we redirect to the
@@ -866,7 +877,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			this.createOrUpdateSuccess(command, loginUser, post);
 
-			return this.finalRedirect(command, post, results, loginUserName, false);
+			return this.finalRedirect(command, post, null, results, loginUserName, false);
 		} catch (final DatabaseException de) {
 			return this.handleDatabaseException(command, loginUser, post, de, "create");
 		}
@@ -876,7 +887,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		return jobResults.stream().map(JobResult::getInfo).anyMatch(list -> JobInformationUtils.containsInformationType(list, PersonResourceLinkInformationAdded.class));
 	}
 
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, List<JobResult> jobResults, final String postOwnerName, boolean update) {
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final Post<RESOURCE> oldPost, final List<JobResult> jobResults, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
@@ -891,10 +902,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
-		 * If the user added an own publications with myown tag and the logic has auto linked persons with the post,
-		 * he should be redirected to his overview page
+		 * If the user added an own publication with myown tag and the logic has auto linked persons with the post,
+		 * he should be redirected to an overview page showing all autolinks
 		 */
-		final View redirectView = this.finalRedirect(postOwnerName, post, command.getReferer(), update);
+		final View redirectView = this.finalRedirect(postOwnerName, post, oldPost, command.getReferer(), update);
 		if (hasAutoLinkingInformation(jobResults)) {
 			command.setJobResults(jobResults);
 			command.setRedirectUrl(redirectView.getName());
