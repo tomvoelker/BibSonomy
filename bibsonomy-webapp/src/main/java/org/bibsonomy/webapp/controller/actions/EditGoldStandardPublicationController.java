@@ -34,9 +34,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
@@ -93,7 +91,8 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer, boolean update) {
-		final String redirectUrl = present(referer) ? referer : this.urlGenerator.getResourceUrl(post.getResource());
+		// final String redirectUrl = present(referer) ? referer : this.urlGenerator.getResourceUrl(post.getResource());
+		final String redirectUrl = this.urlGenerator.getResourceUrl(post.getResource());
 
 		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");
