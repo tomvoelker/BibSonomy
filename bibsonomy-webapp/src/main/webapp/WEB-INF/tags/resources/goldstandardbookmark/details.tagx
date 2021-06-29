@@ -57,8 +57,23 @@
 			</c:if>
 			
 			<!-- tags -->
-			<goldstandard:tags tagCloudCommand="${command.tagcloud}" tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-			
+			<c:choose>
+				<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
+					<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" displayAsTagCloud="true" />
+				</c:when>
+				<c:when test="${properties['goldstandard.tags'] eq 'list'}">
+					<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+				</c:when>
+				<c:when test="${properties['goldstandard.tags'] eq 'disabled'}">
+					<!-- do nothing -->
+				</c:when>
+				<c:otherwise>
+					<!-- tag list as default fallback -->
+					<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+				</c:otherwise>
+			</c:choose>
+
+
 			<!-- users -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" />
 			

@@ -228,7 +228,7 @@
 							</h3>
 							<c:choose>
 								<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
-									<goldstandard:tagcloud tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
+									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" displayAsTagCloud="true" />
 								</c:when>
 								<c:when test="${properties['goldstandard.tags'] eq 'list'}">
 									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
