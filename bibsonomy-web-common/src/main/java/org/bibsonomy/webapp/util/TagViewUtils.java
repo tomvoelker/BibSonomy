@@ -99,6 +99,8 @@ public final class TagViewUtils {
 			return "tagtiny";
 		}
 
+		// todo handle cases, where maxTagCount is small to prevent all tags from being huge
+
 		final int percentage = ((tagCount * 100) / maxTagCount);
 
 		if (percentage < 25) {
