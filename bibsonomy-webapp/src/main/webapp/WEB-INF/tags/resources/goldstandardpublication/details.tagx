@@ -220,29 +220,30 @@
 								<c:out value=" "/>
 
 								<fmt:message key="publications.tags.headline"/>
+								<c:set var="tagsString" value="" />
 								<c:if test="${not empty postOfLoggedInUser.tags}">
 									<small>
 										<c:out value=" " /><fmt:message key="community.tags.myown"/>
 									</small>
+
+									<c:set var="tagsString" value="${mtl:toTagString(postOfLoggedInUser.tags)}" />
 								</c:if>
 							</h3>
-							<c:choose>
-								<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
-									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" displayAsTagCloud="true" />
-								</c:when>
-								<c:when test="${properties['goldstandard.tags'] eq 'list'}">
-									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-								</c:when>
-								<c:when test="${properties['goldstandard.tags'] eq 'disabled'}">
-									<!-- do nothing -->
-								</c:when>
-								<c:otherwise>
-									<!-- tag list as default fallback -->
-									<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-								</c:otherwise>
-							</c:choose>
-						</c:if>
 
+							<c:set var="tagSizeMode" value="detail" />
+							<c:if test="${command.tagcloud.style.id == 0}">
+								<c:set var="tagSizeMode" value="user" />
+							</c:if>
+
+							<tags:cloud
+									requPath="tag"
+									cmd="${command.tagcloud}"
+									tagSizeMode="${tagSizeMode}"
+									showTooltips="${command.context.loginUser.settings.tagboxTooltip}"
+									highlightTags="${tagsString}"
+							/>
+
+						</c:if>
 
 						<!-- users that have this resource in their collection -->
 						<c:if test="${showFolkSonomyLinks}">
@@ -259,7 +260,6 @@
 									showHeadline="false"
 							/>
 						</c:if>
-
 
 						<!-- Referenced and Referencing posts -->
 						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">

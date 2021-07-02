@@ -19,8 +19,6 @@
 	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 	
-<div class="sidebar_collapse_content">
-
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
 		<c:when test="${cmd.style.id == 0}">
@@ -48,8 +46,8 @@
 	<c:if test="${empty showPlain or showPlain eq 'false'}">
 		<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
 	</c:if>
-	
-	<ul class="${style} tagbox">
+
+	<ul class="tagbox">
 		<c:choose>
 			<c:when test="${tagSizeMode eq 'user'}">
 				<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />
@@ -69,10 +67,16 @@
 			</c:if>
 			
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
+
+			<c:set var="myownTagClass" value="" />
+			<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
+			<c:if test="${not empty highlightTags and fn:contains(highlightTags, tagNameWithSpaces)}">
+				<c:set var="myownTagClass" value="myown" />
+			</c:if>
 			
 			<!-- display the tag -->
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
-				<li class="${tagclass}">
+				<li class="${tagclass} ${myownTagClass}">
 					<jspx:element name="a">
 						<c:choose>
 							<c:when test="${not empty scope and scope ne 'LOCAL' and scope ne 'ELASTICSEARCH'}">
@@ -86,10 +90,6 @@
 						<c:if test="${not (tagSizeMode eq 'detail')}">
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
 						</c:if>
-						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
-						<c:if test="${not empty highlightTags and fn:contains(highlightTags, tagNameWithSpaces)}">
-							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
-						</c:if>
 						<c:if test="${showTooltips}">
 							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
 							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>
@@ -101,5 +101,5 @@
 			</c:if>
 		</c:forEach>
 	</ul>
-</div>
+
 </jsp:root>

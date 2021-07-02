@@ -116,7 +116,9 @@
 									<fmt:message key="tags.highlighted.by_user"/>)
 								</small>
 							</h5>
-							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+							<div class="sidebar_collapse_content">
+								<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+							</div>
 						</li>
 					</ul>
 				</jsp:attribute>

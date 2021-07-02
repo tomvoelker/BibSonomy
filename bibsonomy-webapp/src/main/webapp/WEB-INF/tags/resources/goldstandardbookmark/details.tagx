@@ -11,7 +11,8 @@
 	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
@@ -57,22 +58,18 @@
 			</c:if>
 			
 			<!-- tags -->
-			<c:choose>
-				<c:when test="${properties['goldstandard.tags'] eq 'tagcloud'}">
-					<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" displayAsTagCloud="true" />
-				</c:when>
-				<c:when test="${properties['goldstandard.tags'] eq 'list'}">
-					<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-				</c:when>
-				<c:when test="${properties['goldstandard.tags'] eq 'disabled'}">
-					<!-- do nothing -->
-				</c:when>
-				<c:otherwise>
-					<!-- tag list as default fallback -->
-					<goldstandard:tags tagCloudCommand="${command.tagcloud}"  tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
-				</c:otherwise>
-			</c:choose>
+			<c:set var="tagSizeMode" value="detail" />
+			<c:if test="${command.tagcloud.style.id == 0}">
+				<c:set var="tagSizeMode" value="user" />
+			</c:if>
 
+			<tags:cloud
+					requPath="tag"
+					cmd="${command.tagcloud}"
+					tagSizeMode="${tagSizeMode}"
+					showTooltips="${command.context.loginUser.settings.tagboxTooltip}"
+					highlightTags="${tagsString}"
+			/>
 
 			<!-- users -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" />

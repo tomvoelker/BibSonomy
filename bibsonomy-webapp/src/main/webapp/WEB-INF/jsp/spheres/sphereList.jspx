@@ -96,7 +96,9 @@
 				    
 				    <div class="sphere_tag_cloud">
 		    			<div class="sphere_bottom_header"><fmt:message key="post.resource.tags.cap"/>:</div>
-				    	<tags:cloud requPath="sphere/${fn:escapeXml(entry.key)}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
+						<div class="sidebar_collapse_content">
+				    		<tags:cloud requPath="sphere/${fn:escapeXml(entry.key)}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
+						</div>
 				    </div>
 	        		
 	        		<div class="sphere_footer"><!--  --></div>
