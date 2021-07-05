@@ -23,7 +23,8 @@
 		  xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
@@ -55,8 +56,6 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 
-	<!-- 	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" /> -->
-
 	<div id="goldstandard" data-interhash="${goldstandard.interHash}">
 		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 
@@ -71,7 +70,27 @@
 						<div class="content-header-entrytype-badge">
 							<bib:entrytype publication="${goldstandard}" />
 						</div>
+
+						<c:if test="${not empty postOfLoggedInUser}">
+							<span class="community-info warning">
+								<fontawsome:icon icon="warning" /><c:out value=" " />
+								<fmt:message key="community.warning.view" /><c:out value=" " />
+								<c:choose>
+									<c:when test="${showEditOnly}">
+										<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.${resourceType}.edit" /></a>
+									</c:when>
+									<c:otherwise>
+										<fmt:message key="community.warning.edit">
+											<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
+										</fmt:message>
+									</c:otherwise>
+								</c:choose>
+							</span>
+						</c:if>
+
 					</div>
+
+
 
 					<h1 itemprop="name">
 						<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
@@ -96,7 +115,12 @@
 							</div>
 						</c:if>
 
-						<buttons:communityPostActionButtons post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
+						<buttons:communityPostActionButtons
+								post="${post}"
+								resourceType="bibtex"
+								communityPostExists="${isRealGoldstandard}"
+								postOfLoggedInUser="${postOfLoggedInUser}"
+						/>
 					</div>
 					</c:if>
 

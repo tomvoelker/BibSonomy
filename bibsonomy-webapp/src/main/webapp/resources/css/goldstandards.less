@@ -3,14 +3,13 @@
 	.content-header {
 		padding: 0 30px 0 30px;
 		border-bottom: none;
-		margin: 15px 0 0 0;
+		margin: 5px 0 0 0;
 
 		.col-md-10 {
 			padding-left: 0;
 		}
 
 		.content-header-entrytype {
-			height: 24px;
 			margin: 0 0 10px -30px;
 			position: relative;
 
@@ -21,13 +20,23 @@
 				font-variant: small-caps;
 				text-transform: capitalize;
 				background-color: #ccc;
-				position: absolute;
-				top: 0;
-				left: 0;
+				display: inline-block;
 				border-bottom-right-radius: 4px;
 				-webkit-border-bottom-right-radius: 4px;
 				border-top-right-radius: 4px;
 				-webkit-border-top-right-radius: 4px;
+			}
+
+			.community-info {
+				margin-left: 15px;
+				padding: 7px;
+				margin-top: 1px;
+				border-radius: 5px;
+				font-size: 12px;
+
+				&.warning {
+					background-color: @alert-warning-bg;
+				}
 			}
 
 		}
@@ -343,17 +352,6 @@
 
 .container.main.no-padding .breadcrumb {
 	margin: 20px 30px;
-}
-
-.community-info {
-	margin-left: 15px;
-	padding: 7px;
-	margin-top: 1px;
-	border-radius: 5px;
-	
-	&.warning {
-		background-color: @alert-warning-bg;
-	}
 }
 
 /* used for borderless table */
