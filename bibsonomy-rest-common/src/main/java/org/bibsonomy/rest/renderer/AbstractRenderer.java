@@ -1445,7 +1445,7 @@ public abstract class AbstractRenderer implements Renderer {
 			final List<Post<? extends Resource>> posts = new LinkedList<>();
 			for (final PostType post : xmlDoc.getPosts().getPost()) {
 				try {
-					final Post<? extends Resource> p = this.createPost(post, uploadedFileAcessor);
+					final Post<? extends Resource> p = (post.getGoldStandardPublication() == null) ? this.createPost(post, uploadedFileAcessor) : this.createCommunityPost(post);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
 					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" +
@@ -1735,7 +1735,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
 		this.xmlModelValidator.checkStandardPost(xmlPost);
 
-		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
+		final Post<Resource> post = this.createPostWithDate(xmlPost);
 
 		final GoldStandardPublicationType xmlPublication = xmlPost.getGoldStandardPublication();
 		if (present(xmlPublication)) {
@@ -1852,15 +1852,24 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @param xmlPost
 	 * @return
 	 */
-	private Post<Resource> createPostWithUserAndDate(final PostType xmlPost) {
+	private Post<Resource> createPostWithDate(final PostType xmlPost) {
 		final Post<Resource> post = new Post<>();
 		post.setDescription(xmlPost.getDescription());
+		post.setDate(createDate(xmlPost.getPostingdate()));
+		post.setChangeDate(createDate(xmlPost.getChangedate()));
+		return post;
+	}
+
+	/**
+	 * @param xmlPost
+	 * @return
+	 */
+	private Post<Resource> createPostWithUserAndDate(final PostType xmlPost) {
+		final Post<Resource> post = this.createPostWithDate(xmlPost);
 
 		// user
 		final User user = this.createUser(xmlPost);
 		post.setUser(user);
-		post.setDate(createDate(xmlPost.getPostingdate()));
-		post.setChangeDate(createDate(xmlPost.getChangedate()));
 		return post;
 	}
 

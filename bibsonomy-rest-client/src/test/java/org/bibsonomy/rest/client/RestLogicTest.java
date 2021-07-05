@@ -9,6 +9,8 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
@@ -174,6 +176,30 @@ public class RestLogicTest extends TestCase {
 				.createPostQuery(BibTex.class);
 
 		List<Post<BibTex>> posts = this.logic.getPosts(query);
+		Assert.assertNotEquals(posts.size(), 0);
+	}
+
+	@Test
+	public void testGetBookmarksForUser() {
+		PostQuery<Bookmark> query = new PostQueryBuilder()
+				.setGrouping(GroupingEntity.USER)
+				.setGroupingName("hotho")
+				.end(100)
+				.createPostQuery(Bookmark.class);
+
+		List<Post<Bookmark>> posts = this.logic.getPosts(query);
+		Assert.assertNotEquals(posts.size(), 0);
+	}
+
+	@Test
+	public void testGetPublicationsForPerson() {
+		PostQuery<GoldStandardPublication> query = new PostQueryBuilder()
+				.setGrouping(GroupingEntity.PERSON)
+				.setGroupingName("a.hotho")
+				.end(100)
+				.createPostQuery(GoldStandardPublication.class);
+
+		List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
 		Assert.assertNotEquals(posts.size(), 0);
 	}
 

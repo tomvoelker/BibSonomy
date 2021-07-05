@@ -203,7 +203,8 @@ public class ModelValidationUtils {
 	 */
 	public static void checkStandardPost(final PostType xmlPost) throws InvalidModelException {
 		// user
-		if (xmlPost.getUser() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "user is missing");
+		// there is no user for community posts?
+		// if (xmlPost.getUser() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "user is missing");
 		
 		// resource
 		if (xmlPost.getGoldStandardPublication() == null) {
