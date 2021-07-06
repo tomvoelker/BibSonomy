@@ -75,29 +75,20 @@
 							<span class="community-info warning">
 								<fontawsome:icon icon="warning" /><c:out value=" " />
 								<fmt:message key="community.warning.view" /><c:out value=" " />
-								<c:choose>
-									<c:when test="${showEditOnly}">
-										<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.${resourceType}.edit" /></a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message key="community.warning.edit">
-											<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
-										</fmt:message>
-									</c:otherwise>
-								</c:choose>
+
+								<fmt:message key="community.warning.edit">
+									<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
+								</fmt:message>
+
 							</span>
 						</c:if>
-
 					</div>
-
-
 
 					<h1 itemprop="name">
 						<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
 					</h1>
 
 					<h2>
-						<!--<bib:author publication="${goldstandard}" post="${post}"/>-->
 						<bib:desc publication="${goldstandard}"
 								  post="${post}"
 								  linebreakAfterAuthors="${true}"
