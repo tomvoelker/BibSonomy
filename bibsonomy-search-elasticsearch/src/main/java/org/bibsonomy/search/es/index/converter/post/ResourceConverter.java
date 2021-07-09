@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.sun.mail.imap.protocol.FetchItem;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -79,7 +80,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		post.setChangeDate(ElasticsearchUtils.parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
 		final boolean loadDocuments = allowedUsersForDoc.contains(userName);
-		fillUser(post, userName);
+		post.setUser(new User(userName));
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
@@ -105,14 +106,6 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		this.convertResourceInternal(post, source, loadDocuments);
 		
 		return post;
-	}
-
-	/**
-	 * @param post
-	 * @param userName
-	 */
-	protected void fillUser(final Post<R> post, final String userName) {
-		post.setUser(new User(userName));
 	}
 	
 	/**
@@ -191,6 +184,8 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 			final List<String> userNames = users.stream().map(User::getName).collect(Collectors.toList());
 			jsonDocument.put(Fields.ALL_USERS, userNames);
 		}
+
+		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
 		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());

@@ -111,14 +111,6 @@ public class CommunityPublicationConverter extends PublicationConverter {
 
 		return relations;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillUser(org.bibsonomy.model.Post, java.lang.String)
-	 */
-	@Override
-	protected void fillUser(Post<BibTex> post, String userName) {
-		// nothing to do
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.converter.post.ResourceConverter#fillIndexDocument(org.bibsonomy.model.Post, java.util.Map)

@@ -445,15 +445,10 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 */
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
-		// TODO: TODODZO
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
-
-		// TODO: remove TODODZO
-		// final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
-		// this.updateDocumentWithPersonRelation(jsonDocument, rels);
 	}
 
-	/** TODO: TODODZO remove!
+	/** TODO: remove!
 	 * @param jsonDocument
 	 * @param rels
    */

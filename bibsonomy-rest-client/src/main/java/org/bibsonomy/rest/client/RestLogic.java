@@ -281,9 +281,7 @@ public class RestLogic extends AbstractLogicInterface {
 		restQuery.setSearchType(query.getScope());
 		return (List) execute(restQuery);
 	}
-
-
-
+	
 	@Override
 	public Tag getTagDetails(final String tagName) {
 		return execute(new GetTagDetailsQuery(tagName));

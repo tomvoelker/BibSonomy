@@ -27,6 +27,7 @@
 package org.bibsonomy.rest.renderer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
@@ -152,6 +153,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
+ * Abstract renderer
+ *
+ * TODO: add more documentation
+ *
  * @author dzo
  */
 public abstract class AbstractRenderer implements Renderer {
@@ -350,8 +355,9 @@ public abstract class AbstractRenderer implements Renderer {
 
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
 		// set user
-		final String userName = (present(post.getUser())) ? post.getUser().getName() : "";
-		if (present(post.getUser())) {
+		final User user = post.getUser();
+		final String userName = (present(user)) ? user.getName() : "";
+		if (present(userName)) {
 			final UserType xmlUser = new UserType();
 			xmlUser.setName(userName);
 			xmlUser.setHref(this.urlRenderer.createHrefForUser(userName));
@@ -444,7 +450,7 @@ public abstract class AbstractRenderer implements Renderer {
 		if (resource instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
 			final BookmarkType xmlBookmark = new BookmarkType();
-			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
+			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(user.getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
 			xmlBookmark.setIntrahash(bookmark.getIntraHash());
 			xmlBookmark.setTitle(bookmark.getTitle());
@@ -1439,13 +1445,13 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public List<Post<? extends Resource>> parsePostList(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
+	public List<Post<? extends Resource>> parsePostList(final Reader reader, final DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<Post<? extends Resource>> posts = new LinkedList<>();
 			for (final PostType post : xmlDoc.getPosts().getPost()) {
 				try {
-					final Post<? extends Resource> p = (post.getGoldStandardPublication() == null) ? this.createPost(post, uploadedFileAcessor) : this.createCommunityPost(post);
+					final Post<? extends Resource> p = this.createPost(post, uploadedFileAcessor);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
 					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" +
@@ -1732,10 +1738,10 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @return the converted post
 	 * @throws PersonListParserException
 	 */
-	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
+	private Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
 		this.xmlModelValidator.checkStandardPost(xmlPost);
 
-		final Post<Resource> post = this.createPostWithDate(xmlPost);
+		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
 
 		final GoldStandardPublicationType xmlPublication = xmlPost.getGoldStandardPublication();
 		if (present(xmlPublication)) {
@@ -1760,6 +1766,16 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @throws PersonListParserException
 	 */
 	protected Post<Resource> createPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
+		final boolean isCommunityPost = this.isCommunityPost(xmlPost);
+
+		if (isCommunityPost) {
+			return this.createCommunityPost(xmlPost);
+		}
+
+		return this.createNormalPost(xmlPost, uploadedFileAccessor);
+	}
+
+	protected Post<Resource> createNormalPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
 		this.xmlModelValidator.checkPost(xmlPost);
 
 		// create post, user and date
@@ -1848,16 +1864,8 @@ public abstract class AbstractRenderer implements Renderer {
 		return post;
 	}
 
-	/**
-	 * @param xmlPost
-	 * @return
-	 */
-	private Post<Resource> createPostWithDate(final PostType xmlPost) {
-		final Post<Resource> post = new Post<>();
-		post.setDescription(xmlPost.getDescription());
-		post.setDate(createDate(xmlPost.getPostingdate()));
-		post.setChangeDate(createDate(xmlPost.getChangedate()));
-		return post;
+	private boolean isCommunityPost(final PostType xmlPost) {
+		return present(xmlPost.getGoldStandardPublication()); // TODO: add goldstandard bookmark
 	}
 
 	/**
@@ -1865,7 +1873,10 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @return
 	 */
 	private Post<Resource> createPostWithUserAndDate(final PostType xmlPost) {
-		final Post<Resource> post = this.createPostWithDate(xmlPost);
+		final Post<Resource> post = new Post<>();
+		post.setDescription(xmlPost.getDescription());
+		post.setDate(createDate(xmlPost.getPostingdate()));
+		post.setChangeDate(createDate(xmlPost.getChangedate()));
 
 		// user
 		final User user = this.createUser(xmlPost);
