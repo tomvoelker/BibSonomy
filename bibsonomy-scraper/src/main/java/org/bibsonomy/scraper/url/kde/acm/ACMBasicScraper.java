@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import org.apache.commons.logging.Log;
@@ -107,13 +108,16 @@ public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements 
 	protected String convert(final String downloadResult) {
 		// this is a json containing the csl style and also the items to render,
 		// so extract the csl entries from the json response
-		final JSONObject json = (JSONObject) JSONSerializer.toJSON(downloadResult);
-		final JSONObject cslEntries = json.getJSONArray("items").getJSONObject(0);
-		final Optional<Object> firstKey = cslEntries.keySet().stream().findFirst();
-		if (firstKey.isPresent()) {
-			final Object key = firstKey.get();
-			final JSONObject cslEntry = cslEntries.getJSONObject(key.toString());
-			return this.cslToBibtexConverter.toBibtex(cslEntry);
+		final JSON parsedJson = JSONSerializer.toJSON(downloadResult);
+		if (parsedJson instanceof JSONObject) {
+			final JSONObject json = (JSONObject) parsedJson;
+			final JSONObject cslEntries = json.getJSONArray("items").getJSONObject(0);
+			final Optional<Object> firstKey = cslEntries.keySet().stream().findFirst();
+			if (firstKey.isPresent()) {
+				final Object key = firstKey.get();
+				final JSONObject cslEntry = cslEntries.getJSONObject(key.toString());
+				return this.cslToBibtexConverter.toBibtex(cslEntry);
+			}
 		}
 		return null;
 	}
