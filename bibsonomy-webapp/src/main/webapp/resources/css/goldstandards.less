@@ -50,7 +50,7 @@
 		}
 		
 		h2 {
-			font-size: 18px;
+			font-size: 15px;
 			margin-top: 5px;
 			line-height: 1.3;
 			height: auto;
@@ -151,95 +151,25 @@
 			.cust-loader {
 				display: none;
 				position: absolute;
-				top: 110px;
+				top: 80px;
+				width: 225px;
+				height: 55px;
+				background-color: #ccc;
 
 				.loader {
-					height: 40px;
-					width: 200px;
-					margin: auto;
-					position: relative;
-				}
-				.loader--dot {
-					animation-name: loader;
-					animation-timing-function: ease-in-out;
-					animation-duration: 3s;
-					animation-iteration-count: infinite;
-					height: 20px;
-					width: 20px;
-					border-radius: 100%;
-					background-color: black;
-					position: absolute;
-					border: 2px solid white;
-				}
-				.loader--dot:first-child {
-					background-color: #8cc759;
-					animation-delay: 0.5s;
-				}
-				.loader--dot:nth-child(2) {
-					background-color: #8c6daf;
-					animation-delay: 0.4s;
-				}
-				.loader--dot:nth-child(3) {
-					background-color: #ef5d74;
-					animation-delay: 0.3s;
-				}
-				.loader--dot:nth-child(4) {
-					background-color: #f9a74b;
-					animation-delay: 0.2s;
-				}
-				.loader--dot:nth-child(5) {
-					background-color: #60beeb;
-					animation-delay: 0.1s;
-				}
-				.loader--dot:nth-child(6) {
-					background-color: #fbef5a;
-					animation-delay: 0s;
-				}
-				.loader--text {
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					right: 0;
-					width: 4rem;
-					margin: auto;
-				}
-				.loader--text:after {
-					content: "Loading";
-					font-weight: bold;
-					animation-name: loading-text;
-					animation-duration: 3s;
-					animation-iteration-count: infinite;
+					border: 5px solid #f3f3f3; /* Light grey */
+					border-top: 5px solid #3498db; /* Blue */
+					border-radius: 50%;
+					width: 30px;
+					height: 30px;
+					animation: spin 2s linear infinite;
+					margin: 8px auto 0 auto;
 				}
 
-				@keyframes loader {
-					15% {
-						transform: translateX(0);
-					}
-					45% {
-						transform: translateX(205px);
-					}
-					65% {
-						transform: translateX(205px);
-					}
-					95% {
-						transform: translateX(0);
-					}
+				@keyframes spin {
+					0% { transform: rotate(0deg); }
+					100% { transform: rotate(360deg); }
 				}
-				@keyframes loading-text {
-					0% {
-						content: "Loading";
-					}
-					25% {
-						content: "Loading.";
-					}
-					50% {
-						content: "Loading..";
-					}
-					75% {
-						content: "Loading...";
-					}
-				}
-
 			}
 
 		}
@@ -296,8 +226,8 @@
 		}
 		
 		.user-avatar {
-			max-width: 40px;
-			max-height: 40px;
+			max-width: 25px;
+			max-height: 25px;
 		}
 		
 		li.user-card {
