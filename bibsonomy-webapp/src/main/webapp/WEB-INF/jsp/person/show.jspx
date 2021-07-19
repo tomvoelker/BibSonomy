@@ -321,6 +321,8 @@
 				<per:myownPostList command="${command}" posts="${command.myownPosts}"/>
 			</c:if>
 
+			<div class="cust-loader"><span class="cust-spinner"><!-- KEEP MY --></span></div>
+
 			<!-- Other publications of similar authors -->
 			<c:if test="${fn:length(command.similarAuthorPubs) gt 0 and not useCRISView}">
 				<per:otherPubList command="${command}" publications="${command.similarAuthorPubs}" useOtherPubs="${false}" />
@@ -379,6 +381,14 @@
 			controller -->
 			<script type="text/javascript">
 				$(document).ready(function(){
+					var additionalOffset = 0;
+
+					if ($("#otherPublicationsOfSimilarAuthor").length) {
+						additionalOffset = 58 + $("#otherPublicationsOfSimilarAuthor").height();
+					}
+
+					alert(additionalOffset);
+
 					$('#otherPublications').scrollPagination({
 						'url': "/ajax/person/publications?requestedPersonId=${command.person.personId}", // The url you are fetching the results.
 						'data': {
@@ -390,7 +400,7 @@
 						},
 						'scroller': $(window), // Who gonna scroll? default is the full window
 						'autoload': true, // Change this to false if you want to load manually, default true.
-						'heightOffset': 250, // It gonna request when scroll is 10 pixels before the page ends
+						'heightOffset': 250 + additionalOffset, // It gonna request when scroll is 10 pixels before the page ends
 						'loading': "#loading", // ID of loading prompt.
 						'loadingText': 'click to loading more.', // Text of loading prompt.
 						'loadingNomoreText': 'No more.', // No more of loading prompt.

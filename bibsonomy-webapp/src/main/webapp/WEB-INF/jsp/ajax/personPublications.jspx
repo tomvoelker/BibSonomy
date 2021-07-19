@@ -5,6 +5,7 @@
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<c:set var="isLoggedIn" value="${not empty command.context.loginUser.name}" />
 
 	<c:choose>
 		<c:when test="${command.personPostsStyle == 'MYOWN'}">
