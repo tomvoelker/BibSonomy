@@ -387,8 +387,6 @@
 						additionalOffset = 58 + $("#otherPublicationsOfSimilarAuthor").height();
 					}
 
-					alert(additionalOffset);
-
 					$('#otherPublications').scrollPagination({
 						'url': "/ajax/person/publications?requestedPersonId=${command.person.personId}", // The url you are fetching the results.
 						'data': {
