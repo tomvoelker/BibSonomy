@@ -169,31 +169,6 @@
 		<c:if test="${not empty additionalJS}">
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
-		
-		<!--+
-			|
-			| Piwik
-			|
-			+--> 
-		<c:set var="statisticsUrl" value="${properties['project.statistics.service.url']}" />
-		<c:if test="${not empty statisticsUrl}">
-			<c:set var="siteid" value="${properties['project.statisitics.siteid']}" />
-			<script type="text/javascript">
-				<![CDATA[
-					var _paq = _paq || [];
-					_paq.push(['trackPageView']);
-					_paq.push(['enableLinkTracking']);
-					(function() {
-						var u="//${statisticsUrl}";
-						_paq.push(['setTrackerUrl', u+'piwik.php']);
-						_paq.push(['setSiteId', ${siteid}]);
-						var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-						g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-					})();
-				]]>
-			</script>
-		</c:if>
-		<!-- End Piwik Tracking Code --> 
 	
 <!--	<meta name="email" content="${properties['project.email']}"/> -->
 		<parts:meta fieldName="author" />
@@ -201,8 +176,8 @@
 		<parts:meta fieldName="keywords" />
 		<parts:meta fieldName="description" />
 		<!-- TODO: use feed links for bibsonomy in puma? -->
-		<link rel="alternate" type="application/atom+xml" title="${properties['project.name']} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
-		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
+		<link rel="alternate" type="application/atom+xml" title="${properties['project.name']} Blog - Atom" href="https://blog.bibsonomy.org/feeds/posts/default" />
+		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="https://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title><c:if test="${not empty pageTitle}"><c:out value="${pageTitle}"/> | </c:if>${properties['project.name']}</title>
 		<jsp:invoke fragment="headerExt"/>
 	</head>
