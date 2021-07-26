@@ -62,15 +62,118 @@
 			<!--+
 				| HEADER
 				+-->
-			<div class="content-header row" id="info">
-
+			<div class="row" id="info">
 				<div class="col-md-10">
-
 					<div class="content-header-entrytype">
-						<div class="content-header-entrytype-badge">
+						<c:if test="${post.approved}">
+							<fmt:message key="goldStandard.approved.title" var="approved"/>
+							<span class="community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
+								<fontawesome:icon icon="check-circle" />
+							</span>
+						</c:if>
+						<span class="content-header-entrytype-badge">
 							<bib:entrytype publication="${goldstandard}" />
-						</div>
+						</span>
+					</div>
 
+					<h1 itemprop="name">
+						<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+					</h1>
+					<bib:desc publication="${goldstandard}"
+							  post="${post}"
+							  linebreakAfterAuthors="${true}"
+							  restrictToFirstAuthors="${false}"
+							  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
+							  publishedIn="${publishedIn}"/>
+					<c:set var="doi" value="${goldstandard.miscFields['doi']}" />
+					<c:if test="${not empty doi}">
+						<br />
+						<span class="additional-entrytype-information">
+						DOI: <a href="https://dx.doi.org/${doi}"><c:out value="${doi}" /></a>
+						</span>
+					</c:if>
+				</div>
+
+				<div class="col-md-2 content-header-metric-buttons hidden-xs">
+
+					<c:if test="${showFolkSonomyLinks}">
+						<div class="metric-info">
+							<fmt:message key="goldStandard.users" var="inCollectionOf"/>
+							<a class="content-header-additional-info-item hidden-xs"
+							   data-toggle="tooltip"
+							   data-placement="bottom"
+							   title="${fn:escapeXml(inCollectionOf)}"
+							   href="#goldStandardPublicationUsers"
+							>
+								<fontawesome:icon icon="users" />
+								<span class="badge"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)}" /></span>
+							</a>
+						</div>
+						<div class="metric-info">
+							<fmt:message key="tags.of_resource" var="tagsTotal"/>
+							<a class="content-header-additional-info-item hidden-xs"
+							   data-toggle="tooltip"
+							   data-placement="bottom"
+							   title="${fn:escapeXml(tagsTotal)}"
+							   href="#goldStandardPublicationTags"
+							>
+								<fontawesome:icon icon="tags" />
+								<span class="badge"><c:out value="${fn:length(command.tagcloud.tags)}" /></span>
+							</a>
+						</div>
+					</c:if>
+
+					<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+						<c:set var="hasCitations" value="${not empty goldstandard.referencedBy}" />
+						<c:set var="hasReferences" value="${not empty goldstandard.references}" />
+						<c:if test="${hasReferences or hasCitations}">
+							<div class="metric-info">
+								<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
+								<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
+								<c:set var="linkTitle" value="${hasReferences ? referencesTotal : ''} ${hasCitations ? referencedByTotal : ''}" />
+								<a class="content-header-additional-info-item"
+								   data-toggle="tooltip"
+								   data-placement="bottom"
+								   title="${fn:escapeXml(linkTitle)}"
+								   href="#goldStandardPublicationReferences"
+								>
+									<fontawesome:icon icon="link" />
+									<span class="badge">
+										<c:if test="${hasReferences}">
+											<c:out value="${fn:length(goldstandard.references)}" />
+										</c:if>
+										<c:if test="${hasReferences and hasCitations}">
+											<c:out value=" + " />
+										</c:if>
+										<c:if test="${hasCitations}">
+											<c:out value="${fn:length(goldstandard.referencedBy)}" />
+										</c:if>
+									</span>
+								</a>
+							</div>
+						</c:if>
+
+					</c:if>
+				</div>
+			</div>
+
+			<div class="goldstandard-actions row">
+				<div class="col-md-12 content-header-buttons">
+					<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
+					<c:if test="${isLinkToDocument}">
+						<a href="${fn:escapeXml(goldstandard.url)}" class="btn btn-primary">
+							<fontawesome:icon icon="file-pdf-o" /><c:out value=" " /><fmt:message key="fulltext"/>
+						</a>
+					</c:if>
+
+					<c:if test="${command.context.userLoggedIn}">
+
+						<buttons:communityPostActionButtons
+								post="${post}"
+								resourceType="bibtex"
+								communityPostExists="${isRealGoldstandard}"
+								postOfLoggedInUser="${postOfLoggedInUser}"
+						/>
 						<c:if test="${not empty postOfLoggedInUser}">
 							<span class="community-info warning">
 								<fontawsome:icon icon="warning" /><c:out value=" " />
@@ -82,471 +185,364 @@
 
 							</span>
 						</c:if>
-					</div>
-
-					<h1 itemprop="name">
-						<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
-					</h1>
-
-					<h2>
-						<bib:desc publication="${goldstandard}"
-								  post="${post}"
-								  linebreakAfterAuthors="${true}"
-								  restrictToFirstAuthors="${false}"
-								  onlyLinkAuthorsWithPersons="${not showFolkSonomyLinks}"
-								  publishedIn="${publishedIn}"/>
-					</h2>
-
-					<c:if test="${command.context.userLoggedIn}">
-					<div class="content-header-buttons">
-						<c:if test="${post.approved}">
-							<fmt:message key="goldStandard.approved.title" var="approved"/>
-							<div class="btn btn-success community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
-								<span class="fa fa-check-circle" ><!-- keep me --></span>
-							</div>
-						</c:if>
-
-						<buttons:communityPostActionButtons
-								post="${post}"
-								resourceType="bibtex"
-								communityPostExists="${isRealGoldstandard}"
-								postOfLoggedInUser="${postOfLoggedInUser}"
-						/>
-					</div>
 					</c:if>
-
 				</div>
-
-				<div class="col-md-2">
-					<div class="content-header-metric-buttons">
-						<!-- Addition Info Badges -->
-
-						<!-- In collection of users -->
-						<c:if test="${showFolkSonomyLinks}">
-							<fmt:message key="goldStandard.users" var="inCollectionOf"/>
-							<a class="content-header-additional-info-item btn btn-default hidden-xs"
-							   data-toggle="tooltip"
-							   data-placement="bottom"
-							   title="${fn:escapeXml(inCollectionOf)}"
-							   href="#goldStandardPublicationUsers"
-							>
-								<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
-
-								<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
-							</a>
-						</c:if>
-
-						<!-- Tag count -->
-						<c:if test="${showFolkSonomyLinks}">
-							<fmt:message key="tags.of_resource" var="tagsTotal"/>
-							<a class="content-header-additional-info-item btn btn-default hidden-xs"
-							   data-toggle="tooltip"
-							   data-placement="bottom"
-							   title="${fn:escapeXml(tagsTotal)}"
-							   href="#goldStandardPublicationTags"
-							>
-								<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
-
-								<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
-							</a>
-						</c:if>
-
-						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
-							<c:if test="${not empty goldstandard.references}">
-								<fmt:message key="goldStandard.resource.info.references" var="referencesTotal"/>
-								<a class="content-header-additional-info-item btn btn-default hidden-xs"
-								   data-toggle="tooltip"
-								   data-placement="bottom"
-								   title="${fn:escapeXml(referencesTotal)}"
-								   href="#goldStandardPublicationReferences"
-								>
-									<span class="content-header-additional-info-count"><c:out value="${goldstandard.references.size()}" /></span>
-
-									<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.references" /></span>
-								</a>
-							</c:if>
-
-							<c:if test="${not empty goldstandard.referencedBy}">
-								<fmt:message key="goldStandard.resource.info.citations" var="referencedByTotal"/>
-								<a class="content-header-additional-info-item btn btn-default hidden-xs"
-								   data-toggle="tooltip"
-								   data-placement="bottom"
-								   title="${fn:escapeXml(referencedByTotal)}"
-								   href="#goldStandardPublicationReferences"
-								>
-									<span class="content-header-additional-info-count"><c:out value="${goldstandard.referencedBy.size()}" /></span>
-
-									<span class="content-header-additional-info-description"><fmt:message key="goldStandard.resource.info.citations" /></span>
-								</a>
-							</c:if>
-
-						</c:if>
-					</div>
-				</div>
-
-				<div class="clearfix"><!-- KEEP ME --></div>
-
 			</div>
-
+			<hr />
 			<!--+
                 | CONTENT
                 +-->
-			<div class="goldstandard-content">
+			<div class="goldstandard-content row">
+				<div class="col-md-9 col-sm-12 col-xs-12 content">
 
-				<div class="row">
-					<div class="col-md-9 col-sm-12 col-xs-12 content">
-
-						<!--+
-							| abstract
-							+-->
-						<c:choose>
-							<c:when test="${not empty goldstandard['abstract']}">
-								<h3 class="pub-details">
-									<span class="fa fa-align-justify"><!-- keep me --></span>
-									<c:out value=" "/>
-									<fmt:message key="publications.abstract.headline"/>
-								</h3>
-								<div id="abstract">
-									<div class="show-more" itemprop="description">
-										<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
-									</div>
-								</div>
-							</c:when>
-							<c:otherwise>
-								<h3 class="pub-details">
-									<span class="fa fa-align-justify"><!-- keep me --></span>
-									<c:out value=" "/>
-									<fmt:message key="bibtex.details.meta"/>
-								</h3>
-							</c:otherwise>
-						</c:choose>
-
-						<!--+
-							| full description table
-							+-->
-						<div class="goldstandard-metadata">
-							<bib:allFieldsTable publication="${goldstandard}" post="${post}" publishedIn="${publishedIn}" />
-						</div>
-
-						<!-- tags -->
-						<c:if test="${showFolkSonomyLinks}">
-							<h3 id="goldStandardPublicationTags">
-								<span class="fa fa-tag"><!-- keep me --></span>
+					<!--+
+						| abstract
+						+-->
+					<c:choose>
+						<c:when test="${not empty goldstandard['abstract']}">
+							<h3 class="pub-details">
+								<span class="fa fa-align-justify"><!-- keep me --></span>
 								<c:out value=" "/>
-
-								<fmt:message key="publications.tags.headline"/>
-								<c:set var="tagsString" value="" />
-								<c:if test="${not empty postOfLoggedInUser.tags}">
-									<small>
-										<c:out value=" " /><fmt:message key="community.tags.myown"/>
-									</small>
-
-									<c:set var="tagsString" value="${mtl:toTagString(postOfLoggedInUser.tags)}" />
-								</c:if>
+								<fmt:message key="publications.abstract.headline"/>
 							</h3>
-
-							<c:set var="tagSizeMode" value="detail" />
-							<c:if test="${command.tagcloud.style.id == 0}">
-								<c:set var="tagSizeMode" value="user" />
-							</c:if>
-
-							<tags:cloud
-									requPath="tag"
-									cmd="${command.tagcloud}"
-									tagSizeMode="${tagSizeMode}"
-									showTooltips="${command.context.loginUser.settings.tagboxTooltip}"
-									highlightTags="${tagsString}"
-							/>
-
-						</c:if>
-
-						<!-- users that have this resource in their collection -->
-						<c:if test="${showFolkSonomyLinks}">
-							<h3 id="goldStandardPublicationUsers">
-								<span class="fa fa-user"><!-- keep me --></span>
-								<c:out value=" "/>
-
-								<fmt:message key="goldstandard.resource.relatedUsers"/>
-							</h3>
-
-							<common:relatedUsers
-									userList="${command.relatedUserCommand.relatedUsers}"
-									interHash="${goldstandard.interHash}"
-									showHeadline="false"
-							/>
-						</c:if>
-
-						<!-- Referenced and Referencing posts -->
-						<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
-							<c:set var="tabActive" value="false" />
-							<div id="related-publications">
-								<h3 id="goldStandardPublicationReferences">
-									<span class="fa fa-link"><!-- keep me --></span>
-									<c:out value=" "/>
-									<fmt:message key="publications.related.referencedAndCited" />
-								</h3>
-
-								<ul class="nav nav-tabs">
-									<c:if test="${not empty goldstandard.references}">
-										<c:choose>
-											<c:when test="${tabActive == false}">
-												<c:set var="tabActive" value="true" />
-												<c:set var="liClassReferences" value="active" />
-											</c:when>
-											<c:otherwise>
-												<c:set var="liClassReferences" value="" />
-											</c:otherwise>
-										</c:choose>
-										<li class="${liClassReferences}">
-											<a data-toggle="tab" href="#related-publications-references">
-												<fmt:message key="goldStandard.resource.info.references" />
-											</a>
-										</li>
-									</c:if>
-
-									<c:if test="${not empty goldstandard.referencedBy}">
-										<c:choose>
-											<c:when test="${tabActive == false}">
-												<c:set var="tabActive" value="true" />
-												<c:set var="liClassReferencedBy" value="active" />
-											</c:when>
-											<c:otherwise>
-												<c:set var="liClassReferencedBy" value="" />
-											</c:otherwise>
-										</c:choose>
-										<li class="${liClassReferencedBy}">
-											<a data-toggle="tab" href="#related-publications-referencedy">
-												<fmt:message key="goldStandard.resource.info.citations" />
-											</a>
-										</li>
-									</c:if>
-
-									<c:if test="${not empty goldstandard.subGoldStandards}">
-										<c:choose>
-											<c:when test="${tabActive == false}">
-												<c:set var="tabActive" value="true" />
-												<c:set var="liClassSubGoldStandards" value="active" />
-											</c:when>
-											<c:otherwise>
-												<c:set var="liClassSubGoldStandards" value="" />
-											</c:otherwise>
-										</c:choose>
-										<li class="${liClassSubGoldStandards}">
-											<a data-toggle="tab" href="#related-publications-subgoldstandards">
-												<fmt:message key="publications.related.incollection" />
-											</a>
-										</li>
-									</c:if>
-								</ul>
-
-								<div class="tab-content">
-									<div class="tab-pane ${liClassReferences}" id="related-publications-references">
-										<ul data-items="3" class="more-list" data-inline="true">
-											<c:forEach var="reference" items="${goldstandard.references}">
-												<li>
-													<c:if test="${isAdmin}">
-														<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
-													</c:if>
-													<goldstandardpublication:simpleDetails publication="${reference}" />
-												</li>
-											</c:forEach>
-										</ul>
-
-										<c:if test="${isAdmin}">
-											<a class="btn btn-xs btn-success add-reference-link" data-toggle="collapse" href="#admin-add-reference" role="button" aria-expanded="false" aria-controls="admin-add-reference">
-												<fmt:message key="post.resource.addreference" />
-											</a>
-											<div class="collapse" id="admin-add-reference">
-												<h4><fmt:message key="post.resource.addreference" /></h4>
-												<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
-											</div>
-										</c:if>
-									</div>
-
-									<div class="tab-pane ${liClassReferencedBy}" id="related-publications-referencedy">
-										<ul data-items="3" class="more-list" data-inline="true">
-											<c:forEach var="reference" items="${goldstandard.referencedBy}">
-												<li>
-													<c:if test="${isAdmin}">
-														<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
-													</c:if>
-													<goldstandardpublication:simpleDetails publication="${reference}" />
-												</li>
-											</c:forEach>
-										</ul>
-									</div>
-
-									<div class="tab-pane ${liClassSubGoldStandards}" id="related-publications-subgoldstandards">
-										<ul data-items="3" class="more-list" data-inline="true">
-											<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
-												<li>
-													<c:if test="${isAdmin}">
-														<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
-													</c:if>
-													<goldstandardpublication:simpleDetails publication="${reference}" />
-												</li>
-											</c:forEach>
-										</ul>
-									</div>
+							<div id="abstract">
+								<div class="show-more" itemprop="description">
+									<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
 								</div>
-
 							</div>
+						</c:when>
+						<c:otherwise>
+							<h3 class="pub-details">
+								<span class="fa fa-align-justify"><!-- keep me --></span>
+								<c:out value=" "/>
+								<fmt:message key="bibtex.details.meta"/>
+							</h3>
+						</c:otherwise>
+					</c:choose>
+
+					<!--+
+						| full description table
+						+-->
+					<div class="goldstandard-metadata">
+						<bib:allFieldsTable publication="${goldstandard}" post="${post}" publishedIn="${publishedIn}" />
+					</div>
+
+					<!-- tags -->
+					<c:if test="${showFolkSonomyLinks}">
+						<h3 id="goldStandardPublicationTags">
+							<span class="fa fa-tag"><!-- keep me --></span>
+							<c:out value=" "/>
+
+							<fmt:message key="publications.tags.headline"/>
+							<c:set var="tagsString" value="" />
+							<c:if test="${not empty postOfLoggedInUser.tags}">
+								<small>
+									<c:out value=" " /><fmt:message key="community.tags.myown"/>
+								</small>
+
+								<c:set var="tagsString" value="${mtl:toTagString(postOfLoggedInUser.tags)}" />
+							</c:if>
+						</h3>
+
+						<c:set var="tagSizeMode" value="detail" />
+						<c:if test="${command.tagcloud.style.id == 0}">
+							<c:set var="tagSizeMode" value="user" />
 						</c:if>
 
+						<tags:cloud
+								requPath="tag"
+								cmd="${command.tagcloud}"
+								tagSizeMode="${tagSizeMode}"
+								showTooltips="${command.context.loginUser.settings.tagboxTooltip}"
+								highlightTags="${tagsString}"
+						/>
 
-						<!-- Referenced and Referencing posts (Admin only) -->
-						<c:if test="${not hasRelatedPublication and isAdmin}">
-							<h3>
+					</c:if>
+
+					<!-- users that have this resource in their collection -->
+					<c:if test="${showFolkSonomyLinks}">
+						<h3 id="goldStandardPublicationUsers">
+							<span class="fa fa-user"><!-- keep me --></span>
+							<c:out value=" "/>
+
+							<fmt:message key="goldstandard.resource.relatedUsers"/>
+						</h3>
+
+						<common:relatedUsers
+								userList="${command.relatedUserCommand.relatedUsers}"
+								interHash="${goldstandard.interHash}"
+								showHeadline="false"
+						/>
+					</c:if>
+
+					<!-- Referenced and Referencing posts -->
+					<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
+						<c:set var="tabActive" value="false" />
+						<div id="related-publications">
+							<h3 id="goldStandardPublicationReferences">
 								<span class="fa fa-link"><!-- keep me --></span>
 								<c:out value=" "/>
 								<fmt:message key="publications.related.referencedAndCited" />
 							</h3>
 
-							<a class="btn btn-xs btn-success add-reference-link" data-toggle="collapse" href="#admin-add-reference2" role="button" aria-expanded="false" aria-controls="admin-add-reference2">
-								<fmt:message key="post.resource.addreference" />
-							</a>
-							<div class="collapse" id="admin-add-reference2">
-								<h4><fmt:message key="post.resource.addreference" /></h4>
-								<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
-							</div>
-						</c:if>
+							<ul class="nav nav-tabs">
+								<c:if test="${not empty goldstandard.references}">
+									<c:choose>
+										<c:when test="${tabActive == false}">
+											<c:set var="tabActive" value="true" />
+											<c:set var="liClassReferences" value="active" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="liClassReferences" value="" />
+										</c:otherwise>
+									</c:choose>
+									<li class="${liClassReferences}">
+										<a data-toggle="tab" href="#related-publications-references">
+											<fmt:message key="goldStandard.resource.info.references" />
+										</a>
+									</li>
+								</c:if>
 
+								<c:if test="${not empty goldstandard.referencedBy}">
+									<c:choose>
+										<c:when test="${tabActive == false}">
+											<c:set var="tabActive" value="true" />
+											<c:set var="liClassReferencedBy" value="active" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="liClassReferencedBy" value="" />
+										</c:otherwise>
+									</c:choose>
+									<li class="${liClassReferencedBy}">
+										<a data-toggle="tab" href="#related-publications-referencedy">
+											<fmt:message key="goldStandard.resource.info.citations" />
+										</a>
+									</li>
+								</c:if>
 
-						<c:if test="${showFolkSonomyLinks}">
-							<!--+
-								| discussion
-								+-->
-							<c:set var="collapseClass" value="collapse" />
-							<c:set var="collapseExpanded" value="false" />
-							<c:if test="${not empty goldstandard.discussionItems}">
-								<c:set var="collapseClass" value="collapse in" />
-								<c:set var="collapseExpanded" value="true" />
-							</c:if>
-							<h3>
-								<span class="fa fa-comments"><!-- keep me --></span>
-								<c:out value=" "/>
-								<fmt:message key="publications.discussion.headline"/>
+								<c:if test="${not empty goldstandard.subGoldStandards}">
+									<c:choose>
+										<c:when test="${tabActive == false}">
+											<c:set var="tabActive" value="true" />
+											<c:set var="liClassSubGoldStandards" value="active" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="liClassSubGoldStandards" value="" />
+										</c:otherwise>
+									</c:choose>
+									<li class="${liClassSubGoldStandards}">
+										<a data-toggle="tab" href="#related-publications-subgoldstandards">
+											<fmt:message key="publications.related.incollection" />
+										</a>
+									</li>
+								</c:if>
+							</ul>
 
-								<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
-									<fmt:message key="show" />
-									/
-									<fmt:message key="hide" />
-								</a>
-							</h3>
+							<div class="tab-content">
+								<div class="tab-pane ${liClassReferences}" id="related-publications-references">
+									<ul data-items="3" class="more-list" data-inline="true">
+										<c:forEach var="reference" items="${goldstandard.references}">
+											<li>
+												<c:if test="${isAdmin}">
+													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+												</c:if>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
+											</li>
+										</c:forEach>
+									</ul>
 
-							<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
-								<!-- discussion -->
-								<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
-							</div>
-						</c:if>
+									<c:if test="${isAdmin}">
+										<a class="btn btn-xs btn-success add-reference-link" data-toggle="collapse" href="#admin-add-reference" role="button" aria-expanded="false" aria-controls="admin-add-reference">
+											<fmt:message key="post.resource.addreference" />
+										</a>
+										<div class="collapse" id="admin-add-reference">
+											<h4><fmt:message key="post.resource.addreference" /></h4>
+											<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
+										</div>
+									</c:if>
+								</div>
 
+								<div class="tab-pane ${liClassReferencedBy}" id="related-publications-referencedy">
+									<ul data-items="3" class="more-list" data-inline="true">
+										<c:forEach var="reference" items="${goldstandard.referencedBy}">
+											<li>
+												<c:if test="${isAdmin}">
+													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+												</c:if>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
 
-					</div>
-
-
-					<!-- SIDEBAR -->
-					<div class="col-md-3 hidden-xs hidden-sm sidebar">
-
-						<!-- Quick cite -->
-						<h3>
-							<span class="fa fa-quote-right"><!-- keep me --></span>
-							<c:out value=" "/>
-							<fmt:message key="publications.citations.headline" />
-						</h3>
-
-						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-
-						<div class="sidebar-quick-cite-box">
-							<div class="form-group">
-								<label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
-								<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite">
-									<option><fmt:message key="form.input.select" /></option>
-								</select>
-								<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
-							</div>
-
-							<div class="cust-loader">
-								<div class="loader">
-									<div class="loader--dot"><!-- KEEP ME --></div>
-									<div class="loader--dot"><!-- KEEP ME --></div>
-									<div class="loader--dot"><!-- KEEP ME --></div>
-									<div class="loader--dot"><!-- KEEP ME --></div>
-									<div class="loader--dot"><!-- KEEP ME --></div>
-									<div class="loader--dot"><!-- KEEP ME --></div>
-									<div class="loader--text"><!-- KEEP ME --></div>
+								<div class="tab-pane ${liClassSubGoldStandards}" id="related-publications-subgoldstandards">
+									<ul data-items="3" class="more-list" data-inline="true">
+										<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
+											<li>
+												<c:if test="${isAdmin}">
+													<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+												</c:if>
+												<goldstandardpublication:simpleDetails publication="${reference}" />
+											</li>
+										</c:forEach>
+									</ul>
 								</div>
 							</div>
 
 						</div>
-
-						<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="">
-							<jsp:attribute name="modalBody">
-								...
-							</jsp:attribute>
-
-							<jsp:attribute name="modalFooter">
-								<bsform:button
-										id="sidebar-quick-cite-box-modal-clipboard-button"
-										size="defaultSize"
-										style="defaultStyle"
-										valueKey="export.copyToLocalClipboard"
-										icon="clipboard"/>
-
-								<fmt:message key="box.close" var="modalCloseText" />
-								<bsform:button
-										size="defaultSize"
-										style="secondary"
-										dataDismiss="modal"
-										title="${modalCloseText}"
-										value="${modalCloseText}"
-								/>
-
-							</jsp:attribute>
-						</bsold:modal>
-
-						<div class="hidden" id="sidebar-quick-cite-box-endnote">
-							<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
-								<export:endnote post="${post}" escapeXml="${true}" />
-							</textarea>
-						</div>
-
-						<div class="hidden" id="sidebar-quick-cite-box-bibtex">
-							<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
-								<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
-							</textarea>
-						</div>
+					</c:if>
 
 
-						<!-- Search on... -->
+					<!-- Referenced and Referencing posts (Admin only) -->
+					<c:if test="${not hasRelatedPublication and isAdmin}">
 						<h3>
-							<span class="fa fa-search"><!-- keep me --></span>
+							<span class="fa fa-link"><!-- keep me --></span>
 							<c:out value=" "/>
-							<fmt:message key="resources.searchExternal.dropDownLabel" />
+							<fmt:message key="publications.related.referencedAndCited" />
 						</h3>
-						<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupClass="sidebar-links" />
+
+						<a class="btn btn-xs btn-success add-reference-link" data-toggle="collapse" href="#admin-add-reference2" role="button" aria-expanded="false" aria-controls="admin-add-reference2">
+							<fmt:message key="post.resource.addreference" />
+						</a>
+						<div class="collapse" id="admin-add-reference2">
+							<h4><fmt:message key="post.resource.addreference" /></h4>
+							<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
+						</div>
+					</c:if>
 
 
-						<c:if test="${isAdmin}">
-							<h4>Published in</h4>
-
-							<c:if test="${not empty publishedIn}">
-								<goldstandardpublication:simpleDetails publication="${publishedIn}" />
-							</c:if>
-							<c:choose>
-								<c:when test="${empty publishedIn}">
-									<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
-								</c:when>
-								<c:otherwise>
-									<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
-								</c:otherwise>
-							</c:choose>
+					<c:if test="${showFolkSonomyLinks}">
+						<!--+
+							| discussion
+							+-->
+						<c:set var="collapseClass" value="collapse" />
+						<c:set var="collapseExpanded" value="false" />
+						<c:if test="${not empty goldstandard.discussionItems}">
+							<c:set var="collapseClass" value="collapse in" />
+							<c:set var="collapseExpanded" value="true" />
 						</c:if>
-					</div>
+						<h3>
+							<span class="fa fa-comments"><!-- keep me --></span>
+							<c:out value=" "/>
+							<fmt:message key="publications.discussion.headline"/>
+
+							<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
+								<fmt:message key="show" />
+								/
+								<fmt:message key="hide" />
+							</a>
+						</h3>
+
+						<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
+							<!-- discussion -->
+							<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+						</div>
+					</c:if>
+
 
 				</div>
+
+
+				<!-- SIDEBAR -->
+				<div class="col-md-3 hidden-xs hidden-sm sidebar">
+
+					<!-- Quick cite -->
+					<h3>
+						<span class="fa fa-quote-right"><!-- keep me --></span>
+						<c:out value=" "/>
+						<fmt:message key="publications.citations.headline" />
+					</h3>
+
+					<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
+
+					<div class="sidebar-quick-cite-box">
+						<div class="form-group">
+							<label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
+							<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite">
+								<option><fmt:message key="form.input.select" /></option>
+							</select>
+							<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
+						</div>
+
+						<div class="cust-loader">
+							<div class="loader">
+								<div class="loader--dot"><!-- KEEP ME --></div>
+								<div class="loader--dot"><!-- KEEP ME --></div>
+								<div class="loader--dot"><!-- KEEP ME --></div>
+								<div class="loader--dot"><!-- KEEP ME --></div>
+								<div class="loader--dot"><!-- KEEP ME --></div>
+								<div class="loader--dot"><!-- KEEP ME --></div>
+								<div class="loader--text"><!-- KEEP ME --></div>
+							</div>
+						</div>
+
+					</div>
+
+					<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="">
+						<jsp:attribute name="modalBody">
+							...
+						</jsp:attribute>
+
+						<jsp:attribute name="modalFooter">
+							<bsform:button
+									id="sidebar-quick-cite-box-modal-clipboard-button"
+									size="defaultSize"
+									style="defaultStyle"
+									valueKey="export.copyToLocalClipboard"
+									icon="clipboard"/>
+
+							<fmt:message key="box.close" var="modalCloseText" />
+							<bsform:button
+									size="defaultSize"
+									style="secondary"
+									dataDismiss="modal"
+									title="${modalCloseText}"
+									value="${modalCloseText}"
+							/>
+
+						</jsp:attribute>
+					</bsold:modal>
+
+					<div class="hidden" id="sidebar-quick-cite-box-endnote">
+						<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
+							<export:endnote post="${post}" escapeXml="${true}" />
+						</textarea>
+					</div>
+
+					<div class="hidden" id="sidebar-quick-cite-box-bibtex">
+						<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
+							<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
+						</textarea>
+					</div>
+
+
+					<!-- Search on... -->
+					<h3>
+						<span class="fa fa-search"><!-- keep me --></span>
+						<c:out value=" "/>
+						<fmt:message key="resources.searchExternal.dropDownLabel" />
+					</h3>
+					<pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" buttonGroupClass="sidebar-links" />
+
+
+					<c:if test="${isAdmin}">
+						<h4>Published in</h4>
+
+						<c:if test="${not empty publishedIn}">
+							<goldstandardpublication:simpleDetails publication="${publishedIn}" />
+						</c:if>
+						<c:choose>
+							<c:when test="${empty publishedIn}">
+								<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
+							</c:when>
+							<c:otherwise>
+								<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</div>
+
 			</div>
-
-
 		</div>
 	</div>
 </jsp:root>
