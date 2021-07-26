@@ -2,7 +2,6 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"	
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
@@ -93,21 +92,10 @@
 	</dl>
 	
 <!-- 
-		
-			ERLEDIGT
-	OFFEN
-WAS DAMIT MACHEN?
+FIXME: the following fields are missing:
 
 private String annote;
-			private String chapter;
 private String crossref;
-			private String edition;
-			private String howpublished;
-			private String institution;
-			private String organization;
-			private String publisher;
-			private String school;
-			private String series;
 private String day;
 private String month;
 private String year;
