@@ -47,7 +47,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	/** identifier for the custom layout */
 	public static final String CUSTOM_LAYOUT = "custom";
 
-	/** Returns the requested layout. A layout may be user-specific, thus the name 
+	/**
+	 * Returns the requested layout. A layout may be user-specific, thus the name
 	 * of the login user must be given. 
 	 *  
 	 * @param layoutName
@@ -59,7 +60,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 */
 	public LAYOUT getLayout(final String layoutName, final String loginUserName) throws LayoutRenderingException, IOException;
 
-	/** Renders the given layout to the outputStream.
+	/**
+	 * Renders the given layout to the outputStream.
 	 * 
 	 * @param layout
 	 * @param posts
@@ -72,7 +74,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 */
 	public StringBuffer renderLayout(final LAYOUT layout, final  List<? extends Post<? extends Resource>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException;
 
-	/** Checks, if the renderer supports the given resource type.
+	/**
+	 * Checks, if the renderer supports the given resource type.
 	 * 
 	 * XXX: this could also be layout-dependent, i.e., we should not ask the
 	 * renderer, but the layout ...
@@ -84,7 +87,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	
 	/**
 	 * TODO: should be a list?
-	 * @return all layyouts supported by this LayoutRenderer 
+	 * @return all layouts supported by this LayoutRenderer
 	 */
 	public Map<String, LAYOUT> getLayouts();
 }

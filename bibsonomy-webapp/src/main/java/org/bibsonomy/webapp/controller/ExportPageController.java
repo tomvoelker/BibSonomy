@@ -28,8 +28,11 @@ package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
+import org.bibsonomy.layout.standard.StandardLayout;
 import org.bibsonomy.layout.standard.StandardLayouts;
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -38,6 +41,10 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * @author Christian, lsc
@@ -67,7 +74,6 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public View workOn(final ExportPageCommand command) {
-		command.addLayoutMap(this.layoutRenderer.getLayouts());
 
 		// no standard exports in the json export!
 		if ("json".equals(command.getFormat())) {
@@ -78,20 +84,24 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		}
 
 		final RequestWrapperContext context = command.getContext();
+		final Map<String, Layout> layoutMap = new TreeMap<>(this.layoutRenderer.getLayouts());
+		final Map<String, StandardLayout> layouts = this.layouts.getLayoutMap();
+		layoutMap.putAll(layouts);
+
 		if (context.isUserLoggedIn()) {
 			try {
-				command.addLayout(this.layoutRenderer.getLayout(LayoutRenderer.CUSTOM_LAYOUT, context.getLoginUser().getName()));
+				final Layout layout = this.layoutRenderer.getLayout(LayoutRenderer.CUSTOM_LAYOUT, context.getLoginUser().getName());
+				layoutMap.put(layout.getDisplayName(), layout);
 			} catch (final LayoutRenderingException | IOException e) {
 				// ignore because reasons 
 			}
 
 			// also load user custom layouts
-			this.cslFilesManager.loadUserLayouts(context.getLoginUser().getName())
-					.forEach(command::addCustomCslLayout);
+			command.setCustomCslLayoutMap(convertCSLStylesToMap(this.cslFilesManager.loadUserLayouts(context.getLoginUser().getName())));
 		}
 
 		command.setCslLayoutMap(this.cslFilesManager.getCslFiles());
-		command.addLayoutMap(this.layouts.getLayoutMap());
+		command.setLayoutMap(layoutMap);
 
 		if (command.getFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
@@ -99,6 +109,11 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 
 		return Views.EXPORT;
 	}
+
+	private static Map<String, CSLStyle> convertCSLStylesToMap(final List<CSLStyle> layouts) {
+		return layouts.stream().collect(Collectors.toMap(CSLStyle::getDisplayName, item -> item));
+	}
+
 
 	/**
 	 * @param layoutRenderer
@@ -121,4 +136,5 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
 		this.cslFilesManager = cslFilesManager;
 	}
+
 }
