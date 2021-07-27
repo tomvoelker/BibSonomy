@@ -60,7 +60,7 @@ public class DOIUtils {
 	/**
 	 * URL of the DOI resolver.
 	 */
-	public static final String DX_DOI_ORG_URL = "http://" + DX_DOI_ORG + "/";
+	public static final String DX_DOI_ORG_URL = "https://" + DX_DOI_ORG + "/";
 
 	private static final Pattern HOST_PATTERN = Pattern.compile(".*" + DOI_ORG);
 

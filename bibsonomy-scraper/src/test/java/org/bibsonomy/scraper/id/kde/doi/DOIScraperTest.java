@@ -49,9 +49,9 @@ public class DOIScraperTest {
 	
 	@Test
 	public void testScraper1() throws ScrapingException, MalformedURLException {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://dx.doi.org/10.1007/11922162"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://dx.doi.org/10.1007/11922162"));
 		assertFalse(SCRAPER.scrape(sc));
-		assertEquals("http://link.springer.com/book/10.1007/11922162", sc.getUrl().toString());
+		assertEquals("https://link.springer.com/book/10.1007/11922162", sc.getUrl().toString());
 	}
 
 	
@@ -61,7 +61,7 @@ public class DOIScraperTest {
 		sc.setSelectedText("10.1145/160688.160713");
 		
 		assertFalse(SCRAPER.scrape(sc));
-		assertEquals("http://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
+		assertEquals("https://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
 	}
 	
 }

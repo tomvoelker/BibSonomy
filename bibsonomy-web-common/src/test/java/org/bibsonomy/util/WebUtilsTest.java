@@ -86,7 +86,7 @@ public class WebUtilsTest {
 	@Test
 	@Ignore
 	public void testRedirectUrl() throws MalformedURLException {
-		assertEquals("http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=5123720", WebUtils.getRedirectUrl(new URL("http://dx.doi.org/10.1017/S0952523808080978")).toString());
+		assertEquals("https://www.cambridge.org/core/journals/visual-neuroscience/article/abs/image-statistics-at-the-point-of-gaze-during-human-navigation/0C985D25DDBD65829EA88D1E37ECEFBF", WebUtils.getRedirectUrl(new URL("https://dx.doi.org/10.1017/S0952523808080978")).toString());
 	}
 	
 	/**

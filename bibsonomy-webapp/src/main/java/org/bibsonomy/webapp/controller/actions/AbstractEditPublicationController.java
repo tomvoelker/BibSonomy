@@ -51,6 +51,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
@@ -103,9 +104,17 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 * Check if the controller was called by a bookmarklet which just
 		 * delivers URL + selection which should be passed to the scrapers.
 		 */
-		final String url = command.getUrl();
 		final String selection = command.getSelection();
-		
+		String url = command.getUrl();
+
+		/*
+		 * if the selection is a url set it as a url,
+		 * e.g. the postPublication autocomplete will set the selection to the url
+		 */
+		if (!present(url) && present(selection) && UrlUtils.isUrl(selection)) {
+			url = selection;
+		}
+
 		if (command.isMyOwn()) {
 			final String tags = command.getTags();
 			if (!present(tags)) {

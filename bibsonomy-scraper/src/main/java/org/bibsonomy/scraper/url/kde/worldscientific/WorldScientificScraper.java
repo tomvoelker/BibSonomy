@@ -52,12 +52,12 @@ public class WorldScientificScraper extends LiteratumScraper implements CitedbyS
 
 	private static final String SITE_NAME = "World Scientific";
 	private static final String SITE_HOST = "worldscientific.com";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<b>References:</b><ul>(.*)</ul>");
-	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<div class=\"citedByEntry\">(.*)<!-- /fulltext content --></div>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<ul class=\"rlist separator\">(.*?)</ul>");
+	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<ul class=\"rlist temis-related__list\">(.*?)</ul>");
 
 	@Override
 	public String getSupportedSiteName() {

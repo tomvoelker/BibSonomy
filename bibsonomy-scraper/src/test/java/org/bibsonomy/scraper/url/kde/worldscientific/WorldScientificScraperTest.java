@@ -27,7 +27,6 @@
 package org.bibsonomy.scraper.url.kde.worldscientific;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -49,30 +48,27 @@ public class WorldScientificScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		final String url = "http://www.worldscientific.com/doi/abs/10.1142/S0219622006002271";
+		final String url = "https://www.worldscientific.com/doi/abs/10.1142/S0219622006002271";
 		final String resultFile = "WorldScientificScraperUnitURLTest.bib";
 		assertScraperResult(url, null, WorldScientificScraper.class, resultFile);
 	}
 	
 	@Test
 	public void testCitedby() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
 		
 		WorldScientificScraper ws = new WorldScientificScraper();
 		assertTrue(ws.scrape(sc));
 		assertTrue(ws.scrapeCitedby(sc));
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
-		assertTrue(cby.length() > 100);  
-		
-		assertEquals("<a class=\"entryAuthor search-link\" href=\"/author/Fang%2C+Zhiyuan\"><span class=\"".trim(), cby.substring(0, 79).trim());
-		
-		assertTrue(cby.contains("XIANYONG FANG"));
+		assertTrue(cby.length() > 100);
+		assertTrue(cby.contains("Application of Power Big Data in Targeted Poverty Alleviation"));
 	}
 	
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
 		
 		WorldScientificScraper ws = new WorldScientificScraper();
 		assertTrue(ws.scrape(sc));
@@ -80,9 +76,6 @@ public class WorldScientificScraperTest {
 		final String references = sc.getReferences();
 		assertNotNull(references);
 		assertTrue(references.length() > 100);
-		
-		assertEquals("<li class=\"reference\"> R. Agrawal<i></i>, Mining Newsgroups using networks arising from social behavior,".trim(), references.substring(0, 105).trim());
-		
-		assertTrue(references.contains("A. D.   Baxevanis"));
+		assertTrue(references.contains("Mining Newsgroups using networks arising from social behavior"));
 	}
 }

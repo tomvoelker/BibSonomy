@@ -65,6 +65,13 @@ public class WebUtils {
 	/** maximal number of redirects to follow in {@link #getRedirectUrl(URL)} */
 	private static final int MAX_REDIRECT_COUNT = 10;
 
+	/**
+	 * Option to allow circular redirect.
+	 * Some sites do a single circular redirect to just set a parameter, when accessing it.
+	 * Low max redirect count, where circular redirect can be allowed.
+	 */
+	private static final boolean ALLOW_CIRCULAR_REDIRECT = true;
+
 	/** the connection timeout */
 	private static final int CONNECTION_TIMEOUT = 5 * 1000;
 
@@ -104,6 +111,7 @@ public class WebUtils {
 		.setSocketTimeout(READ_TIMEOUT)
 		.setConnectionRequestTimeout(READ_TIMEOUT)
 		.setMaxRedirects(MAX_REDIRECT_COUNT)
+		.setCircularRedirectsAllowed(ALLOW_CIRCULAR_REDIRECT)
 		.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
 	/**
@@ -393,7 +401,6 @@ public class WebUtils {
 			final HttpClientContext context = HttpClientContext.create();
 			final HttpResponse response = client.execute(method, context);
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
 				// get final redirect URL, cf. https://stackoverflow.com/questions/1456987/
 				final List<URI> locations = context.getRedirectLocations();
 				if (locations != null) {

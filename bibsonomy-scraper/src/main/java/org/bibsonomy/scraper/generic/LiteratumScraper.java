@@ -60,8 +60,8 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 	// private static final String BIBTEX_PARAMS = "?downloadFileName=f&include=cit&format=bibtex&direct=on&doi=";
 
 	// to extract the DOI from the URL
-	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi/(abs|full|pdf|pdfplus)/(.+?)(\\?.+)?$");
-	private static final int PATH_ABSTRACT_PATTERN_DOI_GROUP = 2;
+	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi(/?(abs|full|pdf|pdfplus))?/(10\\.\\d+\\/[^\\s\"'}]+)?$");
+	private static final int PATH_ABSTRACT_PATTERN_DOI_GROUP = 3;
 	// to extract the DOI from the query
 	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=(.+?)(&.+)?$");
 	private static final int QUERY_DOI_PATTERN_DOI_GROUP = 1;

@@ -29,6 +29,7 @@ package org.bibsonomy.util;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -519,5 +520,20 @@ public class UrlUtils {
 	 */
 	public static boolean isHTTPS(final String url) {
 		return present(url) && url.startsWith(HTTPS_SCHEMA);
+	}
+
+	/**
+	 * checks if the text is a url
+	 * @param text
+	 * @return <code>true</code> iff the text is a url
+	 */
+	public static boolean isUrl(String text) {
+		try {
+			new URL(text);
+			return true;
+		} catch (MalformedURLException e) {
+			// ignored
+		}
+		return false;
 	}
 }

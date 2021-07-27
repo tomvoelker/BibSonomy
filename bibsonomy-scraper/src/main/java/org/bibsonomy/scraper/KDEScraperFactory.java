@@ -44,7 +44,6 @@ import org.bibsonomy.scraper.snippet.SnippetScraper;
  * Configures the scrapers used by BibSonomy.
  * 
  * @author rja
- *
  */
 public class KDEScraperFactory {
 
