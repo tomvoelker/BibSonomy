@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.clipboard;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +37,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -59,11 +58,7 @@ public class PostClipboardStrategy extends Strategy {
 	 */
 	public PostClipboardStrategy(Context context, String userName, String resourceHash) {
 		super(context);
-		if (present(resourceHash) && resourceHash.length() == 33) {
-			this.resourceHash = resourceHash.substring(1);
-		} else {
-			this.resourceHash = resourceHash;
-		}
+		this.resourceHash = SimHashUtils.removeHashIdentifier(resourceHash);
 		this.userName = userName;
 	}
 

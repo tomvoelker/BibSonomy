@@ -30,9 +30,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -42,6 +44,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
@@ -50,6 +53,7 @@ import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
@@ -86,6 +90,35 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		return command;
 	}
 
+	private Optional<Post<BibTex>> getPost(final String requestedHash) {
+		/*
+		 * first try to get the goldstandard by hash
+		 */
+		try {
+			final String goldStandardHash = SimHashUtils.removeHashIdentifier(requestedHash);
+			final Post<BibTex> goldStandard = (Post<BibTex>) this.logic.getPostDetails(goldStandardHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
+			if (present(goldStandard)) {
+				return Optional.of(goldStandard);
+			}
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
+			// ignore
+		}
+
+		/*
+		 * try to get the user post as a last option
+		 */
+		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
+		postQueryBuilder.setGrouping(GroupingEntity.ALL)
+						.setHash(requestedHash)
+						.entriesStartingAt(1, 0);
+		final List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
+		if (present(posts)) {
+			return Optional.ofNullable(posts.get(0));
+		}
+
+		return Optional.empty();
+	}
+
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
 		final String requestedHash = command.getRequestedHash();
@@ -93,19 +126,15 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 			throw new MalformedURLSchemeException("error.disambiguation_without_hash");
 		}
 
-		// get the post that should be displayed
-		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
-		postQueryBuilder.setGrouping(GroupingEntity.ALL)
-				.setHash(requestedHash)
-				.entriesStartingAt(1, 0);
-		final List<Post<BibTex>> posts = this.logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
-
-		if (!present(posts)) {
+		/*
+		 * find the post with the provided hash
+		 */
+		final Optional<Post<BibTex>> optionalPost = this.getPost(requestedHash);
+		if (!optionalPost.isPresent()) {
 			throw new ObjectNotFoundException(requestedHash);
 		}
 
-		// TODO: don't use the command to pass the post to the methods, please add a parameter for the post
-		final Post<BibTex> post = posts.get(0);
+		final Post<BibTex> post = optionalPost.get();
 		final String action = command.getRequestedAction();
 		if ("newPerson".equals(action)) {
 			return newAction(post, command);
@@ -136,11 +165,10 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 			return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
 
-		final BibTex res = publication;
-		final List<PersonName> personNames = PersonUtils.getPersonsByRoleWithFallback(res, requestedRole);
+		final List<PersonName> personNames = PersonUtils.getPersonsByRoleWithFallback(publication, requestedRole);
 
 		if (!present(personNames) || requestedIndex < 0 || requestedIndex >= personNames.size()) {
-			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
+			throw new ObjectNotFoundException(requestedRole + " for " + publication.getInterHash());
 		}
 
 		final PersonName requestedName = personNames.get(requestedIndex);

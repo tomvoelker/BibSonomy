@@ -53,6 +53,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
@@ -120,23 +121,21 @@ public class LogicInterfaceHelper {
 		 */
 		final T param = buildParam(type, sortKey, start, end);
 
-		// if hash length is 33 ,than use the first character as hash type
-		if (hash != null && hash.length() == 33) {
-			HashID id = HashID.SIM_HASH1;
-			try {
-				id = HashID.getSimHash(Integer.valueOf(hash.substring(0, 1)));
-			} catch (final NumberFormatException ex) {
-				throw new RuntimeException(ex);
-			}
-			
+		// if hash length is 33, than use the first character as hash type
+		if (present(hash)) {
+			final SimHashUtils.HashAndId hashAndId = SimHashUtils.extractHashAndHashId(hash, null);
+			param.setHash(hashAndId.getHash());
+
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
-				param.setSortKey(sortKey);
-				param.setSimHash(id);
+				param.setSimHash(hashAndId.getHashID());
+
+				// FIXME: why is the hash length here required
+				if (hash.length() == 33) {
+					param.setSortKey(sortKey);
+				}
 			}
-			param.setHash(hash.substring(1));
-		} else {
-			param.setHash(hash);
 		}
+
 		/*
 		 * set start and end date
 		 */

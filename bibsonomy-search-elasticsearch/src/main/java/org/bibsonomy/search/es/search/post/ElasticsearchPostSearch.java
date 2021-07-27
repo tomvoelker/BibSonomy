@@ -46,6 +46,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.Group;
@@ -282,15 +283,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		// hash filter
 		final String hash = postQuery.getHash();
 		if (present(hash)) {
-			final String realHash;
-			final String hashField;
-			if (hash.length() == 33) {
-				realHash = hash.substring(1);
-				hashField = HashID.getSimHash(Integer.parseInt(hash.substring(0, 1))) == HashID.INTER_HASH ? Fields.Resource.INTERHASH : Fields.Resource.INTRAHASH;
-			} else {
-				realHash = hash;
-				hashField = Fields.Resource.INTRAHASH;
-			}
+			final SimHashUtils.HashAndId hashAndId = SimHashUtils.extractHashAndHashId(hash);
+			final String realHash = hashAndId.getHash();
+			final String hashField = hashAndId.getHashID().equals(HashID.INTER_HASH) ? Fields.Resource.INTERHASH : Fields.Resource.INTRAHASH;
 			final TermQueryBuilder hashFilter = QueryBuilders.termQuery(hashField, realHash);
 			mainFilterBuilder.must(hashFilter);
 		}
