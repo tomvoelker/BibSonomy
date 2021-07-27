@@ -227,8 +227,6 @@ public class CSLFilesManager {
 		return Collections.unmodifiableMap(this.cslFiles);
 	}
 
-
-
 	public List<CSLStyle> getStandardCslStyles() {
 		List<CSLStyle> cslStyles = new ArrayList<CSLStyle>() {{
 			add(getStyleByName("apa"));

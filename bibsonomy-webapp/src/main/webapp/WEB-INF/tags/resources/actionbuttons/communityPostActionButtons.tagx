@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="true"/>
 
-	<c:set var="buttonClasses" value="btn btn-primary"/>
+	<c:set var="buttonClasses" value="btn btn-default"/>
 	<c:set var="loginUser" value="${command.context.loginUser}" />
 
 	<c:if test="${command.context.userLoggedIn}">
@@ -61,7 +61,7 @@
 					post="${post}"
 					resourceType="${resourceType}"
 					loginUser="${loginUser}"
-					buttonClasses="btn btn-danger"
+					buttonClasses="btn btn-default"
 					additionalText="${additionalText}"
 			/>
 		</c:if>
