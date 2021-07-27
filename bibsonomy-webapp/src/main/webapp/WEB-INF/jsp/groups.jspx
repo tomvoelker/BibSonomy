@@ -69,17 +69,13 @@
 											<div class="col-md-7">
 												<div class="row">
 													<div class="col-md-1"><!-- keep me for offset --></div>
-													<c:choose>
-														<c:when test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(group.name, command.context.loginUser)}">
-															<div class="col-md-1">
-																<group:groupthumbnail noname="${true}" group="${group}"/>
-															</div>
-															<c:set var="groupContentSize" value="10"/>
-														</c:when>
-														<c:otherwise>
-															<c:set var="groupContentSize" value="11"/>
-														</c:otherwise>
-													</c:choose>
+													<c:set var="groupContentSize" value="11"/>
+													<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(group.name, command.context.loginUser)}">
+														<div class="col-md-1">
+															<group:groupthumbnail noname="${true}" group="${group}"/>
+														</div>
+														<c:set var="groupContentSize" value="10"/>
+													</c:if>
 													<div class="col-md-${groupContentSize}">
 														<a href="${groupUrl}">
 															<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
