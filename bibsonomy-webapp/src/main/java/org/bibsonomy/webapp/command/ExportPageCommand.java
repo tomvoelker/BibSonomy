@@ -28,7 +28,6 @@ package org.bibsonomy.webapp.command;
 
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.bibsonomy.layout.csl.CSLStyle;
@@ -58,30 +57,19 @@ public class ExportPageCommand extends ResourceViewCommand {
 	public Map<String, Layout> getLayoutMap() {
 		return this.layoutMap;
 	}
-	
-	/**
-	 * adds all maps to the the layout map
-	 * @param map
-	 */
-	public void addLayoutMap(final Map<String, ? extends Layout> map) {
-		for (Entry<String, ? extends Layout> entry : map.entrySet()){
-			this.layoutMap.put(entry.getValue().getDisplayName(), entry.getValue());
-		}
-	}
-	
-	/**
-	 * adds a layout to the layout map
-	 * @param l 
-	 */
-	public void addLayout(Layout l) {
-		this.layoutMap.put(l.getDisplayName(), l);
-	}
 
 	/**
 	 * @return the cslLayoutMap
 	 */
 	public Map<String, CSLStyle> getCslLayoutMap() {
 		return this.cslLayoutMap;
+	}
+
+	/**
+	 * @return the customCslLayoutMap
+	 */
+	public Map<String, CSLStyle> getCustomCslLayoutMap() {
+		return customCslLayoutMap;
 	}
 	
 	/**
@@ -92,32 +80,16 @@ public class ExportPageCommand extends ResourceViewCommand {
 	}
 
 	/**
-	 * adds a layout to the csl layout map
-	 * @param cslStyle
+	 * @param layoutMap the layoutMap to set
 	 */
-	public void addCslLayout(CSLStyle cslStyle) {
-		this.cslLayoutMap.put(cslStyle.getDisplayName(), cslStyle);
-	}
-
-
-	public void setLayoutMap(Map<String, Layout> layoutMap) {
+	public void setLayoutMap(final Map<String, Layout> layoutMap) {
 		this.layoutMap = layoutMap;
 	}
 
 	/**
-	 * adds a layout to the custom csl layout map
-	 * @param cslStyle
+	 * @param customCslLayoutMap the customCslLayoutMap to set
 	 */
-	public void addCustomCslLayout(CSLStyle cslStyle) {
-		this.customCslLayoutMap.put(cslStyle.getDisplayName(), cslStyle);
-	}
-
-
-	public Map<String, CSLStyle> getCustomCslLayoutMap() {
-		return customCslLayoutMap;
-	}
-
-	public void setCustomCslLayoutMap(Map<String, CSLStyle> customCslLayoutMap) {
+	public void setCustomCslLayoutMap(final Map<String, CSLStyle> customCslLayoutMap) {
 		this.customCslLayoutMap = customCslLayoutMap;
 	}
 }
