@@ -58,41 +58,51 @@
 					<c:when test="${isUserLoggedIn || isGroupsPage}">
 						<c:choose>
 							<c:when test="${groupListCommand.totalCount gt 0}">
-								<dl class="dl-horizontal dt-thumbnail-items group-list">
+								<div class="group-list">
 									<c:forEach var="group" items="${groupListCommand.list}">
 										<c:set var="groupName" value="${group.name}"/>
-										<dt><group:groupthumbnail noname="${true}" group="${group}"/></dt>
-										<dd>
-											<div class="row">
-												<div class="col-md-7">
-													<c:set var="groupUrl"
-														   value="${relativeUrlGenerator.getGroupUrlByGroupName(groupName)}"/>
-													<c:if test="${not isGroupsPage}">
-														<c:set var="groupUrl"
-															   value="${relativeUrlGenerator.getOrganizationUrlByName(groupName)}"/>
-													</c:if>
-													<a href="${groupUrl}">
-														<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
-													</a>
-													<br/>
-													<c:if test="${not empty group.homepage}">
-														<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out
-															value=" "/>
-													</c:if>
-													<c:if test="${isGroupsPage}">
-														<!-- TODO: use url generator -->
-														<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
-													</c:if>
-												</div>
-												<div class="col-md-5 text-right">
-													<c:if test="${isUserLoggedIn}">
-														<group:actions group="${group}"/>
-													</c:if>
+										<c:set var="groupUrl" value="${relativeUrlGenerator.getGroupUrlByGroupName(groupName)}"/>
+										<c:if test="${not isGroupsPage}">
+											<c:set var="groupUrl" value="${relativeUrlGenerator.getOrganizationUrlByName(groupName)}"/>
+										</c:if>
+										<div class="row group-list-item">
+											<div class="col-md-7">
+												<div class="row">
+													<div class="col-md-1"><!-- keep me for offset --></div>
+													<c:choose>
+														<c:when test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(group.name, command.context.loginUser)}">
+															<div class="col-md-1">
+																<group:groupthumbnail noname="${true}" group="${group}"/>
+															</div>
+															<c:set var="groupContentSize" value="10"/>
+														</c:when>
+														<c:otherwise>
+															<c:set var="groupContentSize" value="11"/>
+														</c:otherwise>
+													</c:choose>
+													<div class="col-md-${groupContentSize}">
+														<a href="${groupUrl}">
+															<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
+														</a>
+														<br/>
+														<c:if test="${not empty group.homepage}">
+															<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out value=" "/>
+														</c:if>
+														<c:if test="${isGroupsPage}">
+															<!-- TODO: use url generator -->
+															<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
+														</c:if>
+													</div>
 												</div>
 											</div>
-										</dd>
+											<div class="col-md-5 text-right">
+												<c:if test="${isUserLoggedIn}">
+													<group:actions group="${group}"/>
+												</c:if>
+											</div>
+										</div>
 									</c:forEach>
-								</dl>
+								</div>
 							</c:when>
 							<c:otherwise>
 								<div class="no-items-found">
