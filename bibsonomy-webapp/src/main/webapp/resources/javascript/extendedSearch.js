@@ -29,12 +29,15 @@ function toggleExtendedSearch(focusTarget) {
     input.val('').val(inputValue);
 }
 
-function expandYearRange() {
-    $('#inputGroupField').removeClass('col-md-8').addClass('col-md-6');
+function toggleYearRange() {
     $('#inputGroupYear').toggleClass('hidden');
-    $('#filterValueYear').val('');
-    $('#inputGroupFromYear').toggleClass('hidden');
-    $('#inputGroupToYear').toggleClass('hidden');
+    $('#inputGroupYearRange').toggleClass('hidden');
+
+    if ($('#inputGroupYear').is(':visible')) {
+        $('#toggleYearRange').html(getString('search.extended.year.range.placeholder'));
+    } else {
+        $('#toggleYearRange').html(getString('search.extended.year.placeholder'));
+    }
 }
 
 function switchSelection(type, value, selection) {
@@ -54,22 +57,24 @@ function addFilter() {
 
     // filters
     const year = $('#filterValueYear').val();
-    const fromYear = $('#filterValueFromYear').val();
-    const toYear = $('#filterValueToYear').val();
+    var fromYear = $('#filterValueFromYear').val();
+    var toYear = $('#filterValueToYear').val();
 
-    if (validateYear(year)) {
-        // check if it's simple year input
+    // simple year filter
+    if ($('#inputGroupYear').is(':visible') && validateYear(year)) {
         query = appendFilter(query, operator, 'year', year);
-    } else {
-        // else append year range
-        if (validateYear(fromYear) || validateYear(toYear)) {
-            query = appendFilter(query, operator, 'year', '[' + fromYear + ' TO ' + toYear + ']');
-        }
+    }
+
+    // year range filter
+    if ($('#inputGroupYearRange').is(':visible') && (validateYear(fromYear) || validateYear(toYear))) {
+        // set to * if no upper or lower limit set
+        fromYear = (fromYear !== '') ? fromYear : '*';
+        toYear = (toYear !== '') ? toYear : '*';
+        query = appendFilter(query, operator, 'year', '[' + fromYear + ' TO ' + toYear + ']');
     }
 
     const entrytype = $('#filterSelectionEntrytype').children().first().text();
     query = appendFilter(query, operator, 'entrytype', entrytype);
-
 
     const field = $('#filterSelectionField').children().first().text();
     const fieldValue = $('#filterValueField').val();
@@ -115,14 +120,22 @@ function appendFilter(query, operator, key, value) {
 }
 
 function appendFilterAnd(query, term, key) {
-    var keyIndex = query.indexOf(key + ':');
+    const keyIndex = query.indexOf(key + ':');
     if (keyIndex >= 0) {
-        // replace filter term on this key, since using AND
-        var nextSpaceIndex = query.indexOf(' ', keyIndex)
-        if (nextSpaceIndex < 0) {
-            nextSpaceIndex = query.length;
+        var oldTerm = '';
+        // check if range input
+        if (query.charAt(keyIndex + key.length + 1) === '[') {
+            const nextRightBracketIndex = query.indexOf(']', keyIndex);
+            oldTerm = query.substring(keyIndex, nextRightBracketIndex + 1);
+        } else {
+            // replace filter term on this key, since using AND
+            var nextSpaceIndex = query.indexOf(' ', keyIndex)
+            if (nextSpaceIndex < 0) {
+                nextSpaceIndex = query.length;
+            }
+            oldTerm = query.substring(keyIndex, nextSpaceIndex);
         }
-        var oldTerm = query.substr(keyIndex, nextSpaceIndex - keyIndex);
+
         return query.replace(oldTerm, term);
     }
 

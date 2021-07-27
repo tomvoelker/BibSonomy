@@ -81,7 +81,7 @@
             </c:if>
             <div class="form-group row">
                 <!-- search attribute field -->
-                <div id="inputGroupField" class="col-md-8">
+                <div class="col-md-8">
                     <div class="input-group">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -101,39 +101,8 @@
                     </div>
                 </div>
 
-                <!-- year -->
-                <div id="inputGroupYear" class="col-md-4">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <fmt:message key="search.extended.year"/>:
-                        </div>
-                        <input type="text" class="form-control" id="filterValueYear" placeholder="${yearPlaceholder}" aria-label="${yearLabel}"/>
-                        <span class="input-group-btn">
-                            <fmt:message var="yearRange" key="search.extended.range"/>
-                            <button class="btn btn-default" type="button" title="${yearRange}" onclick="expandYearRange()"><fontawesome:icon icon="plus"/></button>
-                        </span>
-                    </div>
-                </div>
-                <div id="inputGroupFromYear" class="col-md-3 hidden">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <fmt:message key="search.extended.from"/>:
-                        </div>
-                        <input type="text" class="form-control" id="filterValueFromYear" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
-                    </div>
-                </div>
-                <div id="inputGroupToYear" class="col-md-3 hidden">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <fmt:message key="search.extended.to"/>:
-                        </div>
-                        <input type="text" class="form-control" id="filterValueToYear" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
                 <!-- entrytypes -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="btn-group btn-block">
                         <button class="btn btn-default btn-block dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -149,6 +118,32 @@
                             </c:forEach>
                         </ul>
                     </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <!-- year -->
+                <div id="inputGroupYear" class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <fmt:message key="search.extended.year"/>
+                        </div>
+                        <input type="text" class="form-control" id="filterValueYear" placeholder="${yearPlaceholder}" aria-label="${yearLabel}"/>
+                    </div>
+                </div>
+
+                <div id="inputGroupYearRange" class="col-md-4 hidden">
+                    <div class="input-group">
+                        <div class="input-group-addon"><fmt:message key="search.extended.year.range"/></div>
+                        <fmt:message var="fromLabel" key="search.extended.from"/>
+                        <input type="text" class="form-control" id="filterValueFromYear" placeholder="${fromLabel}" aria-label="${fromLabel}" maxlength="4"/>
+                        <div class="input-group-addon" style="padding:6px;">–</div>
+                        <fmt:message var="toLabel" key="search.extended.to"/>
+                        <input type="text" class="form-control" id="filterValueToYear" placeholder="${toLabel}" aria-label="${toLabel}" maxlength="4"/>
+                    </div>
+                </div>
+
+                <div class="col-md-3" style="padding:8px 0;">
+                    <a id="toggleYearRange" href="#" onclick="toggleYearRange()"><fmt:message key="search.extended.year.range.placeholder"/></a>
                 </div>
 
                 <!-- and/or operator for search syntax -->
@@ -169,7 +164,7 @@
                 </div>
 
                 <!-- add filter button -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <button type="button" class="btn btn-primary btn-block" onclick="addFilter()">
                         <fmt:message key="search.extended.add"/>
                     </button>
