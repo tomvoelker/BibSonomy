@@ -201,7 +201,7 @@
 					<c:choose>
 						<c:when test="${not empty goldstandard['abstract']}">
 							<h3 class="pub-details">
-								<span class="fa fa-align-justify"><!-- keep me --></span>
+								<fontawesome:icon icon="align-justify" />
 								<c:out value=" "/>
 								<fmt:message key="publications.abstract.headline"/>
 							</h3>
@@ -213,7 +213,7 @@
 						</c:when>
 						<c:otherwise>
 							<h3 class="pub-details">
-								<span class="fa fa-align-justify"><!-- keep me --></span>
+								<fontawesome:icon icon="align-justify" />
 								<c:out value=" "/>
 								<fmt:message key="bibtex.details.meta"/>
 							</h3>
@@ -230,7 +230,7 @@
 					<!-- tags -->
 					<c:if test="${showFolkSonomyLinks}">
 						<h3 id="goldStandardPublicationTags">
-							<span class="fa fa-tag"><!-- keep me --></span>
+							<fontawesome:icon icon="tag" />
 							<c:out value=" "/>
 
 							<fmt:message key="publications.tags.headline"/>
@@ -262,7 +262,7 @@
 					<!-- users that have this resource in their collection -->
 					<c:if test="${showFolkSonomyLinks}">
 						<h3 id="goldStandardPublicationUsers">
-							<span class="fa fa-user"><!-- keep me --></span>
+							<fontawesome:icon icon="user" />
 							<c:out value=" "/>
 
 							<fmt:message key="goldstandard.resource.relatedUsers"/>
@@ -280,7 +280,8 @@
 						<c:set var="tabActive" value="false" />
 						<div id="related-publications">
 							<h3 id="goldStandardPublicationReferences">
-								<span class="fa fa-link"><!-- keep me --></span>
+								<fontawesome:icon icon="link" />
+
 								<c:out value=" "/>
 								<fmt:message key="publications.related.referencedAndCited" />
 							</h3>
@@ -396,7 +397,7 @@
 					<!-- Referenced and Referencing posts (Admin only) -->
 					<c:if test="${not hasRelatedPublication and isAdmin}">
 						<h3>
-							<span class="fa fa-link"><!-- keep me --></span>
+							<fontawesome:icon icon="link" />
 							<c:out value=" "/>
 							<fmt:message key="publications.related.referencedAndCited" />
 						</h3>
@@ -422,7 +423,7 @@
 							<c:set var="collapseExpanded" value="true" />
 						</c:if>
 						<h3>
-							<span class="fa fa-comments"><!-- keep me --></span>
+							<fontawesome:icon icon="comments" />
 							<c:out value=" "/>
 							<fmt:message key="publications.discussion.headline"/>
 
@@ -442,13 +443,12 @@
 
 				</div>
 
-
-				<!-- SIDEBAR -->
+				<!-- right side -->
 				<div class="col-md-3 hidden-xs hidden-sm sidebar">
 
 					<!-- Quick cite -->
 					<h3>
-						<span class="fa fa-quote-right"><!-- keep me --></span>
+						<fontawesome:icon icon="quote-right" />
 						<c:out value=" "/>
 						<fmt:message key="publications.citations.headline" />
 					</h3>
@@ -518,7 +518,7 @@
 
 					<!-- Search on... -->
 					<h3>
-						<span class="fa fa-search"><!-- keep me --></span>
+						<fontawesome:icon icon="search" />
 						<c:out value=" "/>
 						<fmt:message key="resources.searchExternal.dropDownLabel" />
 					</h3>

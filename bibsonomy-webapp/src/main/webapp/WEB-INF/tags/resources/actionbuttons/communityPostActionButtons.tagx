@@ -61,7 +61,7 @@
 					post="${post}"
 					resourceType="${resourceType}"
 					loginUser="${loginUser}"
-					buttonClasses="btn btn-danger"
+					buttonClasses="btn btn-default"
 					additionalText="${additionalText}"
 			/>
 		</c:if>

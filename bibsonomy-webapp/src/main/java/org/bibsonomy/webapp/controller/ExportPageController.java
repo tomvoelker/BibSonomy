@@ -86,11 +86,11 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 			}
 
 			// also load user custom layouts
-			cslFilesManager.loadUserLayouts(context.getLoginUser().getName())
+			this.cslFilesManager.loadUserLayouts(context.getLoginUser().getName())
 					.forEach(command::addCustomCslLayout);
 		}
 
-		command.setCslLayoutMap(cslFilesManager.getCslFiles());
+		command.setCslLayoutMap(this.cslFilesManager.getCslFiles());
 		command.addLayoutMap(this.layouts.getLayoutMap());
 
 		if (command.getFormatEmbedded()) {

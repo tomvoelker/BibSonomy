@@ -54,8 +54,6 @@
 	color: #777;
   }
 
-
-
   .content-header-metric-buttons {
 	margin-top: 22px;
 
@@ -206,6 +204,12 @@
 	  padding: 0;
 	  font-size: 100%;
 	}
+
+	li.myown {
+	  background-color: @light-grey;
+	  padding: 1px 5px 1px 5px;
+	  border-radius: 3px;
+	}
   }
 
   .taglist {
@@ -254,19 +258,21 @@
   #related-publications {
 	.tab-content {
 	  padding: 10px 0;
+
+	  ul {
+		padding-left: 0px;
+		list-style: none;
+	  }
+	  li {
+		margin-bottom: 10px;
+		padding: 0 10px;
+	  }
+
+	  li:hover {
+		background-color: #f5f5f5;
+	  }
 	}
 
-	.tab-content ul {
-	  padding-left: 0px;
-	  list-style: none;
-	}
-	.tab-content li {
-	  margin-bottom: 10px;
-	  padding: 0 10px;
-	}
-	.tab-content li:hover {
-	  background-color: #f5f5f5;
-	}
 	a.title {
 	  padding-right: 4px;
 	}
