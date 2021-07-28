@@ -47,7 +47,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	/** identifier for the custom layout */
 	public static final String CUSTOM_LAYOUT = "custom";
 
-w	/**
+	/**
 	 * Returns the requested layout. A layout may be user-specific, thus the name
 	 * of the login user must be given. 
 	 *  
