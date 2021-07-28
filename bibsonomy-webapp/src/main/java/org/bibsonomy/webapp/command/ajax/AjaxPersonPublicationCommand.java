@@ -37,6 +37,8 @@ public class AjaxPersonPublicationCommand extends PersonPageCommand {
 	private int page;
 	private int size;
 
+	private int pageSize;
+
 	public int getPage() {
 		return page;
 	}
@@ -51,5 +53,13 @@ public class AjaxPersonPublicationCommand extends PersonPageCommand {
 
 	public void setSize(int size) {
 		this.size = size;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 }

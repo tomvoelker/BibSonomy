@@ -773,7 +773,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 		// default start/end for post query
 		// FIXME: use ListPageCommand!!!
-		int end = postsPerPage;
+		int end = defaultStart + postsPerPage;
 		int start = defaultStart;
 
 		// override when given via GET param

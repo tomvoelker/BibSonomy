@@ -78,7 +78,7 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 			return Views.AJAX_ERRORS;
 		}
 
-		final int postsPerPage = command.getSize();
+		final int postsPerPage = command.getPageSize();
 		final int start = postsPerPage * command.getPage();
 		PersonPageController.fillCommandWithPersonResourceRelations(this.logic, command, person, start, postsPerPage);
 

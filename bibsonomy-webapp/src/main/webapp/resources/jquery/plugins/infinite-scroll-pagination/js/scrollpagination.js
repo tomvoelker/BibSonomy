@@ -76,7 +76,7 @@
                 if (data !== "") {
                     $(opts.loading).text(opts.loadingText);
                     html = data;
-                    dataCount = opts.data.pagesize * opts.data.page;
+                    dataCount = opts.data.pageSize * opts.data.page;
                     $(obj).append(html);
                     if (dataCount < opts.data.size) {
                         opts.data.page++;

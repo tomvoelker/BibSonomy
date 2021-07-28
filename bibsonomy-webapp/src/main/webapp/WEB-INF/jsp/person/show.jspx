@@ -392,8 +392,8 @@
 						'data': {
 							// These are the variables you can pass to the request
 							'page': 1, // Which page at the first time
-							'size': "${numberOfOtherPubs}", // Number of pages FIXME: controller should get the actual number after fixing the controller
-							'pagesize': "${command.personPostsPerPage}",
+							'size': 1000, // Number of pages FIXME: controller should get the actual number after fixing the controller
+							'pageSize': "${command.personPostsPerPage}",
 							'personPostsPerPage': "${command.personPostsPerPage}"
 						},
 						'scroller': $(window), // Who gonna scroll? default is the full window

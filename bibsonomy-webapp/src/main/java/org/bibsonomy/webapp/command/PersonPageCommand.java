@@ -139,7 +139,7 @@ public class PersonPageCommand extends BaseCommand {
 	private List<PhDRecommendation> phdAdvisorRecForPerson;
 	private String okHintKey;
 
-	private Integer start = 0;
+	private Integer start;
 	private Integer end;
 	private Integer prevStart;
 
