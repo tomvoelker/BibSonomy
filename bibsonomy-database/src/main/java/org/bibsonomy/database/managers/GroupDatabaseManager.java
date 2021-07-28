@@ -153,7 +153,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	/**
 	 * Returns pending groups.
 	 *
-	 * TODO (AD) This method handles two cases:
+	 * TODO: This method handles two cases:
 	 *   1) if a username is set, only pending groups for this user are retrieved.
 	 *   2) if username is set to null, all pending groups will be retrieved.
 	 *   => This should be refactored into two separate methods
@@ -447,7 +447,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		final List<Group> groupsForUser = this.queryForList("getGroupsForUser", userName, Group.class, session);
 
 		if (retrieveTransitiveGroups) {
-			final List<Integer> groupids = groupsForUser.stream().map(Group::getGroupId).collect(Collectors.toList());
+			final List<Integer> groupids = groupsForUser.stream()
+							.map(Group::getGroupId)
+							.collect(Collectors.toList());
 
 			if (present(groupids)) {
 				List<Group> subgroups = this.queryForList("getSubgroupsTransitively", groupids, Group.class, session);
@@ -548,7 +550,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		if (retrieveTransitiveSubgroups && present(groupIds)) {
 			List<Integer> subgroups = this.queryForList("getSubgroupIdsTransitively", groupIds, Integer.class, session);
 
-			for (Integer groupId: subgroups) {
+			for (final Integer groupId: subgroups) {
 				if (!groupIds.contains(groupId)) {
 					groupIds.add(groupId);
 				}
@@ -658,11 +660,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 
 			Group parent = group.getParent();
 			if (present(parent)) {
-				this.insert(
-						"insertParentRelations",
-						new InsertParentRelations(parent.getGroupId(), group.getGroupId()),
-						session
-				);
+				this.insert("insertParentRelations", new InsertParentRelations(parent.getGroupId(), group.getGroupId()), session);
 			}
 
 			session.commitTransaction();

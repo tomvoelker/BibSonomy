@@ -29,12 +29,10 @@ package org.bibsonomy.rest.client.queries.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.model.GroupMembership;
-import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;

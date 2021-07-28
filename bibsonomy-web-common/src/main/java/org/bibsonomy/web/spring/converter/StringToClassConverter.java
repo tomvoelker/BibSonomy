@@ -61,7 +61,6 @@ public class StringToClassConverter implements Converter<String, Class<?>> {
 			/*
 			 * check for classes in our model package and all sub packages
 			 */
-
 			final String normedClassName = text.substring(0, 1).toUpperCase() + text.substring(1);
 			for (final Package aPackage : this.modelPackages) {
 				final String name = aPackage.getName();

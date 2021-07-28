@@ -26,6 +26,13 @@
  */
 package org.bibsonomy.wiki.tags.shared.resource;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.model.Bookmark;
@@ -34,12 +41,6 @@ import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.wiki.tags.SharedTag;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * TODO: abstract resource tag

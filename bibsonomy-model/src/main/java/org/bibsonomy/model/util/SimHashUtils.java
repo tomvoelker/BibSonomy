@@ -1,6 +1,7 @@
 package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.HashID;
 
 /**

@@ -16,8 +16,6 @@ import org.bibsonomy.model.cris.GroupPersonLinkType;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.cris.ProjectPersonLinkType;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;

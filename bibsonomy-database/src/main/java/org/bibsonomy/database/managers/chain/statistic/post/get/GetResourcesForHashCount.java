@@ -67,7 +67,7 @@ public class GetResourcesForHashCount extends StatisticChainElement {
 				param.getGrouping() == GroupingEntity.ALL &&
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
-				nullOrEqual(param.getSortKey(), SortKey.NONE) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()));
 	}
 }

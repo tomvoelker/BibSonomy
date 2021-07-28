@@ -27,8 +27,6 @@
 
 package org.bibsonomy.database;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -51,8 +49,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public class InformationLogic implements InformationLogicInterface {
 
-    private static final Log log = LogFactory.getLog(InformationLogic.class);
-
     private User loginUser;
     private DBSessionFactory dbSessionFactory;
 
@@ -73,7 +69,7 @@ public class InformationLogic implements InformationLogicInterface {
      * @return
      */
     @Override
-    public User getUserDetails(String userName) {
+    public User getUserDetails(final String userName) {
         try (final DBSession session = this.openSession()) {
             /*
              * We don't use userName but user.getName() in the remaining part of
@@ -109,7 +105,7 @@ public class InformationLogic implements InformationLogicInterface {
      * @return
      */
     @Override
-    public Group getGroupDetails(String groupName, boolean pending) {
+    public Group getGroupDetails(final String groupName, final boolean pending) {
         try (final DBSession session = this.openSession()) {
 
             final Group myGroup = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, true, true, session);
@@ -132,14 +128,14 @@ public class InformationLogic implements InformationLogicInterface {
     /**
      * @param dbSessionFactory the dbSessionFactory to set
      */
-    public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+    public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
         this.dbSessionFactory = dbSessionFactory;
     }
 
     /**
      * @param userName set the username of the admin user
      */
-    public void setUserName(String userName) {
+    public void setUserName(final String userName) {
         // create admin user to have access admin-only information such as settings of users
         this.loginUser = new User(userName);
         this.loginUser.setRole(Role.ADMIN);

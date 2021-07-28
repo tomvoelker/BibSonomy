@@ -32,6 +32,11 @@ import org.bibsonomy.model.enums.PersonPostsStyle;
 
 import java.sql.SQLException;
 
+/**
+ * type handler callback for {@link PersonPostsStyle}
+ *
+ * @author kchoong
+ */
 public class PersonPostsStyleTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
     @Override

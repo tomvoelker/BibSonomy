@@ -19,18 +19,18 @@ public class GetPersonsByOrganizationCount extends PersonStatisticsChainElement 
 	 *
 	 * @param personDatabaseManager
 	 */
-	public GetPersonsByOrganizationCount(PersonDatabaseManager personDatabaseManager) {
+	public GetPersonsByOrganizationCount(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
 	@Override
-	protected Statistics handle(QueryAdapter<PersonQuery> param, DBSession session) {
+	protected Statistics handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
 		final Group organization = param.getQuery().getOrganization();
 		return this.personDatabaseManager.getPersonsByOrganizationCount(organization, session);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<PersonQuery> param) {
+	protected boolean canHandle(final QueryAdapter<PersonQuery> param) {
 		return present(param.getQuery().getOrganization());
 	}
 }

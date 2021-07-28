@@ -18,17 +18,17 @@ public class GetPersonsByFulltextSearchCount extends PersonStatisticsChainElemen
 	 *
 	 * @param personDatabaseManager
 	 */
-	public GetPersonsByFulltextSearchCount(PersonDatabaseManager personDatabaseManager) {
+	public GetPersonsByFulltextSearchCount(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
 	@Override
-	protected Statistics handle(QueryAdapter<PersonQuery> param, DBSession session) {
+	protected Statistics handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
 		return this.personDatabaseManager.getPersonsByFulltextSearchCount(param.getLoggedinUser(), param.getQuery());
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<PersonQuery> param) {
+	protected boolean canHandle(final QueryAdapter<PersonQuery> param) {
 		return true;
 	}
 }

@@ -9,8 +9,6 @@ import java.util.List;
 /**
  * adds search specific query fields to the post query
  *
- * FIXME: when moving the system tags in the model module this class can be removed by changing the type of tags
- *
  * @author dzo
  * @param <R>
  */

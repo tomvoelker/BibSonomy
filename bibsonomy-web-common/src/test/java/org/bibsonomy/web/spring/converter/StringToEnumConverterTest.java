@@ -26,12 +26,12 @@
  */
 package org.bibsonomy.web.spring.converter;
 
+import static org.junit.Assert.assertEquals;
+
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.UserRelation;
 import org.junit.Test;
 import org.springframework.core.convert.converter.Converter;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author dzo

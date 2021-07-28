@@ -68,14 +68,23 @@ public class GetPersonRelations {
 		this(personId, null, null);
 	}
 
+	/**
+	 * @return the personId
+	 */
 	public String getPersonId() {
 		return personId;
 	}
 
+	/**
+	 * @return the limit
+	 */
 	public Integer getLimit() {
 		return limit;
 	}
 
+	/**
+	 * @return the offset
+	 */
 	public Integer getOffset() {
 		return offset;
 	}

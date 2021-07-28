@@ -23,12 +23,12 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 	 *
 	 * @param personDatabaseManager an instance.
 	 */
-	public GetResourcePersonRelationsWithPosts(PersonDatabaseManager personDatabaseManager) {
+	public GetResourcePersonRelationsWithPosts(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
 	@Override
-	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
+	protected List<ResourcePersonRelation> handle(final QueryAdapter<ResourcePersonRelationQuery> adapter, final DBSession session) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 
 		final int offset = BasicQueryUtils.calcOffset(query);

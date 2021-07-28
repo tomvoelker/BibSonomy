@@ -29,7 +29,6 @@ package org.bibsonomy.database;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.util.BibTexReader;
 
 /**
  * Provides access to BibTeXReader and FileLogic for DBLogic usages.

@@ -449,7 +449,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void createdPost(final Post<BibTex> post, User loggedinUser, final DBSession session) {
+	protected void createdPost(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
 		super.createdPost(post, loggedinUser, session);
 		
 		this.handleExtraUrls(post, session);
@@ -470,7 +470,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void updatedPost(final Post<BibTex> post, User loggedinUser, final DBSession session) {
+	protected void updatedPost(final Post<BibTex> post, final User loggedinUser, final DBSession session) {
 		super.updatedPost(post, loggedinUser, session);
 		
 		this.handleDocuments(post, loggedinUser, session);

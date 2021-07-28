@@ -30,9 +30,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
  *
@@ -40,8 +37,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PersonMatch implements Serializable {
 	private static final long serialVersionUID = -470932185819510145L;
-
-	private static final Log log = LogFactory.getLog(PersonMatch.class);
 
 	public static final int MAX_NUMBER_OF_DENIES = 5;
 	

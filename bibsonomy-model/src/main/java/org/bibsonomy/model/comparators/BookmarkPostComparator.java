@@ -26,14 +26,14 @@
  */
 package org.bibsonomy.model.comparators;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-
-import java.util.Comparator;
-import java.util.List;
 
 
 /**

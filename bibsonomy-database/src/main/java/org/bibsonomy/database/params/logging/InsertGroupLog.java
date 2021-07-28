@@ -27,8 +27,10 @@ public class InsertGroupLog extends LoggingInfoTrait {
 		this.group = group;
 	}
 
+	/**
+	 * @return the group
+	 */
 	public Group getGroup() {
 		return group;
 	}
-
 }

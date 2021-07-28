@@ -29,6 +29,20 @@ package org.bibsonomy.database;
 import static org.bibsonomy.util.ValidationUtils.assertNotNull;
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.auth.util.SimpleAuthUtils;
@@ -171,20 +185,6 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.ValidationUtils;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * Database Implementation of the LogicInterface
@@ -842,7 +842,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ObjectMovedException, ObjectNotFoundException {
-		try (DBSession session = this.openSession()) {
+		try (final DBSession session = this.openSession()) {
 			return this.getPostDetails(resourceHash, userName, session);
 		}
 	}
@@ -3702,6 +3702,18 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
+	 *
+	 * @param personID
+	 * @return the match with given personID
+	 */
+	@Override
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
+		try (final DBSession session = this.openSession()) {
+			return personDBManager.getPhdAdvisorRecForPerson(personID, session);
+		}
+	}
+
+	/**
 	 * @param projectDatabaseManager the projectDatabaseManager to set
 	 */
 	public void setProjectDatabaseManager(ProjectDatabaseManager projectDatabaseManager) {
@@ -3748,17 +3760,5 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void setLoginUser(User loginUser) {
 		this.loginUser = loginUser;
-	}
-
-	/**
-	 *
-	 * @param personID
-	 * @return the match with given personID
-	 */
-	@Override
-	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
-		try (final DBSession session = this.openSession()) {
-			return personDBManager.getPhdAdvisorRecForPerson(personID, session);
-		}
 	}
 }

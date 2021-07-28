@@ -17,7 +17,6 @@ public class GetResourcePersonRelationsQuery extends AbstractQuery<List<Resource
 		this.personId = personId;
 	}
 
-
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
 		this.downloadedDocument = this.performGetRequest(this.getUrlRenderer().createUrlBuilderForResourcePersonRelations(this.personId).asString());

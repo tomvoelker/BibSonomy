@@ -9,6 +9,11 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 import java.io.StringWriter;
 
+/**
+ * query to update a {@link Person}
+ *
+ * @author pda
+ */
 public class UpdatePersonQuery extends AbstractQuery<String> {
 	private final Person person;
 	private final PersonUpdateOperation operation;

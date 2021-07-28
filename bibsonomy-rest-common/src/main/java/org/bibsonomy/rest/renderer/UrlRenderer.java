@@ -28,6 +28,9 @@ package org.bibsonomy.rest.renderer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
+import java.util.List;
+
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -48,9 +51,6 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * This renderer creates URLs according to BibSonomys REST URL scheme.

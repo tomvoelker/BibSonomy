@@ -22,7 +22,7 @@ public class ProjectMetaDataAdapter<E> implements Function<FieldDescriptor<Proje
 	}
 
 	@Override
-	public Set<E> apply(FieldDescriptor<Project, E> fieldDescriptor) {
+	public Set<E> apply(final FieldDescriptor<Project, E> fieldDescriptor) {
 		return this.projectSearch.getDistinctFieldValues(fieldDescriptor);
 	}
 }

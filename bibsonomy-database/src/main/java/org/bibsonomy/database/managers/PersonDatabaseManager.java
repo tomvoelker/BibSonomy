@@ -219,7 +219,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			person.setCrisLinks(crisLinks);
 		}
 
-		// TODO get additionalkeys
+		// TODO get additional keys
 		return person;
 	}
 
@@ -231,8 +231,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 * @return Person
 	 */
 	public Person getPersonByDnbId(final String dnbId, final DBSession session) {
-		Person person = this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
-		// TODO get additionalkeys
+		final Person person = this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
+		// TODO get additional keys
 		return person;
 	}
 
@@ -246,8 +246,8 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, keyName, keyValue);
-		Person person = this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
-		// TODO get additionalkeys
+		final Person person = this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
+		// TODO get additional keys
 		return person;
 	}
 
@@ -338,7 +338,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.delete("deleteAdditionalKeyForPerson", param, session);
 	}
 
-
 	private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
 		return this.queryForObject("getPersonNameById", personNameChangeId, PersonName.class, session);
 	}
@@ -393,7 +392,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 				return JobResult.buildFailure(Collections.singletonList(new MissingObjectErrorMessage(personId, "person")));
 			}
 			// TODO inform plugins about key updates?
-			List<AdditionalKey> keys = person.getAdditionalKeys();
+			final List<AdditionalKey> keys = person.getAdditionalKeys();
 			for (AdditionalKey key : keys) {
 				this.createAdditionalKey(personId, key.getKeyName(), key.getKeyValue(), session);
 			}
@@ -634,8 +633,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	}
 
 
-	//FIXME (AD) introduce distinct query parameter classes that are handed to ibatis instead of recycling the ResourcePersonRelation model --> affects all resource queries!
-
+	// FIXME introduce distinct query parameter classes that are handed to ibatis instead of recycling the ResourcePersonRelation model --> affects all resource queries!
 
 	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
@@ -668,7 +666,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 *
 	 * @return a list of relations.
 	 */
-	//TODO (AD) Q: Why do we have this query? This should always give a single entry list (see unique index)
 	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
 		final ResourcePersonRelation rpr = new ResourcePersonRelation();
 		final Post<BibTex> post = new Post<>();
@@ -703,7 +700,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 
 	/**
 	 * Gets all resource relations for a person.
-	 * TODO (AD) Q: Which fields in ResourcePersonRelation will be populated here?
 	 *
 	 * @param personId a person id.
 	 * @param limit the number of relations returned from the result set.

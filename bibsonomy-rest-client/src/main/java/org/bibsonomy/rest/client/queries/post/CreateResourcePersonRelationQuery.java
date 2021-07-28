@@ -35,6 +35,11 @@ import org.bibsonomy.util.StringUtils;
 
 import java.io.StringWriter;
 
+/**
+ * query to create a resource person relation
+ *
+ * @author pda
+ */
 public class CreateResourcePersonRelationQuery extends AbstractQuery<String> {
     private final ResourcePersonRelation resourcePersonRelation;
 

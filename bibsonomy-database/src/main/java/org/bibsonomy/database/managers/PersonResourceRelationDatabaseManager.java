@@ -17,14 +17,14 @@ public class PersonResourceRelationDatabaseManager extends AbstractDatabaseManag
 	private Chain<Statistics, ResourcePersonRelationQuery> statisticsChain;
 
 	@Override
-	public Statistics getStatistics(ResourcePersonRelationQuery query, User loggedinUser, DBSession session) {
+	public Statistics getStatistics(final ResourcePersonRelationQuery query, final User loggedinUser, final DBSession session) {
 		return this.statisticsChain.perform(query, session);
 	}
 
 	/**
 	 * @param statisticsChain the statisticsChain to set
 	 */
-	public void setStatisticsChain(Chain<Statistics, ResourcePersonRelationQuery> statisticsChain) {
+	public void setStatisticsChain(final Chain<Statistics, ResourcePersonRelationQuery> statisticsChain) {
 		this.statisticsChain = statisticsChain;
 	}
 }

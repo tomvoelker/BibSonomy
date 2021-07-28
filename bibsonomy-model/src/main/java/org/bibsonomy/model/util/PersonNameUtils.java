@@ -473,6 +473,4 @@ public class PersonNameUtils {
 		}
 		return positions;
 	}
-
-
 }

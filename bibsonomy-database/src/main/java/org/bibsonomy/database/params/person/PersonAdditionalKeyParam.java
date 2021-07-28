@@ -48,14 +48,23 @@ public class PersonAdditionalKeyParam {
 		this.keyValue = keyValue;
 	}
 
+	/**
+	 * @return the personId
+	 */
 	public String getPersonId() {
 		return personId;
 	}
 
+	/**
+	 * @return the keyName
+	 */
 	public String getKeyName() {
 		return keyName;
 	}
 
+	/**
+	 * @return the keyValue
+	 */
 	public String getKeyValue() {
 		return keyValue;
 	}

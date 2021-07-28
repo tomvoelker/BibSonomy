@@ -20,7 +20,7 @@ public abstract class PersonChainElement extends ChainElement<List<Person>, Quer
 	 * default constructor
 	 * @param personDatabaseManager
 	 */
-	public PersonChainElement(PersonDatabaseManager personDatabaseManager) {
+	public PersonChainElement(final PersonDatabaseManager personDatabaseManager) {
 		this.personDatabaseManager = personDatabaseManager;
 	}
 

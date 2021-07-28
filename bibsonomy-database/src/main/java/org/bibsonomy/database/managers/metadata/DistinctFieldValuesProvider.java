@@ -21,12 +21,12 @@ public class DistinctFieldValuesProvider<E> implements MetaDataProvider<Set<E>> 
 	/**
 	 * @param providers the providers
 	 */
-	public DistinctFieldValuesProvider(Map<Class<?>, Function<FieldDescriptor<?, E>, Set<E>>> providers) {
+	public DistinctFieldValuesProvider(final Map<Class<?>, Function<FieldDescriptor<?, E>, Set<E>>> providers) {
 		this.providers = providers;
 	}
 
 	@Override
-	public Set<E> getMetaData(MetaDataQuery<Set<E>> metaDataQuery) {
+	public Set<E> getMetaData(final MetaDataQuery<Set<E>> metaDataQuery) {
 		final DistinctFieldValuesQuery<?, E> query = (DistinctFieldValuesQuery<?, E>) metaDataQuery;
 		final Class<?> clazzForMetaData = query.getClazz();
 		final FieldDescriptor<?, E> fieldDescriptor = query.getFieldDescriptor();

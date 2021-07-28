@@ -17,7 +17,7 @@ public abstract class GroupChainElement extends ChainElement<List<Group>, QueryA
 
 	private final GroupDatabaseManager groupDB;
 
-	public GroupChainElement(GroupDatabaseManager groupDatabaseManager) {
+	public GroupChainElement(final GroupDatabaseManager groupDatabaseManager) {
 		this.groupDB = groupDatabaseManager;
 	}
 }

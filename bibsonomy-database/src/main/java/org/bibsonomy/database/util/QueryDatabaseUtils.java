@@ -3,7 +3,7 @@ package org.bibsonomy.database.util;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 
 /**
- * util mathods
+ * util methods
  *
  * @author dzo
  */

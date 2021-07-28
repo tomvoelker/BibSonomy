@@ -36,20 +36,5 @@ public enum SortOrder {
 	/** ascending order */
 	ASC,
 	/** descending order*/
-	DESC;
-
-	/**
-	 * Retrieve SortDirection by name
-	 *
-	 * @param name	"asc" or "desc"
-	 *
-	 * @return the corresponding SortDirection enum, returns DESC if no match found
-	 */
-	public static SortOrder getByName(String name) {
-		try {
-			return SortOrder.valueOf(name.toUpperCase());
-		} catch (NullPointerException | IllegalArgumentException np) {
-			return DESC;
-		}
-	}
+	DESC
 }

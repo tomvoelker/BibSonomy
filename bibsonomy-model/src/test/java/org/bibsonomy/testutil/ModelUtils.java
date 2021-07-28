@@ -366,7 +366,7 @@ public final class ModelUtils {
 	 * @return list of tags
 	 */
 	public static List<Tag> buildTagList(final int count, final String namePrefix, final int detailDepth) {
-		final List<Tag> tags = new ArrayList<Tag>(count);
+		final List<Tag> tags = new ArrayList<>(count);
 		for (int i = 1; i <= count; ++i) {
 			final Tag tag = new Tag();
 			CommonModelUtils.setBeanPropertiesOn(tag);

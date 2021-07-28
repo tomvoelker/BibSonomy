@@ -40,8 +40,6 @@ import java.util.Properties;
 import org.eclipse.jetty.server.Server;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogic;
-import org.bibsonomy.database.DBLogicApiInterfaceFactory;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;

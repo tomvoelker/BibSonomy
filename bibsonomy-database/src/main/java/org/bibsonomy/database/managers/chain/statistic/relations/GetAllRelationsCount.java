@@ -7,19 +7,24 @@ import org.bibsonomy.model.statistics.Statistics;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+/**
+ * chain element that returns the total count of all relations by person id
+ *
+ * @author dzo
+ */
 public class GetAllRelationsCount extends ResourcePersonRelationsStatisticsChainElement {
 
-    public GetAllRelationsCount(PersonDatabaseManager personDatabaseManager) {
+    public GetAllRelationsCount(final PersonDatabaseManager personDatabaseManager) {
         super(personDatabaseManager);
     }
 
     @Override
-    protected Statistics handle(ResourcePersonRelationQuery param, DBSession session) {
+    protected Statistics handle(final ResourcePersonRelationQuery param, final DBSession session) {
         return new Statistics(this.personDatabaseManager.countResourcePersonRelationsWithPosts(param.getPersonId(), session));
     }
 
     @Override
-    protected boolean canHandle(ResourcePersonRelationQuery param) {
+    protected boolean canHandle(final ResourcePersonRelationQuery param) {
         return present(param.getPersonId());
     }
 }

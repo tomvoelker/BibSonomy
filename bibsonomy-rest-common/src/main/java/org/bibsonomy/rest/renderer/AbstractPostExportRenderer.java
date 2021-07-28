@@ -26,10 +26,26 @@
  */
 package org.bibsonomy.rest.renderer;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -38,13 +54,6 @@ import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 /**
  * abstract renderer implementation for exporting posts

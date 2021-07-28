@@ -54,7 +54,7 @@ public class GetResourcesPopular<R extends Resource, P extends ResourceParam<R>>
 		return (param.getGrouping() == GroupingEntity.ALL &&
 				param.getDays() >= 0 &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.POPULAR) &&
+				nullOrEqual(param.getSortKey(), SortKey.POPULAR) &&
 				!present(param.getSearch()) &&
 				!present(param.getAuthor()) &&
 				!present(param.getTitle()));

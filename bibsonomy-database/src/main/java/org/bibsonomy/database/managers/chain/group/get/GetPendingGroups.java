@@ -21,18 +21,18 @@ import java.util.List;
  */
 public class GetPendingGroups extends GroupChainElement {
 
-	public GetPendingGroups(GroupDatabaseManager groupDatabaseManager) {
+	public GetPendingGroups(final GroupDatabaseManager groupDatabaseManager) {
 		super(groupDatabaseManager);
 	}
 
 	@Override
-	protected List<Group> handle(QueryAdapter<GroupQuery> param, DBSession session) {
+	protected List<Group> handle(final QueryAdapter<GroupQuery> param, DBSession session) {
 		final GroupQuery query = param.getQuery();
 		return this.groupDb.getPendingGroups(query.getUserName(), query.getStart(), query.getEnd(), session);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<GroupQuery> param) {
+	protected boolean canHandle(final QueryAdapter<GroupQuery> param) {
 		return param.getQuery().isPending();
 	}
 }

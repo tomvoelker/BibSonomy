@@ -31,7 +31,7 @@ public final class JobInformationUtils {
 	 * @param <T>
 	 * @return filters the list of information and returns only list items that are instances of the provided class
 	 */
-	public static <T extends JobInformation> List<T> extractInformationsOfType(List<JobInformation> list, Class<? extends JobInformation> jobInformationClass) {
+	public static <T extends JobInformation> List<T> extractInformationOfType(List<JobInformation> list, Class<? extends JobInformation> jobInformationClass) {
 		return (List<T>) list.stream().filter(jobInformationClass::isInstance).collect(Collectors.toList());
 	}
 }

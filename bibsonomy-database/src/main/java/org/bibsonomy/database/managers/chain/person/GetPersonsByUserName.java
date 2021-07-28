@@ -25,12 +25,12 @@ public class GetPersonsByUserName extends PersonChainElement {
 	 *
 	 * @param personDatabaseManager
 	 */
-	public GetPersonsByUserName(PersonDatabaseManager personDatabaseManager) {
+	public GetPersonsByUserName(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
 	@Override
-	protected List<Person> handle(QueryAdapter<PersonQuery> param, DBSession session) {
+	protected List<Person> handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
 		final Person personByUser = this.getPersonDatabaseManager().getPersonByUser(param.getQuery().getUserName(), session);
 		if (present(personByUser)) {
 			return Arrays.asList(personByUser);
@@ -40,7 +40,7 @@ public class GetPersonsByUserName extends PersonChainElement {
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<PersonQuery> param) {
+	protected boolean canHandle(final QueryAdapter<PersonQuery> param) {
 		return present(param.getQuery().getUserName());
 	}
 }

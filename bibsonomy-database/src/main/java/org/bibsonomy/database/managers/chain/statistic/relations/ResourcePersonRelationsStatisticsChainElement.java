@@ -5,11 +5,20 @@ import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.statistics.Statistics;
 
+/**
+ * abstract rsource relation stats chain element
+ *
+ * @author ada
+ */
 public abstract class ResourcePersonRelationsStatisticsChainElement extends ChainElement<Statistics, ResourcePersonRelationQuery> {
 
     protected PersonDatabaseManager personDatabaseManager;
 
-    public ResourcePersonRelationsStatisticsChainElement(PersonDatabaseManager personDatabaseManager) {
+    /**
+     * default constructor
+     * @param personDatabaseManager
+     */
+    public ResourcePersonRelationsStatisticsChainElement(final PersonDatabaseManager personDatabaseManager) {
         this.personDatabaseManager = personDatabaseManager;
     }
 }

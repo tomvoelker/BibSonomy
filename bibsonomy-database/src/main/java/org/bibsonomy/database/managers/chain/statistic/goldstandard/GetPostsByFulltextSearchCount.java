@@ -24,18 +24,18 @@ public class GetPostsByFulltextSearchCount<RR extends Resource, R extends Resour
 	 * default constructor
 	 * @param goldStandardDatabaseManager
 	 */
-	public GetPostsByFulltextSearchCount(GoldStandardDatabaseManager<RR, R, ?> goldStandardDatabaseManager) {
+	public GetPostsByFulltextSearchCount(final GoldStandardDatabaseManager<RR, R, ?> goldStandardDatabaseManager) {
 		this.goldStandardDatabaseManager = goldStandardDatabaseManager;
 	}
 
 	@Override
-	protected Statistics handle(QueryAdapter<PostQuery<R>> param, DBSession session) {
+	protected Statistics handle(final QueryAdapter<PostQuery<R>> param, final DBSession session) {
 		final PostSearchQuery<?> searchQuery = new PostSearchQuery<>(param.getQuery());
 		return this.goldStandardDatabaseManager.getPostsByFulltextCount(param.getLoggedinUser(), searchQuery);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<PostQuery<R>> param) {
+	protected boolean canHandle(final QueryAdapter<PostQuery<R>> param) {
 		return true;
 	}
 }

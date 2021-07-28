@@ -13,7 +13,7 @@ import java.util.Collections;
  */
 public class DummyPublicationReader implements BibTexReader {
 	@Override
-	public Collection<BibTex> read(ImportResource importRes) {
+	public Collection<BibTex> read(final ImportResource importRes) {
 		return Collections.emptyList();
 	}
 }

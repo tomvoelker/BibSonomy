@@ -26,17 +26,17 @@
  */
 package org.bibsonomy.model;
 
-import org.bibsonomy.model.cris.CRISLink;
-import org.bibsonomy.model.cris.Linkable;
-import org.bibsonomy.model.enums.Gender;
-import org.bibsonomy.model.extra.AdditionalKey;
-
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.bibsonomy.model.cris.CRISLink;
+import org.bibsonomy.model.cris.Linkable;
+import org.bibsonomy.model.enums.Gender;
+import org.bibsonomy.model.extra.AdditionalKey;
 
 /**
  * Entity class of a real person. Note that {@link User} and {@link Author} are

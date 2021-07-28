@@ -96,7 +96,7 @@ public class ServerFileLogic implements FileLogic {
 	}
 
 	@Override
-	public boolean hasProfilePicture(String username) {
+	public boolean hasProfilePicture(final String username) {
 		return this.profileFileLogic.hasProfilePicture(username);
 	}
 

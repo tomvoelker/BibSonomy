@@ -371,7 +371,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			return true;
 		} else {
 			// additionally check if the user is a member of one of the parent groups.
-			List<Integer> parentGroupIds = this.groupDb.getParentGroupsWhereUserIsMember(groupName, userName, session);
+			final List<Integer> parentGroupIds = this.groupDb.getParentGroupsWhereUserIsMember(groupName, userName, session);
 			return parentGroupIds.size() > 0;
 		}
 	}

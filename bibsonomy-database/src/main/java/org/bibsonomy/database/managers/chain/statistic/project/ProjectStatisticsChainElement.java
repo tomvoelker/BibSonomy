@@ -18,7 +18,7 @@ public abstract class ProjectStatisticsChainElement extends ChainElement<Statist
 	/**
 	 * @param projectDatabaseManager the projectDatabaseManager to set
 	 */
-	public void setProjectDatabaseManager(ProjectDatabaseManager projectDatabaseManager) {
+	public void setProjectDatabaseManager(final ProjectDatabaseManager projectDatabaseManager) {
 		this.projectDatabaseManager = projectDatabaseManager;
 	}
 }

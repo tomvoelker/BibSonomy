@@ -27,6 +27,11 @@
 
 package org.bibsonomy.model.extra;
 
+/**
+ * an map entry representation containing a key and a value
+ *
+ * @author kchoong
+ */
 public class AdditionalKey {
 
 	private String keyName;
@@ -41,18 +46,30 @@ public class AdditionalKey {
 		this.keyValue = keyValue;
 	}
 
+	/**
+	 * @return the keyName
+	 */
 	public String getKeyName() {
 		return keyName;
 	}
 
+	/**
+	 * @param keyName the keyName to set
+	 */
 	public void setKeyName(String keyName) {
 		this.keyName = keyName;
 	}
 
+	/**
+	 * @return the keyValue
+	 */
 	public String getKeyValue() {
 		return keyValue;
 	}
 
+	/**
+	 * @param keyValue the keyValue to set
+	 */
 	public void setKeyValue(String keyValue) {
 		this.keyValue = keyValue;
 	}

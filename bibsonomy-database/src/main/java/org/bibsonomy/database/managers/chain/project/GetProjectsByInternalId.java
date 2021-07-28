@@ -22,7 +22,7 @@ public class GetProjectsByInternalId extends ProjectChainElement {
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<ProjectQuery> param) {
+	protected boolean canHandle(final QueryAdapter<ProjectQuery> param) {
 		final ProjectQuery query = param.getQuery();
 		return present(query.getInternalId());
 	}

@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -41,8 +40,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.junit.Test;
-
-import java.awt.print.Book;
 
 /**
  * @author rja

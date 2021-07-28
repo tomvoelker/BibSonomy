@@ -11,7 +11,7 @@ import org.bibsonomy.model.cris.Linkable;
 public class GroupPersonLinkDirectionChecker implements LinkDirectionChecker {
 
 	@Override
-	public boolean requiresSwap(Linkable source, Linkable target) {
+	public boolean requiresSwap(final Linkable source, final Linkable target) {
 		if (checkType(source) && checkType(target)) {
 			if (source instanceof Person) {
 				return true;
@@ -21,7 +21,7 @@ public class GroupPersonLinkDirectionChecker implements LinkDirectionChecker {
 		return false;
 	}
 
-	private boolean checkType(Linkable linkable) {
+	private boolean checkType(final Linkable linkable) {
 		return linkable instanceof Group || linkable instanceof Person;
 	}
 }

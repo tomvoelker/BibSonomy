@@ -15,7 +15,7 @@ import org.bibsonomy.model.statistics.Statistics;
 public class GetProjectsByFulltextSearchCount extends ProjectStatisticsChainElement {
 
 	@Override
-	protected Statistics handle(final QueryAdapter<ProjectQuery> param, DBSession session) {
+	protected Statistics handle(final QueryAdapter<ProjectQuery> param, final DBSession session) {
 		return this.projectDatabaseManager.getProjectsByFulltextSearchCount(param.getLoggedinUser(), param.getQuery());
 	}
 

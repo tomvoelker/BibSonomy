@@ -4,8 +4,8 @@ import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 
 /**
  * metadata provider
+ *
  * @param <R>
- * @param <Q>
  */
 public interface MetaDataProvider<R> {
 

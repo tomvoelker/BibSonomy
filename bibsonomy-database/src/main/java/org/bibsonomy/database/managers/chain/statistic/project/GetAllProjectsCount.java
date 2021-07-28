@@ -11,12 +11,12 @@ import org.bibsonomy.model.statistics.Statistics;
 public class GetAllProjectsCount extends ProjectStatisticsChainElement {
 
 	@Override
-	protected Statistics handle(QueryAdapter<ProjectQuery> param, DBSession session) {
+	protected Statistics handle(final QueryAdapter<ProjectQuery> param, final DBSession session) {
 		return this.projectDatabaseManager.getAllProjectsCounts(param.getQuery().getProjectStatus(), session);
 	}
 
 	@Override
-	protected boolean canHandle(QueryAdapter<ProjectQuery> param) {
+	protected boolean canHandle(final QueryAdapter<ProjectQuery> param) {
 		return true;
 	}
 }

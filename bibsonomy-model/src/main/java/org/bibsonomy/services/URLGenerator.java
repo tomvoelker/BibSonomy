@@ -147,7 +147,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 	private static final String USER_RELATION = "handleUserRelation";
-        private static final String SCRAPER_INFO = "scraperinfo";
+  private static final String SCRAPER_INFO = "scraperinfo";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());

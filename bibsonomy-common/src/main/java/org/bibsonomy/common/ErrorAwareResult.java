@@ -22,7 +22,7 @@ public class ErrorAwareResult<R> {
 	 * @param result
 	 * @param errors
 	 */
-	public ErrorAwareResult(R result, List<ErrorMessage> errors) {
+	public ErrorAwareResult(final R result, final List<ErrorMessage> errors) {
 		this.result = result;
 		this.errors = errors;
 	}

@@ -20,7 +20,7 @@ public abstract class PersonStatisticsChainElement extends ChainElement<Statisti
 	 *
 	 * @param personDatabaseManager
 	 */
-	public PersonStatisticsChainElement(PersonDatabaseManager personDatabaseManager) {
+	public PersonStatisticsChainElement(final PersonDatabaseManager personDatabaseManager) {
 		this.personDatabaseManager = personDatabaseManager;
 	}
 }

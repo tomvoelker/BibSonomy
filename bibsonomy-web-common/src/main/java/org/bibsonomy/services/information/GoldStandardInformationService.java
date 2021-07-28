@@ -1,11 +1,11 @@
 package org.bibsonomy.services.information;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.antlr.stringtemplate.StringTemplate;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 
 /**
@@ -16,7 +16,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 public class GoldStandardInformationService extends MailInformationService{
 
     /**
-     * Current property to determine, if the given user should be notified about goldstandard changes
+     * Current property to determine, if the users should be notified about goldstandard changes
      */
     private boolean enabled;
 

@@ -331,7 +331,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return this.deletePost(resourceHash, loggedinUser, false, session);
 	}
 
-	protected boolean deletePost(final String resourceHash, User loggedinUser, final boolean update, final DBSession session) {
+	protected boolean deletePost(final String resourceHash, final User loggedinUser, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
@@ -489,13 +489,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 */
 	public void setChain(Chain<List<Post<R>>, QueryAdapter<PostQuery<R>>> chain) {
 		this.chain = chain;
-	}
-
-	/**
-	 * @return the statisticsChain
-	 */
-	public Chain<Statistics, QueryAdapter<PostQuery<R>>> getStatisticsChain() {
-		return statisticsChain;
 	}
 
 	/**

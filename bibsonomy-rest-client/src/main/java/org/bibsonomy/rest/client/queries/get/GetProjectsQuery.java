@@ -11,6 +11,11 @@ import org.bibsonomy.util.ValidationUtils;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * query for getting a list of projects
+ *
+ * @author pda
+ */
 public class GetProjectsQuery extends AbstractQuery<List<Project>> {
 	private ProjectQuery query;
 

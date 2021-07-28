@@ -26,12 +26,7 @@
  */
 package org.bibsonomy.database.systemstags;
 
-import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
-import org.bibsonomy.database.systemstags.executable.ForFriendTag;
-import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
-import org.bibsonomy.database.systemstags.search.SearchSystemTag;
-import org.bibsonomy.model.SystemTag;
-import org.bibsonomy.model.Tag;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +34,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
+import org.bibsonomy.database.systemstags.executable.ForFriendTag;
+import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
+import org.bibsonomy.database.systemstags.search.SearchSystemTag;
+import org.bibsonomy.model.SystemTag;
+import org.bibsonomy.model.Tag;
 
 /**
  * Helper class to encapsulate methods to create and work with systemTags

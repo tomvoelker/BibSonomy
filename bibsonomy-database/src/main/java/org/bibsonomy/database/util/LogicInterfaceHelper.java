@@ -36,7 +36,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.params.BibTexParam;
@@ -128,11 +127,6 @@ public class LogicInterfaceHelper {
 
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
 				param.setSimHash(hashAndId.getHashID());
-
-				// FIXME: why is the hash length here required
-				if (hash.length() == 33) {
-					param.setSortKey(sortKey);
-				}
 			}
 		}
 

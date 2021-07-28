@@ -29,7 +29,6 @@ package org.bibsonomy.rest.client.queries.get;
 import org.apache.http.HttpStatus;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -39,9 +38,9 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import java.util.List;
 
 /**
- * Use this Class to receive an ordered list of all users bibsonomy has.
+ * get the user with the provided saml id
  * 
- * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @author mho
  */
 public final class GetUserBySamlUserIdQuery extends AbstractQuery<String> {
 

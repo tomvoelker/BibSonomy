@@ -49,9 +49,13 @@ public class GetUsersByGroup extends UserChainElement {
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
 		final List<User> userList = new LinkedList<>();
-		Group group = this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session);
+		final Group group = this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session);
+
 		// return empty user list if organization is requested and found group is not an organization
-		if (GroupingEntity.ORGANIZATION.equals(param.getGrouping()) && !group.isOrganization()) return userList;
+		if (GroupingEntity.ORGANIZATION.equals(param.getGrouping()) && !group.isOrganization()) {
+			return userList;
+		}
+
 		for (final GroupMembership ms : group.getMemberships()) {
 			userList.add(ms.getUser());
 		}
