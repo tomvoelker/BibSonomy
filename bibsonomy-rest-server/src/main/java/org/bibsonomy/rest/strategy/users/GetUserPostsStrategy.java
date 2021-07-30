@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy.users;
 
+import java.util.List;
+
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
@@ -35,8 +37,6 @@ import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.posts.AbstractListOfPostsStrategy;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
-
-import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>

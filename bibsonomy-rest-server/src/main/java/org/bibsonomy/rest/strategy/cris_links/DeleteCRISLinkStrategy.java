@@ -8,6 +8,10 @@ import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.ValidationUtils;
 
+/**
+ * TODO: allow deletion of arbitrary cris links
+ * @author pda
+ */
 public class DeleteCRISLinkStrategy extends AbstractDeleteStrategy {
 	private final String sourceId;
 	private final String targetId;

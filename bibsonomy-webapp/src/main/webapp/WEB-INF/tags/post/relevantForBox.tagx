@@ -25,7 +25,7 @@
 		</label>
 	
 		<div class="col-sm-9">
-			<!-- filter box for "other" groups -->
+			<!-- select box for "other" groups -->
 	    	<form:select cssClass="form-control" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
 	      		<fmt:message var="pleaseselect" key="form.input.select"/>
 				<form:option value="" label="${pleaseselect}"/>

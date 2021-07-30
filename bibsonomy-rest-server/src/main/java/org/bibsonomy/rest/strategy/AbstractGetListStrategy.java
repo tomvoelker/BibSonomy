@@ -26,6 +26,12 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.ByteArrayOutputStream;
+import java.io.Writer;
+import java.util.List;
+
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -34,12 +40,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Writer;
-import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Jens Illig

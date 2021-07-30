@@ -50,12 +50,12 @@ public class PersonEntityInformationProvider extends OneToManyEntityInformationP
 	}
 
 	@Override
-	public int getContentId(Person person) {
+	public int getContentId(final Person person) {
 		return person.getPersonChangeId();
 	}
 
 	@Override
-	public String getEntityId(Person entity) {
+	public String getEntityId(final Person entity) {
 		return entity.getPersonId();
 	}
 
@@ -65,7 +65,7 @@ public class PersonEntityInformationProvider extends OneToManyEntityInformationP
 	}
 
 	@Override
-	public String getRouting(Person entity) {
+	public String getRouting(final Person entity) {
 		return entity.getPersonId();
 	}
 }

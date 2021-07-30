@@ -1,23 +1,28 @@
 package org.bibsonomy.rest.strategy.projects;
 
+import java.io.Writer;
+
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.ValidationUtils;
 
-import java.io.Writer;
-
+/**
+ * strategy to update a project
+ *
+ * @author pda
+ */
 public class UpdateProjectStrategy extends AbstractUpdateStrategy {
 	private final String externalId;
 
-	public UpdateProjectStrategy(Context context, String externalId) {
+	public UpdateProjectStrategy(final Context context, final String externalId) {
 		super(context);
 		ValidationUtils.requirePresent(externalId, "No externalId given.");
 		this.externalId = externalId;
 	}
 
 	@Override
-	protected void render(Writer writer, String resourceID) {
+	protected void render(final Writer writer, final String resourceID) {
 		this.getRenderer().serializeProjectId(writer,resourceID);
 	}
 

@@ -19,13 +19,19 @@ import java.io.ByteArrayOutputStream;
 public class GetProjectStrategy extends Strategy {
     private final String projectId;
 
-    public GetProjectStrategy(Context context, String projectId) {
+    /**
+     * constructor
+     *
+     * @param context
+     * @param projectId
+     */
+    public GetProjectStrategy(final Context context, final String projectId) {
         super(context);
         this.projectId = projectId;
     }
 
     @Override
-    public void perform(ByteArrayOutputStream outStream)
+    public void perform(final ByteArrayOutputStream outStream)
             throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
         final Project project = this.getLogic().getProjectDetails(projectId);
         if (project == null) {

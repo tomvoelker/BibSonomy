@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
@@ -15,7 +14,13 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
-
+/**
+ * the controler deletes projects
+ *
+ * handles requests form TODO
+ *
+ * @author tko
+ */
 public class DeleteProjectController implements MinimalisticController<DeleteProjectCommand> {
 	private LogicInterface logic;
 	private URLGenerator urlGenerator;
@@ -26,7 +31,7 @@ public class DeleteProjectController implements MinimalisticController<DeletePro
 	}
 
 	@Override
-	public View workOn(DeleteProjectCommand command) {
+	public View workOn(final DeleteProjectCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final String requestedProjectId = command.getProjectIdToDelete();
 
@@ -63,20 +68,6 @@ public class DeleteProjectController implements MinimalisticController<DeletePro
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
-	}
-
-	/**
-	 * @return
-	 */
-	public URLGenerator getUrlGenerator() {
-		return urlGenerator;
-	}
-
-	/**
-	 * @return
-	 */
-	public LogicInterface getLogic() {
-		return logic;
 	}
 
 	/**

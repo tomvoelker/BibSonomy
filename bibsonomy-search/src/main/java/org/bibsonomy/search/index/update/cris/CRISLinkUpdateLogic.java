@@ -26,7 +26,7 @@ public class CRISLinkUpdateLogic extends AbstractDatabaseManagerWithSessionManag
 	 * @param sourceType
 	 * @param targetType
 	 */
-	public CRISLinkUpdateLogic(CRISEntityType sourceType, CRISEntityType targetType) {
+	public CRISLinkUpdateLogic(final CRISEntityType sourceType, final CRISEntityType targetType) {
 		this.sourceType = sourceType;
 		this.targetType = targetType;
 	}

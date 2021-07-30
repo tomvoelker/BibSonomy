@@ -22,7 +22,7 @@
 							<label class="col-sm-3 control-label"><c:out value="${tagset.setName}"/></label>
 							<div class="col-sm-5">
 								<form:select path="" size="1" multiple="false" cssClass="form-control" tabindex="2">
-									<!-- show "please filter" hint -->
+									<!-- show "please select" hint -->
 									<fmt:message var="pleaseselect" key="form.input.select"/>
 									<form:option value="" label="${pleaseselect}"/>
 									<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="return copyOptionTags(this)"/>

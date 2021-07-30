@@ -4,8 +4,6 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.webapp.command.EntitySearchAndFilterCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 
-import java.util.List;
-
 /**
  * command for the person overview page
  *

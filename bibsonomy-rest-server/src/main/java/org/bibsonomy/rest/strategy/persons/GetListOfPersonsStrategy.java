@@ -21,13 +21,13 @@ public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Perso
 	/**
 	 * @param context
 	 */
-	public GetListOfPersonsStrategy(Context context) {
+	public GetListOfPersonsStrategy(final Context context) {
 		super(context);
 		this.userName = context.getStringAttribute(GroupingEntity.USER.toString().toLowerCase(), null);
 	}
 
 	@Override
-	protected void render(Writer writer, List<Person> persons) {
+	protected void render(final Writer writer, final List<Person> persons) {
 		this.getRenderer().serializePersons(writer, persons, this.getView());
 	}
 

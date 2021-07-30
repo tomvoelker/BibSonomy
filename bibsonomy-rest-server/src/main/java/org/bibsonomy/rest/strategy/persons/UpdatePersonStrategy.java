@@ -35,7 +35,7 @@ public class UpdatePersonStrategy extends AbstractUpdateStrategy {
 	}
 
 	@Override
-	protected void render(Writer writer, String personID) {
+	protected void render(final Writer writer, final String personID) {
 		this.getRenderer().serializePersonId(writer, personID);
 	}
 

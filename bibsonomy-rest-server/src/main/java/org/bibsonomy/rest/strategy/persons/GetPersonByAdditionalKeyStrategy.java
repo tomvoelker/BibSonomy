@@ -54,7 +54,7 @@ public class GetPersonByAdditionalKeyStrategy extends Strategy {
 	/**
 	 * @param context
 	 */
-	public GetPersonByAdditionalKeyStrategy(Context context, String keyName, String keyValue) {
+	public GetPersonByAdditionalKeyStrategy(final Context context, final String keyName, final String keyValue) {
 		super(context);
 		this.keyName = keyName;
 		this.keyValue = keyValue;

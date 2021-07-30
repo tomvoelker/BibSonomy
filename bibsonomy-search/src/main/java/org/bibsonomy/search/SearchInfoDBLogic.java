@@ -63,11 +63,8 @@ public class SearchInfoDBLogic extends AbstractDatabaseManagerWithSessionManagem
 	 */
 	@Override
 	public List<String> getGroupMembersByGroupName(final String groupName) {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.queryForList("getGroupMembersByGroupName", groupName, String.class, session); //TODO (AD) query for parent memberships
-		} finally {
-			session.close();
 		}
 	}
 

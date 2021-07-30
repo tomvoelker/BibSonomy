@@ -33,7 +33,6 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
-import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;

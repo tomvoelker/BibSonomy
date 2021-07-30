@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy.tags;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Writer;
 import java.util.List;
 
@@ -39,8 +41,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>

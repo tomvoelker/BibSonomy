@@ -94,6 +94,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 
 		return result;
 	}
+
 	private FileContentExtractorService fileContentExtractorService;
 
 	/**

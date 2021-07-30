@@ -26,6 +26,10 @@
  */
 package org.bibsonomy.rest.strategy.groups;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Reader;
+import java.util.Collection;
+
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
@@ -33,10 +37,6 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Reader;
-import java.util.Collection;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>

@@ -11,7 +11,7 @@ import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import java.util.Date;
 
 /**
- * implementation to get dbstate for {@link org.bibsonomy.model.Person} index updates
+ * implementation to get the sync target for {@link org.bibsonomy.model.Person} index updates
  *
  * @author dzo
  */

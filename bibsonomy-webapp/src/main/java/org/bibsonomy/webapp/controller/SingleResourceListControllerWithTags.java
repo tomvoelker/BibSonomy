@@ -26,15 +26,15 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import java.util.Date;
+import java.util.List;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Convenience class to provide the functionality of setting related tags

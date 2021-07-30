@@ -21,7 +21,7 @@ public abstract class OneToManyEntityInformationProvider<T, M> extends EntityInf
 	 * @param converter
 	 * @param mappingBuilder
 	 */
-	protected OneToManyEntityInformationProvider(Converter<T, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder, final EntityInformationProvider<M> toManyEntityInformationProvider) {
+	protected OneToManyEntityInformationProvider(final Converter<T, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder, final EntityInformationProvider<M> toManyEntityInformationProvider) {
 		super(converter, mappingBuilder);
 
 		this.toManyEntityInformationProvider = toManyEntityInformationProvider;

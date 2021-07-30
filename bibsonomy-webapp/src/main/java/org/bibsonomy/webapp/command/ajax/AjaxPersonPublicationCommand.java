@@ -39,26 +39,44 @@ public class AjaxPersonPublicationCommand extends PersonPageCommand {
 
 	private int pageSize;
 
+	/**
+	 * @return the page
+	 */
 	public int getPage() {
 		return page;
 	}
 
+	/**
+	 * @param page the page to set
+	 */
 	public void setPage(int page) {
 		this.page = page;
 	}
 
+	/**
+	 * @return the size
+	 */
 	public int getSize() {
 		return size;
 	}
 
+	/**
+	 * @param size the size to set
+	 */
 	public void setSize(int size) {
 		this.size = size;
 	}
 
+	/**
+	 * @return the pageSize
+	 */
 	public int getPageSize() {
 		return pageSize;
 	}
 
+	/**
+	 * @param pageSize the pageSize to set
+	 */
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}

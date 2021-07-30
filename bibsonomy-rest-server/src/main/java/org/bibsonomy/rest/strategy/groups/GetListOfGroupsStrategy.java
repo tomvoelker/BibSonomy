@@ -47,7 +47,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	 */
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
-		internalId = context.getStringAttribute("internalId", null);
+		this.internalId = context.getStringAttribute("internalId", null);
 	}
 
 	@Override
@@ -63,8 +63,11 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	@Override
 	protected List<Group> getList() {
 		final ViewModel view = this.getView();
-		final GroupQuery groupQuery = GroupQuery.builder().start(view.getStartValue()).end(view.getEndValue()).
-						pending(false).externalId(this.internalId).build();
+		final GroupQuery groupQuery = GroupQuery.builder()
+						.start(view.getStartValue())
+						.end(view.getEndValue())
+						.pending(false)
+						.externalId(this.internalId).build();
 		return this.getLogic().getGroups(groupQuery);
 	}
 

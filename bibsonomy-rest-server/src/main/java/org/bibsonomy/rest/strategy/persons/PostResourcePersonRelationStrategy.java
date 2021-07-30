@@ -48,13 +48,18 @@ public class PostResourcePersonRelationStrategy extends AbstractCreateStrategy {
 
 	private final String personId;
 
-	public PostResourcePersonRelationStrategy(Context context, String personId) {
+	/**
+	 * default construtor
+	 * @param context
+	 * @param personId
+	 */
+	public PostResourcePersonRelationStrategy(final Context context, final String personId) {
 		super(context);
 		this.personId = personId;
 	}
 
 	@Override
-	protected void render(Writer writer, String relationId) {
+	protected void render(final Writer writer, final String relationId) {
 		this.getRenderer().serializeResourceHash(writer, relationId);
 	}
 

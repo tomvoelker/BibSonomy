@@ -11,6 +11,9 @@ import org.bibsonomy.rest.strategy.Context;
 import java.io.Writer;
 import java.util.stream.Collectors;
 
+/**
+ * @author pda
+ */
 public class PutCRISLinkStrategy extends AbstractUpdateStrategy {
 	/**
 	 * @param context

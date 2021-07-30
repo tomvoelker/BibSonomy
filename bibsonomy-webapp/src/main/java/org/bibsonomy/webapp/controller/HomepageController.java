@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import java.util.Arrays;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SortKey;
@@ -40,8 +42,6 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import java.util.Arrays;
 
 /**
  * Controller for Homepage

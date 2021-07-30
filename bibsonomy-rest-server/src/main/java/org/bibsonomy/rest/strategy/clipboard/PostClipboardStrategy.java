@@ -77,13 +77,13 @@ public class PostClipboardStrategy extends Strategy {
 	 * @return
 	 */
 	protected List<Post<? extends Resource>> createPost(final String resourceHash, final String userName) {
-		final Post<BibTex> post = new Post<BibTex>();
+		final Post<BibTex> post = new Post<>();
 		final BibTex publication = new BibTex();
 
 		publication.setIntraHash(resourceHash);
 		post.setResource(publication);
 		post.setUser(new User(userName));
-		return Collections.<Post<? extends Resource>> singletonList(post);
+		return Collections.singletonList(post);
 	}
 
 }

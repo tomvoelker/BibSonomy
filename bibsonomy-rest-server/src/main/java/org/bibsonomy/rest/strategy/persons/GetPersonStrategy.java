@@ -55,7 +55,7 @@ public class GetPersonStrategy extends Strategy {
 	 * @param context
 	 * @param personId
 	 */
-	public GetPersonStrategy(Context context, String personId) {
+	public GetPersonStrategy(final Context context, final String personId) {
 		super(context);
 		this.personId = personId;
 	}

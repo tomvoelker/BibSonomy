@@ -21,7 +21,7 @@ public class PersonResourceRelationEntityInformationProvider extends EntityInfor
 	 *
 	 * @param converter the converter to use
 	 */
-	public PersonResourceRelationEntityInformationProvider(Converter<ResourcePersonRelation, Map<String, Object>, ?> converter) {
+	public PersonResourceRelationEntityInformationProvider(final Converter<ResourcePersonRelation, Map<String, Object>, ?> converter) {
 		// the mapping is already created by the parent entity relation
 		super(converter, null);
 	}
@@ -37,7 +37,7 @@ public class PersonResourceRelationEntityInformationProvider extends EntityInfor
 	}
 
 	@Override
-	public String getEntityId(ResourcePersonRelation entity) {
+	public String getEntityId(final ResourcePersonRelation entity) {
 		return String.valueOf(entity.getPersonRelChangeId());
 	}
 
@@ -56,7 +56,7 @@ public class PersonResourceRelationEntityInformationProvider extends EntityInfor
 	 * @return
 	 */
 	@Override
-	public String getRouting(ResourcePersonRelation entity) {
+	public String getRouting(final ResourcePersonRelation entity) {
 		return entity.getPerson().getPersonId();
 	}
 }

@@ -69,8 +69,6 @@ public class PersonPageCommand extends BaseCommand {
 
 	private String index;
 
-
-	private String pubToDelete;
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
 	@Deprecated // TODO: bind person directly
@@ -137,7 +135,6 @@ public class PersonPageCommand extends BaseCommand {
 	
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
 	private List<PhDRecommendation> phdAdvisorRecForPerson;
-	private String okHintKey;
 
 	private Integer start;
 	private Integer end;

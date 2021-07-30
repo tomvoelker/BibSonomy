@@ -124,9 +124,7 @@ public final class RestServlet extends HttpServlet {
 	// document path)
 	private final Map<String, String> additionalInfos = new HashMap<>();
 
-	/**
-	 * TODO
-	 */
+	/** the admin logic */
 	private LogicInterface adminLogic;
 
 	/**
@@ -214,14 +212,6 @@ public final class RestServlet extends HttpServlet {
 		} catch (final AuthenticationException e) {
 			this.handleAuthenticationException(request, response, e);
 		}
-	}
-
-	public LogicInterface getAdminLogic() {
-		return adminLogic;
-	}
-
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
 	}
 
 	/**
@@ -495,5 +485,12 @@ public final class RestServlet extends HttpServlet {
 	 */
 	public void setAuthenticationHandlers(final List<AuthenticationHandler<?>> authenticationHandlers) {
 		this.authenticationHandlers = authenticationHandlers;
+	}
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 }

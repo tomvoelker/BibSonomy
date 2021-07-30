@@ -738,6 +738,6 @@ public class TestDBLogic extends AbstractLogicInterface {
 
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
-		return new ArrayList<>(); //FIXME (AD) provide stubs
+		return new ArrayList<>();
 	}
 }

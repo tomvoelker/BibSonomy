@@ -44,8 +44,6 @@ import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 public class UpdateUserPersonSettingsController extends SettingsPageController {
 	private static final Log log = LogFactory.getLog(UpdateUserPersonSettingsController.class);
 
-	private int maxQuerySize;
-
 	@Override
 	public View workOn(final SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
@@ -86,13 +84,6 @@ public class UpdateUserPersonSettingsController extends SettingsPageController {
 		userSettings.setPersonPostsLayout(commandSettings.getPersonPostsLayout());
 		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("person settings of user " + updatedUser + " has been changed successfully");
-	}
-
-	/**
-	 * @param maxQuerySize the maxQuerySize to set
-	 */
-	public void setMaxQuerySize(int maxQuerySize) {
-		this.maxQuerySize = maxQuerySize;
 	}
 
 }

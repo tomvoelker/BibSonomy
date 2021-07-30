@@ -77,28 +77,45 @@ public class OrganizationPageCommand extends BaseCommand {
 		return publications;
 	}
 
+	/**
+	 * @return the sortPageOrder
+	 */
 	public String getSortPageOrder() {
 		return sortPageOrder;
 	}
 
+	/**
+	 * @param sortPageOrder the sortPageOrder to set
+	 */
 	public void setSortPageOrder(String sortPageOrder) {
 		this.sortPageOrder = sortPageOrder;
 	}
 
+	/**
+	 * @return the sortPage
+	 */
 	public String getSortPage() {
 		return sortPage;
 	}
 
+	/**
+	 * @param sortPage the sortPage to set
+	 */
 	public void setSortPage(String sortPage) {
 		this.sortPage = sortPage;
 	}
 
+	/**
+	 * @return the persons
+	 */
 	public ListCommand<Person> getPersons() {
 		return persons;
 	}
 
+	/**
+	 * @return the projects
+	 */
 	public ListCommand<Project> getProjects() {
 		return projects;
 	}
-
 }

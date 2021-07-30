@@ -22,13 +22,13 @@ public class CRISLinksHandler implements ContextHandler {
 		switch (numTokensLeft) {
 			// /cris_links
 			case 0:
-				return createProjectStrategy(context, httpMethod);
+				return createCRISLinkStrategy(context, httpMethod);
 			default:
 				throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax");
 		}
 	}
 
-	private Strategy createProjectStrategy(Context context, HttpMethod httpMethod) {
+	private Strategy createCRISLinkStrategy(Context context, HttpMethod httpMethod) {
 		switch (httpMethod) {
 			case POST:
 				return new PostCRISLinkStrategy(context);

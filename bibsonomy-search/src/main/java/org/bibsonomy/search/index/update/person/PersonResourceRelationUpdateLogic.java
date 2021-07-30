@@ -1,14 +1,14 @@
 package org.bibsonomy.search.index.update.person;
 
+import java.util.Date;
+import java.util.List;
+
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.index.utils.SearchParamUtils;
 import org.bibsonomy.search.management.database.params.SearchParam;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * implementation to get the new person resource relations and the deleted ones

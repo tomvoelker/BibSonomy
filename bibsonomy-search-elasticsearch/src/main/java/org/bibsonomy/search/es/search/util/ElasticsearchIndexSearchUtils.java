@@ -18,7 +18,6 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;

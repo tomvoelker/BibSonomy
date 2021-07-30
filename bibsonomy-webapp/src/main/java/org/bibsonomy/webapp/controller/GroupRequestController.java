@@ -157,7 +157,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		groupRequest.setUserName(groupAdmin.getName());
 		final boolean activateGroup = loggedInUserIsAdmin || GroupCreationMode.AUTOMATIC.equals(this.groupCreationMode);
 		if (activateGroup) {
-			groupRequest.setReason("no reasons neccessary");
+			groupRequest.setReason("no reasons necessary");
 		}
 		
 		this.logic.createGroup(requestedGroup);

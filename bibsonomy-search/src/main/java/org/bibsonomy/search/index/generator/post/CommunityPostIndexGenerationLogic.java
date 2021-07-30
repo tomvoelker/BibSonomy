@@ -26,7 +26,7 @@ public class CommunityPostIndexGenerationLogic<R extends Resource> extends Resou
 	 *
 	 * @param resourceClass the resource class
 	 */
-	public CommunityPostIndexGenerationLogic(Class<R> resourceClass) {
+	public CommunityPostIndexGenerationLogic(final Class<R> resourceClass) {
 		super(resourceClass);
 	}
 

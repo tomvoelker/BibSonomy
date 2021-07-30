@@ -6,7 +6,7 @@ package org.bibsonomy.search.es.client;
  * @author dzo
  */
 public abstract class AbstractData {
-	/*+ the routing information for this data */
+	/** the routing information for this data */
 	private String routing;
 
 	/** the type information for this data */

@@ -34,16 +34,21 @@ import java.io.Writer;
 
 /**
  * strategy to create a new person
+ *
  * @author pda
  */
 public class PostPersonStrategy extends AbstractCreateStrategy {
 
-	public PostPersonStrategy(Context context) {
+	/**
+	 * default constructor
+	 * @param context
+	 */
+	public PostPersonStrategy(final Context context) {
 		super(context);
 	}
 
 	@Override
-	protected void render(Writer writer, String personID) {
+	protected void render(final Writer writer, final String personID) {
 		this.getRenderer().serializePersonId(writer, personID);
 	}
 

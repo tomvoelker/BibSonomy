@@ -69,11 +69,8 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 		param.setLastContentId(lastContentId);
 		param.setLimit(max);
 
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.queryForSearchPosts("get" + this.getResourceName() + "ForIndex", param, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -121,15 +118,12 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	 * @return
 	 */
 	private Date getLastPreditionDate() {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			final Date date = this.queryForObject("getLastPredictionDate", Date.class, session);
 			if (date == null) {
 				return new Date();
 			}
 			return date;
-		} finally {
-			session.close();
 		}
 	}
 
@@ -137,11 +131,8 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	 * @return
 	 */
 	private Date getLastDocumentDate() {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.queryForObject("getLastDocumentDate", Date.class, session);
-		} finally {
-			session.close();
 		}
 	}
 
@@ -149,33 +140,24 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	 * @return the last tas id
 	 */
 	protected Integer getLastTasId() {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.queryForObject("getLastTasId", Integer.class, session);
-		} finally {
-			session.close();
 		}
 	}
 
 	private Date getLastLogDate() {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
 			if (rVal != null) {
 				return rVal;
 			}
 			return new Date();
-		} finally {
-			session.close();
 		}
 	}
 
 	private long getLastPersonChangeId() {
-		final DBSession session = this.openSession();
-		try {
+		try (final DBSession session = this.openSession()) {
 			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
-		} finally {
-			session.close();
 		}
 	}
 

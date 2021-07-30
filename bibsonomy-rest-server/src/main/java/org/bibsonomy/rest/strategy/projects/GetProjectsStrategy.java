@@ -18,7 +18,11 @@ import java.util.List;
 public class GetProjectsStrategy extends AbstractGetListStrategy<List<Project>> {
 	private final String internalId;
 
-	public GetProjectsStrategy(Context context) {
+	/**
+	 * default constructor
+	 * @param context
+	 */
+	public GetProjectsStrategy(final Context context) {
 		super(context);
 		internalId = context.getStringAttribute("internalId", null);
 	}
@@ -29,7 +33,7 @@ public class GetProjectsStrategy extends AbstractGetListStrategy<List<Project>> 
 	}
 
 	@Override
-	protected void render(Writer writer, List<Project> resultList) {
+	protected void render(final Writer writer, final List<Project> resultList) {
 		this.getRenderer().serializeProjects(writer, resultList, this.getView());
 	}
 

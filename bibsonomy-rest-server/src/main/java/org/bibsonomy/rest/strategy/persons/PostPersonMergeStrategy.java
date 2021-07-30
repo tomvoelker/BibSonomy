@@ -2,6 +2,8 @@ package org.bibsonomy.rest.strategy.persons;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.Writer;
+
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
@@ -9,8 +11,6 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-
-import java.io.Writer;
 
 /**
  * @author pda
@@ -26,7 +26,7 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 	 * @param personMergeTargetId
 	 * @param personToMergeId
 	 */
-	public PostPersonMergeStrategy(Context context, String personMergeTargetId, String personToMergeId) {
+	public PostPersonMergeStrategy(final Context context, final String personMergeTargetId, final String personToMergeId) {
 		super(context);
 		if (!present(personMergeTargetId)) {
 			throw new IllegalArgumentException("No personId given for the target person to merge.");
@@ -39,7 +39,7 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 	}
 
 	@Override
-	protected void render(Writer writer, String resourceID) {
+	protected void render(final Writer writer, final String resourceID) {
 		this.getRenderer().serializePersonId(writer, resourceID);
 	}
 

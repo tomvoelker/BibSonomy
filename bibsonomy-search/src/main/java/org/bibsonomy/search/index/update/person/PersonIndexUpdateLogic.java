@@ -28,7 +28,7 @@ public class PersonIndexUpdateLogic extends PersonDatabaseInformationLogic imple
 
 	@Override
 	public List<Person> getDeletedEntities(Date lastLogDate) {
-		// currently persons can not be deleted
+		// XXX: currently persons can not be deleted
 		return Collections.emptyList();
 	}
 

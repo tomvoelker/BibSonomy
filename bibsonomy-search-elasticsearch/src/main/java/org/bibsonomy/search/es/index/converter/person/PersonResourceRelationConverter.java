@@ -1,7 +1,6 @@
 package org.bibsonomy.search.es.index.converter.person;
 
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;

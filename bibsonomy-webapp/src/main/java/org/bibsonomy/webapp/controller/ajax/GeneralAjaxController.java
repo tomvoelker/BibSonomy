@@ -34,7 +34,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
-import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
 import org.bibsonomy.model.BibTex;

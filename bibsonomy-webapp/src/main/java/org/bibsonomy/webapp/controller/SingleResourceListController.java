@@ -34,7 +34,6 @@ import java.util.List;
 
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -72,9 +71,9 @@ public abstract class SingleResourceListController extends ResourceListControlle
 
 	protected void buildSortCriteria(final TagResourceViewCommand command) {
 		// build sort criteria list from the sortkeys and sortorders in command
-		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
-		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
-		List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+		final List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+		final List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
 		command.setSortCriteria(sortCriteria);
 	}
 

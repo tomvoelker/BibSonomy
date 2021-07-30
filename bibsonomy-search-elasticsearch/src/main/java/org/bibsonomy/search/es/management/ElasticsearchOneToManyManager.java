@@ -1,27 +1,16 @@
 package org.bibsonomy.search.es.management;
 
+import java.net.URI;
+import java.util.Map;
+
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.search.es.client.DeleteData;
-import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
-import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.index.generator.OneToManyEntityInformationProvider;
-import org.bibsonomy.search.es.management.post.ElasticsearchPostManager;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.bibsonomy.search.util.Converter;
-import org.bibsonomy.util.BasicUtils;
-
-import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * a manager that can update a one to many index

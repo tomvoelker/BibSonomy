@@ -43,6 +43,7 @@
 	<!--  remove last comma -->
 	<c:set var="hiddenSystemTags" value="${fn:substring(hiddenSystemTags, 0, fn:length(hiddenSystemTags) - 1 )}" />
 
+	<!-- FIXME: why do we need the groups string -->
 	<c:set var="groupsString" value="" />
 	<!-- groups of the logged in user -->
 	<c:forEach var="group" items="${loginUser.groups}">

@@ -1,12 +1,12 @@
 package org.bibsonomy.search.index.update.post;
 
+import java.util.Date;
+import java.util.List;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.management.database.params.SearchParam;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * all neccessary methods for updating a community post index

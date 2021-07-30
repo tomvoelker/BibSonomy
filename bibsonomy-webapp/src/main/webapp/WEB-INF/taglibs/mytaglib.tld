@@ -382,12 +382,6 @@
 	</function>
 
 	<function>
-		<name>getErrorHint</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String getErrorHint(java.lang.String)</function-signature>
-	</function>
-
-	<function>
 		<name>removeInvalidXmlChars</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.lang.String removeInvalidXmlChars(java.lang.String)</function-signature>

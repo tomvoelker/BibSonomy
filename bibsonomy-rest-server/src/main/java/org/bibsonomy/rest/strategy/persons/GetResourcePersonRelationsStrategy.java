@@ -1,15 +1,14 @@
 package org.bibsonomy.rest.strategy.persons;
 
+import java.io.Writer;
+import java.util.List;
+
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
-
-import java.io.Writer;
-import java.util.List;
 
 /**
  * strategy to get a list of resource person relations
@@ -25,7 +24,7 @@ public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<
 	 * @param context
 	 * @param personId
 	 */
-	public GetResourcePersonRelationsStrategy(Context context, String personId) {
+	public GetResourcePersonRelationsStrategy(final Context context, final String personId) {
 		super(context);
 		this.personId = personId;
 	}

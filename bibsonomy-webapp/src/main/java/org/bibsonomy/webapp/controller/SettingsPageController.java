@@ -443,10 +443,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.cslFilesManager = cslFilesManager;		
 	}
 
-	public boolean isCrisEnabled() {
-		return crisEnabled;
-	}
-
+	/**
+	 * @param crisEnabled the crisEnabled to set
+	 */
 	public void setCrisEnabled(boolean crisEnabled) {
 		this.crisEnabled = crisEnabled;
 	}

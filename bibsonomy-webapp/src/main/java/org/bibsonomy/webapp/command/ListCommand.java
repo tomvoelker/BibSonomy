@@ -319,12 +319,17 @@ public class ListCommand<T> {
 		this.paginationLimit = paginationLimit;
 	}
 
+	/**
+	 * @return the useIndex
+	 */
 	public boolean isUseIndex() {
 		return useIndex;
 	}
 
+	/**
+	 * @param useIndex the useIndex to set
+	 */
 	public void setUseIndex(boolean useIndex) {
 		this.useIndex = useIndex;
 	}
-
 }

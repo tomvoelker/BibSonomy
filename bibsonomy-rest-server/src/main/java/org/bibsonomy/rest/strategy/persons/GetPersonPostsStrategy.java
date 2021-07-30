@@ -29,6 +29,11 @@ package org.bibsonomy.rest.strategy.persons;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -48,10 +53,10 @@ import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
 
-import java.io.Writer;
-import java.util.*;
 
 /**
+ * FIXME: move the duplicate code to the code (see webapp)
+ *
  * Strategy to get the publications of a person by their ID.
  *
  * @author kchoong

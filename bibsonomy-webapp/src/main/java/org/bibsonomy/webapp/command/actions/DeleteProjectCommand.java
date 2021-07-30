@@ -3,6 +3,11 @@ package org.bibsonomy.webapp.command.actions;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 
+/**
+ * command for deleting projects
+ *
+ * @author tko
+ */
 public class DeleteProjectCommand extends BaseCommand {
 
 	private String projectIdToDelete;

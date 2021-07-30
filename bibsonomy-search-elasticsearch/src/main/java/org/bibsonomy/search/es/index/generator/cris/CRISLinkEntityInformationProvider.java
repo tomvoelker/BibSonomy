@@ -19,7 +19,7 @@ public class CRISLinkEntityInformationProvider extends EntityInformationProvider
 	 *
 	 * @param converter
 	 */
-	protected CRISLinkEntityInformationProvider(Converter<CRISLink, Map<String, Object>, ?> converter) {
+	protected CRISLinkEntityInformationProvider(final Converter<CRISLink, Map<String, Object>, ?> converter) {
 		super(converter, null);
 	}
 

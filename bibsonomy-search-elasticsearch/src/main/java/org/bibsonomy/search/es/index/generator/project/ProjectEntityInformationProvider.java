@@ -26,7 +26,7 @@ public class ProjectEntityInformationProvider extends OneToManyEntityInformation
 	 * @param mappingBuilder
 	 * @param toManyEntityInformationProvider
 	 */
-	public ProjectEntityInformationProvider(Converter<Project, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder, EntityInformationProvider<CRISLink> toManyEntityInformationProvider) {
+	public ProjectEntityInformationProvider(final Converter<Project, Map<String, Object>, ?> converter, MappingBuilder<XContentBuilder> mappingBuilder, final EntityInformationProvider<CRISLink> toManyEntityInformationProvider) {
 		super(converter, mappingBuilder, toManyEntityInformationProvider);
 	}
 

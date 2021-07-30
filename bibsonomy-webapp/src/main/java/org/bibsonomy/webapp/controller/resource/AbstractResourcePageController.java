@@ -41,12 +41,10 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
-import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -103,12 +101,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	 * Creates the Map with the Copy Metadata.
 	 */
 	private static Map<String, List<String>> createCopyUserMap(final List<PostMetaData> metaDataList) {
-		Map<String, List<String>> res = new HashMap<String, List<String>>();
+		Map<String, List<String>> res = new HashMap<>();
 		for (PostMetaData data : metaDataList) {
 			List<String> copyUsers = res.get(data.getValue());
 			// author does not yet exist ?
 			if (copyUsers == null ) {
-				copyUsers = new ArrayList<String>();
+				copyUsers = new ArrayList<>();
 				res.put(data.getValue(), copyUsers);
 			} 
 			copyUsers.add(data.getUserName());

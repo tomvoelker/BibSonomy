@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.cris;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.Person;

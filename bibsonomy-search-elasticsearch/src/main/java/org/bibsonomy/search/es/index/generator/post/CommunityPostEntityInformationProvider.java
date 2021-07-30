@@ -18,12 +18,12 @@ public class CommunityPostEntityInformationProvider<R extends Resource> extends 
 	 * @param mappingBuilder
 	 * @param resourceType
 	 */
-	public CommunityPostEntityInformationProvider(Converter converter, MappingBuilder mappingBuilder, Class resourceType) {
+	public CommunityPostEntityInformationProvider(final Converter converter, MappingBuilder mappingBuilder, Class resourceType) {
 		super(converter, mappingBuilder, resourceType);
 	}
 
 	@Override
-	public String getEntityId(Post<R> entity) {
+	public String getEntityId(final Post<R> entity) {
 		return entity.getResource().getInterHash();
 	}
 }

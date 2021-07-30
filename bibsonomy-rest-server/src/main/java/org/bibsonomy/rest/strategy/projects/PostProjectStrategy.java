@@ -43,12 +43,17 @@ import java.util.stream.Collectors;
  * @author pda
  */
 public class PostProjectStrategy extends AbstractCreateStrategy {
-    public PostProjectStrategy(Context context) {
+
+    /**
+     * default constructor
+     * @param context
+     */
+    public PostProjectStrategy(final Context context) {
         super(context);
     }
 
     @Override
-    protected void render(Writer writer, String projectID) {
+    protected void render(final Writer writer, final String projectID) {
         this.getRenderer().serializeProjectId(writer, projectID);
     }
 

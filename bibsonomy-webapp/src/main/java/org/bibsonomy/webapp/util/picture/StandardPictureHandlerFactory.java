@@ -28,13 +28,13 @@ package org.bibsonomy.webapp.util.picture;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.filesystem.FileLogic;
-
-import java.util.List;
 
 /**
  * simple picture handler factory

@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +43,6 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Steffen Kress

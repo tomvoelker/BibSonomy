@@ -26,16 +26,16 @@
  */
 package org.bibsonomy.webapp.util.spring.i18n;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * To fix feature request SPR-9456
@@ -58,7 +58,7 @@ public class LocaleChangeInterceptor extends org.springframework.web.servlet.i18
 			if (newLocale != null) {
 				// check, if selected new locale is supported, otherwise use default locale
 				if (!this.supportedLocales.contains(newLocale)) {
-					newLocale = defaultLocale;
+					newLocale = this.defaultLocale;
 				}
 
 				LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -76,6 +76,9 @@ public class LocaleChangeInterceptor extends org.springframework.web.servlet.i18
 		return true;
 	}
 
+	/**
+	 * @param defaultLocale the defaultLocale to set
+	 */
 	public void setDefaultLocale(String defaultLocale) {
 		this.defaultLocale = defaultLocale;
 	}

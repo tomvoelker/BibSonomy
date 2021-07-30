@@ -67,7 +67,7 @@ public class GravatarPictureHandler extends ExternalPictureHandler {
 	 *
 	 * @param requestedUser
 	 */
-	public GravatarPictureHandler(User requestedUser) {
+	public GravatarPictureHandler(final User requestedUser) {
 		super(requestedUser);
 	}
 

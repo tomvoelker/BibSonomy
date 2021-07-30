@@ -665,6 +665,10 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		return this.search(query, null, offset, limit, null, null);
 	}
 
+	/**
+	 * @param query
+	 * @return the number of documents in the index
+	 */
 	public long getDocumentCount(QueryBuilder query) {
 		return this.client.getDocumentCount(this.getActiveLocalAlias(), this.entityInformationProvider.getType(), query);
 	}

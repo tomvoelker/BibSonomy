@@ -26,6 +26,12 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.layout.csl.CSLStyle;
@@ -39,12 +45,6 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * @author Christian, lsc

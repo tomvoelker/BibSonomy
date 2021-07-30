@@ -70,7 +70,7 @@ public abstract class ExternalPictureHandler extends PictureHandler {
 	 */
 	@Override
 	public View getProfilePictureView(PictureCommand command) {
-		final URL pictureURL = getPictureURL(this.requestedUser, ".jpg" );
+		final URL pictureURL = getPictureURL(this.requestedUser, ".jpg");
 		
 		final ExtendedRedirectView resultV = new ExtendedRedirectView((present(pictureURL))? pictureURL.toString() : "" );
 		resultV.setContentType( "image/jpg" );

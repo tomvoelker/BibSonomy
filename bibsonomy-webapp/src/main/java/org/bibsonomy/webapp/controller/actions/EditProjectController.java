@@ -55,7 +55,7 @@ public class EditProjectController implements MinimalisticController<EditProject
 		// was the edit form called for the first time?
 		final boolean firstCall = context.isFirstCall();
 
-		// TODO: restirct access to admins?
+		// TODO: restrict access to admins?
 		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
@@ -129,12 +129,11 @@ public class EditProjectController implements MinimalisticController<EditProject
 	}
 
 	// FIXME: move this to a utils class!
-	private void handleErrors(JobResult result) {
+	private void handleErrors(final JobResult result) {
 		if (Status.OK.equals(result.getStatus())) {
 			// everything is fine; no errors; action finished without error
 			return;
 		}
-
 		for (final ErrorMessage e : result.getErrors()) {
 			if (e instanceof MissingFieldErrorMessage) {
 				final MissingFieldErrorMessage missingFieldErrorMessage = (MissingFieldErrorMessage) e;
