@@ -82,8 +82,6 @@ public final class RESTConfig {
 
 	public static final String PROJECTS_URL = "projects";
 
-	public static final String ORGANIZATIONS_URL = "organizations";
-
 	public static final String CRIS_LINKS_URL = "cris_links";
 
     public static final String PERSONS_MERGE_URL = "merge";
@@ -109,6 +107,8 @@ public final class RESTConfig {
 	public static final String SORT_ORDER_PARAM = "sortorder";
 
 	public static final String CONCEPT_STATUS_PARAM = "status";
+
+	public static final String ORGANIZATION_PARAM = "organization";
 
 	public static final String SEARCH_PARAM = "search";
 

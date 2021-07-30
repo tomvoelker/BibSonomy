@@ -624,6 +624,7 @@ public class UrlRenderer {
 
 	public UrlBuilder createUrlBuilderForGroups(GroupQuery query) {
 		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
+		urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(query.getOrganization()));
 		if (present(query.getExternalId())) {
 			urlBuilder.addParameter("internalId", query.getExternalId());
 		} else {
@@ -646,8 +647,7 @@ public class UrlRenderer {
 	 * @param resourceHash
 	 * @return
 	 */
-	public String createHrefForClipboadEntry(final String userName,
-																					 final String resourceHash) {
+	public String createHrefForClipboadEntry(final String userName, final String resourceHash) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForClipboard(userName);
 		urlBuilder.addPathElement(resourceHash);
 		return urlBuilder.asString();
