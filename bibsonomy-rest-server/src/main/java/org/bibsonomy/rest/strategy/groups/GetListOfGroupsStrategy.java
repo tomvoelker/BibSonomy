@@ -50,7 +50,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
 		this.internalId = context.getStringAttribute("internalId", null);
-		this.organization = Boolean.parseBoolean(context.getStringAttribute("organization", "false"));
+		this.organization = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.ORGANIZATION_PARAM, "false"));
 	}
 
 	@Override
