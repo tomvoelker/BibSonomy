@@ -62,7 +62,7 @@ public class GetUserPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
+		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(this.sortKeys, this.sortOrders);
 		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 		postQueryBuilder.setGrouping(GroupingEntity.USER)
 				.setGroupingName(this.userName)

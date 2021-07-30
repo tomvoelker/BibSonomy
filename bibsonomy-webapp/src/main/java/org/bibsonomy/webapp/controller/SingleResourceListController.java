@@ -73,7 +73,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		// build sort criteria list from the sortkeys and sortorders in command
 		final List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
 		final List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
-		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteriums(sortKeys, sortOrders);
+		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);
 		command.setSortCriteria(sortCriteria);
 	}
 

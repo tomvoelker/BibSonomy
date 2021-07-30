@@ -84,7 +84,16 @@ public class SortUtils {
 		return parsedSortOrders;
 	}
 
-	public static List<SortCriteria> generateSortCriteriums(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
+	/**
+	 * Generate a list of sort criteria from two separate sort key and order lists.
+	 * If there are less sort orders than the keys, the order for the remaining keys will be set
+	 * to the first order in the list.
+	 *
+	 * @param sortKeys
+	 * @param sortOrders
+	 * @return
+	 */
+	public static List<SortCriteria> generateSortCriteria(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
 		List<SortCriteria> sortCriteria = new LinkedList<>();
 		// Check, if any sort keys given
 		if (sortKeys.isEmpty()) {
@@ -109,6 +118,13 @@ public class SortUtils {
 		return sortCriteria;
 	}
 
+	/**
+	 * Util method to extract just the sort key of every sort criteria in the provided list.
+	 * Used to build parameter values for URLs
+	 *
+	 * @param sortCriteria
+	 * @return list of sort keys separated by delimiter
+	 */
 	public static String getSortKeys(List<SortCriteria> sortCriteria) {
 		final List<String> sortKeys = new LinkedList<>();
 		for (final SortCriteria criteria : sortCriteria) {
@@ -117,6 +133,13 @@ public class SortUtils {
 		return StringUtils.implodeStringArray(sortKeys.toArray(), SORT_KEY_DELIMITER);
 	}
 
+	/**
+	 * Util method to extract just the sort order of every sort criteria in the provided list.
+	 * Used to build parameter values for URLs
+	 *
+	 * @param sortCriteria
+	 * @return list of sort order separated by delimiter
+	 */
 	public static String getSortOrders(List<SortCriteria> sortCriteria) {
 		final List<String> sortOrders = new LinkedList<>();
 		for (final SortCriteria criteria : sortCriteria) {

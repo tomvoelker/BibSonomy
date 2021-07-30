@@ -293,21 +293,35 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		}
 	}
 
+	/**
+	 * Compares the publication date of the given BibTeXs.
+	 * First builds the publication dates in the format YYYYMMDD and then numerically compares them
+	 * Only compares month and day if both of the BibTeX entries contains them.
+	 *
+	 * @param bib1 first BibTeX
+	 * @param bib2 second BibTeX
+	 * @param order desc or asc sort order
+	 * @return an integer representing the sorted order between both publication dates.
+	 * @throws SortKeyIsEqualException
+	 */
 	private int comparePubDate(final BibTex bib1, final BibTex bib2, final SortOrder order) throws SortKeyIsEqualException {
-		String pubDate1 = bib1.getYear();
-		String pubDate2 = bib2.getYear();
+		StringBuilder sbPubDate1 = new StringBuilder(bib1.getYear());
+		StringBuilder sbPubDate2 = new StringBuilder(bib2.getYear());
 
 		// add months if present on both resources
 		if (present(bib1.getMonth()) && present(bib2.getMonth())) {
-			pubDate1 += BibTexUtils.getMonthAsNumber(bib1.getMonth());
-			pubDate2 += BibTexUtils.getMonthAsNumber(bib2.getMonth());
+			sbPubDate1.append(BibTexUtils.getMonthAsNumber(bib1.getMonth()));
+			sbPubDate2.append(BibTexUtils.getMonthAsNumber(bib2.getMonth()));
 
 			// try to add day, if month is set
 			if (present(bib1.getDay()) && present(bib2.getDay())) {
-				pubDate1 += bib1.getDay();
-				pubDate2 += bib2.getDay();
+				sbPubDate1.append(bib1.getDay());
+				sbPubDate2.append(bib2.getDay());
 			}
 		}
+
+		String pubDate1 = sbPubDate1.toString();
+		String pubDate2 = sbPubDate2.toString();
 		try {
 			return this.compare(Integer.parseInt(pubDate1), Integer.parseInt(pubDate2), order);
 		} catch (final NumberFormatException ex) {

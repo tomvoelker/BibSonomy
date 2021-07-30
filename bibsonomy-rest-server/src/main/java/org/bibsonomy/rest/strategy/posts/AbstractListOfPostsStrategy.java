@@ -72,7 +72,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		this.sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null));
 		this.sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null));
-		this.sortCriteria = SortUtils.generateSortCriteriums(this.sortKeys, this.sortOrders);
+		this.sortCriteria = SortUtils.generateSortCriteria(this.sortKeys, this.sortOrders);
 
 		String groupingValue;
 		if (this.grouping != GroupingEntity.ALL) {
