@@ -33,6 +33,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.util.StringUtils;
 
 import java.util.Arrays;
@@ -210,5 +211,87 @@ public final class PersonUtils {
 			return PersonResourceRelationType.EDITOR;
 		}
 		return null;
+	}
+
+	/**
+	 * Get the person's additional key specified by the key name
+	 *
+	 * @param person	the person to get additional key of
+	 * @param keyName	the key name
+	 * @return the additional key as an object, null if not found
+	 */
+	public static AdditionalKey getAdditionalKey(final Person person, final String keyName) {
+		for (AdditionalKey additionalKey : person.getAdditionalKeys()) {
+			if (additionalKey.getKeyName().equalsIgnoreCase(keyName)) {
+				return additionalKey;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Add a new additional key to the person with key name and value
+	 *
+	 * @param person	the person add a key to
+	 * @param keyName	the key name
+	 * @param keyValue	the key value
+	 * @return true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public static boolean addAdditionalKey(final Person person, final String keyName, final String keyValue) {
+		AdditionalKey additionalKey = new AdditionalKey(keyName, keyValue);
+		return addAdditionalKey(person, additionalKey);
+	}
+
+	/**
+	 * Add a new additional key to the person with an additional key object
+	 * @param person			the person to add a key to
+	 * @param additionalKey		the additional key object
+	 * @return true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public static boolean addAdditionalKey(final Person person, final AdditionalKey additionalKey) {
+		AdditionalKey foundKey = getAdditionalKey(person, additionalKey.getKeyName());
+
+		if (present(foundKey)) {
+			// Return true, if exact same key was already present
+			// Return false, if key name with different value was found
+			return foundKey.getKeyValue().equals(additionalKey.getKeyName());
+		} else {
+			// Adding key
+			person.getAdditionalKeys().add(additionalKey);
+			return true;
+		}
+	}
+
+	/**
+	 * Remove an additional key from the person specified by the key name
+	 *
+	 * @param person	the person to remove a key from
+	 * @param keyName	the key name
+	 * @return true, if removing it was successful or key wasn't present. false otherwise
+	 */
+	public static boolean removeAdditionalKey(Person person, final String keyName) {
+		AdditionalKey foundKey = getAdditionalKey(person, keyName);
+		if (present(foundKey)) {
+			person.getAdditionalKeys().remove(foundKey);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Update an additional key of the person specified by the key name
+	 *
+	 * @param person	the person to update
+	 * @param keyName	the key name
+	 * @param keyValue	the new key value
+	 * @return			true, if additional key was updated. False, if key wasn't found to update
+	 */
+	public static boolean updateAdditionalKey(final Person person, final String keyName, final String keyValue) {
+		AdditionalKey foundKey = getAdditionalKey(person, keyName);
+		if (present(foundKey)) {
+			foundKey.setKeyValue(keyValue);
+			return true;
+		}
+		return false;
 	}
 }
