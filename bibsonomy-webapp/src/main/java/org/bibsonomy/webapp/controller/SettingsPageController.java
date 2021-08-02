@@ -81,7 +81,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected RequestLogic requestLogic;
 	protected CSLFilesManager cslFilesManager;
 	protected URLGenerator urlGenerator;
-	private boolean crisEnabled;
 	
 	/**
 	 * The List is used in a hack to protect certain oAuth Tokens from
@@ -109,9 +108,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 */
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
-
-		// set crisEnabled status
-		command.setCrisEnabled(crisEnabled);
 
 		// used to set the user specific value of maxCount/minFreq
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
@@ -441,12 +437,5 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
 		this.cslFilesManager = cslFilesManager;		
-	}
-
-	/**
-	 * @param crisEnabled the crisEnabled to set
-	 */
-	public void setCrisEnabled(boolean crisEnabled) {
-		this.crisEnabled = crisEnabled;
 	}
 }
