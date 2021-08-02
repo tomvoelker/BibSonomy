@@ -800,6 +800,8 @@ INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES
 (4, 'w.test.1', 'w.test.4', 0);
 
 INSERT INTO `person_additional_keys` (`person_id`, `key_name`, `key_value`) VALUES
+('h.muller', 'addKey.1', 'h.muller.addKey.1'),
+('h.muller', 'addKey.2', 'h.muller.addKey.2'),
 ('w.test.1', 'addKey.1', 'w.test.1.addKey.1'),
 ('w.test.1', 'addKey.2', 'w.test.1.addKey.2'),
 ('w.test.2', 'addKey.1', 'w.test.2.addKey.2'),

@@ -26,6 +26,22 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.BibTex;
@@ -37,28 +53,12 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 /**
  * tests for {@link PersonDatabaseManager}
@@ -140,6 +140,9 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testGetPersonById() {
 		final Person person = PERSON_DATABASE_MANAGER.getPersonById(PERSON_ID, this.dbSession);
 		assertThat(person.getPersonId(), is(PERSON_ID));
+
+		final List<AdditionalKey> additionalKeys = person.getAdditionalKeys();
+		assertTrue(additionalKeys.size() > 0);
 	}
 
 	/**
@@ -348,13 +351,6 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void testGetAdditionalKeysByPerson() {
-		final String personId = "w.test.1";
-		final List<AdditionalKey> additionalKeys = PERSON_DATABASE_MANAGER.getAdditionalKeysByPerson(personId, this.dbSession);
-		assertThat(additionalKeys.size(), greaterThan(1));
-	}
-
-	@Test
 	public void testGetPersonByAdditionalKey() {
 		final String personId = "w.test.1";
 		final String additionalKey = "addKey.1";
@@ -362,6 +358,9 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Person person = PERSON_DATABASE_MANAGER.getPersonByAdditionalKey(additionalKey, additionalValue, this.dbSession);
 		assertThat(person.getPersonId(), is(personId));
+
+		final List<AdditionalKey> additionalKeys = person.getAdditionalKeys();
+		assertTrue(additionalKeys.size() > 0);
 	}
 
 	@Test

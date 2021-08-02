@@ -24,6 +24,7 @@
 	
 	<resultMap id="lazyLoadingPerson" class="person" extends="abstractPerson">
 		<result property="names"            column="person_id"           javaType="java.util.ArrayList" select="getNames" />
+		<result property="additionalKeys"   column="person_id"           javaType="java.util.LinkedList" select="getAdditionalKeys" />
 	</resultMap>
 	
 	<resultMap id="personWithNamesPrefilled" class="person" extends="abstractPerson">

@@ -218,7 +218,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 			person.setCrisLinks(crisLinks);
 		}
 
-		// TODO get additional keys
 		return person;
 	}
 
@@ -231,7 +230,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public Person getPersonByDnbId(final String dnbId, final DBSession session) {
 		final Person person = this.queryForObject("getPersonByDnbId", dnbId, Person.class, session);
-		// TODO get additional keys
 		return person;
 	}
 
@@ -246,30 +244,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
 		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, keyName, keyValue);
 		final Person person = this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
-		// TODO get additional keys
 		return person;
-	}
-
-	/**
-	 * Get an additional key of a specified person and key name
-	 * @param personId	specified person
-	 * @param keyName 	specified key name
-	 * @param session	db session
-	 * @return			additional key
-	 */
-	public AdditionalKey getAdditionalKeyByPerson(final String personId, final String keyName, final DBSession session) {
-		final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, null);
-		return this.queryForObject("getAdditionalKeyByPerson", param, AdditionalKey.class, session);
-	}
-
-	/**
-	 * Get the list of additional keys of a specified person
-	 * @param personId	specified person
-	 * @param session	db session
-	 * @return			list of additional keys
-	 */
-	public List<AdditionalKey> getAdditionalKeysByPerson(final String personId, final DBSession session) {
-		return this.queryForList("getAdditionalKeysByPerson", personId, AdditionalKey.class, session);
 	}
 
 	/**
