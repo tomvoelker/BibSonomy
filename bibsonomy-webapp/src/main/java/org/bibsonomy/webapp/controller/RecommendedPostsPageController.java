@@ -108,7 +108,7 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	private void getTagCloud(final TagResourceViewCommand command) {
 		final TagCloudCommand tagCloudCommand = command.getTagcloud();
 		
-		final List<Tag> tags = new ArrayList<Tag>();
+		final List<Tag> tags = new ArrayList<>();
 		
 		// count the number of occurences
 		for (Post<BibTex> post : command.getBibtex().getList()) {

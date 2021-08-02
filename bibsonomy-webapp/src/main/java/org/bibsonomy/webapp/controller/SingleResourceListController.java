@@ -70,7 +70,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	}
 
 	protected void buildSortCriteria(final TagResourceViewCommand command) {
-		// build sort criteria list from the sortkeys and sortorders in command
+		// build sort criteria list from the sort keys and sort orders in command
 		final List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
 		final List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
 		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);

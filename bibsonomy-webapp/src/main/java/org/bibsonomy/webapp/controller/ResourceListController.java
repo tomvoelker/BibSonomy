@@ -281,7 +281,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		}
 		
 		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage()) ||
-				! ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
+				!ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}

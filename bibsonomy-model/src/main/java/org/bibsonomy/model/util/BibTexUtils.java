@@ -867,7 +867,7 @@ public class BibTexUtils {
 	 */
 	public static void sortBibTexList(final List<? extends Post<? extends BibTex>> bibtexList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		if (present(bibtexList) && bibtexList.size() > 1) {
-			Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
+			bibtexList.sort(new BibTexPostComparator(sortKeys, sortOrders));
 		}
 	}
 
@@ -877,7 +877,7 @@ public class BibTexUtils {
 	 * @param bibtexList
 	 */
 	public static void removeDuplicates(final List<Post<BibTex>> bibtexList) {
-		final Set<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
+		final Set<Post<BibTex>> temp = new TreeSet<>(new BibTexPostInterhashComparator());
 		temp.addAll(bibtexList);
 		// FIXME: a bit cumbersome at this point - but we need to work on the bibtexList
 		bibtexList.clear();

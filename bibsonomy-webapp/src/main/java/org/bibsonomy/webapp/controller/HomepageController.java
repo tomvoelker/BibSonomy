@@ -27,6 +27,7 @@
 package org.bibsonomy.webapp.controller;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
@@ -115,7 +116,7 @@ public class HomepageController extends SingleResourceListController implements 
 			final PostQuery<Bookmark> query = new PostQuery<>(Bookmark.class);
 			query.setGrouping(GroupingEntity.GROUP);
 			query.setGroupingName(this.newsGroup);
-			query.setTags(Arrays.asList(this.newsTag));
+			query.setTags(Collections.singletonList(this.newsTag));
 			query.setStart(0);
 			query.setEnd(3);
 			query.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC));
