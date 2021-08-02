@@ -146,21 +146,6 @@ public class SearchPageController extends SingleResourceListController implement
 				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, queryScope,
 								null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(),
 								command.getListCommand(resourceType).getEntriesPerPage());
-
-				// remove duplicates depending on command settings
-				if (resourceType == BibTex.class) {
-					switch (command.getDuplicates()) {
-						case MERGED:
-							BibTexUtils.mergeDuplicates(command.getBibtex().getList());
-							break;
-						case NO:
-							BibTexUtils.removeDuplicates(command.getBibtex().getList());
-							break;
-						case YES:
-						default:
-							break;
-					}
-				}
 			}
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
