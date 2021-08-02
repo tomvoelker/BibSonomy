@@ -68,7 +68,6 @@ public class ChainUtils {
 		 * 2. There are negated tags
 		 * 3.
 		 */
-		//TODO (AD) define rules for handling the query if groups are involved
 		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||	existsNegatedTags) {
 			return true;
 		}
@@ -88,11 +87,7 @@ public class ChainUtils {
 			return true;
 		}
 
-		if ((param.getQueryScope() == QueryScope.SEARCHINDEX)) {
-			return true;
-		}
-
-		return false;
+		return param.getQueryScope() == QueryScope.SEARCHINDEX;
 	}
 
 }

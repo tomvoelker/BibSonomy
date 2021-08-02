@@ -49,7 +49,6 @@ import org.bibsonomy.model.Resource;
  * @param <R>  the resource
  * @param <P>  the param
  */
-//TODO (AD) Remove all group specific database handlers and be sure that everything points here!
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
@@ -98,10 +97,9 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		query.setBibtexKey(param.getBibtexKey());
 		query.setTags(tags); // override tags to remove system tags
 		query.setSortCriteria(param.getSortCriteria());
+		query.setHash(param.getHash());
 
 		// query the resource searcher
-		//TODO (dzo) Do we really need the hashId in GetResourcesForGroup?
-
 		return this.databaseManager.getPostsByResourceSearch(param.getLoggedinUser(), query);
 	}
 }
