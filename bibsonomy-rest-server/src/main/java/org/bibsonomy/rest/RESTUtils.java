@@ -106,7 +106,7 @@ public class RESTUtils {
 	}
 
 	private static List<RenderingFormat> getSupportedAcceptHeaderMediaTypes(final String acceptHeader) {
-		final List<RenderingFormat> formats = new LinkedList<RenderingFormat>();
+		final List<RenderingFormat> formats = new LinkedList<>();
 		// parse the accept header
 		final SortedMap<Double, List<String>> preferredTypes = HeaderUtils.getPreferredTypes(acceptHeader);
 		for (final Entry<Double, List<String>> preferredType : preferredTypes.entrySet()) {
