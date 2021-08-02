@@ -288,7 +288,7 @@
 	<bean id="personRelationChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsByInterhash">
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsByInterhashIndexAndType">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPersonsByInterhash">

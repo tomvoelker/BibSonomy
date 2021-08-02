@@ -11,18 +11,18 @@ import java.util.List;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
- * Handles cases, where an interhash is set.
+ * Handles cases, where an interhash, an index and a type is set.
  *
  * @author ada
  */
-public class GetResourcePersonRelationsByInterhash extends ResourcePersonRelationChainElement {
+public class GetResourcePersonRelationsByInterhashIndexAndType extends ResourcePersonRelationChainElement {
 
 	/**
 	 * Creates an instance with the person database manager set.
 	 *
 	 * @param personDatabaseManager an instance.
 	 */
-	public GetResourcePersonRelationsByInterhash(final PersonDatabaseManager personDatabaseManager) {
+	public GetResourcePersonRelationsByInterhashIndexAndType(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
