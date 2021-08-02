@@ -44,15 +44,12 @@ import org.bibsonomy.services.filesystem.FileLogic;
 public class StandardPictureHandlerFactory implements PictureHandlerFactory {
 
 	/*
-	 * The reason for using the admin Logic is that for
+	 * The reason for using the admin logic is that for
 	 * gravatar we need the email-address (or more precisely its hash) of the
 	 * requested user. Since the mail address is private, only admins and the
 	 * respective owner may see it.
 	 *
 	 * Using the admin logic here is unfortunate.
-	 *
-	 * a) when the admin logic is used this should be marked clearly by naming
-	 * it admin logic
 	 *
 	 * b) the use of the admin logic can be avoided by sorting out the problem
 	 * at hand in the database module.
@@ -97,16 +94,19 @@ public class StandardPictureHandlerFactory implements PictureHandlerFactory {
 	}
 
 	@Override
-	public boolean hasVisibleProfilePicture(String requestedUserName, User loggedinUser) {
+	public boolean hasVisibleProfilePicture(final String requestedUserName, final User loggedinUser) {
 		final User requestedUser = this.adminLogic.getUserDetails(requestedUserName);
+		// first check if the logged in user can see the profile picture of the requested user
 		if (!this.isVisibleForLoggedInUser(requestedUser, loggedinUser)) {
 			return false;
 		}
 
+		// if the picture is external the user can see it
 		if (requestedUser.isUseExternalPicture()) {
 			return true;
 		}
 
+		// check if the requested user has uploaded a profile picture
 		return this.fileLogic.hasProfilePicture(requestedUserName);
 	}
 

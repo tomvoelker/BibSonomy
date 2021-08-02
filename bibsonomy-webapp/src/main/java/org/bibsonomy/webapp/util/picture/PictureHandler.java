@@ -44,13 +44,12 @@ public abstract class PictureHandler {
 	 * default constructor with the user to handle
 	 * @param requestedUser
 	 */
-	public PictureHandler(User requestedUser) {
+	public PictureHandler(final User requestedUser) {
 		this.requestedUser = requestedUser;
 	}
 
 	/**
-	 * Returns a view containing requested user's profile picture.<br/>
-	 * @param command - the actual picture command
+	 * Returns a view containing requested user's profile picture. <br />
 	 * @return view containing profile picture
 	 */
 	public abstract View getProfilePictureView(final PictureCommand command);
