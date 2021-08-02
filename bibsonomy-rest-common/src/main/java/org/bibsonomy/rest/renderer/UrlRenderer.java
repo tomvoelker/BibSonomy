@@ -280,7 +280,6 @@ public class UrlRenderer {
 	}
 
 	/**
-	 *
 	 * @return The API URL currently used to render URLs.
 	 */
 	public String getApiUrl() {
@@ -433,7 +432,7 @@ public class UrlRenderer {
 	}
 
 	/**
-	 * @return the url bulder
+	 * @return the url builder
 	 */
 	public UrlBuilder createUrlBuilderForUsers() {
 		final UrlBuilder builder = this.createUrlBuilderForApi();
@@ -441,58 +440,124 @@ public class UrlRenderer {
 		return builder;
 	}
 
+	/**
+	 * creates a person match url given the target and source id
+	 * @param targetId
+	 * @param sourceId
+	 * @return the url builder for the match url
+	 */
 	public UrlBuilder createUrlBuilderForPersonMatch(String targetId, String sourceId) {
 		return createUrlBuilderForPerson(targetId).
 						addPathElement(RESTConfig.PERSONS_MERGE_URL).addParameter("source", sourceId);
 	}
 
+	/**
+	 * creates a persons url builder
+	 * @param userName the username of a user (when you want to find the claimed person of the user)
+	 * @return url builder
+	 */
 	public UrlBuilder createUrlBuilderForPersons(final String userName) {
 		return this.createUrlBuilderForPersons().addParameter(GroupingEntity.USER.toString().toLowerCase(), userName);
 	}
 
+	/**
+	 * creates a url builder for a person
+	 * @param personId the id of the person
+	 * @return url builder
+	 */
 	public UrlBuilder createUrlBuilderForPerson(String personId) {
 		return createUrlBuilderForPersons().addPathElement(personId);
 	}
 
+	/**
+	 * creates a url builder for persons
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForPersons() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
 	}
 
+	/**
+	 * creates a url builder to update a person
+	 * @param personId the person id
+	 * @param operation the update operation to apply
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
 		return createUrlBuilderForPerson(personId).addParameter("operation", operation.name().toLowerCase());
 	}
 
+	/**
+	 * creates a url builder for a specific project
+	 * @param projectId the id of the project
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForProjects(String projectId) {
-		return createUrlBuilderForProjects().addParameter("internalId", projectId);
-	}
-
-	public UrlBuilder createUrlBuilderForProjectsExternalId(String projectId) {
 		return createUrlBuilderForProjects().addPathElement(projectId);
 	}
 
+	/**
+	 * creates a url builder for a specific project with an external id
+	 * @param projectId the external id
+	 * @return the url builder
+	 */
+	public UrlBuilder createUrlBuilderForProjectsExternalId(String projectId) {
+		return createUrlBuilderForProjects().addParameter("internalId", projectId);
+	}
+
+	/**
+	 * creates a url builder for the projects url
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForProjects() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PROJECTS_URL);
 	}
 
+	/**
+	 * creates a url builder for the cris links url
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForCRISLinks() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.CRIS_LINKS_URL);
 	}
 
+	/**
+	 * creates a url builder for the cris link ulr specified by the source id and target id
+	 * @param sourceId the source id
+	 * @param targetId the target id
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForCRISLinks(String sourceId, String targetId) {
 		return createUrlBuilderForCRISLinks().addParameter("sourceId", sourceId).addParameter("targetId", targetId);
 	}
 
+	/**
+	 * creates a url builder for person resource relations of a specific person
+	 * @param personId the id of the person
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
 						.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
 	}
 
+	/**
+	 * creates a url builder for posts of a specific person
+	 * @param personId the id of the person
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForPersonPosts(String personId) {
 		UrlBuilder builder = createUrlBuilderForPerson(personId);
 		builder.addPathElement(RESTConfig.POSTS_URL);
 		return builder;
 	}
 
+	/**
+	 * creates a url builder for posts of persons with specific additional key and value combinates
+	 * @param keyName
+	 * @param keyValue
+	 * @return the url builder
+	 */
 	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(String keyName, String keyValue) {
 		UrlBuilder builder = createUrlBuilderForPersons();
 		builder.addPathElement(keyName);
