@@ -30,11 +30,6 @@
 	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
 	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
 
-	<typeAlias alias="person"					type="org.bibsonomy.model.Person" />
-	<typeAlias alias="personName"				type="org.bibsonomy.model.PersonName" />
-	<typeAlias alias="resourcePersonRelation"	type="org.bibsonomy.model.ResourcePersonRelation" />
-	<typeAlias alias="gender"					type="org.bibsonomy.model.enums.Gender" />
-
 	<typeAlias alias="statisticsValues" type="org.bibsonomy.model.statistics.StatisticsValues" />
 	<typeAlias alias="statistics"				type="org.bibsonomy.model.statistics.Statistics" />
 	<typeAlias alias="postMetaData"				type="org.bibsonomy.model.metadata.PostMetaData" />
