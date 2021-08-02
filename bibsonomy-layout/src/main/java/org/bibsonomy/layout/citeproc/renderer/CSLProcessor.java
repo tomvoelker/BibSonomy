@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * FIXME: unused
+ *
  * Renders bibliographies using a reusable CSL citation processor instance with an internal ItemDataProvider.
  */
 public class CSLProcessor implements Closeable {

@@ -228,7 +228,7 @@ public class CSLFilesManager {
 	}
 
 	public List<CSLStyle> getStandardCslStyles() {
-		List<CSLStyle> cslStyles = new ArrayList<CSLStyle>() {{
+		return new ArrayList<CSLStyle>() {{
 			add(getStyleByName("apa"));
 			add(getStyleByName("elsevier-harvard"));
 			add(getStyleByName("acm-siggraph"));
@@ -248,12 +248,7 @@ public class CSLFilesManager {
 			add(getStyleByName("frontiers"));
 			add(getStyleByName("din-1505-2-numeric"));
 		}};
-
-		return cslStyles;
 	}
-
-
-
 
 	/**
 	 * reloads the user layouts for the user

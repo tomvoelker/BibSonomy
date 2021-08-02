@@ -2,6 +2,11 @@ package org.bibsonomy.layout.citeproc.renderer;
 
 import de.undercouch.citeproc.LocaleProvider;
 
+/**
+ * TODO: add documentation to this class
+ *
+ * @author ???
+ */
 public class LanguageFile implements LocaleProvider {
 
 	private String locale;
