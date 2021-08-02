@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 /**
  * controller that lists a organization with all the details
- * <p>
+ *
  * request paths:
  * - /organization/ORGANIZATIONNAME
  * - /organization/ORGANIZATIONNAME/projects

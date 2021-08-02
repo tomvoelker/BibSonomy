@@ -28,7 +28,6 @@ package org.bibsonomy.model.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -156,7 +155,7 @@ public class TagUtils {
 	 * @throws RecognitionException
 	 */
 	public static Set<Tag> parse(final String tagString) throws RecognitionException {
-		final Set<Tag> tags = new TreeSet<Tag>();
+		final Set<Tag> tags = new TreeSet<>();
 
 		if (tagString != null) {
 			/*
@@ -212,30 +211,30 @@ public class TagUtils {
 	 * @return all tags with globalTagCount>=limit
 	 */
 	private static List<Tag> mergeFrequencyFilteredTagLists(final List<Tag> src1, final List<Tag> src2, SortKey tagOrder, int limit ) {
-		List<Tag> mergedList = new LinkedList<Tag>();
+		final List<Tag> mergedList = new LinkedList<>();
 		
 		log.debug("Merging tag lists ("+src1.size()+"/"+src2.size()+")and filter by minFreq");
 
 		// collect tags from first tag list
-		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
-		for( Tag t : src1 ) {
+		Map<String,Tag> tagCollector = new HashMap<>();
+		for (final Tag t : src1) {
 			tagCollector.put(t.getName(), t);
 		}
 		// add tags from second list, adding corresponding counts on collisions
-		for( Tag t : src2 ) {
+		for (final Tag t : src2) {
 			Tag oldTag = tagCollector.remove(t.getName());
-			if( ValidationUtils.present(oldTag) ) {
+			if (ValidationUtils.present(oldTag)) {
 				t.setGlobalcount(t.getGlobalcount() + oldTag.getGlobalcount());
 				t.setUsercount(t.getUsercount() + oldTag.getUsercount());
 			}
-			if( t.getGlobalcount()>=limit ) {
+			if (t.getGlobalcount() >= limit) {
 				mergedList.add(t);
 			} 
 		}
 		
 		// add all tags from src1\src2
-		for( Map.Entry<String, Tag> entry : tagCollector.entrySet() ) {
-			if( entry.getValue().getGlobalcount()>=limit ) {
+		for (final Map.Entry<String, Tag> entry : tagCollector.entrySet()) {
+			if (entry.getValue().getGlobalcount() >= limit) {
 				mergedList.add(entry.getValue());
 			} 
 		}
@@ -260,17 +259,17 @@ public class TagUtils {
 	 * @return the top n tags of the merged list 
 	 */
 	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, SortKey tagOrder, int limit ) {
-		List<Tag> mergedList = new LinkedList<Tag>();
+		final List<Tag> mergedList = new LinkedList<>();
 		
 		log.debug("Merging tag lists (" + src1.size() + "/" + src2.size() + ")and filter by popularity");
 		
 		// collect tags from first tag list
-		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
-		for( Tag t : src1 ) {
+		final Map<String,Tag> tagCollector = new HashMap<>();
+		for (final Tag t : src1) {
 			tagCollector.put(t.getName(), t);
 		}
 		// add tags from second list, adding corresponding counts on collisions
-		for( Tag t : src2 ) {
+		for (final Tag t : src2) {
 			Tag oldTag = tagCollector.remove(t.getName());
 			if( ValidationUtils.present(oldTag) ) {
 				t.setGlobalcount(t.getGlobalcount() + oldTag.getGlobalcount());
@@ -280,14 +279,14 @@ public class TagUtils {
 		}
 		
 		// add all tags from src1\src2
-		for( Map.Entry<String, Tag> entry : tagCollector.entrySet() ) {
+		for (Map.Entry<String, Tag> entry : tagCollector.entrySet()) {
 			mergedList.add(entry.getValue());
 		}
 
 		
 		// sort tags according to tag counts
 		log.debug("Sorting tags...");
-		Collections.sort(mergedList, new TagCountComparator());
+		mergedList.sort(new TagCountComparator());
 		log.debug("Done sorting tags.");
 		
 		// all done
@@ -295,7 +294,7 @@ public class TagUtils {
 	}
 
 	/**
-	 * creates frequent tags
+	 * creates frequent tags list with the given tags
 	 * @param tagNames
 	 * @return
 	 */
