@@ -43,7 +43,7 @@ public interface PictureHandlerFactory {
 	 * @param requestedUserName - name of the requested user
 	 * @return target {@link PictureHandler} implementation
 	 */
-	PictureHandler getPictureHandler(String requestedUserName, User loggedinUser);
+	PictureHandler getPictureHandler(final String requestedUserName, final User loggedinUser);
 
 	/**
 	 * @param requestedUserName

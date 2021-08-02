@@ -52,7 +52,7 @@ public abstract class ExternalPictureHandler extends PictureHandler {
 	 *
 	 * @param requestedUser
 	 */
-	public ExternalPictureHandler(User requestedUser) {
+	public ExternalPictureHandler(final User requestedUser) {
 		super(requestedUser);
 	}
 
@@ -63,20 +63,20 @@ public abstract class ExternalPictureHandler extends PictureHandler {
 	 * @param fileExtension - requested file extension as {@code .xxx} or empty string
 	 * @return URL to picture file
 	 */
-	protected abstract URL getPictureURL(User requestedUser, String fileExtension);
+	protected abstract URL getPictureURL(final User requestedUser, final String fileExtension);
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.picture.PictureHandler#getProfilePictureView(org.bibsonomy.model.User, org.bibsonomy.webapp.command.actions.PictureCommand)
 	 */
 	@Override
-	public View getProfilePictureView(PictureCommand command) {
-		final URL pictureURL = getPictureURL(this.requestedUser, ".jpg");
+	public View getProfilePictureView(final PictureCommand command) {
+		final URL pictureURL = this.getPictureURL(this.requestedUser, ".jpg");
 		
-		final ExtendedRedirectView resultV = new ExtendedRedirectView((present(pictureURL))? pictureURL.toString() : "" );
-		resultV.setContentType( "image/jpg" );
-		resultV.setHttp10Compatible(false);
-		resultV.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
-		return resultV;
+		final ExtendedRedirectView redirectView = new ExtendedRedirectView((present(pictureURL))? pictureURL.toString() : "" );
+		redirectView.setContentType( "image/jpg" );
+		redirectView.setHttp10Compatible(false);
+		redirectView.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
+		return redirectView;
 	}
 
 }

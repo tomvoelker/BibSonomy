@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+/**
+ * FIXME: unused
+ */
 public class CachedCSLRenderer {
 	private static final Log LOG = LogFactory.getLog(CachedCSLRenderer.class);
 

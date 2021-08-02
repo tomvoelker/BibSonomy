@@ -9,6 +9,9 @@ import de.undercouch.citeproc.output.Bibliography;
 
 import java.io.IOException;
 
+/**
+ * @author ???
+ */
 public class CSLWithLinks {
 
 	/**
@@ -32,7 +35,7 @@ public class CSLWithLinks {
 	 * @throws IOException if the underlying JavaScript files or the CSL style
 	 *                     could not be loaded
 	 */
-	static Bibliography makeAdhocBibliography(final String style, LocaleProvider localeProvider, final String outputFormat, final CSLItemData... items) throws IOException {
+	static Bibliography makeAdhocBibliography(final String style, final LocaleProvider localeProvider, final String outputFormat, final CSLItemData... items) throws IOException {
 		final ItemDataProvider provider = new ListItemDataProvider(items);
 		try (final CSL csl = new CSL(provider, localeProvider, style, "en-US", false)) {
 			csl.setConvertLinks(true);
@@ -47,6 +50,4 @@ public class CSLWithLinks {
 			return csl.makeBibliography();
 		}
 	}
-
-
 }

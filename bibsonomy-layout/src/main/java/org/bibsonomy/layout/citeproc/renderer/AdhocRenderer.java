@@ -11,13 +11,14 @@ import org.bibsonomy.model.Post;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @deprecated use {@link CachedCSLRenderer}. This renderer is single threaded and benchmarks have demonstrated that is
- * significant slower
+ * This renderer is single threaded
+ * use {@link CachedCSLRenderer} if you care about performance
  */
 public class AdhocRenderer {
 	private static final Log LOG = LogFactory.getLog(AdhocRenderer.class);
@@ -37,43 +38,42 @@ public class AdhocRenderer {
 		final CSLItemData[] cslItems = Arrays.stream(CSLUtils.convertConcurretlyToCslItemData(posts, addSurroundingTextTags))
 				.map(CSLUtils.CSLItemDataConversionResult::getItemData)
 				.toArray(CSLItemData[]::new);
-
-		Bibliography fullbib = null;
 		try {
-			fullbib = CSLWithLinks.makeAdhocBibliography(cslTemplate, localeProvider, "html", cslItems);
+			final Bibliography bibliography = CSLWithLinks.makeAdhocBibliography(cslTemplate, localeProvider, "html", cslItems);
+			// Each element of the entryIds array correspond with the same element of the entries array.
+			final String[] ids = bibliography.getEntryIds();
+			final String[] entries = bibliography.getEntries();
+			final Map<String, String> idToEntryMap = new HashMap<>();
+			for (int i = 0; i < ids.length; i++) {
+				idToEntryMap.put(ids[i], entries[i]);
+			}
+
+			if (LOG.isDebugEnabled()) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("posts: [");
+				for (final Post<? extends BibTex> p : posts) {
+					sb.append("\"" + p.getResource().getTitle() + "\", ");
+				}
+				sb.append("]");
+				LOG.debug(sb.toString());
+
+				sb = new StringBuilder();
+				sb.append("posts converted to cslItems: [");
+				for (final CSLItemData cslItem : cslItems) {
+					sb.append(cslItem.getId() + " (\"" + cslItem.getTitle() + "\"), ");
+				}
+				sb.append("]");
+				LOG.debug(sb.toString());
+
+				LOG.debug("entryIds: " + Arrays.toString(ids));
+				LOG.debug("entries: " + Arrays.toString(entries));
+			}
+			return idToEntryMap;
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("error creating post rendering using CSL", e);
 		}
 
-		// Each element of the entryIds array correspond with the same element of the entries array.
-		final String[] ids = fullbib.getEntryIds();
-		final String[] entries = fullbib.getEntries();
-		final Map<String, String> idToEntryMap = new HashMap<>();
-		for (int i = 0; i < ids.length; i++) {
-			idToEntryMap.put(ids[i], entries[i]);
-		}
-
-		if (LOG.isDebugEnabled()) {
-			StringBuffer sb = new StringBuffer();
-			sb.append("posts: [");
-			for (final Post<? extends BibTex> p : posts) {
-				sb.append("\"" + p.getResource().getTitle() + "\", ");
-			}
-			sb.append("]");
-			LOG.debug(sb.toString());
-
-			sb = new StringBuffer();
-			sb.append("posts converted to cslItems: [");
-			for (final CSLItemData cslItem : cslItems) {
-				sb.append(cslItem.getId() + " (\"" + cslItem.getTitle() + "\"), ");
-			}
-			sb.append("]");
-			LOG.debug(sb.toString());
-
-			LOG.debug("entryIds: " + Arrays.toString(ids));
-			LOG.debug("entries: " + Arrays.toString(entries));
-		}
-		return idToEntryMap;
+		return Collections.emptyMap();
 	}
 
 }

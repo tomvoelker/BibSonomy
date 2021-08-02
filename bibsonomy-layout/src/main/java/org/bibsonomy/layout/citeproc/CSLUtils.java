@@ -1,5 +1,7 @@
 package org.bibsonomy.layout.citeproc;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import de.undercouch.citeproc.bibtex.DateParser;
 import de.undercouch.citeproc.bibtex.NameParser;
 import de.undercouch.citeproc.bibtex.PageParser;
@@ -7,29 +9,36 @@ import de.undercouch.citeproc.bibtex.PageRange;
 import de.undercouch.citeproc.csl.*;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
-import org.jbibtex.*;
+import org.jbibtex.BibTeXEntry;
+import org.jbibtex.LaTeXObject;
+import org.jbibtex.LaTeXParser;
+import org.jbibtex.LaTeXPrinter;
+import org.jbibtex.ParseException;
+import org.jbibtex.StringValue;
+import org.jbibtex.TokenMgrException;
 
 import java.io.StringReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
+ *
+ * FIXME: this class is a mess, was copied from somewhere else, some methods should not be here and are duplicating
+ * already existing methods
+ *
  * Utils for the CSL renderer
  *
- * @author dzo
+ * @author mho
  * @author ag
  */
 public final class CSLUtils {
@@ -38,7 +47,7 @@ public final class CSLUtils {
 	/**
 	 * BibTex entry type -> CSL type
 	 */
-	private static final Map<String, CSLType> TYPEMAP;
+	private static final Map<String, CSLType> TYPEMAP = new HashMap<>();
 
 	/**
 	 * To convert from LaTeX string to user (normal) String.
@@ -54,8 +63,6 @@ public final class CSLUtils {
 	public static String CSL_TITLE_REPLACE_END_TAG = "CSLTITLEEND";
 
 	static {
-		TYPEMAP = new HashMap<>();
-
 		TYPEMAP.put(BibTexUtils.ARTICLE, CSLType.ARTICLE_JOURNAL);
 
 		TYPEMAP.put(BibTexUtils.BOOK, CSLType.BOOK);
@@ -147,12 +154,10 @@ public final class CSLUtils {
 		try {
 			publication.parseMiscField();
 		} catch (final InvalidModelException e) {
-			// MHO DISABLED
-			//result.addIssue(
-			//		Messages.get().container(Messages.ERR_PARSING_MISC_2, getFriendlyName(post), e.getMessage()));
+			// ignore
 		}
 
-		final String id = calculatePostUID(post);
+		final String id = getPostUID(post);
 		final CSLItemDataBuilder cslDataBuilder = new CSLItemDataBuilder();
 		final CSLName[] editors = getCSLNames(publication.getEditor(), addSurroundingTextTags);
 		cslDataBuilder.id(id);
@@ -168,9 +173,9 @@ public final class CSLUtils {
 		final String address = publication.getAddress();
 		if (present(venue)) {
 			cslDataBuilder.eventPlace(BibTexUtils.cleanBibTex(venue));
-			final String eventtitle = publication.getMiscField("eventtitle");
-			if (present(eventtitle)) {
-				cslDataBuilder.event(BibTexUtils.cleanBibTex(eventtitle));
+			final String eventTitle = publication.getMiscField("eventTitle");
+			if (present(eventTitle)) {
+				cslDataBuilder.event(BibTexUtils.cleanBibTex(eventTitle));
 			}
 		} else if (present(location)) {
 			final String cleanedLocation = BibTexUtils.cleanBibTex(location);
@@ -375,29 +380,11 @@ public final class CSLUtils {
 	}
 
 	/**
-	 * Builds a string to help identifying a BibTex entry, so that error messages can help the user identify the
-	 * corresponding PUMA entries
-	 *
-	 * @return user-friendly string identifying a PUMA entry
-	 */
-	public static String getFriendlyName(final Post<? extends BibTex> post) {
-		final BibTex bibTex = post.getResource();
-		final String authors = (null == bibTex.getAuthor()) ? "-"
-				: bibTex.getAuthor().stream().map(author -> BibTexUtils.cleanBibTex(author.toString())).collect(Collectors.joining(","));
-
-		// TODO: print correct base url (puma.ub.uni-stuttgart.de)
-		return String.format("Title \"%s\" by %s", BibTexUtils.cleanBibTex(bibTex.getTitle()), authors)
-				+ String.format("(<a target=\"_blank\" href=\"%s\">%s</a>)",
-				"https://puma.ub.uni-stuttgart.de/bibtex/" + bibTex.getIntraHash() + "/" + post.getUser().getName(),
-				bibTex.getIntraHash() + "/" + post.getUser().getName());
-	}
-
-	/**
 	 * Calculates a unique identifier (UID) for a bibtex post. PUMA allows copies of the same bibtex per user.
 	 *
 	 * @return unique bibtex identifier.
 	 */
-	public static String calculatePostUID(final Post<? extends BibTex> post) {
+	public static String getPostUID(final Post<? extends BibTex> post) {
 		//return post.getResource().getIntraHash() + post.getUser().getName().hashCode();
 		return post.getResource().getIntraHash();
 	}
@@ -485,9 +472,6 @@ public final class CSLUtils {
 			this.itemData = itemData;
 		}
 	}
-
-
-
 
 	public static String replacePlaceholdersFromCSLRendering(String renderedCSL, Post<? extends BibTex> post, URLGenerator urlGenerator) {
 

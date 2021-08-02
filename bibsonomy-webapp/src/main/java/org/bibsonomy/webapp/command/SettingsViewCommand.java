@@ -249,8 +249,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * All CSL styles the system offers
 	 */
 	private List<CSLStyle> personPageCslFiles = null;
-
-	private boolean crisEnabled;
 	
 
 	/**
@@ -263,7 +261,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		this.addTab(GROUP_IDX, "navi.groups");
-		//OAuth tab added in SettingsPageController.java
+		// OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
@@ -1009,12 +1007,4 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.personPageCslFiles = personPageCslFiles;
 	}
 
-
-	public boolean isCrisEnabled() {
-		return crisEnabled;
-	}
-
-	public void setCrisEnabled(boolean crisEnabled) {
-		this.crisEnabled = crisEnabled;
-	}
 }
