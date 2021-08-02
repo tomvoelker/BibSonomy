@@ -109,15 +109,27 @@ public class SortUtils {
 			while (sortKeysIt.hasNext() && sortOrderIt.hasNext()) {
 				sortCriteria.add(new SortCriteria(sortKeysIt.next(), sortOrderIt.next()));
 			}
-
 		} else {
 			// Not enough sort orders, take first sort order for all keys
-			SortOrder sortOrder = sortOrders.get(0);
+			final SortOrder sortOrder = sortOrders.get(0);
 			for (SortKey sortKey : sortKeys) {
 				sortCriteria.add(new SortCriteria(sortKey, sortOrder));
 			}
 		}
 		return sortCriteria;
+	}
+
+	/**
+	 * util method to extract all sort keys form the sort criteria list
+	 * @param sortCriteria
+	 * @return
+	 */
+	public static List<SortKey> getSortKeys(final List<SortCriteria> sortCriteria) {
+		final List<SortKey> sortKeys = new LinkedList<>();
+		for (final SortCriteria criteria : sortCriteria) {
+			sortKeys.add(criteria.getSortKey());
+		}
+		return sortKeys;
 	}
 
 	/**
@@ -127,12 +139,21 @@ public class SortUtils {
 	 * @param sortCriteria
 	 * @return list of sort keys separated by delimiter
 	 */
-	public static String getSortKeys(List<SortCriteria> sortCriteria) {
-		final List<String> sortKeys = new LinkedList<>();
+	public static String getSortKeysAsString(final List<SortCriteria> sortCriteria) {
+		return StringUtils.implodeStringCollection(getSortKeys(sortCriteria), SORT_KEY_DELIMITER);
+	}
+
+	/**
+	 * util method to extract all sort orders from a list of sort criteria
+	 * @param sortCriteria the list of sort criteria
+	 * @return the sort orders
+	 */
+	public static List<SortOrder> getSortOrders(final List<SortCriteria> sortCriteria) {
+		final List<SortOrder> sortOrders = new LinkedList<>();
 		for (final SortCriteria criteria : sortCriteria) {
-			sortKeys.add(criteria.getSortKey().toString());
+			sortOrders.add(criteria.getSortOrder());
 		}
-		return StringUtils.implodeStringArray(sortKeys.toArray(), SORT_KEY_DELIMITER);
+		return sortOrders;
 	}
 
 	/**
@@ -142,12 +163,8 @@ public class SortUtils {
 	 * @param sortCriteria
 	 * @return list of sort order separated by delimiter
 	 */
-	public static String getSortOrders(List<SortCriteria> sortCriteria) {
-		final List<String> sortOrders = new LinkedList<>();
-		for (final SortCriteria criteria : sortCriteria) {
-			sortOrders.add(criteria.getSortOrder().toString());
-		}
-		return StringUtils.implodeStringArray(sortOrders.toArray(), SORT_ORDER_DELIMITER);
+	public static String getSortOrdersAsString(final List<SortCriteria> sortCriteria) {
+		return StringUtils.implodeStringCollection(getSortOrders(sortCriteria), SORT_ORDER_DELIMITER);
 	}
 
 	/**

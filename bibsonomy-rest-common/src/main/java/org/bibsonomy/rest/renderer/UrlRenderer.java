@@ -926,8 +926,8 @@ public class UrlRenderer {
 		}
 
 		if (present(sortCriteria)) {
-			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, SortUtils.getSortKeys(sortCriteria));
-			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, SortUtils.getSortOrders(sortCriteria));
+			urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, SortUtils.getSortKeysAsString(sortCriteria));
+			urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, SortUtils.getSortOrdersAsString(sortCriteria));
 		}
 
 		if (present(search)) {

@@ -25,7 +25,7 @@ public class SortCriteria {
 	 * @param sortKey
 	 * @param sortOrder
 	 */
-	public SortCriteria(SortKey sortKey, SortOrder sortOrder) {
+	public SortCriteria(final SortKey sortKey, final SortOrder sortOrder) {
 		this.sortKey = sortKey;
 		this.sortOrder = sortOrder;
 	}

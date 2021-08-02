@@ -28,11 +28,18 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -55,7 +62,28 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final PostQuery<?> query = new PostQuery<>(this.resourceType);
+		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with
+		// a smarter parameter object to keep parameter lists and sorting clear)
+		final List<SortKey> sortKeys = SortUtils.getSortKeys(this.sortCriteria);
+		final List<SortOrder> sortOrders = SortUtils.getSortOrders(this.sortCriteria);
+
+		if ((this.resourceType != null) && BibTex.class.isAssignableFrom(this.resourceType)) {
+			final List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) this.resourceType);
+
+			BibTexUtils.sortBibTexList(bibtexList, sortKeys, sortOrders);
+			return bibtexList;
+		} else if ((resourceType != null) && Bookmark.class.isAssignableFrom(resourceType)) {
+			final List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) this.resourceType);
+			BookmarkUtils.sortBookmarkList(bookmarkList, sortKeys, sortOrders);
+			return bookmarkList;
+		}
+
+		// return other resource types without ordering
+		return getList(resourceType);
+	}
+
+	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
+		final PostQuery<T> query = new PostQuery<>(resourceType);
 		query.setGrouping(this.grouping);
 		query.setGroupingName(this.groupingValue);
 		query.setTags(this.tags);
@@ -68,4 +96,5 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 		query.setEnd(view.getEndValue());
 		return this.getLogic().getPosts(query);
 	}
+
 }

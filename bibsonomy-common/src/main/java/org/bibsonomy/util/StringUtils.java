@@ -375,7 +375,7 @@ public class StringUtils {
 
 		// check input, init LinkedHashMap
 		// LinkedHashMap has consistent iteration order
-		final Map<String, String> keyValPairs = new LinkedHashMap<String, String>();
+		final Map<String, String> keyValPairs = new LinkedHashMap<>();
 
 		if (!present(input)) {
 			return keyValPairs;

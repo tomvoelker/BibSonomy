@@ -51,7 +51,7 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.sortCriteria);
+		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC));
 	}
 
 	@Override
