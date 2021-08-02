@@ -45,6 +45,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
@@ -66,6 +67,7 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	private final String personId;
 	private final List<String> tags;
 	private final String search;
+	private final AdditionalKey additionalKey;
 
 	// TODO REMOVE ASAP
 	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
@@ -75,11 +77,27 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	 * @param context
 	 * @param personId
 	 */
-	public GetPersonPostsStrategy(Context context, String personId) {
+	public GetPersonPostsStrategy(final Context context, final String personId) {
 		super(context);
 		this.personId = personId;
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
+		this.additionalKey = null;
+	}
+
+	/**
+	 * Strategy constructor for person posts identified by an additional person key.
+	 *
+	 * @param context
+	 * @param keyName	the additional key name
+	 * @param keyValue	the additional key value
+	 */
+	public GetPersonPostsStrategy(final Context context, final String keyName, final String keyValue) {
+		super(context);
+		this.personId = null;
+		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
+		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
+		this.additionalKey = new AdditionalKey(keyName, keyValue);
 	}
 
 	@Override
@@ -89,7 +107,12 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, personId);
+		Person person = null;
+		if (present(this.personId)) {
+			person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
+		} else if (present(this.additionalKey)) {
+			person = this.getLogic().getPersonByAdditionalKey(this.additionalKey.getKeyName(), this.additionalKey.getKeyValue());
+		}
 		if (present(person)) {
 			// check, if a user has claimed this person
 			if (present(person.getUser())) {
@@ -151,6 +174,9 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
+		if (present(this.additionalKey)) {
+			return this.getUrlRenderer().createUrlBuilderForPersonPostsByAdditionalKey(this.additionalKey.getKeyName(), this.additionalKey.getKeyValue());
+		}
 		return this.getUrlRenderer().createUrlBuilderForPersonPosts(this.personId);
 	}
 

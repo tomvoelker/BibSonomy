@@ -26,6 +26,19 @@
  */
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
@@ -61,7 +74,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.Gender;
-import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -71,19 +83,6 @@ import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.util.ObjectUtils;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * database manger for handling {@link Person} related actions

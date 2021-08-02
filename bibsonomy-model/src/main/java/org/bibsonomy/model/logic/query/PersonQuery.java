@@ -3,6 +3,7 @@ package org.bibsonomy.model.logic.query;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.enums.PersonOrder;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
@@ -22,6 +23,8 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	private Group organization;
 	/** find the person claimed by the specified user */
 	private String userName;
+	/** additiona person key */
+	private AdditionalKey additionalKey;
 
 	/** the query provided is only a prefix, perform a prefix search */
 	private boolean usePrefixMatch = false;
@@ -139,6 +142,20 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the additionalKey
+	 */
+	public AdditionalKey getAdditionalKey() {
+		return additionalKey;
+	}
+
+	/**
+	 * @param additionalKey the additionalKey to set
+	 */
+	public void setAdditionalKey(AdditionalKey additionalKey) {
+		this.additionalKey = additionalKey;
 	}
 
 	/**

@@ -35,8 +35,6 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.persons.DeletePersonResourceRelationStrategy;
 import org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy;
-import org.bibsonomy.rest.strategy.persons.GetPersonByAdditionalKeyStrategy;
-import org.bibsonomy.rest.strategy.persons.GetPersonPostsByAdditionalKeyStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonPostsStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
 import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
@@ -169,9 +167,9 @@ public class PersonsHandler implements ContextHandler {
 	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod, String keyName, String keyValue) {
 		switch (httpMethod) {
 			case GET:
-				return new GetPersonByAdditionalKeyStrategy(context, keyName, keyValue);
+				return new GetListOfPersonsStrategy(context, keyName, keyValue);
 			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonByKeyValue");
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonByAdditionalKey");
 		}
 	}
 
@@ -236,9 +234,9 @@ public class PersonsHandler implements ContextHandler {
 	private Strategy createPersonPostsStrategy(Context context, HttpMethod httpMethod, String keyName, String keyValue) {
 		switch (httpMethod) {
 			case GET:
-				return new GetPersonPostsByAdditionalKeyStrategy(context, keyName, keyValue);
+				return new GetPersonPostsStrategy(context, keyName, keyValue);
 			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonPostsByKeyValue");
+				throw new UnsupportedHttpMethodException(httpMethod, "PersonPostsByAdditionalKey");
 		}
 	}
 

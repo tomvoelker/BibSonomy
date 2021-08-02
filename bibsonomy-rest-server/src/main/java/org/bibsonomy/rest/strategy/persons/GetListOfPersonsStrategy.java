@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -17,6 +18,7 @@ import org.bibsonomy.util.UrlBuilder;
 public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Person>> {
 
 	private final String userName;
+	private final AdditionalKey additionalKey;
 
 	/**
 	 * @param context
@@ -24,6 +26,20 @@ public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Perso
 	public GetListOfPersonsStrategy(final Context context) {
 		super(context);
 		this.userName = context.getStringAttribute(GroupingEntity.USER.toString().toLowerCase(), null);
+		this.additionalKey = null;
+	}
+
+	/**
+	 * Strategy constructor for retrieving persons with an additional person key.
+	 *
+	 * @param context
+	 * @param keyName the additional key name
+	 * @param keyValue the additional key value
+	 */
+	public GetListOfPersonsStrategy(final Context context, final String keyName, final String keyValue) {
+		super(context);
+		this.userName = null;
+		this.additionalKey = new AdditionalKey(keyName, keyValue);
 	}
 
 	@Override
@@ -37,6 +53,7 @@ public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Perso
 		query.setStart(this.getView().getStartValue());
 		query.setEnd(this.getView().getEndValue());
 		query.setUserName(this.userName);
+		query.setAdditionalKey(this.additionalKey);
 		return this.getLogic().getPersons(query);
 	}
 
