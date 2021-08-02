@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -105,15 +106,11 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 
 				for (final Person person : persons) {
 					final BibTex publication = post.getResource();
-					final JobInformation authorInfo = this.autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
-					if (present(authorInfo)) {
-						jobInformation.add(authorInfo);
-					}
+					final Optional<JobInformation> authorInfo = this.autoInsertPersonResourceRelation(post, person, publication.getAuthor(), PersonResourceRelationType.AUTHOR, loggedinUser, session);
+					authorInfo.ifPresent(jobInformation::add);
 
-					final JobInformation editorInfo = this.autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
-					if (present(editorInfo)) {
-						jobInformation.add(editorInfo);
-					}
+					final Optional<JobInformation> editorInfo = this.autoInsertPersonResourceRelation(post, person, publication.getEditor(), PersonResourceRelationType.EDITOR, loggedinUser, session);
+					editorInfo.ifPresent(jobInformation::add);
 				}
 			}
 		}
@@ -151,7 +148,7 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 	 * @param loggedinUser
 	 * @param session
 	 */
-	private JobInformation autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
+	private Optional<JobInformation> autoInsertPersonResourceRelation(final Post<? extends BibTex> post, final Person person, final List<PersonName> personList, final PersonResourceRelationType relationType, final User loggedinUser, final DBSession session) {
 		final List<PersonName> personNames = person.getNames();
 		final SortedSet<Integer> foundPersons = new TreeSet<>();
 		if (present(personNames)) {
@@ -170,12 +167,12 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 
 			final boolean added = this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
 			if (added) {
-				return new PersonResourceLinkInformationAdded(resourcePersonRelation);
+				return Optional.of(new PersonResourceLinkInformationAdded(resourcePersonRelation));
 			}
 		} else if (foundPersons.size() != 0) {
 			log.warn("found more than one " + relationType.toString().toLowerCase() + " that could be the person " + post.getResource().getInterHash() + " " + PersonNameUtils.serializePersonNames(personNames));
 		}
 
-		return null;
+		return Optional.empty();
 	}
 }
