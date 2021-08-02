@@ -31,7 +31,7 @@ package org.bibsonomy.model.enums;
  *
  * @author dzo
  */
-public enum ProjectOrder {
+public enum ProjectSortKey {
 
 	/** title of a {@link org.bibsonomy.model.cris.Project} */
 	TITLE,

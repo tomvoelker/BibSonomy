@@ -9,7 +9,7 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.chain.group.GroupChainElement;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
 
 /**
@@ -34,6 +34,6 @@ public class GetGroupsBySearch extends GroupChainElement {
 	@Override
 	protected boolean canHandle(final QueryAdapter<GroupQuery> param) {
 		final GroupQuery query = param.getQuery();
-		return GroupOrder.GROUP_REALNAME.equals(query.getGroupOrder()) || present(query.getSearch()) || present(query.getPrefix());
+		return GroupSortKey.GROUP_REALNAME.equals(query.getGroupOrder()) || present(query.getSearch()) || present(query.getPrefix());
 	}
 }

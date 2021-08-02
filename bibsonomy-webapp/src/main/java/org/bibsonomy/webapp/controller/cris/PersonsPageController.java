@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.PersonOrder;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -46,7 +46,7 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		final int personListStart = personListCommand.getStart();
 		query.setStart(personListStart);
 		query.setEnd(personListStart + personListCommand.getEntriesPerPage());
-		query.setOrder(present(search) ? null : PersonOrder.MAIN_NAME_LAST_NAME);
+		query.setOrder(present(search) ? null : PersonSortKey.MAIN_NAME_LAST_NAME);
 		query.setUsePrefixMatch(true);
 		if (!isUserLoggedin || !command.isShowAllPersons()) {
 			query.setCollege(this.crisCollege);

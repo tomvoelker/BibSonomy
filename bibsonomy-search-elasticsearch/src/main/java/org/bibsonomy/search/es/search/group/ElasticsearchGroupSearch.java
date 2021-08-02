@@ -13,7 +13,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.search.es.index.converter.group.GroupFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
@@ -50,7 +50,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	@Override
 	protected List<Pair<String, SortOrder>> getSortOrder(final GroupQuery query) {
 		final SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final GroupOrder order = query.getGroupOrder();
+		final GroupSortKey order = query.getGroupOrder();
 		if (present(order)) {
 			switch (order) {
 				case GROUP_NAME:

@@ -5,7 +5,7 @@ package org.bibsonomy.model.enums;
  *
  * @author dzo
  */
-public enum PersonOrder {
+public enum PersonSortKey {
 
 	/** order by rank (e.g. from the full text search) */
 	RANK,

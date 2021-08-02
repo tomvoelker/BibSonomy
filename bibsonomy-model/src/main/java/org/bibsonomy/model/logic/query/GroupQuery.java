@@ -2,7 +2,7 @@ package org.bibsonomy.model.logic.query;
 
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
-import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.querybuilder.BasicQueryBuilder;
 
 /**
@@ -14,7 +14,7 @@ import org.bibsonomy.model.logic.querybuilder.BasicQueryBuilder;
  */
 public class GroupQuery extends BasicQuery {
 
-	private final GroupOrder groupOrder;
+	private final GroupSortKey groupSortKey;
 	/**
 	 * the sort order of the order
 	 */
@@ -31,7 +31,7 @@ public class GroupQuery extends BasicQuery {
 	 * @param search         search terms for the full text search
 	 * @param usePrefixMatch flag to indicate that the last token should be matched as a prefix
 	 * @param phraseMatch    the search terms represent a phrase where the tokens should appear in the order entered
-	 * @param groupOrder     the order of the found groups
+	 * @param groupSortKey     the order of the found groups
 	 * @param sortOrder      the sort order of the order
 	 * @param pending        if set to <code>true</code> this query will retrieve pending groups, otherwise only activated groups will be retrieved.
 	 * @param userName       if set the query is restricted to groups created by the user (applies only to pending groups).
@@ -40,14 +40,14 @@ public class GroupQuery extends BasicQuery {
 	 * @param start          start index of the retrieved result set.
 	 * @param end            end index of the retrieved result set.
 	 */
-	public GroupQuery(String search, boolean usePrefixMatch, boolean phraseMatch, GroupOrder groupOrder, SortOrder sortOrder, Prefix prefix, boolean pending, String userName, String externalId, Boolean organization, int start, int end) {
+	public GroupQuery(String search, boolean usePrefixMatch, boolean phraseMatch, GroupSortKey groupSortKey, SortOrder sortOrder, Prefix prefix, boolean pending, String userName, String externalId, Boolean organization, int start, int end) {
 		super();
 		this.setSearch(search);
 		this.setUsePrefixMatch(usePrefixMatch);
 		this.setPhraseMatch(phraseMatch);
 		this.setStart(start);
 		this.setEnd(end);
-		this.groupOrder = groupOrder;
+		this.groupSortKey = groupSortKey;
 		this.sortOrder = sortOrder;
 		this.prefix = prefix;
 		this.pending = pending;
@@ -98,8 +98,8 @@ public class GroupQuery extends BasicQuery {
 	/**
 	 * @return the groupOrder
 	 */
-	public GroupOrder getGroupOrder() {
-		return groupOrder;
+	public GroupSortKey getGroupOrder() {
+		return groupSortKey;
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class GroupQuery extends BasicQuery {
 	 * group query builder
 	 */
 	public final static class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
-		private GroupOrder groupOrder = GroupOrder.GROUP_NAME;
+		private GroupSortKey groupSortKey = GroupSortKey.GROUP_NAME;
 		private SortOrder sortOrder = SortOrder.ASC;
 		private Prefix prefix;
 		private boolean pending;
@@ -126,8 +126,8 @@ public class GroupQuery extends BasicQuery {
 		 * @param order the group order
 		 * @return the group builder
 		 */
-		public GroupQueryBuilder order(final GroupOrder order) {
-			this.groupOrder = order;
+		public GroupQueryBuilder order(final GroupSortKey order) {
+			this.groupSortKey = order;
 			return this;
 		}
 
@@ -196,7 +196,7 @@ public class GroupQuery extends BasicQuery {
 		 * @return the group query
 		 */
 		public GroupQuery build() {
-			return new GroupQuery(search, this.usePrefixMatch, this.phraseMatch, groupOrder, sortOrder, prefix, pending,
+			return new GroupQuery(search, this.usePrefixMatch, this.phraseMatch, groupSortKey, sortOrder, prefix, pending,
 							userName, externalId, organization, start, end);
 		}
 	}

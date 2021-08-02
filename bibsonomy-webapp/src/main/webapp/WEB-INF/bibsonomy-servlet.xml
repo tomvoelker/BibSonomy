@@ -896,7 +896,7 @@
 							<list>
 								<value>search</value>
 								<value>prefix</value>
-								<value>projectOrder</value>
+								<value>projectSortKey</value>
 								<value>projectStatus</value>
 								<value>sortOrder</value>
 								<value>projects.start</value>

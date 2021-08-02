@@ -66,16 +66,16 @@
 								aria-expanded="false">
 							<fontawesome:icon icon="sort-amount-asc" spaceAfter="5"/>
 							<fmt:message key="post.meta.sort.criterion"/><c:out value=": "/>
-							<fmt:message key="project.sortOrder.${command.projectOrder}" />
+							<fmt:message key="project.sortOrder.${command.projectSortKey}" />
 							<c:out value=" " />
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
 							<spring:eval expression="T(org.bibsonomy.model.enums.ProjectOrder).values()" var="orderValues" />
 							<c:forEach var="orderValue" items="${orderValues}">
-								<c:set var="orderSet" value="${command.projectOrder eq orderValue}" />
+								<c:set var="orderSet" value="${command.projectSortKey eq orderValue}" />
 								<li class="${orderSet ? 'disabled' : ''}">
-									<c:set var="projectUrl" value="${mtl:setParam(requPathAndQuery, 'projectOrder', orderValue)}" />
+									<c:set var="projectUrl" value="${mtl:setParam(requPathAndQuery, 'projectSortKey', orderValue)}" />
 									<a href="${projectUrl}">
 										<c:if test="${orderSet}">
 											<fontawesome:icon icon="check" spaceAfter="5" size="xs" />

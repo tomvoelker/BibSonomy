@@ -2,7 +2,7 @@ package org.bibsonomy.model.logic.query;
 
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.enums.PersonOrder;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
@@ -18,7 +18,7 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	private Prefix prefix;
 	private int start = 0;
 	private int end = 20;
-	private PersonOrder order;
+	private PersonSortKey order;
 	/** the organization to filter for */
 	private Group organization;
 	/** find the person claimed by the specified user */
@@ -105,14 +105,14 @@ public class PersonQuery extends PersonSuggestionQueryBuilder implements Paginat
 	/**
 	 * @return the order
 	 */
-	public PersonOrder getOrder() {
+	public PersonSortKey getOrder() {
 		return order;
 	}
 
 	/**
 	 * @param order the order to set
 	 */
-	public void setOrder(PersonOrder order) {
+	public void setOrder(PersonSortKey order) {
 		this.order = order;
 	}
 

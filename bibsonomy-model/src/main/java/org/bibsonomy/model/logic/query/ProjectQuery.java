@@ -30,7 +30,7 @@ import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.querybuilder.BasicQueryBuilder;
 
@@ -47,7 +47,7 @@ public class ProjectQuery extends BasicQuery {
 	/**
 	 * the order of the projects
 	 */
-	private final ProjectOrder order;
+	private final ProjectSortKey order;
 	/**
 	 * the sort order of the order
 	 */
@@ -82,7 +82,7 @@ public class ProjectQuery extends BasicQuery {
 	 * @param person
 	 * @param organization
 	 */
-	protected ProjectQuery(final String search, final Prefix prefix, final ProjectOrder order, SortOrder sortOrder,
+	protected ProjectQuery(final String search, final Prefix prefix, final ProjectSortKey order, SortOrder sortOrder,
 												 ProjectStatus projectStatus, String type, String sponsor,
 												 int start, int end, String externalId, Date startDate, Date endDate,
 												 Person person, Group organization) {
@@ -125,7 +125,7 @@ public class ProjectQuery extends BasicQuery {
 	/**
 	 * @return the order
 	 */
-	public ProjectOrder getOrder() {
+	public ProjectSortKey getOrder() {
 		return order;
 	}
 
@@ -180,9 +180,9 @@ public class ProjectQuery extends BasicQuery {
 
 	public static class ProjectQueryBuilder extends BasicQueryBuilder<ProjectQueryBuilder> {
 		/**
-		 * the order of the projects, default {@link ProjectOrder#TITLE}
+		 * the order of the projects, default {@link ProjectSortKey#TITLE}
 		 */
-		private ProjectOrder order = ProjectOrder.TITLE;
+		private ProjectSortKey order = ProjectSortKey.TITLE;
 
 		/**
 		 * the sort order of the order
@@ -275,7 +275,7 @@ public class ProjectQuery extends BasicQuery {
 		 * @param order
 		 * @return
 		 */
-		public ProjectQueryBuilder order(final ProjectOrder order) {
+		public ProjectQueryBuilder order(final ProjectSortKey order) {
 			this.order = order;
 			return this;
 		}

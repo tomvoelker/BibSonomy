@@ -2,7 +2,7 @@ package org.bibsonomy.database.params;
 
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 
 import java.util.Date;
@@ -24,7 +24,7 @@ public class ProjectParam extends GenericParam {
 
 	private ProjectStatus projectStatus;
 
-	private ProjectOrder projectOrder;
+	private ProjectSortKey projectSortKey;
 
 	private SortOrder sortOrder;
 
@@ -101,15 +101,15 @@ public class ProjectParam extends GenericParam {
 	/**
 	 * @return the projectOrder
 	 */
-	public ProjectOrder getProjectOrder() {
-		return projectOrder;
+	public ProjectSortKey getProjectOrder() {
+		return projectSortKey;
 	}
 
 	/**
-	 * @param projectOrder the projectOrder to set
+	 * @param projectSortKey the projectOrder to set
 	 */
-	public void setProjectOrder(ProjectOrder projectOrder) {
-		this.projectOrder = projectOrder;
+	public void setProjectOrder(ProjectSortKey projectSortKey) {
+		this.projectSortKey = projectSortKey;
 	}
 
 	/**

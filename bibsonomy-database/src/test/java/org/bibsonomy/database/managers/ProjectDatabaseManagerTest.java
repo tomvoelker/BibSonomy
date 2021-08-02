@@ -15,7 +15,7 @@ import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.statistics.Statistics;
 import org.joda.time.DateTime;
@@ -61,24 +61,24 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void testGetAllProjects() {
-		final List<Project> allProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 0, this.dbSession);
+		final List<Project> allProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.TITLE, SortOrder.ASC, 1, 0, this.dbSession);
 		assertEquals(1, allProjects.size());
 
 		final Project firstProject = allProjects.iterator().next();
 		assertEquals("posts", firstProject.getExternalId());
 
 		// test order
-		final List<Project> allProjectsOrderedByStartDate = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.START_DATE, SortOrder.DESC, 1, 0, this.dbSession);
+		final List<Project> allProjectsOrderedByStartDate = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.START_DATE, SortOrder.DESC, 1, 0, this.dbSession);
 		final Project firstProjectByDate = allProjectsOrderedByStartDate.iterator().next();
 		assertEquals("posts_ii", firstProjectByDate.getExternalId());
 
-		final List<Project> allOtherProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 1, this.dbSession);
+		final List<Project> allOtherProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.TITLE, SortOrder.ASC, 1, 1, this.dbSession);
 		assertEquals(1, allOtherProjects.size());
 
 		final Project secondProject = allOtherProjects.iterator().next();
 		assertEquals("posts_ii", secondProject.getExternalId());
 
-		final List<Project> allOtherProjects2 = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 2, this.dbSession);
+		final List<Project> allOtherProjects2 = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.TITLE, SortOrder.ASC, 1, 2, this.dbSession);
 		assertEquals(0, allOtherProjects2.size());
 	}
 

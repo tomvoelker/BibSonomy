@@ -30,7 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -59,7 +59,7 @@ public class GroupsPageController extends SingleResourceListController implement
 		 */
 		final String search = command.getSearch();
 		final boolean searchPresent = present(search);
-		final GroupOrder order = searchPresent ? GroupOrder.RANK : GroupOrder.GROUP_REALNAME;
+		final GroupSortKey order = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
 		final GroupQuery groupQuery = GroupQuery.builder()
 						.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())

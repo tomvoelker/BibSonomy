@@ -1,7 +1,7 @@
 package org.bibsonomy.webapp.command.cris;
 
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.webapp.command.EntitySearchAndFilterCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -17,20 +17,20 @@ public class ProjectsPageCommand extends EntitySearchAndFilterCommand {
 
 	private ProjectStatus projectStatus = ProjectStatus.RUNNING;
 
-	private ProjectOrder projectOrder = ProjectOrder.TITLE;
+	private ProjectSortKey projectSortKey = ProjectSortKey.TITLE;
 
 	/**
 	 * @return the projectOrder
 	 */
-	public ProjectOrder getProjectOrder() {
-		return projectOrder;
+	public ProjectSortKey getProjectOrder() {
+		return projectSortKey;
 	}
 
 	/**
-	 * @param projectOrder the projectOrder to set
+	 * @param projectSortKey the projectOrder to set
 	 */
-	public void setProjectOrder(ProjectOrder projectOrder) {
-		this.projectOrder = projectOrder;
+	public void setProjectOrder(ProjectSortKey projectSortKey) {
+		this.projectSortKey = projectSortKey;
 	}
 
 	/**

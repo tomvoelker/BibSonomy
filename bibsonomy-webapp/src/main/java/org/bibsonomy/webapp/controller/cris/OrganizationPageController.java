@@ -12,7 +12,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.PersonOrder;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
@@ -78,7 +78,7 @@ public class OrganizationPageController implements MinimalisticController<Organi
 		final ListCommand<Person> personsListCommand = command.getPersons();
 		final PersonQuery personOrganizationQuery = new PersonQuery();
 		personOrganizationQuery.setOrganization(group);
-		personOrganizationQuery.setOrder(PersonOrder.MAIN_NAME_LAST_NAME);
+		personOrganizationQuery.setOrder(PersonSortKey.MAIN_NAME_LAST_NAME);
 		final int personStart = personsListCommand.getStart();
 		personOrganizationQuery.setStart(personStart);
 		personOrganizationQuery.setEnd(personStart + personsListCommand.getEntriesPerPage());

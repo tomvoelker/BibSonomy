@@ -4,7 +4,7 @@ package org.bibsonomy.model.enums;
  * the order of the group
  * @author dzo
  */
-public enum GroupOrder {
+public enum GroupSortKey {
 	/** sort by the group name */
 	GROUP_NAME,
 

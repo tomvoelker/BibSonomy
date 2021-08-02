@@ -15,7 +15,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.PersonOrder;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
@@ -222,7 +222,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
-		final PersonOrder order = query.getOrder();
+		final PersonSortKey order = query.getOrder();
 		if (present(order)) {
 			switch (order) {
 				case RANK:

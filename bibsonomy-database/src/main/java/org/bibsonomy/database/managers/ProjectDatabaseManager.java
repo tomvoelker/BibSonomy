@@ -20,7 +20,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
@@ -259,7 +259,7 @@ public class ProjectDatabaseManager extends AbstractDatabaseManager implements S
 	 * @param session
 	 * @return
 	 */
-	public List<Project> getAllProjects(final ProjectStatus projectStatus, final ProjectOrder order, SortOrder sortOrder, final int limit, final int offset, final DBSession session) {
+	public List<Project> getAllProjects(final ProjectStatus projectStatus, final ProjectSortKey order, SortOrder sortOrder, final int limit, final int offset, final DBSession session) {
 		final ProjectParam param = new ProjectParam();
 		param.setProjectStatus(projectStatus);
 		param.setProjectOrder(order);

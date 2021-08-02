@@ -27,33 +27,39 @@
 
 package org.bibsonomy.model.enums;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * FIXME: rename! has nothing to do with the style of the site,
+ * only the source what publications are display on the person page
+ *
+ * @author kchoong
+ */
 public enum PersonPostsStyle {
     GOLDSTANDARD(0),
     MYOWN(1);
 
     private final int value;
-    private static Map<Integer, PersonPostsStyle> map;
 
-    private PersonPostsStyle(int value) {
+    PersonPostsStyle(int value) {
         this.value = value;
     }
 
-    static {
-        map = new HashMap<>();
-        for (PersonPostsStyle style : PersonPostsStyle.values()) {
-            map.put(style.value, style);
+    /**
+     * @param pageType the pageType
+     * @return
+     */
+    public static PersonPostsStyle valueOf(final int pageType) {
+        for (final PersonPostsStyle personPostsStyle : PersonPostsStyle.values()) {
+            if (personPostsStyle.getValue() == pageType) {
+                return personPostsStyle;
+            }
         }
+        throw new IllegalArgumentException("no person posts style with id " + pageType);
     }
 
-    public static PersonPostsStyle valueOf(int pageType) {
-        return map.get(pageType);
-    }
-
+    /**
+     * @return the value
+     */
     public int getValue() {
         return value;
     }
-
 }
