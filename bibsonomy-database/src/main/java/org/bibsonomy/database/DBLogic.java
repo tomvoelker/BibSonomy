@@ -184,6 +184,7 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.Sets;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -764,10 +765,7 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
 			// TODO maybe clean up, firstSortKey only there to not change the buildParam signature
-			SortKey firstSortKey = null;
-			if (present(sortCriteria)) {
-				firstSortKey = sortCriteria.get(0).getSortKey();
-			}
+			final SortKey firstSortKey = SortUtils.getFirstSortKey(sortCriteria);
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the sort order
