@@ -33,7 +33,6 @@ import java.util.Date;
 
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
-
 /**
  * DO NOT CHANGE any constant values after a release
  *
@@ -50,13 +49,13 @@ public final class RESTConfig {
 
 	public static final String POSTS_ADDED_SUB_PATH = "added";
 
+	public static final String RELATIONS_SUB_PATH = "relations";
+
 	public static final String POSTS_ADDED_URL = POSTS_URL + "/" + POSTS_ADDED_SUB_PATH;
 
 	public static final String POSTS_POPULAR_SUB_PATH = "popular";
 
 	public static final String PERIOD_INDEX = "periodIndex";
-
-	public static final String POSTS_POPULAR_URL = POSTS_URL + "/" + POSTS_POPULAR_SUB_PATH;
 
 	public static final String COMMUNITY_SUB_PATH = "community";
 
@@ -68,9 +67,7 @@ public final class RESTConfig {
 
 	public static final String TAGS_URL = "tags";
 
-	public static final String RELATION_PARAM = "relations";
-
-	public static final String REFERENCES_SUB_PATH = "references";
+	public static final String RELATION_PARAM = "relation";
 
 	public static final String RELATION_REFERENCE = GoldStandardRelation.REFERENCE.toString().toLowerCase();
 
@@ -84,7 +81,7 @@ public final class RESTConfig {
 
 	public static final String CRIS_LINKS_URL = "cris_links";
 
-    public static final String PERSONS_MERGE_URL = "merge";
+	public static final String PERSONS_MERGE_URL = "merge";
 
 	public static final String DOCUMENTS_SUB_PATH = "documents";
 

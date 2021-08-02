@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.tags;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.Writer;
 import java.util.List;
 
@@ -40,6 +38,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -47,14 +46,6 @@ import org.bibsonomy.util.UrlBuilder;
  * @author Christian Kramer
  */
 public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
-
-	private static SortKey getFirstSortKey(final List<SortKey> sortKeys) {
-		if (!present(sortKeys)) {
-			return null;
-		}
-
-		return sortKeys.get(0);
-	}
 
 	/** the resource type */
 	protected final Class<? extends Resource> resourceType;
@@ -87,13 +78,13 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForTags(this.resourceType, this.grouping, this.groupingValue, this.hash, this.regex, this.getView().getSortKeys().get(0));
+		return this.getUrlRenderer().createUrlBuilderForTags(this.resourceType, this.grouping, this.groupingValue, this.hash, this.regex, SortUtils.getFirstSortKey(this.getView().getSortCriteria()));
 	}
 
 	@Override
 	protected List<Tag> getList() {
 		final ViewModel view = this.getView();
-		final SortKey sortKey = getFirstSortKey(view.getSortKeys());
+		final SortKey sortKey = SortUtils.getFirstSortKey(view.getSortCriteria());
 		return this.getLogic().getTags(resourceType, grouping, groupingValue, null, hash, null, regex, null, sortKey, null, null, view.getStartValue(), view.getEndValue());
 	}
 

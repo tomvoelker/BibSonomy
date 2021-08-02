@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 
 /**
  * Strategy for handling a request for related tags.
@@ -70,37 +71,20 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 	protected final List<Tag> getList() {
 		switch (this.relation) {
 			case RELATED:
-				return this.handleRelated();
+				return this.getTags(TagSimilarity.COOC);
 			case SIMILAR:
-				return this.handleSimilar();
+				if (this.tags.size() != 1) {
+					return null;
+				}
+				return this.getTags(TagSimilarity.COSINE);
 			default:
-				return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-						hash, null, regex, null, this.getView().getSortKeys().get(0), null, null,
-						this.getView().getStartValue(), this.getView().getEndValue());
+				return this.getTags(null);
 		}
-	}
-	
-	/**
-	 * Handling of the request for related tags. Also possible for more than one tag.
-	 * @return a list of tags which are related to tagList.
-	 */
-	private List<Tag> handleRelated() {
-		return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-				hash, null, regex, TagSimilarity.COOC, this.getView().getSortKeys().get(0),
-				null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
-	/**
-	 * Handling similar tags. Note that we cannot calculate similar tags for more than one tag!
-	 * @return a list of similar tags.
-	 */
-	private List<Tag> handleSimilar() {
-		if (this.tags.size() != 1) {
-			return null;
-		}
-		
+	private List<Tag> getTags(final TagSimilarity tagSimilarity) {
 		return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
-				hash, null, regex, TagSimilarity.COSINE, this.getView().getSortKeys().get(0),
-				null, null, this.getView().getStartValue(), this.getView().getEndValue());
+						hash, null, regex, tagSimilarity, SortUtils.getFirstSortKey(this.getView().getSortCriteria()), null, null,
+						this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

@@ -26,12 +26,11 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 import java.util.List;
 
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -56,18 +55,15 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 		this.view = new ViewModel();
 		this.view.setStartValue(context.getIntAttribute(RESTConfig.START_PARAM, 0));
 		this.view.setEndValue(context.getIntAttribute(RESTConfig.END_PARAM, 20));
-		
+
+		// parse sort criteria information from the param
 		try {
 			final String sortKeysAsString = context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null);
 			final String sortOrdersAsString = context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null);
-			if (present(sortKeysAsString)) {
-				List<SortKey> sortKeys = SortUtils.parseSortKeys(sortKeysAsString);
-				this.view.setSortKeys(sortKeys);
-			}
-			if (present(sortOrdersAsString)) {
-				List<SortOrder> sortOrders = SortUtils.parseSortOrders(sortOrdersAsString);
-				this.view.setSortOrders(sortOrders);
-			}
+			final List<SortKey> sortKeys = SortUtils.parseSortKeys(sortKeysAsString);
+			final List<SortOrder> sortOrders = SortUtils.parseSortOrders(sortOrdersAsString);
+			final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);
+			this.view.setSortCriteria(sortCriteria);
 		} catch (final IllegalArgumentException e) {
 			// the client send a wrong query param throw correct exception
 			throw new BadRequestOrResponseException(e);

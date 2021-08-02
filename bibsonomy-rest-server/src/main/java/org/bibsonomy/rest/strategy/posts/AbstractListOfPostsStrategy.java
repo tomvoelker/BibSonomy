@@ -55,8 +55,6 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final List<String> tags;
 	protected final String search;
 	protected final QueryScope searchType;
-	protected final List<SortKey> sortKeys;
-	protected final List<SortOrder> sortOrders;
 	protected final List<SortCriteria> sortCriteria;
 	
 	/**
@@ -70,9 +68,9 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
 		this.grouping = this.chooseGroupingEntity();
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
-		this.sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null));
-		this.sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null));
-		this.sortCriteria = SortUtils.generateSortCriteria(this.sortKeys, this.sortOrders);
+		final List<SortKey> sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null));
+		final List<SortOrder> sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null));
+		this.sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);
 
 		String groupingValue;
 		if (this.grouping != GroupingEntity.ALL) {

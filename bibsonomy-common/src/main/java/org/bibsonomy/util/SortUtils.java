@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -75,10 +77,10 @@ public class SortUtils {
 	 */
 	public static List<SortOrder> parseSortOrders(final String sortOrders) {
 		final List<SortOrder> parsedSortOrders = new LinkedList<>();
-		if (sortOrders == null) {
+		if (!present(sortOrders)) {
 			return parsedSortOrders;
 		}
-		for (String sortOrder : sortOrders.split("\\" + SORT_ORDER_DELIMITER)) {
+		for (final String sortOrder : sortOrders.split("\\" + SORT_ORDER_DELIMITER)) {
 			parsedSortOrders.add(EnumUtils.searchEnumByName(SortOrder.values(), sortOrder));
 		}
 		return parsedSortOrders;
@@ -93,8 +95,8 @@ public class SortUtils {
 	 * @param sortOrders
 	 * @return
 	 */
-	public static List<SortCriteria> generateSortCriteria(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
-		List<SortCriteria> sortCriteria = new LinkedList<>();
+	public static List<SortCriteria> generateSortCriteria(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
+		final List<SortCriteria> sortCriteria = new LinkedList<>();
 		// Check, if any sort keys given
 		if (sortKeys.isEmpty()) {
 			return sortCriteria;
@@ -166,11 +168,15 @@ public class SortUtils {
 		return singletonSortCriteria(key, SortOrder.DESC);
 	}
 
+	/**
+	 * returns the first sort key if there are keys present else null
+	 * @param sortCriteria
+	 * @return the first sort key or null
+	 */
 	public static SortKey getFirstSortKey(List<SortCriteria> sortCriteria) {
 		if (ValidationUtils.present(sortCriteria)) {
 			return sortCriteria.get(0).getSortKey();
 		}
 		return null;
 	}
-
 }

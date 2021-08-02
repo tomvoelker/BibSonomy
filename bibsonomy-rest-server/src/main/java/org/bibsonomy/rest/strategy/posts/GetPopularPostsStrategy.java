@@ -62,7 +62,7 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final List<String> tag = Collections.singletonList("sys:days:" + String.valueOf(this.periodIndex)); // FIXME: use system tag builder
+		final List<String> tag = Collections.singletonList("sys:days:" + this.periodIndex); // FIXME: use system tag builder
 
 		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 		postQueryBuilder.setGrouping(this.grouping)

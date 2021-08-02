@@ -28,6 +28,7 @@ package org.bibsonomy.rest;
 
 import java.util.List;
 
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 
@@ -52,14 +53,9 @@ public class ViewModel {
 	private int endValue;
 
 	/**
-	 * List of sorting key attribute
+	 * a list of sort criteria
 	 */
-	private List<SortKey> sortKeys;
-
-	/**
-	 * List of sorting order
-	 */
-	private List<SortOrder> sortOrders;
+	private List<SortCriteria> sortCriteria;
 
 	/**
 	 * @return Returns the urlToNextResources.
@@ -107,30 +103,16 @@ public class ViewModel {
 	}
 
 	/**
-	 * @return the sortKeys
+	 * @return the sortCriteria
 	 */
-	public List<SortKey> getSortKeys() {
-		return sortKeys;
+	public List<SortCriteria> getSortCriteria() {
+		return sortCriteria;
 	}
 
 	/**
-	 * @param sortKeys the sortKeys to set
+	 * @param sortCriteria the sortCriteria to set
 	 */
-	public void setSortKeys(List<SortKey> sortKeys) {
-		this.sortKeys = sortKeys;
-	}
-
-	/**
-	 * @return the sortOrders
-	 */
-	public List<SortOrder> getSortOrders() {
-		return sortOrders;
-	}
-
-	/**
-	 * @param sortOrders the sortOrders to set
-	 */
-	public void setSortOrders(List<SortOrder> sortOrders) {
-		this.sortOrders = sortOrders;
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 }

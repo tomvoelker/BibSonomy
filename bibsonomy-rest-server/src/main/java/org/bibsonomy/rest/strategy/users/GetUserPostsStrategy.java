@@ -28,14 +28,12 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.util.List;
 
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.posts.AbstractListOfPostsStrategy;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -62,14 +60,13 @@ public class GetUserPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(this.sortKeys, this.sortOrders);
 		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 		postQueryBuilder.setGrouping(GroupingEntity.USER)
 				.setGroupingName(this.userName)
 				.setTags(this.tags)
 				.search(this.search)
 				.setScope(this.searchType)
-				.setSortCriteria(sortCriteria)
+				.setSortCriteria(this.sortCriteria)
 				.start(this.getView().getStartValue())
 				.end(this.getView().getEndValue());
 		return this.getLogic().getPosts(postQueryBuilder.createPostQuery(this.resourceType));

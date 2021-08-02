@@ -538,7 +538,7 @@ public class UrlRenderer {
 	 */
 	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
-						.addPathElement(personId).addPathElement(RESTConfig.RELATION_PARAM);
+						.addPathElement(personId).addPathElement(RESTConfig.RELATIONS_SUB_PATH);
 	}
 
 	/**

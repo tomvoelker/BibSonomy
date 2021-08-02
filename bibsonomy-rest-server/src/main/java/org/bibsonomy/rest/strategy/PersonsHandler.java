@@ -75,7 +75,7 @@ public class PersonsHandler implements ContextHandler {
 				if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
 					return createPersonPostsStrategy(context, httpMethod, personId);
 				}
-				if (RESTConfig.RELATION_PARAM.equalsIgnoreCase(req)) {
+				if (RESTConfig.RELATIONS_SUB_PATH.equalsIgnoreCase(req)) {
 					return createPersonRelationStrategy(context, httpMethod, personId);
 				}
 				if (RESTConfig.PERSONS_MERGE_URL.equalsIgnoreCase(req)) {
@@ -99,7 +99,7 @@ public class PersonsHandler implements ContextHandler {
 			case 5:
 				personId = urlTokens.next();
 				final String relationsPath = urlTokens.next();
-				if (RESTConfig.RELATION_PARAM.equals(relationsPath)) {
+				if (RESTConfig.RELATIONS_SUB_PATH.equals(relationsPath)) {
 					final String interHash = urlTokens.next();
 					final String type = urlTokens.next();
 					final String index = urlTokens.next();
