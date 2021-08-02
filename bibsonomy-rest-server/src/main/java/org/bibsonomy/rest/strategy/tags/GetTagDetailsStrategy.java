@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.tags;
 
-
 import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -39,7 +38,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public class 	GetTagDetailsStrategy extends Strategy {
+public class GetTagDetailsStrategy extends Strategy {
 	private final Tag tag;
 	private final String tagName;
 
