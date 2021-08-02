@@ -3,6 +3,11 @@
  * 
  * jQuery ScrollPagination
  * 2020/02/17
+ *
+ * MHO: I strongy recomment NOT to update this plugin (if there are updates anyway) due to the changes made!
+ * MHO: I've adapted the plugin to work with our minifier. (replaced all let,..)
+ * MHO: I've also altered the loading logic to prevent multiple calls.
+ * MHO: In addition to that, the pagination has also been slightly altered to use an additional GET parameter
  */
 (function($){
     const defaults = {
