@@ -64,7 +64,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 				(param.getNumSimpleTags() > 0) &&
 				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getSortKey(), SortKey.NONE) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()) &&
 				!present(param.getTitle()) &&
 				!present(param.getAuthor()));

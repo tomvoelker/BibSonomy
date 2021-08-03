@@ -47,8 +47,6 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser;
-import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup;
-import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags;

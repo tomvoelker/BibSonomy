@@ -59,7 +59,7 @@ public class GetResourcesByTagNamesAndUser<R extends Resource, P extends Resourc
 				(param.getNumTransitiveConcepts() == 0) &&
 				present(param.getRequestedUserName()) &&
 				!present(param.getHash()) &&
-				//nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.YEAR) &&
+				nullOrEqual(param.getSortKey(), SortKey.NONE, SortKey.DATE) &&
 				!present(param.getSearch()));
 	}
 
