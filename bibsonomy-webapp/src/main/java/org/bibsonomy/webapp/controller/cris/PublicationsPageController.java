@@ -1,5 +1,10 @@
 package org.bibsonomy.webapp.controller.cris;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Calendar;
+import java.util.List;
+
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -7,17 +12,11 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
-import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.PublicationsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import java.util.Calendar;
-import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * controller that lists all publications of a configurable college
@@ -46,13 +45,16 @@ public class PublicationsPageController implements MinimalisticController<Public
 				.entriesStartingAt(goldStandardPublications.getEntriesPerPage(), goldStandardPublications.getStart())
 				.searchAndSortCriteria(command.getSearch(), new SortCriteria(SortKey.YEAR, SortOrder.DESC));
 
-		PostSearchQuery<GoldStandardPublication> query = new PostSearchQuery<>(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		if (!present(command.getSearch())) {
+			/*
+			 * If there is no search given, for example when the page is viewed for the first time.
+			 * Show latest publications to current year without textual years like: to appear, submitted
+			 */
 			final Calendar calendar = Calendar.getInstance();
-			query.setLastYear(String.valueOf(calendar.get(Calendar.YEAR)));
+			queryBuilder.search(String.format("year:[* TO %s]", calendar.get(Calendar.YEAR)));
 		}
 
-		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(query);
+		final List<Post<GoldStandardPublication>> posts = this.logic.getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		goldStandardPublications.setList(posts);
 
 		return Views.PUBLICATIONS_OVERVIEW;
