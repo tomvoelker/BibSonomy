@@ -124,6 +124,11 @@ public enum Views implements View {
 	GROUPPAGE("group"),
 
 	/**
+	 * group explore page
+	 */
+	GROUPEXPLOREPAGE("groupExplore"),
+
+	/**
 	 * group page showing all resources of a specified group
 	 */
 	GROUPSETTINGSPAGE("groupSettings"),

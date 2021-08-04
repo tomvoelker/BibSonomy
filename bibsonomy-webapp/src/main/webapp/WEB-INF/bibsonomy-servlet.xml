@@ -596,6 +596,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/explore/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupExplorePageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>search</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/reporting/projects">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="projectReportingPageController"/>
@@ -1105,6 +1116,10 @@
 	</bean>	
 
 	<bean id="organizationPageController" class="org.bibsonomy.webapp.controller.cris.OrganizationPageController" scope="request">
+		<property name="logic" ref="logic" />
+	</bean>
+
+	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.GroupExplorePageController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
 
