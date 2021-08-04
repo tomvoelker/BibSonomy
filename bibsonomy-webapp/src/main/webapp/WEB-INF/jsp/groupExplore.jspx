@@ -53,7 +53,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 publication-list" id="organization-publications">
+				<div class="col-md-12 publication-list" id="group-publications">
 					<resources:bibtexs listView="${command.bibtex}"
                                        loginUserName="${command.context.loginUser.name}"
                                        requPath="${requPath}"

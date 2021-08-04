@@ -268,6 +268,20 @@
 						</property>
 					</bean>
 				</entry>
+
+				<entry key="/ajax/explore/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupExploreAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>pageSize</value>
+								<value>page</value>
+								<value>size</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -353,6 +367,10 @@
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
+
+	<bean id="groupExploreAjaxController" class="org.bibsonomy.webapp.controller.ajax.GroupExploreAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
 	</bean>
 
 	
