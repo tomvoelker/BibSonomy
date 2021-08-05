@@ -9,6 +9,9 @@ import java.util.List;
 /**
  * adds search specific query fields to the post query
  *
+ * only use this query when calling the post search directly
+ * for all other queries use the {@link PostQuery}
+ *
  * @author dzo
  * @param <R>
  */
@@ -26,7 +29,7 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 	 *
 	 * @param resourceClass
 	 */
-	public PostSearchQuery(Class<R> resourceClass) {
+	public PostSearchQuery(final Class<R> resourceClass) {
 		super(resourceClass);
 	}
 
