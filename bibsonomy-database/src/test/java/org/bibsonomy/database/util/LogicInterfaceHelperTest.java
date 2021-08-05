@@ -72,9 +72,9 @@ public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 			for (final int hashId : HashID.getHashRange()) {
 				param = LogicInterfaceHelper.buildParam(paramClass, Resource.class, null, null, "", null, hashId + testHash, null, 12, 10, null, null, null, null, new User());
 				if (paramClass == BibTexParam.class) {
-					assertEquals(HashID.getSimHash(hashId).getId(), ((BibTexParam) param).getSimHash());
+					assertEquals(HashID.getSimHash(hashId).getId(), param.getSimHash());
 				} else if (paramClass == TagParam.class) {
-					assertEquals(HashID.getSimHash(hashId).getId(), ((TagParam) param).getSimHash());
+					assertEquals(HashID.getSimHash(hashId).getId(), param.getSimHash());
 				}
 			}
 			for (final Object hashId : new Object[] { "a" /* , 4, 5, 6 */}) {
