@@ -687,9 +687,18 @@ public class UrlRenderer {
 		return builder.asString();
 	}
 
-	public UrlBuilder createUrlBuilderForGroups(GroupQuery query) {
+	/**
+	 * constructs a url builder using a group query object
+	 * @param query
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForGroups(final GroupQuery query) {
 		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
-		urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(query.getOrganization()));
+		final Boolean organization = query.getOrganization();
+		if (present(organization)) {
+			urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(organization));
+		}
+
 		if (present(query.getExternalId())) {
 			urlBuilder.addParameter("internalId", query.getExternalId());
 		} else {
