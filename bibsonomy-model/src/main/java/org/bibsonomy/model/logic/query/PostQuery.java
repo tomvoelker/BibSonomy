@@ -91,7 +91,7 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	 * default constructor
 	 * @param resourceClass
 	 */
-	public PostQuery(Class<R> resourceClass) {
+	public PostQuery(final Class<R> resourceClass) {
 		this.resourceClass = resourceClass;
 	}
 
