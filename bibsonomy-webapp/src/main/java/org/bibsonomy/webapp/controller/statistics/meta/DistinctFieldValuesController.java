@@ -41,7 +41,7 @@ public class DistinctFieldValuesController<T> implements MinimalisticController<
 		return Views.AJAX_JSON;
 	}
 
-	private FieldDescriptor<T, ?> createFieldDescriptor(DistinctFieldValuesCommand<T> command) {
+	private FieldDescriptor<T, ?> createFieldDescriptor(final DistinctFieldValuesCommand<T> command) {
 		final Class<T> clazz = command.getClazz();
 		return (FieldDescriptor<T, ?>) mappers.get(clazz).apply(command.getField());
 	}
