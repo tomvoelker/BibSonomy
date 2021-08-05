@@ -36,6 +36,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.database.params.BibTexParam;
@@ -122,7 +123,7 @@ public class LogicInterfaceHelper {
 
 		// if hash length is 33, than use the first character as hash type
 		if (present(hash)) {
-			final SimHashUtils.HashAndId hashAndId = SimHashUtils.extractHashAndHashId(hash, null);
+			final SimHashUtils.HashAndId hashAndId = SimHashUtils.extractHashAndHashId(hash, HashID.SIM_HASH1);
 			param.setHash(hashAndId.getHash());
 
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
