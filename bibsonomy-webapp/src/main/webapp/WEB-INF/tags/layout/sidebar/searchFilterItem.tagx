@@ -1,0 +1,21 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
+
+    <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
+    <jsp:directive.attribute name="filterEntries" type="java.util.List" required="true"/>
+
+    <sidebar:sidebarItem textKey="${headerMessageKey}">
+		<jsp:attribute name="content">
+            <c:forEach var="entry" items="${filterEntries}" varStatus="status">
+				<button type="button" class="btn btn-primary btn-block" data-toggle="button" aria-pressed="false">
+                    <c:out value="${entry.first}" />
+                    <span class="badge badge-light"><c:out value="${entry.second}" /></span>
+                </button>
+			</c:forEach>
+		</jsp:attribute>
+    </sidebar:sidebarItem>
+</jsp:root>

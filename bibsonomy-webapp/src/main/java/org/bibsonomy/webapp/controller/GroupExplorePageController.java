@@ -2,9 +2,15 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
+import net.sf.json.JSONArray;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
@@ -12,12 +18,16 @@ import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.GroupExploreViewCommand;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.SearchViewCommand;
+import org.bibsonomy.webapp.command.statistics.meta.DistinctFieldValuesCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -34,6 +44,7 @@ import org.springframework.validation.Errors;
 public class GroupExplorePageController extends SingleResourceListController implements MinimalisticController<GroupExploreViewCommand>, ErrorAware {
 
     private LogicInterface logic;
+    private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
     /** the requested group */
     private String requestedGroup;
@@ -69,7 +80,22 @@ public class GroupExplorePageController extends SingleResourceListController imp
         List<Post<BibTex>> posts = this.logic.getPosts(builder.createPostQuery(BibTex.class));
         bibtexCommand.setList(posts);
 
+        List<Pair<String, Integer>> entrytypes = new ArrayList<>();
+        entrytypes.add(new Pair<>("article", 6));
+        entrytypes.add(new Pair<>("newspaper", 35));
+        command.setEntrytypeFilters(entrytypes);
+
+
+        final Set<?> values = this.logic.getMetaData(new DistinctFieldValuesQuery<>(BibTex.class, createFieldDescriptor("entrytype")));
+
+        final JSONArray jsonArray = new JSONArray();
+        jsonArray.addAll(values);
+
         return Views.GROUPEXPLOREPAGE;
+    }
+
+    private FieldDescriptor<BibTex, ?> createFieldDescriptor(String field) {
+        return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
     }
 
     @Override
@@ -82,6 +108,13 @@ public class GroupExplorePageController extends SingleResourceListController imp
      */
     public void setLogic(LogicInterface logic) {
         this.logic = logic;
+    }
+
+    /**
+     * @param mappers the mappers to set
+     */
+    public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
+        this.mappers = mappers;
     }
 
     /**

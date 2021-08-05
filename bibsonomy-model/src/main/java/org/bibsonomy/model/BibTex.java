@@ -39,14 +39,17 @@ import java.util.LinkedHashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
@@ -63,6 +66,16 @@ public class BibTex extends Resource {
 	
 	/** Logging used for problems cloning objects **/
 	private static final Log log = LogFactory.getLog(BibTex.class);
+
+	/** the entrytype field */
+	public static final String ENTRYTYPE_FIELD_NAME = "entrytype";
+
+	/** the year field */
+	public static final String YEAR_FIELD_NAME = "year";
+
+	/** the author field */
+	public static final String AUTHOR_FIELD_NAME = "author";
+
 	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
@@ -856,5 +869,18 @@ public class BibTex extends Resource {
 			return null;
 		}
 	}
+
+	/**
+	 * a lookup method for method references for this class
+	 */
+	public static final Function<String, FieldDescriptor<BibTex, ?>> METHOD_REFERENCE = (field) -> {
+		switch (field) {
+			case "entrytype": return new FieldDescriptor<>(ENTRYTYPE_FIELD_NAME, BibTex::getEntrytype);
+			case "year": return new FieldDescriptor<>(YEAR_FIELD_NAME, BibTex::getYear);
+			// case "author": return new FieldDescriptor<>(AUTHOR_FIELD_NAME, BibTex::getAuthor);
+		}
+
+		return null;
+	};
 
 }

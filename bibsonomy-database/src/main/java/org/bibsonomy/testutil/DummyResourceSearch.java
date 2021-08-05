@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.testutil;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.Post;
@@ -36,6 +38,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
  * @author dzo
@@ -55,5 +58,10 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	@Override
 	public List<Tag> getTags(User loggedinUser, PostSearchQuery<?> postQuery) {
 		return new LinkedList<>();
+	}
+
+	@Override
+	public <E> Set<E> getDistinctFieldValues(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
+		return new HashSet<>();
 	}
 }

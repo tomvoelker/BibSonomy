@@ -522,6 +522,11 @@
 								<constructor-arg ref="projectSearch" />
 							</bean>
 						</entry>
+						<entry key-ref="publicationClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
+								<constructor-arg ref="publicationSearch" />
+							</bean>
+						</entry>
 					</map>
 				</constructor-arg>
 			</bean>

@@ -46,7 +46,10 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.util.SimHashUtils;
+import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.Group;
@@ -65,6 +68,7 @@ import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.util.Sets;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -73,6 +77,11 @@ import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -86,6 +95,14 @@ import org.elasticsearch.search.sort.SortOrder;
 public class ElasticsearchPostSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostSearch.class);
 
+	private static final String COUNT_AGGREGATION_ID = "count";
+	private static final Map<String, String> FIELD_MAPPER = new HashMap<>();
+	static {
+		FIELD_MAPPER.put(BibTex.ENTRYTYPE_FIELD_NAME, Fields.Publication.ENTRY_TYPE);
+		FIELD_MAPPER.put(BibTex.YEAR_FIELD_NAME, Fields.Publication.YEAR);
+		// FIELD_MAPPER.put(BibTex.AUTHOR_FIELD_NAME, Fields.Publication.AUTHORS);
+	}
+
 	/** post model converter */
 	private ResourceConverter<R> resourceConverter;
 
@@ -95,7 +112,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 */
 	protected SearchInfoLogic infoLogic;
 
-	private ElasticsearchManager<R, ?> manager;
+	protected ElasticsearchManager<R, ?> manager;
 
 	@Override
 	public ResultList<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery) {
@@ -227,6 +244,25 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		log.debug("Done calculating tag statistics");
 		// all done.
 		return tags;
+	}
+
+	@Override
+	public <E> Set<E> getDistinctFieldValues(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
+		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(COUNT_AGGREGATION_ID);
+		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
+
+		final Aggregations results = this.manager.aggregate(QueryBuilders.matchAllQuery(), distinctTermsAggregation);
+
+		final ParsedStringTerms aggregation = results.get(COUNT_AGGREGATION_ID);
+
+		Set<Pair<String, Long>> distinctCounts = new HashSet<>();
+		for (Terms.Bucket bucket : aggregation.getBuckets()) {
+			String key = bucket.getKey().toString();
+			long count = bucket.getDocCount();
+			distinctCounts.add(new Pair<>(key, count));
+		}
+		// FIXME: add field converter …
+		return (Set<E>) aggregation.getBuckets().stream().map(bucket -> (bucket).getKey()).collect(Collectors.toSet());
 	}
 
 	/**

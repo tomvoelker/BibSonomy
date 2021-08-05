@@ -1121,6 +1121,13 @@
 
 	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.GroupExplorePageController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">

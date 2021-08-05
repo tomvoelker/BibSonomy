@@ -81,5 +81,17 @@
 				</div>
 			</div>
 		</jsp:attribute>
+
+		<jsp:attribute name="sidebar">
+			<c:if test="${not empty command.entrytypeFilters}">
+				<sidebar:searchFilterItem filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
+			</c:if>
+			<c:if test="${not empty command.yearFilters}">
+				<sidebar:searchFilterItem filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
+			</c:if>
+			<c:if test="${not empty command.authorFilters}">
+				<sidebar:searchFilterItem filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
+			</c:if>
+		</jsp:attribute>
     </layout:paneLayout>
 </jsp:root>
