@@ -30,6 +30,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.strategy.persons.GetPersonPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
@@ -60,11 +61,13 @@ public class PostsHandler implements ContextHandler {
 				
 				switch(httpMethod) {
 				case GET:
-						// /posts/added or popular
+						// /posts/added or popular or person
 						if (RESTConfig.POSTS_ADDED_SUB_PATH.equalsIgnoreCase(path)) {
 							return new GetNewPostsStrategy(context);
 						} else if (RESTConfig.POSTS_POPULAR_SUB_PATH.equalsIgnoreCase(path)) {
 							return new GetPopularPostsStrategy(context);
+						} else if (RESTConfig.POSTS_PERSON_SUB_PATH.equalsIgnoreCase(path)) {
+							return new GetPersonPostsStrategy(context);
 						}
 						break;
 				case POST:

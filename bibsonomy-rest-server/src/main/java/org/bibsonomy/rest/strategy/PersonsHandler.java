@@ -58,8 +58,6 @@ public class PersonsHandler implements ContextHandler {
 		final int numTokensLeft = urlTokens.countRemainingTokens();
 		final String personId;
 		final String req;
-		final String keyName;
-		final String keyValue;
 
 		switch (numTokensLeft) {
 			// /persons
@@ -80,19 +78,6 @@ public class PersonsHandler implements ContextHandler {
 				}
 				if (RESTConfig.PERSONS_MERGE_URL.equalsIgnoreCase(req)) {
 					return createPersonMergeStrategy(context, httpMethod, personId);
-				}
-
-				// /persons/[key]/[value]
-				keyName = personId;
-				keyValue = req;
-				return createPersonStrategy(context, httpMethod, keyName, keyValue);
-			// /persons/[key]/[value]/posts
-			case 3:
-				keyName = urlTokens.next();
-				keyValue = urlTokens.next();
-				req = urlTokens.next();
-				if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
-					return createPersonPostsStrategy(context, httpMethod, keyName, keyValue);
 				}
 				break;
 			// /persons/[personID]/relations/[interhash]/[type]/[index]
@@ -160,23 +145,6 @@ public class PersonsHandler implements ContextHandler {
 	 *
 	 * @param context
 	 * @param httpMethod
-	 * @param keyName
-	 * @param keyValue
-	 * @return
-	 */
-	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod, String keyName, String keyValue) {
-		switch (httpMethod) {
-			case GET:
-				return new GetListOfPersonsStrategy(context, keyName, keyValue);
-			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonByAdditionalKey");
-		}
-	}
-
-	/**
-	 *
-	 * @param context
-	 * @param httpMethod
 	 * @param personId
 	 * @return
 	 */
@@ -220,23 +188,6 @@ public class PersonsHandler implements ContextHandler {
 				return new GetPersonPostsStrategy(context, personId);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonPosts");
-		}
-	}
-
-	/**
-	 *
-	 * @param context
-	 * @param httpMethod
-	 * @param keyName
-	 * @param keyValue
-	 * @return
-	 */
-	private Strategy createPersonPostsStrategy(Context context, HttpMethod httpMethod, String keyName, String keyValue) {
-		switch (httpMethod) {
-			case GET:
-				return new GetPersonPostsStrategy(context, keyName, keyValue);
-			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonPostsByAdditionalKey");
 		}
 	}
 
