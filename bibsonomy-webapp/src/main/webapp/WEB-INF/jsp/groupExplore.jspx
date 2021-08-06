@@ -84,7 +84,7 @@
 
 		<jsp:attribute name="sidebar">
 			<c:if test="${not empty command.entrytypeFilters}">
-				<sidebar:searchFilterItem filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
+				<sidebar:searchFilterItem filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" isMessageKeys="${true}" blockButton="${true}"/>
 			</c:if>
 			<c:if test="${not empty command.yearFilters}">
 				<sidebar:searchFilterItem filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />

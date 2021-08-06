@@ -944,8 +944,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(MetaDataQuery<R> query) {
-		return this.logicinterface.getMetaData(query);
+	public <R> R getMetaData(User loggedInUser, MetaDataQuery<R> query) {
+		return this.logicinterface.getMetaData(loggedInUser, query);
 	}
 
 	@Override

@@ -46,27 +46,27 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.managers.metadata.MetaFieldDescriptor;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.util.SimHashUtils;
-import org.bibsonomy.search.es.index.converter.project.ProjectFields;
-import org.bibsonomy.services.searcher.ResourceSearch;
-import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
+import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.common.settings.Settings;
@@ -248,10 +248,18 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 	@Override
 	public <E> Set<E> getDistinctFieldCounts(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
+		// TODO FIXME (kch) better way to pass through postquery and logged in user
+		MetaFieldDescriptor<? extends  Resource, E> metaFieldDescriptor = (MetaFieldDescriptor<? extends Resource, E>) fieldDescriptor;
+		DistinctFieldQuery<? extends Resource, E> metaDataQuery = (DistinctFieldQuery<? extends Resource, E>) metaFieldDescriptor.getQuery();
+		final User loggedinUser = metaFieldDescriptor.getLoggedInUser();
+		final PostSearchQuery<? extends Resource> postQuery = metaDataQuery.getPostQuery();
+		final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
+		final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedUsers, postQuery);
+
 		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(COUNT_AGGREGATION_ID);
 		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
 
-		final Aggregations results = this.manager.aggregate(QueryBuilders.matchAllQuery(), distinctTermsAggregation);
+		final Aggregations results = this.manager.aggregate(queryBuilder, distinctTermsAggregation);
 
 		final ParsedStringTerms aggregation = results.get(COUNT_AGGREGATION_ID);
 
@@ -261,8 +269,8 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 			long count = bucket.getDocCount();
 			distinctCounts.add(new Pair<>(key, count));
 		}
-		// FIXME: add field converter …
-		return (Set<E>) aggregation.getBuckets().stream().map(bucket -> (bucket).getKey()).collect(Collectors.toSet());
+
+		return (Set<E>) distinctCounts;
 	}
 
 	/**

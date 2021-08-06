@@ -36,7 +36,7 @@ public class DistinctFieldQuery<T, E> implements MetaDataQuery<Set<E>> {
 	 * @param fieldGetter
 	 * @param postQuery
 	 */
-	public DistinctFieldQuery(Class<T> clazz, FieldDescriptor<T, E> fieldGetter, PostSearchQuery<?> postQuery) {
+	public DistinctFieldQuery(Class<T> clazz, FieldDescriptor<T, E> fieldGetter, PostSearchQuery<? extends Resource> postQuery) {
 		this.clazz = clazz;
 		this.fieldDescriptor = fieldGetter;
 		this.postQuery = postQuery;

@@ -514,7 +514,7 @@
 					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery" />
 				</bean>
 			</key>
-			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldValuesProvider">
+			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldProvider">
 				<constructor-arg>
 					<map>
 						<entry key-ref="projectClass">
