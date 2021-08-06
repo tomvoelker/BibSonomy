@@ -487,4 +487,30 @@ $(document).ready(function() {
 	 */
 	$(".personpage-pagination-next-button").hide();
 	$(".personpage-pagination-prev-button").hide();
+
+	// TODO cleanup in case auto loading will live on
+	// this is code for normal not scrolling ajax loading
+	// $(".personpage-pagination-next-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page+1);
+	// 	$(".personpage-pagination-prev-button").attr('data-page', page);
+	// });
+	//
+	// $(".personpage-pagination-prev-button").click(function() {
+	// 	url = $(this).data('url');
+	// 	page = parseInt($(this).attr('data-page'));
+	//
+	// 	$.post(url+"&page="+page).done(function(data) {
+	// 		$("#otherPublications").html(data);
+	// 	});
+	//
+	// 	$(this).attr('data-page', page-1);
+	// 	$(".personpage-pagination-next-button").attr('data-page', page);
+	// });
 });

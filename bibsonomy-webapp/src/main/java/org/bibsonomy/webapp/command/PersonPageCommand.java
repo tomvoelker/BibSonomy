@@ -122,7 +122,7 @@ public class PersonPageCommand extends BaseCommand {
 	private List<ResourcePersonRelation> advisedThesis;
 	private List<ResourcePersonRelation> allPosts;
 	
-	@Deprecated // FIXME: access enum directly
+	@Deprecated // TODO: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
@@ -138,6 +138,8 @@ public class PersonPageCommand extends BaseCommand {
 
 	private Integer start;
 	private Integer end;
+
+	@Deprecated // TODO use posts per page as a var or use the listcommand class to get pagination for free
 	private Integer prevStart;
 
 
