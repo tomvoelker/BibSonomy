@@ -511,7 +511,7 @@
 		<entry>
 			<key>
 				<bean class="java.lang.Class" factory-method="forName">
-					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery" />
+					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery" />
 				</bean>
 			</key>
 			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldValuesProvider">

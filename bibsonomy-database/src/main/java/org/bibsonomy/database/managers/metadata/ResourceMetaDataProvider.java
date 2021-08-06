@@ -9,18 +9,18 @@ import org.bibsonomy.util.object.FieldDescriptor;
 
 public class ResourceMetaDataProvider<E> implements Function<FieldDescriptor<? extends Resource, E>, Set<E>>  {
 
-    private ResourceSearch resourceSearch;
+    private final ResourceSearch<? extends Resource> resourceSearch;
 
     /**
      * @param resourceSearch
      */
-    public ResourceMetaDataProvider(ResourceSearch resourceSearch) {
+    public ResourceMetaDataProvider(ResourceSearch<? extends Resource> resourceSearch) {
         this.resourceSearch = resourceSearch;
     }
 
     @Override
     public Set<E> apply(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
-        return this.resourceSearch.getDistinctFieldValues(fieldDescriptor);
+        return this.resourceSearch.getDistinctFieldCounts(fieldDescriptor);
     }
 
 }

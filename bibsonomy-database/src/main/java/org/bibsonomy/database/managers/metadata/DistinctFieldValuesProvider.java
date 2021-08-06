@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.util.object.FieldDescriptor;
 
@@ -27,7 +27,7 @@ public class DistinctFieldValuesProvider<E> implements MetaDataProvider<Set<E>> 
 
 	@Override
 	public Set<E> getMetaData(final MetaDataQuery<Set<E>> metaDataQuery) {
-		final DistinctFieldValuesQuery<?, E> query = (DistinctFieldValuesQuery<?, E>) metaDataQuery;
+		final DistinctFieldQuery<?, E> query = (DistinctFieldQuery<?, E>) metaDataQuery;
 		final Class<?> clazzForMetaData = query.getClazz();
 		final FieldDescriptor<?, E> fieldDescriptor = query.getFieldDescriptor();
 		return this.providers.get(clazzForMetaData).apply(fieldDescriptor);

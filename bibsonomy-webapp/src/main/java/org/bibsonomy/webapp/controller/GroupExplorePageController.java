@@ -18,16 +18,12 @@ import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.GroupExploreViewCommand;
-import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.SearchViewCommand;
-import org.bibsonomy.webapp.command.statistics.meta.DistinctFieldValuesCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -86,7 +82,7 @@ public class GroupExplorePageController extends SingleResourceListController imp
         command.setEntrytypeFilters(entrytypes);
 
 
-        final Set<?> values = this.logic.getMetaData(new DistinctFieldValuesQuery<>(BibTex.class, createFieldDescriptor("entrytype")));
+        final Set<?> values = this.logic.getMetaData(new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor("entrytype")));
 
         final JSONArray jsonArray = new JSONArray();
         jsonArray.addAll(values);

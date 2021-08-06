@@ -71,9 +71,9 @@ public interface ResourceSearch<R extends Resource> {
 	List<Tag> getTags(final User loggedinUser, final PostSearchQuery<?> postQuery);
 
 	/**
-	 * returns all values for the specified field
-	 * @param fieldDescriptor
+	 * returns all values and counts for the specified field
+	 * @param fieldDescriptor#
 	 * @return
 	 */
-	<E> Set<E> getDistinctFieldValues(final FieldDescriptor<? extends Resource, E> fieldDescriptor);
+	<E> Set<E> getDistinctFieldCounts(final FieldDescriptor<? extends Resource, E> fieldDescriptor);
 }

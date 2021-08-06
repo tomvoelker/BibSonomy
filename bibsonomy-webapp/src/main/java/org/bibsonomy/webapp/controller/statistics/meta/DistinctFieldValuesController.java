@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.statistics.meta.DistinctFieldValuesCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -32,7 +32,7 @@ public class DistinctFieldValuesController<T> implements MinimalisticController<
 
 	@Override
 	public View workOn(final DistinctFieldValuesCommand<T> command) {
-		final Set<?> values = this.logic.getMetaData(new DistinctFieldValuesQuery<>(command.getClazz(), createFieldDescriptor(command)));
+		final Set<?> values = this.logic.getMetaData(new DistinctFieldQuery<>(command.getClazz(), createFieldDescriptor(command)));
 
 		final JSONArray jsonArray = new JSONArray();
 		jsonArray.addAll(values);
