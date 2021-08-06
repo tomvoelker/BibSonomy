@@ -3691,7 +3691,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(User loggedinUser, MetaDataQuery<R> query) {
+	public <R> R getMetaData(final User loggedinUser, final MetaDataQuery<R> query) {
 		return this.getMetaDataProvider(query).getMetaData(loggedinUser, query);
 	}
 

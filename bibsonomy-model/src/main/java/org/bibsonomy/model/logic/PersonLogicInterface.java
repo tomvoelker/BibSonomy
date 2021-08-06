@@ -62,6 +62,7 @@ public interface PersonLogicInterface {
 	 * @param keyValue
 	 * @return
 	 */
+	@Deprecated // FIXME: use getPersons method, the key value type is not unique for one person in general
 	Person getPersonByAdditionalKey(final String keyName, final String keyValue);
 
 	/**

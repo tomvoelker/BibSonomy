@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy.groups;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Writer;
 import java.util.List;
 
@@ -50,7 +52,12 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
 		this.internalId = context.getStringAttribute("internalId", null);
-		this.organization = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.ORGANIZATION_PARAM, "false"));
+		final String organizationFilter = context.getStringAttribute(RESTConfig.ORGANIZATION_PARAM, null);
+		if (present(organizationFilter)) {
+			this.organization = Boolean.parseBoolean(organizationFilter);
+		} else {
+			this.organization = null; // no filter set groups can be also organizations
+		}
 	}
 
 	@Override

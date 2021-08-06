@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -547,22 +548,22 @@ public class UrlRenderer {
 	 * @return the url builder
 	 */
 	public UrlBuilder createUrlBuilderForPersonPosts(String personId) {
-		UrlBuilder builder = createUrlBuilderForPerson(personId);
+		final UrlBuilder builder = createUrlBuilderForPerson(personId);
 		builder.addPathElement(RESTConfig.POSTS_URL);
 		return builder;
 	}
 
 	/**
 	 * creates a url builder for posts of persons with specific additional key and value combinates
-	 * @param keyName
-	 * @param keyValue
+	 * @param additionalKey
 	 * @return the url builder
 	 */
-	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(String keyName, String keyValue) {
-		UrlBuilder builder = createUrlBuilderForPersons();
-		builder.addPathElement(keyName);
-		builder.addPathElement(keyValue);
+	public UrlBuilder createUrlBuilderForPersonPostsByAdditionalKey(final AdditionalKey additionalKey) {
+		final UrlBuilder builder = createUrlBuilderForPersons();
 		builder.addPathElement(RESTConfig.POSTS_URL);
+		builder.addPathElement(RESTConfig.POSTS_PERSON_SUB_PATH);
+		builder.addParameter(RESTConfig.PERSON_ADDITIONAL_KEY_PARAM, additionalKey.getKeyName() + RESTConfig.PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR + additionalKey.getKeyValue());
+
 		return builder;
 	}
 
@@ -687,9 +688,18 @@ public class UrlRenderer {
 		return builder.asString();
 	}
 
-	public UrlBuilder createUrlBuilderForGroups(GroupQuery query) {
+	/**
+	 * constructs a url builder using a group query object
+	 * @param query
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForGroups(final GroupQuery query) {
 		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
-		urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(query.getOrganization()));
+		final Boolean organization = query.getOrganization();
+		if (present(organization)) {
+			urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(organization));
+		}
+
 		if (present(query.getExternalId())) {
 			urlBuilder.addParameter("internalId", query.getExternalId());
 		} else {

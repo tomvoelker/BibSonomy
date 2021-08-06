@@ -39,6 +39,7 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  * @author dzo
  */
 public final class RESTConfig {
+
 	private RESTConfig() {
 		// noop
 	}
@@ -50,6 +51,8 @@ public final class RESTConfig {
 	public static final String POSTS_ADDED_SUB_PATH = "added";
 
 	public static final String RELATIONS_SUB_PATH = "relations";
+
+	public static final String POSTS_PERSON_SUB_PATH = "person";
 
 	public static final String POSTS_ADDED_URL = POSTS_URL + "/" + POSTS_ADDED_SUB_PATH;
 
@@ -132,6 +135,15 @@ public final class RESTConfig {
 	public static final String CLIPBOARD_SUBSTRING = "clipboard";
 
 	public static final String CLIPBOARD_CLEAR = "clear";
+
+	/** the query name for a person id */
+	public static final String PERSON_ID_PARAM = "personId";
+
+	/** the query param name for an additional key for persons */
+	public static final String PERSON_ADDITIONAL_KEY_PARAM = "additionalKey";
+
+	/** the separator used to separate key and value */
+	public static final String PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR = "=";
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"

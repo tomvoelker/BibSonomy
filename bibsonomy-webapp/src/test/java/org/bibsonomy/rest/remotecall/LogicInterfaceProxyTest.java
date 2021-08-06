@@ -551,9 +551,10 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(GroupQuery query) {
+	public List<Group> getGroups(final GroupQuery query) {
 		final List<Group> expectedList = new ArrayList<>();
-		expectedList.add(ModelUtils.getGroup());
+		final Group group1 = ModelUtils.getGroup();
+		expectedList.add(group1);
 		expectedList.get(0).setName("Group1");
 		expectedList.get(0).setGroupId(42);
 		/*
@@ -572,7 +573,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		EasyMock.expect(this.serverLogic.getGroups(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedList);
 		EasyMock.replay(this.serverLogic);
 		final List<Group> returnedGroups = this.clientLogic.getGroups(query);
-		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.id"));
+		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.id|.*\\.organization"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return returnedGroups;
