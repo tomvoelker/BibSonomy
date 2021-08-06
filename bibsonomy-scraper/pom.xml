@@ -119,7 +119,6 @@
 					<excludedGroups>org.bibsonomy.scraper.junit.RemoteTest</excludedGroups>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<profiles>

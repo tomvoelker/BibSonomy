@@ -56,9 +56,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<plugins>
-
-		</plugins>
 	</build>
 
 	<dependencies>

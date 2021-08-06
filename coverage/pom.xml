@@ -55,7 +55,6 @@
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
 	</licenses>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

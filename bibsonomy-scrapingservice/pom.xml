@@ -52,7 +52,6 @@
 			<url>http://www.gnu.org/licenses/agpl.html</url>
 		</license>
 	</licenses>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

@@ -44,7 +44,6 @@
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
 	</licenses>
-
 	<artifactId>bibsonomy-web-common</artifactId>
 	<name>BibSonomy-Web-Common</name>
 	<description>Common things for web</description>

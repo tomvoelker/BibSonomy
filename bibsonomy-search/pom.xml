@@ -93,9 +93,6 @@
 				</includes>
 			</testResource>
 		</testResources>
-		<plugins>
-
-		</plugins>
 	</build>
 	<name>BibSonomy Search</name>
 	<description>Helper classes for search modules.</description>

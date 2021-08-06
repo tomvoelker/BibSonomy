@@ -50,7 +50,6 @@
 			<url>http://www.gnu.org/licenses/gpl.html</url>
 		</license>
 	</licenses>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
