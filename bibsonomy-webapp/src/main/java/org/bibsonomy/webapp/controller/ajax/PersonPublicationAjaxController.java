@@ -27,6 +27,16 @@
 package org.bibsonomy.webapp.controller.ajax;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.layout.citeproc.CSLUtils;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
@@ -44,19 +54,13 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.bibsonomy.util.ValidationUtils.present;
-
 /**
  * Simple AJAX controller that is used to request publications (for auto-loading) for person pages.
  * @author mho
  */
 public class PersonPublicationAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPublicationCommand> {
+
+	private static final Log LOG = LogFactory.getLog(PersonPublicationAjaxController.class);
 
 	private LogicInterface adminLogic;
 
@@ -141,7 +145,7 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 		try {
 			renderedPosts = renderer.renderPosts(postsToConvert , cslStyle.getContent(), localeProvider, true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("error while rendering posts", e);
 			renderedPosts = new HashMap<>();
 		}
 
