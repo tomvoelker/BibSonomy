@@ -61,7 +61,7 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	}
 
 	@Override
-	public <E> Set<E> getDistinctFieldValues(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
+	public <E> Set<E> getDistinctFieldCounts(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
 		return new HashSet<>();
 	}
 }

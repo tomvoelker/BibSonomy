@@ -247,7 +247,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	@Override
-	public <E> Set<E> getDistinctFieldValues(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
+	public <E> Set<E> getDistinctFieldCounts(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
 		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(COUNT_AGGREGATION_ID);
 		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
 
