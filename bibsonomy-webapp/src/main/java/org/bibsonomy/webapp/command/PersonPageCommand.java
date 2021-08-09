@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -122,7 +125,7 @@ public class PersonPageCommand extends BaseCommand {
 	private List<ResourcePersonRelation> advisedThesis;
 	private List<ResourcePersonRelation> allPosts;
 	
-	@Deprecated // FIXME: access enum directly
+	@Deprecated // TODO: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
@@ -138,6 +141,8 @@ public class PersonPageCommand extends BaseCommand {
 
 	private Integer start;
 	private Integer end;
+
+	@Deprecated // TODO use posts per page as a var or use the listcommand class to get pagination for free
 	private Integer prevStart;
 
 

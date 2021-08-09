@@ -7,6 +7,8 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<c:set var="isLoggedIn" value="${not empty command.context.loginUser.name}" />
 
+
+	<c:if test="${not empty command.otherPubs}">
 	<c:choose>
 		<c:when test="${command.personPostsStyle == 'MYOWN'}">
 			<c:choose>
@@ -29,5 +31,6 @@
 			</c:choose>
 		</c:otherwise>
 	</c:choose>
+	</c:if>
 
 </jsp:root>
