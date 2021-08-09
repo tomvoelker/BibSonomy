@@ -34,7 +34,10 @@
                        showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
+
 			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/groupExplore.js"><!-- keep me --></script>
 		</jsp:attribute>
 
         <jsp:attribute name="heading">
@@ -52,45 +55,70 @@
                                           enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12 publication-list" id="group-publications">
-					<resources:bibtexs listView="${command.bibtex}"
-                                       loginUserName="${command.context.loginUser.name}"
-                                       requPath="${requPath}"
-                                       widthClassName="wide"
-                                       isClipboard="${false}"
-                                       showBookmark="${false}"
-                                       showPublication="${true}"
-                                       hideHeadline="${true}"
-                                       hideCounts="${true}"
-                                       hideMetaData="${true}"
-                                       hidePostMenu="${true}"
-                                       onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
-                                       disableResourcetypeSelection="${true}">
-						<jsp:attribute name="additionalSorting">
-							<!-- no options -->
-						</jsp:attribute>
-						<jsp:attribute name="addAsLastItem">
-							<c:if test="${not disableListNavigation}">
-								<div id="publicationsfooter" class="${publicationsWidthClass}">
-									<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-								</div>
-							</c:if>
-						</jsp:attribute>
-					</resources:bibtexs>
+			<div id="groupExplorePublications">
+				<div class="row">
+					<div class="col-md-12 publication-list" id="group-publications">
+						<resources:bibtexs listView="${command.bibtex}"
+										   loginUserName="${command.context.loginUser.name}"
+										   requPath="${requPath}"
+										   widthClassName="wide"
+										   isClipboard="${false}"
+										   showBookmark="${false}"
+										   showPublication="${true}"
+										   hideHeadline="${true}"
+										   hideCounts="${true}"
+										   hideMetaData="${true}"
+										   hidePostMenu="${true}"
+										   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
+										   disableResourcetypeSelection="${true}">
+						</resources:bibtexs>
+					</div>
+				</div>
+				<div class="#morePublications">
+					<script type="text/javascript">
+						$(document).ready(function(){
+							var additionalOffset = 0;
+
+							$('#groupExplorePublications').scrollPagination({
+								'url': "/ajax/explore/group?requestedGroup=${command.requestedGroup}", // The url you are fetching the results.
+								'data': {
+									// These are the variables you can pass to the request
+									'page': 1, // Which page at the first time
+									'size': 1000, // Number of pages FIXME: controller should get the actual number after fixing the controller
+									'pageSize': 20,
+									'search': "${command.search}",
+									'filters': "${command.filters}"
+								},
+								'scroller': $(window), // Who gonna scroll? default is the full window
+								'autoload': true, // Change this to false if you want to load manually, default true.
+								'heightOffset': 250 + additionalOffset, // It gonna request when scroll is 10 pixels before the page ends
+								'loading': "#loading", // ID of loading prompt.
+								'loadingText': 'click to loading more.', // Text of loading prompt.
+								'loadingNomoreText': 'No more.', // No more of loading prompt.
+								'manuallyText': 'click to loading more.', // Click of loading prompt.
+								'before': function(){
+									$(".cust-loader").fadeIn();
+								},
+								'after': function(elementsLoaded){
+									// After loading content, you can use this function to animate your new elements
+									$(".cust-loader").fadeOut();
+								}
+							});
+						});
+					</script>
 				</div>
 			</div>
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
 			<c:if test="${not empty command.entrytypeFilters}">
-				<sidebar:searchFilterItem filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" isMessageKeys="${true}" blockButton="${true}"/>
+				<sidebar:searchFilterList filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" blockButton="${true}"/>
 			</c:if>
 			<c:if test="${not empty command.yearFilters}">
-				<sidebar:searchFilterItem filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
+				<sidebar:searchFilterList filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
 			</c:if>
 			<c:if test="${not empty command.authorFilters}">
-				<sidebar:searchFilterItem filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
+				<sidebar:searchFilterList filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
 			</c:if>
 		</jsp:attribute>
     </layout:paneLayout>

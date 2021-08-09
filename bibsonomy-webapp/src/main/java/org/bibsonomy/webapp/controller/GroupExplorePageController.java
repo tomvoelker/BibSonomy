@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
@@ -76,15 +78,6 @@ public class GroupExplorePageController extends SingleResourceListController imp
                 .entriesStartingAt(bibtexCommand.getEntriesPerPage(), bibtexCommand.getStart())
                 .searchAndSortCriteria(command.getSearch(), new SortCriteria(SortKey.PUBDATE, SortOrder.DESC));
 
-        if (!present(command.getSearch())) {
-            /*
-             * If there is no search given, for example when the page is viewed for the first time.
-             * Show latest publications to current year without textual years like: to appear, submitted
-             */
-            final Calendar calendar = Calendar.getInstance();
-            builder.search(String.format("year:[* TO %s]", calendar.get(Calendar.YEAR)));
-        }
-
         List<Post<BibTex>> posts = this.logic.getPosts(builder.createPostQuery(BibTex.class));
         bibtexCommand.setList(posts);
 
@@ -99,16 +92,16 @@ public class GroupExplorePageController extends SingleResourceListController imp
         return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
     }
 
-    private ArrayList<Pair<String, Integer>> generateEntrytypeFilters() {
-        ArrayList<Pair<String, Integer>> filters = generateFilters(ENTRYTYPE_FILTER, false);
-        for (Pair<String, Integer> filter : filters) {
-            filter.setFirst(String.format("post.resource.entrytype.%s.title", filter.getFirst()));
+    private List<SearchFilterElement> generateEntrytypeFilters() {
+        List<SearchFilterElement> filters = generateFilters(ENTRYTYPE_FILTER, false);
+        for (SearchFilterElement element : filters) {
+            element.setMessageKey(String.format("post.resource.entrytype.%s.title", element.getName()));
         }
 
         return filters;
     }
 
-    private ArrayList<Pair<String, Integer>> generateFilters(String field, boolean reverse) {
+    private List<SearchFilterElement> generateFilters(String field, boolean reverse) {
         // build query for group posts to aggregate for counts
         PostSearchQuery<BibTex> groupPostsQuery = new PostSearchQuery<>();
         groupPostsQuery.setGrouping(GroupingEntity.GROUP);
@@ -118,11 +111,14 @@ public class GroupExplorePageController extends SingleResourceListController imp
         final Set<?> distinctFieldCounts = this.logic.getMetaData(this.loggedInUser,
                 new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor(field), groupPostsQuery));
 
-        ArrayList<Pair<String, Integer>> filters = new ArrayList<>((Set<Pair<String, Integer>>) distinctFieldCounts);
-        filters.sort(new FirstValuePairComparator<>(false));
-        if (reverse) {
-            Collections.reverse(filters);
+        List<SearchFilterElement> filters = new ArrayList<>();
+        for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {
+            SearchFilterElement filterElement = new SearchFilterElement(filter.getFirst(), filter.getSecond());
+            filterElement.setField(field);
+            filterElement.setFilter(filterElement.getField() + ":" + filterElement.getName());
+            filters.add(filterElement);
         }
+        Collections.sort(filters);
 
         return filters;
     }

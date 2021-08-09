@@ -82,18 +82,6 @@ import org.elasticsearch.search.sort.SortOrder;
  */
 public class ElasticsearchPublicationSearch<P extends BibTex> extends ElasticsearchPostSearch<P> {
 
-
-	private static final String ENTRYTYPE_AGGREGATION_ID = "distinct_entrytypes";
-	private static final String YEAR_AGGREGATION_ID = "year";
-	private static final String AUTHOR_FIELD_ID = "author";
-
-	protected static final Map<String, String> FIELD_MAPPER = new HashMap<>();
-	static {
-		FIELD_MAPPER.put(BibTex.ENTRYTYPE_FIELD_NAME, Fields.Publication.ENTRY_TYPE);
-		FIELD_MAPPER.put(BibTex.YEAR_FIELD_NAME, Fields.Publication.YEAR);
-		// FIELD_MAPPER.put(BibTex.AUTHOR_FIELD_NAME, Fields.Publication.AUTHORS);
-	}
-
 	@Override
 	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
 		super.buildResourceSpecificQuery(mainQueryBuilder, loggedinUser, postQuery);

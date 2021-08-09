@@ -1,9 +1,11 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.extra.SearchFilterElement;
 
 public class GroupExploreViewCommand extends SimpleResourceViewCommand {
 
@@ -11,10 +13,10 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
     private Group group;
 
     private String search;
-    private List<String> selectedTags;
-    private List<Pair<String, Integer>> entrytypeFilters;
-    private List<Pair<String, Integer>> yearFilters;
-    private List<Pair<String, Integer>> authorFilters;
+    private String filters;
+    private List<SearchFilterElement> entrytypeFilters;
+    private List<SearchFilterElement> yearFilters;
+    private List<SearchFilterElement> authorFilters;
 
     public String getRequestedGroup() {
         return requestedGroup;
@@ -40,35 +42,35 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
         this.search = search;
     }
 
-    public List<String> getSelectedTags() {
-        return selectedTags;
+    public String getFilters() {
+        return filters;
     }
 
-    public void setSelectedTags(List<String> selectedTags) {
-        this.selectedTags = selectedTags;
+    public void setFilters(String filters) {
+        this.filters = filters;
     }
 
-    public List<Pair<String, Integer>> getEntrytypeFilters() {
+    public List<SearchFilterElement> getEntrytypeFilters() {
         return entrytypeFilters;
     }
 
-    public void setEntrytypeFilters(List<Pair<String, Integer>> entrytypeFilters) {
+    public void setEntrytypeFilters(List<SearchFilterElement> entrytypeFilters) {
         this.entrytypeFilters = entrytypeFilters;
     }
 
-    public List<Pair<String, Integer>> getYearFilters() {
+    public List<SearchFilterElement> getYearFilters() {
         return yearFilters;
     }
 
-    public void setYearFilters(List<Pair<String, Integer>> yearFilters) {
+    public void setYearFilters(List<SearchFilterElement> yearFilters) {
         this.yearFilters = yearFilters;
     }
 
-    public List<Pair<String, Integer>> getAuthorFilters() {
+    public List<SearchFilterElement> getAuthorFilters() {
         return authorFilters;
     }
 
-    public void setAuthorFilters(List<Pair<String, Integer>> authorFilters) {
+    public void setAuthorFilters(List<SearchFilterElement> authorFilters) {
         this.authorFilters = authorFilters;
     }
 }

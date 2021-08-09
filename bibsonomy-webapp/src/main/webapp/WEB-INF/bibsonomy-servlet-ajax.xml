@@ -275,6 +275,8 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedGroup</value>
+								<value>search</value>
+								<value>filters</value>
 								<value>pageSize</value>
 								<value>page</value>
 								<value>size</value>

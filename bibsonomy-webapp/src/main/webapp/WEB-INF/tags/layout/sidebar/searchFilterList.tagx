@@ -1,0 +1,37 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
+
+    <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
+    <jsp:directive.attribute name="filterEntries" type="java.util.List" required="true"/>
+
+    <jsp:directive.attribute name="blockButton" type="java.lang.Boolean" required="false"/>
+    <c:if test="${blockButton}">
+        <c:set var="buttonStyle" value="btn-block" />
+    </c:if>
+
+    <div class="searchFilterList">
+        <sidebar:sidebarItem textKey="${headerMessageKey}">
+            <jsp:attribute name="content">
+                <c:forEach var="entry" items="${filterEntries}" varStatus="status">
+                    <button type="button" class="btn btn-default ${buttonStyle}" data-toggle="button" aria-pressed="false">
+                        <c:choose>
+                            <c:when test="${not empty entry.messageKey}">
+                                <fmt:message key="${entry.messageKey}" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:out value="${entry.name}" />
+                            </c:otherwise>
+                        </c:choose>
+                        <c:out value=" " />
+                        <span class="badge badge-light"><c:out value="${entry.count}" /></span>
+                        <span class="filter hidden"><c:out value="${entry.filter}" /></span>
+                    </button>
+                </c:forEach>
+            </jsp:attribute>
+        </sidebar:sidebarItem>
+    </div>
+</jsp:root>
