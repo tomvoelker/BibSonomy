@@ -31,6 +31,7 @@
     <layout:paneLayout pageTitle="${pageTitle}"
                        command="${command}"
                        requPath="${requPath}"
+					   noSidebar="${true}"
                        showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
@@ -40,7 +41,7 @@
 		</jsp:attribute>
 
         <jsp:attribute name="heading">
-			<span id="requestedGroup" class="hidden"><c:out value="${groupName}" /></span>
+			<!-- nothing to display -->
 		</jsp:attribute>
 
         <jsp:attribute name="content">
@@ -49,25 +50,34 @@
 					<fmt:message var="headerMessage" key="explore.header">
 						<fmt:param value="${fn:escapeXml(groupTitleName)}" />
 					</fmt:message>
-					<parts:extendedSearch headerMessage="${headerMessage}" searchPlaceholderKey="publications.search"
-                                          formAction="" formInputValue="${command.search}"
-                                          enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
+					<h1><c:out value="${headerMessage}" /></h1>
+					<span id="requestedGroup" class="hidden"><c:out value="${groupName}" /></span>
 				</div>
 			</div>
-			<div id="groupExplorePublications"><!-- keep me --></div>
-			<div class="cust-loader"><span class="cust-spinner"><!-- keep me --></span></div>
-		</jsp:attribute>
-
-		<jsp:attribute name="sidebar">
-			<c:if test="${not empty command.entrytypeFilters}">
-				<sidebar:searchFilterList filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" blockButton="${true}"/>
-			</c:if>
-			<c:if test="${not empty command.yearFilters}">
-				<sidebar:searchFilterList filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
-			</c:if>
-			<c:if test="${not empty command.authorFilters}">
-				<sidebar:searchFilterList filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
-			</c:if>
+			<div class="row">
+				<div class="col-md-9">
+					<div class="row">
+						<div class="col-md-12">
+							<parts:extendedSearch headerMessage="" searchPlaceholderKey="publications.search"
+												  formAction="" formInputValue="${command.search}"
+												  enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
+						</div>
+					</div>
+					<div id="groupExplorePublications"><!-- keep me --></div>
+					<div class="cust-loader"><span class="cust-spinner"><!-- keep me --></span></div>
+				</div>
+				<div class="col-md-3">
+					<c:if test="${not empty command.entrytypeFilters}">
+						<sidebar:searchFilterList filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
+					</c:if>
+					<c:if test="${not empty command.yearFilters}">
+						<sidebar:searchFilterList filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
+					</c:if>
+					<c:if test="${not empty command.authorFilters}">
+						<sidebar:searchFilterList filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
+					</c:if>
+				</div>
+			</div>
 		</jsp:attribute>
     </layout:paneLayout>
 </jsp:root>

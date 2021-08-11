@@ -8,29 +8,38 @@
     <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="true"/>
 
-    <jsp:directive.attribute name="blockButton" type="java.lang.Boolean" required="false"/>
-    <c:if test="${blockButton}">
-        <c:set var="buttonStyle" value="btn-block" />
-    </c:if>
+    <jsp:directive.attribute name="dualColumn" type="java.lang.Boolean" required="false"/>
 
     <div class="searchFilterList">
         <sidebar:sidebarItem textKey="${headerMessageKey}">
             <jsp:attribute name="content">
-                <c:forEach var="entry" items="${filterEntries}" varStatus="status">
-                    <button type="button" class="btn btn-default ${buttonStyle}">
-                        <c:choose>
-                            <c:when test="${not empty entry.messageKey}">
-                                <fmt:message key="${entry.messageKey}" />
-                            </c:when>
-                            <c:otherwise>
-                                <c:out value="${entry.name}" />
-                            </c:otherwise>
-                        </c:choose>
-                        <c:out value=" " />
-                        <span class="badge badge-light"><c:out value="${entry.count}" /></span>
-                        <span class="filter hidden"><c:out value="${entry.filter}" /></span>
-                    </button>
-                </c:forEach>
+                <c:choose>
+                    <c:when test="${dualColumn}">
+                        <c:forEach items="${filterEntries}" varStatus="status">
+                            <c:if test="${status.index % 2 != 0}">
+                                <c:set var="filterOne" value="${filterEntries[status.index]}" />
+                                <c:set var="filterTwo" value="${filterEntries[status.index + 1]}" />
+                            </c:if>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="entry" items="${filterEntries}" varStatus="status">
+                            <button type="button" class="btn btn-default btn-block">
+                                <c:choose>
+                                    <c:when test="${not empty entry.messageKey}">
+                                        <fmt:message key="${entry.messageKey}" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:out value="${entry.name}" />
+                                    </c:otherwise>
+                                </c:choose>
+                                <c:out value=" " />
+                                <span class="badge badge-light"><c:out value="${entry.count}" /></span>
+                                <span class="filter hidden"><c:out value="${entry.filter}" /></span>
+                            </button>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </jsp:attribute>
         </sidebar:sidebarItem>
     </div>

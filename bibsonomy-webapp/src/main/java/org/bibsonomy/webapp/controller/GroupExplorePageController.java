@@ -120,6 +120,10 @@ public class GroupExplorePageController extends SingleResourceListController imp
         }
         Collections.sort(filters);
 
+        if (reverse) {
+            Collections.reverse(filters);
+        }
+
         return filters;
     }
 
