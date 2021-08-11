@@ -17,7 +17,7 @@
         <sidebar:sidebarItem textKey="${headerMessageKey}">
             <jsp:attribute name="content">
                 <c:forEach var="entry" items="${filterEntries}" varStatus="status">
-                    <button type="button" class="btn btn-default ${buttonStyle}" data-toggle="button" aria-pressed="false">
+                    <button type="button" class="btn btn-default ${buttonStyle}">
                         <c:choose>
                             <c:when test="${not empty entry.messageKey}">
                                 <fmt:message key="${entry.messageKey}" />

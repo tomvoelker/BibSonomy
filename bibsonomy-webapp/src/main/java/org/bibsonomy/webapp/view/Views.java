@@ -360,6 +360,11 @@ public enum Views implements View {
 	AJAX_POSTS("ajax/posts"),
 
 	/**
+	 * bibtex posts
+	 */
+	AJAX_BIBTEXS("ajax/bibtexs"),
+
+	/**
 	 * posts
 	 */
 	AJAX_PERSON_PUBLICATIONS("ajax/personPublications"),

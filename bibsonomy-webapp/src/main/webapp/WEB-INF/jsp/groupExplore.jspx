@@ -35,13 +35,12 @@
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
-
 			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/groupExplore.js"><!-- keep me --></script>
 		</jsp:attribute>
 
         <jsp:attribute name="heading">
-			<!-- nothing to display -->
+			<span id="requestedGroup" class="hidden"><c:out value="${groupName}" /></span>
 		</jsp:attribute>
 
         <jsp:attribute name="content">
@@ -51,63 +50,12 @@
 						<fmt:param value="${fn:escapeXml(groupTitleName)}" />
 					</fmt:message>
 					<parts:extendedSearch headerMessage="${headerMessage}" searchPlaceholderKey="publications.search"
-                                          formAction="${requPathAndQuery}" formInputValue="${command.search}"
+                                          formAction="" formInputValue="${command.search}"
                                           enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
 				</div>
 			</div>
-			<div id="groupExplorePublications">
-				<div class="row">
-					<div class="col-md-12 publication-list" id="group-publications">
-						<resources:bibtexs listView="${command.bibtex}"
-										   loginUserName="${command.context.loginUser.name}"
-										   requPath="${requPath}"
-										   widthClassName="wide"
-										   isClipboard="${false}"
-										   showBookmark="${false}"
-										   showPublication="${true}"
-										   hideHeadline="${true}"
-										   hideCounts="${true}"
-										   hideMetaData="${true}"
-										   hidePostMenu="${true}"
-										   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
-										   disableResourcetypeSelection="${true}">
-						</resources:bibtexs>
-					</div>
-				</div>
-				<div class="#morePublications">
-					<script type="text/javascript">
-						$(document).ready(function(){
-							var additionalOffset = 0;
-
-							$('#groupExplorePublications').scrollPagination({
-								'url': "/ajax/explore/group?requestedGroup=${command.requestedGroup}", // The url you are fetching the results.
-								'data': {
-									// These are the variables you can pass to the request
-									'page': 1, // Which page at the first time
-									'size': 1000, // Number of pages FIXME: controller should get the actual number after fixing the controller
-									'pageSize': 20,
-									'search': "${command.search}",
-									'filters': "${command.filters}"
-								},
-								'scroller': $(window), // Who gonna scroll? default is the full window
-								'autoload': true, // Change this to false if you want to load manually, default true.
-								'heightOffset': 250 + additionalOffset, // It gonna request when scroll is 10 pixels before the page ends
-								'loading': "#loading", // ID of loading prompt.
-								'loadingText': 'click to loading more.', // Text of loading prompt.
-								'loadingNomoreText': 'No more.', // No more of loading prompt.
-								'manuallyText': 'click to loading more.', // Click of loading prompt.
-								'before': function(){
-									$(".cust-loader").fadeIn();
-								},
-								'after': function(elementsLoaded){
-									// After loading content, you can use this function to animate your new elements
-									$(".cust-loader").fadeOut();
-								}
-							});
-						});
-					</script>
-				</div>
-			</div>
+			<div id="groupExplorePublications"><!-- keep me --></div>
+			<div class="cust-loader"><span class="cust-spinner"><!-- keep me --></span></div>
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">

@@ -13,7 +13,6 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
     private Group group;
 
     private String search;
-    private String filters;
     private List<SearchFilterElement> entrytypeFilters;
     private List<SearchFilterElement> yearFilters;
     private List<SearchFilterElement> authorFilters;
@@ -40,14 +39,6 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
 
     public void setSearch(String search) {
         this.search = search;
-    }
-
-    public String getFilters() {
-        return filters;
-    }
-
-    public void setFilters(String filters) {
-        this.filters = filters;
     }
 
     public List<SearchFilterElement> getEntrytypeFilters() {

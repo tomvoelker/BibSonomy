@@ -2,13 +2,9 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Calendar;
 import java.util.List;
 
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -59,13 +55,12 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
                 .setGrouping(GroupingEntity.GROUP)
                 .setGroupingName(this.requestedGroup)
                 .entriesStartingAt(postsPerPage, start)
-                .setSortCriteria(null)
-                .search(command.getSearch() + " AND " + command.getFilters());
+                .search(command.getSearch());
 
         List<Post<BibTex>> posts = this.logic.getPosts(builder.createPostQuery(BibTex.class));
         bibtexCommand.setList(posts);
 
-        return Views.GROUPEXPLOREPAGE;
+        return Views.AJAX_BIBTEXS;
     }
 
     @Override
