@@ -5,17 +5,13 @@
 	<select id="getBibTexCount" resultClass="int">
 		SELECT COUNT(DISTINCT(b.content_id))
 		FROM bibtex b
-		LEFT JOIN gold_standard gp USING (simhash1)
 		WHERE b.`group` = 0
-		AND gp.title IS NULL
 	</select>
 
 	<select id="getBookmarkCount" resultClass="int">
 		SELECT COUNT(DISTINCT(b.content_id))
 		FROM bookmark b
-		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
 		WHERE b.`group` = 0
-		AND gb.title IS NULL
 	</select>
 
 	<!-- get number of public goldstandard publication posts -->
