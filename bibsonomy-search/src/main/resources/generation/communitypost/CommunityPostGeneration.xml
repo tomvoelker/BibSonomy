@@ -52,9 +52,7 @@
 		(
 			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
 			FROM bibtex b
-			LEFT JOIN gold_standard gb USING (simhash1) <!-- to exclude publications that have already a community post -->
-			WHERE gb.title IS NULL
-			AND b.group = 0 <!-- only public posts -->
+			WHERE b.group = 0 <!-- only public posts -->
 			AND b.content_id &gt; #lastContentId#
 			ORDER BY b.content_id ASC
 			LIMIT #limit#
@@ -68,9 +66,7 @@
 		(
 			SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
 			FROM bookmark b
-			LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1) <!-- to exclude publications that have already a community post -->
-			WHERE gb.title IS NULL
-			AND b.group = 0 <!-- only public posts -->
+			WHERE b.group = 0 <!-- only public posts -->
 			AND b.content_id &gt; #lastContentId#
 			ORDER BY b.content_id ASC
 			LIMIT #limit#
@@ -79,7 +75,7 @@
 		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
 	</select>
 
-	<!-- get list of all commuity publication posts -->
+	<!-- get list of all community publication posts -->
 	<select id="getGoldStandardPublicationForCommunityIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPostWithRelations">
 		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
 		FROM
