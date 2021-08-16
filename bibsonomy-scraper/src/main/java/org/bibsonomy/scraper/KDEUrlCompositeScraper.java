@@ -66,8 +66,8 @@ import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
 import org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
-import org.bibsonomy.scraper.url.kde.digitalhumanities.ZfdGScraper;
 import org.bibsonomy.scraper.url.kde.digitalhumanities.UmanisticaDigitaleScraper;
+import org.bibsonomy.scraper.url.kde.digitalhumanities.ZfdGScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
@@ -116,7 +116,6 @@ import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureArticleScraper;
-import org.bibsonomy.scraper.url.kde.nature.NatureJournalScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureNewsScraper;
 import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
@@ -128,8 +127,8 @@ import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
 import org.bibsonomy.scraper.url.kde.osti.OstiScraper;
-import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.oup.OxfordUniversityPressScraper;
+import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper;
@@ -201,7 +200,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AmazonScraper());
 		addScraper(new PlosScraper());
 		addScraper(new NatureArticleScraper());
-		addScraper(new NatureJournalScraper());
 		addScraper(new NatureNewsScraper());
 		/*
 		 * subclasses of LiteratumScraper
