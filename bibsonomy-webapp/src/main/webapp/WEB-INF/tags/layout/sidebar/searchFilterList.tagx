@@ -6,11 +6,12 @@
 
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
+    <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="true"/>
 
     <jsp:directive.attribute name="dualColumn" type="java.lang.Boolean" required="false"/>
 
-    <div class="searchFilterList">
+    <div class="searchFilterList" data-field="${filterField}">
         <sidebar:sidebarItem textKey="${headerMessageKey}">
             <jsp:attribute name="content">
                 <c:choose>
@@ -24,7 +25,7 @@
                     </c:when>
                     <c:otherwise>
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
-                            <button type="button" class="btn btn-default btn-block">
+                            <button type="button" class="btn btn-default btn-block" data-value="${entry.name}" data-filter="${entry.filter}">
                                 <c:choose>
                                     <c:when test="${not empty entry.messageKey}">
                                         <fmt:message key="${entry.messageKey}" />
@@ -35,7 +36,6 @@
                                 </c:choose>
                                 <c:out value=" " />
                                 <span class="badge badge-light"><c:out value="${entry.count}" /></span>
-                                <span class="filter hidden"><c:out value="${entry.filter}" /></span>
                             </button>
                         </c:forEach>
                     </c:otherwise>

@@ -83,7 +83,7 @@ public class GroupExplorePageController extends SingleResourceListController imp
 
         // create filter list
         command.setEntrytypeFilters(generateEntrytypeFilters());
-        command.setYearFilters(generateFilters(YEAR_FILTER, true));
+        command.setYearFilters(generateFilters(YEAR_FILTER, 200, true));
 
         return Views.GROUPEXPLOREPAGE;
     }
@@ -93,7 +93,7 @@ public class GroupExplorePageController extends SingleResourceListController imp
     }
 
     private List<SearchFilterElement> generateEntrytypeFilters() {
-        List<SearchFilterElement> filters = generateFilters(ENTRYTYPE_FILTER, false);
+        List<SearchFilterElement> filters = generateFilters(ENTRYTYPE_FILTER, 20,false);
         for (SearchFilterElement element : filters) {
             element.setMessageKey(String.format("post.resource.entrytype.%s.title", element.getName()));
         }
@@ -101,15 +101,17 @@ public class GroupExplorePageController extends SingleResourceListController imp
         return filters;
     }
 
-    private List<SearchFilterElement> generateFilters(String field, boolean reverse) {
+    private List<SearchFilterElement> generateFilters(String field, int size, boolean reverse) {
         // build query for group posts to aggregate for counts
         PostSearchQuery<BibTex> groupPostsQuery = new PostSearchQuery<>();
         groupPostsQuery.setGrouping(GroupingEntity.GROUP);
         groupPostsQuery.setGroupingName(this.requestedGroup);
 
         // get aggregated count by given field
-        final Set<?> distinctFieldCounts = this.logic.getMetaData(this.loggedInUser,
-                new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor(field), groupPostsQuery));
+        DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor(field));
+        distinctFieldQuery.setPostQuery(groupPostsQuery);
+        distinctFieldQuery.setSize(size);
+        final Set<?> distinctFieldCounts = this.logic.getMetaData(this.loggedInUser, distinctFieldQuery);
 
         List<SearchFilterElement> filters = new ArrayList<>();
         for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {

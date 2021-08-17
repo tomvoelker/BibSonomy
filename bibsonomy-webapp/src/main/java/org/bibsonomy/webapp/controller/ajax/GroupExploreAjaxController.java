@@ -33,8 +33,6 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
     private String requestedGroup;
     private Group group;
 
-    private final int ENTRIES_PER_PAGE = 20;
-
     @Override
     public View workOn(AjaxGroupExploreCommand command) {
         this.loggedInUser = command.getContext().getLoginUser();
@@ -50,7 +48,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
 
         // get posts of the group
         ListCommand<Post<BibTex>> bibtexCommand = command.getBibtex();
-        bibtexCommand.setEntriesPerPage(ENTRIES_PER_PAGE);
+        bibtexCommand.setEntriesPerPage(postsPerPage);
         PostQueryBuilder builder = new PostQueryBuilder()
                 .setGrouping(GroupingEntity.GROUP)
                 .setGroupingName(this.requestedGroup)

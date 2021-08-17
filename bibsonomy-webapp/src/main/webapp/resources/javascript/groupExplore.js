@@ -4,6 +4,7 @@ $(function() {
     formAction();
     initFilterButtons();
     initResultPagination();
+    validateYearFilters();
 });
 
 function formAction() {
@@ -33,28 +34,16 @@ function initResultPagination() {
     var filters = generateFilterQuery();
     var query = addFiltersToSearchQuery(search, filters);
 
-    $(PUBLICATIONS_SELECTOR).scrollPagination({
+    $.ajax({
         'url': '/ajax/explore/group?requestedGroup=' + groupName, // The url you are fetching the results.
         'data': {
             // These are the variables you can pass to the request
             'page': 0, // Which page at the first time
-            'size': 1000, // Number of pages FIXME: controller should get the actual number after fixing the controller
             'pageSize': 20,
             'search': query
         },
-        'scroller': $(window), // Who gonna scroll? default is the full window
-        'autoload': true, // Change this to false if you want to load manually, default true.
-        'heightOffset': 250, // It gonna request when scroll is 10 pixels before the page ends
-        'loading': "#loading", // ID of loading prompt.
-        'loadingText': 'click to loading more.', // Text of loading prompt.
-        'loadingNomoreText': 'No more.', // No more of loading prompt.
-        'manuallyText': 'click to loading more.', // Click of loading prompt.
-        'before': function(){
-            $(".cust-loader").fadeIn();
-        },
-        'after': function(elementsLoaded){
-            // After loading content, you can use this function to animate your new elements
-            $(".cust-loader").fadeOut();
+        success : function(data) {
+            $(PUBLICATIONS_SELECTOR).html(data);
         }
     });
 }
@@ -64,8 +53,8 @@ function generateFilterQuery() {
 
     $('.searchFilterList').each(function() {
         var selectedFilters = [];
-        $(this).find('.btn.active span.filter').each(function() {
-            selectedFilters.push($(this).html());
+        $(this).find('.btn.active').each(function() {
+            selectedFilters.push($(this).data('filter'));
         });
         var selectedFiltersQuery = selectedFilters.join(' OR ');
         if (selectedFiltersQuery) filterQuery.push('(' + selectedFiltersQuery + ')');
@@ -87,4 +76,31 @@ function addFiltersToSearchQuery(search, filters) {
     }
 
     return query;
+}
+
+function validateYearFilters() {
+    $('.searchFilterList').each(function() {
+        if ($(this).data('field') === 'year') {
+            $(this).children('button').each(function() {
+                var element = $(this);
+                if (isNaN(element.data('value'))) {
+                    element.remove();
+                }
+            });
+        }
+    });
+}
+
+function switchSortKey(sortKey, element) {
+    var element = $(element);
+    var label = $('#labelSortKey');
+    label.attr('data-sortkey', sortKey);
+    label.html(element.html());
+}
+
+function switchSortOrder(sortOrder, element) {
+    var element = $(element);
+    var label = $('#labelSortOrder');
+    label.attr('data-sortorder', sortOrder);
+    label.html(element.html());
 }

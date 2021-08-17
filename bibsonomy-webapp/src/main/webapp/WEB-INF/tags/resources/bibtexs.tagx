@@ -23,6 +23,7 @@
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 
+	<jsp:directive.attribute name="hideHeadlineTitle" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
@@ -87,8 +88,10 @@
 		addAsLastItem="${addAsLastItem}">
 		<jsp:attribute name="listHeadline">
 			<h3 class="list-headline">
-				<fmt:message key="publications" />
-				&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-publications" href=""><fmt:message key="list.hide" /></a>)</small>
+				<c:if test="${not hideHeadlineTitle}">
+					<fmt:message key="publications" />
+					&amp;nbsp;<small class="hidden-lg hidden-md">(<a id="hide-publications" href=""><fmt:message key="list.hide" /></a>)</small>
+				</c:if>
 				<!-- Display total number of entries in list -->
 				<c:if test="${not hideCounts and not empty listView.list and listView.totalCount != 0}">
 					<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="publications" /></c:set>

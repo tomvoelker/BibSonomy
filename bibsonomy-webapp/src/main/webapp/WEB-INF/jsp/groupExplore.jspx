@@ -63,18 +63,54 @@
 												  enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
 						</div>
 					</div>
+					<div class="row explore-list-headline">
+						<div class="col-md-3"><!-- keep me --></div>
+						<div class="col-md-2">
+							<span><fmt:message key="post.meta.sort.criterion" /></span>
+						</div>
+						<div class="col-md-3">
+							<div class="dropdown">
+								<button class="btn btn-default btn-block dropdown-toggle" type="button" id="dropdownSortKey" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+									<span id="labelSortKey" data-sortkey="pubdate"><fmt:message key="sort.pubdate" /></span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownSortKey">
+									<li><a onclick="switchSortKey('date', this)"><fmt:message key="sort.date" /></a></li>
+									<li><a onclick="switchSortKey('title', this)"><fmt:message key="sort.title" /></a></li>
+									<li><a onclick="switchSortKey('author', this)"><fmt:message key="sort.author" /></a></li>
+									<li><a onclick="switchSortKey('pubdate', this)"><fmt:message key="sort.pubdate" /></a></li>
+									<li><a onclick="switchSortKey('entrytype', this)"><fmt:message key="sort.entrytype" /></a></li>
+									<li><a onclick="switchSortKey('rank', this)"><fmt:message key="sort.rank" /></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<span><fmt:message key="post.meta.sort.order" /></span>
+						</div>
+						<div class="col-md-2">
+							<div class="dropdown">
+								<button class="btn btn-default btn-block dropdown-toggle" type="button" id="dropdownSortOrder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+									<span id="labelSortOrder" data-sortorder="desc"><fmt:message key="post.meta.sort.order.descending" /></span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownSortOrder">
+									<li><a onclick="switchSortOrder('desc', this)"><fmt:message key="post.meta.sort.order.descending" /></a></li>
+									<li><a onclick="switchSortOrder('asc', this)"><fmt:message key="post.meta.sort.order.ascending" /></a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
 					<div id="groupExplorePublications"><!-- keep me --></div>
-					<div class="cust-loader"><span class="cust-spinner"><!-- keep me --></span></div>
 				</div>
 				<div class="col-md-3">
 					<c:if test="${not empty command.entrytypeFilters}">
-						<sidebar:searchFilterList filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
+						<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
 					</c:if>
 					<c:if test="${not empty command.yearFilters}">
-						<sidebar:searchFilterList filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
+						<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
 					</c:if>
 					<c:if test="${not empty command.authorFilters}">
-						<sidebar:searchFilterList filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
+						<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
 					</c:if>
 				</div>
 			</div>

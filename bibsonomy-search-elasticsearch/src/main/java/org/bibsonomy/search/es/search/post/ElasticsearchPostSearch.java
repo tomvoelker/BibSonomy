@@ -98,7 +98,7 @@ import org.elasticsearch.search.sort.SortOrder;
 public class ElasticsearchPostSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostSearch.class);
 
-	private static final int AGGREGATION_BUCKET_SIZE = 100;
+
 	private static final String COUNT_AGGREGATION_ID = "count";
 	private static final Map<String, String> FIELD_MAPPER = new HashMap<>();
 	static {
@@ -262,7 +262,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(COUNT_AGGREGATION_ID);
 		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
-		distinctTermsAggregation.size(AGGREGATION_BUCKET_SIZE);
+		distinctTermsAggregation.size(metaDataQuery.getSize());
 
 		final Aggregations results = this.manager.aggregate(queryBuilder, distinctTermsAggregation);
 

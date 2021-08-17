@@ -16,12 +16,21 @@
                                isClipboard="${false}"
                                showBookmark="${false}"
                                showPublication="${true}"
-                               hideHeadline="${true}"
+                               hideHeadline="${false}"
+                               hideHeadlineTitle="${true}"
                                hideCounts="${true}"
                                hideMetaData="${true}"
-                               hidePostMenu="${true}"
+                               hidePostMenu="${false}"
                                onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
                                disableResourcetypeSelection="${true}">
+                <jsp:attribute name="additionalSorting">
+                    <!-- no options -->
+                </jsp:attribute>
+                <jsp:attribute name="addAsLastItem">
+                    <div id="publicationsfooter">
+                        <rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+                    </div>
+                </jsp:attribute>
             </resources:bibtexs>
         </div>
     </div>

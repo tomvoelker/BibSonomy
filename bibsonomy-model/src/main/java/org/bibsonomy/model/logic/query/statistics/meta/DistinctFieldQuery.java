@@ -17,7 +17,16 @@ public class DistinctFieldQuery<T, E> implements MetaDataQuery<Set<E>> {
 
 	private final FieldDescriptor<T, E> fieldDescriptor;
 	private final Class<T> clazz;
-	private final PostSearchQuery<? extends Resource> postQuery;
+
+	/**
+	 * post search query to limit the distinct field values and counts to a search result
+	 */
+	private PostSearchQuery<? extends Resource> postQuery;
+
+	/**
+	 * the bucket size
+	 */
+	private int size = 10;
 
 	/**
 	 * default constructor
@@ -27,19 +36,6 @@ public class DistinctFieldQuery<T, E> implements MetaDataQuery<Set<E>> {
 	public DistinctFieldQuery(Class<T> clazz, FieldDescriptor<T, E> fieldGetter) {
 		this.clazz = clazz;
 		this.fieldDescriptor = fieldGetter;
-		this.postQuery = null;
-	}
-
-	/**
-	 * constructor for distinct field queries with an additional post query
-	 * @param clazz
-	 * @param fieldGetter
-	 * @param postQuery
-	 */
-	public DistinctFieldQuery(Class<T> clazz, FieldDescriptor<T, E> fieldGetter, PostSearchQuery<? extends Resource> postQuery) {
-		this.clazz = clazz;
-		this.fieldDescriptor = fieldGetter;
-		this.postQuery = postQuery;
 	}
 
 	/**
@@ -61,5 +57,26 @@ public class DistinctFieldQuery<T, E> implements MetaDataQuery<Set<E>> {
 	 */
 	public PostSearchQuery<? extends Resource> getPostQuery() {
 		return postQuery;
+	}
+
+	/**
+	 * @param postQuery the post search query to set
+	 */
+	public void setPostQuery(PostSearchQuery<? extends Resource> postQuery) {
+		this.postQuery = postQuery;
+	}
+
+	/**
+	 * @return the bucket size
+	 */
+	public int getSize() {
+		return size;
+	}
+
+	/**
+	 * @param size the bucket size to set
+	 */
+	public void setSize(int size) {
+		this.size = size;
 	}
 }
