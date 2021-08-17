@@ -186,7 +186,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	}
 
 	protected void insertDataIntoIndex(String indexName) {
-		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> ElasticsearchIndexGenerator.this.generationLogic.getEntities(lastContenId, limit), this.entityInformationProvider, new IndexVoter<>());
+		this.insertDataIntoIndex(indexName, ElasticsearchIndexGenerator.this.generationLogic::getEntities, this.entityInformationProvider, new IndexVoter<>());
 	}
 
 	protected final <E> void insertDataIntoIndex(String indexName, Generator<E> generator, EntityInformationProvider<E> entityInformationProvider, final IndexVoter<E> indexVoter) {
