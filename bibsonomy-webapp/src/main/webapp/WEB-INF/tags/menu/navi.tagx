@@ -19,6 +19,9 @@
 	<c:set var="showPopularNav" value="${properties['system.nav.popular']}" />
 	<c:set var="showProjectsNav" value="${properties['system.cris.project.links']}" />
 
+	<c:set var="showExploreGroupNav" value="${properties['explore.group.nav']}" />
+	<c:set var="exploreGroupId" value="${properties['explore.group.id']}" />
+
 	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
@@ -268,10 +271,21 @@
 							</ul>
 						</li>
 					</c:if>
-					
+
+					<!--+
+						| genealogy
+						+-->
 					<c:if test="${properties['genealogy.activated'] eq 'true' and not showCRISNavBar}">
 						<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
 					</c:if>
+
+					<!--+
+						| group explore
+						+-->
+					<c:if test="${showExploreGroupNav}">
+						<li class="${activeTab eq 'explore' ? 'active' : ''}"><a href="${relativeUrlGenerator.getExploreUrlByGroup(exploreGroupId)}"><c:out value="${exploreGroupId}" /></a></li>
+					</c:if>
+
 					
 					<c:if test="${userIsAdmin}">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">

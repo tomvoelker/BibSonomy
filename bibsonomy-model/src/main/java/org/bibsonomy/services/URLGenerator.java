@@ -114,6 +114,7 @@ public class URLGenerator {
 	private static final String CONCEPT_PREFIX = "concept";
 	private static final String DOCUMENT_PREFIX = "documents";
 	private static final String DISAMBIGUATION_PREFIX = "person";
+	private static final String EXPLORE_PREFIX = "explore";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
@@ -150,7 +151,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 	private static final String USER_RELATION = "handleUserRelation";
-  private static final String SCRAPER_INFO = "scraperinfo";
+  	private static final String SCRAPER_INFO = "scraperinfo";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -522,7 +523,16 @@ public class URLGenerator {
 	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
 		return "edit" + StringUtils.capitalizeWord(getResourceNameForEditForm(resourceClass));
 	}
-	
+
+	public String getExploreUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(EXPLORE_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
+	}
+
 	/**
 	 * @param resourceClass
 	 * @return
