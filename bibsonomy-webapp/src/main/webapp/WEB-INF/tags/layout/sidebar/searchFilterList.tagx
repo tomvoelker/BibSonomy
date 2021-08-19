@@ -7,23 +7,16 @@
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
     <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
-    <jsp:directive.attribute name="filterEntries" type="java.util.List" required="true"/>
+    <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
+    <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
 
     <jsp:directive.attribute name="dualColumn" type="java.lang.Boolean" required="false"/>
 
     <div class="searchFilterList" data-field="${filterField}">
         <sidebar:sidebarItem textKey="${headerMessageKey}">
             <jsp:attribute name="content">
-                <c:choose>
-                    <c:when test="${dualColumn}">
-                        <c:forEach items="${filterEntries}" varStatus="status">
-                            <c:if test="${status.index % 2 != 0}">
-                                <c:set var="filterOne" value="${filterEntries[status.index]}" />
-                                <c:set var="filterTwo" value="${filterEntries[status.index + 1]}" />
-                            </c:if>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
+                <div class="searchFilterEntries">
+                    <c:if test="${not empty filterEntries}">
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
                             <button type="button" class="btn btn-default btn-block" data-value="${entry.name}" data-filter="${entry.filter}">
                                 <c:choose>
@@ -38,8 +31,8 @@
                                 <span class="badge badge-light"><c:out value="${entry.count}" /></span>
                             </button>
                         </c:forEach>
-                    </c:otherwise>
-                </c:choose>
+                    </c:if>
+                </div>
             </jsp:attribute>
         </sidebar:sidebarItem>
     </div>

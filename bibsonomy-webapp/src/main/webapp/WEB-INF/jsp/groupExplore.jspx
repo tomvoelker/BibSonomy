@@ -46,12 +46,14 @@
 
         <jsp:attribute name="content">
 			<div class="row">
+				<fmt:message var="headerMessage" key="explore.header">
+					<fmt:param value="${fn:escapeXml(groupTitleName)}" />
+				</fmt:message>
+				<h1 id="requestedGroup" data-group="${groupName}"><c:out value="${headerMessage}" /></h1>
+			</div>
+			<div class="row">
 				<div class="col-md-12">
-					<fmt:message var="headerMessage" key="explore.header">
-						<fmt:param value="${fn:escapeXml(groupTitleName)}" />
-					</fmt:message>
-					<h1><c:out value="${headerMessage}" /></h1>
-					<span id="requestedGroup" class="hidden"><c:out value="${groupName}" /></span>
+					<p><c:out value="${group.description}" /></p>
 				</div>
 			</div>
 			<div class="row">
@@ -63,9 +65,42 @@
 												  enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
 						</div>
 					</div>
-					<div id="groupExplorePublications"><!-- keep me --></div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+								<rc:actions resourceType="bibtex"
+											sortPage="rank"
+											sortPageOrder="desc"
+											entriesPerPage="20"
+											showBookmark="${false}"
+											showPublication="${true}"
+											showInboxActions="${false}"
+											isClipboard="${false}"
+											disableListNavigation="${false}"
+											disableResourcetypeSelection="${false}"/>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="custom-loader hidden"><span class="spinner"><!-- keep me --></span></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div id="groupExplorePublications"><!-- keep me --></div>
+						</div>
+					</div>
 				</div>
 				<div class="col-md-3">
+					<c:if test="${groupName eq properties['explore.group.id']}">
+						<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" />
+						<div class="searchFilterList" data-field="custom">
+							<sidebar:sidebarHeader textKey="explore.filter.custom.header" />
+							<input class="form-control" type="text" placeholder="Search" aria-label="Search" />
+							<div class="searchFilterEntries" id="custom-selection"><!-- keep me --></div>
+						</div>
+					</c:if>
 					<c:if test="${not empty command.entrytypeFilters}">
 						<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
 					</c:if>

@@ -1,21 +1,33 @@
 package org.bibsonomy.webapp.controller.ajax;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxGroupExploreCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * AJAX controller to support clickable filters of publication lists for groups, while maintaining the search input.
@@ -25,7 +37,12 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class GroupExploreAjaxController extends AjaxController implements MinimalisticController<AjaxGroupExploreCommand> {
 
+    private static final String ENTRYTYPE_FILTER = "entrytype";
+    private static final String YEAR_FILTER = "year";
+    private static final String AUTHOR_FILTER = "author";
+    
     private LogicInterface logic;
+    private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
     private User loggedInUser;
 
@@ -40,25 +57,71 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         // get group details
         this.requestedGroup = command.getRequestedGroup();
         this.group = this.logic.getGroupDetails(requestedGroup, false);
-        command.setGroup(this.group);
+
+        PostQueryBuilder builder = new PostQueryBuilder()
+                .setGrouping(GroupingEntity.GROUP)
+                .setGroupingName(this.requestedGroup)
+                .search(command.getSearch());
+
+        if (command.isDistinctCount()) {
+            PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
+            try {
+                JSONObject entrytypeJson = new JSONObject();
+                entrytypeJson.append(ENTRYTYPE_FILTER, toJSONArray(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
+                JSONObject yearJson = new JSONObject();
+                yearJson.append(YEAR_FILTER, toJSONArray(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
+
+                JSONArray distinctCount = new JSONArray();
+                distinctCount.put(entrytypeJson);
+                distinctCount.put(yearJson);
+
+                command.setResponseString(distinctCount.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+            return Views.AJAX_JSON;
+        }
 
         // start + end
         final int postsPerPage = command.getPageSize();
         final int start = postsPerPage * command.getPage();
+        builder.entriesStartingAt(postsPerPage, start);
 
         // get posts of the group
         ListCommand<Post<BibTex>> bibtexCommand = command.getBibtex();
         bibtexCommand.setEntriesPerPage(postsPerPage);
-        PostQueryBuilder builder = new PostQueryBuilder()
-                .setGrouping(GroupingEntity.GROUP)
-                .setGroupingName(this.requestedGroup)
-                .entriesStartingAt(postsPerPage, start)
-                .search(command.getSearch());
+        bibtexCommand.setStart(start);
 
         List<Post<BibTex>> posts = this.logic.getPosts(builder.createPostQuery(BibTex.class));
         bibtexCommand.setList(posts);
 
         return Views.AJAX_BIBTEXS;
+    }
+
+    private FieldDescriptor<BibTex, ?> createFieldDescriptor(String field) {
+        return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
+    }
+
+
+    private Set<Pair<String, Long>> generateFilters(PostSearchQuery<BibTex> query, String field, int size) {
+        // get aggregated count by given field
+        DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor(field));
+        distinctFieldQuery.setPostQuery(query);
+        distinctFieldQuery.setSize(size);
+        return (Set<Pair<String, Long>>) this.logic.getMetaData(this.loggedInUser, distinctFieldQuery);
+    }
+
+    private JSONArray toJSONArray(Set<Pair<String, Long>> filters) throws JSONException {
+        JSONArray arr = new JSONArray();
+        for (Pair<String, Long> filter : filters) {
+            JSONObject obj = new JSONObject();
+            obj.append(filter.getFirst(), filter.getSecond());
+            arr.put(obj);
+        }
+        return arr;
     }
 
     @Override
@@ -73,4 +136,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         this.logic = logic;
     }
 
+    public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
+        this.mappers = mappers;
+    }
 }

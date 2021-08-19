@@ -276,9 +276,9 @@
 							<list>
 								<value>requestedGroup</value>
 								<value>search</value>
+								<value>distinctCount</value>
 								<value>pageSize</value>
 								<value>page</value>
-								<value>size</value>
 							</list>
 						</property>
 					</bean>
@@ -372,6 +372,13 @@
 
 	<bean id="groupExploreAjaxController" class="org.bibsonomy.webapp.controller.ajax.GroupExploreAjaxController" scope="request" parent="ajaxController">
 		<property name="logic" ref="adminLogic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	

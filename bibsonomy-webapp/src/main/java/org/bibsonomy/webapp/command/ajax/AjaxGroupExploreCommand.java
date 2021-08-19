@@ -7,6 +7,9 @@ public class AjaxGroupExploreCommand extends GroupExploreViewCommand {
     private int page;
     private int pageSize;
 
+    private boolean distinctCount;
+    private String responseString;
+
     public int getPage() {
         return page;
     }
@@ -21,5 +24,21 @@ public class AjaxGroupExploreCommand extends GroupExploreViewCommand {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public boolean isDistinctCount() {
+        return distinctCount;
+    }
+
+    public void setDistinctCount(boolean distinctCount) {
+        this.distinctCount = distinctCount;
+    }
+
+    public String getResponseString() {
+        return responseString;
+    }
+
+    public void setResponseString(String responseString) {
+        this.responseString = responseString;
     }
 }

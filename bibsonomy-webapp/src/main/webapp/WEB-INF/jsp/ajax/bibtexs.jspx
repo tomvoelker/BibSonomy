@@ -16,8 +16,7 @@
                                isClipboard="${false}"
                                showBookmark="${false}"
                                showPublication="${true}"
-                               hideHeadline="${false}"
-                               hideHeadlineTitle="${true}"
+                               hideHeadline="${true}"
                                hideCounts="${true}"
                                hideMetaData="${true}"
                                hidePostMenu="${false}"
@@ -28,7 +27,7 @@
                 </jsp:attribute>
                 <jsp:attribute name="addAsLastItem">
                     <div id="publicationsfooter">
-                        <rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+                        <rc:nextprev listView="${command.bibtex}" listViewStartParamName="${command.bibtex.start}"/>
                     </div>
                 </jsp:attribute>
             </resources:bibtexs>

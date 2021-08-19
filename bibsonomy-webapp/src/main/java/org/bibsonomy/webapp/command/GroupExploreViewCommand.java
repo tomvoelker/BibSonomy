@@ -1,9 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.List;
-import java.util.Map;
 
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.extra.SearchFilterElement;
 
@@ -13,6 +11,10 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
     private Group group;
 
     private String search;
+
+    private String customTagFiltersUrl;
+    private List<SearchFilterElement> customTagFilters;
+
     private List<SearchFilterElement> entrytypeFilters;
     private List<SearchFilterElement> yearFilters;
     private List<SearchFilterElement> authorFilters;
@@ -39,6 +41,22 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public String getCustomTagFiltersUrl() {
+        return customTagFiltersUrl;
+    }
+
+    public void setCustomTagFiltersUrl(String customTagFiltersUrl) {
+        this.customTagFiltersUrl = customTagFiltersUrl;
+    }
+
+    public List<SearchFilterElement> getCustomTagFilters() {
+        return customTagFilters;
+    }
+
+    public void setCustomTagFilters(List<SearchFilterElement> customTagFilters) {
+        this.customTagFilters = customTagFilters;
     }
 
     public List<SearchFilterElement> getEntrytypeFilters() {
