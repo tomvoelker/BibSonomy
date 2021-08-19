@@ -97,7 +97,7 @@
 						<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" />
 						<div class="searchFilterList" data-field="custom">
 							<sidebar:sidebarHeader textKey="explore.filter.custom.header" />
-							<input class="form-control" type="text" placeholder="Search" aria-label="Search" />
+							<input id="searchCustomFilters" class="form-control" type="text" placeholder="Search" aria-label="Search" onkeyup="searchCustomFilters()" />
 							<div class="searchFilterEntries" id="custom-selection"><!-- keep me --></div>
 						</div>
 					</c:if>

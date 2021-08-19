@@ -18,7 +18,7 @@
                                showPublication="${true}"
                                hideHeadline="${true}"
                                hideCounts="${true}"
-                               hideMetaData="${true}"
+                               hideMetaData="${false}"
                                hidePostMenu="${false}"
                                onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
                                disableResourcetypeSelection="${true}">

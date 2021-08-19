@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller.ajax;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,9 +11,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.services.searcher.PostSearchQuery;
@@ -69,7 +65,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
                 JSONObject entrytypeJson = new JSONObject();
                 entrytypeJson.append(ENTRYTYPE_FILTER, toJSONArray(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
                 JSONObject yearJson = new JSONObject();
-                yearJson.append(YEAR_FILTER, toJSONArray(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
+                yearJson.append(YEAR_FILTER, toJSONArray(generateFilters(distinctPostQuery, YEAR_FILTER, 200)));
 
                 JSONArray distinctCount = new JSONArray();
                 distinctCount.put(entrytypeJson);
@@ -79,8 +75,6 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
 
             return Views.AJAX_JSON;
         }

@@ -68,16 +68,20 @@ function updateCounters() {
     var search = $('#extendedSearchInput').val();
 
     $.ajax({
-        datatype: 'json',
         url: '/ajax/explore/group', // The url you are fetching the results.
+        dataType: 'json',
         data: {
             // These are the variables you can pass to the request
             'requestedGroup': groupName,
             'distinctCount': true,
             'search': search
         },
+        error: function(xhr, status, error) {
+            console.log(status);
+            console.log(xhr.responseText);
+        },
         success : function(data) {
-            console.log(data);
+            console.log("working!");
         },
         complete : function() {
             console.log("working?");
@@ -125,21 +129,6 @@ function validateYearFilters() {
     });
 }
 
-var tags = [
-    {
-        'name': 'OA',
-        'description': 'Open Access'
-    },
-    {
-        'name': 'OAFONDS',
-        'description': 'Open-Access-Publikationsfonds'
-    },
-    {
-        'name': 'DFG',
-        'description': 'Deutsche Forschungsgemeinschaft'
-    },
-];
-
 function createFilterButton(name, filter, description) {
     var element = '<button class="btn btn-default btn-block" ' +
         'data-filter="' + filter + '" ' +
@@ -151,54 +140,39 @@ function createFilterButton(name, filter, description) {
 
 function addTagFilters() {
     var entries = $('.searchFilterList[data-field="tags"]').find('.searchFilterEntries');
-    tags.forEach(function(tag) {
-        entries.append(createFilterButton(tag.name, "tags:" + tag.name, tag.description));
+    $.ajax({
+        url: '/resources_puma/addons/explore/tags.json', // The url you are fetching the results.
+        dataType: 'json',
+        success : function(data) {
+            $.each(data, function(index, tag) {
+                entries.append(createFilterButton(tag.name, "tags:" + tag.name, tag.description));
+            });
+        }
     });
 }
 
-var custom = {
-    "head": {
-        "vars": ["label", "cnr", "facility", "fromDate", "untilDate"]
-    },
-    "results": {
-        "bindings": [
-            {
-                "label": {"type": "literal", "value": "ubs_10001"},
-                "cnr": {"type": "literal", "value": "010000"},
-                "facility": {"type": "literal", "value": "Fakultät für Architektur und Stadtplanung"},
-                "fromDate": {
-                    "type": "literal",
-                    "datatype": "http://www.w3.org/2001/XMLSchema#date",
-                    "value": "2016-02-18"
-                }
-            },
-            {
-                "label": {"type": "literal", "value": "ubs_10002"},
-                "cnr": {"type": "literal", "value": "020000"},
-                "facility": {"type": "literal", "value": "Fakultät für Bau- und Umweltingenieurwissenschaften"},
-                "fromDate": {
-                    "type": "literal",
-                    "datatype": "http://www.w3.org/2001/XMLSchema#date",
-                    "value": "2016-02-19"
-                }
-            },
-            {
-                "label": {"type": "literal", "value": "ubs_10003"},
-                "cnr": {"type": "literal", "value": "030000"},
-                "facility": {"type": "literal", "value": "Fakultät für Chemie"},
-                "fromDate": {
-                    "type": "literal",
-                    "datatype": "http://www.w3.org/2001/XMLSchema#date",
-                    "value": "2016-02-19"
-                }
-            }
-        ]
-    }
-};
-
 function addCustomFilters() {
     var entries = $('.searchFilterList[data-field="custom"]').find('.searchFilterEntries');
-    custom.results.bindings.forEach(function(entity) {
-        entries.append(createFilterButton(entity.label.value, "tags:" + entity.label.value, entity.facility.value));
+    $.ajax({
+        url: '/resources_puma/addons/explore/custom.json', // The url you are fetching the results.
+        dataType: 'json',
+        success : function(data) {
+            data.results.bindings.forEach(function(entity) {
+                entries.append(createFilterButton(entity.label.value, "tags:" + entity.label.value, entity.facility.value));
+            });
+        }
+    });
+}
+
+function searchCustomFilters() {
+    var search = $('#searchCustomFilters').val().toLowerCase();
+    var entries = $('.searchFilterList[data-field="custom"]').find('.searchFilterEntries');
+    entries.children().each(function() {
+        var value = $(this).html().toLowerCase();
+        if (value.indexOf(search) > -1) {
+            $(this).removeClass('hidden');
+        } else {
+            $(this).addClass('hidden');
+        }
     });
 }
