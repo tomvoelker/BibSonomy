@@ -12,10 +12,10 @@
 
     <jsp:directive.attribute name="dualColumn" type="java.lang.Boolean" required="false"/>
 
-    <div class="searchFilterList" data-field="${filterField}">
+    <div class="filter-list" data-field="${filterField}">
         <sidebar:sidebarItem textKey="${headerMessageKey}">
             <jsp:attribute name="content">
-                <div class="searchFilterEntries">
+                <div class="filter-entries">
                     <c:if test="${not empty filterEntries}">
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
                             <button type="button" class="btn btn-default btn-block" data-value="${entry.name}" data-filter="${entry.filter}">

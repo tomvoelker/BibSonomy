@@ -1,5 +1,12 @@
 const PUBLICATIONS_SELECTOR = '#groupExplorePublications';
+const FILTER_LIST_SELECTOR = '.filter-list';
+const FILTER_ENTRIES_SELECTOR = '.filter-entries';
+const HIDDEN_CLASS = 'hidden';
+const ACTIVE_CLASS = 'active';
 
+/**
+ * on load
+ */
 $(function() {
     // disable form action
     formAction();
@@ -16,6 +23,9 @@ $(function() {
     initResultPagination(0);
 });
 
+/**
+ * input controls
+ */
 function formAction() {
     $('#extendedSearchForm').on('submit', function (e) {
         e.preventDefault();
@@ -25,9 +35,9 @@ function formAction() {
 }
 
 function initFilterButtons(field) {
-    var filterList = $('.searchFilterList[data-field=' + field + ']');
-    filterList.find('.searchFilterEntries > button').click(function() {
-        $(this).toggleClass('active');
+    var filterList = $('.filter-list[data-field=' + field + ']');
+    filterList.find('.filter-entries > button').click(function() {
+        $(this).toggleClass(ACTIVE_CLASS);
         updateResultPagination();
     });
 }
@@ -39,6 +49,9 @@ function updateResultPagination() {
     initResultPagination(0);
 }
 
+/**
+ * AJAX updates
+ */
 function initResultPagination(page) {
     var groupName = $('#requestedGroup').data('group');
     var search = $('#extendedSearchInput').val();
@@ -55,13 +68,13 @@ function initResultPagination(page) {
             'search': query
         },
         beforeSend: function() {
-            $('.custom-loader').removeClass('hidden');
+            $('.custom-loader').removeClass(HIDDEN_CLASS);
         },
         success : function(data) {
             $(PUBLICATIONS_SELECTOR).html(data);
         },
         complete: function() {
-            $('.custom-loader').addClass('hidden');
+            $('.custom-loader').addClass(HIDDEN_CLASS);
         },
     });
 }
@@ -92,10 +105,13 @@ function updateCounters() {
     });
 }
 
+/**
+ * query and filter builder
+ */
 function generateFilterQuery() {
     var filterQuery = [];
 
-    $('.searchFilterList').each(function() {
+    $('.filter-list').each(function() {
         var selectedFilters = [];
         $(this).find('.btn.active').each(function() {
             selectedFilters.push($(this).data('filter'));
@@ -123,8 +139,8 @@ function addFiltersToSearchQuery(search, filters) {
 }
 
 function validateYearFilters() {
-    var yearFilterList = $('.searchFilterList[data-field="year"]');
-    yearFilterList.find('.searchFilterEntries > button').each(function() {
+    var yearFilterList = $('.filter-list[data-field="year"]');
+    yearFilterList.find('.filter-entries > button').each(function() {
         var element = $(this);
         if (isNaN(element.data('value'))) {
             element.remove();
@@ -143,13 +159,13 @@ function createFilterButton(name, filter, description) {
 }
 
 function addTagFilters() {
-    var entries = $('.searchFilterList[data-field="tags"]').find('.searchFilterEntries');
+    var entries = $('.filter-list[data-field="tags"]').find(FILTER_ENTRIES_SELECTOR);
     $.ajax({
         url: '/resources_puma/addons/explore/tags.json', // The url you are fetching the results.
         dataType: 'json',
         success : function(data) {
-            $.each(data, function(index, tag) {
-                entries.append(createFilterButton(tag.name, 'tags:' + tag.name, tag.description));
+            $.each(data, function(index, entity) {
+                entries.append(createFilterButton(entity.tag, 'tags:' + entity.tag, entity.description));
             });
             initFilterButtons('tags');
         }
@@ -157,7 +173,7 @@ function addTagFilters() {
 }
 
 function addCustomFilters() {
-    var entries = $('.searchFilterList[data-field="custom"]').find('.searchFilterEntries');
+    var entries = $('.filter-list[data-field="custom"]').find(FILTER_ENTRIES_SELECTOR);
     $.ajax({
         url: '/resources_puma/addons/explore/custom.json', // The url you are fetching the results.
         dataType: 'json',
@@ -172,13 +188,13 @@ function addCustomFilters() {
 
 function searchCustomFilters() {
     var search = $('#searchCustomFilters').val().toLowerCase();
-    var entries = $('.searchFilterList[data-field="custom"]').find('.searchFilterEntries');
+    var entries = $('.filter-list[data-field="custom"]').find('.filter-entries');
     entries.children().each(function() {
         var value = $(this).html().toLowerCase();
         if (value.indexOf(search) > -1) {
-            $(this).removeClass('hidden');
+            $(this).removeClass(HIDDEN_CLASS);
         } else {
-            $(this).addClass('hidden');
+            $(this).addClass(HIDDEN_CLASS);
         }
     });
 }
