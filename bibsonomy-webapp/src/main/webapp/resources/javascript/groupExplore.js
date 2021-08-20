@@ -20,7 +20,7 @@ $(function() {
     // add action to filter buttons
     initFilterButtons();
     // add init results
-    initResultPagination(0);
+    updateResults(0);
 });
 
 /**
@@ -30,7 +30,7 @@ function formAction() {
     $('#extendedSearchForm').on('submit', function (e) {
         e.preventDefault();
         updateCounters();
-        updateResultPagination();
+        updateResults(0);
     });
 }
 
@@ -38,21 +38,14 @@ function initFilterButtons(field) {
     var filterList = $('.filter-list[data-field=' + field + ']');
     filterList.find('.filter-entries > button').click(function() {
         $(this).toggleClass(ACTIVE_CLASS);
-        updateResultPagination();
+        updateResults(0);
     });
-}
-
-function updateResultPagination() {
-    // empty shown publications
-    $(PUBLICATIONS_SELECTOR).empty();
-    // init new result pagination with updated query
-    initResultPagination(0);
 }
 
 /**
  * AJAX updates
  */
-function initResultPagination(page) {
+function updateResults(page) {
     var groupName = $('#requestedGroup').data('group');
     var search = $('#extendedSearchInput').val();
     var filters = generateFilterQuery();
@@ -68,6 +61,7 @@ function initResultPagination(page) {
             'search': query
         },
         beforeSend: function() {
+            $(PUBLICATIONS_SELECTOR).empty();
             $('.custom-loader').removeClass(HIDDEN_CLASS);
         },
         success : function(data) {
@@ -93,14 +87,27 @@ function updateCounters() {
             'search': search
         },
         error: function(xhr, status, error) {
-            console.log(status);
-            console.log(xhr.responseText);
+            var distinctCounts = JSON.parse(xhr.responseText);
+            console.log(JSON.stringify(distinctCounts));
+            updateFieldCounts('entrytype', distinctCounts.entrytype);
+            updateFieldCounts('year', distinctCounts.year);
         },
         success : function(data) {
-            console.log("working!");
-        },
-        complete : function() {
-            console.log("working?");
+            console.log("success?");
+        }
+    });
+}
+
+function updateFieldCounts(field, counts) {
+    var filterList = $('.filter-list[data-field="'+ field + '"]');
+    filterList.find('.filter-entries > button').each(function() {
+        var value = $(this).data('value');
+        if (value in counts) {
+            $(this).find('span').html(counts[value]);
+            $(this).removeClass(HIDDEN_CLASS);
+        } else {
+            $(this).addClass(HIDDEN_CLASS);
+            $(this).removeClass(ACTIVE_CLASS);
         }
     });
 }
@@ -149,6 +156,8 @@ function validateYearFilters() {
 }
 
 function createFilterButton(name, filter, description) {
+
+
     var element = '<button class="btn btn-default btn-block" ' +
         'title="' + description + '" ' +
         'data-filter="' + filter + '" ' +

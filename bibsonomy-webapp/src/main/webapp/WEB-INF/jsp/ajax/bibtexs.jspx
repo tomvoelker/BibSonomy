@@ -3,7 +3,7 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
-		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
+          xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
@@ -27,7 +27,7 @@
                 </jsp:attribute>
                 <jsp:attribute name="addAsLastItem">
                     <div id="publicationsfooter">
-                        <rc:nextprev listView="${command.bibtex}" listViewStartParamName="${command.bibtex.start}"/>
+                        <rc:nextprev listView="${command.bibtex}" listViewStartParamName="${command.bibtex.start}" onClickOverride="updateResults" />
                     </div>
                 </jsp:attribute>
             </resources:bibtexs>

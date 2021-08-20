@@ -62,14 +62,9 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         if (command.isDistinctCount()) {
             PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
             try {
-                JSONObject entrytypeJson = new JSONObject();
-                entrytypeJson.append(ENTRYTYPE_FILTER, toJSONArray(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
-                JSONObject yearJson = new JSONObject();
-                yearJson.append(YEAR_FILTER, toJSONArray(generateFilters(distinctPostQuery, YEAR_FILTER, 200)));
-
-                JSONArray distinctCount = new JSONArray();
-                distinctCount.put(entrytypeJson);
-                distinctCount.put(yearJson);
+                JSONObject distinctCount = new JSONObject();
+                distinctCount.put(ENTRYTYPE_FILTER, filtersToJSON(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
+                distinctCount.put(YEAR_FILTER, filtersToJSON(generateFilters(distinctPostQuery, YEAR_FILTER, 200)));
 
                 command.setResponseString(distinctCount.toString());
             } catch (JSONException e) {
@@ -108,14 +103,12 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         return (Set<Pair<String, Long>>) this.logic.getMetaData(this.loggedInUser, distinctFieldQuery);
     }
 
-    private JSONArray toJSONArray(Set<Pair<String, Long>> filters) throws JSONException {
-        JSONArray arr = new JSONArray();
+    private JSONObject filtersToJSON(Set<Pair<String, Long>> filters) throws JSONException {
+        JSONObject res = new JSONObject();
         for (Pair<String, Long> filter : filters) {
-            JSONObject obj = new JSONObject();
-            obj.append(filter.getFirst(), filter.getSecond());
-            arr.put(obj);
+            res.put(filter.getFirst(), filter.getSecond());
         }
-        return arr;
+        return res;
     }
 
     @Override
