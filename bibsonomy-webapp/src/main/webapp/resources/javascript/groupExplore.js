@@ -3,7 +3,9 @@ const PUBLICATIONS_SELECTOR = '#groupExplorePublications';
 $(function() {
     // disable form action
     formAction();
-    // add custom tags
+    // add tag filters
+    initFilterButtons('entrytype');
+    initFilterButtons('year');
     addTagFilters();
     addCustomFilters();
     // remove invalid year buttons
@@ -22,8 +24,9 @@ function formAction() {
     });
 }
 
-function initFilterButtons() {
-    $('.searchFilterList .btn').click(function() {
+function initFilterButtons(field) {
+    var filterList = $('.searchFilterList[data-field=' + field + ']');
+    filterList.find('.searchFilterEntries > button').click(function() {
         $(this).toggleClass('active');
         updateResultPagination();
     });
@@ -131,6 +134,7 @@ function validateYearFilters() {
 
 function createFilterButton(name, filter, description) {
     var element = '<button class="btn btn-default btn-block" ' +
+        'title="' + description + '" ' +
         'data-filter="' + filter + '" ' +
         'data-value="' + name + '">' +
         description + '</button>';
@@ -145,8 +149,9 @@ function addTagFilters() {
         dataType: 'json',
         success : function(data) {
             $.each(data, function(index, tag) {
-                entries.append(createFilterButton(tag.name, "tags:" + tag.name, tag.description));
+                entries.append(createFilterButton(tag.name, 'tags:' + tag.name, tag.description));
             });
+            initFilterButtons('tags');
         }
     });
 }
@@ -158,8 +163,9 @@ function addCustomFilters() {
         dataType: 'json',
         success : function(data) {
             data.results.bindings.forEach(function(entity) {
-                entries.append(createFilterButton(entity.label.value, "tags:" + entity.label.value, entity.facility.value));
+                entries.append(createFilterButton(entity.label.value, 'tags:' + entity.label.value, entity.facility.value));
             });
+            initFilterButtons('custom');
         }
     });
 }

@@ -1,25 +1,33 @@
 #groupExplorePublications {
-
   .posts {
-    li {
+    .post {
       padding: 0 20px;
       height: auto;
       border: none;
     }
 
-    li:nth-child(odd) {
+    .post:nth-child(even) {
       background-color: #eee;
     }
   }
-
 }
 
-.searchFilterList .btn.active {
-  background-color: @main-color;
+.searchFilterList {
+  .btn.active {
+    background-color: @main-color;
+  }
+
+  .searchFilterEntries {
+    button {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
 
 #custom-selection {
-  max-height: 100px;
+  max-height: 230px;
+  margin-top: 5px;
   overflow: hidden;
   overflow-y: scroll;
 }
