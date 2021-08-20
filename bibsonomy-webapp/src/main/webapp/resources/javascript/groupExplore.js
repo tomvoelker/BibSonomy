@@ -156,8 +156,6 @@ function validateYearFilters() {
 }
 
 function createFilterButton(name, filter, description) {
-
-
     var element = '<button class="btn btn-default btn-block" ' +
         'title="' + description + '" ' +
         'data-filter="' + filter + '" ' +
