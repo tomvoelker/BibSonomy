@@ -107,7 +107,7 @@ function updateFieldCounts(field, counts) {
     $('#filter-entries-' + field + ' > button').each(function() {
         var value = $(this).data('value');
         if (value in counts) {
-            $(this).find('span .badge').html(counts[value]);
+            $(this).find('.badge').html(counts[value]);
             $(this).removeClass(HIDDEN_CLASS);
         } else {
             $(this).addClass(HIDDEN_CLASS);
