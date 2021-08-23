@@ -9,26 +9,32 @@
     <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
     <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="showMore" type="java.lang.Boolean" required="false"/>
 
-    <jsp:directive.attribute name="dualColumn" type="java.lang.Boolean" required="false"/>
+    <c:if test="${showMore}">
+        <c:set var="hide" value="hidden" />
+    </c:if>
 
     <div class="filter-list" data-field="${filterField}">
         <sidebar:sidebarItem textKey="${headerMessageKey}">
             <jsp:attribute name="content">
-                <div class="filter-entries">
+                <div id="filter-entries-${filterField}" class="filter-entries">
                     <c:if test="${not empty filterEntries}">
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
                             <c:set var="label" value="${entry.name}" />
                              <c:if test="${not empty entry.messageKey}">
                                 <fmt:message var="label" key="${entry.messageKey}" />
                             </c:if>
-                            <button type="button" class="btn btn-default btn-block" title="${label}" data-value="${entry.name}" data-filter="${entry.filter}">
+                            <button type="button" class="btn btn-default btn-block ${hide}" title="${label}" data-value="${entry.name}" data-filter="${entry.filter}">
                                 <span class="filter-button-label"><c:out value="${label}" /></span>
                                 <span class="badge badge-light"><c:out value="${entry.count}" /></span>
                             </button>
                         </c:forEach>
                     </c:if>
                 </div>
+                <c:if test="${showMore}">
+                    <span class="show-more-link" id="filter-more-${filterField}"><fmt:message key="explore.show.more" /></span>
+                </c:if>
             </jsp:attribute>
         </sidebar:sidebarItem>
     </div>

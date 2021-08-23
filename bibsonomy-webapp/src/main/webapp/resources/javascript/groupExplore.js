@@ -1,6 +1,3 @@
-const PUBLICATIONS_SELECTOR = '#groupExplorePublications';
-const FILTER_LIST_SELECTOR = '.filter-list';
-const FILTER_ENTRIES_SELECTOR = '.filter-entries';
 const HIDDEN_CLASS = 'hidden';
 const ACTIVE_CLASS = 'active';
 
@@ -17,6 +14,8 @@ $(function() {
     addCustomFilters();
     // remove invalid year buttons
     validateYearFilters();
+    // init 'show more' for year list
+    showRelevantYears();
     // add action to filter buttons
     initFilterButtons();
     // add init results
@@ -35,8 +34,7 @@ function formAction() {
 }
 
 function initFilterButtons(field) {
-    var filterList = $('.filter-list[data-field=' + field + ']');
-    filterList.find('.filter-entries > button').click(function() {
+    $('#filter-entries-' + field + ' > button').click(function() {
         $(this).toggleClass(ACTIVE_CLASS);
         updateResults(0);
     });
@@ -61,11 +59,11 @@ function updateResults(page) {
             'search': query
         },
         beforeSend: function() {
-            $(PUBLICATIONS_SELECTOR).empty();
+            $('#groupExplorePublications').empty();
             $('.custom-loader').removeClass(HIDDEN_CLASS);
         },
         success : function(data) {
-            $(PUBLICATIONS_SELECTOR).html(data);
+            $('#groupExplorePublications').html(data);
         },
         complete: function() {
             $('.custom-loader').addClass(HIDDEN_CLASS);
@@ -99,11 +97,10 @@ function updateCounters() {
 }
 
 function updateFieldCounts(field, counts) {
-    var filterList = $('.filter-list[data-field="'+ field + '"]');
-    filterList.find('.filter-entries > button').each(function() {
+    $('#filter-entries-' + field + ' > button').each(function() {
         var value = $(this).data('value');
         if (value in counts) {
-            $(this).find('span').html(counts[value]);
+            $(this).find('span .badge').html(counts[value]);
             $(this).removeClass(HIDDEN_CLASS);
         } else {
             $(this).addClass(HIDDEN_CLASS);
@@ -146,11 +143,23 @@ function addFiltersToSearchQuery(search, filters) {
 }
 
 function validateYearFilters() {
-    var yearFilterList = $('.filter-list[data-field="year"]');
-    yearFilterList.find('.filter-entries > button').each(function() {
+    $('#filter-entries-year > button').each(function() {
         var element = $(this);
         if (isNaN(element.data('value'))) {
             element.remove();
+        }
+    });
+}
+
+function showRelevantYears() {
+    var listSize = $('#filter-entries-year button').size();
+    var num = 10;
+    $('#filter-entries-year button:lt(' + num + ')').removeClass(HIDDEN_CLASS);
+    $('#filter-more-year').click(function () {
+        num = (num + 10 <= listSize) ? num + 10 : listSize;
+        $('#filter-entries-year button:lt(' + num + ')').removeClass(HIDDEN_CLASS);
+        if(num === listSize){
+            $('#filter-more-year').addClass(HIDDEN_CLASS);
         }
     });
 }
@@ -166,7 +175,7 @@ function createFilterButton(name, filter, description) {
 }
 
 function addTagFilters() {
-    var entries = $('.filter-list[data-field="tags"]').find(FILTER_ENTRIES_SELECTOR);
+    var entries = $('#filter-entries-tags');
     $.ajax({
         url: '/resources_puma/addons/explore/tags.json', // The url you are fetching the results.
         dataType: 'json',
@@ -180,7 +189,7 @@ function addTagFilters() {
 }
 
 function addCustomFilters() {
-    var entries = $('.filter-list[data-field="custom"]').find(FILTER_ENTRIES_SELECTOR);
+    var entries = $('#filter-entries-custom');
     $.ajax({
         url: '/resources_puma/addons/explore/custom.json', // The url you are fetching the results.
         dataType: 'json',

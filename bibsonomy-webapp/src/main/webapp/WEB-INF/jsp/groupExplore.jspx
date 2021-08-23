@@ -102,14 +102,14 @@
 								<sidebar:sidebarHeader textKey="explore.filter.custom.header" />
 								<fmt:message var="customFilterPlaceholder" key="explore.filter.search.placeholder" />
 								<input id="searchCustomFilters" class="form-control" type="text" placeholder="${customFilterPlaceholder}" aria-label="${customFilterPlaceholder}" onkeyup="searchCustomFilters()" />
-								<div class="filter-entries search-filter-selection"><!-- keep me --></div>
+								<div id="filter-entries-custom" class="filter-entries search-filter-selection"><!-- keep me --></div>
 							</div>
 						</c:if>
 						<c:if test="${not empty command.entrytypeFilters}">
 							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
 						</c:if>
 						<c:if test="${not empty command.yearFilters}">
-							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" />
+							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" showMore="${true}" />
 						</c:if>
 						<c:if test="${not empty command.authorFilters}">
 							<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
