@@ -276,6 +276,8 @@
 							<list>
 								<value>requestedGroup</value>
 								<value>search</value>
+								<value>sortPage</value>
+								<value>sortPageOrder</value>
 								<value>distinctCount</value>
 								<value>pageSize</value>
 								<value>page</value>

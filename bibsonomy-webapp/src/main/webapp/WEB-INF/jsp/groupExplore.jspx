@@ -72,15 +72,16 @@
 							<div class="col-md-12">
 								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
 									<rc:actions resourceType="bibtex"
-												sortPage="rank"
+												sortPage="pubdate"
 												sortPageOrder="desc"
 												entriesPerPage="20"
 												showBookmark="${false}"
 												showPublication="${true}"
 												showInboxActions="${false}"
 												isClipboard="${false}"
-												disableListNavigation="${false}"
-												disableResourcetypeSelection="${false}"/>
+												disableFiltering="${true}"
+												ignoreSortLinks="${true}"
+												overridePath="/group/${groupName}" />
 								</div>
 							</div>
 						</div>

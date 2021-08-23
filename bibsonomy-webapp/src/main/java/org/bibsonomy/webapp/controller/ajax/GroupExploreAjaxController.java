@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
@@ -15,6 +16,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxGroupExploreCommand;
@@ -78,6 +80,10 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         final int postsPerPage = command.getPageSize();
         final int start = postsPerPage * command.getPage();
         builder.entriesStartingAt(postsPerPage, start);
+
+        // sort criteria
+        List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(SortUtils.parseSortKeys(command.getSortPage()), SortUtils.parseSortOrders(command.getSortPageOrder()));
+        builder.setSortCriteria(sortCriteria);
 
         // get posts of the group
         ListCommand<Post<BibTex>> bibtexCommand = command.getBibtex();

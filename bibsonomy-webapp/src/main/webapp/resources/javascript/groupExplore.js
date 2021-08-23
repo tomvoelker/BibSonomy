@@ -18,6 +18,8 @@ $(function() {
     showRelevantYears();
     // add action to filter buttons
     initFilterButtons();
+    // init sorting options
+    initSortOptions();
     // add init results
     updateResults(0);
 });
@@ -48,15 +50,20 @@ function updateResults(page) {
     var search = $('#extendedSearchInput').val();
     var filters = generateFilterQuery();
     var query = addFiltersToSearchQuery(search, filters);
+    var selectedSort =  $('#sorting-dropdown-menu > .sort-selected');
+    var sortPage = selectedSort.data('key');
+    var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
 
     $.ajax({
         url: '/ajax/explore/group', // The url you are fetching the results.
         data: {
             // These are the variables you can pass to the request
             'requestedGroup': groupName,
+            'search': query,
+            'sortPage': sortPage,
+            'sortPageOrder': sortPageOrder,
             'page': page, // Which page at the first time
             'pageSize': 20,
-            'search': query
         },
         beforeSend: function() {
             $('#groupExplorePublications').empty();
@@ -212,5 +219,37 @@ function searchCustomFilters() {
         } else {
             $(this).addClass(HIDDEN_CLASS);
         }
+    });
+}
+
+/**
+ * sorting
+ */
+
+function initSortOptions() {
+    var SELECTED_CLASS = 'sort-selected';
+    $('#sorting-dropdown-menu > .sort-selection').click(function (e) {
+        e.preventDefault();
+
+        // hide all sorting order arrows
+        $('.sort-order').addClass(HIDDEN_CLASS);
+
+        // remove all elements as selected and selected the current element
+        if ($(this).hasClass(SELECTED_CLASS)) {
+            $(this).data('asc', !$(this).data('asc'))
+        } else {
+            $('#sorting-dropdown-menu > .sort-selection').removeClass(SELECTED_CLASS);
+            $(this).addClass(SELECTED_CLASS);
+        }
+
+        // show the correct sorting arrow to display the order
+        if ($(this).data('asc')) {
+            $(this).find('.sort-asc').removeClass(HIDDEN_CLASS);
+        } else {
+            $(this).find('.sort-desc').removeClass(HIDDEN_CLASS);
+        }
+
+        // refresh results
+        updateResults(0);
     });
 }

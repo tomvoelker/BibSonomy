@@ -58,8 +58,6 @@ public class GroupExplorePageController extends SingleResourceListController imp
     private String requestedGroup;
     private Group group;
 
-    private final int ENTRIES_PER_PAGE = 20;
-
     @Override
     public View workOn(GroupExploreViewCommand command) {
         this.loggedInUser = command.getContext().getLoginUser();
@@ -68,18 +66,6 @@ public class GroupExplorePageController extends SingleResourceListController imp
         this.requestedGroup = command.getRequestedGroup();
         this.group = this.logic.getGroupDetails(requestedGroup, false);
         command.setGroup(this.group);
-
-        // get posts of the group
-        ListCommand<Post<BibTex>> bibtexCommand = command.getBibtex();
-        bibtexCommand.setEntriesPerPage(ENTRIES_PER_PAGE);
-        PostQueryBuilder builder = new PostQueryBuilder()
-                .setGrouping(GroupingEntity.GROUP)
-                .setGroupingName(this.requestedGroup)
-                .entriesStartingAt(bibtexCommand.getEntriesPerPage(), bibtexCommand.getStart())
-                .searchAndSortCriteria(command.getSearch(), new SortCriteria(SortKey.PUBDATE, SortOrder.DESC));
-
-        List<Post<BibTex>> posts = this.logic.getPosts(builder.createPostQuery(BibTex.class));
-        bibtexCommand.setList(posts);
 
         // create filter list
         command.setEntrytypeFilters(generateEntrytypeFilters());
