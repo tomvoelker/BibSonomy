@@ -36,22 +36,40 @@
     text-align: center;
 
     .spinner {
-      border: 16px solid #f3f3f3; /* Light grey */
-      border-top: 16px solid #3498db; /* Blue */
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      animation: spin 2s linear infinite;
-      display: inline-block;
-      text-align: center;
+      animation: rotator 1.4s linear infinite;
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
+    @keyframes rotator {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(270deg); }
+    }
+
+    .path {
+      stroke-dasharray: 187;
+      stroke-dashoffset: 0;
+      transform-origin: center;
+      animation:
+              dash 1.4s ease-in-out infinite,
+              colors (1.4s*4) ease-in-out infinite;
+    }
+
+    @keyframes colors {
+      0% { stroke: @main-color; }
+      25% { stroke: @main-color-light; }
+      50% { stroke: @main-color; }
+      75% { stroke: @main-color-light; }
+      100% { stroke: @main-color; }
+    }
+
+    @keyframes dash {
+      0% { stroke-dashoffset: 187; }
+      50% {
+        stroke-dashoffset: 46.75;
+        transform:rotate(135deg);
       }
       100% {
-        transform: rotate(360deg);
+        stroke-dashoffset: 187;
+        transform:rotate(450deg);
       }
     }
   }
