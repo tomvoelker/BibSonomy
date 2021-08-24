@@ -81,6 +81,7 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.bibsonomy.webapp.util.TagViewUtils;
 import org.joda.time.DateTime;
@@ -186,6 +187,13 @@ public class Functions {
 	 */
 	public static String markdownToHtml(final String markdown) {
 		return new PegDownProcessor().markdownToHtml(StringEscapeUtils.escapeHtml(markdown));
+	}
+
+	/**
+	 * @return the real Name of the logged-in user
+	 */
+	public static String getUserName() {
+		return AuthenticationUtils.getUser().getRealname();
 	}
 
 	/**

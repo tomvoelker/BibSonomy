@@ -181,6 +181,12 @@
 	</function>
 
 	<function>
+		<name>getUserName</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.lang.String getUserName()</function-signature>
+	</function>
+
+	<function>
 		<name>encodePathSegment</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String encodePathSegment(java.lang.String)</function-signature>

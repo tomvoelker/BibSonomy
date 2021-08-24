@@ -35,6 +35,39 @@
 				$(this).tooltip('toggle');
 			});
 		});
+
+		window.onload = function(){
+			document.getElementById("post.resource.author").onblur = function() {
+				if(isAuthor() &amp;&amp; !document.getElementById("myownChkBox").checked){
+					document.getElementById("imAmAuthorWarning").style.display = "block"
+				} else {
+					document.getElementById("imAmAuthorWarning").style.display = "none"
+				}
+			}
+
+			document.getElementById("myownChkBox").onclick = function() {
+				document.getElementById("imAmAuthorWarning").style.display = "none"
+			}
+
+			/**
+			 * Determines whether the currently logged in user has entered a form of their own name in the authors field
+			 * @returns {boolean}
+			 */
+			function isAuthor() {
+				let userName = document.getElementById("userName").value;
+				let splittedUserName = userName.split(/[ ,]+/);
+
+				let enteredAuthors = document.getElementById("post.resource.author").value;
+				let enteredAuthorsArray = enteredAuthors.split("\n");
+
+				if (enteredAuthors.length !== 0){
+					return enteredAuthorsArray.some(enteredAuthor => splittedUserName.every(userNameElement => enteredAuthor.includes(userNameElement)));
+				} else{
+					return false;
+				}
+			}
+		};
+
 	</script>
 	
 	<spring:eval expression="T(org.bibsonomy.model.util.BibTexUtils).ENTRYTYPES" var="entryTypes" />
@@ -105,7 +138,7 @@
 	
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 	
-	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
+	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}"/>
 	
 	<c:if test="${person != null }">
 		<div class="form-group">
@@ -153,8 +186,13 @@
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
+				<div class="alert alert-warning alert-dismissible" role="alert" id="imAmAuthorWarning" style="display: none;">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<fmt:message key="post.resource.myown.reminder"/>
+				</div>
 				<div class="checkbox clearfix">
 					<label>
+						<input type="hidden" id="userName" value="${mtl:getUserName()}"/>
 						<input name="myOwn" type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
 						<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
 						<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
