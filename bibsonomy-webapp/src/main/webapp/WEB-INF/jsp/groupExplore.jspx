@@ -5,16 +5,11 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
           xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-          xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-          xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
           xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-          xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
           xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-          xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
-          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
           xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+>
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -96,24 +91,24 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-3 sidebar">
 						<c:if test="${groupName eq properties['explore.group.id']}">
-							<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" />
+							<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" />
 							<div class="filter-list" data-field="custom">
-								<sidebar:sidebarHeader textKey="explore.filter.custom.header" />
+								<sidebar:sidebarHeader textKey="explore.filter.custom.header" iconKey="sitemap"/>
 								<fmt:message var="customFilterPlaceholder" key="explore.filter.search.placeholder" />
 								<input id="searchCustomFilters" class="form-control" type="text" placeholder="${customFilterPlaceholder}" aria-label="${customFilterPlaceholder}" onkeyup="searchCustomFilters()" />
 								<div id="filter-entries-custom" class="filter-entries search-filter-selection"><!-- keep me --></div>
 							</div>
 						</c:if>
 						<c:if test="${not empty command.entrytypeFilters}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" />
+							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" headerMessageIcon="book" />
 						</c:if>
 						<c:if test="${not empty command.yearFilters}">
-							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" showMore="${true}" />
+							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" headerMessageIcon="calendar-alt" showMore="${true}" />
 						</c:if>
 						<c:if test="${not empty command.authorFilters}">
-							<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" />
+							<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" headerMessageIcon="user" />
 						</c:if>
 					</div>
 				</div>
