@@ -23,7 +23,6 @@ import org.bibsonomy.webapp.command.ajax.AjaxGroupExploreCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +60,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
                 .setGroupingName(this.requestedGroup)
                 .search(command.getSearch());
 
+        // check, if only the distinct counts of the query should be retrieved
         if (command.isDistinctCount()) {
             PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
             try {
@@ -73,6 +73,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
                 e.printStackTrace();
             }
 
+            // returns a JSON response
             return Views.AJAX_JSON;
         }
 
@@ -101,6 +102,14 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
     }
 
 
+    /**
+     * Retrieve a distinct count of a field with a given post search query.
+     *
+     * @param query the post search query
+     * @param field the index field
+     * @param size the size of buckets
+     * @return
+     */
     private Set<Pair<String, Long>> generateFilters(PostSearchQuery<BibTex> query, String field, int size) {
         // get aggregated count by given field
         DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor(field));
@@ -109,6 +118,13 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         return (Set<Pair<String, Long>>) this.logic.getMetaData(this.loggedInUser, distinctFieldQuery);
     }
 
+    /**
+     * Create JSON object for a distinct count
+     *
+     * @param filters list of pairs with name and count
+     * @return JSONObject JSON representation of the count
+     * @throws JSONException
+     */
     private JSONObject filtersToJSON(Set<Pair<String, Long>> filters) throws JSONException {
         JSONObject res = new JSONObject();
         for (Pair<String, Long> filter : filters) {

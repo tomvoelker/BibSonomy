@@ -32,11 +32,8 @@ package org.bibsonomy.search.es.search.post;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
@@ -45,10 +42,6 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.search.es.index.converter.project.ProjectFields;
-import org.bibsonomy.services.searcher.PostSearchQuery;
-import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
@@ -56,10 +49,10 @@ import org.bibsonomy.database.systemstags.search.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.search.TitleSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.util.object.FieldDescriptor;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.ExistsQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -67,10 +60,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 

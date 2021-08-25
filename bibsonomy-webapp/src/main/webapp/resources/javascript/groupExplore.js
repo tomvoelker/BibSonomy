@@ -27,6 +27,10 @@ $(function() {
 /**
  * input controls
  */
+
+/**
+ * Prevent default of the search interface and now triggers the update of the counters and the post results.
+ */
 function formAction() {
     $('#extendedSearchForm').on('submit', function (e) {
         e.preventDefault();
@@ -35,6 +39,11 @@ function formAction() {
     });
 }
 
+/**
+ * Add action to all filter buttons in a section. On click set to active and update search results correspondingly.
+ *
+ * @param field the section identified by the field
+ */
 function initFilterButtons(field) {
     $('#filter-entries-' + field + ' > button').click(function() {
         $(this).toggleClass(ACTIVE_CLASS);
@@ -44,6 +53,12 @@ function initFilterButtons(field) {
 
 /**
  * AJAX updates
+ */
+
+/**
+ * Get all inputs for the search query and update the posts lists via AJAX.
+ *
+ * @param page the selected pagination
  */
 function updateResults(page) {
     var groupName = $('#requestedGroup').data('group');
@@ -78,6 +93,9 @@ function updateResults(page) {
     });
 }
 
+/**
+ * Get all inputs for the search query and update the counters on the filters accordingly via AJAX.
+ */
 function updateCounters() {
     var groupName = $('#requestedGroup').data('group');
     var search = $('#extendedSearchInput').val();
@@ -98,11 +116,18 @@ function updateCounters() {
             updateFieldCounts('year', distinctCounts.year);
         },
         success : function(data) {
+            // TODO fix me
             console.log("success?");
         }
     });
 }
 
+/**
+ * Update a filter section's counters.
+ *
+ * @param field the filter section name
+ * @param counts the list of updated counts
+ */
 function updateFieldCounts(field, counts) {
     $('#filter-entries-' + field + ' > button').each(function() {
         var value = $(this).data('value');
@@ -134,6 +159,13 @@ function generateFilterQuery() {
     return filterQuery.join(' AND ');
 }
 
+/**
+ * Concat the search query and the selected filters
+ *
+ * @param search the search
+ * @param filters the selected filters
+ * @returns the combined query
+ */
 function addFiltersToSearchQuery(search, filters) {
     var query = '';
     if (search) {
@@ -149,6 +181,9 @@ function addFiltersToSearchQuery(search, filters) {
     return query;
 }
 
+/**
+ * Removes all non-numeric filters in the year filter section.
+ */
 function validateYearFilters() {
     $('#filter-entries-year > button').each(function() {
         var element = $(this);
@@ -158,6 +193,10 @@ function validateYearFilters() {
     });
 }
 
+/**
+ * Initialize the show more functionality in the year filter section.
+ * At the beginning show max. 10 entries and expand by clicking on the link below.
+ */
 function showRelevantYears() {
     var listSize = $('#filter-entries-year button').size();
     var num = 10;
@@ -171,6 +210,14 @@ function showRelevantYears() {
     });
 }
 
+/**
+ * Create a button HTML-Element for a filter.
+ *
+ * @param name
+ * @param filter
+ * @param description
+ * @returns {string}
+ */
 function createFilterButton(name, filter, description) {
     var element = '<button class="btn btn-default btn-block" ' +
         'title="' + description + '" ' +
@@ -181,6 +228,9 @@ function createFilterButton(name, filter, description) {
     return element;
 }
 
+/**
+ * Get the list of highlighted tags for the current PUMA system and add it as an additional filter section.
+ */
 function addTagFilters() {
     var entries = $('#filter-entries-tags');
     $.ajax({
@@ -195,6 +245,9 @@ function addTagFilters() {
     });
 }
 
+/**
+ * Get the list of custom tags (for example: subgroups/subentities identified by tags) for the current PUMA system and add it as an additional filter section.
+ */
 function addCustomFilters() {
     var entries = $('#filter-entries-custom');
     $.ajax({
@@ -209,6 +262,9 @@ function addCustomFilters() {
     });
 }
 
+/**
+ * Simple search for the custom tag list.
+ */
 function searchCustomFilters() {
     var search = $('#searchCustomFilters').val().toLowerCase();
     var entries = $('.filter-list[data-field="custom"]').find('.filter-entries');
@@ -226,6 +282,9 @@ function searchCustomFilters() {
  * sorting
  */
 
+/**
+ * Initialize sorting buttons to update selection and the post results.
+ */
 function initSortOptions() {
     var SELECTED_CLASS = 'sort-selected';
     $('#sorting-dropdown-menu > .sort-selection').click(function (e) {

@@ -29,25 +29,20 @@
  */
 package org.bibsonomy.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
@@ -873,7 +868,7 @@ public class BibTex extends Resource {
 		}
 	}
 
-	/**
+	/**<
 	 * a lookup method for method references for this class
 	 */
 	public static final Function<String, FieldDescriptor<BibTex, ?>> METHOD_REFERENCE = (field) -> {

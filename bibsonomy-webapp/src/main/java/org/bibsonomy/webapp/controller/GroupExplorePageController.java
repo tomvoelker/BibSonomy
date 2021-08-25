@@ -1,35 +1,23 @@
 package org.bibsonomy.webapp.controller;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.bibsonomy.common.FirstValuePairComparator;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
-import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.GroupExploreViewCommand;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -87,6 +75,14 @@ public class GroupExplorePageController extends SingleResourceListController imp
         return filters;
     }
 
+    /**
+     * Generate a list of search filter elements of the entire group posts.
+     *
+     * @param field the index field
+     * @param size the bucket size
+     * @param reverse reverse sort order by name
+     * @return
+     */
     private List<SearchFilterElement> generateFilters(String field, int size, boolean reverse) {
         // build query for group posts to aggregate for counts
         PostSearchQuery<BibTex> groupPostsQuery = new PostSearchQuery<>();
