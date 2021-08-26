@@ -52,6 +52,21 @@ function initFilterButtons(field) {
 }
 
 /**
+ * Add action to all filter buttons in a section. On click set to active and update search results correspondingly.
+ * Also updates the counters on filter list
+ *
+ * @param field the section identified by the field
+ */
+function initFilterButtonsWithCounterUpdate(field) {
+    $('#filter-entries-' + field + ' > button').click(function() {
+        $(this).toggleClass(ACTIVE_CLASS);
+        var filters = generateTagsFilterQuery();
+        updateCounters(filters)
+        updateResults(0);
+    });
+}
+
+/**
  * AJAX updates
  */
 
@@ -96,9 +111,10 @@ function updateResults(page) {
 /**
  * Get all inputs for the search query and update the counters on the filters accordingly via AJAX.
  */
-function updateCounters() {
+function updateCounters(filters) {
     var groupName = $('#requestedGroup').data('group');
     var search = $('#extendedSearchInput').val();
+    var query = addFiltersToSearchQuery(search, filters);
 
     $.ajax({
         url: '/ajax/explore/group', // The url you are fetching the results.
@@ -107,11 +123,10 @@ function updateCounters() {
             // These are the variables you can pass to the request
             'requestedGroup': groupName,
             'distinctCount': true,
-            'search': search
+            'search': query
         },
         error: function(xhr, status, error) {
             var distinctCounts = JSON.parse(xhr.responseText);
-            console.log(JSON.stringify(distinctCounts));
             updateFieldCounts('entrytype', distinctCounts.entrytype);
             updateFieldCounts('year', distinctCounts.year);
         },
@@ -135,6 +150,7 @@ function updateFieldCounts(field, counts) {
             $(this).find('.badge').html(counts[value]);
             $(this).removeClass(HIDDEN_CLASS);
         } else {
+            $(this).find('.badge').html(0);
             $(this).addClass(HIDDEN_CLASS);
             $(this).removeClass(ACTIVE_CLASS);
         }
@@ -148,15 +164,34 @@ function generateFilterQuery() {
     var filterQuery = [];
 
     $('.filter-list').each(function() {
-        var selectedFilters = [];
-        $(this).find('.btn.active').each(function() {
-            selectedFilters.push($(this).data('filter'));
-        });
-        var selectedFiltersQuery = selectedFilters.join(' OR ');
+        var selectedFiltersQuery = getFilterQuery(this)
         if (selectedFiltersQuery) filterQuery.push('(' + selectedFiltersQuery + ')');
     });
 
     return filterQuery.join(' AND ');
+}
+
+/**
+ * query and filter builder for ONLY custom tags
+ */
+function generateTagsFilterQuery() {
+    var filterQuery = [];
+
+    var customQuery = getFilterQuery($('#filter-list-custom'));
+    if (customQuery) filterQuery.push('(' + customQuery + ')');
+
+    var tagsQuery = getFilterQuery($('#filter-list-tags'));
+    if (tagsQuery) filterQuery.push('(' + tagsQuery + ')');
+
+    return filterQuery.join(' AND ');
+}
+
+function getFilterQuery(filterList) {
+    var selectedFilters = [];
+    $(filterList).find('.btn.active').each(function() {
+        selectedFilters.push($(this).data('filter'));
+    });
+    return selectedFilters.join(' OR ');
 }
 
 /**
@@ -198,14 +233,17 @@ function validateYearFilters() {
  * At the beginning show max. 10 entries and expand by clicking on the link below.
  */
 function showRelevantYears() {
-    var listSize = $('#filter-entries-year button').size();
+    var entries = $('#filter-entries-year button');
+    var listSize = entries.size();
+    entries.hide();
+
     var num = 10;
-    $('#filter-entries-year button:lt(' + num + ')').removeClass(HIDDEN_CLASS);
+    $('#filter-entries-year button:lt(' + num + ')').show();
     $('#filter-more-year').click(function () {
         num = (num + 10 <= listSize) ? num + 10 : listSize;
-        $('#filter-entries-year button:lt(' + num + ')').removeClass(HIDDEN_CLASS);
+        $('#filter-entries-year button:lt(' + num + ')').show();
         if(num === listSize){
-            $('#filter-more-year').addClass(HIDDEN_CLASS);
+            $('#filter-more-year').hide();
         }
     });
 }
@@ -240,7 +278,9 @@ function addTagFilters() {
             $.each(data, function(index, entity) {
                 entries.append(createFilterButton(entity.tag, 'tags:' + entity.tag, entity.description));
             });
-            initFilterButtons('tags');
+            initFilterButtonsWithCounterUpdate('tags');
+
+            // show filter section
             $('#filter-list-tags').removeClass(HIDDEN_CLASS);
         }
     });
@@ -258,7 +298,9 @@ function addCustomFilters() {
             data.results.bindings.forEach(function(entity) {
                 entries.append(createFilterButton(entity.label.value, 'tags:' + entity.label.value, entity.facility.value));
             });
-            initFilterButtons('custom');
+            initFilterButtonsWithCounterUpdate('custom');
+
+            // show filter section
             $('#filter-list-custom').removeClass(HIDDEN_CLASS);
         }
     });
