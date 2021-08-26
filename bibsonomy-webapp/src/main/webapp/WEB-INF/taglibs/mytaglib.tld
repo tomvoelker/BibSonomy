@@ -181,9 +181,9 @@
 	</function>
 
 	<function>
-		<name>getUserName</name>
+		<name>getUserRealNames</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String getUserName()</function-signature>
+		<function-signature>java.lang.String getUserRealNames()</function-signature>
 	</function>
 
 	<function>

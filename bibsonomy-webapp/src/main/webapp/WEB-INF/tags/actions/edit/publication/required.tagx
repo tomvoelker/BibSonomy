@@ -54,14 +54,14 @@
 			 * @returns {boolean}
 			 */
 			function isAuthor() {
-				let userName = document.getElementById("userName").value;
-				let splittedUserName = userName.split(/[ ,]+/);
+				let userRealNames = document.getElementById("userRealNames").value;
+				let individualUserRealNames = userRealNames.split(" and ");
 
 				let enteredAuthors = document.getElementById("post.resource.author").value;
-				let enteredAuthorsArray = enteredAuthors.split("\n");
+				let individualEnteredAuthors = enteredAuthors.split("\n");
 
 				if (enteredAuthors.length !== 0){
-					return enteredAuthorsArray.some(enteredAuthor => splittedUserName.every(userNameElement => enteredAuthor.includes(userNameElement)));
+					return individualEnteredAuthors.some(enteredAuthor => individualUserRealNames.some(userRealName => enteredAuthor === userRealName));
 				} else{
 					return false;
 				}
@@ -192,7 +192,7 @@
 				</div>
 				<div class="checkbox clearfix">
 					<label>
-						<input type="hidden" id="userName" value="${mtl:getUserName()}"/>
+						<input type="hidden" id="userRealNames" value="${mtl:getUserRealNames()}"/>
 						<input name="myOwn" type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
 						<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
 						<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
