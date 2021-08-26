@@ -153,11 +153,11 @@
 				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
-			<div class="pull-left">
+			<div class="post-rating pull-left">
 				<discussion:rating post="${post}" />
 			</div>
 			<c:if test="${not hidePostMenu}">
-				<div class="pull-right">
+				<div class="post-buttons pull-right">
 					<jsp:invoke fragment="actions"/>
 				</div>
 			</c:if>
