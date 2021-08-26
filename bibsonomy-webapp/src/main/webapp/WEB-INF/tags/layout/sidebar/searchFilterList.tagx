@@ -12,16 +12,20 @@
     <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
     <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="hide" type="java.lang.Boolean" required="false" />
     <jsp:directive.attribute name="showMore" type="java.lang.Boolean" required="false"/>
 
     <c:if test="${showMore}">
         <c:set var="hide" value="hidden" />
     </c:if>
 
-    <div class="filter-list" data-field="${filterField}">
+    <div id="filter-list-${filterField}" class="filter-list" data-field="${filterField}">
         <sidebar:sidebarItem textKey="${headerMessageKey}" iconKey="${headerMessageIcon}">
             <jsp:attribute name="content">
-                <div id="filter-entries-${filterField}" class="filter-entries">
+                <c:if test="${hidden}">
+                    <c:set var="hide" value="hidden" />
+                </c:if>
+                <div id="filter-entries-${filterField}" class="filter-entries ${hidden}">
                     <c:if test="${not empty filterEntries}">
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
                             <c:set var="label" value="${entry.name}" />

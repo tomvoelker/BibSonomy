@@ -234,13 +234,14 @@ function createFilterButton(name, filter, description) {
 function addTagFilters() {
     var entries = $('#filter-entries-tags');
     $.ajax({
-        url: '/resources_puma/addons/explore/tags.json', // The url you are fetching the results.
+        url: '/resources_puma/addons/explore/highlightTags.json', // The url you are fetching the results.
         dataType: 'json',
         success : function(data) {
             $.each(data, function(index, entity) {
                 entries.append(createFilterButton(entity.tag, 'tags:' + entity.tag, entity.description));
             });
             initFilterButtons('tags');
+            $('#filter-list-tags').removeClass(HIDDEN_CLASS);
         }
     });
 }
@@ -251,13 +252,14 @@ function addTagFilters() {
 function addCustomFilters() {
     var entries = $('#filter-entries-custom');
     $.ajax({
-        url: '/resources_puma/addons/explore/custom.json', // The url you are fetching the results.
+        url: '/resources_puma/addons/explore/customTags.json', // The url you are fetching the results.
         dataType: 'json',
         success : function(data) {
             data.results.bindings.forEach(function(entity) {
                 entries.append(createFilterButton(entity.label.value, 'tags:' + entity.label.value, entity.facility.value));
             });
             initFilterButtons('custom');
+            $('#filter-list-custom').removeClass(HIDDEN_CLASS);
         }
     });
 }
@@ -267,7 +269,7 @@ function addCustomFilters() {
  */
 function searchCustomFilters() {
     var search = $('#searchCustomFilters').val().toLowerCase();
-    var entries = $('.filter-list[data-field="custom"]').find('.filter-entries');
+    var entries = $('#filter-entries-custom');
     entries.children().each(function() {
         var value = $(this).html().toLowerCase();
         if (value.indexOf(search) > -1) {
