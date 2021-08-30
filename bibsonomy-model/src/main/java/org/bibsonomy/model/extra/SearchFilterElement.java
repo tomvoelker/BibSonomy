@@ -48,11 +48,6 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
     private String field;
 
     /**
-     * fulltext search filter
-     */
-    private String filter;
-
-    /**
      * message key to display label in webapp
      */
     private String messageKey;
@@ -98,20 +93,6 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     public void setField(String field) {
         this.field = field;
-    }
-
-    /**
-     * @return the fulltext search filter
-     */
-    public String getFilter() {
-        return filter;
-    }
-
-    /**
-     * @param filter the fulltext search filter to set
-     */
-    public void setFilter(String filter) {
-        this.filter = filter;
     }
 
     /**

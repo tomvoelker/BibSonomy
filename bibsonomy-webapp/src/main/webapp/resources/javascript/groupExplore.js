@@ -165,7 +165,7 @@ function generateFilterQuery() {
 
     $('.filter-list').each(function() {
         var selectedFiltersQuery = getFilterQuery(this)
-        if (selectedFiltersQuery) filterQuery.push('(' + selectedFiltersQuery + ')');
+        if (selectedFiltersQuery) filterQuery.push(selectedFiltersQuery);
     });
 
     return filterQuery.join(' AND ');
@@ -178,10 +178,10 @@ function generateTagsFilterQuery() {
     var filterQuery = [];
 
     var customQuery = getFilterQuery($('#filter-list-custom'));
-    if (customQuery) filterQuery.push('(' + customQuery + ')');
+    if (customQuery) filterQuery.push(customQuery);
 
     var tagsQuery = getFilterQuery($('#filter-list-tags'));
-    if (tagsQuery) filterQuery.push('(' + tagsQuery + ')');
+    if (tagsQuery) filterQuery.push(tagsQuery);
 
     return filterQuery.join(' AND ');
 }
@@ -189,9 +189,17 @@ function generateTagsFilterQuery() {
 function getFilterQuery(filterList) {
     var selectedFilters = [];
     $(filterList).find('.btn.active').each(function() {
-        selectedFilters.push($(this).data('filter'));
+        selectedFilters.push($(this).data('value'));
     });
-    return selectedFilters.join(' OR ');
+
+    var field = $(filterList).data('field');
+    var matchValues = selectedFilters.join(' OR ');
+
+    if (matchValues) {
+        return field + ':(' + matchValues + ')';
+    }
+
+    return '';
 }
 
 /**

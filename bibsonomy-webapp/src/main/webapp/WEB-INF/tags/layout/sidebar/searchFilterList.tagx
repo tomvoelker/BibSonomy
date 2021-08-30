@@ -29,7 +29,7 @@
                              <c:if test="${not empty entry.messageKey}">
                                 <fmt:message var="label" key="${entry.messageKey}" />
                             </c:if>
-                            <button type="button" class="btn btn-default btn-block" title="${label}" data-value="${entry.name}" data-filter="${entry.filter}">
+                            <button type="button" class="btn btn-default btn-block" title="${label}" data-value="${entry.name}">
                                 <span class="filter-button-label"><c:out value="${label}" /></span>
                                 <span class="badge badge-light"><c:out value="${entry.count}" /></span>
                             </button>

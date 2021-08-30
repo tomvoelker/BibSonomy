@@ -99,7 +99,6 @@ public class GroupExplorePageController extends SingleResourceListController imp
         for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {
             SearchFilterElement filterElement = new SearchFilterElement(filter.getFirst(), filter.getSecond());
             filterElement.setField(field);
-            filterElement.setFilter(filterElement.getField() + ":" + filterElement.getName());
             filters.add(filterElement);
         }
         Collections.sort(filters);
