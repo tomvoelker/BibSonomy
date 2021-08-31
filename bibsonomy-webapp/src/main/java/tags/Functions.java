@@ -190,21 +190,6 @@ public class Functions {
 	}
 
 	/**
-	 * converts all known names of the currently logged-in user in a single string
-	 * @return all names in the Last, First format with " and " as the delimiter
-	 */
-	public static String getUserRealNames() {
-		User currentUser = AuthenticationUtils.getUser();
-		List<PersonName> userRealnameList = PersonNameUtils.discoverPersonNamesIgnoreExceptions(currentUser.getRealname());
-
-		if(currentUser.getClaimedPerson() != null && currentUser.getClaimedPerson().getNames() != null) {
-				userRealnameList.add(currentUser.getClaimedPerson().getMainName());
-				userRealnameList.addAll(currentUser.getClaimedPerson().getNames());
-		}
-		return PersonNameUtils.serializePersonNames(userRealnameList, true, " and ");
-	}
-
-	/**
 	 * Removes all "non-trivial" characters from the file name. If the file name
 	 * is empty "export" is returned
 	 * 

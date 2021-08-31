@@ -54,15 +54,23 @@
 			 * @returns {boolean}
 			 */
 			function isAuthor() {
-				let userRealNames = document.getElementById("userRealNames").value;
-				let individualUserRealNames = userRealNames.split(" and ");
+				let allPossibleNames = [];
+				if(document.getElementById("claimedPersonMainNameID") == null){ //uses the User.realName as a fallback if no Person was claimed by the user
+					let individualUserRealName = document.getElementById("userRealnameID").value
+					allPossibleNames.push(individualUserRealName)
+				} else { //uses all names saved in the person claimed by the current user
+					let userClaimedPersonMainName = document.getElementById("claimedPersonMainNameID").value;
+					allPossibleNames.push(userClaimedPersonMainName)
+					let userClaimedPersonNames = document.getElementById("claimedPersonNamesID").value;
+					allPossibleNames = allPossibleNames.concat(userClaimedPersonNames.split(" and "));
+				}
 
 				let enteredAuthors = document.getElementById("post.resource.author").value;
 				let individualEnteredAuthors = enteredAuthors.split("\n");
 
 				if (enteredAuthors.length !== 0){
-					return individualEnteredAuthors.some(enteredAuthor => individualUserRealNames.some(userRealName => enteredAuthor === userRealName));
-				} else{
+					return individualEnteredAuthors.some(enteredAuthor => allPossibleNames.some(userRealName => enteredAuthor === userRealName));
+				} else{ //Fallback if the input was left empty or the input was deleted
 					return false;
 				}
 			}
@@ -182,8 +190,17 @@
 			<bsform:input labelColSpan="3" path="post.resource.school"/>
 		</c:if>
 	</c:if>
-	
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
+
+		<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames(T(org.bibsonomy.model.util.PersonNameUtils).discoverPersonNamesIgnoreExceptions('${command.context.loginUser.realname}'))" var="userRealname"/>
+		<input type="hidden" id="userRealnameID" value="${userRealname}"/>
+		<c:if test="${not empty command.context.loginUser.claimedPerson}">
+			<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonName('${command.context.loginUser.claimedPerson.mainName}')" var="claimedPersonMainName"/>
+			<input type="hidden" id="claimedPersonMainNameID" value="${claimedPersonMainName}"/>
+			<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames('${command.context.loginUser.claimedPerson.names}', true, ' and ')" var="claimedPersonNames"/>
+			<input type="hidden" id="claimedPersonNamesID" value="${claimedPersonNames}"/>
+		</c:if>
+
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
 				<div class="alert alert-warning alert-dismissible" role="alert" id="imAmAuthorWarning" style="display: none;">
@@ -192,7 +209,6 @@
 				</div>
 				<div class="checkbox clearfix">
 					<label>
-						<input type="hidden" id="userRealNames" value="${mtl:getUserRealNames()}"/>
 						<input name="myOwn" type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
 						<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
 						<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
@@ -201,7 +217,6 @@
 			</div>
 		</div>
 	</c:if>
-
 	<bsform:textarea labelColSpan="3" inputColSpan="9" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
 	<bsform:input labelColSpan="3" inputColSpan="9" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
 </jsp:root>
