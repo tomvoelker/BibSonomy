@@ -125,14 +125,13 @@ function updateCounters(filters) {
             'distinctCount': true,
             'search': query
         },
-        error: function(xhr, status, error) {
-            var distinctCounts = JSON.parse(xhr.responseText);
-            updateFieldCounts('entrytype', distinctCounts.entrytype);
-            updateFieldCounts('year', distinctCounts.year);
-        },
         success : function(data) {
-            // TODO fix me
-            console.log("success?");
+            updateFieldCounts('entrytype', data.entrytype);
+            updateFieldCounts('year', data.year);
+        },
+        error: function(xhr, status, error) {
+            updateFieldCountsFailed('entrytype');
+            updateFieldCountsFailed('year');
         }
     });
 }
@@ -154,6 +153,13 @@ function updateFieldCounts(field, counts) {
             $(this).addClass(HIDDEN_CLASS);
             $(this).removeClass(ACTIVE_CLASS);
         }
+    });
+}
+
+function updateFieldCountsFailed(field) {
+    $('#filter-entries-' + field + ' > button').each(function() {
+        $(this).find('.badge').html('?');
+        $(this).removeClass(ACTIVE_CLASS);
     });
 }
 

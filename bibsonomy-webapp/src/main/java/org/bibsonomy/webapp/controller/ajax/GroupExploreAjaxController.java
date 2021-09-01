@@ -68,6 +68,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
                 distinctCount.put(ENTRYTYPE_FILTER, filtersToJSON(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
                 distinctCount.put(YEAR_FILTER, filtersToJSON(generateFilters(distinctPostQuery, YEAR_FILTER, 200)));
 
+                command.setFormat(Views.FORMAT_STRING_JSON);
                 command.setResponseString(distinctCount.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
