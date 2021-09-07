@@ -47,21 +47,7 @@ function formAction() {
 function initFilterButtons(field) {
     $('#filter-entries-' + field + ' > button').click(function() {
         $(this).toggleClass(ACTIVE_CLASS);
-        updateResults(0);
-    });
-}
-
-/**
- * Add action to all filter buttons in a section. On click set to active and update search results correspondingly.
- * Also updates the counters on filter list
- *
- * @param field the section identified by the field
- */
-function initFilterButtonsWithCounterUpdate(field) {
-    $('#filter-entries-' + field + ' > button').click(function() {
-        $(this).toggleClass(ACTIVE_CLASS);
-        var filters = generateTagsFilterQuery();
-        updateCounters(filters)
+        updateCounters();
         updateResults(0);
     });
 }
@@ -111,9 +97,10 @@ function updateResults(page) {
 /**
  * Get all inputs for the search query and update the counters on the filters accordingly via AJAX.
  */
-function updateCounters(filters) {
+function updateCounters() {
     var groupName = $('#requestedGroup').data('group');
     var search = $('#extendedSearchInput').val();
+    var filters = generateFilterQuery();
     var query = addFiltersToSearchQuery(search, filters);
 
     $.ajax({
@@ -143,6 +130,7 @@ function updateCounters(filters) {
  * @param counts the list of updated counts
  */
 function updateFieldCounts(field, counts) {
+
     $('#filter-entries-' + field + ' > button').each(function() {
         var value = $(this).data('value');
         if (value in counts) {
@@ -150,8 +138,9 @@ function updateFieldCounts(field, counts) {
             $(this).removeClass(HIDDEN_CLASS);
         } else {
             $(this).find('.badge').html(0);
-            $(this).addClass(HIDDEN_CLASS);
-            $(this).removeClass(ACTIVE_CLASS);
+            if (!$(this).hasClass(ACTIVE_CLASS)) {
+                $(this).addClass(HIDDEN_CLASS);
+            }
         }
     });
 }
@@ -273,7 +262,6 @@ function showRelevantYears() {
 function createFilterButton(name, filter, description) {
     var element = '<button class="btn btn-default btn-block" ' +
         'title="' + description + '" ' +
-        'data-filter="' + filter + '" ' +
         'data-value="' + name + '">' +
         description + '</button>';
 
@@ -292,7 +280,7 @@ function addTagFilters() {
             $.each(data, function(index, entity) {
                 entries.append(createFilterButton(entity.tag, 'tags:' + entity.tag, entity.description));
             });
-            initFilterButtonsWithCounterUpdate('tags');
+            initFilterButtons('tags');
 
             // show filter section
             $('#filter-list-tags').removeClass(HIDDEN_CLASS);
@@ -312,7 +300,7 @@ function addCustomFilters() {
             data.results.bindings.forEach(function(entity) {
                 entries.append(createFilterButton(entity.label.value, 'tags:' + entity.label.value, entity.facility.value));
             });
-            initFilterButtonsWithCounterUpdate('custom');
+            initFilterButtons('custom');
 
             // show filter section
             $('#filter-list-custom').removeClass(HIDDEN_CLASS);
