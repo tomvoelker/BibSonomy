@@ -4,7 +4,9 @@ const ACTIVE_CLASS = 'active';
 /**
  * on load
  */
-$(function() {
+$(function () {
+    // only show allowed selection field in extended search
+    disableSearchFields();
     // disable form action
     formAction();
     // add tag filters
@@ -45,7 +47,7 @@ function formAction() {
  * @param field the section identified by the field
  */
 function initFilterButtons(field) {
-    $('#filter-entries-' + field + ' > button').click(function() {
+    $('#filter-entries-' + field + ' > button').click(function () {
         $(this).toggleClass(ACTIVE_CLASS);
         updateCounters();
         updateResults(0);
@@ -66,7 +68,7 @@ function updateResults(page) {
     var search = $('#extendedSearchInput').val();
     var filters = generateFilterQuery();
     var query = addFiltersToSearchQuery(search, filters);
-    var selectedSort =  $('#sorting-dropdown-menu > .sort-selected');
+    var selectedSort = $('#sorting-dropdown-menu > .sort-selected');
     var sortPage = selectedSort.data('key');
     var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
 
@@ -81,14 +83,14 @@ function updateResults(page) {
             'page': page, // Which page at the first time
             'pageSize': 20,
         },
-        beforeSend: function() {
+        beforeSend: function () {
             $('#groupExplorePublications').empty();
             $('.custom-loader').removeClass(HIDDEN_CLASS);
         },
-        success : function(data) {
+        success: function (data) {
             $('#groupExplorePublications').html(data);
         },
-        complete: function() {
+        complete: function () {
             $('.custom-loader').addClass(HIDDEN_CLASS);
         },
     });
@@ -112,11 +114,11 @@ function updateCounters() {
             'distinctCount': true,
             'search': query
         },
-        success : function(data) {
+        success: function (data) {
             updateFieldCounts('entrytype', data.entrytype);
             updateFieldCounts('year', data.year);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             updateFieldCountsFailed('entrytype');
             updateFieldCountsFailed('year');
         }
@@ -131,7 +133,7 @@ function updateCounters() {
  */
 function updateFieldCounts(field, counts) {
 
-    $('#filter-entries-' + field + ' > button').each(function() {
+    $('#filter-entries-' + field + ' > button').each(function () {
         var value = $(this).data('value');
         if (value in counts) {
             $(this).find('.badge').html(counts[value]);
@@ -146,7 +148,7 @@ function updateFieldCounts(field, counts) {
 }
 
 function updateFieldCountsFailed(field) {
-    $('#filter-entries-' + field + ' > button').each(function() {
+    $('#filter-entries-' + field + ' > button').each(function () {
         $(this).find('.badge').html('?');
         $(this).removeClass(ACTIVE_CLASS);
     });
@@ -158,7 +160,7 @@ function updateFieldCountsFailed(field) {
 function generateFilterQuery() {
     var filterQuery = [];
 
-    $('.filter-list').each(function() {
+    $('.filter-list').each(function () {
         var selectedFiltersQuery = getFilterQuery(this)
         if (selectedFiltersQuery) filterQuery.push(selectedFiltersQuery);
     });
@@ -183,7 +185,7 @@ function generateTagsFilterQuery() {
 
 function getFilterQuery(filterList) {
     var selectedFilters = [];
-    $(filterList).find('.btn.active').each(function() {
+    $(filterList).find('.btn.active').each(function () {
         selectedFilters.push($(this).data('value'));
     });
 
@@ -223,7 +225,7 @@ function addFiltersToSearchQuery(search, filters) {
  * Removes all non-numeric filters in the year filter section.
  */
 function validateYearFilters() {
-    $('#filter-entries-year > button').each(function() {
+    $('#filter-entries-year > button').each(function () {
         var element = $(this);
         if (isNaN(element.data('value'))) {
             element.remove();
@@ -245,7 +247,7 @@ function showRelevantYears() {
     $('#filter-more-year').click(function () {
         num = (num + 10 <= listSize) ? num + 10 : listSize;
         $('#filter-entries-year button:lt(' + num + ')').show();
-        if(num === listSize){
+        if (num === listSize) {
             $('#filter-more-year').hide();
         }
     });
@@ -276,8 +278,8 @@ function addTagFilters() {
     $.ajax({
         url: '/resources_puma/addons/explore/highlightTags.json', // The url you are fetching the results.
         dataType: 'json',
-        success : function(data) {
-            $.each(data, function(index, entity) {
+        success: function (data) {
+            $.each(data, function (index, entity) {
                 entries.append(createFilterButton(entity.tag, 'tags:' + entity.tag, entity.description));
             });
             initFilterButtons('tags');
@@ -296,8 +298,8 @@ function addCustomFilters() {
     $.ajax({
         url: '/resources_puma/addons/explore/customTags.json', // The url you are fetching the results.
         dataType: 'json',
-        success : function(data) {
-            data.results.bindings.forEach(function(entity) {
+        success: function (data) {
+            data.results.bindings.forEach(function (entity) {
                 entries.append(createFilterButton(entity.label.value, 'tags:' + entity.label.value, entity.facility.value));
             });
             initFilterButtons('custom');
@@ -314,7 +316,7 @@ function addCustomFilters() {
 function searchCustomFilters() {
     var search = $('#searchCustomFilters').val().toLowerCase();
     var entries = $('#filter-entries-custom');
-    entries.children().each(function() {
+    entries.children().each(function () {
         var value = $(this).html().toLowerCase();
         if (value.indexOf(search) > -1) {
             $(this).removeClass(HIDDEN_CLASS);
@@ -357,4 +359,18 @@ function initSortOptions() {
         // refresh results
         updateResults(0);
     });
+}
+
+/**
+ * Extended search interface
+ */
+
+var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institution', 'doi', 'isbn'];
+
+function disableSearchFields() {
+    $('#dropdownSelectionField').children('li').each(function () {
+        if (!allowedSearchFields.includes($(this).data('field'))) {
+            $(this).addClass(HIDDEN_CLASS);
+        }
+    })
 }
