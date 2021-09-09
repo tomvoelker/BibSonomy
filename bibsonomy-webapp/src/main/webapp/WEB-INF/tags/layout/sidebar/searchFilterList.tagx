@@ -13,6 +13,7 @@
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
     <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="hide" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="buttonClass" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="showMore" type="java.lang.Boolean" required="false"/>
 
     <c:if test="${hide}">
@@ -29,7 +30,7 @@
                              <c:if test="${not empty entry.messageKey}">
                                 <fmt:message var="label" key="${entry.messageKey}" />
                             </c:if>
-                            <button type="button" class="btn btn-default btn-block" title="${label}" data-value="${entry.name}">
+                            <button type="button" class="btn btn-default btn-block filter-entry ${buttonClass}" title="${label}" data-value="${entry.name}">
                                 <span class="filter-button-label"><c:out value="${label}" /></span>
                                 <span class="badge badge-light"><c:out value="${entry.count}" /></span>
                             </button>

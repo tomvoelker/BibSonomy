@@ -18,8 +18,6 @@ $(function () {
     validateYearFilters();
     // init 'show more' for year list
     showRelevantYears();
-    // add action to filter buttons
-    initFilterButtons();
     // init sorting options
     initSortOptions();
     // add init results
@@ -41,6 +39,8 @@ function formAction() {
     });
 }
 
+var lastSelectedFilter;
+
 /**
  * Add action to all filter buttons in a section. On click set to active and update search results correspondingly.
  *
@@ -48,6 +48,7 @@ function formAction() {
  */
 function initFilterButtons(field) {
     $('#filter-entries-' + field + ' > button').click(function () {
+        lastSelectedFilter = this;
         $(this).toggleClass(ACTIVE_CLASS);
         updateCounters();
         updateResults(0);
@@ -140,7 +141,7 @@ function updateFieldCounts(field, counts) {
             $(this).removeClass(HIDDEN_CLASS);
         } else {
             $(this).find('.badge').html(0);
-            if (!$(this).hasClass(ACTIVE_CLASS)) {
+            if ($('.filter-entry-counter.active').length < 2 && !$(this).hasClass(ACTIVE_CLASS)) {
                 $(this).addClass(HIDDEN_CLASS);
             }
         }
@@ -262,7 +263,7 @@ function showRelevantYears() {
  * @returns {string}
  */
 function createFilterButton(name, filter, description) {
-    var element = '<button class="btn btn-default btn-block" ' +
+    var element = '<button class="btn btn-default btn-block filter-entry" ' +
         'title="' + description + '" ' +
         'data-value="' + name + '">' +
         description + '</button>';
@@ -324,6 +325,12 @@ function searchCustomFilters() {
             $(this).addClass(HIDDEN_CLASS);
         }
     });
+}
+
+function resetFilterSelection() {
+    $('.filter-entry').removeClass(ACTIVE_CLASS);
+    updateCounters();
+    updateResults(0);
 }
 
 /**

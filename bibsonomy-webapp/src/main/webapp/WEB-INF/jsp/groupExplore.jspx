@@ -96,6 +96,10 @@
 						</div>
 					</div>
 					<div class="col-md-3 sidebar">
+						<div id="groupExploreFilterHeader">
+							<!--<h3><fmt:message key="explore.filter.header"/></h3>-->
+							<a id="resetFilterLink" href="#" onclick="resetFilterSelection()"><fmt:message key="explore.filter.reset"/></a>
+						</div>
 						<c:if test="${groupName eq properties['explore.group.id']}">
 							<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" hide="${true}" />
 							<div id="filter-list-custom" class="filter-list hidden" data-field="tags">
@@ -106,13 +110,16 @@
 							</div>
 						</c:if>
 						<c:if test="${not empty command.entrytypeFilters}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}" headerMessageKey="explore.filter.entrytype.header" headerMessageIcon="book" />
+							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
+													  headerMessageKey="explore.filter.entrytype.header" headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
 						<c:if test="${not empty command.yearFilters}">
-							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}" headerMessageKey="explore.filter.pubyear.header" headerMessageIcon="calendar-alt" showMore="${true}" />
+							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}"
+													  headerMessageKey="explore.filter.pubyear.header" headerMessageIcon="calendar-alt" buttonClass="filter-entry-counter" showMore="${true}" />
 						</c:if>
 						<c:if test="${not empty command.authorFilters}">
-							<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}" headerMessageKey="explore.filter.author.header" headerMessageIcon="user" />
+							<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}"
+													  headerMessageKey="explore.filter.author.header" headerMessageIcon="user" buttonClass="filter-counter-entry" />
 						</c:if>
 					</div>
 				</div>
