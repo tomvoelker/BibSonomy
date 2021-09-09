@@ -283,7 +283,7 @@
 						| group explore
 						+-->
 					<c:if test="${showExploreGroupNav}">
-						<li class="${activeTab eq 'explore' ? 'active' : ''}"><a href="${relativeUrlGenerator.getExploreUrlByGroup(exploreGroupId)}"><c:out value="${exploreGroupId}" /></a></li>
+						<li class="${activeTab eq 'explore' ? 'active' : ''}"><a href="${relativeUrlGenerator.getExploreUrlByGroup(exploreGroupId)}"><fmt:message key="explore.navi.title" /></a></li>
 					</c:if>
 
 					
