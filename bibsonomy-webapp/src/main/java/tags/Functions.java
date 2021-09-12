@@ -81,7 +81,6 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
-import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.bibsonomy.webapp.util.TagViewUtils;
 import org.joda.time.DateTime;

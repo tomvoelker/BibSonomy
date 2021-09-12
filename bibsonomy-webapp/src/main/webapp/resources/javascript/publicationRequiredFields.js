@@ -1,16 +1,19 @@
 $(function(){
 	myownTagInit($('#myownChkBox'), $('#inpf_tags'));
 
-	document.getElementById("post.resource.author").onblur = function() {
+	document.getElementById("post.resource.author").addEventListener("blur", authorWarning, true)
+	document.getElementById("post.resource.editor").addEventListener("blur", authorWarning, true)
+
+	document.getElementById("myownChkBox").onclick = function() {
+		document.getElementById("imAmAuthorWarning").style.display = "none"
+	}
+
+	function authorWarning() {
 		if(isAuthor() && !document.getElementById("myownChkBox").checked){
 			document.getElementById("imAmAuthorWarning").style.display = "block"
 		} else {
 			document.getElementById("imAmAuthorWarning").style.display = "none"
 		}
-	}
-
-	document.getElementById("myownChkBox").onclick = function() {
-		document.getElementById("imAmAuthorWarning").style.display = "none"
 	}
 
 });
@@ -80,8 +83,10 @@ function isAuthor() {
 
 	let enteredAuthors = document.getElementById("post.resource.author").value;
 	let individualEnteredAuthors = enteredAuthors.split("\n");
+	let enteredEditors = document.getElementById("post.resource.editor").value;
+	individualEnteredAuthors = individualEnteredAuthors.concat(enteredEditors.split("\n"));
 
-	if (enteredAuthors.length !== 0){
+	if (enteredAuthors.length !== 0 || enteredEditors.length !== 0){
 		return individualEnteredAuthors.some(enteredAuthor => allPossibleNames.some(userRealName => enteredAuthor === userRealName));
 	} else{ //Fallback if the input was left empty or the input was deleted
 		return false;
