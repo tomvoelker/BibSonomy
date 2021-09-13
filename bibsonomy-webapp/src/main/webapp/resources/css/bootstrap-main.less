@@ -1752,6 +1752,66 @@ hr.option-result-divider {
   float: none;
 }
 
+.list-result {
+  .row {
+	padding-bottom: 10px;
+  }
+
+  .row:last-child {
+	padding-bottom: 0;
+  }
+
+}
+
+@listResultEntityPadding: 10px;
+
+.list-result-entity {
+  position: relative;
+  height: 130px;
+  border: @background-color solid 1px;
+  border-radius: 5px;
+  padding: @listResultEntityPadding;
+  margin: 5px;
+
+  .media-heading {
+	margin: 0;
+  }
+
+  .media-description {
+	line-height: 1.5em;
+	height: 3em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+  }
+
+  .media-link-group {
+	position: absolute;
+	left: @listResultEntityPadding;
+	bottom: @listResultEntityPadding;
+
+	span {
+	  padding: 5px 10px;
+	  margin-right: 5px;
+	  background: @background-color;
+	}
+  }
+
+  .media-button-group {
+	position: absolute;
+	right: @listResultEntityPadding;
+	bottom: @listResultEntityPadding;
+  }
+
+  .media-image {
+	height: 70px;
+	width: 70px;
+	background: grey;
+	border-radius: 70px;
+  }
+
+}
+
 
 #organizations{
 	img {

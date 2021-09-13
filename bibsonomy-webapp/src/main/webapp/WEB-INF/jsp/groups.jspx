@@ -22,13 +22,13 @@
 	<fmt:message key="navi.${requPath}" var="pageTitle"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.${requPath}" command="${command}"
-					   pageTitle="${pageTitle}" activeTab="groups">
+					   pageTitle="${pageTitle}" activeTab="groups" noSidebar="${true}">
 		<!--+
 		 	| heading
 		 	+-->
 		<jsp:attribute name="heading">
 			<c:if test="${isGroupsPage}">
-				<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" hideGroup="${true}"/>
+				<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" hideGroup="${isGroupsPage}"/>
 			</c:if>
 		</jsp:attribute>
 
@@ -42,118 +42,61 @@
 			<c:set var="type" value="${isGroupsPage ? 'groups' : 'organizations'}" />
 			<c:set var="groupListCommand" value="${command.groups}" />
 
-			<c:if test="${groupListCommand.totalCount gt 0}">
-				<div class="row">
-					<div class="col-md-4 col-md-offset-4 vcenter">
-						<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
-					</div>
-				</div>
-			</c:if>
-
-			<hr class="option-result-divider"/>
-
-			<div id="${type}">
-				<!-- loggedin users or the group page get the group details overview with a action menu, else a two column layout -->
+			<div id="${type}" class="list-result">
 				<c:choose>
-					<c:when test="${isUserLoggedIn || isGroupsPage}">
-						<c:choose>
-							<c:when test="${groupListCommand.totalCount gt 0}">
-								<div class="group-list">
-									<c:forEach var="group" items="${groupListCommand.list}">
-										<c:set var="groupName" value="${group.name}"/>
-										<c:set var="groupUrl" value="${relativeUrlGenerator.getGroupUrlByGroupName(groupName)}"/>
-										<c:if test="${not isGroupsPage}">
-											<c:set var="groupUrl" value="${relativeUrlGenerator.getOrganizationUrlByName(groupName)}"/>
-										</c:if>
-										<div class="row group-list-item">
-											<div class="col-md-7">
-												<div class="row">
-													<div class="col-md-1"><!-- keep me for offset --></div>
-													<c:set var="groupContentSize" value="11"/>
-													<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(group.name, command.context.loginUser)}">
-														<div class="col-md-1">
-															<group:groupthumbnail noname="${true}" group="${group}"/>
-														</div>
-														<c:set var="groupContentSize" value="10"/>
-													</c:if>
-													<div class="col-md-${groupContentSize}">
-														<a href="${groupUrl}">
-															<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
-														</a>
-														<br/>
-														<c:if test="${not empty group.homepage}">
-															<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out value=" "/>
-														</c:if>
-														<c:if test="${isGroupsPage}">
-															<!-- TODO: use url generator -->
-															<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
-														</c:if>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-5 text-right">
-												<c:if test="${isUserLoggedIn}">
-													<group:actions group="${group}"/>
-												</c:if>
-											</div>
-										</div>
-									</c:forEach>
-								</div>
-							</c:when>
-							<c:otherwise>
-								<div class="no-items-found">
-									<fmt:message key="groups.noResult" />
-								</div>
-							</c:otherwise>
-						</c:choose>
+					<c:when test="${isGroupsPage}">
+						<fmt:message var="noResultMessage" key="groups.noResult" />
 					</c:when>
 					<c:otherwise>
+						<fmt:message var="noResultMessage" key="organizations.noResult" />
+					</c:otherwise>
+				</c:choose>
+
+				<c:choose>
+					<c:when test="${groupListCommand.totalCount gt 0}">
 						<c:set var="list" value="${groupListCommand.list}" />
 						<c:set var="listLength" value="${fn:length(list)}" />
+						<c:set var="columns" value="3" />
+
 						<c:choose>
-							<c:when test="${listLength gt 0}">
-								<c:set var="columns" value="2" />
+							<c:when test="${isGroupsPage}">
 								<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
 									<div class="row">
 										<c:forEach var="offset" begin="0" end="${columns - 1}">
 											<c:set var="position" value="${i + offset}" />
 											<c:if test="${position lt listLength}">
-												<c:set var="orga" value="${list[position]}"/>
-												<organization:organizationInfoCard organization="${orga}"/>
+												<lists:groupResultEntity columnSize="${12/columns}" group="${list[position]}"/>
 											</c:if>
 										</c:forEach>
 									</div>
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
-								<div class="no-items-found">
-								<fmt:message key="organizations.noResult" />
-							</div>
+								<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
+									<div class="row">
+										<c:forEach var="offset" begin="0" end="${columns - 1}">
+											<c:set var="position" value="${i + offset}" />
+											<c:if test="${position lt listLength}">
+
+											</c:if>
+										</c:forEach>
+									</div>
+								</c:forEach>
 							</c:otherwise>
 						</c:choose>
+					</c:when>
+					<c:otherwise>
+						<div class="no-items-found">
+							<c:out value="${noResultMessage}" />
+						</div>
 					</c:otherwise>
 				</c:choose>
-				<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
-			</div>
-		</jsp:attribute>
 
-		<!--+
-			 | sidebar
-			 +-->
-		<jsp:attribute name="sidebar">
-			<!--+
-				| explain what groups are good for
-				+-->
-			<c:if test="${isUserLoggedIn}">
-				<bs:alert style="info">
-					<jsp:attribute name="alertBody">
-						<fmt:message key="system.groups">
-							<!-- TODO: use URLGenerator -->
-							<fmt:param value="/grouprequest"/>
-						</fmt:message>
-					</jsp:attribute>
-				</bs:alert>
-			</c:if>
+				<div id="${type}-result-footer">
+					<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
+					<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
+				</div>
+			</div>
 		</jsp:attribute>
 
 	</layout:paneLayout>

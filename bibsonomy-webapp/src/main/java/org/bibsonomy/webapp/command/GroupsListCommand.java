@@ -43,7 +43,7 @@ public class GroupsListCommand extends EntitySearchAndFilterCommand {
 	private Group requestedGroup;
 
 	/** filter for only showing organizations */
-	private Boolean organizations;
+	private Boolean organizations = false;
 
 	/**
 	 * @return the groups

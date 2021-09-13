@@ -1,0 +1,51 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
+
+	<jsp:directive.attribute name="columnSize" type="java.lang.Integer" required="true" />
+
+	<jsp:directive.attribute name="headingTitle" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="headingUrl" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="subHeadingTitle" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="description" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="iconUrl" type="java.lang.String" required="false" />
+
+	<jsp:directive.attribute name="links" fragment="true"/>
+	<jsp:directive.attribute name="buttons" fragment="true"/>
+
+	<div class="col-md-${columnSize}">
+		<div class="media list-result-entity">
+			<div class="media-body">
+				<a href="${headingUrl}">
+					<h4 class="media-heading"><c:out value="${headingTitle}" /></h4>
+				</a>
+				<c:if test="${subHeadingTitle}">
+					<small><span class="media-sub-heading"><c:out value="${subHeadingTitle}" /></span></small>
+				</c:if>
+
+				<div class="media-description">
+					<c:out value="${description}" />
+				</div>
+
+				<div class="media-link-group">
+					<jsp:invoke fragment="links" />
+				</div>
+				<div class="media-button-group">
+					<jsp:invoke fragment="buttons" />
+				</div>
+			</div>
+
+			<div class="media-right media-top">
+				<div class="media-image">
+					<c:if test="${iconUrl}">
+						<img class="media-object" src="${iconUrl}" alt="${headingTitle}" />
+					</c:if>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</jsp:root>
