@@ -77,7 +77,7 @@
 										<c:forEach var="offset" begin="0" end="${columns - 1}">
 											<c:set var="position" value="${i + offset}" />
 											<c:if test="${position lt listLength}">
-
+												<lists:organizationResultEntity columnSize="${12/columns}" organization="${list[position]}"/>
 											</c:if>
 										</c:forEach>
 									</div>
@@ -91,11 +91,10 @@
 						</div>
 					</c:otherwise>
 				</c:choose>
-
-				<div id="${type}-result-footer">
-					<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
-					<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
-				</div>
+			</div>
+			<div id="${type}-result-footer" class="list-result-footer">
+				<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
+				<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
 			</div>
 		</jsp:attribute>
 

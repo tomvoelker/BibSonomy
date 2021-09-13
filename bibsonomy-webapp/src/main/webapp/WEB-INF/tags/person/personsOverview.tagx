@@ -6,6 +6,8 @@
           xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
           xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
           xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
           xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
@@ -72,6 +74,35 @@
 
     <hr class="option-result-divider"/>
 
-    <person:personList listCommand="${personListCommand}" showPagination="${true}" />
+    <div id="persons" class="list-result">
+        <c:choose>
+            <c:when test="${personListCommand.totalCount gt 0}">
+                <c:set var="list" value="${personListCommand.list}" />
+                <c:set var="listLength" value="${fn:length(list)}" />
+                <c:set var="columns" value="3" />
+
+                <c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
+                    <div class="row">
+                        <c:forEach var="offset" begin="0" end="${columns - 1}">
+                            <c:set var="position" value="${i + offset}" />
+                            <c:if test="${position lt listLength}">
+                                <lists:personResultEntity columnSize="${12/columns}" person="${list[position]}"/>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <div class="no-items-found">
+                    <fmt:message key="persons.noResult" />
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+
+    <div id="persons-result-footer" class="list-result-footer">
+        <rc:nextprev listView="${personListCommand}" listViewStartParamName="persons.start"/>
+        <lists:listResultInfo listCommand="${personListCommand}" messageKey="persons.results.description" />
+    </div>
 
 </jsp:root>
