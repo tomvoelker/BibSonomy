@@ -57,12 +57,12 @@
         <div class="col-md-4">
             <rc:nextprev listView="${personListCommand}" listViewStartParamName="persons.start"/>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 vcenter">
             <lists:listResultInfo listCommand="${personListCommand}" messageKey="persons.results.description" />
         </div>
         <c:if test="${command.context.userLoggedIn}">
             <div class="col-md-4 text-right vcenter">
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <fontawesome:icon icon="users" spaceAfter="5"/>
                         <c:choose>

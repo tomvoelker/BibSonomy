@@ -96,11 +96,11 @@
 				<div class="col-md-4">
 					<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-4 vcenter">
 					<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
 				</div>
 				<div class="col-md-4 text-right vcenter">
-					<a class="btn btn-primary" href="/grouprequest">Create group</a>
+					<a class="btn btn-primary btn-sm" href="/grouprequest">Create group</a>
 				</div>
 			</div>
 		</jsp:attribute>
