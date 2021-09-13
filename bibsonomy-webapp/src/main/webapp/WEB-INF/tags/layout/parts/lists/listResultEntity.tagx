@@ -22,7 +22,7 @@
 				<a href="${headingUrl}">
 					<h4 class="media-heading"><c:out value="${headingTitle}" /></h4>
 				</a>
-				<c:if test="${subHeadingTitle}">
+				<c:if test="${not empty subHeadingTitle}">
 					<small><span class="media-sub-heading"><c:out value="${subHeadingTitle}" /></span></small>
 				</c:if>
 
@@ -40,7 +40,7 @@
 
 			<div class="media-right media-top">
 				<div class="media-image">
-					<c:if test="${iconUrl}">
+					<c:if test="${not empty iconUrl}">
 						<img class="media-object" src="${iconUrl}" alt="${headingTitle}" />
 					</c:if>
 				</div>

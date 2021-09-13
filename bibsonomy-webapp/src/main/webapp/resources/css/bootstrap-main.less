@@ -1761,6 +1761,38 @@ hr.option-result-divider {
 	padding-bottom: 0;
   }
 
+  .row > div{
+	padding-left: 5px;
+	padding-right: 5px;
+  }
+
+  .row > div:first-child{
+	padding-left: 15px;
+	padding-right: 5px;
+  }
+
+  .row > div:last-child{
+	padding-right: 15px;
+	padding-left: 5px;
+  }
+
+  .row > div:only-child{
+	padding-left: 15px;
+	padding-right: 5px;
+  }
+
+}
+
+.list-result-footer {
+  margin-top: 30px;
+
+  .pagination {
+	margin: 0;
+  }
+
+  .list-result-info {
+	text-align: center;
+  }
 }
 
 @listResultEntityPadding: 10px;
@@ -1771,7 +1803,6 @@ hr.option-result-divider {
   border: @background-color solid 1px;
   border-radius: 5px;
   padding: @listResultEntityPadding;
-  margin: 5px;
 
   .media-heading {
 	margin: 0;
@@ -1801,6 +1832,10 @@ hr.option-result-divider {
 	position: absolute;
 	right: @listResultEntityPadding;
 	bottom: @listResultEntityPadding;
+
+	a {
+	  margin-left: 5px;
+	}
   }
 
   .media-image {

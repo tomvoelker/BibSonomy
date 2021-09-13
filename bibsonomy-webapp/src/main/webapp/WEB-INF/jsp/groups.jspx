@@ -92,9 +92,16 @@
 					</c:otherwise>
 				</c:choose>
 			</div>
-			<div id="${type}-result-footer" class="list-result-footer">
-				<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
-				<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
+			<div id="${type}-result-footer" class="row list-result-footer">
+				<div class="col-md-4">
+					<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
+				</div>
+				<div class="col-md-4">
+					<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
+				</div>
+				<div class="col-md-4 text-right vcenter">
+					<a class="btn btn-primary" href="/grouprequest">Create group</a>
+				</div>
 			</div>
 		</jsp:attribute>
 

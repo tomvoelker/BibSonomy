@@ -28,19 +28,17 @@
 	<c:choose>
 		<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
 			<!-- TODO: use url generator -->
-			<div class="btn-group">
-				<fmt:message var="groupLeaveMessage" key="group.leave" />
-				<fmt:message var="memberOfMessage" key="group.memberOf" />
-				<a data-delete-text="${groupLeaveMessage}" data-default-text="${memberOfMessage}" href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-success ${buttonSize} delete-toggle ${systemReadOnly ? 'disabled' : ''}">
-					<fontawesome:icon icon="check" /><c:out value=" "/><span class="infotext"><c:out value="${memberOfMessage}"/></span>
-				</a>
-				<a href="/settings/group/${group.name}" class="btn btn-default ${buttonSize}">
-					<fontawesome:icon icon="cogs" /><c:out value=" "/>
-					<c:if test="${showSettingsLabel}">
-						<span class="infotext"><fmt:message key="group.settings" /></span>
-					</c:if>
-				</a>
-			</div>
+			<fmt:message var="groupLeaveMessage" key="group.leave" />
+			<fmt:message var="memberOfMessage" key="group.memberOf" />
+			<a data-delete-text="${groupLeaveMessage}" data-default-text="${memberOfMessage}" href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-success ${buttonSize} delete-toggle ${systemReadOnly ? 'disabled' : ''}">
+				<fontawesome:icon icon="check" /><c:out value=" "/><span class="infotext"><c:out value="${memberOfMessage}"/></span>
+			</a>
+			<a href="/settings/group/${group.name}" class="btn btn-default ${buttonSize}">
+				<fontawesome:icon icon="cogs" /><c:out value=" "/>
+				<c:if test="${showSettingsLabel}">
+					<span class="infotext"><fmt:message key="group.settings" /></span>
+				</c:if>
+			</a>
 		</c:when>
 		<c:otherwise>
 			<c:choose>
