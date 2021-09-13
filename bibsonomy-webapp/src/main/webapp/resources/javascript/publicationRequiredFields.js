@@ -1,20 +1,19 @@
 $(function(){
-	myownTagInit($('#myownChkBox'), $('#inpf_tags'));
-
-	document.getElementById("post.resource.author").addEventListener("blur", authorWarning, true)
-	document.getElementById("post.resource.editor").addEventListener("blur", authorWarning, true)
-
-	document.getElementById("myownChkBox").onclick = function() {
-		document.getElementById("imAmAuthorWarning").style.display = "none"
-	}
+	 myownTagInit($('#myownChkBox'), $('#inpf_tags'));
 
 	function authorWarning() {
-		if(isAuthor() && !document.getElementById("myownChkBox").checked){
-			document.getElementById("imAmAuthorWarning").style.display = "block"
+		if(isAuthor() && !$("#myownChkBox").is(':checked')){
+			$('#imAmAuthorWarning').attr("style", "display:block")
 		} else {
-			document.getElementById("imAmAuthorWarning").style.display = "none"
+			$('#imAmAuthorWarning').attr("style", "display:none")
 		}
 	}
+
+	$("#post\\.resource\\.editor").on('change',authorWarning);
+	$("#post\\.resource\\.author").on('change',authorWarning);
+	$('#myownChkBox').click( function() {
+		$('#imAmAuthorWarning').attr("style", "display:none")
+	})
 
 });
 
@@ -71,19 +70,19 @@ function myownTagInit(chkbox, tagbox) {
  */
 function isAuthor() {
 	let allPossibleNames = [];
-	if(document.getElementById("claimedPersonMainNameID") == null){ //uses the User.realName as a fallback if no Person was claimed by the user
-		let individualUserRealName = document.getElementById("userRealnameID").value
+	if(!$("#claimedPersonMainNameID").length){ //uses the User.realName as a fallback if no Person was claimed by the user
+		let individualUserRealName = $('#userRealnameID').val()
 		allPossibleNames.push(individualUserRealName)
 	} else { //uses all names saved in the person claimed by the current user
-		let userClaimedPersonMainName = document.getElementById("claimedPersonMainNameID").value;
+		let userClaimedPersonMainName = $('#claimedPersonMainNameID').val()
 		allPossibleNames.push(userClaimedPersonMainName)
-		let userClaimedPersonNames = document.getElementById("claimedPersonNamesID").value;
-		allPossibleNames = allPossibleNames.concat(userClaimedPersonNames.split(" and "));
+		let userClaimedPersonNames = $('#claimedPersonNamesID').val()
+		allPossibleNames = allPossibleNames.concat(userClaimedPersonNames.split(" and "))
 	}
 
-	let enteredAuthors = document.getElementById("post.resource.author").value;
+	let enteredAuthors = $("#post\\.resource\\.author").val();
 	let individualEnteredAuthors = enteredAuthors.split("\n");
-	let enteredEditors = document.getElementById("post.resource.editor").value;
+	let enteredEditors = $("#post\\.resource\\.editor").val();
 	individualEnteredAuthors = individualEnteredAuthors.concat(enteredEditors.split("\n"));
 
 	if (enteredAuthors.length !== 0 || enteredEditors.length !== 0){
