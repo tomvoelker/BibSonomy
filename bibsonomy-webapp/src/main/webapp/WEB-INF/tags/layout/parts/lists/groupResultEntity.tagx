@@ -6,27 +6,34 @@
 		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
 
-	<jsp:directive.attribute name="columnSize" type="java.lang.Integer" required="true" />
+	<jsp:directive.attribute name="columnSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true"/>
 
 	<c:set var="isUserLoggedIn" value="${command.context.userLoggedIn}"/>
 
 	<c:choose>
 		<c:when test="${not empty group.realname}">
-			<c:set var="groupName" value="${group.realname}" />
+			<c:set var="groupName" value="${group.realname}"/>
 		</c:when>
 		<c:otherwise>
-			<c:set var="groupName" value="${group.name}" />
+			<c:set var="groupName" value="${group.name}"/>
 		</c:otherwise>
 	</c:choose>
 
-	<c:set var="groupUrl" value="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}" />
+	<c:set var="groupUrl" value="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"/>
+
+	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(group.name, command.context.loginUser)}">
+		<c:set var="iconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/>
+	</c:if>
 
 	<lists:listResultEntity
 			columnSize="${columnSize}"
 			headingTitle="${groupName}"
 			headingUrl="${groupUrl}"
-			description="${group.description}">
+			description="${group.description}"
+			iconUrl="${iconUrl}"
+			iconFallback="users"
+			iconCircle="${true}">
 
 		<jsp:attribute name="links">
 			<c:if test="${not empty group.homepage}">
@@ -37,7 +44,7 @@
 
 		<jsp:attribute name="buttons">
 			<c:if test="${isUserLoggedIn}">
-				<group:actions group="${group}" showSettingsLabel="${false}" />
+				<group:actions group="${group}" showSettingsLabel="${false}"/>
 			</c:if>
 		</jsp:attribute>
 	</lists:listResultEntity>

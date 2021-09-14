@@ -1791,6 +1791,7 @@ hr.option-result-divider {
 }
 
 @listResultEntityPadding: 10px;
+@listResultEntityImageSize: 70px;
 
 .list-result-entity {
   position: relative;
@@ -1834,10 +1835,23 @@ hr.option-result-divider {
   }
 
   .media-image {
-	height: 70px;
-	width: 70px;
+	height: @listResultEntityImageSize;
+	width: @listResultEntityImageSize;
 	background: grey;
-	border-radius: 70px;
+
+	overflow: hidden;
+	text-align: center;
+	font-size: @listResultEntityImageSize;
+  }
+
+  .media-object {
+	position: absolute;
+	height: @listResultEntityImageSize;
+	width: @listResultEntityImageSize;
+  }
+
+  .media-circle {
+	border-radius: @listResultEntityImageSize;
   }
 
 }

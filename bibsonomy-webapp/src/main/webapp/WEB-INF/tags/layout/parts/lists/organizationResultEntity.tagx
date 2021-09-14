@@ -6,27 +6,34 @@
 		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
 
-	<jsp:directive.attribute name="columnSize" type="java.lang.Integer" required="true" />
+	<jsp:directive.attribute name="columnSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="organization" type="org.bibsonomy.model.Group" required="true"/>
 
 	<c:set var="isUserLoggedIn" value="${command.context.userLoggedIn}"/>
 
 	<c:choose>
 		<c:when test="${not empty organization.realname}">
-			<c:set var="organizationName" value="${organization.realname}" />
+			<c:set var="organizationName" value="${organization.realname}"/>
 		</c:when>
 		<c:otherwise>
-			<c:set var="organizationName" value="${organization.name}" />
+			<c:set var="organizationName" value="${organization.name}"/>
 		</c:otherwise>
 	</c:choose>
 
-	<c:set var="organizationUrl" value="${relativeUrlGenerator.getOrganizationUrlByName(organization.name)}" />
+	<c:set var="organizationUrl" value="${relativeUrlGenerator.getOrganizationUrlByName(organization.name)}"/>
+
+	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(organization.name, command.context.loginUser)}">
+		<c:set var="iconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(organization.name)}"/>
+	</c:if>
 
 	<lists:listResultEntity
 			columnSize="${columnSize}"
 			headingTitle="${organizationName}"
 			headingUrl="${organizationUrl}"
-			description="${organization.description}">
+			description="${organization.description}"
+			iconUrl="${iconUrl}"
+			iconFallback="building"
+			iconCircle="${true}">
 	</lists:listResultEntity>
 
 </jsp:root>

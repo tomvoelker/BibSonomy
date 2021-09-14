@@ -14,12 +14,19 @@
 	<c:set var="personName" value="${person.mainName.lastName}, ${person.mainName.firstName}" />
 	<c:set var="personUrl" value="${relativeUrlGenerator.getPersonUrl(person.personId)}" />
 
+	<c:if test="${not empty person.user and gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(person.user, command.context.loginUser)}">
+		<c:set var="iconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
+	</c:if>
+
 	<lists:listResultEntity
 			columnSize="${columnSize}"
 			headingTitle="${personName}"
 			subHeadingTitle="${person.academicDegree}"
 			headingUrl="${personUrl}"
-			description="${person.email}">
+			description="${person.email}"
+			iconUrl="${iconUrl}"
+			iconFallback="user"
+			iconCircle="${true}">
 
 		<jsp:attribute name="links">
 			<c:if test="${not empty person.homepage}">
@@ -31,9 +38,12 @@
 			<c:if test="${not empty person.researcherid}">
 				<span class="badge"><a href="#">Researcher ID</a></span>
 			</c:if>
+
+			<!-- link to connected user
 			<c:if test="${not empty person.user}">
 				<span class="badge"><a href="${relativeUrlGenerator.getUserUrlByUserName(person.user)}">User</a></span>
 			</c:if>
+			-->
 		</jsp:attribute>
 
 	</lists:listResultEntity>
