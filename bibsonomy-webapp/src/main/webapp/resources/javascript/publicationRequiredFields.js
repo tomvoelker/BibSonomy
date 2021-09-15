@@ -3,16 +3,16 @@ $(function(){
 
 	function authorWarning() {
 		if(isAuthor() && !$("#myownChkBox").is(':checked')){
-			$('#imAmAuthorWarning').attr("style", "display:block")
+			$('#imAmAuthorWarning').attr("style", "display:block");
 		} else {
-			$('#imAmAuthorWarning').attr("style", "display:none")
+			$('#imAmAuthorWarning').attr("style", "display:none");
 		}
 	}
 
 	$("#post\\.resource\\.editor").on('change',authorWarning);
 	$("#post\\.resource\\.author").on('change',authorWarning);
 	$('#myownChkBox').click( function() {
-		$('#imAmAuthorWarning').attr("style", "display:none")
+		$('#imAmAuthorWarning').attr("style", "display:none");
 	})
 
 });
@@ -71,13 +71,13 @@ function myownTagInit(chkbox, tagbox) {
 function isAuthor() {
 	let allPossibleNames = [];
 	if(!$("#claimedPersonMainNameID").length){ //uses the User.realName as a fallback if no Person was claimed by the user
-		let individualUserRealName = $('#userRealnameID').val()
-		allPossibleNames.push(individualUserRealName)
+		let individualUserRealName = $('#userRealnameID').val();
+		allPossibleNames.push(individualUserRealName);
 	} else { //uses all names saved in the person claimed by the current user
-		let userClaimedPersonMainName = $('#claimedPersonMainNameID').val()
-		allPossibleNames.push(userClaimedPersonMainName)
-		let userClaimedPersonNames = $('#claimedPersonNamesID').val()
-		allPossibleNames = allPossibleNames.concat(userClaimedPersonNames.split(" and "))
+		let userClaimedPersonMainName = $('#claimedPersonMainNameID').val();
+		allPossibleNames.push(userClaimedPersonMainName);
+		let userClaimedPersonNames = $('#claimedPersonNamesID').val();
+		allPossibleNames = allPossibleNames.concat(userClaimedPersonNames.split(" and "));
 	}
 
 	let enteredAuthors = $("#post\\.resource\\.author").val();
