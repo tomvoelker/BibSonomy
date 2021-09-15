@@ -27,7 +27,7 @@ function highlightMatches(text, input) {
 
 function highlightMatch(text, term) {
 	return text.replace( new RegExp("(?![^&;]+;)(?!<[^<>]*)(" +
-			$.ui.autocomplete.escapeRegex(term) +
+			$.ui.autocompvare.escapeRegex(term) +
 			")(?![^<>]*>)(?![^&;]+;)", "gi"
 	), "<strong>$1</strong>"
 	);
@@ -69,25 +69,25 @@ function myownTagInit(chkbox, tagbox) {
  * @returns {boolean}
  */
 function isAuthor() {
-	let allPossibleNames = [];
+	var allPossibleNames = [];
 	if(!$("#claimedPersonMainNameID").length){ //uses the User.realName as a fallback if no Person was claimed by the user
-		let individualUserRealName = $('#userRealnameID').val();
+		var individualUserRealName = $('#userRealnameID').val();
 		allPossibleNames.push(individualUserRealName);
 	} else { //uses all names saved in the person claimed by the current user
-		let userClaimedPersonMainName = $('#claimedPersonMainNameID').val();
+		var userClaimedPersonMainName = $('#claimedPersonMainNameID').val();
 		allPossibleNames.push(userClaimedPersonMainName);
-		let userClaimedPersonNames = $('#claimedPersonNamesID').val();
+		var userClaimedPersonNames = $('#claimedPersonNamesID').val();
 		allPossibleNames = allPossibleNames.concat(userClaimedPersonNames.split(" and "));
 	}
 
-	let enteredAuthors = $("#post\\.resource\\.author").val();
-	let individualEnteredAuthors = enteredAuthors.split("\n");
-	let enteredEditors = $("#post\\.resource\\.editor").val();
+	var enteredAuthors = $("#post\\.resource\\.author").val();
+	var individualEnteredAuthors = enteredAuthors.split("\n");
+	var enteredEditors = $("#post\\.resource\\.editor").val();
 	individualEnteredAuthors = individualEnteredAuthors.concat(enteredEditors.split("\n"));
 
 	if (enteredAuthors.length !== 0 || enteredEditors.length !== 0){
 		return individualEnteredAuthors.some(enteredAuthor => allPossibleNames.some(userRealName => enteredAuthor === userRealName));
-	} else{ //Fallback if the input was left empty or the input was deleted
+	} else{ //Fallback if the input was left empty or the input was devared
 		return false;
 	}
 }
