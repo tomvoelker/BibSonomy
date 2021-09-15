@@ -1,5 +1,5 @@
 $(function(){
-	 myownTagInit($('#myownChkBox'), $('#inpf_tags'));
+	myownTagInit($('#myownChkBox'), $('#inpf_tags'));
 
 	function authorWarning() {
 		if(isAuthor() && !$("#myownChkBox").is(':checked')){

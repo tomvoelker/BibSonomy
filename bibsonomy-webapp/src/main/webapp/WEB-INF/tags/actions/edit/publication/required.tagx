@@ -105,7 +105,7 @@
 	
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 	
-	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}"/>
+	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
 	
 	<c:if test="${person != null }">
 		<div class="form-group">
@@ -149,6 +149,7 @@
 			<bsform:input labelColSpan="3" path="post.resource.school"/>
 		</c:if>
 	</c:if>
+
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
 
 		<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames(T(org.bibsonomy.model.util.PersonNameUtils).discoverPersonNamesIgnoreExceptions('${command.context.loginUser.realname}'))" var="userRealname"/>
@@ -176,6 +177,7 @@
 			</div>
 		</div>
 	</c:if>
+
 	<bsform:textarea labelColSpan="3" inputColSpan="9" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
 	<bsform:input labelColSpan="3" inputColSpan="9" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
 </jsp:root>
