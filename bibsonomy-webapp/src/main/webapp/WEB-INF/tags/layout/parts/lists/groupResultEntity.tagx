@@ -22,6 +22,7 @@
 
 	<c:set var="groupUrl" value="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"/>
 
+	<c:set var="showDefaultIcon" value="${properties['profile.picture.default']}"/>
 	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(group.name, command.context.loginUser)}">
 		<c:set var="iconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}"/>
 	</c:if>
@@ -33,7 +34,8 @@
 			description="${group.description}"
 			iconUrl="${iconUrl}"
 			iconFallback="users"
-			iconCircle="${true}">
+			iconCircle="${true}"
+			showDefaultIcon="${showDefaultIcon}">
 
 		<jsp:attribute name="links">
 			<c:if test="${not empty group.homepage}">

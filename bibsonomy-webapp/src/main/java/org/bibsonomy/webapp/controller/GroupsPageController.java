@@ -57,6 +57,8 @@ public class GroupsPageController extends SingleResourceListController implement
 	public View workOn(final GroupsListCommand command) {
 		final String format = command.getFormat();
 		final ListCommand<Group> groupListCommand = command.getGroups();
+		groupListCommand.setEntriesPerPage(30);
+
 		/*
 		 * get requested groups
 		 */

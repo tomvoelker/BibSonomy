@@ -99,9 +99,11 @@
 				<div class="col-md-4 vcenter">
 					<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
 				</div>
-				<div class="col-md-4 text-right vcenter">
-					<a class="btn btn-primary btn-sm" href="/grouprequest">Create group</a>
-				</div>
+				<c:if test="${isGroupsPage}">
+					<div class="col-md-4 text-right vcenter">
+						<a class="btn btn-primary btn-sm" href="/grouprequest">Create group</a>
+					</div>
+				</c:if>
 			</div>
 		</jsp:attribute>
 

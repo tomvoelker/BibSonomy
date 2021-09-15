@@ -22,6 +22,7 @@
 
 	<c:set var="organizationUrl" value="${relativeUrlGenerator.getOrganizationUrlByName(organization.name)}"/>
 
+	<c:set var="showDefaultIcon" value="${properties['profile.picture.default']}"/>
 	<c:if test="${gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(organization.name, command.context.loginUser)}">
 		<c:set var="iconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(organization.name)}"/>
 	</c:if>
@@ -33,7 +34,14 @@
 			description="${organization.description}"
 			iconUrl="${iconUrl}"
 			iconFallback="building"
-			iconCircle="${true}">
+			iconCircle="${true}"
+			showDefaultIcon="${showDefaultIcon}">
+
+		<jsp:attribute name="links">
+			<c:if test="${not empty organization.homepage}">
+				<span class="badge"><a href="${fn:escapeXml(organization.homepage)}">Homepage</a></span>
+			</c:if>
+		</jsp:attribute>
 	</lists:listResultEntity>
 
 </jsp:root>
