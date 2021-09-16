@@ -1024,4 +1024,24 @@ public class Functions {
 		}
 		return false;
 	}
+
+	public static List<Group> getActualGroups(List<Group> groups) {
+		List<Group> actualGroups = new ArrayList<>();
+		for (Group group : groups) {
+			if (!group.isOrganization()) {
+				actualGroups.add(group);
+			}
+		}
+		return actualGroups;
+	}
+
+	public static List<Group> getOrganizations(List<Group> groups) {
+		List<Group> organizations = new ArrayList<>();
+		for (Group group : groups) {
+			if (group.isOrganization()) {
+				organizations.add(group);
+			}
+		}
+		return organizations;
+	}
 }

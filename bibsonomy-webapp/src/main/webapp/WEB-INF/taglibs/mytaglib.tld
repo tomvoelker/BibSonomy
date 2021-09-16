@@ -458,4 +458,16 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>boolean isSameHost(java.lang.String, java.lang.String)</function-signature>
 	</function>
+
+	<function>
+		<name>getActualGroups</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.List getActualGroups(java.util.List)</function-signature>
+	</function>
+
+	<function>
+		<name>getOrganizations</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.List getOrganizations(java.util.List)</function-signature>
+	</function>
 </taglib>

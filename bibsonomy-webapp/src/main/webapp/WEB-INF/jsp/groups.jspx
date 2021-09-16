@@ -20,9 +20,17 @@
 	<c:set var="isGroupsPage" value="${requPath eq 'groups'}"/>
 	<c:set var="isUserLoggedIn" value="${command.context.userLoggedIn}"/>
 	<fmt:message key="navi.${requPath}" var="pageTitle"/>
+	<c:choose>
+		<c:when test="${isGroupsPage}">
+			<c:set var="activeTab" value="groups"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="activeTab" value="organizations"/>
+		</c:otherwise>
+	</c:choose>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.${requPath}" command="${command}"
-					   pageTitle="${pageTitle}" activeTab="groups" noSidebar="${true}">
+					   pageTitle="${pageTitle}" activeTab="${activeTab}" noSidebar="${true}">
 		<!--+
 		 	| heading
 		 	+-->

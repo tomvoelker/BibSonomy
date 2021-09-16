@@ -20,6 +20,9 @@
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
 
+	<c:set var="actualGroups" value="${mtl:getActualGroups(loginUser.groups)}" />
+	<c:set var="organizations" value="${mtl:getOrganizations(loginUser.groups)}" />
+
 	<jsp:useBean id="navElements" class="java.util.HashMap"/>
 
 	<!--+
@@ -81,13 +84,13 @@
 		+-->
 	<c:set target="${navElements}" property="groups">
 		<c:choose>
-			<c:when test="${not empty loginUser.groups}">
+			<c:when test="${not empty actualGroups}">
 				<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
 					<ul class="dropdown-menu">
 						<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
 						<li class="divider"><!-- keep me --></li>
-						<c:forEach var="grp" items="${loginUser.groups}">
+						<c:forEach var="grp" items="${actualGroups}">
 							<c:set var="role" value="${grp.getGroupMembershipForUser(loginUser).groupRole}" />
 							<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
 								<li class="dropdown-submenu">
@@ -146,7 +149,26 @@
 		+-->
 	<c:set target="${navElements}" property="organizations">
 		<c:if test="${not showCRISNavBar}">
-			<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="person.show.organizations"/></a></li>
+			<c:choose>
+				<c:when test="${not empty organizations}">
+					<li class="dropdown ${activeTab eq 'organizations' ? 'active' : ''}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.organizations"/><b class="caret">&amp;nbsp;</b></a>
+						<ul class="dropdown-menu">
+							<li><a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="navi.organizations.all"/></a></li>
+							<li class="divider"><!-- keep me --></li>
+							<c:forEach var="organization" items="${organizations}">
+								<c:set var="role" value="${organization.getGroupMembershipForUser(loginUser).groupRole}" />
+								<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
+									<li><a href="${relativeUrlGenerator.getOrganizationUrlByName(organization.name)}">${organization.name}</a></li>
+								</c:if>
+							</c:forEach>
+						</ul>
+					</li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="navi.organizations"/></a></li>
+				</c:otherwise>
+			</c:choose>
 		</c:if>
 	</c:set>
 
