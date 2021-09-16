@@ -27,7 +27,7 @@ function highlightMatches(text, input) {
 
 function highlightMatch(text, term) {
 	return text.replace( new RegExp("(?![^&;]+;)(?!<[^<>]*)(" +
-			$.ui.autocompvare.escapeRegex(term) +
+			$.ui.autocomplete.escapeRegex(term) +
 			")(?![^<>]*>)(?![^&;]+;)", "gi"
 	), "<strong>$1</strong>"
 	);
@@ -87,7 +87,7 @@ function isAuthor() {
 
 	if (enteredAuthors.length !== 0 || enteredEditors.length !== 0){
 		return individualEnteredAuthors.some(enteredAuthor => allPossibleNames.some(userRealName => enteredAuthor === userRealName));
-	} else{ //Fallback if the input was left empty or the input was devared
+	} else{ //Fallback if the input was left empty or the input was deleted
 		return false;
 	}
 }
