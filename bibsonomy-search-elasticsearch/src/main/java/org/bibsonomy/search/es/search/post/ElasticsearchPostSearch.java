@@ -467,7 +467,9 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		fields.forEach(builder::field);
 		// set the type to phrase prefix match
 		builder.analyzeWildcard(true)
-				//.minimumShouldMatch("75%")
+				// TODO fixme dzo
+				// Currently breaks searches when chaining multiple ORs for example
+				// .minimumShouldMatch("75%")
 				.tieBreaker(1f);
 		return builder;
 	}

@@ -3,24 +3,13 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bs/bibcomponents"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
-	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
-	xmlns:system="urn:jsptagdir:/WEB-INF/tags/system"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
@@ -56,18 +45,19 @@
 									</fmt:message>
 								</p>
 								<fieldset>
-									<batch:content	resourceType="bibtex"
-													listView="${command.bibtex}" 
-													otherPostsUrlPrefix="bla" 
-													listViewStartParamName="bibtex.start"
-													postsErrorMessages="${command.postsErrorList}"
-													directEdit="${false}"
-													overwrite="${command.overwrite}"
-													updateExistingPost="${command.updateExistingPost}" >
+									<batch:importContent	resourceType="bibtex"
+															listView="${command.bibtex}" 
+															otherPostsUrlPrefix="bla" 
+															listViewStartParamName="bibtex.start"
+															postsErrorMessages="${command.postsErrorList}"
+															directEdit="${false}"
+															overwrite="${command.overwrite}"
+															groupedErrorList="${command.groupedErrorList}"
+															updateExistingPost="${command.updateExistingPost}" >
 										<jsp:attribute name="shortPostDescription">
 											<bib:shortDescription post="${post}"/>
 										</jsp:attribute>
-									</batch:content>
+									</batch:importContent>
 								</fieldset>
 							</div>
 						</c:when>

@@ -71,7 +71,7 @@ public class BioMedCentralScraper extends GenericBibTeXURLScraper {
 		 */
 		final Matcher m = PATH_PATTERN.matcher(url.getPath());
 		if (m.find()) {
-			return "http://citation-needed.springer.com/v2/references/" + m.group(1) + "?format=bibtex&flavour=citation";
+			return "https://citation-needed.springer.com/v2/references/" + m.group(1) + "?format=bibtex&flavour=citation";
 		}
 		return null;
 	}

@@ -294,12 +294,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * create lists for the different types of actions
 		 */
-		final List<String> postsToDelete = new LinkedList<String>();
-		final List<Post<?>> postsToUpdateTags = new LinkedList<Post<?>>();
-		final List<Post<?>> postsToNormalize = new LinkedList<Post<?>>();
-		final List<Post<?>> postsToUpdateViewable = new LinkedList<Post<?>>();
+		final List<String> postsToDelete = new LinkedList<>();
+		final List<Post<?>> postsToUpdateTags = new LinkedList<>();
+		final List<Post<?>> postsToNormalize = new LinkedList<>();
+		final List<Post<?>> postsToUpdateViewable = new LinkedList<>();
 		// several updates actions at the same time
-		final List<Post<?>> postsToCombiUpdate = new LinkedList<Post<?>>();
+		final List<Post<?>> postsToCombiUpdate = new LinkedList<>();
 		/*
 		 * All updated posts will get the same date.
 		 */
@@ -458,7 +458,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * after update/store contains all posts with errors, to show them to
 		 * the user for correction
 		 */
-		final List<Post<? extends Resource>> postsWithErrors = new LinkedList<Post<? extends Resource>>();
+		final List<Post<? extends Resource>> postsWithErrors = new LinkedList<>();
 		if (postsArePublications) {
 			command.setBibtex(new ListCommand<Post<BibTex>>(command, (List) postsWithErrors));
 		} else {
@@ -716,9 +716,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								 * since those tags probably caused the error
 								 */
 								post.setTags(updatedPost.getTags());
-							} catch (final ObjectNotFoundException ex1) {
-								// ignore
-							} catch (final ObjectMovedException ex1) {
+							} catch (final ObjectNotFoundException | ObjectMovedException ex1) {
 								// ignore
 							}
 						}
@@ -745,7 +743,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
-		final Map<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
+		final Map<String, Post<? extends Resource>> postMap = new HashMap<>();
 		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
 		if (!updatePosts && present(postsFromSession)) {
 			/*

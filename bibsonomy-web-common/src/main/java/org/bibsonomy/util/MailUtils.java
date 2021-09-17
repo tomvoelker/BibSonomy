@@ -411,7 +411,7 @@ public class MailUtils {
 			final String messageSubject = messageSource.getMessage("grouprequest.mail.subject", messagesParameters, locale);
 			
 			// TODO: currently using projectEmail, maybe we want a special mail address?
-			this.sendHTMLMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectJoinGroupRequestFromAddress);
+			this.sendHTMLMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectEmail);
 		} catch (final MessagingException e) {
 			log.fatal("Could not send group request mail: " + e.getMessage());
 		}

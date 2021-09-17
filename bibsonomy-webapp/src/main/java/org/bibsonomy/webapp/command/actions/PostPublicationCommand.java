@@ -36,6 +36,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
+import org.bibsonomy.webapp.command.ErrorInfo;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,7 +62,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	/**
 	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
 	private Map<String, List<ErrorMessage>> postsErrorList;
-
+	
+	/**
+	 * list to group the posts by their error messages */
+	private List<ErrorInfo> groupedErrorList;
+	
 	/**
 	 * For multiple posts
 	 */
@@ -298,6 +303,21 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	 */
 	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
 		this.postsErrorList = postsErrorList;
+	}
+	
+	/**
+	 * 
+	 * @return the groupedErrorList
+	 */
+	public List<ErrorInfo> getGroupedErrorList(){
+		return this.groupedErrorList;
+	}
+	
+	/**
+	 * @param groupedErrorList the groupedErrorList to set
+	 */
+	public void setGroupedErrorList(List<ErrorInfo> groupedErrorList) {
+		this.groupedErrorList = groupedErrorList;
 	}
 	
 }
