@@ -71,16 +71,16 @@
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<spring:eval expression="T(org.bibsonomy.model.enums.ProjectOrder).values()" var="orderValues" />
-							<c:forEach var="orderValue" items="${orderValues}">
-								<c:set var="orderSet" value="${command.projectSortKey eq orderValue}" />
-								<li class="${orderSet ? 'disabled' : ''}">
-									<c:set var="projectUrl" value="${mtl:setParam(requPathAndQuery, 'projectSortKey', orderValue)}" />
+							<spring:eval expression="T(org.bibsonomy.model.enums.ProjectSortKey).values()" var="sortKeys" />
+							<c:forEach var="sortKey" items="${sortKeys}">
+								<c:set var="keySet" value="${command.projectSortKey eq sortKey}" />
+								<li class="${keySet ? 'disabled' : ''}">
+									<c:set var="projectUrl" value="${mtl:setParam(requPathAndQuery, 'projectSortKey', sortKey)}" />
 									<a href="${projectUrl}">
-										<c:if test="${orderSet}">
+										<c:if test="${keySet}">
 											<fontawesome:icon icon="check" spaceAfter="5" size="xs" />
 										</c:if>
-										<fmt:message key="project.sortOrder.${orderValue}" />
+										<fmt:message key="project.sortOrder.${sortKey}" />
 									</a>
 								</li>
 							</c:forEach>
