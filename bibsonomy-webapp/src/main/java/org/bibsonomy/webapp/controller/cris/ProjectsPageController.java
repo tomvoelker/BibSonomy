@@ -70,7 +70,7 @@ public class ProjectsPageController implements MinimalisticController<ProjectsPa
 						.search(command.getSearch())
 						.prefixMatch(true)
 						.prefix(command.getPrefix())
-						.order(command.getProjectOrder())
+						.sortKey(command.getProjectSortKey())
 						.sortOrder(command.getSortOrder());
 
 		// query the logic for matching projects

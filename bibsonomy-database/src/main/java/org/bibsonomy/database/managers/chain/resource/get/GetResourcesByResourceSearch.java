@@ -31,21 +31,25 @@ package org.bibsonomy.database.managers.chain.resource.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.ChainUtils;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.services.searcher.PostSearchQuery;
-import org.bibsonomy.model.SystemTag;
+import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.database.systemstags.search.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.SystemTag;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 
 /**
  * @author claus
@@ -71,6 +75,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		String firstYear = null;
 		String lastYear = null;
 		String entryType = null;
+		Set<String> authorSearchTerms = new HashSet<>();
 
 		/*
 		 * check system tags for negated and year tags
@@ -88,7 +93,14 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 				negatedTags.add(((NotTagSystemTag) systemTag).getTagName());
 			} else if (systemTag instanceof EntryTypeSystemTag) {
 				entryType = systemTag.getArgument();
+			} else if (systemTag instanceof AuthorSystemTag) {
+				authorSearchTerms.add(systemTag.getArgument());
 			}
+		}
+		StringJoiner authorJoiner = new StringJoiner(" ", "\"", "\"");
+		authorJoiner.setEmptyValue("");
+		for (String authorSearchTerm : authorSearchTerms) {
+			authorJoiner.add(authorSearchTerm);
 		}
 
 		final PostSearchQuery<R> query = new PostSearchQuery<>(param.getQuery());
@@ -101,6 +113,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		query.setTags(tags); // override tags to remove system tags
 		query.setSortCriteria(param.getSortCriteria());
 		query.setHash(param.getHash());
+		query.setAuthorSearchTerms(authorJoiner.toString());
 
 		// query the resource searcher
 		return this.databaseManager.getPostsByResourceSearch(param.getLoggedinUser(), query);
