@@ -17,11 +17,8 @@
     <fmt:message key="person.index.placeholder" var="placeholderText"/>
     <fmt:message key="person.index.searchInfo" var="searchInfo"/>
 
-    <div class="row">
-        <div class="col-md-12">
-            <parts:searchHeader headerMessageKey="persons.header" searchPlaceholderKey="person.search" requPathAndQuery="${requPathAndQuery}" command="${command}" />
-        </div>
-    </div>
+    <parts:searchHeader headerMessageKey="persons.header" searchPlaceholderKey="person.search"
+                        requPathAndQuery="${requPathAndQuery}" command="${command}" />
 
     <c:set var="loggedinUser" value="${command.context.userLoggedIn}" />
 
