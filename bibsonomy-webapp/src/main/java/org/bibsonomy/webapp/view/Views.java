@@ -56,7 +56,7 @@ public enum Views implements View {
 	/**
 	 * the cris homepage (currently a static welcome page)
 	 */
-	CRIS_HOMEPAGE("cris/home"),
+	CRIS_HOMEPAGE("cris/homePublications"),
 
 	/**
 	 * here users can calculate the hashes of their publications
