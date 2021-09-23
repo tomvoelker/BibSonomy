@@ -28,10 +28,10 @@
 
 		<jsp:attribute name="links">
 			<c:if test="${not empty project.startDate}">
-				<span class="badge"><fmt:message key="project.startDate"/>: <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" /></span>
+				<span class="badge"><fmt:message key="project.startDate.short"/>: <fmt:formatDate value="${project.startDate}" pattern="dd.MM.yyyy" /></span>
 			</c:if>
 			<c:if test="${not empty project.endDate}">
-				<span class="badge"><fmt:message key="project.endDate"/>: <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" /></span>
+				<span class="badge"><fmt:message key="project.endDate.short"/>: <fmt:formatDate value="${project.endDate}" pattern="dd.MM.yyyy" /></span>
 			</c:if>
 		</jsp:attribute>
 
