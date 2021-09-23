@@ -7,7 +7,8 @@
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
@@ -21,11 +22,22 @@
 					   showPageOptions="${true}"
 					   noSidebar="${true}">
 
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+
         <jsp:attribute name="content">
 			<c:if test="${not userLoggedIn}">
 				<div class="row">
 					<div class="col-md-12">
 						<h1 class="text-center"><fmt:message key="cris.home.header"/></h1>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p class="lead">
+							<fmt:message key="cris.home.description"/>
+						</p>
 					</div>
 				</div>
 			</c:if>
@@ -92,19 +104,30 @@
 				</div>
 			</div>
 
-			<c:if test="${not userLoggedIn}">
-				<div class="row">
-					<div class="col-md-12">
-						<p class="lead">
-							<fmt:message key="cris.home.description"/>
-						</p>
-					</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h3><fmt:message key="cris.home.latest"/>:</h3>
 				</div>
-			</c:if>
-		</jsp:attribute>
+			</div>
 
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+			<div class="row">
+				<div class="col-md-12 publication-list" id="home-publications">
+					<resources:bibtexs listView="${command.goldStandardPublications}"
+									   loginUserName="${command.context.loginUser.name}"
+									   requPath="${requPath}"
+									   widthClassName="wide"
+									   isClipboard="${false}"
+									   showBookmark="${false}"
+									   showPublication="${true}"
+									   hideHeadline="${true}"
+									   hideCounts="${true}"
+									   hideMetaData="${false}"
+									   hidePostMenu="${true}"
+									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
+									   disableResourcetypeSelection="${true}">
+					</resources:bibtexs>
+				</div>
+			</div>
 		</jsp:attribute>
 
 	</layout:paneLayout>
