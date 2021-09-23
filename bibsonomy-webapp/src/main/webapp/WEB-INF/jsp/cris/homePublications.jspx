@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
-        <jsp:attribute name="content">
+		<jsp:attribute name="content">
 			<c:if test="${not userLoggedIn}">
 				<div class="row">
 					<div class="col-md-12">
@@ -43,63 +43,65 @@
 			</c:if>
 
 			<div class="row">
-				<div id="home-news">
-					<div class="news-carousel-img">
-						<img class="img-responsive img-rounded" src="/resources_puma/image/cris_home_header.jpg" id="cris-home-logo"/>
-					</div>
+				<div class="col-md-10 col-md-offset-1">
+					<div id="home-news">
+						<c:set var="news" value="${command.news}"/>
+						<c:set var="newsLength" value="${fn:length(news)}"/>
+						<div id="news-carousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+							<!-- Indicators -->
+							<ol class="carousel-indicators">
+								<c:forEach var="i" begin="0" end="${newsLength - 1}" step="1">
+									<c:set var="item" value="${news[i]}"/>
+									<c:choose>
+										<c:when test="${i eq 0}">
+											<li class="active" data-target="#news-carousel" data-slide-to="${i}"><!-- keep me --></li>
+										</c:when>
+										<c:otherwise>
+											<li data-target="#news-carousel" data-slide-to="${i}"><!-- keep me --></li>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</ol>
 
-					<c:set var="news" value="${command.news}"/>
-					<c:set var="newsLength" value="${fn:length(news)}"/>
-					<div id="news-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
-						<!-- Indicators -->
-						<ol class="carousel-indicators">
-							<c:forEach var="i" begin="0" end="${newsLength - 1}" step="1">
-								<c:set var="item" value="${news[i]}"/>
-								<c:choose>
-									<c:when test="${i eq 0}">
-										<li class="active" data-target="#news-carousel" data-slide-to="${i}"><!-- keep me --></li>
-									</c:when>
-									<c:otherwise>
-										<li data-target="#news-carousel" data-slide-to="${i}"><!-- keep me --></li>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</ol>
+							<!-- Wrapper for slides -->
+							<div class="carousel-inner" role="listbox">
+								<c:forEach var="i" begin="0" end="${newsLength - 1}" step="1">
+									<c:set var="item" value="${news[i]}"/>
+									<c:choose>
+										<c:when test="${i eq 0}">
+											<div class="item active">
+												<div class="news-carousel-placeholder"><!-- keep me --></div>
+												<div class="carousel-caption">
+													<div class="carousel-content">
+														<h3><a href="${item.resource.url}">${item.resource.title}</a></h3>
+														<p>${item.description}</p>
+													</div>
+												</div>
+											</div>
+										</c:when>
+										<c:otherwise>
+											<div class="item">
+												<div class="news-carousel-placeholder"><!-- keep me --></div>
+												<div class="carousel-caption">
+													<div class="carousel-content">
+														<h3><a href="${item.resource.url}">${item.resource.title}</a></h3>
+														<p>${item.description}</p>
+													</div>
+												</div>
+											</div>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</div>
 
-						<!-- Wrapper for slides -->
-						<div class="carousel-inner" role="listbox">
-							<c:forEach var="i" begin="0" end="${newsLength - 1}" step="1">
-								<c:set var="item" value="${news[i]}"/>
-								<c:choose>
-									<c:when test="${i eq 0}">
-										<div class="item active">
-											<div class="news-carousel-placeholder"><!-- keep me --></div>
-											<div class="carousel-caption">
-												<h3><a href="${item.resource.url}">${item.resource.title}</a></h3>
-												<p>${item.description}</p>
-											</div>
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div class="item">
-											<div class="news-carousel-placeholder"><!-- keep me --></div>
-											<div class="carousel-caption">
-												<h3><a href="${item.resource.url}">${item.resource.title}</a></h3>
-												<p>${item.description}</p>
-											</div>
-										</div>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
+							<!-- Controls -->
+							<a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
+								<fontawesome:icon icon="chevron-left" fixedWidth="${true}"/>
+							</a>
+							<a class="right carousel-control" href="#news-carousel" role="button" data-slide="next">
+								<fontawesome:icon icon="chevron-right" fixedWidth="${true}"/>
+							</a>
 						</div>
-
-						<!-- Controls -->
-						<a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
-							<fontawesome:icon icon="chevron-left" fixedWidth="${true}"/>
-						</a>
-						<a class="right carousel-control" href="#news-carousel" role="button" data-slide="next">
-							<fontawesome:icon icon="chevron-right" fixedWidth="${true}"/>
-						</a>
 					</div>
 				</div>
 			</div>

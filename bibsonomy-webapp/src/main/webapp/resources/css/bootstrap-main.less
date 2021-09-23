@@ -1734,12 +1734,12 @@ ul.prefix-list {
 }
 
 #home-news {
-  .news-carousel-img {
-	position: absolute;
-	height: 500px;
-	overflow:hidden;
-	background-color:lightgrey;
-  }
+  min-height: 400px;
+  max-height: 600px;
+
+  background-image: url("/resources_puma/image/cris_home_header.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
 
   .news-carousel-placeholder {
 	height: 500px;
@@ -1747,11 +1747,38 @@ ul.prefix-list {
   }
 
   .carousel-caption {
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.6);
+	left: 0;
+	right: 0;
+	padding-top: 0;
+
+	.carousel-content {
+	  padding: 0 10%;
+
+	  h3 {
+		margin: 10px 0;
+
+		a, a:hover, a:focus{
+		  font-weight: bold;
+		  color: @main-color-light;
+		}
+	  }
+
+	  p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		line-height: 1.5em;
+		height: 3em;
+	  }
+	}
   }
 
   .carousel-control {
 	background: none;
+
+	span {
+	  display: none;
+	}
   }
 
   .carousel-indicators {
