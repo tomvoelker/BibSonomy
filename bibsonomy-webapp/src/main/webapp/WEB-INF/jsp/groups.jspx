@@ -8,10 +8,8 @@
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
-		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
-		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-		  xmlns:organization="urn:jsptagdir:/WEB-INF/tags/organization"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 >
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -109,7 +107,13 @@
 				</div>
 				<c:if test="${isGroupsPage}">
 					<div class="col-md-4 text-right vcenter">
-						<a class="btn btn-primary btn-sm" href="/grouprequest">Create group</a>
+						<fmt:message var="groupCreateHint" key="groups.create.hint"/>
+						<a href="#" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="${groupCreateHint}">
+							<fontawesome:icon icon="info-circle" fixedWidth="${true}"/>
+						</a>
+						<a class="btn btn-primary btn-sm" href="/grouprequest" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="${groupCreateHint}">
+							<fmt:message key="groups.create"/>
+						</a>
 					</div>
 				</c:if>
 			</div>

@@ -61,7 +61,7 @@
             <div class="col-md-4 text-right vcenter">
                 <div class="btn-group btn-group-sm" role="group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <fontawesome:icon icon="users" spaceAfter="5"/>
+                        <fontawesome:icon icon="users" fixedWidth="${true}"/>
                         <c:choose>
                             <c:when test="${command.showAllPersons}">
                                 <fmt:message key="persons.select.college.all" />
@@ -77,7 +77,7 @@
                             <c:set var="allPersonsUrl" value="${mtl:setParam(requPathAndQuery, 'showAllPersons', 'true')}" />
                             <a href="${allPersonsUrl}">
                                 <c:if test="${command.showAllPersons}">
-                                    <fontawesome:icon icon="check" spaceAfter="5" size="xs" />
+                                    <fontawesome:icon icon="check" fixedWidth="${true}" />
                                 </c:if>
                                 <fmt:message key="persons.select.college.all" />
                             </a>
@@ -86,7 +86,7 @@
                             <c:set var="filterUniversity" value="${mtl:setParam(requPathAndQuery, 'showAllPersons', 'false')}" />
                             <a href="${filterUniversity}">
                                 <c:if test="${not command.showAllPersons}">
-                                    <fontawesome:icon icon="check" spaceAfter="5" size="xs" />
+                                    <fontawesome:icon icon="check" fixedWidth="${true}" />
                                 </c:if>
                                 <fmt:message key="persons.select.college.filtered" />
                             </a>
