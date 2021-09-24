@@ -16,13 +16,18 @@
 	<fmt:message key="cv.title" var="cvtitle">
 		<fmt:param value="${user.name}"/>
 	</fmt:message>
+	<fmt:message key="person.show.thatsMeButton" var="persontitle"/>
 	<!--+
 		| show link to CV page
 		+-->
 	<div class="row user-card-cv">
 		<div class="btn-group btn-group-sm">
+			<!-- button for claimed person link -->
+			<c:if test="${not empty user.claimedPerson}">
+				<a class="btn btn-default btn-sm" href="${relativeUrlGenerator.getPersonUrl(user.claimedPerson.personId)}" title="${persontitle}"><fontawesome:icon icon="user" spaceAfter="5" /><fmt:message key="navi.person"/></a>
+			</c:if>
 	 		<!-- button for CV link -->
-			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fontawesome:icon icon="user" spaceAfter="5" /><fmt:message key="navi.cv.abbrev"/></a>
+			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fontawesome:icon icon="file-alt" spaceAfter="5" /><fmt:message key="navi.cv.abbrev"/></a>
 			<c:if test="${not ownPage}">
 				<!-- dropdown toggle button -->
 				<button data-toggle="dropdown" class="btn btn-default btn-small dropdown-toggle"><span class="caret"></span></button>
