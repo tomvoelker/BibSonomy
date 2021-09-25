@@ -16,9 +16,11 @@
 	<fmt:message key="cv.title" var="cvtitle">
 		<fmt:param value="${user.name}"/>
 	</fmt:message>
-	<fmt:message key="person.show.thatsMeButton" var="persontitle"/>
+	<fmt:message key="person.title" var="persontitle">
+		<fmt:param value="${user.name}"/>
+	</fmt:message>
 	<!--+
-		| show link to CV page
+		| show link to CV page and (if avaiable) the claimed person page
 		+-->
 	<div class="row user-card-cv">
 		<div class="btn-group btn-group-sm">
