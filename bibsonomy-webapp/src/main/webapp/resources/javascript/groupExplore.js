@@ -312,6 +312,24 @@ function addCustomFilters() {
 }
 
 /**
+ * Get the list of custom tags (for example: subgroups/subentities identified by tags) for the current PUMA system and add it as an additional filter section.
+ */
+function addCustomTreeFilters() {
+    var entries = $('#filter-entries-custom');
+    $.ajax({
+        url: '/resources_puma/addons/explore/customTagsTree.json', // The url you are fetching the results.
+        dataType: 'json',
+        success: function (data) {
+            entries.append(createFilterTree(data));
+            // initFilterButtons('custom');
+
+            // show filter section
+            $('#filter-list-custom').removeClass(HIDDEN_CLASS);
+        }
+    });
+}
+
+/**
  * Simple search for the custom tag list.
  */
 function searchCustomFilters() {
@@ -325,6 +343,29 @@ function searchCustomFilters() {
             $(this).addClass(HIDDEN_CLASS);
         }
     });
+}
+
+function createFilterTree(items) {
+    var tree = $('<ul/>');
+
+    $.each(items, function (i) {
+        var item = items[i];
+        var li = $("<li/>", {
+            'data-value': item.label,
+            'data-cnr': item.cnr,
+            'data-from': item.fromDate,
+            'data-until': item.untilDate
+        }).appendTo(tree);
+        var label = $("<span/>")
+            .text(item.facility)
+            .appendTo(li);
+        if (item.LowerTags) {
+            var children = createFilterTree(item.LowerTags);
+            children.appendTo(tree);
+        }
+    });
+
+    return tree;
 }
 
 function resetFilterSelection() {
@@ -372,7 +413,7 @@ function initSortOptions() {
  * Extended search interface
  */
 
-var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institution', 'doi', 'isbn'];
+var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institution', 'doi', 'isbn', 'issn'];
 
 function disableSearchFields() {
     $('#dropdownSelectionField').children('li').each(function () {
