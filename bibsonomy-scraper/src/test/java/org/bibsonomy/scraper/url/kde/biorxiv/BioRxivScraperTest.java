@@ -32,6 +32,7 @@ package org.bibsonomy.scraper.url.kde.biorxiv;
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.joda.time.LocalDateTime;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -56,9 +57,44 @@ public class BioRxivScraperTest {
 	 * starts URL test 2
 	 */
 	@Test
-	public void url1Test2Run(){		
+	public void url2Test1Run(){
 		final String url = "https://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
 		final String resultFile = "BioRxivScraperUnitURLTest2.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
+
+	/**
+	 * Tests for the different views(tabs) of the same article
+	 */
+	@Test
+	public void url3Test1Run(){
+		final String url = "https://www.biorxiv.org/content/10.1101/622803v1";
+		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		assertScraperResult(url, BioRxivScraper.class, resultFile);
+	}
+	@Test
+	public void url3Test2Run(){
+		final String url = "https://www.biorxiv.org/content/10.1101/622803v1.full";
+		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		assertScraperResult(url, BioRxivScraper.class, resultFile);
+	}
+	@Test
+	public void url3Test3Run(){
+		final String url = "https://www.biorxiv.org/content/10.1101/622803v1.article-info";
+		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		assertScraperResult(url, BioRxivScraper.class, resultFile);
+	}
+	@Test
+	public void url3Test4Run(){
+		final String url = "https://www.biorxiv.org/content/10.1101/622803v1.article-metrics";
+		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		assertScraperResult(url, BioRxivScraper.class, resultFile);
+	}
+
+
+
+
+
+
+
 }
