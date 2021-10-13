@@ -66,4 +66,8 @@ public class IOPScraperTest {
 	public void url2TestRun(){
 		assertScraperResult("http://iopscience.iop.org/article/10.1088/2041-8205/730/1/L11", IOPScraper.class, "IOPScraperUnitURLTest2.bib");
 	}
+	@Test
+	public void url3TestRun(){
+		assertScraperResult("http://iopscience.iop.org/article/10.1088/1751-8121/aacaa3", IOPScraper.class, "IOPScraperUnitURLTest2.bib");
+	}
 }
