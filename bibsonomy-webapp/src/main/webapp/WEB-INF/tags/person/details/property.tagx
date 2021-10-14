@@ -1,0 +1,36 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <jsp:directive.attribute name="type" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="value" type="java.lang.String" required="true" />
+
+    <c:set value="${fn:toUpperCase(type.substring(0, 1))}${type.substring(1)}" var="typeUpper"/>
+
+    <div class="row">
+        <div class="col-md-2">
+            <b><fmt:message key="person.show.${type}" /></b>
+        </div>
+        <div class="col-md-10">
+            <c:choose>
+                <c:when test="${type eq 'homepage'}" >
+                    <a class="personPageFormFieldContent" id="personPageForm${typeUpper}Value" rel="external nofollow" href="${fn:escapeXml(value)}" itemprop="url"><c:out value="${value}"/></a>
+                </c:when>
+                <c:when test="${type eq 'orcid'}">
+                    <perdetails:orcid orcid="${value}" returnUrl="${true}" />
+                </c:when>
+                <c:when test="${type eq 'researcherid'}">
+                    <perdetails:researcherid researcherid="${value}" returnUrl="${true}"/>
+                </c:when>
+                <c:otherwise>
+                    <span class="personPageFormFieldContent" id="personPageForm${typeUpper}Value">${value}</span>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</jsp:root>

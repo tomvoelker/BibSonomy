@@ -35,7 +35,7 @@ import org.bibsonomy.webapp.command.PersonPageCommand;
 /**
  * @author mho
  */
-public class AjaxPersonPublicationCommand extends PersonPageCommand {
+public class AjaxPersonPageCommand extends PersonPageCommand {
 
 	private int page;
 	private int size;

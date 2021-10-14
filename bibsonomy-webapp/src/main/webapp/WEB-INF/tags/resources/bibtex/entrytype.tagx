@@ -9,7 +9,7 @@
 	<c:if test="${not empty publication.entrytype}">
 		<fmt:message key="post.resource.entrytype.${publication.entrytype}.title" var="messageString" />
 		<c:if test="${!fn:startsWith(messageString,'???')}">
-			${messageString}
+			<c:out value="${messageString}"/>
 		</c:if>
 	</c:if>
 

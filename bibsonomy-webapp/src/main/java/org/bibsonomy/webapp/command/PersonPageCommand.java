@@ -47,6 +47,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.exception.LogicException;
 
 /**
@@ -120,6 +121,8 @@ public class PersonPageCommand extends BaseCommand {
 	private String personPostsLayout;
 	private List<Post<BibTex>> myownPosts;
 	private Map<String, String> myownPostsRendered;
+
+	private List<SearchFilterElement> entrytypeFilters;
 
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
@@ -823,5 +826,13 @@ public class PersonPageCommand extends BaseCommand {
 
 	public void setMyownPostsRendered(Map<String, String> myownPostsRendered) {
 		this.myownPostsRendered = myownPostsRendered;
+	}
+
+	public List<SearchFilterElement> getEntrytypeFilters() {
+		return entrytypeFilters;
+	}
+
+	public void setEntrytypeFilters(List<SearchFilterElement> entrytypeFilters) {
+		this.entrytypeFilters = entrytypeFilters;
 	}
 }

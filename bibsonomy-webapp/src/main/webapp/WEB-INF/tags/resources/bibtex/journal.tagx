@@ -6,10 +6,17 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	<jsp:directive.attribute name="prefix" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="suffix" type="java.lang.String" required="false" />
+
+	<c:if test="${empty suffix}">
+		<c:set var="suffix" value="," />
+	</c:if>
 	
 	<c:if test="${not empty publication.journal}">
-		<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Periodical">
-			 <span itemprop="name"><em><c:out value="${mtl:cleanBibtex(publication.journal)}" /></em></span>
-		</span>
+		<em>
+			<span itemprop="journal"><c:out value="${mtl:cleanBibtex(publication.journal)}"/></span>
+			<c:out value="${suffix} "/>
+		</em>
 	</c:if>	
 </jsp:root>

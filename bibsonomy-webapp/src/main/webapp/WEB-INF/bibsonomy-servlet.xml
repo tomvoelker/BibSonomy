@@ -967,6 +967,13 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">

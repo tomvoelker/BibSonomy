@@ -31,22 +31,24 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.layout.citeproc.CSLUtils;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
-import org.bibsonomy.layout.citeproc.renderer.LanguageFile;
 import org.bibsonomy.layout.csl.CSLFilesManager;
-import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonMergeFieldConflict;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
@@ -54,19 +56,18 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.exception.LogicException;
-import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.PersonMatchUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.Sets;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -75,50 +76,24 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-/**
- * FIXME: this controller is a mess, please replace it with separate controllers for editing and viewing
- *
- * controller for a single person details page
- * paths:
- * - /person/PERSON_ID
- *
- * e.g.
- * /person/a.hotho
- *
- * @author Christian Pfeiffer
- */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PersonMatch.class);
 
 	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
-	private URLGenerator urlGenerator;
+	private LogicInterface adminLogic;
 	private RequestLogic requestLogic;
-	private PersonRoleRenderer personRoleRenderer;
+	private URLGenerator urlGenerator;
 	private Errors errors;
+	private PersonRoleRenderer personRoleRenderer;
 	private PictureHandlerFactory pictureHandlerFactory;
+	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
+
 	/** the college that the cris system is configured for */
 	private String crisCollege;
-
-	private LogicInterface adminLogic;
 
 
 	// TMP TEST
@@ -141,502 +116,14 @@ public class PersonPageController extends SingleResourceListController implement
 		this.renderer = renderer;
 	}
 
-
-
 	@Override
-	public PersonPageCommand instantiateCommand() {
-		return new PersonPageCommand();
-	}
-	
-	@Override
-	public View workOn(final PersonPageCommand command) {
+	public View workOn(PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		final String formAction = command.getFormAction();
-		final boolean action = present(formAction);
-		if (!action && !present(command.getRequestedPersonId())) {
+		final String personId = command.getRequestedPersonId();
+		if (!present(personId)) {
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
 
-		if (present(formAction)) {
-			if (!context.isValidCkey()) {
-				errors.reject("error.field.valid.ckey");
-			}
-
-			switch(formAction) {
-				case "update": return this.updateAction(command);
-				case "addName": return this.addNameAction(command);
-				case "deleteName": return this.deleteNameAction(command);
-				case "setMainName": return this.setMainNameAction(command);
-				case "addRole": return this.addRoleAction(command);
-				case "addThesis": return this.addThesisAction(command);
-				case "editRole": return this.editRoleAction(command);
-				case "deleteRole": return this.deleteRoleAction(command);
-				case "unlink": return this.unlinkAction(command);
-				case "link": return this.linkAction(command);
-				case "search": return this.searchAction(command);
-				case "searchPub": return this.searchPubAction(command);
-				case "searchPubAuthor": return this.searchPubAuthorAction(command);
-				case "merge": return this.mergeAction(command);
-				case "conflictMerge": return this.conflictMerge(command);
-				case "getConflict": return this.getConflicts(command);
-
-				default:
-					return indexAction();
-			}
-		} else if (present(command.getRequestedPersonId())) {
-			return this.showAction(command);
-		}
-		
-		// the following statement cannot be reached, and seems useless anyway, since in this case no formAction was present and not PersonId. 
-		// Remove when sure. 
-		return indexAction();
-	}
-
-	/**
-	 * @param command
-	 * @return
-	 */
-	private View conflictMerge(PersonPageCommand command) {
-		final JSONObject jsonResponse = new JSONObject();
-
-		try {
-			final Map<String, String> map = new HashMap<>();
-			final Person person = command.getPerson();
-			if (present(person)) {
-				for (final String fieldName : Person.fieldsWithResolvableMergeConflicts){
-					final PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
-					final Object value = desc.getReadMethod().invoke(person);
-
-					if (value != null) {
-						map.put(fieldName, value.toString());
-					}
-				}
-			}
-			final PersonName newName = command.getNewName();
-			if (present(newName)) {
-				map.put("mainName", PersonNameUtils.serializePersonName(newName));
-			}
-
-			jsonResponse.put("status", this.logic.mergePersonsWithConflicts(command.getFormMatchId(), map));
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
-			log.error("error while building cpm", e);
-			jsonResponse.put("status", false);
-		}
-
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * FIXME: we DO NOT use database ids in the webapp!!!!!!!
-	 *
-	 * @param command
-	 * @return
-	 */
-	private View getConflicts(final PersonPageCommand command) {
-		final int formMatchId = command.getFormMatchId();
-		final PersonMatch personMatch = this.logic.getPersonMergeRequest(formMatchId);
-
-		final JSONArray array = new JSONArray();
-		for (PersonMergeFieldConflict conflict : PersonMatchUtils.getPersonMergeConflicts(personMatch)) {
-			final JSONObject jsonConflict = new JSONObject();
-			jsonConflict.put("field", conflict.getFieldName());
-			jsonConflict.put("person1Value", conflict.getPerson1Value());
-			jsonConflict.put("person2Value", conflict.getPerson2Value());
-			array.add(jsonConflict);
-		}
-		command.setResponseString(array.toJSONString());
-		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * @param command
-	 * @return
-	 */
-	private View addThesisAction(PersonPageCommand command) {
-		addRoleAction(command);
-		return showAction(command);
-	}
-
-	/** 
-	 * This is a helper function that adds to an JSONarray from a list of resource-person-relations.
-	 * @param suggestions
-	 * @param array
-	 * @return
-	 */
-	private void buildupAuthorResponseArray(final List<ResourcePersonRelation> suggestions, JSONArray array) {
-			for (final ResourcePersonRelation rel : suggestions) {
-				final JSONObject jsonPersonName = new JSONObject();
-				jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
-				final int personIndex = rel.getPersonIndex();
-				jsonPersonName.put("personIndex", personIndex);
-
-				final BibTex pub = rel.getPost().getResource();
-				final List<PersonName> authors = pub.getAuthor();
-				jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(personIndex).toString()));
-				jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub, this.requestLogic.getLocale(), false));
-				array.add(jsonPersonName);
-			}
-	}
-	
-	/** 
-	 * This is a helper function adds to an JSONarray Publications form a sugesstions list.  
-	 * @param posts
-	 * @return
-	 */
-	private JSONArray buildupPubResponseArray(final List<Post<GoldStandardPublication>> posts) {
-		final JSONArray array = new JSONArray();
-		for (final Post<GoldStandardPublication> post : posts) {
-			final JSONObject jsonPersonName = new JSONObject();
-			final BibTex publication = post.getResource();
-			jsonPersonName.put("interhash", publication.getInterHash());
-			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(publication, this.requestLogic.getLocale(), false));
-			array.add(jsonPersonName);
-		}
-		return array;
-	}
-
-	/**
-	 * @param command
-	 * @return
-	 */
-	private View searchPubAction(PersonPageCommand command) { 
-		final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getFormSelectedName());
-		final JSONArray array = this.buildupPubResponseArray(suggestions);
-		command.setResponseString(array.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-	private List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
-		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().search(search).
-						createPostQuery(GoldStandardPublication.class);
-		// TODO limit searches to thesis
-		return this.logic.getPosts(postQuery);
-	}
-
-	/**
-	 * Combined publication and author search action. This search is in particular necessary 
-	 * when someone want's to find unrelated (no role associated to authors) documents.  
-	 * @param command
-	 * @return
-	 */
-	private View searchPubAuthorAction(final PersonPageCommand command) {
-		final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getFormSelectedName());
-		
-		final JSONArray array = new JSONArray();
-
-		array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications (not associated to Persons) oriented search return
-		command.setResponseString(array.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * @param command
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private View searchAction(PersonPageCommand command) {
-		final PersonQuery query = new PersonQuery(command.getFormSelectedName());
-		query.setUsePrefixMatch(true);
-		if (command.isLimitResultsToCRISCollege() && present(this.crisCollege)) {
-			query.setCollege(this.crisCollege);
-		}
-
-		/*
-		 * query the persons and get the publication that should be displayed alongside the person
-		 */
-		final List<Person> persons = this.logic.getPersons(query);
-		final JSONArray array = new JSONArray();
-		for (final Person person : persons) {
-			final JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", person.getPersonId());
-			final String personName = BibTexUtils.cleanBibTex(person.getMainName().toString());
-			jsonPersonName.put("personName", personName);
-			jsonPersonName.put("extendedPersonName", personName); // FIXME: this.personRoleRenderer.getExtendedPersonName(rel, this.requestLogic.getLocale(), false));
-
-			array.add(jsonPersonName);
-		}
-
-		command.setResponseString(array.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-	private static View indexAction() {
-		return Views.PERSON_SHOW;
-	}
-
-	/**
-	 * action called when a user want to unlink an author from a publication
-	 * @param command
-	 * @return the ajax text view
-	 */
-	private View unlinkAction(PersonPageCommand command) {
-		this.logic.unlinkUser(this.logic.getAuthenticatedUser().getName());
-		return Views.AJAX_TEXT;
-	}
-	
-	private View linkAction(final PersonPageCommand command) {
-		final Person person = new Person();
-		person.setPersonId(command.getFormPersonId());
-		person.setUser(command.getContext().getLoginUser().getName());
-		this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
-		return Views.AJAX_TEXT;
-	}
-
-	/**
-	 * Action called when a user wants to add a person role to a thesis
-	 * @param command
-	 * @return
-	 */
-	private View addRoleAction(PersonPageCommand command) {
-		final JSONObject jsonResponse = new JSONObject();
-		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		final Post<BibTex> post = new Post<>();
-		post.setResource(new BibTex());
-		post.getResource().setInterHash(command.getFormInterHash());
-		resourcePersonRelation.setPost(post);
-		
-		try {
-			final Person person = new Person();
-			if (present(command.getFormPersonId())) {
-				person.setPersonId(command.getFormPersonId());
-			} else {
-				final PersonName mainName = command.getNewName();
-				mainName.setMain(true);
-				person.setMainName(mainName);
-				this.logic.createPerson(person);
-			}
-			resourcePersonRelation.setPerson(person);
-			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
-			resourcePersonRelation.setRelationType(command.getFormPersonRole());
-
-			this.logic.createResourceRelation(resourcePersonRelation);
-		} catch (LogicException e) {
-			command.getLogicExceptions().add(e);
-			jsonResponse.put("exception", e.getClass().getSimpleName());
-		}
-
-		jsonResponse.put("personId", resourcePersonRelation.getPerson().getPersonId());
-		jsonResponse.put("resourcePersonRelationid", resourcePersonRelation.getPersonRelChangeId() + "");
-		jsonResponse.put("personUrl", this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
-		command.setResponseString(jsonResponse.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * Action called when a user wants to edit the role of a person in a thesis
-	 * @param command
-	 * @return
-	 */
-	private View editRoleAction(PersonPageCommand command) {
-		// TODO not used? remove?
-		for (String role : command.getFormPersonRoles()) {
-			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-			Post<BibTex> post = new Post<>();
-			post.setResource(new BibTex());
-			post.getResource().setInterHash(command.getFormInterHash());
-			resourcePersonRelation.setPost(post);
-			resourcePersonRelation.setPerson(new Person());
-			resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
-			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
-			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
-			resourcePersonRelation.setRelationType(relationType);
-			try {
-				this.logic.createResourceRelation(resourcePersonRelation);
-			} catch (LogicException e) {
-				command.getLogicExceptions().add(e);
-			}
-		}
-		
-		return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(command.getPerson().getPersonId()));
-	}
-	
-	private View deleteRoleAction(PersonPageCommand command) {
-		this.logic.removeResourceRelation(null, null, -1, null); // FIXME: change
-		
-		return Views.AJAX_TEXT;
-	}
-
-	/*
-	 * performs the merge action for the selected match
-	 */
-	private View mergeAction(PersonPageCommand command) {
-		int id = command.getFormMatchId();
-		JSONObject jsonResponse = new JSONObject();
-
-		PersonMatch match = this.logic.getPersonMergeRequest(id);
-		boolean result = true;
-		if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
-			result = this.logic.acceptMerge(match);
-		} else if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
-			this.logic.denyPersonMerge(match);
-		}
-		jsonResponse.put("status", result);
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;
-	}
-	
-	/**
-	 * action called when a user updates preferences of a person
-	 * @param command
-	 */
-	private View updateAction(PersonPageCommand command) {
-		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
-
-		// TODO: check if person present!
-
-		final Person commandPerson = command.getPerson();
-		if (!present(commandPerson)) {
-			// FIXME: proper frontend responses in cases like this
-			throw new NoSuchElementException();
-		}
-		
-		final PersonUpdateOperation operation = command.getUpdateOperation();
-		final JSONObject jsonResponse = new JSONObject();
-
-		// FIXME: why do we have to copy all values from the command person to the person found in the logic?
-		// set all attributes that might be updated
-		person.setAcademicDegree(commandPerson.getAcademicDegree());
-		person.setOrcid(commandPerson.getOrcid().replaceAll("-", ""));
-		person.setResearcherid(commandPerson.getResearcherid().replaceAll("-", ""));
-		person.setCollege(commandPerson.getCollege());
-		
-		// TODO only allow updates if the editor "is" this person
-		person.setEmail(commandPerson.getEmail());
-		person.setHomepage(commandPerson.getHomepage());
-		
-		// FIXME: write independent update method
-		// FIXME: add its me action
-		
-		//command.getPerson().getMainName().setMain(false);
-		//command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
-
-		try {
-			this.logic.updatePerson(person, operation);
-			jsonResponse.put("status", true);
-
-		} catch (final Exception e) {
-			log.error("error while updating person " + commandPerson.getPersonId(), e);
-			jsonResponse.put("status", false);
-			// TODO: set proper error message
-			//jsonResponse.put("message", "Some error occured");
-		}
-
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * Action called when a user adds an alternative name to a person
-	 * @param command
-	 */
-	private View addNameAction(PersonPageCommand command) {
-		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
-
-		final JSONObject jsonResponse = new JSONObject();
-
-		if (!present(person) || !present(command.getNewName())) {
-			jsonResponse.put("status", false);
-			// TODO: set proper error message
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
-		}
-
-		final PersonName personName = command.getNewName();
-		personName.setPersonId(command.getPerson().getPersonId());
-		for (PersonName otherName : person.getNames()) {
-			if (personName.equals(otherName)) {
-				jsonResponse.put("status", true);
-				jsonResponse.put("personNameChangeId", otherName.getPersonNameChangeId());
-				command.setResponseString(jsonResponse.toString());
-				return Views.AJAX_JSON;
-			}
-		}
-		
-		try {
-			this.logic.createPersonName(personName);
-		} catch (Exception e) {
-			jsonResponse.put("status", false);
-			// TODO: set proper error message
-			//jsonResponse.put("message", "Some error occured");
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
-		}
-		
-		jsonResponse.put("status", true);
-		jsonResponse.put("personNameChangeId", personName.getPersonNameChangeId());
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;		
-	}
-
-	/**
-	 * Action called when a user removes an alternative name from a person
-	 * @param command
-	 * @return
-	 */
-	private View deleteNameAction(PersonPageCommand command) {
-		final JSONObject jsonResponse = new JSONObject();
-		try {			
-			this.logic.removePersonName(new Integer(command.getFormPersonNameId()));
-		} catch (Exception e) {
-			jsonResponse.put("status", false);
-			// TODO: set proper error message
-			//jsonResponse.put("message", "Some error occured");
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
-		}
-		
-		jsonResponse.put("status", true);
-		command.setResponseString(jsonResponse.toString());
-		return Views.AJAX_JSON;	
-	}
-
-	private View setMainNameAction(PersonPageCommand command) {
-		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
-		
-		final JSONObject jsonResponse = new JSONObject();
-		
-		
-		person.getMainName().setMain(false);
-		person.setMainName(Integer.parseInt(command.getFormSelectedName()));
-		
-		// bind the new person
-		command.setPerson(person);
-		
-		try {
-			this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
-		} catch (final Exception e) {
-			jsonResponse.put("status", false);
-			// TODO: set proper error message
-			//jsonResponse.put("message", "Some error occured");
-			command.setResponseString(jsonResponse.toString());
-			return Views.AJAX_JSON;
-		}
-		
-		jsonResponse.put("status", true);
-		command.setResponseString(jsonResponse.toString());
-		
-		return Views.AJAX_JSON;	
-	}
-
-	/**
-	 * handles the person page
-	 * @param command
-	 * @return
-	 */
-	private View showAction(final PersonPageCommand command) {
-		// TODO: remove initialization
-		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
-			command.getAvailableRoles().add(prr);
-		}
-		// FIXME: remove? TODO_CRIS
-		command.setShowProjects(true);
-
-		final String personId = command.getRequestedPersonId();
 		/*
 		 * get the person; if person with the requested id was merged with another person, this method
 		 * throws a ObjectMovedException and the wrapper will render the redirect
@@ -645,133 +132,39 @@ public class PersonPageController extends SingleResourceListController implement
 		if (!present(person)) {
 			return Views.ERROR404;
 		}
-		command.setPerson(person);
-		command.setPhdAdvisorRecForPerson(this.logic.getPhdAdvisorRecForPerson(personId));
 
-		command.setHasPicture(this.pictureHandlerFactory.hasVisibleProfilePicture(person.getUser(), command.getContext().getLoginUser()));
+		command.setPerson(person);
+
+		fillCommandWithPersonResourceRelations(this.logic, command, person, 0, command.getPersonPostsPerPage());
+		fillCommandWithSimiliarAuthorPubs(command, person);
 
 		// extract user settings
 		// Get the linked user's person posts style settings
 		final User user = adminLogic.getUserDetails(person.getUser());
-		final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
-		final String personPostsLayout = user.getSettings().getPersonPostsLayout();
-		command.setPersonPostsLayout(personPostsLayout);
-		command.setPersonPostsStyle(personPostsStyle);
-
-
-		fillCommandWithPersonResourceRelations(this.logic, command, person, 0, command.getPersonPostsPerPage());
-
-		final List<PersonMatch> personMatches = this.logic.getPersonMatches(personId);
-		command.setPersonMatchList(personMatches);
-		command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(personMatches));
-
-		/*
-		 * get a list of post that could be also be written by the requested person
-		 */
-		final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
-		final List<Post<GoldStandardPublication>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
-		for (final Post<GoldStandardPublication> post : similarAuthorPubs) {
-			final ResourcePersonRelation relation = new ResourcePersonRelation();
-			relation.setPost(post);
-			relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
-			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
-			similarAuthorRelations.add(relation);
+		if (present(user)) {
+			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+			final String personPostsLayout = user.getSettings().getPersonPostsLayout();
+			command.setPersonPostsStyle(personPostsStyle);
+			command.setPersonPostsLayout(personPostsLayout);
 		}
 
-		command.setSimilarAuthorPubs(similarAuthorRelations);
-
-
-		/////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////
-		/// TODO: rework this whole block
-		// TMP TEST
-
-		if (!present(personPostsLayout) || personPostsLayout.startsWith("DEFAULT")) {
-			return Views.PERSON_SHOW;
-		}
-
-		Map<String, String> renderedPosts;
-
-		// convert posts
-		List<Post<? extends BibTex>> postsToConvert = new ArrayList<>();
-		if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
-			postsToConvert.addAll(command.getMyownPosts());
-		} else {
-			postsToConvert.addAll(command.getOtherPubs().stream()
-					.map(ResourcePersonRelation::getPost)
-					.collect(Collectors.toList()));
-		}
-
-		// the prefix is set in settings->person
-		String prefix = "CUSTOM/";
-		CSLStyle cslStyle;
-
-		if (personPostsLayout.startsWith("CUSTOM/")) {
-			cslStyle = cslFilesManager.getStyleByName(personPostsLayout.substring(prefix.length()));
-		} else {
-			cslStyle = cslFilesManager.getStyleByName(personPostsLayout);
-		}
-
-		if (!present(cslStyle)) {
-			// style not found? reset to default rendering
-			command.setPersonPostsLayout("DEFAULT");
-			return Views.PERSON_SHOW;
-		}
-
-		final String userDefaultLanguage = user.getSettings().getDefaultLanguage();
-		LanguageFile localeProvider = new LanguageFile();
-		switch (userDefaultLanguage) {
-			case "de":
-				localeProvider.setLocale(cslFilesManager.getLocaleFile("de-DE"));
+		switch(command.getPersonPostsStyle()) {
+			case MYOWN:
+				this.setMyOwnPosts(command);
 				break;
-			case "en":
+			case GOLDSTANDARD:
 			default:
-				localeProvider.setLocale(cslFilesManager.getLocaleFile("en-US"));
+				this.setGoldStandards(command);
 				break;
 		}
-
-		try {
-			renderedPosts = renderer.renderPosts(postsToConvert , cslStyle.getContent(), localeProvider, true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			renderedPosts = new HashMap<>();
-		}
-
-		command.setRenderedPosts(renderedPosts);
-
-		if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
-			Map<String, String> myOwnPostsRendered = new HashMap<>();
-			for (Post<BibTex> post: command.getMyownPosts()) {
-				String renderedPost = renderedPosts.get(post.getResource().getIntraHash());
-
-				// CSL replacements
-				renderedPost = CSLUtils.replacePlaceholdersFromCSLRendering(renderedPost, post, urlGenerator);
-
-				myOwnPostsRendered.put(post.getResource().getIntraHash(), renderedPost);
-			}
-			command.setMyownPostsRendered(myOwnPostsRendered);
-		} else {
-			for (ResourcePersonRelation resourcePersonRelation: command.getOtherPubs()) {
-				String renderedPost = renderedPosts.get(resourcePersonRelation.getPost().getResource().getIntraHash());
-
-				// CSL replacements
-				renderedPost = CSLUtils.replacePlaceholdersFromCSLRendering(renderedPost, resourcePersonRelation.getPost(), urlGenerator);
-
-				resourcePersonRelation.setRenderedPost(renderedPost);
-			}
-		}
-		/////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////
 
 		return Views.PERSON_SHOW;
+
 	}
 
 	public static void fillCommandWithPersonResourceRelations(final LogicInterface logic, final PersonPageCommand command, Person person, final int defaultStart, final int defaultPostsPerPage) {
-		final User authenticatedUser = logic.getAuthenticatedUser();
-		final int listItemcount = authenticatedUser.getSettings().getListItemcount();
-		command.setPersonPostsPerPage(listItemcount);
 
-		final int postsPerPage = defaultPostsPerPage == 0 ? listItemcount : defaultPostsPerPage;
+		final int postsPerPage = defaultPostsPerPage;
 
 		// default start/end for post query
 		// FIXME: use ListPageCommand!!!
@@ -781,7 +174,7 @@ public class PersonPageController extends SingleResourceListController implement
 		// override when given via GET param
 		final Integer commandStart = command.getStart();
 		if (present(commandStart)) {
-			start = Integer.valueOf(commandStart);
+			start = commandStart;
 			end = start + postsPerPage;
 		}
 
@@ -797,24 +190,6 @@ public class PersonPageController extends SingleResourceListController implement
 			command.setPrevStart(0);
 		} else {
 			command.setPrevStart(start - postsPerPage);
-		}
-
-		final String linkedUser = person.getUser();
-		if (present(linkedUser)) {
-
-			// Get 'myown' posts of the linked user
-			final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-					.start(start)
-					.end(end)
-					.setTags(new ArrayList<>(Collections.singletonList("myown")))
-					.setGrouping(GroupingEntity.USER)
-					.setGroupingName(person.getUser());
-			final List<Post<BibTex>> myownPosts = logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
-			command.setMyownPosts(myownPosts);
-
-		} else {
-			// default to gold standard publications, if no linked user found
-			command.setPersonPostsStyle(PersonPostsStyle.GOLDSTANDARD);
 		}
 
 		/*
@@ -872,15 +247,34 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setOtherAdvisedPubs(otherAdvisorRelations);
 	}
 
-	/**
-	 * @param otherAuthorRelations
-	 * @param requestedStart
-	 * @param requestedEnd
-	 * @return the paginated list
-	 */
-	@Deprecated
+	private void fillCommandWithSimiliarAuthorPubs(PersonPageCommand command, Person person) {
+		/*
+		 * get a list of post that could be also be written by the requested person
+		 */
+		final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
+		final List<Post<GoldStandardPublication>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
+		for (final Post<GoldStandardPublication> post : similarAuthorPubs) {
+			final ResourcePersonRelation relation = new ResourcePersonRelation();
+			relation.setPost(post);
+			relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
+			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
+			similarAuthorRelations.add(relation);
+		}
+
+		command.setSimilarAuthorPubs(similarAuthorRelations);
+	}
+
+	private List<Post<GoldStandardPublication>> getPublicationsOfSimilarAuthor(Person person) {
+		final PostQuery<GoldStandardPublication> personNameQuery = new PostQueryBuilder()
+				.setPersonNames(person.getNames())
+				.setOnlyIncludeAuthorsWithoutPersonId(true)
+				.end(20) // get 20 "recommendations"
+				.createPostQuery(GoldStandardPublication.class);
+		return this.logic.getPosts(personNameQuery);
+	}
+
 	private static List<ResourcePersonRelation> applyStartEnd(final List<ResourcePersonRelation> otherAuthorRelations,
-													   final int requestedStart, final int requestedEnd) {
+															  final int requestedStart, final int requestedEnd) {
 		final int size = otherAuthorRelations.size();
 		if (requestedStart > size) {
 			return Collections.emptyList();
@@ -890,13 +284,56 @@ public class PersonPageController extends SingleResourceListController implement
 		return otherAuthorRelations.subList(requestedStart, end);
 	}
 
-	private List<Post<GoldStandardPublication>> getPublicationsOfSimilarAuthor(Person person) {
-		final PostQuery<GoldStandardPublication> personNameQuery = new PostQueryBuilder().
-						setPersonNames(person.getNames()).
-						setOnlyIncludeAuthorsWithoutPersonId(true).
-				end(20) // get 20 "recommendations"
-						.createPostQuery(GoldStandardPublication.class);
-		return this.logic.getPosts(personNameQuery);
+	private void setGoldStandards(PersonPageCommand command) {
+		// build query for person ID to aggregate for counts
+		PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(GoldStandardPublication.class);
+		postsQuery.setGrouping(GroupingEntity.PERSON);
+		postsQuery.setGroupingName(command.getPerson().getPersonId());
+		// TODO fix going to bibtex index rn
+		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));
+	}
+
+	private void setMyOwnPosts(PersonPageCommand command) {
+		// build query for 'myown' posts to aggregate for counts
+		PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>();
+		postsQuery.setGrouping(GroupingEntity.USER);
+		postsQuery.setGroupingName(command.getPerson().getUser());
+		// TODO use system tag
+		// postsQuery.setSystemTags(Collections.singletonList(new MyOwnSystemTag()));
+		postsQuery.setTags(Collections.singletonList("myown"));
+
+		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));
+	}
+
+	/**
+	 * Generate a list of entrytype filter elements of the 'myown' posts.
+	 *
+	 * @param command the person page command
+	 * @return
+	 */
+	private List<SearchFilterElement> generateEntrytypeFilters(PersonPageCommand command, PostSearchQuery<? extends BibTex> postsQuery) {
+		// get aggregated count by given field
+		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class, (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply("entrytype"));
+		distinctFieldQuery.setPostQuery(postsQuery);
+		distinctFieldQuery.setSize(20);
+
+		final Set<?> distinctFieldCounts = this.logic.getMetaData(command.getContext().getLoginUser(), distinctFieldQuery);
+
+		List<SearchFilterElement> filters = new ArrayList<>();
+		for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {
+			SearchFilterElement filterElement = new SearchFilterElement(filter.getFirst(), filter.getSecond());
+			filterElement.setField("entrytype");
+			filterElement.setMessageKey(String.format("post.resource.entrytype.%s.title", filterElement.getName()));
+			filters.add(filterElement);
+		}
+		Collections.sort(filters);
+
+		return filters;
+	}
+
+	@Override
+	public PersonPageCommand instantiateCommand() {
+		return new PersonPageCommand();
 	}
 
 	@Override
@@ -909,43 +346,30 @@ public class PersonPageController extends SingleResourceListController implement
 		this.errors = errors;
 	}
 
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
-	 * @param adminLogic the adminLogic to set
-	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 
-	/**
-	 * @param personRoleRenderer the personRoleRenderer to set
-	 */
-	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
-		this.personRoleRenderer = personRoleRenderer;
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 
-	/**
-	 * @param urlGenerator the urlGenerator to set
-	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 
-	/**
-	 * Sets this controller's {@link PictureHandlerFactory} instance.
-	 *
-	 * @param factory
-	 */
-	public void setPictureHandlerFactory(final PictureHandlerFactory factory) {
-		this.pictureHandlerFactory = factory;
+	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+		this.personRoleRenderer = personRoleRenderer;
 	}
 
-	/**
-	 * @param crisCollege the crisCollege to set
-	 */
+	public void setPictureHandlerFactory(PictureHandlerFactory pictureHandlerFactory) {
+		this.pictureHandlerFactory = pictureHandlerFactory;
+	}
+
+	public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
+		this.mappers = mappers;
+	}
+
 	public void setCrisCollege(String crisCollege) {
 		this.crisCollege = crisCollege;
 	}

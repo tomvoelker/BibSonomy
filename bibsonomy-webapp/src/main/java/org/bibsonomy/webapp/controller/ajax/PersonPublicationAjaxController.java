@@ -51,7 +51,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.webapp.command.ajax.AjaxPersonPublicationCommand;
+import org.bibsonomy.webapp.command.ajax.AjaxPersonPageCommand;
 import org.bibsonomy.webapp.controller.PersonPageController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -61,7 +61,7 @@ import org.bibsonomy.webapp.view.Views;
  * Simple AJAX controller that is used to request publications (for auto-loading) for person pages.
  * @author mho
  */
-public class PersonPublicationAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPublicationCommand> {
+public class PersonPublicationAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPageCommand> {
 
 	private static final Log LOG = LogFactory.getLog(PersonPublicationAjaxController.class);
 
@@ -72,12 +72,12 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 	private URLGenerator urlGenerator;
 
 	@Override
-	public AjaxPersonPublicationCommand instantiateCommand() {
-		return new AjaxPersonPublicationCommand();
+	public AjaxPersonPageCommand instantiateCommand() {
+		return new AjaxPersonPageCommand();
 	}
 
 	@Override
-	public View workOn(final AjaxPersonPublicationCommand command) {
+	public View workOn(final AjaxPersonPageCommand command) {
 		final String requestedPersonId = command.getRequestedPersonId();
 
 		final Person person = this.getPersonById(requestedPersonId);

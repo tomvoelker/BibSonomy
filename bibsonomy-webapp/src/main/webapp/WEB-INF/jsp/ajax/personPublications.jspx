@@ -23,7 +23,7 @@
 		<c:otherwise>
 			<c:choose>
 				<c:when test="${empty command.personPostsLayout or command.personPostsLayout == 'DEFAULT'}">
-					<per:otherPubList command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
+					<per:personPublications command="${command}" publications="${command.otherPubs}" useOtherPubs="${true}" onlyLinkAuthorsWithPersons="${not isLoggedIn}" hideHeadline="${true}"/>
 				</c:when>
 				<c:otherwise>
 					<per:renderedPubList command="${command}" publications="${command.otherPubs}" hideHeadline="${true}" buttons="${true}" />
