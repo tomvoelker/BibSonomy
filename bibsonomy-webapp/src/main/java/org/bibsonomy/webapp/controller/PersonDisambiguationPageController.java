@@ -159,7 +159,11 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final int requestedIndex = command.getRequestedIndex().intValue();
 
 		final BibTex publication = post.getResource();
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(publication.getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).build());
+		final ResourcePersonRelationQueryBuilder relationsQuery = new ResourcePersonRelationQueryBuilder()
+				.byInterhash(publication.getInterHash())
+				.byRelationType(requestedRole)
+				.byAuthorIndex(requestedIndex);
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(relationsQuery.build());
 
 		/*
 		 * redirect to the person page of the author/editor

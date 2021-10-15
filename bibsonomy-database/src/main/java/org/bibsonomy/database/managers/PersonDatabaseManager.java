@@ -638,7 +638,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 *
 	 * @param interhash a resource interhash.
 	 * @param authorIndex an author index.
-	 * @param role a relation type.
+	 * @param role a list of relation types.
 	 * @param session a database session.
 	 *
 	 * @return a list of relations.
@@ -685,8 +685,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 *
 	 * @return a list of all resources.
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, Integer limit,
-																																					Integer offset, final DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, Integer limit, Integer offset, final DBSession session) {
 		return this.queryForList("getComunityBibTexRelationsForPerson",
 						new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
@@ -703,6 +702,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	public int countResourcePersonRelationsWithPosts(String personId, DBSession session) {
 		return this.queryForObject("countComunityBibTexRelationsForPerson",
 						buildBibTexParam(personId), Integer.class, session);
+	}
+
+	public List<ResourcePersonRelation> getResourcePersonRelationsOnlyTheses(final String personId, final DBSession session) {
+		return this.queryForList("getThesisRelationsForPerson",
+				new GetPersonRelations(personId, null, null), ResourcePersonRelation.class, session);
 	}
 
 

@@ -37,8 +37,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
     private static final String ENTRYTYPE_FILTER = "entrytype";
     private static final String YEAR_FILTER = "year";
     private static final String AUTHOR_FILTER = "author";
-    
-    private LogicInterface logic;
+
     private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
     private User loggedInUser;
@@ -137,13 +136,6 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
     @Override
     public AjaxGroupExploreCommand instantiateCommand() {
         return new AjaxGroupExploreCommand();
-    }
-
-    /**
-     * @param logic the logic to set
-     */
-    public void setLogic(LogicInterface logic) {
-        this.logic = logic;
     }
 
     public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {

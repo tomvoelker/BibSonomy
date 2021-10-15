@@ -257,13 +257,46 @@
 				
 				<entry key="/ajax/person/publications">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="personPublicationAjaxController" />
+						<property name="controllerBeanName" value="personPublicationsAjaxController" />
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
 								<value>pageSize</value>
 								<value>page</value>
 								<value>size</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/person/theses">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personThesesAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/person/similar">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personSimilarAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/person/projects">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personPublicationAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
 							</list>
 						</property>
 					</bean>
@@ -365,11 +398,23 @@
 
 	<bean id="projectPersonLinkController" class="org.bibsonomy.webapp.controller.cris.ajax.ProjectPersonLinkAjaxController" scope="request" parent="ajaxController" />
 
-	<bean id="personPublicationAjaxController" class="org.bibsonomy.webapp.controller.ajax.PersonPublicationAjaxController" scope="request" parent="ajaxController">
-		<property name="adminLogic" ref="adminLogic" />
+	<bean id="personPublicationsAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonPublicationsAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
+	</bean>
+
+	<bean id="personThesesAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonThesesAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
+	</bean>
+
+	<bean id="personSimilarAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonSimilarAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
+	</bean>
+
+	<bean id="personProjectsAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonProjectsAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
 	</bean>
 
 	<bean id="groupExploreAjaxController" class="org.bibsonomy.webapp.controller.ajax.GroupExploreAjaxController" scope="request" parent="ajaxController">
