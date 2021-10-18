@@ -5,6 +5,7 @@
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>

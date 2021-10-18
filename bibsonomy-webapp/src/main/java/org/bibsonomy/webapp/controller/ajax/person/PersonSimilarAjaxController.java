@@ -1,13 +1,16 @@
 package org.bibsonomy.webapp.controller.ajax.person;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.webapp.command.ajax.AjaxPersonPageCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -26,9 +29,18 @@ public class PersonSimilarAjaxController extends AjaxController implements Minim
                 .createPostQuery(GoldStandardPublication.class);
         final List<Post<GoldStandardPublication>> similarPosts = this.logic.getPosts(personNameQuery);
 
-        command.setResponseString("{}");
-        // returns a JSON response
-        return Views.AJAX_JSON;
+        final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
+        for (final Post<GoldStandardPublication> post : similarPosts) {
+            final ResourcePersonRelation relation = new ResourcePersonRelation();
+            relation.setPost(post);
+            relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
+            relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
+            similarAuthorRelations.add(relation);
+        }
+
+        command.setSimilarAuthorPubs(similarAuthorRelations);
+
+        return Views.AJAX_PERSON_PUBLICATIONS;
     }
 
     @Override

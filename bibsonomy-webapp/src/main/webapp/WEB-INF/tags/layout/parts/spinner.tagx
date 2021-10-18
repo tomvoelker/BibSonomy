@@ -4,19 +4,19 @@
 
 
 	<jsp:directive.attribute name="show" type="java.lang.Boolean" required="false"/>
-
-	<c:choose>
-		<c:when test="${show}">
-			<c:set var="loaderHidden" value=""/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loaderHidden" value="hidden"/>
-		</c:otherwise>
-	</c:choose>
+	<jsp:directive.attribute name="id" type="java.lang.String" required="false"/>
 
 
-	<div class="custom-loader ${loaderHidden}">
-		<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+	<c:if test="${not show}">
+		<c:set var="loaderHidden" value="hidden"/>
+	</c:if>
+
+	<c:if test="${not empty id}">
+		<c:set var="loaderId" value="loader-${id}"/>
+	</c:if>
+
+	<div id="${loaderId}" class="custom-loader ${loaderHidden}">
+		<svg class="spinner" width="45px" height="45px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
 			<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
 		</svg>
 	</div>

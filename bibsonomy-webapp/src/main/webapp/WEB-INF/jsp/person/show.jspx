@@ -55,7 +55,7 @@
 			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
 
-			<script type='text/javascript' src='/resources/javascript/person/newPersonPage.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 		</jsp:attribute>
 
 		<jsp:attribute name="heading">
@@ -77,7 +77,7 @@
 
 		<jsp:attribute name="content">
 			<errors:global/>
-			<div id="personInfo" class="row">
+			<div id="personInfo" class="row" data-person="${command.person.personId}">
 				<div class="col-md-9">
 					<perdetails:profile command="${command}" hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}"
 										title="${personNameWithDegree}" personName="${personName}"/>
@@ -128,7 +128,8 @@
 
 				<div class="person-content row" data-content="publications">
 					<div class="col-md-9">
-						<parts:spinner/>
+						<div id="personPublications"><!-- keep me --></div>
+						<parts:spinner id="publications"/>
 					</div>
 					<div class="col-md-3 sidebar">
 						<c:if test="${not empty command.entrytypeFilters}">

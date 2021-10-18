@@ -3,6 +3,7 @@
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
@@ -10,7 +11,9 @@
 	<!-- Show theses and related ones -->
 	<div class="row">
 		<div class="col-md-12">
-			<perdetails:theses command="${command}"/>
+			<div id="personTheses">
+				<parts:spinner id="theses" show="${true}"/>
+			</div>
 		</div>
 	</div>
 
@@ -35,10 +38,9 @@
 	<!-- Other publications of similar authors -->
 	<div class="person-content row hidden" data-content="similar">
 		<div class="col-md-12">
-			<c:if test="${fn:length(command.similarAuthorPubs) gt 0}">
-				<perdetails:publications command="${command}" publications="${command.similarAuthorPubs}"
-										 isSimilarAuthors="${true}" hideHeadline="${true}"/>
-			</c:if>
+			<div id="personSimilarAuthors">
+				<parts:spinner id="similiar-authors" show="${true}"/>
+			</div>
 		</div>
 	</div>
 

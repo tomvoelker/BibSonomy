@@ -709,6 +709,10 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 				new GetPersonRelations(personId, null, null), ResourcePersonRelation.class, session);
 	}
 
+	public List<ResourcePersonRelation> getResourcePersonRelationsExcludeTheses(final String personId, final DBSession session) {
+		return this.queryForList("getExcludeThesisRelationsForPerson",
+				new GetPersonRelations(personId, null, null), ResourcePersonRelation.class, session);
+	}
 
 	private BibTexParam buildBibTexParam(String personId) {
 		final BibTexParam param = new BibTexParam();

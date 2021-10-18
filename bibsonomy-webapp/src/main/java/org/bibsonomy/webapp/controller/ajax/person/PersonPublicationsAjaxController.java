@@ -1,12 +1,28 @@
 package org.bibsonomy.webapp.controller.ajax.person;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
 import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonPostsStyle;
+import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ajax.AjaxPersonPageCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
 
 public class PersonPublicationsAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPageCommand> {
 
@@ -16,7 +32,44 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
 
     @Override
     public View workOn(AjaxPersonPageCommand command) {
-        return null;
+        final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
+        final User user = this.logic.getUserDetails(person.getUser());
+
+        if (ValidationUtils.present(user) && user.getSettings().getPersonPostsStyle() == PersonPostsStyle.MYOWN) {
+            return workOnMyOwnPosts(command, user);
+        } else {
+            return workOnPublications(command, person);
+        }
+    }
+
+    public View workOnPublications(AjaxPersonPageCommand command, Person person) {
+        final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+                .byPersonId(command.getRequestedPersonId())
+                .withPosts(true)
+                .withPersonsOfPosts(true)
+                .excludeTheses(true)
+                .groupByInterhash(true)
+                .orderBy(PersonResourceRelationOrder.PublicationYear)
+                .fromTo(0, Integer.MAX_VALUE);
+
+        final List<ResourcePersonRelation> publications = logic.getResourceRelations(queryBuilder.build());
+
+        command.setOtherPubs(publications);
+
+        return Views.AJAX_PERSON_PUBLICATIONS;
+    }
+
+    public View workOnMyOwnPosts(AjaxPersonPageCommand command, User user) {
+        // Get 'myown' posts of the user
+        final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+                .setTags(Collections.singletonList("myown"))
+                .setGrouping(GroupingEntity.USER)
+                .setGroupingName(user.getName());
+
+        final List<Post<BibTex>> posts = logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+        command.setMyownPosts(posts);
+
+        return Views.AJAX_PERSON_POSTS;
     }
 
     @Override

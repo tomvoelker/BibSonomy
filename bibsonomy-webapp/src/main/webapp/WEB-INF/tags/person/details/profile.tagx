@@ -43,8 +43,8 @@
 						<perdetails:property command="${command}" type="college" value="${command.person.college}"/>
 					</c:when>
 					<c:otherwise>
-						<!-- Organisations -->
-						<perdetails:organisations organizations="${organizations}"/>
+						<!-- Organizations -->
+						<perdetails:organizations organizations="${organizations}"/>
 					</c:otherwise>
 				</c:choose>
 

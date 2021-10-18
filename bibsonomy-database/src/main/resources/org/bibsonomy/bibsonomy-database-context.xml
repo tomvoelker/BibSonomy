@@ -298,6 +298,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsOnlyTheses">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsExcludeTheses">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>

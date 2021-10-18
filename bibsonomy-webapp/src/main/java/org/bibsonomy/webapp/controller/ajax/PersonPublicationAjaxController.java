@@ -87,7 +87,7 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 
 		final int postsPerPage = command.getPageSize();
 		final int start = postsPerPage * command.getPage();
-		PersonPageController.fillCommandWithPersonResourceRelations(this.logic, command, person, start, postsPerPage);
+		// PersonPageController.fillCommandWithPersonResourceRelations(this.logic, command, person, start, postsPerPage);
 
 
 		/////////////////////////////////////////////////////////////////
@@ -156,7 +156,7 @@ public class PersonPublicationAjaxController extends AjaxController implements M
 
 		if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
 			Map<String, String> myOwnPostsRendered = new HashMap<>();
-			for (Post<BibTex> post: command.getMyownPosts()) {
+			for (Post<BibTex> post : command.getMyownPosts()) {
 				String renderedPost = renderedPosts.get(post.getResource().getIntraHash());
 
 				// CSL replacements

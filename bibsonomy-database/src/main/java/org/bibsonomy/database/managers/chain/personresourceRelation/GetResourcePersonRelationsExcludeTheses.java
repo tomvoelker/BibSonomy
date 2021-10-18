@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers.chain.personresourceRelation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
@@ -27,11 +29,17 @@ public class GetResourcePersonRelationsExcludeTheses extends ResourcePersonRelat
 
     @Override
     protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> param, DBSession session) {
-        return null;
+        return this.getPersonDatabaseManager().getResourcePersonRelationsExcludeTheses(param.getQuery().getPersonId(), session);
     }
 
     @Override
     protected boolean canHandle(QueryAdapter<ResourcePersonRelationQuery> param) {
-        return false;
+        final ResourcePersonRelationQuery query = param.getQuery();
+        return present(query.getPersonId()) &&
+                query.isExcludeTheses() &&
+                !query.isOnlyTheses() &&
+                query.isWithPosts() &&
+                !present(query.getAuthorIndex()) &&
+                !present(query.getRelationType());
     }
 }

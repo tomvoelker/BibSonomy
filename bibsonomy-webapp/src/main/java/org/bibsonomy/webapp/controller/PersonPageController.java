@@ -135,9 +135,6 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setPerson(person);
 
-		fillCommandWithPersonResourceRelations(this.logic, command, person, 0, command.getPersonPostsPerPage());
-		fillCommandWithSimiliarAuthorPubs(command, person);
-
 		// extract user settings
 		// Get the linked user's person posts style settings
 		final User user = adminLogic.getUserDetails(person.getUser());
@@ -159,129 +156,6 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 
 		return Views.PERSON_SHOW;
-
-	}
-
-	public static void fillCommandWithPersonResourceRelations(final LogicInterface logic, final PersonPageCommand command, Person person, final int defaultStart, final int defaultPostsPerPage) {
-
-		final int postsPerPage = defaultPostsPerPage;
-
-		// default start/end for post query
-		// FIXME: use ListPageCommand!!!
-		int end = defaultStart + postsPerPage;
-		int start = defaultStart;
-
-		// override when given via GET param
-		final Integer commandStart = command.getStart();
-		if (present(commandStart)) {
-			start = commandStart;
-			end = start + postsPerPage;
-		}
-
-		final Integer commandEnd = command.getEnd();
-		if (present(commandEnd)) {
-			end = commandEnd;
-		}
-
-		command.setEnd(end);
-		command.setStart(start);
-
-		if (start < postsPerPage) {
-			command.setPrevStart(0);
-		} else {
-			command.setPrevStart(start - postsPerPage);
-		}
-
-		/*
-		 * FIXME: currently the database does not support queries like: give me all thesis related relations
-		 * so we cannot apply the pagination here, otherwise we do not get the PHD information and the other advisor
-		 * infos we need to display on top of the view
-		 * The current workaround is to get all the relations from the db and apply the pagination afterwards which is not
-		 * efficient!
-		 */
-		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(person.getPersonId())
-				.withPosts(true)
-				.withPersonsOfPosts(true)
-				.groupByInterhash(true)
-				.orderBy(PersonResourceRelationOrder.PublicationYear)
-				.fromTo(0, Integer.MAX_VALUE);
-
-		// TODO: maybe this should be done in the view?
-		final List<ResourcePersonRelation> resourceRelations = logic.getResourceRelations(queryBuilder.build());
-		final List<ResourcePersonRelation> authorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> otherAuthorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> otherAdvisorRelations = new ArrayList<>();
-
-		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
-			final BibTex publication = post.getResource();
-			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
-			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
-
-			if (isAuthorEditorRelation) {
-				if (isThesis) {
-					authorRelations.add(resourcePersonRelation);
-				} else {
-					otherAuthorRelations.add(resourcePersonRelation);
-				}
-			} else {
-				if (isThesis) {
-					advisorRelations.add(resourcePersonRelation);
-				} else {
-					otherAdvisorRelations.add(resourcePersonRelation);
-				}
-			}
-
-			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature
-			// to hesitate putting in their dissertations
-			publication.setRating(null);
-			publication.setNumberOfRatings(null);
-		}
-
-		command.setThesis(authorRelations);
-		command.setAdvisedThesis(advisorRelations);
-		command.setOtherPubs(applyStartEnd(otherAuthorRelations, start, end));
-		// FIXME: not used in the view!!
-		command.setOtherAdvisedPubs(otherAdvisorRelations);
-	}
-
-	private void fillCommandWithSimiliarAuthorPubs(PersonPageCommand command, Person person) {
-		/*
-		 * get a list of post that could be also be written by the requested person
-		 */
-		final List<ResourcePersonRelation> similarAuthorRelations = new ArrayList<>();
-		final List<Post<GoldStandardPublication>> similarAuthorPubs = this.getPublicationsOfSimilarAuthor(person);
-		for (final Post<GoldStandardPublication> post : similarAuthorPubs) {
-			final ResourcePersonRelation relation = new ResourcePersonRelation();
-			relation.setPost(post);
-			relation.setPersonIndex(PersonUtils.findIndexOfPerson(person, post.getResource()));
-			relation.setRelationType(PersonUtils.getRelationType(person, post.getResource()));
-			similarAuthorRelations.add(relation);
-		}
-
-		command.setSimilarAuthorPubs(similarAuthorRelations);
-	}
-
-	private List<Post<GoldStandardPublication>> getPublicationsOfSimilarAuthor(Person person) {
-		final PostQuery<GoldStandardPublication> personNameQuery = new PostQueryBuilder()
-				.setPersonNames(person.getNames())
-				.setOnlyIncludeAuthorsWithoutPersonId(true)
-				.end(20) // get 20 "recommendations"
-				.createPostQuery(GoldStandardPublication.class);
-		return this.logic.getPosts(personNameQuery);
-	}
-
-	private static List<ResourcePersonRelation> applyStartEnd(final List<ResourcePersonRelation> otherAuthorRelations,
-															  final int requestedStart, final int requestedEnd) {
-		final int size = otherAuthorRelations.size();
-		if (requestedStart > size) {
-			return Collections.emptyList();
-		}
-
-		final int end = Math.min(requestedEnd, size);
-		return otherAuthorRelations.subList(requestedStart, end);
 	}
 
 	private void setGoldStandards(PersonPageCommand command) {
