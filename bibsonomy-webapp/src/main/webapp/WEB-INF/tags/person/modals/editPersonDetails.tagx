@@ -1,0 +1,31 @@
+<jsp:root version="2.0"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
+	<fmt:message key="person.show.close" var="textClose"/>
+	<fmt:message key="person.show.addThesisButton" var="textAddThesisButton"/>
+	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton"/>
+
+
+	<fmt:message key="person.show.modal.editPersonDetails.header" var="modalTitle"/>
+	<bs:modal modalTitle="${modalTitle}" id="editPersonDetails">
+        <jsp:attribute name="modalBody">
+            <div id="settings-options" class="container-fluid">
+                <div class="row">
+                    <label for="editMainName" class="col-md-4 col-form-label">Main Name</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="editMainName"
+                                   placeholder="Main Name" value=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </jsp:attribute>
+		<jsp:attribute name="modalFooter">
+            <!-- keep me -->
+        </jsp:attribute>
+	</bs:modal>
+</jsp:root>

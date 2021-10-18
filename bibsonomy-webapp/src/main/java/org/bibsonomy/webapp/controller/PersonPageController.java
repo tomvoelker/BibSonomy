@@ -172,8 +172,6 @@ public class PersonPageController extends SingleResourceListController implement
 		PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>();
 		postsQuery.setGrouping(GroupingEntity.USER);
 		postsQuery.setGroupingName(command.getPerson().getUser());
-		// TODO use system tag
-		// postsQuery.setSystemTags(Collections.singletonList(new MyOwnSystemTag()));
 		postsQuery.setTags(Collections.singletonList("myown"));
 
 		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));

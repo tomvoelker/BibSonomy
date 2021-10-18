@@ -2,11 +2,15 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+          xmlns:modals="urn:jsptagdir:/WEB-INF/tags/person/modals"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+>
 
-    <jsp:directive.attribute name="hasClaimedOrIsAdmin" type="java.lang.Boolean" required="true" />
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+    <jsp:directive.attribute name="hasClaimedOrIsAdmin" type="java.lang.Boolean" required="true" />
     <jsp:directive.attribute name="title" type="java.lang.String" required="true" />
+
+    <modals:editPersonDetails command="${command}" />
 
     <div>
         <div class="form-group">
@@ -14,6 +18,9 @@
                 <c:out value="${title}"/>
                 <c:out value=" "/>
             </h1>
+            <c:if test="${hasClaimedOrIsAdmin}">
+                <a href="#" data-toggle="modal" data-target="#editPersonDetails"><fontawesome:icon icon="pencil"/></a>
+            </c:if>
         </div>
     </div>
 </jsp:root>
