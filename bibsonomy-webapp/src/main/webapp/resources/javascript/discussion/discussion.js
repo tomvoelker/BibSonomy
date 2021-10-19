@@ -157,7 +157,10 @@ function deleteDiscussionItem() {
 			}
 		}
 	});
-	
+
+	//TODO: Can be deleted as soon as no 405 Error is returned when deleting
+	window.location.reload(true);
+
 	return false;
 }
 

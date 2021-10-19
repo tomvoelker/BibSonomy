@@ -108,13 +108,6 @@ function initStars() {
 	}).on('rating.change', function(event, value, caption) {
 		var form = $('.simple-review-form.createreview');
 		form.find('textarea').focus();
-		saveReview(form, function(rating, data) {
-			var hash = data.hash;
-			var hashInput = $('<input type="hidden" name="discussionItem.hash">').val(hash);
-			var actionInput = $('<input name="_method" value="PUT" type="hidden">');
-			form.append(actionInput);
-			form.append(hashInput);
-		});
 	});
 }
 
