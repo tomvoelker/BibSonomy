@@ -44,9 +44,33 @@ public class IGIGlobalScraperTest {
 	 * starts URL test with id url_265
 	 */
 	@Test
-	public void urlTestRun() {
-		final String url = "http://www.igi-global.com/article/linked-data-story-far/37496";
-		final String resultFile = "IGIGlobalScraperUnitURLTest.bib";
+	public void url1TestRun() {
+		final String url = "https://www.igi-global.com/article/linked-data-story-far/37496";
+		final String resultFile = "IGIGlobalScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url2TestRun() {
+		final String url = "https://www.igi-global.com/chapter/exploring-the-self-efficacy-building-practice-of-teaching-real-world-entrepreneurial-leadership-skills-on-the-graduate-level/270802";
+		final String resultFile = "IGIGlobalScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url3TestRun() {
+		final String url = "https://www.igi-global.com/book/handbook-research-digital-transformation-industry/265448";
+		final String resultFile = "IGIGlobalScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url4TestRun() {
+		final String url = "https://www.igi-global.com/journal/journal-database-management/1072";
+		final String resultFile = "IGIGlobalScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url5TestRun() {
+		final String url = "https://www.igi-global.com/gateway/chapter/60047";
+		final String resultFile = "IGIGlobalScraperUnitURLTest5.bib";
 		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
 	}
 }
