@@ -75,37 +75,33 @@ public class IGIGlobalScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
-
+		String html = null;
 		try {
-			String html = WebUtils.getContentAsString(url);
-
-			final Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
-			String eventvalidation = "";
-			if(m_eventvalidation.find())  eventvalidation = m_eventvalidation.group(1);
-
-			final Matcher m_viewstate = VIEWSTATE.matcher(html);
-			String viewstate = "";
-			if(m_viewstate.find()) viewstate = m_viewstate.group(1);
-
-			final Matcher m_submitEndnote = SUBMIT_ENDNOTE.matcher(html);
-			String submitEndnote = "";
-			if(m_submitEndnote.find()) submitEndnote = m_submitEndnote.group(1);
-
-			final List<NameValuePair> postData = new ArrayList<>();
-
-			postData.add(new BasicNameValuePair("__EVENTVALIDATION", eventvalidation));
-			postData.add(new BasicNameValuePair("__VIEWSTATE", viewstate));
-			// the values can be ignored
-			postData.add(new BasicNameValuePair(submitEndnote + ".x", "42"));
-			postData.add(new BasicNameValuePair(submitEndnote + ".y", "2"));
-
-			return postData;
-
+			html = WebUtils.getContentAsString(url);
 		}catch (IOException io){
 			io.printStackTrace();
-			return null;
-
 		}
+		final Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
+		String eventvalidation = "";
+		if(m_eventvalidation.find())  eventvalidation = m_eventvalidation.group(1);
+
+		final Matcher m_viewstate = VIEWSTATE.matcher(html);
+		String viewstate = "";
+		if(m_viewstate.find()) viewstate = m_viewstate.group(1);
+
+		final Matcher m_submitEndnote = SUBMIT_ENDNOTE.matcher(html);
+		String submitEndnote = "";
+		if(m_submitEndnote.find()) submitEndnote = m_submitEndnote.group(1);
+
+		final List<NameValuePair> postData = new ArrayList<>();
+
+		postData.add(new BasicNameValuePair("__EVENTVALIDATION", eventvalidation));
+		postData.add(new BasicNameValuePair("__VIEWSTATE", viewstate));
+		// the values can be ignored
+		postData.add(new BasicNameValuePair(submitEndnote + ".x", "42"));
+		postData.add(new BasicNameValuePair(submitEndnote + ".y", "2"));
+
+		return postData;
 
 	}
 
