@@ -51,7 +51,7 @@ public class IGIGlobalScraperTest {
 	}
 	@Test
 	public void url2TestRun() {
-		final String url = "https://www.igi-global.com/chapter/exploring-the-self-efficacy-building-practice-of-teaching-real-world-entrepreneurial-leadership-skills-on-the-graduate-level/270802";
+		final String url = "http://www.igi-global.com/chapter/exploring-the-self-efficacy-building-practice-of-teaching-real-world-entrepreneurial-leadership-skills-on-the-graduate-level/270802";
 		final String resultFile = "IGIGlobalScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
 	}

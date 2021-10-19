@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
 public class IGIGlobalScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "IGI Global";
-	private static final String SITE_URL = "http://www.igi-global.com";
+	private static final String SITE_URL = "https://www.igi-global.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
 	private static final Pattern EVENTVALIDATION = Pattern.compile("<input type=\"hidden\" name=\"__EVENTVALIDATION\" id=\"__EVENTVALIDATION\" value=\"(.*?)\" />");
@@ -70,6 +70,10 @@ public class IGIGlobalScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		// can t download over http
+		if (url.getProtocol().equals("http")){
+			return "https" + url.toExternalForm().substring(4);
+		}
 		return url.toExternalForm();
 	}
 
