@@ -35,6 +35,11 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
         final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
         final User user = this.logic.getUserDetails(person.getUser());
 
+        // start + end
+        final int postsPerPage = command.getPageSize();
+        final int start = postsPerPage * command.getPage();
+        command.setStart(start);
+
         if (ValidationUtils.present(user) && user.getSettings().getPersonPostsStyle() == PersonPostsStyle.MYOWN) {
             return workOnMyOwnPosts(command, user);
         } else {
@@ -50,7 +55,7 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
                 .excludeTheses(true)
                 .groupByInterhash(true)
                 .orderBy(PersonResourceRelationOrder.PublicationYear)
-                .fromTo(0, Integer.MAX_VALUE);
+                .fromTo(command.getStart(), command.getPageSize());
 
         final List<ResourcePersonRelation> publications = logic.getResourceRelations(queryBuilder.build());
 

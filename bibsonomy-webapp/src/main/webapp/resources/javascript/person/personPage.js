@@ -7,7 +7,8 @@ const ACTIVE_CLASS = 'active';
 $(function () {
 	initFilterButtons('entrytype');
 	loadSimilarAuthors();
-	loadPublications();
+	// loadPublications();
+	initPublicationPagination(0);
 
 	// ORCID formatter
 	$("#editOrcid").mask("9999-9999-9999-9999");
@@ -28,24 +29,6 @@ function initFilterButtons(field) {
 }
 
 /**
- * Load the theses of the person.
- */
-function loadTheses() {
-	var personId = $('#personInfo').data('person');
-
-	$.ajax({
-		url: '/ajax/person/theses', // The url you are fetching the results.
-		data: {
-			// These are the variables you can pass to the request
-			'requestedPersonId': personId
-		},
-		success: function (data) {
-			$('#personTheses').html(data);
-		}
-	});
-}
-
-/**
  * Load publications of similar authors.
  */
 function loadSimilarAuthors() {
@@ -57,8 +40,14 @@ function loadSimilarAuthors() {
 			// These are the variables you can pass to the request
 			'requestedPersonId': personId
 		},
+		beforeSend: function () {
+			$('#loader-similar').removeClass(HIDDEN_CLASS);
+		},
 		success: function (data) {
 			$('#personSimilarAuthors').html(data);
+		},
+		complete: function () {
+			$('#loader-similar').addClass(HIDDEN_CLASS);
 		}
 	});
 }
@@ -83,6 +72,40 @@ function loadPublications() {
 		},
 		complete: function () {
 			$('#loader-publications').addClass(HIDDEN_CLASS);
+		}
+	});
+}
+
+function initPublicationPagination(page) {
+	var personId = $('#personInfo').data('person');
+	var sortPage = '';
+	var sortPageOrder = '';
+	var query = '';
+
+	$('#personPublications').scrollPagination({
+		'url': '/ajax/person/publications',  // The url you are fetching the results.
+		'data': {
+			// These are the variables you can pass to the request
+			'requestedPersonId': personId,
+			'search': query,
+			'sortPage': sortPage,
+			'sortPageOrder': sortPageOrder,
+			'page': page, // Which page at the first time
+			'pageSize': 20,
+		},
+		'scroller': $(window), // Who gonna scroll? default is the full window
+		'autoload': true, // Change this to false if you want to load manually, default true.
+		'heightOffset': 250, // It gonna request when scroll is 10 pixels before the page ends
+		'loading': "#loading", // ID of loading prompt.
+		'loadingText': 'click to loading more.', // Text of loading prompt.
+		'loadingNomoreText': 'No more.', // No more of loading prompt.
+		'manuallyText': 'click to loading more.', // Click of loading prompt.
+		'before': function(){
+			$("#loader-publications").removeClass(HIDDEN_CLASS);
+		},
+		'after': function(elementsLoaded){
+			// After loading content, you can use this function to animate your new elements
+			$("#loader-publications").addClass(HIDDEN_CLASS);
 		}
 	});
 }

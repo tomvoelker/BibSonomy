@@ -261,9 +261,11 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
+								<value>search</value>
+								<value>sortPage</value>
+								<value>sortPageOrder</value>
 								<value>pageSize</value>
 								<value>page</value>
-								<value>size</value>
 							</list>
 						</property>
 					</bean>
