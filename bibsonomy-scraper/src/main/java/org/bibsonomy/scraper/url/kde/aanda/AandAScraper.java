@@ -66,7 +66,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 					new Pair<>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN)
 	);
 	
-	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)</div>");
+	private static final Pattern pat_references = Pattern.compile("(?s)<ol class=\"references\">(.*)</div>");
 	private static final Pattern pat_references_1 = Pattern.compile("(?s)<HR><b>References(.*)</UL>");
 	private static final Pattern pat_link_ref = Pattern.compile("href=\"(.*?)\"");
 	
