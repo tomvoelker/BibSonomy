@@ -57,11 +57,11 @@
 
 						<c:choose>
 							<c:when test="${command.forceRemoteUserIdAsUsername}">
-								<!-- LOCAL USER NAME / ALIAS -->
-								<bsform:input path="registerUser.name" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" noHelp="${true}" inputGroupSymbol="@" />
+								<input type="hidden" value="${command.registerUser.name}" name="registerUser.name" />
 							</c:when>
 							<c:otherwise>
-								<input type="hidden" value="${command.registerUser.name}" name="registerUser.name" />
+								<!-- LOCAL USER NAME / ALIAS -->
+								<bsform:input path="registerUser.name" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" noHelp="${true}" inputGroupSymbol="@" />
 							</c:otherwise>
 						</c:choose>
 						
