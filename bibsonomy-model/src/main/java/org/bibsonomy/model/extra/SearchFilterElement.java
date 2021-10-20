@@ -52,6 +52,11 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     private String messageKey;
 
+    /**
+     * message key for tooltip
+     */
+    private String tooltipKey;
+
 
     public SearchFilterElement(final String name, final long count) {
         this.name = name;
@@ -107,5 +112,19 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     public void setMessageKey(String messageKey) {
         this.messageKey = messageKey;
+    }
+
+    /**
+     * @return the tooltip message key
+     */
+    public String getTooltipKey() {
+        return tooltipKey;
+    }
+
+    /**
+     * @param tooltipKey the tooltip message key to set
+     */
+    public void setTooltipKey(String tooltipKey) {
+        this.tooltipKey = tooltipKey;
     }
 }
