@@ -45,14 +45,28 @@ public class AhaJournalsScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract", AhaJournalsScraper.class, "AhaJournalsScraperUnitURLTest1.bib");
+		assertScraperResult("http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract", AhaJournalsScraper.class, "ahajournals/AhaJournalsScraperUnitURLTest1.bib");
 	}
+
+	@Test
+	public void url1Test2Run() {
+		assertScraperResult("https://www.ahajournals.org/doi/full/10.1161/CIRCULATIONAHA.115.019768", AhaJournalsScraper.class, "ahajournals/AhaJournalsScraperUnitURLTest1.bib");
+	}
+
 	
 	/**
 	 * starts test
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f", AhaJournalsScraper.class, "AhaJournalsScraperUnitURLTest2.bib");
+		assertScraperResult("http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f", AhaJournalsScraper.class, "ahajournals/AhaJournalsScraperUnitURLTest2.bib");
 	}
+
+	@Test
+	public void url2Test2Run() {
+		assertScraperResult("https://www.ahajournals.org/doi/abs/10.1161/circ.114.suppl_18.ii_864?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f", AhaJournalsScraper.class, "ahajournals/AhaJournalsScraperUnitURLTest2.bib");
+	}
+
+
+
 }
