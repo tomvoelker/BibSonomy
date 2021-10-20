@@ -46,7 +46,7 @@ public class AAAIScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://ojs.aaai.org/index.php/ICWSM/article/view/14200";
-		final String resultFile = "AAAIScraperUnitURLTest1.bib";
+		final String resultFile = "aaai/AAAIScraperUnitURLTest1.bib";
 		assertScraperResult(url, AAAIScraper.class, resultFile);
 	}
 	
@@ -56,7 +56,7 @@ public class AAAIScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "https://ojs.aaai.org//index.php/aimagazine/article/view/2376";
-		final String resultFile = "AAAIScraperUnitURLTest2.bib";
+		final String resultFile = "aaai/AAAIScraperUnitURLTest2.bib";
 		assertScraperResult(url, AAAIScraper.class, resultFile);
 	}
 	
@@ -66,7 +66,7 @@ public class AAAIScraperTest {
 	@Test
 	public void url3TestRun(){
 		final String url = "https://ojs.aaai.org//index.php/aimagazine/article/view/2601";
-		final String resultFile = "AAAIScraperUnitURLTest3.bib";
+		final String resultFile = "aaai/AAAIScraperUnitURLTest3.bib";
 		assertScraperResult(url, AAAIScraper.class, resultFile);
 	}
 }
