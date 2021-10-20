@@ -37,6 +37,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ import java.util.regex.Pattern;
  *
  * @author Haile
  */
-public class IGIGlobalScraper extends GenericBibTeXURLScraper {
+public class IGIGlobalScraper extends GenericRISURLScraper {
 
 	private static final String SITE_NAME = "IGI Global";
 	private static final String SITE_URL = "https://www.igi-global.com";
@@ -66,7 +67,6 @@ public class IGIGlobalScraper extends GenericBibTeXURLScraper {
 					new Pair<>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN)
 	);
 
-	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
@@ -109,10 +109,6 @@ public class IGIGlobalScraper extends GenericBibTeXURLScraper {
 
 	}
 
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return RIS2BIB.toBibtex(bibtex);
-	}
 
 	@Override
 	public String getSupportedSiteName() {
