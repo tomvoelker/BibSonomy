@@ -135,6 +135,31 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setPerson(person);
 
+		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+				.byPersonId(personId)
+				.withPosts(true)
+				.withPersonsOfPosts(true)
+				.onlyTheses(true)
+				.groupByInterhash(true)
+				.orderBy(PersonResourceRelationOrder.PublicationYear)
+				.fromTo(0, Integer.MAX_VALUE);
+
+		final List<ResourcePersonRelation> thesesRelations = logic.getResourceRelations(queryBuilder.build());
+		final List<ResourcePersonRelation> authorEditorRelations = new ArrayList<>();
+		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
+
+		for (ResourcePersonRelation thesis : thesesRelations) {
+			final boolean isAuthorEditor = PUBLICATION_RELATED_RELATION_TYPES.contains(thesis.getRelationType());
+			if (isAuthorEditor) {
+				authorEditorRelations.add(thesis);
+			} else {
+				advisorRelations.add(thesis);
+			}
+		}
+
+		command.setThesis(authorEditorRelations);
+		command.setAdvisedThesis(advisorRelations);
+
 		// extract user settings
 		// Get the linked user's person posts style settings
 		final User user = adminLogic.getUserDetails(person.getUser());

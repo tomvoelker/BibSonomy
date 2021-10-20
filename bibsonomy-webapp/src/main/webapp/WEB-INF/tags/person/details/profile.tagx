@@ -30,9 +30,7 @@
 			<small>
 				<span class="media-sub-heading">
 					<!-- Alternative Names -->
-					<c:if test="${fn:length(command.person.names) gt 1}">
-						<perdetails:alternativeNames hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}"/>
-					</c:if>
+					<perdetails:alternativeNames command="${command}"/>
 				</span>
 			</small>
 

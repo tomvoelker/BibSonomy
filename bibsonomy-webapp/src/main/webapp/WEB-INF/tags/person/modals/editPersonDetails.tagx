@@ -1,31 +1,135 @@
 <jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
-	<fmt:message key="person.show.close" var="textClose"/>
-	<fmt:message key="person.show.addThesisButton" var="textAddThesisButton"/>
-	<fmt:message key="person.show.newThesisButton" var="textNewThesisButton"/>
 
+	<c:set var="person" value="${command.person}"/>
 
 	<fmt:message key="person.show.modal.editPersonDetails.header" var="modalTitle"/>
-	<bs:modal modalTitle="${modalTitle}" id="editPersonDetails">
+	<bs:modal modalTitle="${modalTitle}" id="editPersonDetails" large="${true}">
         <jsp:attribute name="modalBody">
-            <div id="settings-options" class="container-fluid">
-                <div class="row">
-                    <label for="editMainName" class="col-md-4 col-form-label">Main Name</label>
+            <div class="container-fluid">
+				<div class="row">
+                    <label for="editDegree" class="col-md-3 col-form-label"><fmt:message key="person.show.academicDegree"/></label>
                     <div class="col-md-8">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="editMainName"
-                                   placeholder="Main Name" value=""/>
-                        </div>
+						<fmt:message var="degreePlaceholder" key="person.show.academicDegree"/>
+						<input type="text" class="form-control" id="editDegree" data-reset="${person.academicDegree}"
+							   placeholder="${degreePlaceholder}" value="${person.academicDegree}"/>
+                    </div>
+					<div class="col-md-1">
+						<fmt:message var="resetHint" key="resetbutton"/>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editDegree">
+							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
+						</a>
+					</div>
+                </div>
+                <div class="row">
+                    <label for="editCollege" class="col-md-3 col-form-label"><fmt:message key="person.show.college"/></label>
+                    <div class="col-md-8">
+						<fmt:message var="collegePlaceholder" key="person.show.college.placeholder"/>
+						<input type="text" class="form-control" id="editCollege" data-reset="${person.college}"
+							   placeholder="${collegePlaceholder}" value="${person.college}"/>
+                    </div>
+					<div class="col-md-1">
+						<fmt:message var="resetHint" key="resetbutton"/>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editCollege">
+							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
+						</a>
+					</div>
+                </div>
+				<div class="row">
+                    <label for="editEmail" class="col-md-3 col-form-label"><fmt:message key="person.show.email"/></label>
+                    <div class="col-md-8">
+						<fmt:message var="emailPlaceholder" key="person.show.email.placeholder"/>
+						<input type="text" class="form-control" id="editEmail" data-reset="${person.email}"
+							   placeholder="${emailPlaceholder}" value="${person.email}"/>
+                    </div>
+					<div class="col-md-1">
+						<fmt:message var="resetHint" key="resetbutton"/>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editEmail">
+							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
+						</a>
+					</div>
+                </div>
+				<div class="row">
+                    <label for="editHomepage" class="col-md-3 col-form-label"><fmt:message key="person.show.homepage"/></label>
+                    <div class="col-md-8">
+						<fmt:message var="homepagePlaceholder" key="person.show.homepage.placeholder"/>
+						<input type="text" class="form-control" id="editHomepage" data-reset="${person.homepage}"
+							   placeholder="${homepagePlaceholder}" value="${person.homepage}"/>
+                    </div>
+					<div class="col-md-1">
+						<fmt:message var="resetHint" key="resetbutton"/>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editHomepage">
+							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
+						</a>
+					</div>
+                </div>
+				<div class="row">
+                    <label for="editOrcid" class="col-md-3 col-form-label"><fmt:message key="person.show.orcid"/></label>
+                    <div class="col-md-8">
+						<fmt:message var="orcidPlaceholder" key="person.show.orcid.placeholder"/>
+						<input type="text" class="form-control" id="editOrcid" data-reset="${person.orcid}"
+							   placeholder="${orcidPlaceholder}" value="${person.orcid}"/>
+                    </div>
+					<div class="col-md-1">
+						<fmt:message var="resetHint" key="resetbutton"/>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editOrcid">
+							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
+						</a>
+					</div>
+                </div>
+				<div class="row">
+                    <label for="editResearcherId" class="col-md-3 col-form-label"><fmt:message key="person.show.researcherid"/></label>
+                    <div class="col-md-8">
+						<fmt:message var="researcherPlaceholder" key="person.show.researcherid.placeholder"/>
+						<input type="text" class="form-control" id="editResearcherId" data-reset="${person.researcherid}"
+							   placeholder="${researcherPlaceholder}" value="${person.researcherid}"/>
+                    </div>
+					<div class="col-md-1">
+						<fmt:message var="resetHint" key="resetbutton"/>
+						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editResearcherId">
+							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
+						</a>
+					</div>
+                </div>
+				<c:forEach var="name" items="${person.names}">
+					<div class="row">
+						<label class="col-md-3 col-form-label"><fmt:message key="person.show.personAlternateNames"/></label>
+						<div class="col-md-4">
+							<c:out value="${name.firstName}"/>
+						</div>
+						<div class="col-md-4">
+							<c:out value="${name.lastName}"/>
+						</div>
+						<div class="col-md-1">
+							<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
+							<a href="#" data-toggle="tooltip" data-placement="top" title="${selectMainHint}">
+								<fontawesome:icon icon="check-circle" fixedWidth="${true}"/>
+							</a>
+						</div>
+					</div>
+				</c:forEach>
+				<div class="row">
+                    <label class="col-md-3 col-form-label"><fmt:message key="person.show.personAlternateNames"/></label>
+                    <div class="col-md-4">
+						<fmt:message var="firstNamePlaceholder" key="person.new.formFirstName"/>
+						<input type="text" class="form-control" id="addFirstName" placeholder="${firstNamePlaceholder}" />
+                    </div>
+					<div class="col-md-4">
+						<fmt:message var="lastNamePlaceholder" key="person.new.formLastName"/>
+						<input type="text" class="form-control" id="addLastName" placeholder="${lastNamePlaceholder}" />
                     </div>
                 </div>
             </div>
         </jsp:attribute>
 		<jsp:attribute name="modalFooter">
-            <!-- keep me -->
+            <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="person.show.close"/></button>
+			<button type="button" class="btn btn-primary" id="editPersonSubmit"><fmt:message key="person.show.modal.editPersonDetails.save"/></button>
         </jsp:attribute>
 	</bs:modal>
 </jsp:root>

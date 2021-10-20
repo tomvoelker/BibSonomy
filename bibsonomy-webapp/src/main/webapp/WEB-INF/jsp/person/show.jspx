@@ -47,6 +47,17 @@
 					   showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/autocompleteRelatedThesis.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
+
+			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
+
+            <script type='text/javascript' src='/resources/javascript/person/deletePersonRelationResource.js'><!-- keep me --></script>
+            <script type='text/javascript' src='/resources/javascript/person/addPersonRelationResource.js'><!-- keep me --></script>
+
 			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
 
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
