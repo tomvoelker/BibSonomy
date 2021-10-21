@@ -40,19 +40,20 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class SageJournalScraperTest {
+	String resultDirectory = "sage/";
 
 	/**
 	 * starts URL test with id url_219
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://jis.sagepub.com/content/38/3/297.abstract", SageJournalScraper.class, "SagepubUnitURLTest1.bib");
+		assertScraperResult("http://jis.sagepub.com/content/38/3/297.abstract", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest1.bib");
 	}
 	/**
 	 * starts URL test with id url_242
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://cdp.sagepub.com/content/12/4/105.short", SageJournalScraper.class, "SagepubUnitURLTest2.bib");
+		assertScraperResult("http://cdp.sagepub.com/content/12/4/105.short", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest2.bib");
 	}
 }

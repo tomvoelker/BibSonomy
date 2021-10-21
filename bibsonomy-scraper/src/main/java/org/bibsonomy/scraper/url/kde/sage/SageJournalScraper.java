@@ -29,19 +29,18 @@
  */
 package org.bibsonomy.scraper.url.kde.sage;
 
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.CitMgrScraper;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitationManagerScraper;
-
 /**
  * @author wla
  */
-public class SageJournalScraper extends CitationManagerScraper {
+public class SageJournalScraper extends CitMgrScraper {
 
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download to citation manager</a>");
 	private static final String SITE_NAME = "Sage Journal";
 	private static final String SITE_URL = "http://online.sagepub.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -63,11 +62,6 @@ public class SageJournalScraper extends CitationManagerScraper {
 	@Override
 	public String getInfo() {
 		return INFO;
-	}
-
-	@Override
-	public Pattern getDownloadLinkPattern() {
-		return DOWNLOAD_LINK_PATTERN;
 	}
 
 	@Override
