@@ -66,12 +66,14 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
 
     public View workOnMyOwnPosts(AjaxPersonPageCommand command, User user) {
         // Get 'myown' posts of the user
-        final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+        final PostQueryBuilder queryBuilder = new PostQueryBuilder()
                 .setTags(Collections.singletonList("myown"))
                 .setGrouping(GroupingEntity.USER)
-                .setGroupingName(user.getName());
+                .setGroupingName(user.getName())
+                .search(command.getSearch())
+                .entriesStartingAt(command.getPageSize(), command.getStart());
 
-        final List<Post<BibTex>> posts = logic.getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
+        final List<Post<BibTex>> posts = logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
         command.setMyownPosts(posts);
 
         return Views.AJAX_PERSON_POSTS;

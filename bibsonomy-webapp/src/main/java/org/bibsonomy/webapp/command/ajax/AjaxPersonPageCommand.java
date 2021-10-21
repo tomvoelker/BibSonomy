@@ -37,10 +37,18 @@ import org.bibsonomy.webapp.command.PersonPageCommand;
  */
 public class AjaxPersonPageCommand extends PersonPageCommand {
 
-	private int page;
-	private int size;
+	private String search;
 
+	private int page;
 	private int pageSize;
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
+	}
 
 	/**
 	 * @return the page
@@ -54,20 +62,6 @@ public class AjaxPersonPageCommand extends PersonPageCommand {
 	 */
 	public void setPage(int page) {
 		this.page = page;
-	}
-
-	/**
-	 * @return the size
-	 */
-	public int getSize() {
-		return size;
-	}
-
-	/**
-	 * @param size the size to set
-	 */
-	public void setSize(int size) {
-		this.size = size;
 	}
 
 	/**

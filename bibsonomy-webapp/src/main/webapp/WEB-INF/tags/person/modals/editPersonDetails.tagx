@@ -13,7 +13,7 @@
 	<fmt:message key="person.show.modal.editPersonDetails.header" var="modalTitle"/>
 	<bs:modal modalTitle="${modalTitle}" id="editPersonDetails" large="${true}">
         <jsp:attribute name="modalBody">
-            <div class="container-fluid">
+            <div id="formEditPersonDetails" class="container-fluid">
 				<div class="row">
                     <label for="editDegree" class="col-md-3 col-form-label"><fmt:message key="person.show.academicDegree"/></label>
                     <div class="col-md-8">
@@ -23,7 +23,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editDegree">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -38,7 +38,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editCollege">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -53,7 +53,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editEmail">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -68,7 +68,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editHomepage">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -83,7 +83,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editOrcid">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -98,7 +98,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editResearcherId">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -145,10 +145,8 @@
 											<div class="col-md-4"><c:out value="${name.lastName}"/></div>
 											<div class="col-md-1">
 												<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
-												<a href="#" data-toggle="tooltip" data-placement="top" title="${selectMainHint}"
-												   data-firstName="${name.firstName}" data-lastName="${name.lastName}">
-													<fontawesome:icon icon="square" fixedWidth="${true}" regular="${true}"/>
-												</a>
+												<input type="checkbox" class="check-main" data-toggle="tooltip" data-placement="top" title="${selectMainHint}"
+												   data-firstName="${name.firstName}" data-lastName="${name.lastName}" />
 											</div>
 										</div>
 									</c:otherwise>
@@ -171,7 +169,7 @@
         </jsp:attribute>
 		<jsp:attribute name="modalFooter">
             <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="person.show.close"/></button>
-			<button type="button" class="btn btn-primary" id="editPersonSubmit"><fmt:message key="person.show.modal.editPersonDetails.save"/></button>
+			<button type="button" class="btn btn-primary" id="submitEditPersonDetails"><fmt:message key="person.show.modal.editPersonDetails.save"/></button>
         </jsp:attribute>
 	</bs:modal>
 </jsp:root>
