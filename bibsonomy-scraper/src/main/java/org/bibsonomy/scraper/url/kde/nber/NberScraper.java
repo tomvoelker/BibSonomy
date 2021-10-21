@@ -29,23 +29,25 @@
  */
 package org.bibsonomy.scraper.url.kde.nber;
 
-import java.net.MalformedURLException;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
  */
-public class NberScraper extends AbstractUrlScraper {
+public class NberScraper extends GenericRISURLScraper {
 
 	private static final String SITE_URL = "http://www.nber.org/";
 	private static final String SITE_NAME = "National Bureau of Economic Research";
@@ -53,32 +55,34 @@ public class NberScraper extends AbstractUrlScraper {
 
 	private static final String NBER_HOST  = "www.nber.org";
 
+	private static final Pattern URL_CODE_PATTERN = Pattern.compile("/papers/(w\\d{5})");
+
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NBER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return info;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		//here we just need to append .bib to the url and we got the bibtex file
-		try {
-			sc.setUrl(new URL(sc.getUrl().toString() + ".bib"));
-		} catch (MalformedURLException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		final String bibResult = sc.getPageContent();
-
-		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return url.toExternalForm();
 	}
 
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {		
+	@Override
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
+		String code = "";
+		String urlPath = url.getPath();
+		Matcher m_code = URL_CODE_PATTERN.matcher(urlPath);
+		if (m_code.find()) code = m_code.group(1);
+
+		List<NameValuePair> postData = new LinkedList<>();
+		postData.add(new BasicNameValuePair("code", code));
+		postData.add(new BasicNameValuePair("file_type", "ris"));
+		postData.add(new BasicNameValuePair("form_id", "download_citation"));
+		return postData;
+	}
+
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
