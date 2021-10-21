@@ -41,7 +41,6 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -66,6 +65,9 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 	protected final boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
+		if (!present(url)){
+			url = scrapingContext.getUrl();
+		}
 
 		try {
 			final String doi = this.getDOI(url);
@@ -117,7 +119,7 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 		return postData;
 	}
 
-	protected String getDOI(URL url) throws UnsupportedEncodingException, URISyntaxException {
+	private String getDOI(URL url) throws URISyntaxException {
 		String doi = "";
 		final Matcher m_doi = DOI_PATTERN.matcher(url.getPath());
 		if (m_doi.find()) {

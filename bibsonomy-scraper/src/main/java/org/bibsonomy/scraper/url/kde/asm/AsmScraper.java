@@ -43,8 +43,7 @@ import java.util.regex.Pattern;
  * @author Haile
  */
 public class AsmScraper extends CitMgrScraper {
-	
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download to citation manager</a>");
+
 	private static final String SITE_NAME = "American Society for Microbiology";
 	private static final String SITE_URL = "http://journals.asm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
