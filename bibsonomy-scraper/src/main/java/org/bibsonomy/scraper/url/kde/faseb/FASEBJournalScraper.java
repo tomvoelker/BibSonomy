@@ -29,23 +29,18 @@
  */
 package org.bibsonomy.scraper.url.kde.faseb;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.CitMgrScraper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author wla
  */
-public class FASEBJournalScraper extends GenericBibTeXURLScraper {
+public class FASEBJournalScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "The FASEB Journal";
 	private static final String SITE_URL = "http://www.fasebj.org";
@@ -53,50 +48,12 @@ public class FASEBJournalScraper extends GenericBibTeXURLScraper {
 
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "www.fasebj.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
-	/*
-	 * This regex is for extraction of 
-	 *  -"15/14/2565" from
-	 *   http://www.fasebj.org/content/15/14/2565.abstract
-	 *   
-	 *  -"26/8/3100" from 
-	 *   http://www.fasebj.org/content/26/8/3100.full
-	 *   http://www.fasebj.org/content/26/8/3100.short
-	 *   
-	 *  -"fj.12-211441" from
-	 *   http://www.fasebj.org/content/early/2012/06/15/fj.12-211441.short
-	 *  
-	 */
-	private static final Pattern URL_ID_PATTERN = Pattern.compile("(?:(\\d*?/\\d*?/\\d*?)\\.(?:(?:abstract)|(?:full)|(?:short)))|(fj\\.\\d*-\\d*)");
 
-	private static final String BIBTEX_URL = "http://www.fasebj.org/citmgr?type=bibtex&gca=fasebj;";
-	/**
-	 * extracts publication id form url
-	 * 
-	 * @param url
-	 *            to extract
-	 * @return document id or <code>null</code> if no id parsed
-	 */
-	private String extractId(final String url) {
-		final Matcher matcher = URL_ID_PATTERN.matcher(url);
-		if (matcher.find()) {
-			for (int i = 1; i <= matcher.groupCount(); i++) {
-				final String id = matcher.group(i);
-				if (present(id)) {
-					return id;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
@@ -112,12 +69,4 @@ public class FASEBJournalScraper extends GenericBibTeXURLScraper {
 		return PATTERNS;
 	}
 
-	@Override
-	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		final String id = extractId(url.toString());
-		if (present(id)) {
-			return BIBTEX_URL + id;
-		}
-		return null;
-	}
 }
