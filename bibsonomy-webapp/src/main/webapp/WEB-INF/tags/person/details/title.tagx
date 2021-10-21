@@ -12,13 +12,11 @@
 
     <modals:editPersonDetails command="${command}" />
 
-    <div>
-        <h1>
-            <c:out value="${title}"/>
-            <c:if test="${hasClaimedOrIsAdmin}">
-                <c:out value=" "/>
-                <small><a href="#" data-toggle="modal" data-target="#editPersonDetails"><fontawesome:icon icon="pencil"/></a></small>
-            </c:if>
-        </h1>
-    </div>
+    <h1>
+        <c:out value="${title}"/>
+        <c:if test="${hasClaimedOrIsAdmin}">
+            <c:out value=" "/>
+            <small><a href="#" data-toggle="modal" data-target="#editPersonDetails"><fontawesome:icon icon="pencil"/></a></small>
+        </c:if>
+    </h1>
 </jsp:root>

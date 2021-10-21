@@ -121,15 +121,13 @@ public class PersonPageCommand extends BaseCommand {
 	private String personPostsLayout;
 	private List<Post<BibTex>> myownPosts;
 	private Map<String, String> myownPostsRendered;
+	private String alternativeNames;
 
 	private List<SearchFilterElement> entrytypeFilters;
 
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
 	private List<ResourcePersonRelation> allPosts;
-	
-	@Deprecated // TODO: access enum directly
-	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
 	private List<ResourcePersonRelation> otherPubs;
@@ -505,22 +503,6 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the availableRoles
-	 */
-	@Deprecated // FIXME: access enum directly
-	public List<PersonResourceRelationType> getAvailableRoles() {
-		return this.availableRoles;
-	}
-
-	/**
-	 * @param availableRoles the availableRoles to set
-	 */
-	@Deprecated // FIXME: access enum directly
-	public void setAvailableRoles(List<PersonResourceRelationType> availableRoles) {
-		this.availableRoles = availableRoles;
-	}
-
-	/**
 	 * @return true if the current login user is associated to this person
 	 */
 	@Deprecated // TODO: bind person directly
@@ -826,6 +808,14 @@ public class PersonPageCommand extends BaseCommand {
 
 	public void setMyownPostsRendered(Map<String, String> myownPostsRendered) {
 		this.myownPostsRendered = myownPostsRendered;
+	}
+
+	public String getAlternativeNames() {
+		return alternativeNames;
+	}
+
+	public void setAlternativeNames(String alternativeNames) {
+		this.alternativeNames = alternativeNames;
 	}
 
 	public List<SearchFilterElement> getEntrytypeFilters() {

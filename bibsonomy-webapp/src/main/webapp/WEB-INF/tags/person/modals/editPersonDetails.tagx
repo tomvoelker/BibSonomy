@@ -3,6 +3,7 @@
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
@@ -22,7 +23,8 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editDegree">
+						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						   title="${resetHint}" data-reset="editDegree">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
 					</div>
@@ -36,7 +38,8 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editCollege">
+						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						   title="${resetHint}" data-reset="editCollege">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
 					</div>
@@ -50,7 +53,8 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editEmail">
+						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						   title="${resetHint}" data-reset="editEmail">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
 					</div>
@@ -64,7 +68,8 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editHomepage">
+						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						   title="${resetHint}" data-reset="editHomepage">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
 					</div>
@@ -78,7 +83,8 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editOrcid">
+						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						   title="${resetHint}" data-reset="editOrcid">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
 					</div>
@@ -92,39 +98,75 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" data-toggle="tooltip" data-placement="top" title="${resetHint}" data-reset="editResearcherId">
+						<a href="#" class="hidden" data-toggle="tooltip" data-placement="top"
+						   title="${resetHint}" data-reset="editResearcherId">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
 					</div>
                 </div>
-				<c:forEach var="name" items="${person.names}">
-					<div class="row">
-						<label class="col-md-3 col-form-label"><fmt:message key="person.show.personAlternateNames"/></label>
-						<div class="col-md-4">
-							<c:out value="${name.firstName}"/>
+
+				<c:choose>
+					<c:when test="${fn:length(person.names) lt 1}">
+						<div class="row">
+							<label class="col-md-3 col-form-label"><fmt:message key="person.show.personAlternateNames"/></label>
+							<div class="col-md-4">
+								<fmt:message var="firstNamePlaceholder" key="person.new.formFirstName"/>
+								<input type="text" class="form-control" id="addFirstName" placeholder="${firstNamePlaceholder}" />
+							</div>
+							<div class="col-md-4">
+								<fmt:message var="lastNamePlaceholder" key="person.new.formLastName"/>
+								<input type="text" class="form-control" id="addLastName" placeholder="${lastNamePlaceholder}" />
+							</div>
 						</div>
-						<div class="col-md-4">
-							<c:out value="${name.lastName}"/>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="name" items="${person.names}" varStatus="status">
+							<c:set var="labelSet" value="${false}"/>
+							<c:if test="${not name.main}">
+								<c:choose>
+									<c:when test="${labelSet}">
+										<div class="row">
+											<div class="col-md-4 col-md-offset-3"><c:out value="${name.firstName}"/></div>
+											<div class="col-md-4"><c:out value="${name.lastName}"/></div>
+											<div class="col-md-1">
+												<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
+												<a href="#" data-toggle="tooltip" data-placement="top" title="${selectMainHint}"
+												   data-firstName="${name.firstName}" data-lastName="${name.lastName}">
+													<fontawesome:icon icon="square" fixedWidth="${true}" regular="${true}"/>
+												</a>
+											</div>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<c:set var="labelSet" value="${true}"/>
+										<div class="row">
+											<label class="col-md-3 col-form-label"><fmt:message key="person.show.personAlternateNames"/></label>
+											<div class="col-md-4"><c:out value="${name.firstName}"/></div>
+											<div class="col-md-4"><c:out value="${name.lastName}"/></div>
+											<div class="col-md-1">
+												<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
+												<a href="#" data-toggle="tooltip" data-placement="top" title="${selectMainHint}"
+												   data-firstName="${name.firstName}" data-lastName="${name.lastName}">
+													<fontawesome:icon icon="square" fixedWidth="${true}" regular="${true}"/>
+												</a>
+											</div>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+						</c:forEach>
+						<div class="row">
+							<div class="col-md-4 col-md-offset-3">
+								<fmt:message var="firstNamePlaceholder" key="person.new.formFirstName"/>
+								<input type="text" class="form-control" id="addFirstName" placeholder="${firstNamePlaceholder}" />
+							</div>
+							<div class="col-md-4">
+								<fmt:message var="lastNamePlaceholder" key="person.new.formLastName"/>
+								<input type="text" class="form-control" id="addLastName" placeholder="${lastNamePlaceholder}" />
+							</div>
 						</div>
-						<div class="col-md-1">
-							<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
-							<a href="#" data-toggle="tooltip" data-placement="top" title="${selectMainHint}">
-								<fontawesome:icon icon="check-circle" fixedWidth="${true}"/>
-							</a>
-						</div>
-					</div>
-				</c:forEach>
-				<div class="row">
-                    <label class="col-md-3 col-form-label"><fmt:message key="person.show.personAlternateNames"/></label>
-                    <div class="col-md-4">
-						<fmt:message var="firstNamePlaceholder" key="person.new.formFirstName"/>
-						<input type="text" class="form-control" id="addFirstName" placeholder="${firstNamePlaceholder}" />
-                    </div>
-					<div class="col-md-4">
-						<fmt:message var="lastNamePlaceholder" key="person.new.formLastName"/>
-						<input type="text" class="form-control" id="addLastName" placeholder="${lastNamePlaceholder}" />
-                    </div>
-                </div>
+					</c:otherwise>
+				</c:choose>
             </div>
         </jsp:attribute>
 		<jsp:attribute name="modalFooter">

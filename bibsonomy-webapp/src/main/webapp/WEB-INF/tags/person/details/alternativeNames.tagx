@@ -7,13 +7,11 @@
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
 
-    <c:if test="${fn:length(command.person.names) gt 1}">
-        <div id="personAlternativeNames">
-            <c:forEach var="name" items="${command.person.names}" varStatus="index">
-                <c:if test="${!name.main}">
-                    <c:out value="${name.firstName} ${name.lastName}"/>
-                </c:if>
-            </c:forEach>
-        </div>
+    <c:if test="${fn:length(command.alternativeNames) gt 0}">
+        <i>
+            <span>
+                <c:out value="${fn:join(fn:split(command.alternativeNames, ';'), ', ')}"/>
+            </span>
+        </i>
     </c:if>
 </jsp:root>

@@ -4,12 +4,15 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:directive.attribute name="availableRoles" type="java.util.Collection" required="true"/>
-	
+
+	<spring:eval var="availableRoles" expression="T(org.bibsonomy.model.enums.PersonResourceRelationType).values()"/>
+
+
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 	
 	<div class="personThesisEntry row ${post.resource.interHash}_${post.resource.intraHash}">

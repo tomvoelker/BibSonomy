@@ -26,19 +26,21 @@
 			</div>
 		</div>
 		<div class="media-body">
-			<perdetails:title hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" title="${title}" />
-			<small>
+			<div class="person-header">
+				<perdetails:title hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}" command="${command}" title="${title}" />
 				<span class="media-sub-heading">
 					<!-- Alternative Names -->
 					<perdetails:alternativeNames command="${command}"/>
 				</span>
-			</small>
+			</div>
 
 			<div class="media-description">
 				<c:choose>
 					<c:when test="${empty organizations}">
 						<!-- College -->
-						<perdetails:property command="${command}" type="college" value="${command.person.college}"/>
+						<c:if test="${not empty command.person.college}">
+							<perdetails:property command="${command}" type="college" value="${command.person.college}"/>
+						</c:if>
 					</c:when>
 					<c:otherwise>
 						<!-- Organizations -->

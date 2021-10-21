@@ -42,14 +42,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.Post;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -58,11 +57,8 @@ import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
-import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.services.searcher.PostSearchQuery;
@@ -135,6 +131,16 @@ public class PersonPageController extends SingleResourceListController implement
 
 		command.setPerson(person);
 
+		// set alternative names
+		List<String> alternativeNames = new ArrayList<>();
+		for (PersonName name : person.getNames()) {
+			if(!name.isMain()) {
+				alternativeNames.add(String.format("%s %s", name.getFirstName(), name.getLastName()));
+			}
+		}
+		command.setAlternativeNames(String.join(";", alternativeNames));
+
+		// set thesis relations
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
 				.byPersonId(personId)
 				.withPosts(true)

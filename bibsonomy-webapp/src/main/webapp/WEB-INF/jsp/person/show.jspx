@@ -122,9 +122,6 @@
 							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
 													  headerMessageKey="explore.filter.entrytype.header"
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
-							<div id="filterHeader">
-								<a id="resetFilterLink" href="#" onclick="resetFilterSelection()"><fmt:message key="explore.filter.reset"/></a>
-							</div>
 						</c:if>
 					</div>
 				</div>
