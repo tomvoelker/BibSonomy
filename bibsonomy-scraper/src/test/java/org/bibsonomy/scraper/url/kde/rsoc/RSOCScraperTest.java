@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class RSOCScraperTest {
+	String resultDirectory = "rsoc/";
 	
 	/**
 	 * starts URL test with id url_96
@@ -48,7 +49,7 @@ public class RSOCScraperTest {
 	@Test
 	public void urlTest1Run(){
 		final String url = "http://rsta.royalsocietypublishing.org/content/357/1750/133.abstract?sid=9d8827ba-af22-4f85-92b4-d65da59cf197";
-		final String resultFile = "RSOCScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "RSOCScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, RSOCScraper.class, resultFile);
 	}
 	
@@ -58,7 +59,7 @@ public class RSOCScraperTest {
 	@Test
 	public void urlTest2Run(){
 		final String url = "http://rspb.royalsocietypublishing.org/content/267/1440/205.abstract?sid=93bbdbe3-dc3a-41e1-bd8d-b6c5af6ac3d8";
-		final String resultFile = "RSOCScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "RSOCScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, RSOCScraper.class, resultFile);
 	}
 	

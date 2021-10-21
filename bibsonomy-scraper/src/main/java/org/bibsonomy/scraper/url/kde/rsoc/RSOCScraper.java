@@ -29,24 +29,17 @@
  */
 package org.bibsonomy.scraper.url.kde.rsoc;
 
-import java.io.IOException;
-import java.net.URL;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.CitMgrScraper;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class RSOCScraper extends GenericBibTeXURLScraper {
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
+public class RSOCScraper extends CitMgrScraper {
 	private static final String SITE_NAME = "Royal Society Publishing";
 	private static final String SITE_URL = "http://royalsocietypublishing.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -75,32 +68,4 @@ public class RSOCScraper extends GenericBibTeXURLScraper {
 		return URL_PATTERNS;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		try {
-			final String content = WebUtils.getContentAsString(url, cookies);
-			final Matcher m = BIBTEX_PATTERN.matcher(content);
-			if (m.find()) {
-				return "http://" + url.getHost() + m.group(1);
-			}
-		} catch (final IOException e) {
-			throw new ScrapingException(e);
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		final String firstLine = bibtex.split("\n")[0].trim();
-		if (firstLine.split("\\{").length == 1) {
-			return bibtex.replace(firstLine, firstLine + "nokey,");
-		}
-		return bibtex;
-	}
 }
