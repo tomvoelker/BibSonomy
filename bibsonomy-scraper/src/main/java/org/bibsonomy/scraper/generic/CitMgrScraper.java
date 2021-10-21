@@ -30,14 +30,6 @@
 package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -47,7 +39,18 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.id.DOIUtils;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * abstract scraper for a citation manager that is used by some libraries. You can identify using the final download url
@@ -57,49 +60,72 @@ import org.bibsonomy.util.id.DOIUtils;
  */
 public abstract class CitMgrScraper extends AbstractUrlScraper {
 
-	private static final Pattern DOUBLE_COMMA_FIX = Pattern.compile("},,\n");
-
-	private static String repairBibTeX(final String bibTeX) {
-		return DOUBLE_COMMA_FIX.matcher(bibTeX).replaceFirst("},\n");
-	}
+	private static final Pattern DOI_PATTERN = Pattern.compile("(10\\.[0-9a-zA-Z]+/(?:(?![\"&'])\\S)+)\\b");
 
 	@Override
 	protected final boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-
-		final URL url = scrapingContext.getUrl();
+		URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
 
 		try {
 			final String doi = this.getDOI(url);
 			if (!present(doi)) {
-				throw new ScrapingFailureException("can't get doi from url");
+				throw new ScrapingFailureException("can't get doi from " + url);
 			}
 
-			final String downloadUrl = this.getDownloodSiteUrl(url) + "action/downloadCitation";
+			final String downloadUrl = this.getDownloadSiteUrl(url) + getDownloadURLPath();
 			final List<NameValuePair> postData = new LinkedList<>();
 			postData.add(new BasicNameValuePair("doi", doi));
-			postData.add(new BasicNameValuePair("downloadFileName", "pericles_1467981741"));
-			postData.add(new BasicNameValuePair("format", "bibtex"));
-			postData.add(new BasicNameValuePair("direct", "other-type"));
-			postData.add(new BasicNameValuePair("include", "abs"));
-			postData.add(new BasicNameValuePair("submit", "Download"));
 
-			final String bibtex = WebUtils.getContentAsString(downloadUrl, null, postData, url.toExternalForm());
-			if (present(bibtex)) {
-				scrapingContext.setBibtexResult(repairBibTeX(bibtex.trim()));
+			Map<String, String> additionalPostData = this.getPostData();
+
+			for (String s : additionalPostData.keySet()) {
+				postData.add(new BasicNameValuePair(s, additionalPostData.get(s)));
 			}
+
+			String bibtex = WebUtils.getContentAsString(downloadUrl, null, postData, url.toExternalForm());
+			bibtex = postProcessScrapingResult(scrapingContext, bibtex);
+			scrapingContext.setBibtexResult(bibtex);
+
 			return true;
 		} catch (final IOException | URISyntaxException e) {
 			throw new InternalFailureException(e);
 		}
 	}
 
-	protected String getDownloodSiteUrl(final URL url) throws ScrapingFailureException {
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex;
+	}
+
+	protected String getDownloadSiteUrl(final URL url) {
+		if (url != null) {
+			return url.getProtocol() + "://" + url.getHost();
+		}
 		return this.getSupportedSiteURL();
 	}
 
-	protected String getDOI(URL url) throws URISyntaxException {
-		final String doi = DOIUtils.extractDOI(url.getPath());
-		return UrlUtils.decodePathSegment(doi);
+
+	protected String getDownloadURLPath() {
+		return "/action/downloadCitation";
 	}
+
+	protected Map<String, String> getPostData() {
+		HashMap<String, String> postData = new HashMap<>();
+		postData.put("format", "bibtex");
+		postData.put("include", "abs");
+		postData.put("submit", "Download");
+		return postData;
+	}
+
+	protected String getDOI(URL url) throws UnsupportedEncodingException, URISyntaxException {
+		String doi = "";
+		final Matcher m_doi = DOI_PATTERN.matcher(url.getPath());
+		if (m_doi.find()) {
+			doi = m_doi.group(1);
+		}
+
+		doi = UrlUtils.decodePathSegment(doi);
+		return doi;
+	}
+
 }

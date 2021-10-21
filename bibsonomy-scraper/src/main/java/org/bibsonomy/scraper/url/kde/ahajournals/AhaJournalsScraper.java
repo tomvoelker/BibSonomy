@@ -29,27 +29,22 @@
  */
 package org.bibsonomy.scraper.url.kde.ahajournals;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
+import org.bibsonomy.scraper.generic.CitMgrScraper;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 
 /**
  * @author Mohammed Abed
  */
-public class AhaJournalsScraper extends GenericRISURLScraper {
+public class AhaJournalsScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "Aha Journals";
 	private static final String SITE_URL = "http://circ.ahajournals.org/";
@@ -59,43 +54,31 @@ public class AhaJournalsScraper extends GenericRISURLScraper {
 	private static final String NEW_AHA_JOURNALS_HOST = "ahajournals.org";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AHA_JOURNALS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEW_AHA_JOURNALS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-	private static final Pattern PATTERN_FROM_URL = Pattern.compile(".*/(.*/[circ||CIRC].*)");
 
-	private static final String DOWNLOAD_URL = "https://www.ahajournals.org/action/downloadCitation";
-	
 	@Override
-	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException {
-		return DOWNLOAD_URL;
+	protected String getDownloadURLPath() {
+		return "/action/downloadCitation";
 	}
-	protected List<NameValuePair> getDownloadData(final URL url, final String cookies) {
-		//if old host is called redirects to new host
-		URL redirectedUrl = WebUtils.getRedirectUrl(url);
 
-		String rawPath = null;
-		try {
-			  rawPath = redirectedUrl.toURI().getRawPath();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-
-		final Matcher m_doi = PATTERN_FROM_URL.matcher(rawPath);
-		String doi = "";
-		if(m_doi.find()) doi= m_doi.group(1);
-
-		final List<NameValuePair> postData = new ArrayList<>();
-		postData.add(new BasicNameValuePair("doi",doi ));
-		//ris can be changed to bibtex, but returned bibtex is malformed
-		postData.add(new BasicNameValuePair("format", "ris"));
-
+	@Override
+	protected Map<String, String> getPostData() {
+		Map<String, String> postData = super.getPostData();
+		postData.put("format", "ris");
 		return postData;
 	}
 
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return RIS2BIB.toBibtex(bibtex);
+	}
 
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;

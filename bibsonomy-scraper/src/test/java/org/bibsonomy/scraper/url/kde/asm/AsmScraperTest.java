@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.asm;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,6 +39,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AsmScraperTest {
+	String resultDirectory = "asm/";
 
 	/**
 	 * @param args
@@ -49,7 +49,9 @@ public class AsmScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertScraperResult("http://aem.asm.org/content/61/10/3567", AsmScraper.class, "AsmScraperUnitURLTest.bib");
+		final String url = "http://aem.asm.org/content/61/10/3567";
+		final String resultFile = resultDirectory + "AsmScraperUnitURL1Test.bib";
+		assertScraperResult(url, AsmScraper.class, resultFile);
 	}
 
 }
