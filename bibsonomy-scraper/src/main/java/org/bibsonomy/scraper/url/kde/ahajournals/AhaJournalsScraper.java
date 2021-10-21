@@ -62,11 +62,6 @@ public class AhaJournalsScraper extends CitMgrScraper {
 	}
 
 	@Override
-	protected String getDownloadURLPath() {
-		return "/action/downloadCitation";
-	}
-
-	@Override
 	protected Map<String, String> getPostData() {
 		Map<String, String> postData = super.getPostData();
 		postData.put("format", "ris");
