@@ -29,51 +29,6 @@
     padding-right: 5px;
   }
 
-  .custom-loader {
-    width: 100%;
-    height: 120px;
-    padding: 10px 0;
-    text-align: center;
-
-    .spinner {
-      animation: rotator 1.4s linear infinite;
-    }
-
-    @keyframes rotator {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(270deg); }
-    }
-
-    .path {
-      stroke-dasharray: 187;
-      stroke-dashoffset: 0;
-      transform-origin: center;
-      animation:
-              dash 1.4s ease-in-out infinite,
-              colors (1.4s*4) ease-in-out infinite;
-    }
-
-    @keyframes colors {
-      0% { stroke: @main-color; }
-      25% { stroke: @main-color-light; }
-      50% { stroke: @main-color; }
-      75% { stroke: @main-color-light; }
-      100% { stroke: @main-color; }
-    }
-
-    @keyframes dash {
-      0% { stroke-dashoffset: 187; }
-      50% {
-        stroke-dashoffset: 46.75;
-        transform:rotate(135deg);
-      }
-      100% {
-        stroke-dashoffset: 187;
-        transform:rotate(450deg);
-      }
-    }
-  }
-
   .sidebar {
     h4 {
       border: none;

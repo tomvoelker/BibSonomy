@@ -1,6 +1,3 @@
-const HIDDEN_CLASS = 'hidden';
-const ACTIVE_CLASS = 'active';
-
 /**
  * on load
  */
@@ -49,7 +46,7 @@ var lastSelectedFilter;
 function initFilterButtons(field) {
     $('#filter-entries-' + field + ' > button').click(function () {
         lastSelectedFilter = this;
-        $(this).toggleClass(ACTIVE_CLASS);
+        $(this).toggleClass('active');
         updateCounters();
         updateResults(0);
     });
@@ -86,13 +83,13 @@ function updateResults(page) {
         },
         beforeSend: function () {
             $('#groupExplorePublications').empty();
-            $('.custom-loader').removeClass(HIDDEN_CLASS);
+            $('.custom-loader').show(0);
         },
         success: function (data) {
             $('#groupExplorePublications').html(data);
         },
         complete: function () {
-            $('.custom-loader').addClass(HIDDEN_CLASS);
+            $('.custom-loader').hide(0);
         },
     });
 }
@@ -133,16 +130,15 @@ function updateCounters() {
  * @param counts the list of updated counts
  */
 function updateFieldCounts(field, counts) {
-
     $('#filter-entries-' + field + ' > button').each(function () {
         var value = $(this).data('value');
         if (value in counts) {
             $(this).find('.badge').html(counts[value]);
-            $(this).removeClass(HIDDEN_CLASS);
+            $(this).show(0);
         } else {
             $(this).find('.badge').html(0);
-            if ($('.filter-entry-counter.active').length < 2 && !$(this).hasClass(ACTIVE_CLASS)) {
-                $(this).addClass(HIDDEN_CLASS);
+            if ($('.filter-entry-counter.active').length < 2 && !$(this).hasClass('active')) {
+                $(this).hide(0);
             }
         }
     });
@@ -151,22 +147,8 @@ function updateFieldCounts(field, counts) {
 function updateFieldCountsFailed(field) {
     $('#filter-entries-' + field + ' > button').each(function () {
         $(this).find('.badge').html('?');
-        $(this).removeClass(ACTIVE_CLASS);
+        $(this).removeClass('active');
     });
-}
-
-/**
- * query and filter builder
- */
-function generateFilterQuery() {
-    var filterQuery = [];
-
-    $('.filter-list').each(function () {
-        var selectedFiltersQuery = getFilterQuery(this)
-        if (selectedFiltersQuery) filterQuery.push(selectedFiltersQuery);
-    });
-
-    return filterQuery.join(' AND ');
 }
 
 /**
@@ -184,56 +166,6 @@ function generateTagsFilterQuery() {
     return filterQuery.join(' AND ');
 }
 
-function getFilterQuery(filterList) {
-    var selectedFilters = [];
-    $(filterList).find('.btn.active').each(function () {
-        selectedFilters.push($(this).data('value'));
-    });
-
-    var field = $(filterList).data('field');
-    var matchValues = selectedFilters.join(' OR ');
-
-    if (matchValues) {
-        return field + ':(' + matchValues + ')';
-    }
-
-    return '';
-}
-
-/**
- * Concat the search query and the selected filters
- *
- * @param search the search
- * @param filters the selected filters
- * @returns the combined query
- */
-function addFiltersToSearchQuery(search, filters) {
-    var query = '';
-    if (search) {
-        query += search;
-        if (filters) {
-            query += ' AND ';
-            query += filters;
-        }
-    } else {
-        query += filters;
-    }
-
-    return query;
-}
-
-/**
- * Removes all non-numeric filters in the year filter section.
- */
-function validateYearFilters() {
-    $('#filter-entries-year > button').each(function () {
-        var element = $(this);
-        if (isNaN(element.data('value'))) {
-            element.remove();
-        }
-    });
-}
-
 /**
  * Initialize the show more functionality in the year filter section.
  * At the beginning show max. 10 entries and expand by clicking on the link below.
@@ -241,34 +173,17 @@ function validateYearFilters() {
 function showRelevantYears() {
     var entries = $('#filter-entries-year button');
     var listSize = entries.size();
-    entries.hide();
+    entries.addClass('hidden');
 
     var num = 10;
-    $('#filter-entries-year button:lt(' + num + ')').show();
+    $('#filter-entries-year button:lt(' + num + ')').removeClass('hidden');
     $('#filter-more-year').click(function () {
         num = (num + 10 <= listSize) ? num + 10 : listSize;
-        $('#filter-entries-year button:lt(' + num + ')').show();
+        $('#filter-entries-year button:lt(' + num + ')').removeClass('hidden');
         if (num === listSize) {
-            $('#filter-more-year').hide();
+            $('#filter-more-year').hide(0);
         }
     });
-}
-
-/**
- * Create a button HTML-Element for a filter.
- *
- * @param name
- * @param filter
- * @param description
- * @returns {string}
- */
-function createFilterButton(name, filter, description) {
-    var element = '<button class="btn btn-default btn-block filter-entry" ' +
-        'title="' + description + '" ' +
-        'data-value="' + name + '">' +
-        description + '</button>';
-
-    return element;
 }
 
 /**
@@ -286,7 +201,7 @@ function addTagFilters() {
             initFilterButtons('tags');
 
             // show filter section
-            $('#filter-list-tags').removeClass(HIDDEN_CLASS);
+            $('#filter-list-tags').removeClass('hidden');
         }
     });
 }
@@ -306,7 +221,7 @@ function addCustomFilters() {
             initFilterButtons('custom');
 
             // show filter section
-            $('#filter-list-custom').removeClass(HIDDEN_CLASS);
+            $('#filter-list-custom').removeClass('hidden');
         }
     });
 }
@@ -324,7 +239,7 @@ function addCustomTreeFilters() {
             // initFilterButtons('custom');
 
             // show filter section
-            $('#filter-list-custom').removeClass(HIDDEN_CLASS);
+            $('#filter-list-custom').removeClass('hidden');
         }
     });
 }
@@ -335,12 +250,12 @@ function addCustomTreeFilters() {
 function searchCustomFilters() {
     var search = $('#searchCustomFilters').val().toLowerCase();
     var entries = $('#filter-entries-custom');
-    entries.children().each(function () {
+    $(entries).children().each(function () {
         var value = $(this).html().toLowerCase();
         if (value.indexOf(search) > -1) {
-            $(this).removeClass(HIDDEN_CLASS);
+            $(this).show(0);
         } else {
-            $(this).addClass(HIDDEN_CLASS);
+            $(this).hide(0);
         }
     });
 }
@@ -369,44 +284,9 @@ function createFilterTree(items) {
 }
 
 function resetFilterSelection() {
-    $('.filter-entry').removeClass(ACTIVE_CLASS);
+    $('.filter-entry').removeClass('active');
     updateCounters();
     updateResults(0);
-}
-
-/**
- * sorting
- */
-
-/**
- * Initialize sorting buttons to update selection and the post results.
- */
-function initSortOptions() {
-    var SELECTED_CLASS = 'sort-selected';
-    $('#sorting-dropdown-menu > .sort-selection').click(function (e) {
-        e.preventDefault();
-
-        // hide all sorting order arrows
-        $('.sort-order').addClass(HIDDEN_CLASS);
-
-        // remove all elements as selected and selected the current element
-        if ($(this).hasClass(SELECTED_CLASS)) {
-            $(this).data('asc', !$(this).data('asc'))
-        } else {
-            $('#sorting-dropdown-menu > .sort-selection').removeClass(SELECTED_CLASS);
-            $(this).addClass(SELECTED_CLASS);
-        }
-
-        // show the correct sorting arrow to display the order
-        if ($(this).data('asc')) {
-            $(this).find('.sort-asc').removeClass(HIDDEN_CLASS);
-        } else {
-            $(this).find('.sort-desc').removeClass(HIDDEN_CLASS);
-        }
-
-        // refresh results
-        updateResults(0);
-    });
 }
 
 /**
@@ -418,7 +298,7 @@ var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institutio
 function disableSearchFields() {
     $('#dropdownSelectionField').children('li').each(function () {
         if (!allowedSearchFields.includes($(this).data('field'))) {
-            $(this).addClass(HIDDEN_CLASS);
+            $(this).hide(0);
         }
     })
 }

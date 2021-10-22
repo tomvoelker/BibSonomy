@@ -30,8 +30,8 @@
                        showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
-			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/explorePage.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/groupExplore.js"><!-- keep me --></script>
 		</jsp:attribute>
 
@@ -82,11 +82,7 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12">
-								<div class="custom-loader hidden">
-									<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-									   <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-									</svg>
-								</div>
+								<parts:spinner/>
 							</div>
 						</div>
 						<div class="row">
