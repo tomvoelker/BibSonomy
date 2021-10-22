@@ -3,6 +3,7 @@
  */
 $(function () {
     initSubmit();
+    initResetableInput();
     initResetButtons();
     initMainNameSelection();
 
@@ -14,16 +15,33 @@ $(function () {
 });
 
 function initSubmit() {
-    $('#submitEditPersonDetails').click(function() {
+    $('#submitEditPersonDetails').click(function () {
 
     });
 }
 
+function initResetableInput() {
+    $('#formEditPersonDetails input').change(function () {
+        var id = $(this).attr('id');
+        var resetLink = $('.reset-link[data-reset="' + id +'"]');
+        if ($(this).val() !== $(this).data('reset')) {
+            $(resetLink).fadeIn();
+        } else {
+            $(resetLink).fadeOut();
+        }
+    });
+}
+
 function initResetButtons() {
+    $('.reset-link').click(function () {
+        var resetId = $(this).data('reset');
+        var input = $('#' + resetId);
+        $(input).val($(input).data('reset'));
+    })
 }
 
 function initMainNameSelection() {
-    $('.check-main').change(function() {
+    $('.check-main').change(function () {
         $(this).siblings().prop('checked', false);
     });
 }
@@ -31,7 +49,7 @@ function initMainNameSelection() {
 /**
  * Validates a given url string
  * @param url
- * @returns	true if the given url is valid or empty, false otherwise
+ * @returns    true if the given url is valid or empty, false otherwise
  */
 function isValidURL(url) {
     if (!url) {

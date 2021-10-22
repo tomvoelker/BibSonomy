@@ -23,7 +23,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editDegree">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -38,7 +38,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editCollege">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -53,7 +53,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editEmail">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -68,7 +68,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editHomepage">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -83,7 +83,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editOrcid">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>
@@ -98,7 +98,7 @@
                     </div>
 					<div class="col-md-1">
 						<fmt:message var="resetHint" key="resetbutton"/>
-						<a href="#" class="reset-link hidden" data-toggle="tooltip" data-placement="top"
+						<a href="#" class="reset-link" data-toggle="tooltip" data-placement="top"
 						   title="${resetHint}" data-reset="editResearcherId">
 							<fontawesome:icon icon="redo" fixedWidth="${true}"/>
 						</a>

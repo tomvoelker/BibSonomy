@@ -137,3 +137,19 @@ function generateFilterQuery() {
 
 	return filterQuery.join(' AND ');
 }
+
+function getFilterQuery(filterList) {
+	var selectedFilters = [];
+	$(filterList).find('.btn.active').each(function () {
+		selectedFilters.push($(this).data('value'));
+	});
+
+	var field = $(filterList).data('field');
+	var matchValues = selectedFilters.join(' OR ');
+
+	if (matchValues) {
+		return field + ':(' + matchValues + ')';
+	}
+
+	return '';
+}
