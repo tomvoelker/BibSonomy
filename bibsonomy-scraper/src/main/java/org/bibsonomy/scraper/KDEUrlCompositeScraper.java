@@ -179,6 +179,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		// changed to hebis Scraper
 		//addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
+		// SpringerScraper has to come before SpringerLinkScraper
+		addScraper(new SpringerScraper());
 		addScraper(new SpringerLinkScraper());
 		addScraper(new ScienceDirectScraper());
 		addScraper(new PubMedScraper());
