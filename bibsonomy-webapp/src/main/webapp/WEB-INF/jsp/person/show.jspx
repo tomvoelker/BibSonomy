@@ -66,6 +66,7 @@
 			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
 
+			<script type='text/javascript' src='/resources/javascript/person/explorePage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/editPerson.js'><!-- keep me --></script>
 		</jsp:attribute>

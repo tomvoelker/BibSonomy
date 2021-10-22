@@ -25,9 +25,9 @@ function initResetableInput() {
         var id = $(this).attr('id');
         var resetLink = $('.reset-link[data-reset="' + id +'"]');
         if ($(this).val() !== $(this).data('reset')) {
-            $(resetLink).fadeIn();
+            $(resetLink).show(0);
         } else {
-            $(resetLink).fadeOut();
+            $(resetLink).hide(0);
         }
     });
 }

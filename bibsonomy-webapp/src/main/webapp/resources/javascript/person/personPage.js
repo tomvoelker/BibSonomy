@@ -1,6 +1,3 @@
-const HIDDEN_CLASS = 'hidden';
-const ACTIVE_CLASS = 'active';
-
 /**
  * on load
  */
@@ -26,13 +23,13 @@ function loadSimilarAuthors() {
 			'requestedPersonId': personId
 		},
 		beforeSend: function () {
-			$('#loader-similar').removeClass(HIDDEN_CLASS);
+			$('#loader-similar').show(0);
 		},
 		success: function (data) {
 			$('#personSimilarAuthors').html(data);
 		},
 		complete: function () {
-			$('#loader-similar').addClass(HIDDEN_CLASS);
+			$('#loader-similar').hide(0);
 		}
 	});
 }
@@ -50,13 +47,13 @@ function loadPublications() {
 			'requestedPersonId': personId
 		},
 		beforeSend: function () {
-			$('#loader-publications').removeClass(HIDDEN_CLASS);
+			$('#loader-publications').show(0);
 		},
 		success: function (data) {
 			$('#personPublications').html(data);
 		},
 		complete: function () {
-			$('#loader-publications').addClass(HIDDEN_CLASS);
+			$('#loader-publications').hide(0);
 		}
 	});
 }
@@ -86,11 +83,11 @@ function initPublicationPagination(page) {
 		'loadingNomoreText': 'No more.', // No more of loading prompt.
 		'manuallyText': 'click to loading more.', // Click of loading prompt.
 		'before': function(){
-			$("#loader-publications").removeClass(HIDDEN_CLASS);
+			$("#loader-publications").show(0);
 		},
 		'after': function(elementsLoaded){
 			// After loading content, you can use this function to animate your new elements
-			$("#loader-publications").addClass(HIDDEN_CLASS);
+			$("#loader-publications").hide(0);
 		}
 	});
 }
@@ -104,9 +101,9 @@ function togglePersonContent(contentType) {
 		});
 		$('.person-content').each(function() {
 			if ($(this).data('content') === contentType) {
-				$(this).removeClass(HIDDEN_CLASS);
+				$(this).show(0);
 			} else {
-				$(this).addClass(HIDDEN_CLASS);
+				$(this).hide(0);
 			}
 		});
 	}
@@ -119,37 +116,7 @@ function togglePersonContent(contentType) {
  */
 function initFilterButtons(field) {
 	$('#filter-entries-' + field + ' > button').click(function () {
-		$(this).toggleClass(ACTIVE_CLASS);
+		$(this).toggleClass('active');
 		updateResults(0);
 	});
-}
-
-/**
- * entrytype filter builder
- */
-function generateFilterQuery() {
-	var filterQuery = [];
-
-	$('.filter-list').each(function () {
-		var selectedFiltersQuery = getFilterQuery(this)
-		if (selectedFiltersQuery) filterQuery.push(selectedFiltersQuery);
-	});
-
-	return filterQuery.join(' AND ');
-}
-
-function getFilterQuery(filterList) {
-	var selectedFilters = [];
-	$(filterList).find('.btn.active').each(function () {
-		selectedFilters.push($(this).data('value'));
-	});
-
-	var field = $(filterList).data('field');
-	var matchValues = selectedFilters.join(' OR ');
-
-	if (matchValues) {
-		return field + ':(' + matchValues + ')';
-	}
-
-	return '';
 }
