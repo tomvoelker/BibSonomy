@@ -122,7 +122,6 @@ import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.neurips.NeurIPSScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
 import org.bibsonomy.scraper.url.kde.nrc.NRCScraper;
-import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
@@ -177,7 +176,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new JEBScraper());
 		addScraper(new RSPBScraper());
 		addScraper(new BioRxivScraper());
-		addScraper(new OpacScraper());
+		// changed to hebis Scraper
+		//addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
 		addScraper(new SpringerLinkScraper());
 		addScraper(new ScienceDirectScraper());
@@ -227,7 +227,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new DBLPScraper());
 		addScraper(new BioMedCentralScraper());
 		addScraper(new WorldCatScraper());
-		addScraper(new SpringerScraper());
 		addScraper(new AnthroSourceScraper());
 		addScraper(new BMJScraper());
 		addScraper(new EditLibScraper());
