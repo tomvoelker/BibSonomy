@@ -30,8 +30,8 @@
                        showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
-			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/explorePage.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/groupExplore.js"><!-- keep me --></script>
 		</jsp:attribute>
 
