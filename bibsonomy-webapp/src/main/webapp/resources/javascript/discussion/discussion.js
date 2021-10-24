@@ -155,11 +155,12 @@ function deleteDiscussionItem() {
 				
 				plotRatingDistribution();
 			}
+		},
+		error: function(jqXHR, data, errorThrown) {
+			//TODO: Can be deleted as soon as no 405 error is returned regularly during HTTP DELETE
+			window.location.reload(true);
 		}
 	});
-
-	//TODO: Can be deleted as soon as no 405 Error is returned when deleting
-	window.location.reload(true);
 
 	return false;
 }

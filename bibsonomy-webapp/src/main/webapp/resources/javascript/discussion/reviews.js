@@ -72,9 +72,11 @@ $(function() {
 				
 				form.hide();
 			},
-			error:		function(jqXHR, data, errorThrown) {
+			error: function(jqXHR, data, errorThrown) {
+				//TODO: Can be deleted as soon as no 405 error is returned regularly during HTTP PUT
+				window.location.reload(true);
 				handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
-			},
+			}
 		});
 		
 		return false;
