@@ -30,24 +30,25 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
-import org.bibsonomy.util.id.ISBNUtils;
+import org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper;
+import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Scraper for springer.com
- * 
+ *
  * @author tst
  */
 public class SpringerScraper extends AbstractUrlScraper {
@@ -58,55 +59,67 @@ public class SpringerScraper extends AbstractUrlScraper {
 
 	/** Host */
 	private static final String HOST = "springer.com";
-	private static final String SPRINGER_CITATION_HOST = "link.springer.com/book";
+	private static final String SPRINGER_CITATION_HOST = "link.springer.com";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
-					new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN),
-					new Pair<>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN)
-	);
-	
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
+
+	static {
+		patterns.add(new Pair<>(Pattern.compile(".*" + HOST), Pattern.compile("computer")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + HOST), Pattern.compile("book")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + HOST), Pattern.compile("content")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), Pattern.compile("computer")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), Pattern.compile("book")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), Pattern.compile("content")));
+	}
+
+	Pattern HTML_DOI_PATTERN = Pattern.compile("<dt>DOI</dt>\\s*<dd>(.*)</dd>");
+
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		final String url = sc.getUrl().toExternalForm().replace(".pdf", "");
 
 		try {
-			final String url = sc.getUrl().toString();
-			
-			if (url.contains(".pdf")) {
-				url.replaceAll("/content/pdf", "");
-				url.replaceAll(".pdf", "");
+			String  doiURL = "https://doi.org/";
+			String doi = DOIUtils.getDoiFromURL(new URL(url));
+
+			if (present(doi)){
+				doiURL += doi;
+			}else {
+				String html = WebUtils.getContentAsString(url);
+				Matcher m_doiInHtml = HTML_DOI_PATTERN.matcher(html);
+				if (m_doiInHtml.find()) doiURL += m_doiInHtml.group(1);
 			}
-			
-			final String isbn = ISBNUtils.extractISBN(url);
-			final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 
-			if (present(bibtex)) {
-				sc.setBibtexResult(bibtex);
+			if (present(doiURL)){
+				ScrapingContext context = new ScrapingContext(new URL(doiURL), null);
+				new ContentNegotiationDOIScraper().scrape(context);
+				sc.setBibtexResult(context.getBibtexResult());
+				sc.setDoiURL(new URL(doiURL));
 				return true;
-			} 
-			
-			throw new ScrapingFailureException("getting bibtex failed");
-
+			}else {
+				return false;
+			}
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
-	
+
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
-	
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-	
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
