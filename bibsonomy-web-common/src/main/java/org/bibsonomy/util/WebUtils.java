@@ -359,7 +359,11 @@ public class WebUtils {
 		try {
 			final HttpResponse response = client.execute(method);
 			if (response.getStatusLine().getStatusCode()==HttpStatus.SC_OK){
-				String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+				String charset = "UTF-8";
+				Header firstHeader = response.getFirstHeader(CONTENT_TYPE_HEADER_NAME);
+				if (present(firstHeader)){
+					charset = extractCharset(firstHeader.getValue());
+				}
 				return inputStreamToStringBuilder(response.getEntity().getContent(), charset).toString();
 			}
 			return null;
