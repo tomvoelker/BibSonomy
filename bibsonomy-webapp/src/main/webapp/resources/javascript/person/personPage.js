@@ -2,6 +2,9 @@
  * on load
  */
 $(function () {
+	// init content tab navigation
+	initPersonNavigation();
+
 	// init filter buttons
 	initFilterButtons('entrytype');
 
@@ -16,44 +19,22 @@ $(function () {
 function loadSimilarAuthors() {
 	var personId = $('#personInfo').data('person');
 
+	$('#personSimilarAuthors').empty();
+
 	$.ajax({
 		url: '/ajax/person/similar', // The url you are fetching the results.
 		data: {
 			// These are the variables you can pass to the request
 			'requestedPersonId': personId
 		},
-		beforeSend: function () {
-			$('#loader-similar').show(0);
-		},
 		success: function (data) {
 			$('#personSimilarAuthors').html(data);
 		},
-		complete: function () {
-			$('#loader-similar').hide(0);
-		}
-	});
-}
-
-/**
- * Load publications of the person.
- */
-function loadPublications() {
-	var personId = $('#personInfo').data('person');
-
-	$.ajax({
-		url: '/ajax/person/publications', // The url you are fetching the results.
-		data: {
-			// These are the variables you can pass to the request
-			'requestedPersonId': personId
+		'before': function(){
+			$("#loader-similar").show(0);
 		},
-		beforeSend: function () {
-			$('#loader-publications').show(0);
-		},
-		success: function (data) {
-			$('#personPublications').html(data);
-		},
-		complete: function () {
-			$('#loader-publications').hide(0);
+		'after': function(){
+			$("#loader-similar").hide(0);
 		}
 	});
 }
@@ -63,6 +44,12 @@ function initPublicationPagination(page) {
 	var sortPage = '';
 	var sortPageOrder = '';
 	var query = generateFilterQuery();
+
+	var container = $('#personPublicationsContainer');
+	container.empty();
+	$('<div>', {
+		id: 'personPublications',
+	}).appendTo(container);
 
 	$('#personPublications').scrollPagination({
 		'url': '/ajax/person/publications',  // The url you are fetching the results.
@@ -85,28 +72,31 @@ function initPublicationPagination(page) {
 		'before': function(){
 			$("#loader-publications").show(0);
 		},
-		'after': function(elementsLoaded){
-			// After loading content, you can use this function to animate your new elements
+		'after': function(){
 			$("#loader-publications").hide(0);
 		}
 	});
 }
 
-function togglePersonContent(contentType) {
-	var nav = $('#personContentNav');
-
-	if ($(nav).length ) {
-		$(nav).children().each(function () {
-			$(this).toggleClass('active');
-		});
-		$('.person-content').each(function() {
-			if ($(this).data('content') === contentType) {
-				$(this).show(0);
+function initPersonNavigation() {
+	$('.tab-link').click(function () {
+		var contentType = $(this).data('tab');
+		$('#personContentNav li').each(function() {
+			if ($(this).data('tab') === contentType) {
+				$(this).addClass('active');
 			} else {
-				$(this).hide(0);
+				$(this).removeClass('active');
 			}
 		});
-	}
+
+		$('.person-content').each(function() {
+			if ($(this).data('content') === contentType) {
+				$(this).removeClass('hidden');
+			} else {
+				$(this).addClass('hidden');
+			}
+		});
+	});
 }
 
 /**

@@ -16,6 +16,7 @@
 		  xmlns:clear="http://java.sun.com/jsp/jstl/core"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 		  xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 >
@@ -29,6 +30,7 @@
 
 	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}"/>
 
+	<c:set var="personId" value="${command.person.personId}"/>
 	<c:set var="personName" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}"/>
 	<c:choose>
 		<c:when test="${not empty command.person.academicDegree}">
@@ -66,7 +68,7 @@
 			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
 
-			<script type='text/javascript' src='/resources/javascript/person/explorePage.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/explorePage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/editPerson.js'><!-- keep me --></script>
 		</jsp:attribute>
@@ -90,7 +92,7 @@
 
 		<jsp:attribute name="content">
 			<errors:global/>
-			<div id="personInfo" class="row" data-person="${command.person.personId}">
+			<div id="personInfo" class="row" data-person="${personId}">
 				<div class="col-md-9">
 					<perdetails:profile command="${command}" hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}"
 										title="${personNameWithDegree}" personName="${personName}"/>
@@ -116,7 +118,23 @@
 
 				<div class="person-content row" data-content="publications">
 					<div class="col-md-9">
-						<div id="personPublications"><!-- keep me --></div>
+						<div class="row">
+							<div class="col-md-12">
+								<div style="clear: both;">
+        							<h3 class="list-headline">
+										<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+											<div class="btn-group">
+												<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
+												<ul id="sorting-dropdown-menu" class="dropdown-menu">
+													<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
+												</ul>
+											</div>
+										</div>
+									</h3>
+								</div>
+							</div>
+						</div>
+						<div id="personPublicationsContainer"><!-- keep me --></div>
 						<parts:spinner id="publications"/>
 					</div>
 					<div class="col-md-3 sidebar">

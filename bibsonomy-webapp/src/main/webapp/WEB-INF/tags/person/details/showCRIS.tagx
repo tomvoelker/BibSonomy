@@ -18,13 +18,13 @@
 		<div class="row">
 			<div class="col-md-12">
 				<ul id="personContentNav" class="nav nav-tabs nav-justified">
-					<li role="presentation" class="active">
-						<a href="#" onclick="togglePersonContent('publications')">
+					<li role="presentation" class="active" data-tab="publications">
+						<a href="#" class="tab-link" data-tab="publications">
 							<strong><fmt:message key="person.show.publications"/></strong>
 						</a>
 					</li>
-					<li role="presentation">
-						<a href="#" onclick="togglePersonContent('projects')">
+					<li role="presentation" data-tab="projects">
+						<a href="#" class="tab-link" data-tab="projects">
 							<strong><fmt:message key="person.show.projects"/></strong>
 						</a>
 					</li>

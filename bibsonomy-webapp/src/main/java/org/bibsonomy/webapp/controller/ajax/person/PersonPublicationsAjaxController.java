@@ -39,6 +39,7 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
         final int postsPerPage = command.getPageSize();
         final int start = postsPerPage * command.getPage();
         command.setStart(start);
+        command.setEnd(start + postsPerPage);
 
         if (ValidationUtils.present(user) && user.getSettings().getPersonPostsStyle() == PersonPostsStyle.MYOWN) {
             return workOnMyOwnPosts(command, user);
@@ -55,7 +56,7 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
                 .excludeTheses(true)
                 .groupByInterhash(true)
                 .orderBy(PersonResourceRelationOrder.PublicationYear)
-                .fromTo(command.getStart(), command.getPageSize());
+                .fromTo(command.getStart(), command.getEnd());
 
         final List<ResourcePersonRelation> publications = logic.getResourceRelations(queryBuilder.build());
 

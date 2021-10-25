@@ -29,7 +29,8 @@ public class GetResourcePersonRelationsExcludeTheses extends ResourcePersonRelat
 
     @Override
     protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> param, DBSession session) {
-        return this.getPersonDatabaseManager().getResourcePersonRelationsExcludeTheses(param.getQuery().getPersonId(), session);
+        final ResourcePersonRelationQuery query = param.getQuery();
+        return this.getPersonDatabaseManager().getResourcePersonRelationsExcludeTheses(query.getPersonId(), query.getEnd() - query.getStart(), query.getStart(), session);
     }
 
     @Override

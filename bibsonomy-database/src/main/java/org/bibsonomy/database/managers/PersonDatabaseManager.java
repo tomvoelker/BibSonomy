@@ -704,14 +704,14 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 						buildBibTexParam(personId), Integer.class, session);
 	}
 
-	public List<ResourcePersonRelation> getResourcePersonRelationsOnlyTheses(final String personId, final DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsOnlyTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
 		return this.queryForList("getThesisRelationsForPerson",
-				new GetPersonRelations(personId, null, null), ResourcePersonRelation.class, session);
+				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
 
-	public List<ResourcePersonRelation> getResourcePersonRelationsExcludeTheses(final String personId, final DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsExcludeTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
 		return this.queryForList("getExcludeThesisRelationsForPerson",
-				new GetPersonRelations(personId, null, null), ResourcePersonRelation.class, session);
+				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
 
 	private BibTexParam buildBibTexParam(String personId) {
