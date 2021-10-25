@@ -86,29 +86,30 @@ function createFilterButton(name, filter, description) {
 /**
  * Initialize sorting buttons to update selection and the post results.
  */
-function initSortOptions() {
+function initSortOptions(menuId, updateResults) {
     var SELECTED_CLASS = 'sort-selected';
-    var HIDDEN_CLASS = 'hidden';
 
-    $('#sorting-dropdown-menu > .sort-selection').click(function (e) {
+    var menu = $('#' + menuId);
+
+    $(menu).children('.sort-selection').click(function (e) {
         e.preventDefault();
 
         // hide all sorting order arrows
-        $('.sort-order').addClass(HIDDEN_CLASS);
+        $('.sort-order').addClass('hidden');
 
         // remove all elements as selected and selected the current element
         if ($(this).hasClass(SELECTED_CLASS)) {
             $(this).data('asc', !$(this).data('asc'))
         } else {
-            $('#sorting-dropdown-menu > .sort-selection').removeClass(SELECTED_CLASS);
+            $(menu).children('.sort-selection').removeClass(SELECTED_CLASS);
             $(this).addClass(SELECTED_CLASS);
         }
 
         // show the correct sorting arrow to display the order
         if ($(this).data('asc')) {
-            $(this).find('.sort-asc').removeClass(HIDDEN_CLASS);
+            $(this).find('.sort-asc').removeClass('hidden');
         } else {
-            $(this).find('.sort-desc').removeClass(HIDDEN_CLASS);
+            $(this).find('.sort-desc').removeClass('hidden');
         }
 
         // refresh results

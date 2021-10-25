@@ -16,7 +16,7 @@ $(function () {
     // init 'show more' for year list
     showRelevantYears();
     // init sorting options
-    initSortOptions();
+    initSortOptions('sorting-dropdown-menu', updateResults);
     // add init results
     updateResults(0);
 });
