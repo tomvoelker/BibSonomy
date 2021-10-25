@@ -34,21 +34,17 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -59,8 +55,6 @@ import java.util.regex.Pattern;
  */
 public abstract class CitMgrScraper extends AbstractUrlScraper {
 
-	private static final Pattern DOI_PATTERN = Pattern.compile("(10\\.[0-9a-zA-Z]+/(?:(?![\"&'])\\S)+)\\b");
-
 	@Override
 	protected final boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
@@ -70,7 +64,7 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 		}
 
 		try {
-			final String doi = this.getDOI(url);
+			final String doi = DOIUtils.getDoiFromURL(new URL(url.getProtocol(), url.getHost(), url.getPath()));
 			if (!present(doi)) {
 				throw new ScrapingFailureException("can't get doi from " + url);
 			}
@@ -90,8 +84,8 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 			scrapingContext.setBibtexResult(bibtex);
 
 			return true;
-		} catch (final IOException | URISyntaxException e) {
-			throw new InternalFailureException(e);
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
 		}
 	}
 
@@ -119,15 +113,5 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 		return postData;
 	}
 
-	private String getDOI(URL url) throws URISyntaxException {
-		String doi = "";
-		final Matcher m_doi = DOI_PATTERN.matcher(url.getPath());
-		if (m_doi.find()) {
-			doi = m_doi.group(1);
-		}
-
-		doi = UrlUtils.decodePathSegment(doi);
-		return doi;
-	}
 
 }
