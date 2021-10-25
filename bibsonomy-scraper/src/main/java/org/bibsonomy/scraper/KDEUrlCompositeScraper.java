@@ -37,6 +37,7 @@ import org.bibsonomy.scraper.url.kde.aappublications.AappublicationsScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
+import org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
@@ -81,6 +82,7 @@ import org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
+import org.bibsonomy.scraper.url.kde.hebis.HebisScraper;
 import org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
 import org.bibsonomy.scraper.url.kde.hogrefe.HogrefeScraper;
@@ -178,6 +180,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BioRxivScraper());
 		// changed to hebis Scraper
 		//addScraper(new OpacScraper());
+		addScraper(new HebisScraper());
 		addScraper(new IEEEXploreScraper());
 		// SpringerScraper has to come before SpringerLinkScraper
 		addScraper(new SpringerScraper());
@@ -328,7 +331,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		/*
 		 * rja, 2018-03-07, now handled by HighwireScraper
 		 */
-		//addScraper(new AhaJournalsScraper());
+		addScraper(new AhaJournalsScraper());
 		addScraper(new KargerScraper());
 		addScraper(new FRONTIERSINScraper());
 		addScraper(new SpieDigitalLibraryScraper());
