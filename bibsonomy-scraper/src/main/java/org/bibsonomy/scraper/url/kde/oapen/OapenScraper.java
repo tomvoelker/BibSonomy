@@ -63,12 +63,10 @@ public class OapenScraper extends GenericRISURLScraper {
 		String html = WebUtils.getContentAsString(url);
 
 		final Matcher m_exportCitation = EXPORT_CITATION.matcher(html);
-		String exportCitation = "";
 		if (m_exportCitation.find()) {
-			exportCitation = m_exportCitation.group(1);
+			return m_exportCitation.group(1);
 		}
-
-		return exportCitation;
+		return null;
 	}
 
 
