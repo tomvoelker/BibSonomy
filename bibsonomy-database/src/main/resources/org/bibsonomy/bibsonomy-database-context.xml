@@ -528,6 +528,11 @@
 								<constructor-arg ref="projectSearch" />
 							</bean>
 						</entry>
+						<entry key-ref="goldStandardPublicationClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
+								<constructor-arg ref="goldStandardPublicationSearch" />
+							</bean>
+						</entry>
 						<entry key-ref="publicationClass">
 							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
 								<constructor-arg ref="publicationSearch" />

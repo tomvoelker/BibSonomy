@@ -969,6 +969,9 @@
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
 		<property name="mappers">
 			<map>
+				<entry key-ref="goldStandardPublicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
 				<entry key-ref="publicationClass">
 					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
 				</entry>

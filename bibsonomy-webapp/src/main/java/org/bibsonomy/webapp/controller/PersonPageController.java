@@ -195,8 +195,13 @@ public class PersonPageController extends SingleResourceListController implement
 		postsQuery.setGrouping(GroupingEntity.PERSON);
 		postsQuery.setGroupingName(command.getPerson().getPersonId());
 		postsQuery.setSearch(NO_THESIS_SEARCH);
-		// TODO fix going to bibtex index rn
-		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));
+
+		DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
+				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply("entrytype"));
+		distinctFieldQuery.setPostQuery(postsQuery);
+		distinctFieldQuery.setSize(20);
+
+		command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
 	}
 
 	private void setMyOwnPosts(PersonPageCommand command) {
@@ -207,21 +212,21 @@ public class PersonPageController extends SingleResourceListController implement
 		postsQuery.setTags(Collections.singletonList("myown"));
 		postsQuery.setSearch(NO_THESIS_SEARCH);
 
-		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));
+		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
+				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply("entrytype"));
+		distinctFieldQuery.setPostQuery(postsQuery);
+		distinctFieldQuery.setSize(20);
+
+		command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
 	}
 
 	/**
-	 * Generate a list of entrytype filter elements of the 'myown' posts.
+	 * Generate a list of entrytype filter elements of distinct field query.
 	 *
 	 * @param command the person page command
 	 * @return
 	 */
-	private List<SearchFilterElement> generateEntrytypeFilters(PersonPageCommand command, PostSearchQuery<? extends BibTex> postsQuery) {
-		// get aggregated count by given field
-		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class, (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply("entrytype"));
-		distinctFieldQuery.setPostQuery(postsQuery);
-		distinctFieldQuery.setSize(20);
-
+	private List<SearchFilterElement> generateEntrytypeFilters(PersonPageCommand command, DistinctFieldQuery<? extends BibTex, ?> distinctFieldQuery) {
 		final Set<?> distinctFieldCounts = this.logic.getMetaData(command.getContext().getLoginUser(), distinctFieldQuery);
 
 		List<SearchFilterElement> filters = new ArrayList<>();
