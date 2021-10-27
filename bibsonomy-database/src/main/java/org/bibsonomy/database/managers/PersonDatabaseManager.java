@@ -704,11 +704,29 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 						buildBibTexParam(personId), Integer.class, session);
 	}
 
+	/**
+	 * Get relations for the given person, that are only with an entrytype including thesis
+	 *
+	 * @param personId the person id
+	 * @param limit the result limit
+	 * @param offset the result offset
+	 * @param session the sesseion
+	 * @return list of relations
+	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsOnlyTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
 		return this.queryForList("getThesisRelationsForPerson",
 				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
 
+	/**
+	 * Get relations for the given person, that are only with an entrytype excluding thesis
+	 *
+	 * @param personId the person id
+	 * @param limit the result limit
+	 * @param offset the result offset
+	 * @param session the sesseion
+	 * @return list of relations
+	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsExcludeTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
 		return this.queryForList("getExcludeThesisRelationsForPerson",
 				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);

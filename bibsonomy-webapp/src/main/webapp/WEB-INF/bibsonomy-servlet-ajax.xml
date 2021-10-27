@@ -407,10 +407,6 @@
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
-	<bean id="personThesesAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonThesesAjaxController" scope="request" parent="ajaxController">
-		<property name="logic" ref="adminLogic" />
-	</bean>
-
 	<bean id="personSimilarAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonSimilarAjaxController" scope="request" parent="ajaxController">
 		<property name="logic" ref="adminLogic" />
 	</bean>
