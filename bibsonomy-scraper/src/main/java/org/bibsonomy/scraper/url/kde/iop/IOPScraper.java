@@ -1,43 +1,48 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
- * <p>
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
- * <p>
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.scraper.url.kde.iop;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import static org.bibsonomy.util.ValidationUtils.present;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -45,59 +50,47 @@ import java.util.regex.Pattern;
  * SCraper for http://www.iop.org and http://www.ioscience.iop.org/article
  * @author tst
  */
-public class IOPScraper extends GenericBibTeXURLScraper {
+public class IOPScraper extends AbstractUrlScraper {
 	/* URL parts */
-	private static final String IOP_URL_PATH_START = "/article";
-	private static final String IOP_EJ_URL_BASE = "http://www.iop.org";
 	private static final String SITE_NAME = "IOP";
-	private static final String SITE_URL = IOP_EJ_URL_BASE + "/";
+	private static final String SITE_URL = "https://iopscience.iop.org";
 	private static final String INFO = "Scraper for electronic journals from " + href(SITE_URL, SITE_NAME);
-	private static final String IOP_HOST = "iop.org";
 	private static final String NEW_IOP_HOST = "iopscience.iop.org";
 
-	/*
-	 * needed regular expressions to extract the publication id from the url
-	 */
-	private static final Pattern PUBLICATION_ID_PATTERN = Pattern.compile("^.*?article\\/(.*?\\/(.*?))($|\\/meta)");
-
 	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
-			new Pair<>(Pattern.compile(".*" + IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN),
-			new Pair<>(Pattern.compile(".*" + NEW_IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*"))
+			new Pair<>(Pattern.compile(".*" + NEW_IOP_HOST), Pattern.compile("/article" + ".*"))
 	);
 
+	private static final String DOWNLOAD_URL_PATH = "https://iopscience.iop.org/export?";
+
 	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		String resultURL = "https://iopscience.iop.org/export?";
-		final Matcher publicationIdMatcher = PUBLICATION_ID_PATTERN.matcher(url.toString());
-		if (publicationIdMatcher.find()) {
-
-			// doi and pubID can be found in the url. It is not needed to scrape the site itself
-			final String doi = publicationIdMatcher.group(1);
-			final String articleId = publicationIdMatcher.group(2);
-
-			final List<NameValuePair> getData = new ArrayList<NameValuePair>(5);
-
-			getData.add(new BasicNameValuePair("doi", doi));
-			getData.add(new BasicNameValuePair("articleId", articleId));
-			getData.add(new BasicNameValuePair("exportFormat", "iopexport_bib"));
-			getData.add(new BasicNameValuePair("exportType", "abs"));
-			getData.add(new BasicNameValuePair("navsubmit", "Export+abstract"));
-
-			for (int i = 0, getDataSize = getData.size(); i < getDataSize; i++) {
-				NameValuePair data = getData.get(i);
-				String paramName = data.getName();
-				String paramValue = data.getValue();
-				resultURL += paramName + "=" + paramValue;
-				if (i != getDataSize - 1) {
-					resultURL += "&";
-				}
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
+		try {
+			final URL url = scrapingContext.getUrl();
+			// gets the parameters for the get Method from the url, which should be scraped
+			String doi = DOIUtils.getDoiFromURL(url);
+			if (!present(doi)){
+				throw new ScrapingException("doi not found in " + url);
 			}
+			// doi contains /meta if the url itself contains /meta
+			doi = doi.replaceAll("/meta", "");
+			final String articleId = doi.substring(doi.indexOf("/")+1);
 
-			return resultURL;
+			final String downloadUrlParams = "doi=" + doi + "&articleId=" +articleId + "&exportFormat=iopexport_bib&exportType=abs&navsubmit=Export+abstract";
+			final String downloadUrl = DOWNLOAD_URL_PATH + downloadUrlParams;
+
+			HttpGet get = new HttpGet(downloadUrl);
+			// needed to avoid recaptcha
+			get.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36");
+
+			String bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+			scrapingContext.setBibtexResult(bibtex);
+			return true;
+		} catch (HttpException | IOException e) {
+			throw new ScrapingException(e);
 		}
-		return null;
 	}
-
 
 	@Override
 	public String getInfo() {
