@@ -30,7 +30,14 @@ public class GetResourcePersonRelationsOnlyTheses extends ResourcePersonRelation
     @Override
     protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> param, DBSession session) {
         final ResourcePersonRelationQuery query = param.getQuery();
-        return this.getPersonDatabaseManager().getResourcePersonRelationsOnlyTheses(query.getPersonId(), query.getEnd() - query.getStart(), query.getStart(), session);
+
+        final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsOnlyTheses(query.getPersonId(), query.getEnd() - query.getStart(), query.getStart(), session);
+
+        if (query.isWithPersonsOfPosts()) {
+            this.getPersonDatabaseManager().loadAllRelationsInPosts(relations, session);
+        }
+
+        return relations;
     }
 
     @Override

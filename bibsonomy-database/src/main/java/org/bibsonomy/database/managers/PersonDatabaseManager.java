@@ -756,6 +756,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 	}
 
+	public void loadAllRelationsInPosts(final List<ResourcePersonRelation> relations, final DBSession session) {
+		// FIXME use a join to retrieve the necessary information
+		for (final ResourcePersonRelation resourcePersonRelation : relations) {
+			final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
+			final List<ResourcePersonRelation> relsOfPub = this.getResourcePersonRelationsWithPersonsByInterhash(interHash, session);
+			resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
+		}
+	}
+
 
 	/**
 	 * based on the query this logic returns all matching persons
