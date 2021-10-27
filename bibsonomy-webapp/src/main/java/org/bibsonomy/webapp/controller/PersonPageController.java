@@ -76,9 +76,9 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(PersonMatch.class);
 
 	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
+	public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
 
 	private LogicInterface adminLogic;
 	private RequestLogic requestLogic;
@@ -194,6 +194,7 @@ public class PersonPageController extends SingleResourceListController implement
 		PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(GoldStandardPublication.class);
 		postsQuery.setGrouping(GroupingEntity.PERSON);
 		postsQuery.setGroupingName(command.getPerson().getPersonId());
+		postsQuery.setSearch(NO_THESIS_SEARCH);
 		// TODO fix going to bibtex index rn
 		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));
 	}
@@ -204,6 +205,7 @@ public class PersonPageController extends SingleResourceListController implement
 		postsQuery.setGrouping(GroupingEntity.USER);
 		postsQuery.setGroupingName(command.getPerson().getUser());
 		postsQuery.setTags(Collections.singletonList("myown"));
+		postsQuery.setSearch(NO_THESIS_SEARCH);
 
 		command.setEntrytypeFilters(generateEntrytypeFilters(command, postsQuery));
 	}

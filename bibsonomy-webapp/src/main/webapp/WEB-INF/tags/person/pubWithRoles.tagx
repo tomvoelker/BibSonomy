@@ -12,7 +12,6 @@
 
 	<spring:eval var="availableRoles" expression="T(org.bibsonomy.model.enums.PersonResourceRelationType).values()"/>
 
-
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 	
 	<div class="personThesisEntry row ${post.resource.interHash}_${post.resource.intraHash}">

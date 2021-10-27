@@ -8,12 +8,13 @@
 
 	<c:choose>
 		<c:when test="${fn:length(command.otherPubs) gt 0}">
-			<perdetails:publications command="${command}" publications="${command.otherPubs}"
-									 isSimilarAuthors="${false}" hideHeadline="${true}"/>
+			<perdetails:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}"/>
 		</c:when>
 		<c:when test="${fn:length(command.similarAuthorPubs) gt 0}">
-			<perdetails:publications command="${command}" publications="${command.similarAuthorPubs}"
-									 isSimilarAuthors="${true}" hideHeadline="${true}"/>
+			<perdetails:publications command="${command}" relations="${command.similarAuthorPubs}" isSimilarAuthors="${true}"/>
+		</c:when>
+		<c:when test="${fn:length(command.myownPosts) gt 0}">
+			<perdetails:publications command="${command}" publications="${command.myownPosts}" isSimilarAuthors="${true}"/>
 		</c:when>
 		<c:otherwise>
 

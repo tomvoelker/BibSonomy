@@ -11,13 +11,21 @@ $(function () {
 	// init publications
 	loadSimilarAuthors();
 	initPublicationPagination(0);
+
+	// init sorting options
+	initSortOptions('sorting-dropdown-menu', initPublicationPagination);
+	// init sorting options
+	initSortOptions('sorting-dropdown-menu-similar', loadSimilarAuthors);
 });
 
 /**
  * Load publications of similar authors.
  */
-function loadSimilarAuthors() {
+function loadSimilarAuthors(page) {
 	var personId = $('#personInfo').data('person');
+	var selectedSort = $('#sorting-dropdown-menu-similar > .sort-selected');
+	var sortPage = selectedSort.data('key');
+	var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
 
 	$('#personSimilarAuthors').empty();
 
@@ -41,9 +49,10 @@ function loadSimilarAuthors() {
 
 function initPublicationPagination(page) {
 	var personId = $('#personInfo').data('person');
-	var sortPage = '';
-	var sortPageOrder = '';
 	var query = generateFilterQuery();
+	var selectedSort = $('#sorting-dropdown-menu > .sort-selected');
+	var sortPage = selectedSort.data('key');
+	var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
 
 	var container = $('#personPublicationsContainer');
 	container.empty();
@@ -107,6 +116,6 @@ function initPersonNavigation() {
 function initFilterButtons(field) {
 	$('#filter-entries-' + field + ' > button').click(function () {
 		$(this).toggleClass('active');
-		updateResults(0);
+		initPublicationPagination(0);
 	});
 }

@@ -215,8 +215,8 @@ a.personPageShowAdditionalRoleFields {
 
 .simplePubEntry-buttons {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 5px;
+	right: 5px;
 }
 
 
@@ -410,6 +410,27 @@ a.person-nav-link:hover {
 		cursor: pointer;
 		text-decoration: underline;
 	  }
+	}
+  }
+
+  .person-publications {
+	.simplePubEntry {
+	  padding: 5px;
+	  border: none;
+	}
+
+	.simplePubEntry:nth-child(even) {
+	  background-color: #eee;
+	  border-radius: 3px;
+	}
+
+	// 2px padding to align with button group
+	.simplePubTitle {
+	  padding-top: 2px;
+	}
+
+	.simplePubYear {
+	  padding-top: 2px;
 	}
   }
 }

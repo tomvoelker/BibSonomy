@@ -30,6 +30,9 @@
 package org.bibsonomy.webapp.command.ajax;
 
 
+import java.util.List;
+
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 
 /**
@@ -42,10 +45,21 @@ public class AjaxPersonPageCommand extends PersonPageCommand {
 	private int page;
 	private int pageSize;
 
+	private String sortPage;
+	private String sortPageOrder;
+
+	private List<SortCriteria> sortCriteria;
+
+	/**
+	 * @return the search string
+	 */
 	public String getSearch() {
 		return search;
 	}
 
+	/**
+	 * @param search the search string to set
+	 */
 	public void setSearch(String search) {
 		this.search = search;
 	}
@@ -76,5 +90,40 @@ public class AjaxPersonPageCommand extends PersonPageCommand {
 	 */
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+	}
+	/**
+	 * @return the sortPage
+	 */
+	public String getSortPage() {
+		return this.sortPage;
+	}
+
+	/**
+	 * @param sortPage the sortPage to set
+	 */
+	public void setSortPage(final String sortPage) {
+		this.sortPage = sortPage;
+	}
+
+	/**
+	 * @return the sortPageOrder
+	 */
+	public String getSortPageOrder() {
+		return this.sortPageOrder;
+	}
+
+	/**
+	 * @param sortPageOrder the sortPageOrder to set
+	 */
+	public void setSortPageOrder(final String sortPageOrder) {
+		this.sortPageOrder = sortPageOrder;
+	}
+
+	public List<SortCriteria> getSortCriteria() {
+		return sortCriteria;
+	}
+
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 }

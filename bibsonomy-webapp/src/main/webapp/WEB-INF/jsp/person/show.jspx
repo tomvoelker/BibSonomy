@@ -148,7 +148,7 @@
 			</div>
 
 			<!-- Person merge -->
-			<div class="row">
+			<div class="person-content row" data-content="merge">
 				<div class="col-md-12">
 					<!-- similar persons, that one could merge -->
 					<c:if test="${fn:length(command.personMatchList) gt 0 and isAdmin}">
