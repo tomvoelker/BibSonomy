@@ -49,24 +49,19 @@
 					   showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
-			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/autocompleteRelatedThesis.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
-
-			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
-
-            <script type='text/javascript' src='/resources/javascript/person/deletePersonRelationResource.js'><!-- keep me --></script>
-            <script type='text/javascript' src='/resources/javascript/person/addPersonRelationResource.js'><!-- keep me --></script>
-
 			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
-
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
-
 			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
+
+			<script type='text/javascript' src='/resources/javascript/person/theses.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
+            <script type='text/javascript' src='/resources/javascript/person/relations.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
+
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 
 			<script type='text/javascript' src='/resources/javascript/explorePage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>

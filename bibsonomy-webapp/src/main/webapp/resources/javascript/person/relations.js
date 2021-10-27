@@ -1,4 +1,30 @@
-$(document).ready(function() {
+/**
+ * on load
+ */
+$(function () {
+    initDeleteRelationButtons();
+    initAddRelationButtons();
+});
+
+
+function initDeleteRelationButtons() {
+    $('.delete-button').click(function (e) {
+        var ele = $(e.target);
+        if (ele.is('span')) {
+            ele = ele.parent();
+        }
+        var interhash = ele.data('interhash');
+        var index = ele.data('personindex');
+        var type = ele.data('relationtype');
+        var form = $('#deletePersonResourceRelationForm');
+        form.find('#interhash').val(interhash);
+        form.find('#index').val(index);
+        form.find('#type').val(type);
+        $("#unlinkPublication").modal("toggle");
+    });
+}
+
+function initAddRelationButtons() {
     $('.add-button').click(function (e) {
         var ele = $(e.target);
         if (ele.is('span')) {
@@ -25,7 +51,7 @@ $(document).ready(function() {
     $('#addPublicationAuthorSelect').change(function() {
         $('#addPersonResourceRelationForm').find('#index').val($(this).val())
     });
-});
+}
 
 function reset_select(){
     $('#addPublicationAuthorSelect').find('option').remove();
