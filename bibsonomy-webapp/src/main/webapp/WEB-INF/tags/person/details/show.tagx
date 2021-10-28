@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
 
 	<!-- Show theses and related ones -->
-	<div id="personTheses" class="row">
+	<div class="row person-content" data-content="theses">
 		<div class="col-md-12">
 			<div>
 				<perdetails:theses command="${command}"/>
@@ -38,7 +38,7 @@
 	</div>
 
 	<!-- Other publications of similar authors -->
-	<div class="person-content row hidden" data-content="similar">
+	<div class="row person-content hidden" data-content="similar">
 		<div class="col-md-12">
 			<div class="row">
 				<div class="col-md-12">

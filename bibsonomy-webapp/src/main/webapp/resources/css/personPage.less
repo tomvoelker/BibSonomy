@@ -375,12 +375,44 @@ a.person-nav-link:hover {
 	text-decoration: none;
 }
 
-#personInfo {
+
+.person-content {
   padding-bottom: 20px;
 }
 
-#personTheses {
-  padding-bottom: 20px;
+.person-info {
+  .person-header {
+	h1 {
+	  margin-bottom: 5px;
+	}
+
+	padding-bottom: 10px;
+  }
+
+  .media-left {
+	padding-right: 30px;
+  }
+}
+
+.person-publications {
+  .simplePubEntry {
+	padding: 5px;
+	border: none;
+  }
+
+  .simplePubEntry:nth-child(even) {
+	background-color: #eee;
+	border-radius: 3px;
+  }
+
+  // 2px padding to align with button group
+  .simplePubTitle {
+	padding-top: 2px;
+  }
+
+  .simplePubYear {
+	padding-top: 2px;
+  }
 }
 
 #personContent {
@@ -412,27 +444,6 @@ a.person-nav-link:hover {
 	  }
 	}
   }
-
-  .person-publications {
-	.simplePubEntry {
-	  padding: 5px;
-	  border: none;
-	}
-
-	.simplePubEntry:nth-child(even) {
-	  background-color: #eee;
-	  border-radius: 3px;
-	}
-
-	// 2px padding to align with button group
-	.simplePubTitle {
-	  padding-top: 2px;
-	}
-
-	.simplePubYear {
-	  padding-top: 2px;
-	}
-  }
 }
 
 #editPersonDetails {
@@ -440,16 +451,16 @@ a.person-nav-link:hover {
 	padding: 10px 0;
   }
 
+  label {
+	margin: 0;
+  }
+
+  .input-label {
+	padding-top: 5px;
+  }
+
   .reset-link {
 	display: none;
+	padding-top: 8px;
   }
-}
-
-.person-header {
-  h1 {
-	margin-top: 0;
-	margin-bottom: 5px;
-  }
-
-  padding-bottom: 10px;
 }

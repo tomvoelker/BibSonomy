@@ -22,7 +22,7 @@ $(function () {
  * Load publications of similar authors.
  */
 function loadSimilarAuthors(page) {
-	var personId = $('#personInfo').data('person');
+	var personId = $('.person-info').data('person');
 	var selectedSort = $('#sorting-dropdown-menu-similar > .sort-selected');
 	var sortPage = selectedSort.data('key');
 	var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
@@ -48,7 +48,7 @@ function loadSimilarAuthors(page) {
 }
 
 function initPublicationPagination(page) {
-	var personId = $('#personInfo').data('person');
+	var personId = $('.person-info').data('person');
 	var query = generateFilterQuery();
 	var selectedSort = $('#sorting-dropdown-menu > .sort-selected');
 	var sortPage = selectedSort.data('key');
