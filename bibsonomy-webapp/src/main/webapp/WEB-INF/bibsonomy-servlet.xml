@@ -957,16 +957,11 @@
 		<property name="crisEnabled" value="${system.cris}" />
 	</bean>
 	
-	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources" ref="allResources"/>
-		<property name="requestLogic" ref="requestLogic"/>
-		<property name="personRoleRenderer" ref="personRoleRenderer"/>
-		<property name="urlGenerator" ref="relativeUrlGenerator" />
-		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
-		<property name="crisCollege" value="${system.cris.college}" />
-		<property name="adminLogic" ref="adminLogic"/>
+	<bean id="personPageController" class="org.bibsonomy.webapp.controller.person.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="logic" ref="adminLogic"/>
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
+		<property name="supportedResources" ref="allResources"/>
 		<property name="mappers">
 			<map>
 				<entry key-ref="goldStandardPublicationClass">
@@ -979,7 +974,7 @@
 		</property>
 	</bean>
 
-	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.person.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />

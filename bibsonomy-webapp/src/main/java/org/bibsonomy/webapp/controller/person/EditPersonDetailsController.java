@@ -45,14 +45,16 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONObject;
 
+/**
+ * Controller to handle all requests to edit person details,
+ * such as names, e-mail, homepage, etc.
+ *
+ * @author kchoong
+ */
 public class EditPersonDetailsController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
-    private final LogicInterface logic;
-
-    public EditPersonDetailsController(LogicInterface logic) {
-        this.logic = logic;
-    }
+    private LogicInterface logic;
 
     /**
      * action called when a user updates preferences of a person
@@ -60,8 +62,6 @@ public class EditPersonDetailsController {
      */
     protected View updateAction(PersonPageCommand command) {
         final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
-
-        // TODO: check if person present!
 
         final Person commandPerson = command.getPerson();
         if (!present(commandPerson)) {
@@ -195,5 +195,9 @@ public class EditPersonDetailsController {
         command.setResponseString(jsonResponse.toString());
 
         return Views.AJAX_JSON;
+    }
+
+    public void setLogic(LogicInterface logic) {
+        this.logic = logic;
     }
 }

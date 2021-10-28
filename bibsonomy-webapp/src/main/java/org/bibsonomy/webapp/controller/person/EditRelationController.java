@@ -60,19 +60,19 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/**
+ * Controller to handle all requests to edit relations of a publication related to a given person.
+ *
+ * @author kchoong
+ */
 public class EditRelationController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
-    private final LogicInterface logic;
-
+    private LogicInterface logic;
     private RequestLogic requestLogic;
     private PersonRoleRenderer personRoleRenderer;
-    private String crisCollege;
     private URLGenerator urlGenerator;
-
-    public EditRelationController(LogicInterface logic) {
-        this.logic = logic;
-    }
+    private String crisCollege;
 
     /**
      * action called when a user want to link an author from a publication
@@ -255,5 +255,25 @@ public class EditRelationController {
             array.add(jsonPersonName);
         }
         return array;
+    }
+
+    public void setLogic(LogicInterface logic) {
+        this.logic = logic;
+    }
+
+    public void setRequestLogic(RequestLogic requestLogic) {
+        this.requestLogic = requestLogic;
+    }
+
+    public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+        this.personRoleRenderer = personRoleRenderer;
+    }
+
+    public void setCrisCollege(String crisCollege) {
+        this.crisCollege = crisCollege;
+    }
+
+    public void setUrlGenerator(URLGenerator urlGenerator) {
+        this.urlGenerator = urlGenerator;
     }
 }

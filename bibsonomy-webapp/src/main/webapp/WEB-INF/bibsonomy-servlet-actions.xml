@@ -1454,8 +1454,27 @@
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
 	</bean>
 
+	<bean id="editPersonDetailsController" class="org.bibsonomy.webapp.controller.person.EditPersonDetailsController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="editRelationController" class="org.bibsonomy.webapp.controller.person.EditRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator"/>
+		<property name="crisCollege" value="${system.cris.college}"/>
+	</bean>
+
+	<bean id="mergePersonController" class="org.bibsonomy.webapp.controller.person.MergePersonController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
 	<bean id="editPersonController" class="org.bibsonomy.webapp.controller.person.EditPersonController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="detailsController" ref="editPersonDetailsController"/>
+		<property name="relationController" ref="editRelationController"/>
+		<property name="mergeController" ref="mergePersonController"/>
 	</bean>
 
 </beans>

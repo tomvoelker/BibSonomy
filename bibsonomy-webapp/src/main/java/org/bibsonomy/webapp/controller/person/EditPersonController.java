@@ -54,16 +54,9 @@ public class EditPersonController implements MinimalisticController<PersonPageCo
     private LogicInterface logic;
     private Errors errors;
 
-    private final EditPersonDetailsController detailsController;
-    private final EditRelationController relationController;
-    private final MergePersonController mergeController;
-
-    public EditPersonController(LogicInterface logic) {
-        this.logic = logic;
-        this.detailsController = new EditPersonDetailsController(logic);
-        this.relationController = new EditRelationController(logic);
-        this.mergeController = new MergePersonController(logic);
-    }
+    private EditPersonDetailsController detailsController;
+    private EditRelationController relationController;
+    private MergePersonController mergeController;
 
     @Override
     public View workOn(PersonPageCommand command) {
@@ -132,11 +125,19 @@ public class EditPersonController implements MinimalisticController<PersonPageCo
         this.errors = errors;
     }
 
-    public LogicInterface getLogic() {
-        return logic;
-    }
-
     public void setLogic(LogicInterface logic) {
         this.logic = logic;
+    }
+
+    public void setDetailsController(EditPersonDetailsController detailsController) {
+        this.detailsController = detailsController;
+    }
+
+    public void setRelationController(EditRelationController relationController) {
+        this.relationController = relationController;
+    }
+
+    public void setMergeController(MergePersonController mergeController) {
+        this.mergeController = mergeController;
     }
 }

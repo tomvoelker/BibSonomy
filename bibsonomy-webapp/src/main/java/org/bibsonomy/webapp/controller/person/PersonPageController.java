@@ -27,7 +27,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -53,41 +53,38 @@ import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.SearchFilterElement;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
+/**
+ * Controller for a single person details page
+ * paths:
+ * - /person/PERSON_ID
+ *
+ * e.g.
+ * /person/a.hotho
+ *
+ * @author Christian Pfeiffer
+ */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 
 	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 	public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
 
-	private LogicInterface adminLogic;
-	private RequestLogic requestLogic;
-	private URLGenerator urlGenerator;
 	private Errors errors;
-	private PersonRoleRenderer personRoleRenderer;
-	private PictureHandlerFactory pictureHandlerFactory;
 	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
-
-	/** the college that the cris system is configured for */
-	private String crisCollege;
-
 
 	// TMP TEST
 	private AdhocRenderer renderer;
@@ -165,7 +162,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 		// extract user settings
 		// Get the linked user's person posts style settings
-		final User user = adminLogic.getUserDetails(person.getUser());
+		final User user = this.logic.getUserDetails(person.getUser());
 		if (present(user)) {
 			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
 			final String personPostsLayout = user.getSettings().getPersonPostsLayout();
@@ -253,31 +250,7 @@ public class PersonPageController extends SingleResourceListController implement
 		this.errors = errors;
 	}
 
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
-	}
-
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	public void setUrlGenerator(URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
-
-	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
-		this.personRoleRenderer = personRoleRenderer;
-	}
-
-	public void setPictureHandlerFactory(PictureHandlerFactory pictureHandlerFactory) {
-		this.pictureHandlerFactory = pictureHandlerFactory;
-	}
-
 	public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
 		this.mappers = mappers;
-	}
-
-	public void setCrisCollege(String crisCollege) {
-		this.crisCollege = crisCollege;
 	}
 }

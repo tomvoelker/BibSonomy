@@ -30,7 +30,7 @@
 package org.bibsonomy.webapp.controller.ajax.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.webapp.controller.PersonPageController.NO_THESIS_SEARCH;
+import static org.bibsonomy.webapp.controller.person.PersonPageController.NO_THESIS_SEARCH;
 
 import java.util.Collections;
 import java.util.List;

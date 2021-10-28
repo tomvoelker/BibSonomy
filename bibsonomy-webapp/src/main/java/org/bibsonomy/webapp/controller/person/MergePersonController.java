@@ -53,14 +53,15 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/**
+ * Controller to handle all requests about person merges.
+ *
+ * @author kchoong
+ */
 public class MergePersonController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
-    private final LogicInterface logic;
-
-    public MergePersonController(LogicInterface logic) {
-        this.logic = logic;
-    }
+    private LogicInterface logic;
 
     /*
      * performs the merge action for the selected match
@@ -136,5 +137,9 @@ public class MergePersonController {
 
         command.setResponseString(jsonResponse.toString());
         return Views.AJAX_JSON;
+    }
+
+    public void setLogic(LogicInterface logic) {
+        this.logic = logic;
     }
 }
