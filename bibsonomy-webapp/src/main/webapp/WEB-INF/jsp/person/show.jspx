@@ -87,17 +87,25 @@
 
 		<jsp:attribute name="content">
 			<errors:global/>
-			<div class="row person-content person-info" data-person="${personId}">
-				<div class="col-md-9">
-					<perdetails:profile command="${command}" hasClaimedOrIsAdmin="${hasClaimedOrIsAdmin}"
-										title="${personNameWithDegree}" personName="${personName}"/>
-				</div>
-				<div class="col-md-3">
-					<!-- claim info -->
-					<!-- TODO: disable if CRIS system and person is in the configured college? -->
-					<c:if test="${not useCRISView}">
-						<perdetails:linkPerson command="${command}" hasClaimedPerson="${hasClaimedPerson}"/>
-					</c:if>
+			<div class="row person-content person-info" data-person="${personId}" data-content="info">
+				<div class="col-md-12">
+					<perdetails:profile command="${command}" title="${personNameWithDegree}" personName="${personName}">
+						<jsp:attribute name="icons">
+							<c:if test="${not useCRISView and not empty command.person.user}">
+								<div class="person-header-icons">
+									<fmt:message var="claimedHint" key="person.sidebar.linkedUserClaimedText"/>
+									<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"
+									   data-toggle="popover" data-placement="top" data-trigger="hover" data-content="${claimedHint}">
+										<fontawesome:icon icon="link" fixedWidth="${true}"/>
+									</a>
+								</div>
+							</c:if>
+						</jsp:attribute>
+						<jsp:attribute name="buttons">
+							<perdetails:buttons command="${command}" useCRISView="${useCRISView}"
+												hasClaimedPerson="${hasClaimedPerson}" isAdmin="${isAdmin}"/>
+						</jsp:attribute>
+					</perdetails:profile>
 				</div>
 			</div>
 
@@ -139,26 +147,6 @@
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
 					</div>
-				</div>
-			</div>
-
-			<!-- Person merge -->
-			<div class="person-content row" data-content="merge">
-				<div class="col-md-12">
-					<!-- similar persons, that one could merge -->
-					<c:if test="${fn:length(command.personMatchList) gt 0 and isAdmin}">
-						<div style="clear: both;">
-							<h3 class="list-headline">
-								<fmt:message key="person.show.similarPersonMatchList" />
-							</h3>
-
-							<div id="personMatchesEntries">
-								<c:forEach var="personMatch" items="${command.personMatchList}">
-									<per:mergablePersonView personMatch="${personMatch}" currentPerson="${command.person}" conflicts="${command.mergeConflicts}"/>
-								</c:forEach>
-							</div>
-						</div>
-					</c:if>
 				</div>
 			</div>
 		</jsp:attribute>

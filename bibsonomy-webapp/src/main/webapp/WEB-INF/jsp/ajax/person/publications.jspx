@@ -2,19 +2,20 @@
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details" xmlns:c="http://java.sun.com/jsp/jstl/core">
+		  xmlns:person="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
 	<c:choose>
 		<c:when test="${fn:length(command.otherPubs) gt 0}">
-			<perdetails:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}"/>
+			<person:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}"/>
 		</c:when>
 		<c:when test="${fn:length(command.similarAuthorPubs) gt 0}">
-			<perdetails:publications command="${command}" relations="${command.similarAuthorPubs}" isSimilarAuthors="${true}"/>
+			<person:publications command="${command}" relations="${command.similarAuthorPubs}" isSimilarAuthors="${true}"/>
 		</c:when>
 		<c:when test="${fn:length(command.myownPosts) gt 0}">
-			<perdetails:publications command="${command}" publications="${command.myownPosts}" isSimilarAuthors="${true}"/>
+			<person:publications command="${command}" publications="${command.myownPosts}" isSimilarAuthors="${true}"/>
 		</c:when>
 		<c:otherwise>
 
