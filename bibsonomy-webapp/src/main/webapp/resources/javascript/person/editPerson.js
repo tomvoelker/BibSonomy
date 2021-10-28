@@ -15,8 +15,10 @@ $(function () {
 });
 
 function initSubmit() {
-    $('#submitEditPersonDetails').click(function () {
+    $('#submitEditPersonDetails').click(function (e) {
+        e.preventDefault();
 
+        var formData = $('#formEditPersonDetails').serializeArray();
     });
 }
 
@@ -37,6 +39,7 @@ function initResetButtons() {
         var resetId = $(this).data('reset');
         var input = $('#' + resetId);
         $(input).val($(input).data('reset'));
+        $(this).hide(0);
     })
 }
 

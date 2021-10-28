@@ -55,6 +55,7 @@
 			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
 
+			<!-- TODO (kch): combine more -->
 			<script type='text/javascript' src='/resources/javascript/person/theses.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
             <script type='text/javascript' src='/resources/javascript/person/relations.js'><!-- keep me --></script>

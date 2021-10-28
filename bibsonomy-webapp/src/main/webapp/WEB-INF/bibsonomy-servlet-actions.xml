@@ -779,6 +779,17 @@
 						</property>
 					</bean>
 				</entry>
+
+				<!-- edit person -->
+				<entry key="/person/edit">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="editPersonController" />
+						<property name="allowedFields">
+							<list>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -1442,4 +1453,9 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
 	</bean>
+
+	<bean id="editPersonController" class="org.bibsonomy.webapp.controller.person.EditPersonController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
 </beans>
