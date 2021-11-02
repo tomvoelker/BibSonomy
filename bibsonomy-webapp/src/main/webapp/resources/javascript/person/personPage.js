@@ -98,7 +98,7 @@ function initPersonNavigation() {
 			}
 		});
 
-		$('.person-content').each(function() {
+		$('.person-tab-content').each(function() {
 			if ($(this).data('content') === contentType) {
 				$(this).removeClass('hidden');
 			} else {

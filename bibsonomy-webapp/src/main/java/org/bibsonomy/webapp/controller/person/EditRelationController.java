@@ -53,6 +53,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -79,9 +80,9 @@ public class EditRelationController {
      * @param command
      * @return the ajax text view
      */
-    protected View linkAction(final PersonPageCommand command) {
+    protected View linkAction(final EditPersonCommand command) {
         final Person person = new Person();
-        person.setPersonId(command.getFormPersonId());
+        person.setPersonId(command.getPersonId());
         person.setUser(command.getContext().getLoginUser().getName());
         this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
         return Views.AJAX_TEXT;
@@ -102,7 +103,7 @@ public class EditRelationController {
      * @param command
      * @return
      */
-    protected View addRoleAction(PersonPageCommand command) {
+    protected View addRoleAction(EditPersonCommand command) {
         final JSONObject jsonResponse = new JSONObject();
         final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
         final Post<BibTex> post = new Post<>();
@@ -112,8 +113,8 @@ public class EditRelationController {
 
         try {
             final Person person = new Person();
-            if (present(command.getFormPersonId())) {
-                person.setPersonId(command.getFormPersonId());
+            if (present(command.getPersonId())) {
+                person.setPersonId(command.getPersonId());
             } else {
                 final PersonName mainName = command.getNewName();
                 mainName.setMain(true);
@@ -143,7 +144,7 @@ public class EditRelationController {
      * @param command
      * @return
      */
-    protected View editRoleAction(PersonPageCommand command) {
+    protected View editRoleAction(EditPersonCommand command) {
         // TODO not used? remove?
         for (String role : command.getFormPersonRoles()) {
             final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
@@ -152,7 +153,7 @@ public class EditRelationController {
             post.getResource().setInterHash(command.getFormInterHash());
             resourcePersonRelation.setPost(post);
             resourcePersonRelation.setPerson(new Person());
-            resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
+            resourcePersonRelation.getPerson().setPersonId(command.getPersonId());
             resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
             final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role));
             resourcePersonRelation.setRelationType(relationType);
@@ -166,7 +167,7 @@ public class EditRelationController {
         return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(command.getPerson().getPersonId()));
     }
 
-    protected View deleteRoleAction(PersonPageCommand command) {
+    protected View deleteRoleAction(EditPersonCommand command) {
         this.logic.removeResourceRelation(null, null, -1, null); // FIXME: change
 
         return Views.AJAX_TEXT;
@@ -176,8 +177,8 @@ public class EditRelationController {
      * @param command
      * @return
      */
-    protected View searchPubAction(PersonPageCommand command) {
-        final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getFormSelectedName());
+    protected View searchPubAction(EditPersonCommand command) {
+        final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getSelectedName());
         final JSONArray array = this.buildupPubResponseArray(suggestions);
         command.setResponseString(array.toJSONString());
 
@@ -197,8 +198,8 @@ public class EditRelationController {
      * @param command
      * @return
      */
-    protected View searchPubAuthorAction(final PersonPageCommand command) {
-        final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getFormSelectedName());
+    protected View searchPubAuthorAction(final EditPersonCommand command) {
+        final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getSelectedName());
 
         final JSONArray array = new JSONArray();
 
@@ -213,8 +214,8 @@ public class EditRelationController {
      * @return
      */
     @SuppressWarnings("unchecked")
-    protected View searchAction(PersonPageCommand command) {
-        final PersonQuery query = new PersonQuery(command.getFormSelectedName());
+    protected View searchAction(EditPersonCommand command) {
+        final PersonQuery query = new PersonQuery(command.getSelectedName());
         query.setUsePrefixMatch(true);
         if (command.isLimitResultsToCRISCollege() && present(this.crisCollege)) {
             query.setCollege(this.crisCollege);

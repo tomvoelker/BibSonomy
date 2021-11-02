@@ -33,11 +33,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -47,7 +44,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
 
-public class EditPersonController implements MinimalisticController<PersonPageCommand>, ErrorAware {
+public class EditPersonController implements MinimalisticController<EditPersonCommand>, ErrorAware {
 
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
@@ -59,22 +56,22 @@ public class EditPersonController implements MinimalisticController<PersonPageCo
     private MergePersonController mergeController;
 
     @Override
-    public View workOn(PersonPageCommand command) {
+    public View workOn(EditPersonCommand command) {
 
         final RequestWrapperContext context = command.getContext();
-        final String formAction = command.getFormAction();
-        final boolean action = present(formAction);
+        final String editAction = command.getEditAction();
+        final boolean action = present(editAction);
         if (!action && !present(command.getRequestedPersonId())) {
             throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
         }
 
 
-        if (present(formAction)) {
+        if (present(editAction)) {
             if (!context.isValidCkey()) {
                 errors.reject("error.field.valid.ckey");
             }
 
-            switch(formAction) {
+            switch(editAction) {
                 case "update":
                     return this.detailsController.updateAction(command);
                 case "link":
@@ -111,8 +108,8 @@ public class EditPersonController implements MinimalisticController<PersonPageCo
     }
 
     @Override
-    public PersonPageCommand instantiateCommand() {
-        return new PersonPageCommand();
+    public EditPersonCommand instantiateCommand() {
+        return new EditPersonCommand();
     }
 
     @Override

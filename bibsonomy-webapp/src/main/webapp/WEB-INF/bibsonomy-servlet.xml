@@ -367,45 +367,10 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
-								<value>formResponseString</value>
-								<value>formMatchId</value>
-								<value>formAction</value>
-								<value>formPersonRoles</value>
-								<value>formPersonRole</value>
-								<value>formPersonId</value>
-								<value>formInterHash</value>
-								<value>formIntraHash</value>
-								<value>formResourceHash</value>
-								<value>formThatsMe</value>
-								<value>formPersonNameId</value>
-								<value>formFirstName</value>
-								<value>formMiddleName</value>
-								<value>formLastName</value>
-								<value>formSelectedName</value>
-								<value>formResourcePersonRelationId</value>
-								
-								<value>formPersonIndex</value>
-								<value>resourcePersonRelation.personIndex</value>
-								
-								<value>updateOperation</value>
-								
-								
-								<value>person.personId</value>
-								<value>person.orcid</value>
-								<value>person.researcherid</value>
-								<value>person.academicDegree</value>
-								<value>person.college</value>
-								<value>person.email</value>
-								<value>person.homepage</value>
-								<value>person.gender</value>
-								
-								<value>newName.firstName</value>
-								<value>newName.lastName</value>
-
 								<value>limitResultsToCRISCollege</value>
-								
 								<value>start</value>
 								<value>end</value>
+								<value>responseString</value>
 							</list>
 						</property>
 					</bean>

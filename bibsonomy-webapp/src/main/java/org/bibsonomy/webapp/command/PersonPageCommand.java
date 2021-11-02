@@ -34,19 +34,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.PersonPostsStyle;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.exception.LogicException;
 
@@ -55,63 +52,17 @@ import org.bibsonomy.model.logic.exception.LogicException;
  */
 public class PersonPageCommand extends BaseCommand {
 
-	/** Used during the generation of new names */
-	private PersonName newName;
-	
 	/** describes the relation between a person and a resource */
 	private ResourcePersonRelation resourcePersonRelation;
 	
 	/** personId of the person requested */
 	private String requestedPersonId;
-	
-	private String formSelectedName;
-
-	/** Properties if deleting or adding relations */
-	private String type;
-
-	private String interhash;
-
-	private String index;
-
-	@Deprecated // TODO: bind person directly
-	private String formResourceHash;
-	@Deprecated // TODO: bind person directly
-	private String formPersonId;
-	@Deprecated // TODO: bind person directly
-	private PersonResourceRelationType formPersonRole;
-
-	@Deprecated // TODO: bind person dier rectly
-	private String formThesisId;
-	@Deprecated // TODO: bind person directly
-	private String formPersonNameId;
-	@Deprecated // TODO: bind person directly
-	private List<String> formPersonRoles;
-	@Deprecated // TODO: bind person directly
-	private String formRequestType;
-	@Deprecated // TODO: bind person directly
-	private String formResourcePersonRelationId;
-	@Deprecated // TODO: bind person directly
-	private String formInterHash;
-	@Deprecated // TODO: bind person directly
-	private String formIntraHash;
-	@Deprecated // TODO: bind person directly
-	private boolean formThatsMe;
-	@Deprecated // TODO: bind person directly
-	private int formPersonIndex = -1;
-	
-	private int formMatchId;
-	private String formResponseString;
-
-	private boolean hasPicture;
 
 	/** if true only persons of the configured cris system are displayed */
 	private boolean limitResultsToCRISCollege;
 
-	private boolean showProjects;
-
 	private List<Project> projects;
-
-	private String formAction;
+	private boolean showProjects;
 	
 	private Person person;
 	private Post<? extends Resource> post;
@@ -146,11 +97,8 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // TODO use posts per page as a var or use the listcommand class to get pagination for free
 	private Integer prevStart;
 
-
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
-
-	private PersonUpdateOperation updateOperation;
 
 	private Map<String, String> renderedPosts;
 
@@ -162,19 +110,7 @@ public class PersonPageCommand extends BaseCommand {
 		this.renderedPosts = renderedPosts;
 	}
 
-	/**
-	 * @return the updateOperation
-	 */
-	public PersonUpdateOperation getUpdateOperation() {
-		return this.updateOperation;
-	}
 
-	/**
-	 * @param updateOperation the updateOperation to set
-	 */
-	public void setUpdateOperation(PersonUpdateOperation updateOperation) {
-		this.updateOperation = updateOperation;
-	}
 
 	/**
 	 * @return the logicExceptions
@@ -182,20 +118,6 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated
 	public Collection<LogicException> getLogicExceptions() {
 		return this.logicExceptions;
-	}
-	
-	/**
-	 * @return the formSelectedName
-	 */
-	public String getFormSelectedName() {
-		return this.formSelectedName;
-	}
-
-	/**
-	 * @param formSelectedName the formSelectedName to set
-	 */
-	public void setFormSelectedName(String formSelectedName) {
-		this.formSelectedName = formSelectedName;
 	}
 	
 	/**
@@ -224,20 +146,6 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setRequestedPersonId(String personId) {
 		this.requestedPersonId = personId;
-	}
-
-	/**
-	 * @return the formPersonRole
-	 */
-	public List<String> getFormPersonRoles() {
-		return this.formPersonRoles;
-	}
-	
-	/**
-	 * @param formPersonRoles the formPersonRoles to set
-	 */
-	public void setFormPersonRoles(List<String> formPersonRoles) {
-		this.formPersonRoles = formPersonRoles;
 	}
 
 	/**
@@ -339,100 +247,6 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the formAction
-	 */
-	public String getFormAction() {
-		return this.formAction;
-	}
-
-	/**
-	 * @param formAction the formAction to set
-	 */
-	public void setFormAction(String formAction) {
-		this.formAction = formAction;
-	}
-
-	/**
-	 * @return String
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormResourceHash() {
-		return this.formResourceHash;
-	}
-
-	/**
-	 * @return the formPersonId
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormPersonId() {
-		return this.formPersonId;
-	}
-
-	/**
-	 * @param formPersonId the formPersonId to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormPersonId(String formPersonId) {
-		this.formPersonId = formPersonId;
-	}
-
-	/**
-	 * @return the formPersonRole
-	 */
-	@Deprecated // TODO: bind person directly
-	public PersonResourceRelationType getFormPersonRole() {
-		return this.formPersonRole;
-	}
-
-	/**
-	 * @param formPersonRole the formPersonRole to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormPersonRole(PersonResourceRelationType formPersonRole) {
-		this.formPersonRole = formPersonRole;
-	}
-
-	/**
-	 * @return the formThesisId
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormThesisId() {
-		return this.formThesisId;
-	}
-
-	/**
-	 * @param formThesisId the formThesisId to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormThesisId(String formThesisId) {
-		this.formThesisId = formThesisId;
-	}
-
-	/**
-	 * @param formResourceHash the formResourceHash to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormResourceHash(String formResourceHash) {
-		this.formResourceHash = formResourceHash;
-	}
-
-	/**
-	 * @return String
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormPersonNameId() {
-		return this.formPersonNameId;
-	}
-
-	/**
-	 * @param personNameId2 the nameId to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormPersonNameId(String personNameId2) {
-		this.formPersonNameId = personNameId2;
-	}
-
-	/**
 	 * @param jsonString
 	 */
 	public void setResponseString(String jsonString) {
@@ -444,94 +258,6 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public String getResponseString() {
 		return this.responseString;
-	}
-
-	/**
-	 * @return the formRequestType
-	 */
-	public String getFormRequestType() {
-		return this.formRequestType;
-	}
-
-	/**
-	 * @param formRequestType the formRequestType to set
-	 */
-	public void setFormRequestType(String formRequestType) {
-		this.formRequestType = formRequestType;
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getFormResourcePersonRelationId() {
-			return this.formResourcePersonRelationId;
-	}
-
-	/**
-	 * @param formResourcePersonRelationId the formResourcePersonRelationId to set
-	 */
-	public void setFormResourcePersonRelationId(String formResourcePersonRelationId) {
-		this.formResourcePersonRelationId = formResourcePersonRelationId;
-	}
-
-	/**
-	 * @return the formInterHash
-	 */
-	public String getFormInterHash() {
-		return this.formInterHash;
-	}
-
-	/**
-	 * @param formInterHash the formInterHash to set
-	 */
-	public void setFormInterHash(String formInterHash) {
-		this.formInterHash = formInterHash;
-	}
-
-	/**
-	 * @return the formIntraHash
-	 */
-	public String getFormIntraHash() {
-		return this.formIntraHash;
-	}
-
-	/**
-	 * @param formIntraHash the formIntraHash to set
-	 */
-	public void setFormIntraHash(String formIntraHash) {
-		this.formIntraHash = formIntraHash;
-	}
-
-	/**
-	 * @return true if the current login user is associated to this person
-	 */
-	@Deprecated // TODO: bind person directly
-	public boolean isFormThatsMe() {
-		return this.formThatsMe;
-	}
-
-	/**
-	 * @param formThatsMe if the current login user is associated to this person
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormThatsMe(boolean formThatsMe) {
-		this.formThatsMe = formThatsMe;
-	}
-
-	/**
-	 * @return the formAuthorIndex
-	 */
-	@Deprecated // TODO: bind person directly
-	public int getFormPersonIndex() {
-		return this.formPersonIndex;
-	}
-
-	/**
-	 * @param formAuthorIndex the formAuthorIndex to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormPersonIndex(int formAuthorIndex) {
-		this.formPersonIndex = formAuthorIndex;
 	}
 
 	/**
@@ -554,20 +280,6 @@ public class PersonPageCommand extends BaseCommand {
 
 	public List<ResourcePersonRelation> getOtherAdvisedPubs() {
 		return this.otherAdvisedPubs;
-	}
-
-	/**
-	 * @return the newName
-	 */
-	public PersonName getNewName() {
-		return this.newName;
-	}
-
-	/**
-	 * @param newName the newName to set
-	 */
-	public void setNewName(PersonName newName) {
-		this.newName = newName;
 	}
 
 	/**
@@ -627,34 +339,6 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the formMatchId
-	 */
-	public int getFormMatchId() {
-		return this.formMatchId;
-	}
-
-	/**
-	 * @param formMatchId the formMatchId to set
-	 */
-	public void setFormMatchId(int formMatchId) {
-		this.formMatchId = formMatchId;
-	}
-
-	/**
-	 * @return the formResponseString
-	 */
-	public String getFormResponseString() {
-		return this.formResponseString;
-	}
-
-	/**
-	 * @param formResponseString the formResponseString to set
-	 */
-	public void setFormResponseString(String formResponseString) {
-		this.formResponseString = formResponseString;
-	}
-
-	/**
 	 * @return the phdAdvisorRecForPerson
 	 */
 	public List<PhDRecommendation> getPhdAdvisorRecForPerson() {
@@ -666,62 +350,6 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setPhdAdvisorRecForPerson(List<PhDRecommendation> phdAdvisorRecForPerson) {
 		this.phdAdvisorRecForPerson = phdAdvisorRecForPerson;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type
-	 */
-	public void setType (String type) {
-		this.type = type;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getInterhash() {
-		return interhash;
-	}
-
-	/**
-	 * @param interhash
-	 */
-	public void setInterhash(String interhash) {
-		this.interhash = interhash;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getIndex() {
-		return index;
-	}
-
-	/**
-	 * @param index
-	 */
-	public void setIndex(String index) {
-		this.index = index;
-	}
-
-	/**
-	 * @return the hasPicture
-	 */
-	public boolean isHasPicture() {
-		return hasPicture;
-	}
-
-	/**
-	 * @param hasPicture the hasPicture to set
-	 */
-	public void setHasPicture(boolean hasPicture) {
-		this.hasPicture = hasPicture;
 	}
 
 	/**

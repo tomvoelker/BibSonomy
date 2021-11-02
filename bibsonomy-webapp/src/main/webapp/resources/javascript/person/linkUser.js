@@ -1,14 +1,17 @@
-$(document).ready(function() {
-	$("#btnLinkSubmit").on("click", function(e) {
+/**
+ * on load
+ */
+$(function () {
+	$("#btnLinkSubmit").click(function() {
 		var e = $(this);
-		
-		text = $("#btnLinkSubmit").text();
-		$("#btnLinkSubmit").html(text + " <i class='fa fa-spinner fa-spin '></i>");
-		$("#btnLinkSubmit").addClass("disabled");
-		
-		$.post("/person",
-				{ 	formAction: "link",
-					formPersonId: e.attr("data-person-id")
+		var text = e.text();
+		var personInfo = $('.person-info');
+		e.html(text + " <i class='fa fa-spinner fa-spin'></i>");
+		e.addClass("disabled");
+		$.post("/person/edit",
+				{
+					editAction: 'link',
+					personId: personInfo.data('person')
 				}
 		).done(function(data) {
 			$("#linkPerson").modal("hide");		
@@ -16,16 +19,17 @@ $(document).ready(function() {
 		});
 	});
 	
-	$("#btnUnlinkSubmit").on("click", function(e) {
+	$("#btnUnlinkSubmit").click(function () {
 		var e = $(this);
+		var text = e.text();
+		var personInfo = $('.person-info');
+		e.html(text + " <i class='fa fa-spinner fa-spin'></i>");
+		e.addClass("disabled");
 		
-		text = $("#btnUnlinkSubmit").text();	
-		$("#btnUnlinkSubmit").html(text + " <i class='fa fa-spinner fa-spin '></i>");
-		$("#btnUnlinkSubmit").addClass("disabled");
-		
-		$.post("/person",
-				{ 	formAction: "unlink",
-					formPersonId: e.attr("data-person-id")
+		$.post("/person/edit",
+				{
+					editAction: 'unlink',
+					personId: personInfo.data('person')
 				}
 		).done(function(data) {
 			$("#unlinkPerson").modal("hide");

@@ -786,6 +786,41 @@
 						<property name="controllerBeanName"	value="editPersonController" />
 						<property name="allowedFields">
 							<list>
+								<value>personId</value>
+								<value>claimedPerson</value>
+
+								<value>editAction</value>
+								<value>updateOperation</value>
+								<value>responseString</value>
+
+								<!-- person details fields -->
+								<value>degree</value>
+								<value>college</value>
+								<value>email</value>
+								<value>homepage</value>
+								<value>orcid</value>
+								<value>researcherid</value>
+								<value>gender</value>
+
+								<!-- name fields -->
+								<value>firstName</value>
+								<value>lastName</value>
+
+								<value>formMatchId</value>
+								<value>formPersonRoles</value>
+								<value>formPersonRole</value>
+								<value>formInterHash</value>
+								<value>formIntraHash</value>
+								<value>formResourceHash</value>
+
+								<value>formPersonNameId</value>
+								<value>formFirstName</value>
+								<value>formMiddleName</value>
+								<value>formLastName</value>
+								<value>formSelectedName</value>
+								<value>formResourcePersonRelationId</value>
+								<value>formPersonIndex</value>
+								<value>resourcePersonRelation.personIndex</value>
 							</list>
 						</property>
 					</bean>

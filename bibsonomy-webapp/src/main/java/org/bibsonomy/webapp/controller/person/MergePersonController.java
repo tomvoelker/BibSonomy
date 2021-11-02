@@ -47,7 +47,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
@@ -66,7 +66,7 @@ public class MergePersonController {
     /*
      * performs the merge action for the selected match
      */
-    protected View mergeAction(PersonPageCommand command) {
+    protected View mergeAction(EditPersonCommand command) {
         int id = command.getFormMatchId();
         JSONObject jsonResponse = new JSONObject();
 
@@ -88,7 +88,7 @@ public class MergePersonController {
      * @param command
      * @return
      */
-    protected View getConflicts(final PersonPageCommand command) {
+    protected View getConflicts(final EditPersonCommand command) {
         final int formMatchId = command.getFormMatchId();
         final PersonMatch personMatch = this.logic.getPersonMergeRequest(formMatchId);
 
@@ -108,7 +108,7 @@ public class MergePersonController {
      * @param command
      * @return
      */
-    protected View conflictMerge(PersonPageCommand command) {
+    protected View conflictMerge(EditPersonCommand command) {
         final JSONObject jsonResponse = new JSONObject();
 
         try {

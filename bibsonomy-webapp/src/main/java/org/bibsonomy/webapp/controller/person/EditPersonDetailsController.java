@@ -41,6 +41,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONObject;
@@ -60,8 +61,8 @@ public class EditPersonDetailsController {
      * action called when a user updates preferences of a person
      * @param command
      */
-    protected View updateAction(PersonPageCommand command) {
-        final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
+    protected View updateAction(EditPersonCommand command) {
+        final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
         final Person commandPerson = command.getPerson();
         if (!present(commandPerson)) {
@@ -86,8 +87,8 @@ public class EditPersonDetailsController {
         // FIXME: write independent update method
         // FIXME: add its me action
 
-        //command.getPerson().getMainName().setMain(false);
-        //command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
+        // command.getPerson().getMainName().setMain(false);
+        // command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
 
         try {
             this.logic.updatePerson(person, operation);
@@ -96,8 +97,7 @@ public class EditPersonDetailsController {
         } catch (final Exception e) {
             log.error("error while updating person " + commandPerson.getPersonId(), e);
             jsonResponse.put("status", false);
-            // TODO: set proper error message
-            //jsonResponse.put("message", "Some error occured");
+            jsonResponse.put("message", "Some error occured");
         }
 
         command.setResponseString(jsonResponse.toString());
@@ -108,7 +108,7 @@ public class EditPersonDetailsController {
      * Action called when a user adds an alternative name to a person
      * @param command
      */
-    private View addNameAction(PersonPageCommand command) {
+    private View addNameAction(EditPersonCommand command) {
         final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
 
         final JSONObject jsonResponse = new JSONObject();
@@ -152,7 +152,7 @@ public class EditPersonDetailsController {
      * @param command
      * @return
      */
-    private View deleteNameAction(PersonPageCommand command) {
+    private View deleteNameAction(EditPersonCommand command) {
         final JSONObject jsonResponse = new JSONObject();
         try {
             this.logic.removePersonName(new Integer(command.getFormPersonNameId()));
@@ -169,14 +169,14 @@ public class EditPersonDetailsController {
         return Views.AJAX_JSON;
     }
 
-    private View setMainNameAction(PersonPageCommand command) {
+    private View setMainNameAction(EditPersonCommand command) {
         final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
 
         final JSONObject jsonResponse = new JSONObject();
 
 
         person.getMainName().setMain(false);
-        person.setMainName(Integer.parseInt(command.getFormSelectedName()));
+        person.setMainName(Integer.parseInt(command.getSelectedName()));
 
         // bind the new person
         command.setPerson(person);

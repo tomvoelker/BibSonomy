@@ -67,6 +67,7 @@
 			<script type='text/javascript' src='/resources/javascript/explorePage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/editPerson.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/mergePerson.js'><!-- keep me --></script>
 		</jsp:attribute>
 
 		<jsp:attribute name="heading">
@@ -88,7 +89,7 @@
 
 		<jsp:attribute name="content">
 			<errors:global/>
-			<div class="row person-content person-info" data-person="${personId}" data-content="info">
+			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
 				<div class="col-md-12">
 					<perdetails:profile command="${command}" title="${personNameWithDegree}" personName="${personName}">
 						<jsp:attribute name="icons">
@@ -120,7 +121,7 @@
 					</c:otherwise>
 				</c:choose>
 
-				<div class="row person-content" data-content="publications">
+				<div class="row person-content person-tab-content" data-content="publications">
 					<div class="col-md-9">
 						<div class="row">
 							<div class="col-md-12">

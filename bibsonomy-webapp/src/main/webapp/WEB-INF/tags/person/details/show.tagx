@@ -38,7 +38,7 @@
 	</div>
 
 	<!-- Other publications of similar authors -->
-	<div class="row person-content hidden" data-content="similar">
+	<div class="row person-content person-tab-content hidden" data-content="similar">
 		<div class="col-md-12">
 			<div class="row">
 				<div class="col-md-12">

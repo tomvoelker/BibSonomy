@@ -35,7 +35,7 @@
 
 	<!-- Projects -->
 	<c:if test="${showProjectLinks}">
-		<div class="row person-content hidden" data-content="projects">
+		<div class="row person-content person-tab-content hidden" data-content="projects">
 			<div class="col-md-12">
 				<h2>
 					<fontawesome:icon icon="project-diagram" spaceAfter="5" />
