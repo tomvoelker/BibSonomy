@@ -33,6 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -59,46 +60,44 @@ public class EditPersonController implements MinimalisticController<EditPersonCo
     public View workOn(EditPersonCommand command) {
 
         final RequestWrapperContext context = command.getContext();
-        final String editAction = command.getEditAction();
-        final boolean action = present(editAction);
+        final PersonUpdateOperation operation = command.getUpdateOperation();
+        final boolean action = present(operation);
         if (!action && !present(command.getRequestedPersonId())) {
             throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
         }
 
+        if (!context.isValidCkey()) {
+            errors.reject("error.field.valid.ckey");
+        }
 
-        if (present(editAction)) {
-            if (!context.isValidCkey()) {
-                errors.reject("error.field.valid.ckey");
-            }
-
-            switch(editAction) {
-                case "update":
-                    return this.detailsController.updateAction(command);
-                case "link":
-                    return this.relationController.linkAction(command);
-                case "unlink":
-                    return this.relationController.unlinkAction(command);
-                case "addRole":
-                    this.relationController.addRoleAction(command);
-                case "addThesis":
-                    this.relationController.addRoleAction(command);
-                case "editRole":
-                    this.relationController.editRoleAction(command);
-                case "deleteRole":
-                    this.relationController.deleteRoleAction(command);
-                case "search":
-                    this.relationController.searchAction(command);
-                case "searchPub":
-                    this.relationController.searchPubAction(command);
-                case "searchPubAuthor":
-                    this.relationController.searchPubAuthorAction(command);
-                case "merge":
-                    this.mergeController.mergeAction(command);
-                case "conflictMerge":
-                    this.mergeController.conflictMerge(command);
-                case "getConflict":
-                    this.mergeController.getConflicts(command);
-            }
+        switch(operation) {
+            case UPDATE_ALL:
+                return this.detailsController.updateAction(command);
+            case ADD_NAME:
+                break;
+            case DELETE_NAME:
+                break;
+            case SELECT_MAIN_NAME:
+                break;
+            case UPDATE_NAMES:
+                break;
+            case ADD_ROLE:
+                this.relationController.addRoleAction(command);
+            case DELETE_ROLE:
+                this.relationController.deleteRoleAction(command);
+            case UPDATE_ROLE:
+                return this.relationController.editRoleAction(command);
+            case LINK_USER:
+                return this.relationController.linkAction(command);
+            case UNLINK_USER:
+                return this.relationController.unlinkAction(command);
+            case MERGE_ACCEPT:
+            case MERGE_DENIED:
+                return this.mergeController.mergeAction(command);
+            case MERGE_CONFLICTS:
+                return this.mergeController.conflictMerge(command);
+            case MERGE_GET_CONFLICTS:
+                return this.mergeController.getConflicts(command);
         }
 
         final JSONObject jsonResponse = new JSONObject();

@@ -94,7 +94,7 @@
 					<perdetails:profile command="${command}" title="${personNameWithDegree}" personName="${personName}">
 						<jsp:attribute name="icons">
 							<c:if test="${not useCRISView and not empty command.person.user}">
-								<div class="person-header-icons">
+								<div class="person-icons">
 									<fmt:message var="claimedHint" key="person.sidebar.linkedUserClaimedText"/>
 									<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"
 									   data-toggle="popover" data-placement="top" data-trigger="hover" data-content="${claimedHint}">

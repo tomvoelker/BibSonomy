@@ -45,29 +45,25 @@ public class EditPersonCommand extends PersonPageCommand {
 
     private String personId;
     private boolean claimedPerson;
-    private String editAction;
     private PersonUpdateOperation updateOperation;
 
-    /** new name entry */
+    /** Properties for editing names of person */
     private PersonName newName;
-    private String firstName;
-    private String lastName;
-    private String selectedName;
+    private Integer personNameId;
+
 
     /** Properties if deleting or adding relations */
     private String type;
     private String interhash;
     private String index;
+    private String selectedName;
 
     @Deprecated // TODO: bind person directly
     private String formResourceHash;
     @Deprecated // TODO: bind person directly
     private PersonResourceRelationType formPersonRole;
-
     @Deprecated // TODO: bind person dier rectly
     private String formThesisId;
-    @Deprecated // TODO: bind person directly
-    private String formPersonNameId;
     @Deprecated // TODO: bind person directly
     private List<String> formPersonRoles;
     @Deprecated // TODO: bind person directly
@@ -79,10 +75,7 @@ public class EditPersonCommand extends PersonPageCommand {
     @Deprecated // TODO: bind person directly
     private String formIntraHash;
     @Deprecated // TODO: bind person directly
-    private boolean formThatsMe;
-    @Deprecated // TODO: bind person directly
     private int formPersonIndex = -1;
-
     private int formMatchId;
 
     public String getPersonId() {
@@ -109,28 +102,12 @@ public class EditPersonCommand extends PersonPageCommand {
         this.newName = newName;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Integer getPersonNameId() {
+        return personNameId;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getSelectedName() {
-        return selectedName;
-    }
-
-    public void setSelectedName(String selectedName) {
-        this.selectedName = selectedName;
+    public void setPersonNameId(Integer personNameId) {
+        this.personNameId = personNameId;
     }
 
     /**
@@ -145,20 +122,6 @@ public class EditPersonCommand extends PersonPageCommand {
      */
     public void setUpdateOperation(PersonUpdateOperation updateOperation) {
         this.updateOperation = updateOperation;
-    }
-
-    /**
-     * @return the editAction
-     */
-    public String getEditAction() {
-        return editAction;
-    }
-
-    /**
-     * @param editAction the editAction to set
-     */
-    public void setEditAction(String editAction) {
-        this.editAction = editAction;
     }
 
     /**
@@ -203,6 +166,14 @@ public class EditPersonCommand extends PersonPageCommand {
         this.index = index;
     }
 
+    public String getSelectedName() {
+        return selectedName;
+    }
+
+    public void setSelectedName(String selectedName) {
+        this.selectedName = selectedName;
+    }
+
     public String getFormResourceHash() {
         return formResourceHash;
     }
@@ -225,14 +196,6 @@ public class EditPersonCommand extends PersonPageCommand {
 
     public void setFormThesisId(String formThesisId) {
         this.formThesisId = formThesisId;
-    }
-
-    public String getFormPersonNameId() {
-        return formPersonNameId;
-    }
-
-    public void setFormPersonNameId(String formPersonNameId) {
-        this.formPersonNameId = formPersonNameId;
     }
 
     public List<String> getFormPersonRoles() {
@@ -273,14 +236,6 @@ public class EditPersonCommand extends PersonPageCommand {
 
     public void setFormIntraHash(String formIntraHash) {
         this.formIntraHash = formIntraHash;
-    }
-
-    public boolean isFormThatsMe() {
-        return formThatsMe;
-    }
-
-    public void setFormThatsMe(boolean formThatsMe) {
-        this.formThatsMe = formThatsMe;
     }
 
     public int getFormPersonIndex() {

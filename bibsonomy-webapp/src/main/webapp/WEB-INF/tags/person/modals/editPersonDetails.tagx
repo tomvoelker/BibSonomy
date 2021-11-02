@@ -11,7 +11,7 @@
 
 	<c:set var="person" value="${command.person}"/>
 
-	<fmt:message key="person.show.modal.editPersonDetails.header" var="modalTitle"/>
+	<fmt:message key="person.show.modal.details.header" var="modalTitle"/>
 	<bs:modal modalTitle="${modalTitle}" id="${id}" large="${true}">
         <jsp:attribute name="modalBody">
             <div class="container-fluid">
@@ -118,82 +118,12 @@
 							</a>
 						</div>
 					</div>
-
-					<c:choose>
-						<c:when test="${fn:length(person.names) eq 1}">
-							<div class="row">
-								<div class="col-md-3">
-									<label class="input-label"><fmt:message key="person.show.personAlternateNames"/></label>
-								</div>
-								<div class="col-md-4">
-									<fmt:message var="firstNamePlaceholder" key="person.new.formFirstName"/>
-									<input type="text" class="form-control" id="addFirstName" name="lastName" placeholder="${firstNamePlaceholder}" />
-								</div>
-								<div class="col-md-4">
-									<fmt:message var="lastNamePlaceholder" key="person.new.formLastName"/>
-									<input type="text" class="form-control" id="addLastName" name="firstName" placeholder="${lastNamePlaceholder}" />
-								</div>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<c:forEach var="name" items="${person.names}" varStatus="status">
-								<c:set var="labelSet" value="${false}"/>
-								<c:if test="${not name.main}">
-									<c:choose>
-										<c:when test="${labelSet}">
-											<div class="row">
-												<div class="col-md-4 col-md-offset-3"><c:out value="${name.firstName}"/></div>
-												<div class="col-md-4"><c:out value="${name.lastName}"/></div>
-												<div class="col-md-1">
-													<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
-													<a href="#" data-toggle="tooltip" data-placement="top" title="${selectMainHint}"
-													   data-firstName="${name.firstName}" data-lastName="${name.lastName}">
-														<fontawesome:icon icon="square" fixedWidth="${true}" regular="${true}"/>
-													</a>
-												</div>
-											</div>
-										</c:when>
-										<c:otherwise>
-											<c:set var="labelSet" value="${true}"/>
-											<div class="row">
-												<div class="col-md-3">
-													<label><fmt:message key="person.show.personAlternateNames"/></label>
-												</div>
-												<div class="col-md-4"><c:out value="${name.firstName}"/></div>
-												<div class="col-md-4"><c:out value="${name.lastName}"/></div>
-												<div class="col-md-1">
-													<fmt:message var="selectMainHint" key="person.show.personAlternateNamesSelect"/>
-													<input type="checkbox" class="check-main" data-toggle="tooltip" data-placement="top" title="${selectMainHint}"
-													   data-firstName="${name.firstName}" data-lastName="${name.lastName}" />
-													<fmt:message var="deleteHint" key="person.show.modalDeleteNameHeader"/>
-													<a href="#" data-toggle="tooltip" data-placement="top" title="${deleteHint}"
-													   data-firstName="${name.firstName}" data-lastName="${name.lastName}">
-														<fontawesome:icon icon="trash" fixedWidth="${true}"/>
-													</a>
-												</div>
-											</div>
-										</c:otherwise>
-									</c:choose>
-								</c:if>
-							</c:forEach>
-							<div class="row">
-								<div class="col-md-4 col-md-offset-3">
-									<fmt:message var="firstNamePlaceholder" key="person.new.formFirstName"/>
-									<input type="text" class="form-control" id="addFirstName" name="firstName" placeholder="${firstNamePlaceholder}" />
-								</div>
-								<div class="col-md-4">
-									<fmt:message var="lastNamePlaceholder" key="person.new.formLastName"/>
-									<input type="text" class="form-control" id="addLastName" name="lastName" placeholder="${lastNamePlaceholder}" />
-								</div>
-							</div>
-						</c:otherwise>
-					</c:choose>
 				</form>
             </div>
         </jsp:attribute>
 		<jsp:attribute name="modalFooter">
             <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="person.show.close"/></button>
-			<button type="button" class="btn btn-primary" id="submitEditPersonDetails"><fmt:message key="person.show.modal.editPersonDetails.save"/></button>
+			<button type="button" class="btn btn-primary" id="submitEditPersonDetails"><fmt:message key="person.show.saveButton"/></button>
         </jsp:attribute>
 	</bs:modal>
 </jsp:root>

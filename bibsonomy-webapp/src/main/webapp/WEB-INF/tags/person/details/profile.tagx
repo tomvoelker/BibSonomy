@@ -29,7 +29,7 @@
 		</div>
 		<div class="media-body">
 			<div class="row person-header">
-				<div class="col-md-8">
+				<div class="col-md-12">
 					<h1>
 						<c:out value="${title}"/>
 						<jsp:invoke fragment="icons" />
@@ -41,11 +41,7 @@
 						</span>
 					</c:if>
 				</div>
-				<div class="col-md-4">
-					<jsp:invoke fragment="buttons" />
-				</div>
 			</div>
-
 			<div class="media-description">
 				<c:choose>
 					<c:when test="${empty organizations}">
@@ -81,6 +77,11 @@
 				<c:if test="${not empty command.person.researcherid}">
 					<perdetails:property command="${command}" type="researcherid" value="${command.person.researcherid}"/>
 				</c:if>
+			</div>
+			<div class="row person-buttons">
+				<div class="col-md-12">
+					<jsp:invoke fragment="buttons" />
+				</div>
 			</div>
 		</div>
 	</div>

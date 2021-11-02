@@ -5,16 +5,15 @@ $(function () {
 	$("#btnLinkSubmit").click(function() {
 		var e = $(this);
 		var text = e.text();
-		var personInfo = $('.person-info');
 		e.html(text + " <i class='fa fa-spinner fa-spin'></i>");
-		e.addClass("disabled");
-		$.post("/person/edit",
+		e.addClass('disabled');
+		$.post('/person/edit',
 				{
-					editAction: 'link',
-					personId: personInfo.data('person')
+					updateOperation: 'LINK_USER',
+					personId: $('.person-info').data('person')
 				}
 		).done(function(data) {
-			$("#linkPerson").modal("hide");		
+			$("#linkPerson").modal('hide');
 			location.reload();
 		});
 	});
@@ -22,17 +21,16 @@ $(function () {
 	$("#btnUnlinkSubmit").click(function () {
 		var e = $(this);
 		var text = e.text();
-		var personInfo = $('.person-info');
 		e.html(text + " <i class='fa fa-spinner fa-spin'></i>");
-		e.addClass("disabled");
+		e.addClass('disabled');
 		
-		$.post("/person/edit",
+		$.post('/person/edit',
 				{
-					editAction: 'unlink',
-					personId: personInfo.data('person')
+					updateOperation: 'UNLINK_USER',
+					personId: $('.person-info').data('person')
 				}
 		).done(function(data) {
-			$("#unlinkPerson").modal("hide");
+			$("#unlinkPerson").modal('hide');
 			location.reload();
 		});
 	});

@@ -30,7 +30,7 @@ function setupPersonAutocomplete(inputFieldSelector, editAction, displayKey, sel
 	var personNames = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: '/person/edit?editAction=' + editAction + '&formSelectedName=%QUERY',
+		remote: '/person/edit?editAction=' + editAction + '&selectedName=%QUERY',
 		wildcard: '%QUERY',
 		rateLimitWait: 800
 	});

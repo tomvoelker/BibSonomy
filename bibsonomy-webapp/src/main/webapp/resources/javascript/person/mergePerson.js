@@ -14,9 +14,8 @@ $(function () {
 function initMergeButton() {
     $('.mergeButton').click(function () {
         var form_data = {
-            formAction: "merge",
-            formMatchId: $(this).attr("match-id"),
-            updateOperation: $(this).attr("data-operation")
+            updateOperation: $(this).attr("data-operation"),
+            formMatchId: $(this).attr("match-id")
         };
 
         $.post("/person/edit", form_data).done(function (data) {
@@ -34,7 +33,7 @@ function initConflictButton() {
     $('.mergeConflictButton').click(function () {
         var form_data = {};
         $.each($("#conflictInputForm").serializeArray(), function (i, field) {
-            if (field.name == 'person.mainName') {
+            if (field.name === 'person.mainName') {
                 var mainName = field.value;
 
                 var names = mainName.split(", ");
@@ -46,7 +45,7 @@ function initConflictButton() {
         });
 
         form_data["formMatchId"] = $("#conflictModalAccept").attr("match-id");
-        form_data["formAction"] = "conflictMerge";
+        form_data["updateOperation"] = "MERGE_CONFLICTS";
 
         $.post("/person/edit", form_data).done(function (data) {
             if (data.status) {
@@ -67,7 +66,7 @@ function initConflictMergeButton() {
         $('#conflictModalDeny')[0].setAttribute("match-id", $(this).attr("match-id"));
         var body = $('#conflictModalDiaBody');
         form_data = {
-            formAction: "getConflict",
+            updateOperation: "MERGE_GET_CONFLICTS",
             formMatchId: $(this).attr("match-id")
         }
 
@@ -94,10 +93,10 @@ function initConflictMergeButton() {
                 $(input)[0].setAttribute("id", "text");
                 $(input)[0].setAttribute("name", 'person.' + data[conflict].field);
                 $(input)[0].setAttribute("placeholder", "( " + data[conflict].person1Value + " | " + data[conflict].person2Value + " )");
-                if (data[conflict].field == 'gender') {
+                if (data[conflict].field === 'gender') {
                     $(input)[0].setAttribute("pattern", "(m|F)");
                     $(input)[0].setAttribute("title", "Gender must be 'm' or 'F'");
-                } else if (data[conflict].field == 'mainName') {
+                } else if (data[conflict].field === 'mainName') {
                     $(input)[0].setAttribute("title", "Lastname, Fistname");
                     $(input)[0].setAttribute("pattern", "(.+)(, )(.+)");
                 } else {
@@ -119,9 +118,9 @@ function initConflictMergeButton() {
                                 reg = new RegExp('.+');
                         }
 
-                        return ($(input).attr('value').length == 0 || !reg.test($(input).attr('value')));
+                        return ($(input).attr('value').length === 0 || !reg.test($(input).attr('value')));
                     });
-                    if (notSatisfiedInputs.length == 0 && $('#conflictInputForm').serializeArray().length > 0) {
+                    if (notSatisfiedInputs.length === 0 && $('#conflictInputForm').serializeArray().length > 0) {
 
                         $('#conflictModalAccept').prop("disabled", false);
                     } else {

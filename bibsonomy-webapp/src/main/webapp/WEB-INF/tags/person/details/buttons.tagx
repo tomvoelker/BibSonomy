@@ -13,14 +13,26 @@
 	<jsp:directive.attribute name="hasClaimedPerson" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isAdmin" type="java.lang.Boolean" required="true" />
 
-	<div class="person-header-buttons">
+	<c:set var="loggedInNotSpammer" value="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}"/>
+
+	<div>
 		<!-- Edit Person -->
 		<c:if test="${hasClaimedPerson or isAdmin}">
 			<!-- Edit person modal dialog -->
 			<modals:editPersonDetails command="${command}" id="editPersonDetails"/>
 			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#editPersonDetails">
+				<fontawesome:icon icon="user-edit" fixedWidth="${true}"/>
+				<fmt:message key="person.show.editDetailsButton"/>
+			</a>
+		</c:if>
+
+		<!-- Edit Person Names -->
+		<c:if test="${loggedInNotSpammer}">
+			<!-- Edit person modal dialog -->
+			<modals:editPersonNames command="${command}" id="editPersonNames"/>
+			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#editPersonNames">
 				<fontawesome:icon icon="pencil" fixedWidth="${true}"/>
-				<fmt:message key="person.show.editPersonButton"/>
+				<fmt:message key="person.show.editNamesButton"/>
 			</a>
 		</c:if>
 
@@ -38,7 +50,7 @@
 				</c:when>
 
 				<!-- Claim person -->
-				<c:when test="${empty command.person.user and not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+				<c:when test="${empty command.person.user and loggedInNotSpammer}">
 					<!-- Link person modal dialog -->
 					<modals:linkPerson command="${command}" id="linkPerson"/>
 					<a href="#" class="btn btn-default" data-toggle="modal" data-target="#linkPerson">

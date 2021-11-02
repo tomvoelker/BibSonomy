@@ -155,7 +155,7 @@ public class EditPersonDetailsController {
     private View deleteNameAction(EditPersonCommand command) {
         final JSONObject jsonResponse = new JSONObject();
         try {
-            this.logic.removePersonName(new Integer(command.getFormPersonNameId()));
+            this.logic.removePersonName(command.getPersonNameId());
         } catch (Exception e) {
             jsonResponse.put("status", false);
             // TODO: set proper error message
@@ -176,7 +176,7 @@ public class EditPersonDetailsController {
 
 
         person.getMainName().setMain(false);
-        person.setMainName(Integer.parseInt(command.getSelectedName()));
+        person.setMainName(command.getPersonNameId());
 
         // bind the new person
         command.setPerson(person);

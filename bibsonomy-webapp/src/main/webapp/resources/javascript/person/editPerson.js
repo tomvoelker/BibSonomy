@@ -25,20 +25,18 @@ function initSubmit() {
         }
 
         var formData = $('#formEditPersonDetails').serializeArray();
-        var personInfo = $('.person-info')
-        formData.push({name: 'editAction', value: 'update'});
         formData.push({name: 'updateOperation', value: 'UPDATE_ALL'});
-        formData.push({name: 'personId', value: personInfo.data('person')});
-        formData.push({name: 'claimedPerson', value: personInfo.data('claimed-person')});
+        formData.push({name: 'personId', value:getPersonId()});
+        formData.push({name: 'claimedPerson', value: getClaimedPerson()});
 
         $.ajax({
-            type: "POST",
+            type: 'POST',
             url: '/person/edit',
             data: formData,
             complete: function (data) {
-                // error handling
                 if (data.status) {
-                    // location.reload();
+                    // request success
+                    // location.reload()
                 } else {
                     // error during update
                     console.log(data.message);
@@ -130,134 +128,82 @@ function isValidEMail(mail) {
 
 function initNameEditing() {
     // add a new name to the alternative names list
-    $("#btnAddNameSubmit").click(function () {
-        var form_data = $("#addNameForm").serializeArray();
-        form_data.push({name: "editAction", value: "addName"});
+    $("#submitEditPersonNames").click(function () {
+        var e = $(this);
 
-        $.post("/person/edit", form_data).done(function (data) {
-            // error handling
-            if (data.status) {
-                // everything is fine
+        var formData = $("#formEditPersonNames").serializeArray();
+        formData.push({name: 'updateOperation', value: 'ADD_NAME'});
+        formData.push({name: "personId", value: getPersonId()});
 
-                // no alternative names so far, delete the placholder
-                if ($("#personPageAlternativeNameList").hasClass("hidden")) {
-                    $("#personPageAlternativeNamePlaceholder").remove();
-                    $("#personPageAlternativeNameList").removeClass("hidden");
-                }
-
-                // add the name to the list (includes the delete button)
-                $("#personPageAlternativeNameList").append('<li id="personPageAlternativeNameID_' + data.personNameChangeId + '">' + ''
-                    + $("#formFirstName").val() + ' ' + $("#formLastName").val() + ' '
-                    + '<span '
-                    + 'data-person-name-id="' + data.personNameChangeId + '" '
-                    + 'data-firstName="' + $("#formFirstName").val() + '" '
-                    + 'data-lastName="' + $("#formLastName").val() + '" '
-                    + 'data-toggle="modal" '
-                    + 'data-target="#removeName" '
-                    + 'id="removeName_' + data.personNameChangeId + '" '
-                    + 'class="removeName fa fa-remove"> '
-                    + '</span>'
-                    + '</li>'
-                );
-
-                // hide the modal and reset the form fields
-                $("#addName").modal("hide");
-                $("#formFirstName").val("");
-                $("#formLastName").val("");
-
-                // register the onclick function for the new added button:-
-                $("#removeName_" + data.personNameChangeId).on("click", function () {
-                    var e = $(this);
-                    $("#removeNameForm input[name=formPersonNameId]").val(e.attr("data-person-name-id"));
-                    $("#modalRemoveNameText").html(e.attr("data-firstName") + " " + e.attr("data-lastName"));
-                    $("#removeName").modal("hide");
-                });
-
-            } else {
-                // error during update
-                if (data.message !== "") {
-                    // display the error somewhere
-                    $("#personPageAjaxError").text(data.message).show();
+        $.ajax({
+            type: 'POST',
+            url: '/person/edit',
+            data: formData,
+            complete: function (data) {
+                if (data.status) {
+                    // request success
+                    // location.reload()
                 } else {
-                    $("#personPageAjaxError").show();
-                    $("#personPageAjaxErrorDefaultMessage").show();
+                    // error during update
+                    console.log(data.message);
                 }
             }
         });
     });
 
-    // inserts the values into the modal (TODO: check if data can be taken from fields)
-    $(".removeName").click(function (e) {
-        $("#removeNameForm input[name=formPersonNameId]").val(e.attr("data-person-name-id"));
-        $("#modalRemoveNameText").html(e.attr("data-firstName") + " " + e.attr("data-lastName"));
-    });
-
-    // submit the remove alternative name modal
-    $("#btnRemoveNameSubmit").click(function () {
+    // Select alternative names as main
+    $('.btn-select-name').click(function () {
+        var e = $(this);
+        var personNameId = e.data('name-id');
         $.ajax({
-            type: "POST",
+            type: 'POST',
             url: '/person/edit',
             data: {
-                editAction: "deleteName",
-                formPersonNameId: $("#formPersonNameId").val()
+                updateOperation: "SELECT_MAIN_NAME",
+                personId: getPersonId(),
+                personNameId: personNameId
             },
             complete: function (data) {
-                // hide the modal
-                var id = $("#formPersonNameId").val();
-                $("#formPersonNameId").val("");
-                $("#removeName").modal("hide");
-
                 // error handling
                 if (data.status) {
-                    // everything is fine
-                    // remove the name from the list
-                    $("#personPageAlternativeNameID_" + id).remove();
+                    // location.reload()
                 } else {
                     // error during update
-                    if (data.message !== "") {
-                        // display the error somewhere
-                        $("#personPageAjaxError").text(data.message).show();
-                    } else {
-                        $("#personPageAjaxError").show();
-                        $("personPageAjaxErrorDefaultMessage").show();
-                    }
+                    console.log(data.message);
                 }
             }
         });
     });
 
-    // submit the new main name form
-    $("#btnSetMainNameSubmit").click(function () {
-        var form_data = $("#setMainNameForm").serializeArray();
-        form_data.push({name: "editAction", value: "setMainName"});
-
-        $.ajax({
-            type: "POST",
-            url: '/person/edit',
-            data: form_data,
-            complete: function (data) {
-                // error handling
-                if (data.status) {
-                    // everything is fine - reload to render the page again
-                    location.reload();
-                } else {
-                    // error during update
-                    if (data.message !== "") {
-                        // display the error somewhere
-                        $("#personPageAjaxError").text(data.message).show();
-                    } else {
-                        $("#personPageAjaxError").show();
-                        $("#personPageAjaxErrorDefaultMessage").show();
-                    }
-                }
-            }
-        });
-    });
-
-    // inserts the values into the modal
-    $(".personPageAlternativeName").click(function () {
+    // Remove alternative names
+    $('.btn-delete-name').click(function () {
         var e = $(this);
-        $("#setMainNameForm input[name=formSelectedName]").val(e.attr("data-person-name-id"));
-        $("#modalMainNameText").html(e.attr("data-firstName") + " " + e.attr("data-lastName"));
+        var personNameId = e.data('name-id');
+        $.ajax({
+            type: 'POST',
+            url: '/person/edit',
+            data: {
+                updateOperation: 'DELETE_NAME',
+                personId: getPersonId(),
+                personNameId: personNameId
+            },
+            complete: function (data) {
+                if (data.status) {
+                    // request success
+                    // location.reload()
+                } else {
+                    // error during update
+                    console.log(data.message);
+                }
+            }
+        });
     });
+}
+
+function getPersonId() {
+    return $('.person-info').data('person');
+}
+
+function getClaimedPerson() {
+    return $('.person-info').data('claimed-person');
 }
