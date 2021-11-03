@@ -12,7 +12,7 @@
 	<c:set var="person" value="${command.person}"/>
 
 	<fmt:message key="person.show.modal.details.header" var="modalTitle"/>
-	<bs:modal modalTitle="${modalTitle}" id="${id}" large="${true}">
+	<bs:modal modalTitle="${modalTitle}" modalClass="edit-person-modal" id="${id}" large="${true}">
         <jsp:attribute name="modalBody">
             <div class="container-fluid">
 				<form id="formEditPersonDetails">

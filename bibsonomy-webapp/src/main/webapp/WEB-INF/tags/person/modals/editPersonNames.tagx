@@ -20,7 +20,7 @@
 	<fmt:message var="lastNamePlaceholder" key="person.new.lastName"/>
 
 	<fmt:message key="person.show.modal.names.header" var="modalTitle"/>
-	<bs:modal modalTitle="${modalTitle}" id="${id}" large="${true}">
+	<bs:modal modalTitle="${modalTitle}" modalClass="edit-person-modal" id="${id}" large="${true}">
         <jsp:attribute name="modalBody">
             <div class="container-fluid">
 				<form id="formEditPersonNames">
@@ -63,7 +63,7 @@
 											<c:set var="labelSet" value="${true}"/>
 											<div class="row">
 												<div class="col-md-3">
-													<label><fmt:message key="person.show.personAlternateNames"/></label>
+													<label class="input-label"><fmt:message key="person.show.personAlternateNames"/></label>
 												</div>
 												<div class="col-md-3"><c:out value="${name.firstName}"/></div>
 												<div class="col-md-4"><c:out value="${name.lastName}"/></div>
