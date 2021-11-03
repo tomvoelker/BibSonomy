@@ -77,9 +77,14 @@ public class SpringerScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		final String url = sc.getUrl().toExternalForm().replace(".pdf", "");
 
 		try {
+			String url = WebUtils.getRedirectUrl(sc.getUrl()).toExternalForm();
+			if (!present(url)){
+				url = sc.getUrl().toExternalForm();
+			}
+			url = url.replace(".pdf", "");
+
 			String  doiURL = "https://doi.org/";
 			String doi = DOIUtils.getDoiFromURL(new URL(url));
 

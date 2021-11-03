@@ -55,9 +55,9 @@ public class NberScraper extends GenericRISURLScraper {
 
 	private static final String NBER_HOST  = "www.nber.org";
 
-	private static final Pattern URL_CODE_PATTERN = Pattern.compile("/papers/(w\\d{5})");
-
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NBER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+
+	private static final Pattern URL_CODE_PATTERN = Pattern.compile("/papers/(w\\d{5})");
 	
 	public String getInfo() {
 		return info;
@@ -69,16 +69,21 @@ public class NberScraper extends GenericRISURLScraper {
 	}
 
 	@Override
-	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
-		String code = "";
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
+		String code;
 		String urlPath = url.getPath();
 		Matcher m_code = URL_CODE_PATTERN.matcher(urlPath);
-		if (m_code.find()) code = m_code.group(1);
+		if (m_code.find()){
+			code = m_code.group(1);
+		}else {
+			throw new ScrapingException("can't get code from " + url);
+		}
 
 		List<NameValuePair> postData = new LinkedList<>();
 		postData.add(new BasicNameValuePair("code", code));
 		postData.add(new BasicNameValuePair("file_type", "ris"));
 		postData.add(new BasicNameValuePair("form_id", "download_citation"));
+
 		return postData;
 	}
 

@@ -35,7 +35,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -66,7 +65,7 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 		try {
 			final String doi = DOIUtils.getDoiFromURL(new URL(url.getProtocol(), url.getHost(), url.getPath()));
 			if (!present(doi)) {
-				throw new ScrapingFailureException("can't get doi from " + url);
+				throw new ScrapingException("can't get doi from " + url);
 			}
 
 			final String downloadUrl = this.getDownloadSiteUrl(url) + getDownloadURLPath();
@@ -80,6 +79,9 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 			}
 
 			String bibtex = WebUtils.getContentAsString(downloadUrl, null, postData, url.toExternalForm());
+			if (!present(bibtex)){
+				throw new ScrapingException("can't get bibtex from " + url);
+			}
 			bibtex = postProcessScrapingResult(scrapingContext, bibtex);
 			scrapingContext.setBibtexResult(bibtex);
 

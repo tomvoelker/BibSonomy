@@ -99,28 +99,31 @@ public class IucrScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	protected List<NameValuePair> getDownloadData(URL url, String cookies){
-		String html = null;
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException{
 		try {
-			html = WebUtils.getContentAsString(url);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String cnor = "";
-		Matcher m1_cnor = CNOR_PATTERN_1.matcher(html);
-		Matcher m2_cnor = CNOR_PATTERN_2.matcher(html);
-		if (m1_cnor.find()){
-			cnor = m1_cnor.group(1);
-		}else {
-			if (m2_cnor.find()){
-				cnor = m2_cnor.group(1);
+			String html = WebUtils.getContentAsString(url);
+
+			String cnor;
+			Matcher m1_cnor = CNOR_PATTERN_1.matcher(html);
+			Matcher m2_cnor = CNOR_PATTERN_2.matcher(html);
+			if (m1_cnor.find()){
+				cnor = m1_cnor.group(1);
+			}else {
+				if (m2_cnor.find()){
+					cnor = m2_cnor.group(1);
+				}else {
+					throw new ScrapingException("can't get cnor from html of " + url);
+				}
 			}
+
+			List<NameValuePair> postData = new LinkedList<>();
+			postData.add(new BasicNameValuePair("cnor", cnor));
+
+			return postData;
+		}catch (IOException e){
+			throw new ScrapingException(e);
 		}
 
-		List<NameValuePair> postData = new LinkedList<>();
-		postData.add(new BasicNameValuePair("cnor", cnor));
-
-		return postData;
 	}
 
 	@Override

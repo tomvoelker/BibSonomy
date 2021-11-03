@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.scraper.url.kde.osti;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -37,6 +38,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -58,11 +60,19 @@ public class OstiScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
-			String html = WebUtils.getContentAsString(scrapingContext.getUrl());
+			URL url = scrapingContext.getUrl();
+			String html = WebUtils.getContentAsString(url);
+			if (!present(html)){
+				throw new ScrapingException("can't get html of " + url);
+			}
 
-			String bibtex = "";
+			String bibtex;
 			Matcher m_bibtex = PATTERN_BIBTEX_ON_PAGE.matcher(html);
-			if (m_bibtex.find()) bibtex = m_bibtex.group(1);
+			if (m_bibtex.find()) {
+				bibtex = m_bibtex.group(1);
+			}else {
+				throw new ScrapingException("can't get bibtex from " + url);
+			}
 
 			scrapingContext.setBibtexResult(fixBibtex(bibtex));
 			return true;

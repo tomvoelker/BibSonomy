@@ -27,11 +27,12 @@ public class HebisScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		String id = "";
 		Matcher m_id = ID_PATTERN.matcher(url.getPath());
-		if (m_id.find()) id = m_id.group(1);
-
-		return "https://hds.hebis.de/ubks/Puma/Export?id=" + id + "&exportType=bib";
+		if (m_id.find()) {
+			return "https://hds.hebis.de/ubks/Puma/Export?id=" + m_id.group(1)+ "&exportType=bib";
+		}else {
+			return null;
+		}
 	}
 
 	@Override

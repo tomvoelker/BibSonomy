@@ -81,27 +81,40 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 				url = scrapingContext.getUrl();
 			}
 
-			String bibcode = "";
-			Matcher m_bibcode = URL_BIBCODE_PATTERN.matcher(url.getPath());
-			if (m_bibcode.find())bibcode = m_bibcode.group(1);
-
-			final String jsonForPost = "{\"bibcode\":[\""+ bibcode +"\"],\"sort\":[\"date desc, bibcode desc\"],\"maxauthor\":[0],\"authorcutoff\":[200],\"journalformat\":[1]}";
-			if (!present(jsonForPost)) {
-				throw new ScrapingFailureException("can't get json from " + url);
+			String authorizationJson = WebUtils.getContentAsString(AUTHORIZATION_URL);
+			if (!present(authorizationJson)){
+				throw new ScrapingException("can't get authorization-json from " + authorizationJson);
+			}
+			String authorizationHeaderValue = getAuthorizationTokenFromJson(authorizationJson);
+			if (!present(authorizationHeaderValue)){
+				throw new ScrapingException("couln't get authorization token from " + authorizationJson);
 			}
 
-			String authorizationJson = WebUtils.getContentAsString(AUTHORIZATION_URL);
-			String authorizationHeaderValue = getAuthorizationTokenFromJson(authorizationJson);
+			String bibcode;
+			Matcher m_bibcode = URL_BIBCODE_PATTERN.matcher(url.getPath());
+			if (m_bibcode.find()){
+				bibcode = m_bibcode.group(1);
+			}else {
+				throw new ScrapingException(url + " did not contain bibcode");
+			}
 
 			HttpPost post = new HttpPost(DOWNLOAD_URL);
 			post.setHeader("Content-Type", "application/json");
 			post.setHeader("Authorization", authorizationHeaderValue);
+			String jsonForPost = "{\"bibcode\":[\""+ bibcode +"\"],\"sort\":[\"date desc, bibcode desc\"],\"maxauthor\":[0],\"authorcutoff\":[200],\"journalformat\":[1]}";
 			post.setEntity(new StringEntity(jsonForPost));
 
-			String bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
-			bibtex = JsonToBibtex(bibtex);
-			scrapingContext.setBibtexResult(bibtex);
+			String bibtexJson = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			if (!present(bibtexJson)){
+				throw new ScrapingException("can't get json of bibtex from " + DOWNLOAD_URL);
+			}
 
+			String bibtex = JsonToBibtex(bibtexJson);
+			if (!present(bibtex)){
+				throw new ScrapingException(bibtexJson + " did not contain bibtex");
+			}
+
+			scrapingContext.setBibtexResult(bibtex);
 			return true;
 		} catch (final IOException | HttpException e) {
 			throw new ScrapingFailureException(e);
@@ -131,7 +144,11 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 	protected String JsonToBibtex(String json) {
 		JSONArray hostArray = JSONArray.fromObject("["+json+"]");
 		JSONObject hostObject = hostArray.getJSONObject(0);
-		return hostObject.getString("export");
+		String bibtex = hostObject.getString("export");
+		if (present(bibtex)){
+			return bibtex;
+		}
+		return null;
 	}
 
 	protected String getAuthorizationTokenFromJson(String json) {
@@ -139,7 +156,10 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 		JSONObject hostObject = hostArray.getJSONObject(0);
 		String tokenType = hostObject.getString("token_type");
 		String accessToken = hostObject.getString("access_token");
-		return tokenType + ":" +  accessToken;
+		if (present(tokenType)&&present(accessToken)){
+			return tokenType + ":" +  accessToken;
+		}
+		return null;
 	}
 
 }

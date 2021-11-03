@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.scraper.url.kde.mdpi;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
@@ -64,6 +65,8 @@ public class MDPIScraper extends GenericBibTeXURLScraper implements CitedbyScrap
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
 					new Pair<>(Pattern.compile(".*" + "mdpi.com"), AbstractUrlScraper.EMPTY_PATTERN)
 	);
+	private static final String DOWNLOAD_URL = "https://www.mdpi.com/export";
+
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<input type=\"hidden\" name=\"articles_ids\\[\\]\" value=\"(\\d+)\">");
 	private static final Pattern CITATION_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*)\">");
 
@@ -119,31 +122,33 @@ public class MDPIScraper extends GenericBibTeXURLScraper implements CitedbyScrap
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		return "https://www.mdpi.com/export";
+		return DOWNLOAD_URL;
 	}
 
 	@Override
-	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
-		String pageContent = "";
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
 		try {
-			pageContent = WebUtils.getContentAsString(url);
+			String pageContent = WebUtils.getContentAsString(url);
+			if (!present(pageContent)){
+				throw new ScrapingException("can't get page content of " + url);
+			}
+
+			String id;
+			final Matcher m_id = BIBTEX_PATTERN.matcher(pageContent);
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>();
+			if (m_id.find()) {
+				id = m_id.group(1);
+			}else {
+				throw new ScrapingException("can't get article-id from " + url);
+			}
+
+			postData.add(new BasicNameValuePair("articles_ids[]=", id));
+			postData.add(new BasicNameValuePair("export_format_top", "bibtex"));
+
+			return postData;
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ScrapingException(e);
 		}
-		String id = "";
-		final Matcher m_id = BIBTEX_PATTERN.matcher(pageContent);
-		final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
-		if (m_id.find()) {
-			id = m_id.group(1);
-		}
-		postData.add(new BasicNameValuePair("articles_ids[]=", id));
-		postData.add(new BasicNameValuePair("export_format_top", "bibtex"));
-
-		return postData;
 	}
-
-
-
-
 
 }

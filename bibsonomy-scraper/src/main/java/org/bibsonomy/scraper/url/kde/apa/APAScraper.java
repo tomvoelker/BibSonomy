@@ -29,11 +29,14 @@
  */
 package org.bibsonomy.scraper.url.kde.apa;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -67,6 +70,8 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final String VISIT_SECOND_URL = "https://psycnet.apa.org/api/request/record.exportRISFile";
 	private static final String VISIT_THIRD_URL = "https://psycnet.apa.org/ris/download";
 
+	private static final Header USER_AGENT_HEADER = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36");
+
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 
 
@@ -98,32 +103,43 @@ public class APAScraper extends AbstractUrlScraper {
 			HttpClient client = WebUtils.getHttpClient();
 			String url = scrapingContext.getUrl().toExternalForm();
 
-			String uid = "";
+			String uid;
 			Matcher m_uid = URL_UID_PATTERN.matcher(url);
-			if (m_uid.find()) uid = m_uid.group(1);
-
-			String userAgentHeader = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36";
+			if (m_uid.find()) {
+				uid = m_uid.group(1);
+			}else {
+				throw new ScrapingException("can't get uid from " + url);
+			}
 
 			HttpGet get1 = new HttpGet(url);
-			get1.addHeader("User-Agent", userAgentHeader);
+			get1.addHeader(USER_AGENT_HEADER);
 			String cookie = WebUtils.getHeaders(client, get1, "set-cookie");
+			if (!present(cookie)){
+				throw new ScrapingException("can't get cookies \"set-cookie\" from " + url);
+			}
 
 			HttpPost post = new HttpPost(VISIT_SECOND_URL);
 			post.setHeader("Cookie", cookie);
 			post.setHeader("Content-Type", "application/json");
-			post.setEntity(new StringEntity("{\"api\":\"record.exportRISFile\",\"params\":{\"UIDList\":[{\"UID\":\"" + uid + "\",\"ProductCode\":\"PA\"}],\"exportType\":\"referenceSoftware\"}}"));
-			WebUtils.getContentAsString(client, post);
+			StringEntity postBody = new StringEntity("{\"api\":\"record.exportRISFile\",\"params\":{\"UIDList\":[{\"UID\":\"" + uid + "\",\"ProductCode\":\"PA\"}],\"exportType\":\"referenceSoftware\"}}");
+			post.setEntity(postBody);
+			String postResponse = WebUtils.getContentAsString(client, post);
+			if (!present(postResponse)||!postResponse.equals("{\"isRisExportCreated\":true,\"accessLink\":\"\"}\n")){
+				throw new ScrapingException("authorization to get ris was not given from " + VISIT_SECOND_URL + " with body " + postBody);
+			}
 
 			HttpGet get2 = new HttpGet(VISIT_THIRD_URL);
 			get2.addHeader("Cookie", cookie);
-			get2.addHeader("User-Agent", userAgentHeader);
+			get2.addHeader(USER_AGENT_HEADER);
 			String ris = WebUtils.getContentAsString(client, get2);
+			if (!present(ris)){
+				throw new ScrapingException("can't get ris from " + VISIT_THIRD_URL);
+			}
 
 			scrapingContext.setBibtexResult(RIS2BIB.toBibtex(ris));
 			return true;
 		} catch (IOException | HttpException e) {
-			e.printStackTrace();
-			return false;
+			throw new ScrapingException("can't get bibtex from " + scrapingContext.getUrl());
 		}
 	}
 }
