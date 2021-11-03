@@ -31,6 +31,7 @@ package org.bibsonomy.scraper.url.kde.iop;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.http.HttpException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -63,6 +64,12 @@ public class IOPScraper extends AbstractUrlScraper {
 
 	private static final String DOWNLOAD_URL_PATH = "https://iopscience.iop.org/export?";
 
+	private static final List<String> USER_AGENTS = Arrays.asList(
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
+					"Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1",
+					"Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1"
+	);
+
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
@@ -81,10 +88,24 @@ public class IOPScraper extends AbstractUrlScraper {
 			final String downloadUrl = DOWNLOAD_URL_PATH + downloadUrlParams;
 
 			HttpGet get = new HttpGet(downloadUrl);
-			// needed to avoid recaptcha
-			get.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36");
 
-			String bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+
+			//IOP blocks userAgents, which send to many reqeusts. So we first try out three different userAgents and if  non work we use a random value.
+			String bibtex = null;
+			for (String userAgent : USER_AGENTS) {
+				try {
+					get.setHeader("User-Agent", userAgent);
+					bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+				}catch (ClientProtocolException ignored){}
+			}
+			if (!present(bibtex)){
+				get.setHeader("User-Agent", String.valueOf(Math.random()));
+				bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+			}
+			if (!present(bibtex)){
+				throw new ScrapingException("can't get bibtex from " + url);
+			}
+
 			scrapingContext.setBibtexResult(bibtex);
 			return true;
 		} catch (HttpException | IOException e) {
