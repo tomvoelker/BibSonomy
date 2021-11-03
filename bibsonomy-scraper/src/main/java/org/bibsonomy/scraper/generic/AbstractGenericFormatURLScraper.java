@@ -113,7 +113,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 	 * @param cookies
 	 * @return
 	 */
-	protected List<NameValuePair> getDownloadData(final URL url, final String cookies) {
+	protected List<NameValuePair> getDownloadData(final URL url, final String cookies) throws ScrapingException {
 		return null;
 	}
 

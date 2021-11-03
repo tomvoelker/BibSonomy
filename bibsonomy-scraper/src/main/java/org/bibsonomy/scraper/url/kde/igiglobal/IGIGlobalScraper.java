@@ -33,10 +33,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
@@ -67,48 +64,55 @@ public class IGIGlobalScraper extends GenericRISURLScraper {
 					new Pair<>(Pattern.compile(".*" + "igi-global.com"), AbstractUrlScraper.EMPTY_PATTERN)
 	);
 
-
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		// can t download over http
-		if (url.getProtocol().equals("http")){
-			return "https" + url.toExternalForm().substring(4);
-		}
-		return url.toExternalForm();
+		// can't download over http
+		return "https://" + url.getHost() + "/" + url.getPath();
 	}
 
 	@Override
-	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
-		String html = null;
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
 		try {
-			html = WebUtils.getContentAsString(url);
-		}catch (IOException io){
-			io.printStackTrace();
+			String html = WebUtils.getContentAsString(url);
+
+			final Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
+			String eventvalidation;
+			if(m_eventvalidation.find()){
+				eventvalidation = m_eventvalidation.group(1);
+			}else {
+				throw new ScrapingException("html of "+ url + " did not contain eventvalidation value");
+			}
+
+			final Matcher m_viewstate = VIEWSTATE.matcher(html);
+			String viewstate;
+			if(m_viewstate.find()){
+				viewstate = m_viewstate.group(1);
+			}else {
+				throw new ScrapingException("html of "+ url + " did not contain viewstate value");
+			}
+
+			final Matcher m_submitEndnote = SUBMIT_ENDNOTE.matcher(html);
+			String submitEndnote;
+			if(m_submitEndnote.find()){
+				submitEndnote = m_submitEndnote.group(1);
+			}else {
+				throw new ScrapingException("html of "+ url + " did not contain submitEndnote name");
+			}
+
+			final List<NameValuePair> postData = new ArrayList<>();
+
+			postData.add(new BasicNameValuePair("__EVENTVALIDATION", eventvalidation));
+			postData.add(new BasicNameValuePair("__VIEWSTATE", viewstate));
+			// the values can be ignored
+			postData.add(new BasicNameValuePair(submitEndnote + ".x", "42"));
+			postData.add(new BasicNameValuePair(submitEndnote + ".y", "2"));
+
+			return postData;
+
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
-		final Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
-		String eventvalidation = "";
-		if(m_eventvalidation.find())  eventvalidation = m_eventvalidation.group(1);
-
-		final Matcher m_viewstate = VIEWSTATE.matcher(html);
-		String viewstate = "";
-		if(m_viewstate.find()) viewstate = m_viewstate.group(1);
-
-		final Matcher m_submitEndnote = SUBMIT_ENDNOTE.matcher(html);
-		String submitEndnote = "";
-		if(m_submitEndnote.find()) submitEndnote = m_submitEndnote.group(1);
-
-		final List<NameValuePair> postData = new ArrayList<>();
-
-		postData.add(new BasicNameValuePair("__EVENTVALIDATION", eventvalidation));
-		postData.add(new BasicNameValuePair("__VIEWSTATE", viewstate));
-		// the values can be ignored
-		postData.add(new BasicNameValuePair(submitEndnote + ".x", "42"));
-		postData.add(new BasicNameValuePair(submitEndnote + ".y", "2"));
-
-		return postData;
-
 	}
-
 
 	@Override
 	public String getSupportedSiteName() {
