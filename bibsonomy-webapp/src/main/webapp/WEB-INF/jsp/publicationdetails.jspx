@@ -20,7 +20,8 @@
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
@@ -31,7 +32,12 @@
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<layout:paneLayout pageTitle="${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}">
+	<layout:paneLayout
+			pageTitle="${title}"
+			command="${command}"
+			requestedUser="${command.requestedUser}"
+			requPath="${requPath}"
+			showPageOptions="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
@@ -55,6 +61,45 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
+
+
+			<!-- Quick cite -->
+			<h3>
+				<fontawsome:icon icon="quote-right" />
+				<c:out value=" "/>
+				<fmt:message key="publications.citations.headline" />
+			</h3>
+
+			<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
+
+			<div class="sidebar-quick-cite-box">
+				<div class="form-group">
+					<label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
+					<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite">
+						<option><fmt:message key="form.input.select" /></option>
+					</select>
+					<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
+				</div>
+
+				<div class="cust-loader">
+					<div class="loader">
+						<div class="loader--dot"><!-- KEEP ME --></div>
+						<div class="loader--dot"><!-- KEEP ME --></div>
+						<div class="loader--dot"><!-- KEEP ME --></div>
+						<div class="loader--dot"><!-- KEEP ME --></div>
+						<div class="loader--dot"><!-- KEEP ME --></div>
+						<div class="loader--dot"><!-- KEEP ME --></div>
+						<div class="loader--text"><!-- KEEP ME --></div>
+					</div>
+				</div>
+
+			</div>
+
+
+
+
+
+
 			<sidebar:sidebarItem textKey="bibtex.details.meta">
 				<jsp:attribute name="content">
 					<ul>
@@ -88,39 +133,13 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
+
+
 			<sidebar:sidebarItem textKey="community">
 				<jsp:attribute name="content">
-					<ul>
-						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
-							<li>
-								<h5><fmt:message key="bibtex.details.related_users"/></h5>
-								<ul style="margin-left: 1em; list-style:disc;">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-										<li class="${userclass}">
-											<user:username user="${user}" />
-										</li>
-									</c:forEach>
-								</ul>
-							</li>
-						</c:if>
 
-							
-						<!--+
-							| 
-							| tags
-							|
-							+-->
-						<li><h5><fmt:message key="tags"/>
-								<small style="font-size:80%;">
-									(<user:username user="${post.user}" />
-									<fmt:message key="tags.highlighted.by_user"/>)
-								</small>
-							</h5>
-							<div class="sidebar_collapse_content">
-								<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
-							</div>
-						</li>
-					</ul>
+
+
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 			<!--+

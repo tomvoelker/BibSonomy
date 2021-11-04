@@ -17,7 +17,11 @@
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
+>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
@@ -172,6 +176,7 @@
 				<pub:externalSearchPublication loggedinUser="${command.context.loginUser}" publication="${publication}" />
 			</dd>
 		</dl>
+
 		
 		<!--+
 			| discussion and rating
@@ -207,5 +212,46 @@
 		</c:if>
 		</ul>
 	</div>
-	
+
+
+
+
+	<h3>
+		<fontawsome:icon icon="users" />
+		<c:out value=" "/>
+		<fmt:message key="community" />
+	</h3>
+	<ul>
+		<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
+			<li>
+				<h5><fmt:message key="bibtex.details.related_users"/></h5>
+				<common:relatedUsers
+						userList="${command.relatedUserCommand.relatedUsers}"
+						interHash="${post.resource.interHash}"
+						showHeadline="false"
+				/>
+			</li>
+		</c:if>
+
+
+		<!--+
+            |
+            | tags
+            |
+            +-->
+		<li><h5><fmt:message key="tags"/>
+			<small style="font-size:80%;">
+				(<user:username user="${post.user}" />
+				<fmt:message key="tags.highlighted.by_user"/>)
+			</small>
+		</h5>
+			<div class="sidebar_collapse_content">
+				<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+			</div>
+		</li>
+	</ul>
+
+
+
+
 </jsp:root>
