@@ -31,7 +31,7 @@ function initSubmit() {
 
         $.ajax({
             type: 'POST',
-            url: '/person/edit',
+            url: '/editPerson',
             data: formData,
             complete: function (data) {
                 if (data.status) {
@@ -137,7 +137,7 @@ function initNameEditing() {
 
         $.ajax({
             type: 'POST',
-            url: '/person/edit',
+            url: '/editPerson',
             data: formData,
             complete: function (data) {
                 if (data.status) {
@@ -157,7 +157,7 @@ function initNameEditing() {
         var personNameId = e.data('name-id');
         $.ajax({
             type: 'POST',
-            url: '/person/edit',
+            url: '/editPerson',
             data: {
                 updateOperation: "SELECT_MAIN_NAME",
                 personId: getPersonId(),
@@ -181,7 +181,7 @@ function initNameEditing() {
         var personNameId = e.data('name-id');
         $.ajax({
             type: 'POST',
-            url: '/person/edit',
+            url: '/editPerson',
             data: {
                 updateOperation: 'DELETE_NAME',
                 personId: getPersonId(),

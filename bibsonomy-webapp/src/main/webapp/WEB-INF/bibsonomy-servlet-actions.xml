@@ -781,7 +781,7 @@
 				</entry>
 
 				<!-- edit person -->
-				<entry key="/person/edit">
+				<entry key="/editPerson">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="editPersonController" />
 						<property name="allowedFields">
@@ -1502,7 +1502,6 @@
 	</bean>
 
 	<bean id="editPersonController" class="org.bibsonomy.webapp.controller.person.EditPersonController" scope="request">
-		<property name="logic" ref="logic"/>
 		<property name="detailsController" ref="editPersonDetailsController"/>
 		<property name="relationController" ref="editRelationController"/>
 		<property name="mergeController" ref="mergePersonController"/>

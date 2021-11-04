@@ -25,12 +25,12 @@ function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
 	});
 }
 
-function setupPersonAutocomplete(inputFieldSelector, editAction, displayKey, selectionHandler) {
+function setupPersonAutocomplete(inputFieldSelector, updateOperation, displayKey, selectionHandler) {
 	// constructs the suggestion engine
 	var personNames = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: '/person/edit?editAction=' + editAction + '&selectedName=%QUERY',
+		remote: '/editPerson?updateOperation=' + updateOperation + '&selectedName=%QUERY',
 		wildcard: '%QUERY',
 		rateLimitWait: 800
 	});

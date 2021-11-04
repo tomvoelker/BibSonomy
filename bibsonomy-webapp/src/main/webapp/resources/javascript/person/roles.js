@@ -87,7 +87,7 @@ function initRoleEditing() {
         formData.push({name: "resourcePersonRelation.personIndex", value: e.data('author-index')});
         formData.push({name: "formPersonIndex", value: e.data('author-index')});
 
-        $.post("/person/edit", formData).done(
+        $.post("/editPerson", formData).done(
             function (data) {
                 if (data.exception) {
                     alert(getString('person.show.error.addRoleFailed'));
@@ -106,7 +106,7 @@ function initRoleEditing() {
 
     $("#btnDeleteRoleSubmit").click(function () {
         var e = $(this);
-        $.post("/person/edit",
+        $.post("/editPerson",
             {
                 updateOperation: "DELETE_ROLE",
                 formResourcePersonRelationId: e.attr("data-resourcePersonRelation-id")

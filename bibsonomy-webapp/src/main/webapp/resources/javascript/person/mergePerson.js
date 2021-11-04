@@ -18,7 +18,7 @@ function initMergeButton() {
             formMatchId: $(this).attr("match-id")
         };
 
-        $.post("/person/edit", form_data).done(function (data) {
+        $.post("/editPerson", form_data).done(function (data) {
             if (data.status) {
                 $("#match_" + form_data.formMatchId).slideUp(500, function () {
                     $(this).remove();
@@ -47,7 +47,7 @@ function initConflictButton() {
         form_data["formMatchId"] = $("#conflictModalAccept").attr("match-id");
         form_data["updateOperation"] = "MERGE_CONFLICTS";
 
-        $.post("/person/edit", form_data).done(function (data) {
+        $.post("/editPerson", form_data).done(function (data) {
             if (data.status) {
                 $("#match_" + form_data.formMatchId).slideUp(500, function () {
                     $(this).remove();
@@ -70,7 +70,7 @@ function initConflictMergeButton() {
             formMatchId: $(this).attr("match-id")
         }
 
-        $.post("/person/edit", form_data).done(function (data) {
+        $.post("/editPerson", form_data).done(function (data) {
             var body = document.createElement("form");
             $(body).addClass("form-group");
             $(body)[0].setAttribute("id", "conflictInputForm")

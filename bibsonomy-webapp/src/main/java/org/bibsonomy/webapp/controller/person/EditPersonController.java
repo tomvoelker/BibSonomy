@@ -45,11 +45,18 @@ import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONObject;
 import org.springframework.validation.Errors;
 
+/**
+ * Controller to edit person via AJAX.
+ *
+ * paths:
+ * - /editPerson
+ *
+ * @author kchoong
+ */
 public class EditPersonController implements MinimalisticController<EditPersonCommand>, ErrorAware {
 
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
-    private LogicInterface logic;
     private Errors errors;
 
     private EditPersonDetailsController detailsController;
@@ -58,7 +65,6 @@ public class EditPersonController implements MinimalisticController<EditPersonCo
 
     @Override
     public View workOn(EditPersonCommand command) {
-
         final RequestWrapperContext context = command.getContext();
         final PersonUpdateOperation operation = command.getUpdateOperation();
         final boolean action = present(operation);
@@ -119,10 +125,6 @@ public class EditPersonController implements MinimalisticController<EditPersonCo
     @Override
     public void setErrors(Errors errors) {
         this.errors = errors;
-    }
-
-    public void setLogic(LogicInterface logic) {
-        this.logic = logic;
     }
 
     public void setDetailsController(EditPersonDetailsController detailsController) {
