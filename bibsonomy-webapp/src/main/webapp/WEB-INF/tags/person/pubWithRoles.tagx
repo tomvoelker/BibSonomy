@@ -16,14 +16,14 @@
 	
 	<div class="personThesisEntry row ${post.resource.interHash}_${post.resource.intraHash}">
 	
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<span class="ptitle"><bib:title post="${post}" /></span>
 			<div class="personPdesc pdesc ellipsis">
 				<div class="ellipsis-content"><bib:desc post="${post}" publication="${post.resource}"/></div>
 			</div>	
 		</div>
 		
-		<div class="col-md-6" style="border-left: 1px solid lightgrey">
+		<div class="col-md-4" style="border-left: 1px solid lightgrey">
 		
 			<!-- Doctorial advisor and first reviewer should always be visible -->
 			<ul class="list-unstyled">

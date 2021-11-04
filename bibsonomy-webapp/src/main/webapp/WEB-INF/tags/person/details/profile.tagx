@@ -34,12 +34,6 @@
 						<c:out value="${title}"/>
 						<jsp:invoke fragment="icons" />
 					</h1>
-					<!-- Alternative Names -->
-					<c:if test="${fn:length(command.alternativeNames) gt 0}">
-						<span class="media-sub-heading">
-							<c:out value="${fn:join(fn:split(command.alternativeNames, ';'), ', ')}"/>
-						</span>
-					</c:if>
 				</div>
 			</div>
 			<div class="media-description">
@@ -52,20 +46,25 @@
 					</c:when>
 					<c:otherwise>
 						<!-- Organizations -->
-						<perdetails:organizations organizations="${organizations}"/>
+						<c:choose>
+							<c:when test="${fn:length(organizations) eq 1}">
+								<perdetails:property command="${command}" type="organization" list="${organizations}"/>
+							</c:when>
+							<c:otherwise>
+								<perdetails:property command="${command}" type="organizations" list="${organizations}"/>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 
 				<!-- E-Mail -->
 				<c:if test="${not empty command.person.email}">
-					<perdetails:property  command="${command}" type="email" value="${command.person.email}"/>
+					<perdetails:property command="${command}" type="email" value="${command.person.email}"/>
 				</c:if>
-
-				<br/>
 
 				<!-- Homepage -->
 				<c:if test="${not empty command.person.homepage}">
-					<perdetails:property  command="${command}" type="homepage" value="${command.person.homepage}"/>
+					<perdetails:property command="${command}" type="homepage" value="${command.person.homepage}"/>
 				</c:if>
 
 				<!-- ORCiD -->
@@ -76,6 +75,11 @@
 				<!-- ResearcherID -->
 				<c:if test="${not empty command.person.researcherid}">
 					<perdetails:property command="${command}" type="researcherid" value="${command.person.researcherid}"/>
+				</c:if>
+
+				<!-- Alternative Names -->
+				<c:if test="${not empty command.alternativeNames}">
+					<perdetails:property command="${command}" type="personAlternateNames" list="${command.alternativeNames}"/>
 				</c:if>
 			</div>
 			<div class="row person-buttons">

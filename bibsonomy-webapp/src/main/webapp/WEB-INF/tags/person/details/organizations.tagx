@@ -5,28 +5,13 @@
 
     <jsp:directive.attribute name="organizations" type="java.util.List" required="true" />
 
-    <c:choose>
-        <c:when test="${fn:length(organizations) eq 1}">
-            <c:set value="person.show.organization" var="key" />
-        </c:when>
-        <c:otherwise>
-            <c:set value="person.show.organizations" var="key" />
-        </c:otherwise>
-    </c:choose>
+    <c:forEach var="org" items="${organizations}" varStatus="status">
+        <a href="${relativeUrlGenerator.getOrganizationUrlByName(org.source.name)}">
+            <c:out value="${org.source.realname}"/>
+        </a>
+        <c:if test="${not status.last}">
+            <br/>
+        </c:if>
+    </c:forEach>
 
-    <div class='form-group'>
-        <label class="control-label col-md-4 col-smallpadding"><fmt:message key="${key}" /></label>
-        <div class="col-md-8">
-            <div class="personPageFormPlaceholder">
-                <!-- This simply renders all organisatzions. There is no checking, which is the "primary" one -->
-                <c:forEach var="orga" items="${organizations}">
-                    <span class="personPageFormFieldContent" id="personPageFormOrganizationValue">
-                        <a href="${relativeUrlGenerator.getOrganizationUrlByName(orga.source.name)}">
-                            <c:out value="${orga.source.realname}"/> <br/>
-                        </a>
-                    </span>
-                </c:forEach>
-            </div>
-        </div>
-    </div>
 </jsp:root>

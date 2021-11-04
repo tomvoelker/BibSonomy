@@ -38,6 +38,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -72,7 +73,7 @@ public class PersonPageCommand extends BaseCommand {
 	private String personPostsLayout;
 	private List<Post<BibTex>> myownPosts;
 	private Map<String, String> myownPostsRendered;
-	private String alternativeNames;
+	private List<PersonName> alternativeNames;
 
 	private List<SearchFilterElement> entrytypeFilters;
 
@@ -438,11 +439,11 @@ public class PersonPageCommand extends BaseCommand {
 		this.myownPostsRendered = myownPostsRendered;
 	}
 
-	public String getAlternativeNames() {
+	public List<PersonName> getAlternativeNames() {
 		return alternativeNames;
 	}
 
-	public void setAlternativeNames(String alternativeNames) {
+	public void setAlternativeNames(List<PersonName> alternativeNames) {
 		this.alternativeNames = alternativeNames;
 	}
 

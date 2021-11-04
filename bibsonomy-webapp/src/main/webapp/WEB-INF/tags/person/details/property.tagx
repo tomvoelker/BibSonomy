@@ -8,18 +8,18 @@
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
     <jsp:directive.attribute name="type" type="java.lang.String" required="true" />
-    <jsp:directive.attribute name="value" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="value" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="list" type="java.util.List" required="false" />
 
-    <c:set value="${fn:toUpperCase(type.substring(0, 1))}${type.substring(1)}" var="typeUpper"/>
 
-    <div class="row">
+    <div class="row person-property">
         <div class="col-md-2">
-            <b><fmt:message key="person.show.${type}" /></b>
+            <b><fmt:message key="person.show.${type}"/></b>
         </div>
         <div class="col-md-10">
             <c:choose>
                 <c:when test="${type eq 'homepage'}" >
-                    <a class="personPageFormFieldContent" id="personPageForm${typeUpper}Value" rel="external nofollow" href="${fn:escapeXml(value)}" itemprop="url"><c:out value="${value}"/></a>
+                    <a href="${fn:escapeXml(value)}" rel="external nofollow" target="_blank"><c:out value="${value}"/></a>
                 </c:when>
                 <c:when test="${type eq 'orcid'}">
                     <perdetails:orcid orcid="${value}" returnUrl="${true}" />
@@ -27,8 +27,17 @@
                 <c:when test="${type eq 'researcherid'}">
                     <perdetails:researcherid researcherid="${value}" returnUrl="${true}"/>
                 </c:when>
+                <c:when test="${type eq 'personAlternateNames'}" >
+                    <perdetails:alternativeNames names="${list}"/>
+                </c:when>
+                <c:when test="${type eq 'organization'}">
+                    <perdetails:organizations organizations="${list}"/>
+                </c:when>
+                <c:when test="${type eq 'organizations'}">
+                    <perdetails:organizations organizations="${list}"/>
+                </c:when>
                 <c:otherwise>
-                    <span class="personPageFormFieldContent" id="personPageForm${typeUpper}Value">${value}</span>
+                    <span>${value}</span>
                 </c:otherwise>
             </c:choose>
         </div>

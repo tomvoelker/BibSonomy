@@ -126,13 +126,13 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setPerson(person);
 
 		// set alternative names
-		List<String> alternativeNames = new ArrayList<>();
+		List<PersonName> alternativeNames = new ArrayList<>();
 		for (PersonName name : person.getNames()) {
 			if(!name.isMain()) {
-				alternativeNames.add(String.format("%s %s", name.getFirstName(), name.getLastName()));
+				alternativeNames.add(name);
 			}
 		}
-		command.setAlternativeNames(String.join(";", alternativeNames));
+		command.setAlternativeNames(alternativeNames);
 
 		// set thesis relations
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
