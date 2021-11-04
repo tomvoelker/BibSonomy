@@ -30,7 +30,7 @@
 package org.bibsonomy.model.enums;
 
 /**
- * defines the order of the projects
+ * defines the sort key of the projects
  *
  * @author dzo
  */

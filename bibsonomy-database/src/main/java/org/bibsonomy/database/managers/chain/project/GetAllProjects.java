@@ -46,7 +46,7 @@ public class GetAllProjects extends ProjectChainElement {
 	@Override
 	protected List<Project> handle(final QueryAdapter<ProjectQuery> param, final DBSession session) {
 		final ProjectQuery query = param.getQuery();
-		return this.projectDatabaseManager.getAllProjects(query.getProjectStatus(), query.getOrder(), query.getSortOrder(), BasicQueryUtils.calcLimit(query), BasicQueryUtils.calcOffset(query), session);
+		return this.projectDatabaseManager.getAllProjects(query.getProjectStatus(), query.getSortKey(), query.getSortOrder(), BasicQueryUtils.calcLimit(query), BasicQueryUtils.calcOffset(query), session);
 	}
 
 	@Override
