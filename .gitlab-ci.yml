@@ -16,7 +16,7 @@ cache:
 build:
   stage: build
   script:
-    - mvn clean install -N -DskipTests
+    - mvn clean install -DskipTests
 
 test:
   stage: test
