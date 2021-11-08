@@ -70,6 +70,7 @@ import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -416,7 +417,12 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
-		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms);
+		/**
+		 * before 4.0?
+		 * return QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).useDisMax(false);
+		 */
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms)
+				.defaultOperator(Operator.AND);
 		// set the fields where the string query should search for the string
 		fields.forEach(builder::field);
 		// set the type to phrase prefix match
