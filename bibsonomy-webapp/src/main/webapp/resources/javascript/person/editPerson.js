@@ -34,7 +34,7 @@ function initSubmit() {
             url: '/editPerson',
             data: formData,
             complete: function (data) {
-                if (data.status) {
+                if (data.success) {
                     // request success
                     // location.reload()
                 } else {
@@ -132,20 +132,23 @@ function initNameEditing() {
         var e = $(this);
 
         var formData = $("#formEditPersonNames").serializeArray();
-        formData.push({name: 'updateOperation', value: 'ADD_NAME'});
+        formData.push({name: "updateOperation", value: 'ADD_NAME'});
         formData.push({name: "personId", value: getPersonId()});
 
         $.ajax({
             type: 'POST',
+            async: false,
             url: '/editPerson',
             data: formData,
             complete: function (data) {
-                if (data.status) {
-                    // request success
+                console.log(data);
+                if (data.success) {
+                    // success
+                    console.log(data.message);
                     // location.reload()
                 } else {
-                    // error during update
-                    console.log(data.message);
+                    // error
+                    console.log(data.error);
                 }
             }
         });
@@ -154,22 +157,25 @@ function initNameEditing() {
     // Select alternative names as main
     $('.btn-select-name').click(function () {
         var e = $(this);
-        var personNameId = e.data('name-id');
         $.ajax({
             type: 'POST',
+            async: false,
             url: '/editPerson',
             data: {
                 updateOperation: "SELECT_MAIN_NAME",
                 personId: getPersonId(),
-                personNameId: personNameId
+                "personName.firstName": e.data('first-name'),
+                "personName.lastName": e.data('last-name'),
             },
             complete: function (data) {
-                // error handling
-                if (data.status) {
+                console.log(data);
+                if (data.success) {
+                    // success
+                    console.log(data.message);
                     // location.reload()
                 } else {
-                    // error during update
-                    console.log(data.message);
+                    // error
+                    console.log(data.error);
                 }
             }
         });
@@ -178,22 +184,25 @@ function initNameEditing() {
     // Remove alternative names
     $('.btn-delete-name').click(function () {
         var e = $(this);
-        var personNameId = e.data('name-id');
         $.ajax({
             type: 'POST',
+            async: false,
             url: '/editPerson',
             data: {
                 updateOperation: 'DELETE_NAME',
                 personId: getPersonId(),
-                personNameId: personNameId
+                "personName.firstName": e.data('first-name'),
+                "personName.lastName": e.data('last-name'),
             },
             complete: function (data) {
-                if (data.status) {
-                    // request success
+                console.log(data);
+                if (data.success) {
+                    // success
+                    console.log(data.message);
                     // location.reload()
                 } else {
-                    // error during update
-                    console.log(data.message);
+                    // error
+                    console.log(data.error);
                 }
             }
         });

@@ -843,14 +843,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createPersonName(PersonName withPersonId) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(org.bibsonomy.model.enums.PersonIdType, java.lang.String)
 	 */
 	@Override
@@ -874,14 +866,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, QueryScope queryScope, String regex, TagSimilarity relation, SortKey sortKey, Date startDate, Date endDate, int start, int end) {
 		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, queryScope, regex, relation, sortKey, startDate, endDate, start, end);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
-	 */
-	@Override
-	public void removePersonName(Integer personNameId) {
-		throwReadOnlyException();
 	}
 
 	/* (non-Javadoc)

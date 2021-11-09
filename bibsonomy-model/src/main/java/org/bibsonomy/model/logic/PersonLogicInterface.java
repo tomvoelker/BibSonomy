@@ -100,21 +100,6 @@ public interface PersonLogicInterface {
 	void removeResourceRelation(final String personId, final String interHash, final int index, final PersonResourceRelationType type);
 
 	/**
-	 * @param withPersonId
-	 */
-	@Deprecated // use update person
-	void createPersonName(PersonName withPersonId);
-
-	/**
-	 * FIXME: remove database id
-	 *
-	 * removes a person name from a specific person
-	 * @param personNameId
-	 */
-	@Deprecated // use update person
-	void removePersonName(final Integer personNameId);
-
-	/**
 	 * retrieves persons
 	 * @param query the query specifying what person should be returned
 	 * @return the persons

@@ -34,6 +34,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -53,7 +55,7 @@ import org.springframework.validation.Errors;
  *
  * @author kchoong
  */
-public class EditPersonController implements MinimalisticController<EditPersonCommand>, ErrorAware {
+public class EditPersonController extends AbstractEditPersonController implements MinimalisticController<EditPersonCommand>, ErrorAware {
 
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
@@ -74,17 +76,18 @@ public class EditPersonController implements MinimalisticController<EditPersonCo
 
         if (!context.isValidCkey()) {
             errors.reject("error.field.valid.ckey");
+            // return error(command, "The provided security token is invalid.");
         }
 
         switch(operation) {
             case UPDATE_ALL:
                 return this.detailsController.updateAction(command);
             case ADD_NAME:
-                break;
+                return this.detailsController.addNameAction(command);
             case DELETE_NAME:
-                break;
+                return this.detailsController.deleteNameAction(command);
             case SELECT_MAIN_NAME:
-                break;
+                return this.detailsController.setMainNameAction(command);
             case UPDATE_NAMES:
                 break;
             case ADD_ROLE:
@@ -106,10 +109,7 @@ public class EditPersonController implements MinimalisticController<EditPersonCo
                 return this.mergeController.getConflicts(command);
         }
 
-        final JSONObject jsonResponse = new JSONObject();
-        command.setResponseString(jsonResponse.toString());
-
-        return Views.AJAX_JSON;
+        return error(command, "No edit operation set.");
     }
 
     @Override

@@ -22,7 +22,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="degreePlaceholder" key="person.show.academicDegree"/>
-							<input type="text" class="form-control" id="editDegree" name="degree" data-reset="${person.academicDegree}"
+							<input type="text" class="form-control" id="editDegree" name="person.academicDegree" data-reset="${person.academicDegree}"
 								   placeholder="${degreePlaceholder}" value="${person.academicDegree}"/>
 						</div>
 						<div class="col-md-1">
@@ -39,7 +39,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="collegePlaceholder" key="person.show.college.placeholder"/>
-							<input type="text" class="form-control" id="editCollege" name="college" data-reset="${person.college}"
+							<input type="text" class="form-control" id="editCollege" name="person.college" data-reset="${person.college}"
 								   placeholder="${collegePlaceholder}" value="${person.college}"/>
 						</div>
 						<div class="col-md-1">
@@ -56,7 +56,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="emailPlaceholder" key="person.show.email.placeholder"/>
-							<input type="text" class="form-control" id="editEmail" name="email" data-reset="${person.email}"
+							<input type="text" class="form-control" id="editEmail" name="person.email" data-reset="${person.email}"
 								   placeholder="${emailPlaceholder}" value="${person.email}"/>
 						</div>
 						<div class="col-md-1">
@@ -73,7 +73,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="homepagePlaceholder" key="person.show.homepage.placeholder"/>
-							<input type="text" class="form-control" id="editHomepage" name="homepage" data-reset="${person.homepage}"
+							<input type="text" class="form-control" id="editHomepage" name="person.homepage" data-reset="${person.homepage}"
 								   placeholder="${homepagePlaceholder}" value="${person.homepage}"/>
 						</div>
 						<div class="col-md-1">
@@ -90,7 +90,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="orcidPlaceholder" key="person.show.orcid.placeholder"/>
-							<input type="text" class="form-control" id="editOrcid" name="orcid" data-reset="${person.orcid}"
+							<input type="text" class="form-control" id="editOrcid" name="person.orcid" data-reset="${person.orcid}"
 								   placeholder="${orcidPlaceholder}" value="${person.orcid}"/>
 						</div>
 						<div class="col-md-1">
@@ -107,7 +107,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="researcherPlaceholder" key="person.show.researcherid.placeholder"/>
-							<input type="text" class="form-control" id="editResearcherId" name="researcherId" data-reset="${person.researcherid}"
+							<input type="text" class="form-control" id="editResearcherId" name="person.researcherId" data-reset="${person.researcherid}"
 								   placeholder="${researcherPlaceholder}" value="${person.researcherid}"/>
 						</div>
 						<div class="col-md-1">

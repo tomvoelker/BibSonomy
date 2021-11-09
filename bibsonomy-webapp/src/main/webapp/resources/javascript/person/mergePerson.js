@@ -19,7 +19,7 @@ function initMergeButton() {
         };
 
         $.post("/editPerson", form_data).done(function (data) {
-            if (data.status) {
+            if (data.success) {
                 $("#match_" + form_data.formMatchId).slideUp(500, function () {
                     $(this).remove();
                 });
@@ -48,7 +48,7 @@ function initConflictButton() {
         form_data["updateOperation"] = "MERGE_CONFLICTS";
 
         $.post("/editPerson", form_data).done(function (data) {
-            if (data.status) {
+            if (data.success) {
                 $("#match_" + form_data.formMatchId).slideUp(500, function () {
                     $(this).remove();
                 });

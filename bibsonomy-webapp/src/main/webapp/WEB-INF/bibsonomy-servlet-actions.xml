@@ -793,18 +793,18 @@
 								<value>updateOperation</value>
 								<value>responseString</value>
 
-								<!-- person details fields -->
-								<value>degree</value>
-								<value>college</value>
-								<value>email</value>
-								<value>homepage</value>
-								<value>orcid</value>
-								<value>researcherid</value>
-								<value>gender</value>
-
 								<!-- name fields -->
-								<value>newName.firstName</value>
-								<value>newName.lastName</value>
+								<value>personName.firstName</value>
+								<value>personName.lastName</value>
+
+								<!-- person details fields -->
+								<value>person.academicDegree</value>
+								<value>person.college</value>
+								<value>person.email</value>
+								<value>person.homepage</value>
+								<value>person.orcid</value>
+								<value>person.researcherid</value>
+								<value>person.gender</value>
 
 								<value>selectedName</value>
 								<value>formMatchId</value>

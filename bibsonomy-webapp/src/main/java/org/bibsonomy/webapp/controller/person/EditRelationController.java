@@ -66,7 +66,7 @@ import org.json.simple.JSONObject;
  *
  * @author kchoong
  */
-public class EditRelationController {
+public class EditRelationController extends AbstractEditPersonController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
     private LogicInterface logic;
@@ -116,7 +116,7 @@ public class EditRelationController {
             if (present(command.getPersonId())) {
                 person.setPersonId(command.getPersonId());
             } else {
-                final PersonName mainName = command.getNewName();
+                final PersonName mainName = command.getPersonName();
                 mainName.setMain(true);
                 person.setMainName(mainName);
                 this.logic.createPerson(person);

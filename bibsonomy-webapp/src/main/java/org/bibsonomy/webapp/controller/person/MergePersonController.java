@@ -58,7 +58,7 @@ import org.json.simple.JSONObject;
  *
  * @author kchoong
  */
-public class MergePersonController {
+public class MergePersonController extends AbstractEditPersonController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
     private LogicInterface logic;
@@ -77,7 +77,7 @@ public class MergePersonController {
         } else if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
             this.logic.denyPersonMerge(match);
         }
-        jsonResponse.put("status", result);
+        jsonResponse.put("success", result);
         command.setResponseString(jsonResponse.toString());
         return Views.AJAX_JSON;
     }
@@ -124,15 +124,15 @@ public class MergePersonController {
                     }
                 }
             }
-            final PersonName newName = command.getNewName();
+            final PersonName newName = command.getPersonName();
             if (present(newName)) {
                 map.put("mainName", PersonNameUtils.serializePersonName(newName));
             }
 
-            jsonResponse.put("status", this.logic.mergePersonsWithConflicts(command.getFormMatchId(), map));
+            jsonResponse.put("success", this.logic.mergePersonsWithConflicts(command.getFormMatchId(), map));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IntrospectionException e) {
             log.error("error while building cpm", e);
-            jsonResponse.put("status", false);
+            jsonResponse.put("success", false);
         }
 
         command.setResponseString(jsonResponse.toString());

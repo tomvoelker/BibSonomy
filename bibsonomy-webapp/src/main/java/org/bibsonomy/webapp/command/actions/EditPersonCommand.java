@@ -48,9 +48,7 @@ public class EditPersonCommand extends PersonPageCommand {
     private PersonUpdateOperation updateOperation;
 
     /** Properties for editing names of person */
-    private PersonName newName;
-    private Integer personNameId;
-
+    private PersonName personName;
 
     /** Properties if deleting or adding relations */
     private String type;
@@ -94,20 +92,12 @@ public class EditPersonCommand extends PersonPageCommand {
         this.claimedPerson = claimedPerson;
     }
 
-    public PersonName getNewName() {
-        return newName;
+    public PersonName getPersonName() {
+        return personName;
     }
 
-    public void setNewName(PersonName newName) {
-        this.newName = newName;
-    }
-
-    public Integer getPersonNameId() {
-        return personNameId;
-    }
-
-    public void setPersonNameId(Integer personNameId) {
-        this.personNameId = personNameId;
+    public void setPersonName(PersonName personName) {
+        this.personName = personName;
     }
 
     /**

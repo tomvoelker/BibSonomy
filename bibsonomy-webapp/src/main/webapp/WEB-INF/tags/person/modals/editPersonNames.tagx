@@ -29,10 +29,10 @@
 							<label class="input-label"><fmt:message key="person.show.personAlternateNames"/></label>
 						</div>
 						<div class="col-md-3">
-							<input type="text" class="form-control" id="addFirstName" name="newName.firstName" placeholder="${firstNamePlaceholder}" />
+							<input type="text" class="form-control" id="addFirstName" name="personName.firstName" placeholder="${firstNamePlaceholder}" />
 						</div>
 						<div class="col-md-4">
-							<input type="text" class="form-control" id="addLastName" name="newName.lastName" placeholder="${lastNamePlaceholder}" />
+							<input type="text" class="form-control" id="addLastName" name="personName.lastName" placeholder="${lastNamePlaceholder}" />
 						</div>
 						<div class="col-md-2">
 							<button type="button" class="btn btn-primary btn-block" id="submitEditPersonNames"><fmt:message key="person.show.addNameButton"/></button>
@@ -45,11 +45,11 @@
 						<div class="col-md-4"><c:out value="${name.lastName}"/></div>
 						<div class="col-md-2">
 							<a href="#" class="btn btn-default btn-select-name" data-toggle="tooltip" data-placement="top"
-							   title="${selectHint}" data-name-id="${name.personNameChangeId}">
+							   title="${selectHint}" data-first-name="${name.firstName}" data-last-name="${name.lastName}">
 								<fontawesome:icon icon="check" fixedWidth="${true}"/>
 							</a>
 							<a href="#" class="btn btn-default btn-delete-name" data-toggle="tooltip" data-placement="top"
-							   title="${deleteHint}" data-name-id="${name.personNameChangeId}">
+							   title="${deleteHint}" data-first-name="${name.firstName}" data-last-name="${name.lastName}">
 								<fontawesome:icon icon="trash" fixedWidth="${true}"/>
 							</a>
 						</div>

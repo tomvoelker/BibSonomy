@@ -3475,25 +3475,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
-	 */
-	@Override
-	public void removePersonName(final Integer personChangeId) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.removePersonName(personChangeId, this.loginUser, session);
-		}
-	}
-
-	@Override
-	public void createPersonName(final PersonName personName) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.createPersonName(personName, session);
-		}
-	}
-
 	@Override
 	public void unlinkUser(final String username) {
 		this.ensureLoggedInAndNoSpammer();

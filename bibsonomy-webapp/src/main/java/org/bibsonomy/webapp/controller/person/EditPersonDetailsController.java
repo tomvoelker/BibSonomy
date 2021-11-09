@@ -31,8 +31,6 @@ package org.bibsonomy.webapp.controller.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.NoSuchElementException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
@@ -40,11 +38,8 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.Views;
-import org.json.simple.JSONObject;
 
 /**
  * Controller to handle all requests to edit person details,
@@ -52,7 +47,7 @@ import org.json.simple.JSONObject;
  *
  * @author kchoong
  */
-public class EditPersonDetailsController {
+public class EditPersonDetailsController extends AbstractEditPersonController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
     private LogicInterface logic;
@@ -62,89 +57,51 @@ public class EditPersonDetailsController {
      * @param command
      */
     protected View updateAction(EditPersonCommand command) {
-        final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
-
-        final Person commandPerson = command.getPerson();
-        if (!present(commandPerson)) {
-            // FIXME: proper frontend responses in cases like this
-            throw new NoSuchElementException();
+        Person updatedPerson = command.getPerson();
+        if (!present(updatedPerson)) {
+            return error(command, "No updates founds!");
         }
 
-        final PersonUpdateOperation operation = command.getUpdateOperation();
-        final JSONObject jsonResponse = new JSONObject();
-
-        // FIXME: why do we have to copy all values from the command person to the person found in the logic?
-        // set all attributes that might be updated
-        person.setAcademicDegree(commandPerson.getAcademicDegree());
-        person.setOrcid(commandPerson.getOrcid().replaceAll("-", ""));
-        person.setResearcherid(commandPerson.getResearcherid().replaceAll("-", ""));
-        person.setCollege(commandPerson.getCollege());
-
-        // TODO only allow updates if the editor "is" this person
-        person.setEmail(commandPerson.getEmail());
-        person.setHomepage(commandPerson.getHomepage());
-
-        // FIXME: write independent update method
-        // FIXME: add its me action
-
-        // command.getPerson().getMainName().setMain(false);
-        // command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
+        updatedPerson.setPersonId(command.getPersonId());
+        Person person = fillPersonFromDB(updatedPerson);
 
         try {
-            this.logic.updatePerson(person, operation);
-            jsonResponse.put("status", true);
-
+            this.logic.updatePerson(person, command.getUpdateOperation());
+            return success(command, "The person has been successfully updated!");
         } catch (final Exception e) {
-            log.error("error while updating person " + commandPerson.getPersonId(), e);
-            jsonResponse.put("status", false);
-            jsonResponse.put("message", "Some error occured");
+            log.error("error while updating person " + updatedPerson.getPersonId(), e);
+            return error(command, "Failed to update the person.");
         }
-
-        command.setResponseString(jsonResponse.toString());
-        return Views.AJAX_JSON;
     }
 
     /**
      * Action called when a user adds an alternative name to a person
      * @param command
      */
-    private View addNameAction(EditPersonCommand command) {
-        final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
+    protected View addNameAction(EditPersonCommand command) {
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
-        final JSONObject jsonResponse = new JSONObject();
-
-        if (!present(person) || !present(command.getNewName())) {
-            jsonResponse.put("status", false);
-            // TODO: set proper error message
-            command.setResponseString(jsonResponse.toString());
-            return Views.AJAX_JSON;
+        // Check if person exists
+        if (!present(person)) {
+            return errorPersonNotFound(command);
         }
 
-        final PersonName personName = command.getNewName();
-        personName.setPersonId(command.getPerson().getPersonId());
-        for (PersonName otherName : person.getNames()) {
-            if (personName.equals(otherName)) {
-                jsonResponse.put("status", true);
-                jsonResponse.put("personNameChangeId", otherName.getPersonNameChangeId());
-                command.setResponseString(jsonResponse.toString());
-                return Views.AJAX_JSON;
-            }
+        // Check if a person name is given
+        if (!present(command.getPersonName())) {
+            return errorPersonNameNotFound(command);
         }
 
+        // Adding name to person
         try {
-            this.logic.createPersonName(personName);
+            if (person.addName(command.getPersonName())) {
+                this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+                return success(command, "New name has been added!");
+            } else {
+                return error(command, "Name already exists!");
+            }
         } catch (Exception e) {
-            jsonResponse.put("status", false);
-            // TODO: set proper error message
-            //jsonResponse.put("message", "Some error occured");
-            command.setResponseString(jsonResponse.toString());
-            return Views.AJAX_JSON;
+            return error(command, "Failed to update person's names.");
         }
-
-        jsonResponse.put("status", true);
-        jsonResponse.put("personNameChangeId", personName.getPersonNameChangeId());
-        command.setResponseString(jsonResponse.toString());
-        return Views.AJAX_JSON;
     }
 
     /**
@@ -152,49 +109,73 @@ public class EditPersonDetailsController {
      * @param command
      * @return
      */
-    private View deleteNameAction(EditPersonCommand command) {
-        final JSONObject jsonResponse = new JSONObject();
-        try {
-            this.logic.removePersonName(command.getPersonNameId());
-        } catch (Exception e) {
-            jsonResponse.put("status", false);
-            // TODO: set proper error message
-            //jsonResponse.put("message", "Some error occured");
-            command.setResponseString(jsonResponse.toString());
-            return Views.AJAX_JSON;
+    protected View deleteNameAction(EditPersonCommand command) {
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
+
+        // Check if person exists
+        if (!present(person)) {
+            return errorPersonNotFound(command);
         }
 
-        jsonResponse.put("status", true);
-        command.setResponseString(jsonResponse.toString());
-        return Views.AJAX_JSON;
+        // Check if a person name is given
+        if (!present(command.getPersonName())) {
+            return errorPersonNameNotFound(command);
+        }
+
+        try {
+            if (person.removeName(command.getPersonName())) {
+                this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+                return success(command, "The name has been successfully deleted!");
+            } else {
+                return error(command, "Name doesn't exists!");
+            }
+        } catch (Exception e) {
+            return error(command, "Failed to delete the name.");
+        }
     }
 
-    private View setMainNameAction(EditPersonCommand command) {
-        final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
+    protected View setMainNameAction(EditPersonCommand command) {
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
-        final JSONObject jsonResponse = new JSONObject();
+        // Check if person exists
+        if (!present(person)) {
+            return errorPersonNotFound(command);
+        }
 
+        // Check if a person name is given
+        if (!present(command.getPersonName())) {
+            return errorPersonNameNotFound(command);
+        }
 
         person.getMainName().setMain(false);
-        person.setMainName(command.getPersonNameId());
-
-        // bind the new person
-        command.setPerson(person);
+        person.setMainName(command.getPersonName());
 
         try {
             this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+            return success(command, "Main name has been successfully updated!");
         } catch (final Exception e) {
-            jsonResponse.put("status", false);
-            // TODO: set proper error message
-            //jsonResponse.put("message", "Some error occured");
-            command.setResponseString(jsonResponse.toString());
-            return Views.AJAX_JSON;
+            return error(command, "Failed to update the main name.");
         }
+    }
 
-        jsonResponse.put("status", true);
-        command.setResponseString(jsonResponse.toString());
+    private Person fillPersonFromDB(Person updatedPerson) {
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, updatedPerson.getPersonId());
 
-        return Views.AJAX_JSON;
+        // set all attributes that might be updated
+        person.setAcademicDegree(updatedPerson.getAcademicDegree());
+        person.setOrcid(updatedPerson.getOrcid().replaceAll("-", ""));
+        person.setResearcherid(updatedPerson.getResearcherid().replaceAll("-", ""));
+        person.setCollege(updatedPerson.getCollege());
+
+        // TODO only allow updates if the editor "is" this person
+        person.setEmail(updatedPerson.getEmail());
+        person.setHomepage(updatedPerson.getHomepage());
+
+        return person;
+    }
+
+    protected View errorPersonNameNotFound(EditPersonCommand command) {
+        return error(command, "No new name for person provided.");
     }
 
     public void setLogic(LogicInterface logic) {
