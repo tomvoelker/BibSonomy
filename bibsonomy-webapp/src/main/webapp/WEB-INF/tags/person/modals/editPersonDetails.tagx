@@ -123,8 +123,7 @@
         </jsp:attribute>
 		<jsp:attribute name="modalFooter">
             <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="person.show.close"/></button>
-			<fmt:message var="loadingText" key="person.show.saveButton.loading"/>
-			<button type="button" class="btn btn-primary" id="submitEditPersonDetails" data-loading-text="${loadingText}">
+			<button type="button" class="btn btn-primary" id="submitEditPersonDetails">
 				<fmt:message key="person.show.saveButton"/>
 			</button>
         </jsp:attribute>

@@ -35,7 +35,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
@@ -55,8 +54,10 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
     /**
      * action called when a user updates preferences of a person
      * @param command
+     *
+     * @return the ajax json response
      */
-    protected View updateDetailsAction(EditPersonCommand command) {
+    protected View updateDetailsAction(final EditPersonCommand command) {
         Person updatedPerson = command.getPerson();
         if (!present(updatedPerson)) {
             return error(command, "No updates founds!");
@@ -81,8 +82,10 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
     /**
      * Action called when a user adds an alternative name to a person
      * @param command
+     *
+     * @return the ajax json response
      */
-    protected View addNameAction(EditPersonCommand command) {
+    protected View addNameAction(final EditPersonCommand command) {
         Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
         // Check if person exists
@@ -111,9 +114,10 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
     /**
      * Action called when a user removes an alternative name from a person
      * @param command
-     * @return
+     *
+     * @return the ajax json response
      */
-    protected View deleteNameAction(EditPersonCommand command) {
+    protected View deleteNameAction(final EditPersonCommand command) {
         Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
         // Check if person exists
@@ -138,7 +142,13 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         }
     }
 
-    protected View setMainNameAction(EditPersonCommand command) {
+    /**
+     * Action called when a user sets a new main name for a person
+     * @param command
+     *
+     * @return the ajax json response
+     */
+    protected View setMainNameAction(final EditPersonCommand command) {
         Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
         // Check if person exists
@@ -162,7 +172,15 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         }
     }
 
-    private Person fillPersonFromDB(EditPersonCommand command, Person updatedPerson) {
+    /**
+     * Gets the person from the database and replaces their fields with the updated version.
+     * (Not updated in the Database yet though, just object)
+     *
+     * @param command
+     * @param updatedPerson
+     * @return person from the database with updated fields
+     */
+    private Person fillPersonFromDB(final EditPersonCommand command, final Person updatedPerson) {
         Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
         if (!present(person)) {
@@ -186,7 +204,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         return person;
     }
 
-    protected View errorPersonNameNotFound(EditPersonCommand command) {
+    protected View errorPersonNameNotFound(final EditPersonCommand command) {
         return error(command, "No new name for person provided.");
     }
 

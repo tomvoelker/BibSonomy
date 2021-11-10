@@ -43,6 +43,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.LogicException;
@@ -52,7 +53,6 @@ import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
-import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
@@ -78,32 +78,48 @@ public class EditRelationController extends AbstractEditPersonController {
     /**
      * action called when a user want to link an author from a publication
      * @param command
-     * @return the ajax text view
+     *
+     * @return the ajax json response
      */
     protected View linkAction(final EditPersonCommand command) {
         final Person person = new Person();
         person.setPersonId(command.getPersonId());
         person.setUser(command.getContext().getLoginUser().getName());
-        this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
-        return Views.AJAX_TEXT;
+
+        try {
+            this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
+            return success(command, "The person has been successfully linked!");
+        } catch (final Exception e) {
+            log.error("error while updating person " + person.getPersonId(), e);
+            return error(command, "Failed to link the person.");
+        }
     }
 
     /**
      * action called when a user want to unlink an author from a publication
      * @param command
-     * @return the ajax text view
+     *
+     * @return the ajax json response
      */
-    protected View unlinkAction(PersonPageCommand command) {
-        this.logic.unlinkUser(this.logic.getAuthenticatedUser().getName());
-        return Views.AJAX_TEXT;
+    protected View unlinkAction(final EditPersonCommand command) {
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
+
+        try {
+            this.logic.updatePerson(person, PersonUpdateOperation.UNLINK_USER);
+            return success(command, "The person has been successfully unlinked!");
+        } catch (final Exception e) {
+            log.error("error while updating person " + person.getPersonId(), e);
+            return error(command, "Failed to unlink the person.");
+        }
     }
 
     /**
      * Action called when a user wants to add a person role to a thesis
      * @param command
-     * @return
+     *
+     * @return the ajax json response
      */
-    protected View addRoleAction(EditPersonCommand command) {
+    protected View addRoleAction(final EditPersonCommand command) {
         final JSONObject jsonResponse = new JSONObject();
         final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
         final Post<BibTex> post = new Post<>();
@@ -142,9 +158,10 @@ public class EditRelationController extends AbstractEditPersonController {
     /**
      * Action called when a user wants to edit the role of a person in a thesis
      * @param command
-     * @return
+     *
+     * @return the ajax json response
      */
-    protected View editRoleAction(EditPersonCommand command) {
+    protected View editRoleAction(final EditPersonCommand command) {
         // TODO not used? remove?
         for (String role : command.getFormPersonRoles()) {
             final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
@@ -167,15 +184,23 @@ public class EditRelationController extends AbstractEditPersonController {
         return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(command.getPerson().getPersonId()));
     }
 
-    protected View deleteRoleAction(EditPersonCommand command) {
+    /**
+     * Action called when a user wants to delete the role of a person in a thesis
+     * @param command
+     *
+     * @return the ajax json response
+     */
+    protected View deleteRoleAction(final EditPersonCommand command) {
         this.logic.removeResourceRelation(null, null, -1, null); // FIXME: change
 
         return Views.AJAX_TEXT;
     }
 
     /**
+     * Action called when user searches for a publication...
      * @param command
-     * @return
+     *
+     * @return the ajax json response
      */
     protected View searchPubAction(EditPersonCommand command) {
         final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getSelectedName());
@@ -196,7 +221,8 @@ public class EditRelationController extends AbstractEditPersonController {
      * Combined publication and author search action. This search is in particular necessary
      * when someone want's to find unrelated (no role associated to authors) documents.
      * @param command
-     * @return
+     *
+     * @return the ajax json response
      */
     protected View searchPubAuthorAction(final EditPersonCommand command) {
         final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getSelectedName());
@@ -210,8 +236,10 @@ public class EditRelationController extends AbstractEditPersonController {
     }
 
     /**
+     * Action called when searching...
      * @param command
-     * @return
+     *
+     * @return the ajax json response
      */
     @SuppressWarnings("unchecked")
     protected View searchAction(EditPersonCommand command) {
@@ -242,9 +270,10 @@ public class EditRelationController extends AbstractEditPersonController {
     }
 
     /**
-     * This is a helper function adds to an JSONarray Publications form a sugesstions list.
+     * This is a helper function adds to an JSONArray Publications form a suggestions list.
      * @param posts
-     * @return
+     *
+     * @return JSONArray
      */
     private JSONArray buildupPubResponseArray(final List<Post<GoldStandardPublication>> posts) {
         final JSONArray array = new JSONArray();

@@ -902,14 +902,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
-	 */
-	@Override
-	public void unlinkUser(String username) {
-		this.doDefaultAction();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */
 	@Override

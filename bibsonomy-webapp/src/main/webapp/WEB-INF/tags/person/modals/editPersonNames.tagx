@@ -35,8 +35,7 @@
 							<input type="text" class="form-control" id="addLastName" name="personName.lastName" placeholder="${lastNamePlaceholder}" />
 						</div>
 						<div class="col-md-2">
-							<fmt:message var="loadingText" key="person.show.addNameButton.loading"/>
-							<button type="button" class="btn btn-primary btn-block" id="submitEditPersonNames" data-loading-text="${loadingText}">
+							<button type="button" class="btn btn-primary btn-block" id="submitEditPersonNames">
 								<fmt:message key="person.show.addNameButton"/>
 							</button>
 						</div>

@@ -17,7 +17,7 @@
         <jsp:attribute name="modalFooter">
             <form action="" method="post" class='form-inline' id='unlinkPersonForm'>
                 <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="person.show.close"/></button>
-                <button type="button" class="btn btn-primary" data-action='unlink' data-person-id='${command.person.personId}' id='btnUnlinkSubmit'><fmt:message key="person.show.thatsNotMeButton" /></button>
+                <button type="button" class="btn btn-primary" id='btnUnlinkSubmit'><fmt:message key="person.show.thatsNotMeButton" /></button>
             </form>
         </jsp:attribute>
     </bs:modal>

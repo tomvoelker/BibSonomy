@@ -116,12 +116,6 @@ public interface PersonLogicInterface {
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
 
 	/**
-	 * @param username
-	 */
-	@Deprecated // FIXME: add to update person logic
-	void unlinkUser(String username);
-
-	/**
 	 * TODO: add documentation
 	 *
 	 * @param personID the id of the person

@@ -3346,9 +3346,14 @@ public class DBLogic implements LogicInterface {
 					break;
 				case LINK_USER:
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
-					// first unlink with the old person
+					// first unlink with the old user
 					this.personDBManager.unlinkUser(claimedUser, session);
 					this.personDBManager.updateUserLink(person, session);
+					break;
+				case UNLINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// unlink with the user
+					this.personDBManager.unlinkUser(claimedUser, session);
 					break;
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");
@@ -3452,14 +3457,6 @@ public class DBLogic implements LogicInterface {
 	public Person getPersonByAdditionalKey(final String key, final String value) {
 		try (final DBSession session = this.openSession()) {
 			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
-		}
-	}
-
-	@Override
-	public void unlinkUser(final String username) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.unlinkUser(username, session);
 		}
 	}
 

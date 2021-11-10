@@ -2,11 +2,9 @@
  * on load
  */
 $(function () {
-    initSubmit();
-    initResetableInput();
-    initResetButtons();
+    initDetailsEditing();
     initNameEditing();
-    initMainNameSelection();
+    initUserLinking();
 
     // ORCID formatter
     $("#editOrcid").mask("9999-9999-9999-9999");
@@ -15,15 +13,17 @@ $(function () {
     $("#editResearcherId").mask("\a-9999-9999");
 });
 
-function initSubmit() {
+function initDetailsEditing() {
+    initResetableInput();
+    initResetButtons();
+
     $('#submitEditPersonDetails').click(function (e) {
         e.preventDefault();
 
+        var btn = $(this);
         if (validateSubmit()) {
             return;
         }
-
-        $(this).button('loading');
 
         var formData = $('#formEditPersonDetails').serializeArray();
         formData.push({name: 'updateOperation', value: 'UPDATE_DETAILS'});
@@ -32,8 +32,12 @@ function initSubmit() {
 
         $.ajax({
             type: 'POST',
+            async: false,
             url: '/editPerson',
             data: formData,
+            beforeSend: function (data) {
+                setButtonLoading(btn);
+            },
             complete: function (data) {
                 if (data.success) {
                     // request success
@@ -41,6 +45,8 @@ function initSubmit() {
                 } else {
                     // error during update
                     showErrorAlert(data.message);
+                    $('#editPersonDetails').modal('hide');
+                    unsetButtonLoading(btn);
                 }
             }
         });
@@ -88,12 +94,6 @@ function initResetButtons() {
     })
 }
 
-function initMainNameSelection() {
-    $('.check-main').change(function () {
-        $(this).siblings().prop('checked', false);
-    });
-}
-
 /**
  * Validates a given url string
  * @param url
@@ -132,6 +132,7 @@ function initNameEditing() {
     $("#submitEditPersonNames").click(function (e) {
         e.preventDefault();
 
+        var btn = $(this);
         var lastNameInput = $('#addLastName');
         if (!lastNameInput.val()) {
             lastNameInput.css('border-color', 'red');
@@ -142,13 +143,14 @@ function initNameEditing() {
         formData.push({name: "updateOperation", value: 'ADD_NAME'});
         formData.push({name: "personId", value: getPersonId()});
 
-        $(this).button('loading');
-
         $.ajax({
             type: 'POST',
             async: false,
             url: '/editPerson',
             data: formData,
+            beforeSend: function (data) {
+                setButtonLoading(btn);
+            },
             complete: function (data) {
                 if (data.success) {
                     // success
@@ -156,6 +158,8 @@ function initNameEditing() {
                 } else {
                     // error
                     showErrorAlert(data.error);
+                    $('#editPersonNames').modal('hide');
+                    unsetButtonLoading(btn);
                 }
             }
         });
@@ -163,7 +167,7 @@ function initNameEditing() {
 
     // Select alternative names as main
     $('.btn-select-name').click(function () {
-        var e = $(this);
+        var btn = $(this);
         $.ajax({
             type: 'POST',
             async: false,
@@ -174,6 +178,9 @@ function initNameEditing() {
                 "personName.firstName": e.data('first-name'),
                 "personName.lastName": e.data('last-name'),
             },
+            beforeSend: function (data) {
+                setButtonLoading(btn);
+            },
             complete: function (data) {
                 if (data.success) {
                     // success
@@ -181,6 +188,8 @@ function initNameEditing() {
                 } else {
                     // error
                     showErrorAlert(data.error);
+                    $('#editPersonNames').modal('hide');
+                    unsetButtonLoading(btn);
                 }
             }
         });
@@ -188,7 +197,7 @@ function initNameEditing() {
 
     // Remove alternative names
     $('.btn-delete-name').click(function () {
-        var e = $(this);
+        var btn = $(this);
         $.ajax({
             type: 'POST',
             async: false,
@@ -199,14 +208,65 @@ function initNameEditing() {
                 "personName.firstName": e.data('first-name'),
                 "personName.lastName": e.data('last-name'),
             },
+            beforeSend: function (data) {
+                setButtonLoading(btn);
+            },
             complete: function (data) {
                 if (data.success) {
                     // success
-                    location.reload()
+                    location.reload();
                 } else {
                     // error
                     showErrorAlert(data.error);
+                    $("#linkPerson").modal('hide');
+                    unsetButtonLoading(btn);
                 }
+            }
+        });
+    });
+}
+
+function initUserLinking() {
+    $("#btnLinkSubmit").click(function () {
+        var btn = $(this);
+
+        $.ajax({
+            type: 'POST',
+            async: false,
+            url: '/editPerson',
+            data: {
+                updateOperation: 'LINK_USER',
+                personId: getPersonId()
+            },
+            beforeSend: function (data) {
+                setButtonLoading(btn);
+            },
+            complete: function (data) {
+                $("#linkPerson").modal('hide');
+                unsetButtonLoading(btn);
+                location.reload();
+            }
+        });
+    });
+
+    $("#btnUnlinkSubmit").click(function () {
+        var btn = $(this);
+
+        $.ajax({
+            type: 'POST',
+            async: false,
+            url: '/editPerson',
+            data: {
+                updateOperation: 'UNLINK_USER',
+                personId: getPersonId()
+            },
+            beforeSend: function (data) {
+                setButtonLoading(btn);
+            },
+            complete: function (data) {
+                $("#unlinkPerson").modal('hide');
+                unsetButtonLoading(btn);
+                location.reload();
             }
         });
     });
@@ -218,6 +278,19 @@ function getPersonId() {
 
 function getClaimedPerson() {
     return $('.person-info').data('claimed-person');
+}
+
+function setButtonLoading(button) {
+    var text = $(button).text();
+    $(button).html(text + " <i class='fa fa-spinner fa-spin'></i>");
+    $(button).addClass('disabled');
+}
+
+function unsetButtonLoading(button) {
+    var text = $(button).text();
+    text.replace("<i class='fa fa-spinner fa-spin'></i>", "");
+    $(button).html(text);
+    $(button).removeClass('disabled');
 }
 
 function showErrorAlert(messageKey) {

@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
  */
 public class AbstractEditPersonController {
 
-    protected View success(EditPersonCommand command, String successMsg) {
+    protected View success(final EditPersonCommand command, final String successMsg) {
         final JSONObject response = new JSONObject();
         response.put("success", true);
         response.put("message", successMsg);
@@ -19,7 +19,7 @@ public class AbstractEditPersonController {
         return Views.AJAX_JSON;
     }
 
-    protected View error(EditPersonCommand command, String errorMsg) {
+    protected View error(final EditPersonCommand command, final String errorMsg) {
         final JSONObject response = new JSONObject();
         response.put("success", false);
         response.put("error", errorMsg);
@@ -28,7 +28,7 @@ public class AbstractEditPersonController {
         return Views.AJAX_JSON;
     }
 
-    protected View errorPersonNotFound(EditPersonCommand command) {
+    protected View errorPersonNotFound(final EditPersonCommand command) {
         return error(command, "Person with ID: " + command.getPersonId() + "not found.");
     }
 
