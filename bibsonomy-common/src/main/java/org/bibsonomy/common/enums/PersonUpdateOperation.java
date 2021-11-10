@@ -38,23 +38,14 @@ public enum PersonUpdateOperation {
 	/** Updates all attributes of a person */
 	UPDATE_ALL,
 
-	/** Update the orcid of a person */
-	UPDATE_ORCID,
+	/** Updates all details of a person */
+	UPDATE_DETAILS,
 
-	/** Update the researcherid of a person */
-	UPDATE_RESEARCHERID,
+	/** Update the names of a person */
+	UPDATE_NAMES,
 
-	/** Update the academic degree of a person */
-	UPDATE_ACADEMIC_DEGREE,
-
-	/** Updates the college */
-	UPDATE_COLLEGE,
-	
-	/** Updates the college */
-	UPDATE_EMAIL,
-	
-	/** Updates the college */
-	UPDATE_HOMEPAGE,
+	/** Update the additional keys of a person */
+	UPDATE_ADDITIONAL_KEYS,
 
 	/** Creates a new person */
 	CREATE_PERSON,
@@ -67,9 +58,6 @@ public enum PersonUpdateOperation {
 
 	/** Select alternative name as main name of a person */
 	SELECT_MAIN_NAME,
-
-	/** Update the names of a person */
-	UPDATE_NAMES,
 
 	/** Add role of person to a resource relation */
 	ADD_ROLE,

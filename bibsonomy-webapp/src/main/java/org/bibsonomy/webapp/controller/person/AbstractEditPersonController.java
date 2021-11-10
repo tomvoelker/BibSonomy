@@ -1,8 +1,5 @@
 package org.bibsonomy.webapp.controller.person;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import org.bibsonomy.model.Person;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;

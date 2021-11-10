@@ -20,13 +20,14 @@ function initSubmit() {
         e.preventDefault();
 
         if (validateSubmit()) {
-            console.log('error in submit');
             return;
         }
 
+        $(this).button('loading');
+
         var formData = $('#formEditPersonDetails').serializeArray();
-        formData.push({name: 'updateOperation', value: 'UPDATE_ALL'});
-        formData.push({name: 'personId', value:getPersonId()});
+        formData.push({name: 'updateOperation', value: 'UPDATE_DETAILS'});
+        formData.push({name: 'personId', value: getPersonId()});
         formData.push({name: 'claimedPerson', value: getClaimedPerson()});
 
         $.ajax({
@@ -36,10 +37,10 @@ function initSubmit() {
             complete: function (data) {
                 if (data.success) {
                     // request success
-                    // location.reload()
+                    location.reload();
                 } else {
                     // error during update
-                    console.log(data.message);
+                    showErrorAlert(data.message);
                 }
             }
         });
@@ -128,12 +129,20 @@ function isValidEMail(mail) {
 
 function initNameEditing() {
     // add a new name to the alternative names list
-    $("#submitEditPersonNames").click(function () {
-        var e = $(this);
+    $("#submitEditPersonNames").click(function (e) {
+        e.preventDefault();
+
+        var lastNameInput = $('#addLastName');
+        if (!lastNameInput.val()) {
+            lastNameInput.css('border-color', 'red');
+            return;
+        }
 
         var formData = $("#formEditPersonNames").serializeArray();
         formData.push({name: "updateOperation", value: 'ADD_NAME'});
         formData.push({name: "personId", value: getPersonId()});
+
+        $(this).button('loading');
 
         $.ajax({
             type: 'POST',
@@ -141,14 +150,12 @@ function initNameEditing() {
             url: '/editPerson',
             data: formData,
             complete: function (data) {
-                console.log(data);
                 if (data.success) {
                     // success
-                    console.log(data.message);
-                    // location.reload()
+                    location.reload();
                 } else {
                     // error
-                    console.log(data.error);
+                    showErrorAlert(data.error);
                 }
             }
         });
@@ -168,14 +175,12 @@ function initNameEditing() {
                 "personName.lastName": e.data('last-name'),
             },
             complete: function (data) {
-                console.log(data);
                 if (data.success) {
                     // success
-                    console.log(data.message);
-                    // location.reload()
+                    location.reload();
                 } else {
                     // error
-                    console.log(data.error);
+                    showErrorAlert(data.error);
                 }
             }
         });
@@ -195,14 +200,12 @@ function initNameEditing() {
                 "personName.lastName": e.data('last-name'),
             },
             complete: function (data) {
-                console.log(data);
                 if (data.success) {
                     // success
-                    console.log(data.message);
-                    // location.reload()
+                    location.reload()
                 } else {
                     // error
-                    console.log(data.error);
+                    showErrorAlert(data.error);
                 }
             }
         });
@@ -215,4 +218,14 @@ function getPersonId() {
 
 function getClaimedPerson() {
     return $('.person-info').data('claimed-person');
+}
+
+function showErrorAlert(messageKey) {
+    var alert = $('<div class="alert alert-danger alert-dismissable"></div>');
+    var button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+    alert.append(button);
+    alert.append($('<strong>Error: </strong>'));
+    alert.append(messageKey);
+
+    $('#ajaxErrorAlerts').append(alert);
 }

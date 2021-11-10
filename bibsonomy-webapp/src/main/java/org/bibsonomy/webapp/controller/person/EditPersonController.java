@@ -69,9 +69,12 @@ public class EditPersonController extends AbstractEditPersonController implement
     public View workOn(EditPersonCommand command) {
         final RequestWrapperContext context = command.getContext();
         final PersonUpdateOperation operation = command.getUpdateOperation();
-        final boolean action = present(operation);
-        if (!action && !present(command.getRequestedPersonId())) {
-            throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
+        if (!present(operation)) {
+            return error(command, "No edit operation set.");
+        }
+
+        if (!present(command.getPersonId())) {
+            return error(command, "The person page was requested without a person in the request.");
         }
 
         if (!context.isValidCkey()) {
@@ -80,16 +83,14 @@ public class EditPersonController extends AbstractEditPersonController implement
         }
 
         switch(operation) {
-            case UPDATE_ALL:
-                return this.detailsController.updateAction(command);
+            case UPDATE_DETAILS:
+                return this.detailsController.updateDetailsAction(command);
             case ADD_NAME:
                 return this.detailsController.addNameAction(command);
             case DELETE_NAME:
                 return this.detailsController.deleteNameAction(command);
             case SELECT_MAIN_NAME:
                 return this.detailsController.setMainNameAction(command);
-            case UPDATE_NAMES:
-                break;
             case ADD_ROLE:
                 this.relationController.addRoleAction(command);
             case DELETE_ROLE:

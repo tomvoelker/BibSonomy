@@ -88,7 +88,10 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+			<!-- Error alerts -->
 			<errors:global/>
+			<div id="ajaxErrorAlerts"><!-- keep me for AJAX error --></div>
+
 			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
 				<div class="col-md-12">
 					<perdetails:profile command="${command}" title="${personNameWithDegree}" personName="${personName}">

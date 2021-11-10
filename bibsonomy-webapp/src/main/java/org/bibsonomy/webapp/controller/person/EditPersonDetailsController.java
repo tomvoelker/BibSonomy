@@ -56,17 +56,21 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
      * action called when a user updates preferences of a person
      * @param command
      */
-    protected View updateAction(EditPersonCommand command) {
+    protected View updateDetailsAction(EditPersonCommand command) {
         Person updatedPerson = command.getPerson();
         if (!present(updatedPerson)) {
             return error(command, "No updates founds!");
         }
 
-        updatedPerson.setPersonId(command.getPersonId());
-        Person person = fillPersonFromDB(updatedPerson);
+        Person person = fillPersonFromDB(command, updatedPerson);
+
+        // Check if person exists
+        if (!present(person)) {
+            return errorPersonNotFound(command);
+        }
 
         try {
-            this.logic.updatePerson(person, command.getUpdateOperation());
+            this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_DETAILS);
             return success(command, "The person has been successfully updated!");
         } catch (final Exception e) {
             log.error("error while updating person " + updatedPerson.getPersonId(), e);
@@ -158,13 +162,21 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         }
     }
 
-    private Person fillPersonFromDB(Person updatedPerson) {
-        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, updatedPerson.getPersonId());
+    private Person fillPersonFromDB(EditPersonCommand command, Person updatedPerson) {
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
+
+        if (!present(person)) {
+            return null;
+        }
 
         // set all attributes that might be updated
         person.setAcademicDegree(updatedPerson.getAcademicDegree());
-        person.setOrcid(updatedPerson.getOrcid().replaceAll("-", ""));
-        person.setResearcherid(updatedPerson.getResearcherid().replaceAll("-", ""));
+        if (present(updatedPerson.getOrcid())) {
+            person.setOrcid(updatedPerson.getOrcid().replaceAll("-", ""));
+        }
+        if (present(updatedPerson.getResearcherid())) {
+            person.setResearcherid(updatedPerson.getResearcherid().replaceAll("-", ""));
+        }
         person.setCollege(updatedPerson.getCollege());
 
         // TODO only allow updates if the editor "is" this person

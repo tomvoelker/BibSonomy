@@ -3325,50 +3325,30 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
 			}
 
-			/*
-			 * check for email, homepage - can only be edited if the loggedin user claimed
-			 * the person (but admins can edit infos anyway)
-			 */
-			if (!personClaimed && Sets.asSet(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-			}
-
 			// TODO: this should be done in the manager
 			person.setChangeDate(new Date());
 			person.setChangedBy(this.loginUser.getName());
 
 			switch (operation) {
-				case UPDATE_ORCID: 
-					this.personDBManager.updateOrcid(person, session);
+				case UPDATE_ALL:
+					this.personDBManager.updatePerson(person, session);
+					// TODO: why is this not called in the manager?
+					this.updatePersonNames(person, session);
 					break;
-				case UPDATE_RESEARCHERID:
-					this.personDBManager.updateResearcherid(person, session);
-					break;
-				case UPDATE_ACADEMIC_DEGREE:
-					this.personDBManager.updateAcademicDegree(person, session);
+				case UPDATE_DETAILS:
+					this.personDBManager.updatePerson(person, session);
 					break;
 				case UPDATE_NAMES:
 					this.updatePersonNames(person, session);
 					break;
-				case UPDATE_COLLEGE:
-					this.personDBManager.updateCollege(person, session);
-					break;
-				case UPDATE_EMAIL:
-					this.personDBManager.updateEmail(person, session);
-					break;
-				case UPDATE_HOMEPAGE:
-					this.personDBManager.updateHomepage(person, session);
+				case UPDATE_ADDITIONAL_KEYS:
+					// TODO (kch) refactor updating additional keys
 					break;
 				case LINK_USER:
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
 					// first unlink with the old person
 					this.personDBManager.unlinkUser(claimedUser, session);
 					this.personDBManager.updateUserLink(person, session);
-					break;
-				case UPDATE_ALL:
-					this.personDBManager.updatePerson(person, session);
-					// TODO: why is this not called in the manager?
-					this.updatePersonNames(person, session);
 					break;
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");

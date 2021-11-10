@@ -330,6 +330,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.updatePersonAdditionalKeys(person, session);
 	}
 
+	@ Deprecated
 	private JobResult updatePersonField(final Person person, final String fieldName, final DBSession session) {
 		session.beginTransaction();
 		try {
