@@ -55,11 +55,9 @@ import org.springframework.validation.Errors;
  *
  * @author kchoong
  */
-public class EditPersonController extends AbstractEditPersonController implements MinimalisticController<EditPersonCommand>, ErrorAware {
+public class EditPersonController extends AbstractEditPersonController implements MinimalisticController<EditPersonCommand> {
 
     private static final Log log = LogFactory.getLog(EditPersonController.class);
-
-    private Errors errors;
 
     private EditPersonDetailsController detailsController;
     private EditRelationController relationController;
@@ -70,16 +68,15 @@ public class EditPersonController extends AbstractEditPersonController implement
         final RequestWrapperContext context = command.getContext();
         final PersonUpdateOperation operation = command.getUpdateOperation();
         if (!present(operation)) {
-            return error(command, "No edit operation set.");
+            return error(command, "person.edit.noOperation");
         }
 
         if (!present(command.getPersonId())) {
-            return error(command, "The person page was requested without a person in the request.");
+            return error(command, "person.edit.noPersonId");
         }
 
         if (!context.isValidCkey()) {
-            errors.reject("error.field.valid.ckey");
-            // return error(command, "The provided security token is invalid.");
+            // return error(command, "error.field.valid.ckey");
         }
 
         switch(operation) {
@@ -116,16 +113,6 @@ public class EditPersonController extends AbstractEditPersonController implement
     @Override
     public EditPersonCommand instantiateCommand() {
         return new EditPersonCommand();
-    }
-
-    @Override
-    public Errors getErrors() {
-        return errors;
-    }
-
-    @Override
-    public void setErrors(Errors errors) {
-        this.errors = errors;
     }
 
     public void setDetailsController(EditPersonDetailsController detailsController) {

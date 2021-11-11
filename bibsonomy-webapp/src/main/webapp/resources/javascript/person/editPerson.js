@@ -175,8 +175,8 @@ function initNameEditing() {
             data: {
                 updateOperation: "SELECT_MAIN_NAME",
                 personId: getPersonId(),
-                "personName.firstName": e.data('first-name'),
-                "personName.lastName": e.data('last-name'),
+                "personName.firstName": btn.data('first-name'),
+                "personName.lastName": btn.data('last-name'),
             },
             beforeSend: function (data) {
                 setButtonLoading(btn);
@@ -205,8 +205,8 @@ function initNameEditing() {
             data: {
                 updateOperation: 'DELETE_NAME',
                 personId: getPersonId(),
-                "personName.firstName": e.data('first-name'),
-                "personName.lastName": e.data('last-name'),
+                "personName.firstName": btn.data('first-name'),
+                "personName.lastName": btn.data('last-name'),
             },
             beforeSend: function (data) {
                 setButtonLoading(btn);
@@ -218,7 +218,7 @@ function initNameEditing() {
                 } else {
                     // error
                     showErrorAlert(data.error);
-                    $("#linkPerson").modal('hide');
+                    $("#editPersonNames").modal('hide');
                     unsetButtonLoading(btn);
                 }
             }
@@ -242,9 +242,15 @@ function initUserLinking() {
                 setButtonLoading(btn);
             },
             complete: function (data) {
-                $("#linkPerson").modal('hide');
-                unsetButtonLoading(btn);
-                location.reload();
+                if (data.success) {
+                    // success
+                    location.reload();
+                } else {
+                    // error
+                    showErrorAlert(data.error);
+                    $("#linkPerson").modal('hide');
+                    unsetButtonLoading(btn);
+                }
             }
         });
     });
@@ -264,9 +270,15 @@ function initUserLinking() {
                 setButtonLoading(btn);
             },
             complete: function (data) {
-                $("#unlinkPerson").modal('hide');
-                unsetButtonLoading(btn);
-                location.reload();
+                if (data.success) {
+                    // success
+                    location.reload();
+                } else {
+                    // error
+                    showErrorAlert(data.error);
+                    $("#unlinkPerson").modal('hide');
+                    unsetButtonLoading(btn);
+                }
             }
         });
     });
@@ -298,7 +310,7 @@ function showErrorAlert(messageKey) {
     var button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
     alert.append(button);
     alert.append($('<strong>Error: </strong>'));
-    alert.append(messageKey);
+    alert.append(getString(messageKey));
 
     $('#ajaxErrorAlerts').append(alert);
 }

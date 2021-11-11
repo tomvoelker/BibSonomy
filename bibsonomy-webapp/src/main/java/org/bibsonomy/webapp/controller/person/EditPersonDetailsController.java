@@ -60,7 +60,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
     protected View updateDetailsAction(final EditPersonCommand command) {
         Person updatedPerson = command.getPerson();
         if (!present(updatedPerson)) {
-            return error(command, "No updates founds!");
+            return error(command, "person.error.noUpdates");
         }
 
         Person person = fillPersonFromDB(command, updatedPerson);
@@ -75,7 +75,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
             return success(command, "The person has been successfully updated!");
         } catch (final Exception e) {
             log.error("error while updating person " + updatedPerson.getPersonId(), e);
-            return error(command, "Failed to update the person.");
+            return error(command, "person.error.fail.details");
         }
     }
 
@@ -104,10 +104,10 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
                 this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
                 return success(command, "New name has been added!");
             } else {
-                return error(command, "Name already exists!");
+                return error(command, "person.error.nameExists");
             }
         } catch (Exception e) {
-            return error(command, "Failed to update person's names.");
+            return error(command, "person.error.fail.names");
         }
     }
 
@@ -135,10 +135,10 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
                 this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
                 return success(command, "The name has been successfully deleted!");
             } else {
-                return error(command, "Name doesn't exists!");
+                return error(command, "person.error.nameNotFound");
             }
         } catch (Exception e) {
-            return error(command, "Failed to delete the name.");
+            return error(command, "person.error.fail.deleteName");
         }
     }
 
@@ -168,7 +168,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
             this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
             return success(command, "Main name has been successfully updated!");
         } catch (final Exception e) {
-            return error(command, "Failed to update the main name.");
+            return error(command, "person.error.fail.mainName");
         }
     }
 
@@ -205,7 +205,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
     }
 
     protected View errorPersonNameNotFound(final EditPersonCommand command) {
-        return error(command, "No new name for person provided.");
+        return error(command, "person.error.noName");
     }
 
     public void setLogic(LogicInterface logic) {

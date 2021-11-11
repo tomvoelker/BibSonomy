@@ -91,7 +91,7 @@ public class EditRelationController extends AbstractEditPersonController {
             return success(command, "The person has been successfully linked!");
         } catch (final Exception e) {
             log.error("error while updating person " + person.getPersonId(), e);
-            return error(command, "Failed to link the person.");
+            return error(command, "person.error.fail.link");
         }
     }
 
@@ -109,7 +109,7 @@ public class EditRelationController extends AbstractEditPersonController {
             return success(command, "The person has been successfully unlinked!");
         } catch (final Exception e) {
             log.error("error while updating person " + person.getPersonId(), e);
-            return error(command, "Failed to unlink the person.");
+            return error(command, "person.error.fail.unlink");
         }
     }
 
