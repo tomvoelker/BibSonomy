@@ -286,6 +286,7 @@
 					<version>2.10.0</version>
 					<configuration>
 						<reportVersion>2.14.0</reportVersion>
+						<reportDirectory>allure-report</reportDirectory>
 					</configuration>
 				</plugin>
 			</plugins>
