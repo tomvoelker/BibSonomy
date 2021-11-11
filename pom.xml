@@ -280,6 +280,14 @@
 					<artifactId>maven-jaxb2-plugin</artifactId>
 					<version>0.8.1</version>
 				</plugin>
+				<plugin>
+					<groupId>io.qameta.allure</groupId>
+					<artifactId>allure-maven</artifactId>
+					<version>2.10.0</version>
+					<configuration>
+						<reportVersion>2.14.0</reportVersion>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -405,7 +413,7 @@
 	<profiles>
 		<profile>
 			<id>deploy-to-biblicious</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=biblicious is given 
+			<!-- change tomcat deploy destination when -Ddeploy-to=biblicious is given
 				as parameter. -->
 			<activation>
 				<property>
@@ -677,12 +685,12 @@
 			<dependency>
 				<groupId>org.apache.ibatis</groupId>
 				<artifactId>ibatis-sqlmap</artifactId>
-				<!-- XXX: 2.2.0 is not the correct version, but we need a number in the 
+				<!-- XXX: 2.2.0 is not the correct version, but we need a number in the
 					version to host the jar on our repo; ; classifier was r737724
 					2.2.0: moved asm to asm1 to use newer asm versions-->
 				<version>2.2.0-SNAPSHOT</version>
 				<exclusions>
-					<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven 
+					<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven
 						) -->
 					<exclusion>
 						<artifactId>xerces</artifactId>

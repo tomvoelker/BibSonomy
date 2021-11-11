@@ -3,6 +3,7 @@ image: maven:3-openjdk-8
 stages:
   - build
   - test
+  - report
 
 variables:
   #MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
@@ -16,7 +17,7 @@ cache:
 build:
   stage: build
   script:
-    - mvn clean install -DskipTests
+    - mvn clean install -DskipTests -N
   artifacts:
     untracked: true
     expire_in: 1 hour
@@ -42,3 +43,15 @@ test:
     reports:
       junit:
         - bibsonomy-*/target/surefire-reports/TEST-*.xml
+
+report:
+  stage: report
+  script:
+    - mvn allure:report
+    - mkdir reports
+    - mv target/allure-report/* reports
+  artifacts:
+    when: always
+    paths:
+      - reports
+    expire_in: 1 day
