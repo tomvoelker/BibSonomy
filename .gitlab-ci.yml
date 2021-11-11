@@ -11,6 +11,7 @@ variables:
   #MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   # DB stuff
+  MARIADB_ROOT_PASSWORD: root
   MARIADB_USER: bibsonomy
   MARIADB_PASSWORD: ""
 
@@ -18,6 +19,11 @@ cache:
   paths:
     - .m2/repository/
     - target/
+
+default:
+  before_script:
+    - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > bibsonomy.properties
+
 # TODO remove -N below!
 build:
   stage: build
