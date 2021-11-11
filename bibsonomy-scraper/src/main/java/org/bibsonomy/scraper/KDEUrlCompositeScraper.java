@@ -39,6 +39,7 @@ import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
 import org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
+import org.bibsonomy.scraper.url.kde.akjournals.AKJournalsScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
 import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
@@ -350,6 +351,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new UmanisticaDigitaleScraper());
 		addScraper(new ZfdGScraper());
 		addScraper(new ResearchGateScraper());
+		addScraper(new AKJournalsScraper());
 
 		// site specific scrapers
 		addScraper(new OpenReviewScraper());

@@ -39,6 +39,7 @@ import org.junit.experimental.categories.Category;
  *
  * @author Haile
  */
+@Deprecated
 @Category(RemoteTest.class)
 public class AkademiaiScraperTest {
 	/**

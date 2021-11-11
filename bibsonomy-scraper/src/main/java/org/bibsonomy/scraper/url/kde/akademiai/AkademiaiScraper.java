@@ -45,6 +45,8 @@ import org.bibsonomy.scraper.generic.GenericRISURLScraper;
  *
  * @author Haile
  */
+// host changed from akademiai.com to akjournals
+@Deprecated
 public class AkademiaiScraper extends GenericRISURLScraper {
 
 	private static final String SITE_NAME = "Akademiai Kiado";
