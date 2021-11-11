@@ -33,4 +33,4 @@ test:
     expire_in: 1 day
     reports:
       junit:
-        - target/surefire-reports/TEST-*.xml
+        - bibsonomy-*/target/surefire-reports/TEST-*.xml
