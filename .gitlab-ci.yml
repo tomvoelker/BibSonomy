@@ -17,15 +17,12 @@ build:
   stage: build
   script:
     - mvn clean install -DskipTests
-  # 👇🏻 should be replaced by artifacts
-  cache:
-    - "*"
-  #artifacts:
-  #  untracked: true
-  #  expire_in: 1 hour
-  #  expose_as: jars
-  #  paths:
-  #    - target/
+  artifacts:
+    untracked: true
+    expire_in: 1 hour
+    expose_as: jars
+    paths:
+      - target/
 
 test:
   stage: test
@@ -33,6 +30,7 @@ test:
     - mvn test
   artifacts:
     when: always
+    expire_in: 1 day
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
