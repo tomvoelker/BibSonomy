@@ -33,7 +33,7 @@ test:
   services:
     - mariadb:10.3
   before_script:
-    - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > bibsonomy.properties
+    - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
   artifacts:
