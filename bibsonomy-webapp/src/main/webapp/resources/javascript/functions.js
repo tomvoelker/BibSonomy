@@ -861,7 +861,6 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 		getFriends = function () {return friends;};
 		$.ajax({
 			url: '/json/friends?userRelation=FRIEND_OF',
-			async: false,
 			dataType: "json",
 			success: function (data) {
 				friends = $.map( data.items, function( item ) {
@@ -875,7 +874,6 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 		getGroups = function () {return groups;};
 		$.ajax({
 			url: '/json/groups',
-			async: false,
 			dataType: "json",
 			data: {
 				"memberOfOnly": true
