@@ -46,6 +46,7 @@ test:
 
 report:
   stage: report
+  when: always
   script:
     - mvn allure:report
     - mkdir reports
