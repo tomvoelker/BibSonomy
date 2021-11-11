@@ -13,7 +13,6 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
     private SortOrder sortOrder = SortOrder.ASC;
     private Prefix prefix;
 
-    private String createdBy;
     private String userName;
     private String externalId;
 
@@ -67,16 +66,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
     }
 
     /**
-     * @param createdBy the user name to query (for pending groups)
-     * @return the group builder
-     */
-    public GroupQueryBuilder createdBy(final String createdBy) {
-        this.createdBy = createdBy;
-        return this;
-    }
-
-    /**
-     * @param userName query all groups username is member of
+     * @param userName query all groups username is member of or has created for pending groups
      * @return the group builder
      */
     public GroupQueryBuilder userName(final String userName) {
@@ -109,7 +99,6 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
         groupQuery.setPrefix(this.prefix);
         groupQuery.setGroupSortKey(this.groupSortKey);
         groupQuery.setSortOrder(this.sortOrder);
-        groupQuery.setCreatedBy(this.createdBy);
         groupQuery.setUserName(this.userName);
         groupQuery.setExternalId(this.externalId);
         groupQuery.setOrganization(this.organization);

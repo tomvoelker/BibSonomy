@@ -59,12 +59,8 @@ public class GroupQuery extends BasicQuery {
     private SortOrder sortOrder;
 
     /**
-     * if set the query is restricted to groups created by the user (applies only to pending groups).
-     */
-    private String createdBy;
-
-    /**
-     * if set the query is restricted to groups the user is a member of
+     * If set the query is restricted to groups the user is a member of.
+     * When querying for pending groups, this is considered the creator of the group.
      */
     private String userName;
 
@@ -118,14 +114,6 @@ public class GroupQuery extends BasicQuery {
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     public String getUserName() {
