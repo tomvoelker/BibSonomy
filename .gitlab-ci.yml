@@ -4,9 +4,17 @@ stages:
   - build
   - test
 
+services:
+  - mariadb:10.3
+
 variables:
   #MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  # DB stuff
+  MYSQL_ROOT_PASSWORD: test
+  database.main.url: mariadb
+  database.main.username: root
+  database.main.password: test
 
 cache:
   paths:
