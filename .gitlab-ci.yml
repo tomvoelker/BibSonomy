@@ -1,10 +1,5 @@
 image: maven:3-openjdk-8
 
-stages:
-  - build
-  - test
-  - report
-
 variables:
   #MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
@@ -36,22 +31,14 @@ test:
     - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
-  artifacts:
-    when: always
-    expire_in: 1 day
-    reports:
-      junit:
-        - bibsonomy-*/target/surefire-reports/TEST-*.xml
-
-report:
-  stage: report
-  when: always
-  script:
     - mvn jxr:jxr
     - mvn surefire-report:report-only -DoutputDirectory=public
     - mvn site -DgenerateReports=false
   artifacts:
     when: always
+    expire_in: 1 hour
+    reports:
+      junit:
+        - bibsonomy-*/target/surefire-reports/TEST-*.xml
     paths:
       - target/
-    expire_in: 1 day
