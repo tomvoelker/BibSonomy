@@ -143,7 +143,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 * Get pending requested groups
 		 */
 		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE).
-						userName(loggedInUserName).pending(true).build();
+						createdBy(loggedInUserName).pending(true).build();
 		command.setPendingRequestedgroups(this.logic.getGroups(groupQuery));
 
 		/*

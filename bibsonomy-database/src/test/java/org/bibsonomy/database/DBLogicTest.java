@@ -1754,7 +1754,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testGetPendingGroupsForUser() {
 		LogicInterface logic = this.getAdminDbLogic("testrequestuser1");
-		final GroupQuery query = GroupQuery.builder().pending(true).start(0).end(100).userName("testrequestuser1").build();
+		final GroupQuery query = GroupQuery.builder().pending(true).start(0).end(100).createdBy("testrequestuser1").build();
 		List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(1));
