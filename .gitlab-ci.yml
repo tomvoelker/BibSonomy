@@ -31,8 +31,9 @@ test:
     - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
-    - mvn surefire-report:report-only -Daggregate=true
-    - mvn site
+    # no test html
+    #- mvn surefire-report:report-only -Daggregate=true
+    #- mvn site
   artifacts:
     untracked: true
     when: always
