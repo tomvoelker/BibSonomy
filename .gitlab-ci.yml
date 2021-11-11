@@ -46,8 +46,8 @@ test:
       - target/
 
 pages:
-  dependencies:
-    - test
+  stage: deploy
+  when: always
   script:
     - cp target/site/* public/
   artifacts:
