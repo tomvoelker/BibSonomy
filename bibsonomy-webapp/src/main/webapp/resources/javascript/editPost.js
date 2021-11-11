@@ -18,9 +18,6 @@ var collect;
 
 
 $(function() {
-	/*
-	 * TODO: remove unused code of old autocompletion -> initTagAutocompletion($('#inpf_tags')); 
-	 */
 	startTagAutocompletion($('#inpf_tags'), false, true, true, true, true);
 	$("#copiedTags li, .tagbox li a").each(function() {
 		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
@@ -28,25 +25,6 @@ $(function() {
 	//only add this listener one time
 	$("#recommendationReloadButton").click(reloadRecommendation);
 });
-
-
-/**
- * Initializes the auto-completion for the tag box, e.g., 
- * - adds a send-tag handler to the parameter tagbox
- * providing auto-complete functionality by suggesting friends
- * 
- * @param tagbox
- */
-function initTagAutocompletion(tagbox) {
-	/*
-	 * tags from side bar and from copied post
-	 */
-	$("#copiedTags li, .tagbox li a").each(function() {
-		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
-	});
-
-	initTagAutocompletionForSendTag(tagbox);
-}
 
 function enableHandler() {
 	document.onkeydown = document.onkeypress = document.onkeyup = handler;
@@ -898,143 +876,6 @@ function showTagSets(select) {
 function copyOptionTags(element) {
 	return copytag("inpf_tags", element.getAttributeNode("value").value);
 }
-
-
-function initTagAutocompletionForSendTag(tagbox) {
-
-	if (tagbox[0] == null)
-		return;
-	
-	var friends = null;
-	
-	var groups = null;
-	
-	getFriends = function () {return friends;};
-	$.ajax({
-		url: '/json/friends?userRelation=FRIEND_OF',
-		async: false,
-		dataType: "jsonp",
-		success: function (data) {
-			friends = $.map( data.items, function( item ) {
-				return item.name;
-			});
-		}
-	});
-	
-	getGroups = function () {return groups;};
-	$.ajax({
-		url: '/json/groups',
-		async: false,
-		dataType: "jsonp",
-		success: function (data) {
-			groups = $.map( data.items, function( item ) {
-				return item.name;
-			});
-		}
-	});
-
-	tagbox[0].onclick = tagbox[0].onblur = tagbox[0].onfocus = null;
-
-	var c = null;	
-	var inpfValue = function(t) {
-		if(t == null)
-			return c;
-		return (c = t);
-	};
-	var suggestSendTo = function (partialName) {
-		var x = 0;
-		var regexp = new RegExp("^"+partialName);
-		var friends = getFriends();
-		var groups = getGroups();
-		delete sortedCollection;
-		sortedCollection = new Array();
-		clearSuggestion();
-		if(tagbox.val().indexOf("send:") != -1) {
-			while(x < friends.length) {
-				if(("send:"+friends[x]).match(regexp) 
-					&& tagbox.val().match(new RegExp("([ ]|^)send:"+friends[x]+"([ ]|$)")) == null)  
-						sortedCollection.push("send:"+friends[x]);
-				x++;
-			}
-		}
-		else if(tagbox.val().indexOf("for:") != -1) {
-			while(x < groups.length) {
-				if(("for:"+groups[x]).match(regexp) 
-					&& tagbox.val().match(new RegExp("([ ]|^)for:"+groups[x]+"([ ]|$)")) == null)  
-						sortedCollection.push("for:"+groups[x]);
-				x++;
-			}
-		}
-		addToggleChild(sortedCollection);
-		activeTag = partialName;
-	};
-	
-	
-	var evalKeyInput = function (e) {
-		var keyCode = e.keyCode;
-		switch( keyCode ) {
-        case keyCode.ENTER:
-        case keyCode.NUMPAD_ENTER:
-        case keyCode.TAB:{
-        	e.preventDefault();
-        	break;
-        }	
-        default: {
-        		if(e.type == 'keydown')
-        			inpfValue(tagbox.val().split(" "));
-        	}
-        }
-		return handler(e);
-	};
-	
-	tagbox.keydown(function (e) {
-		evalKeyInput(e);
-	}).keypress(function (e) {
-		return handler(e);
-	}).keyup(function (e) {
-		evalKeyInput(e);
-		var t = inpfValue();
-		var reverse = false;
-		if(getFriends() != null) {
-			var tagsNew = tagbox.val().split(" ");
-			var x = 0;
-			if(tagsNew.length < t.length) {
-				tagsNew = tagsNew.reverse();t = t.reverse();reverse = true;
-			}
-			
-			while( t.length > x ) {
-				if(tagsNew[x] != undefined 
-						&& tagsNew[x] != t[x]) {
-					if((tagsNew[x].match(/^send:/) == null) 
-							|| t[x].length == 0)
-						break;
-					return suggestSendTo(tagsNew[x]);
-				}
-				x++;
-			}
-		}
-		if(getGroups() != null) {
-			var tagsNew = tagbox.val().split(" ");
-			var x = 0;
-			if(tagsNew.length < t.length) {
-				tagsNew = tagsNew.reverse();t = t.reverse();reverse = true;
-			}
-			
-			while( t.length > x ) {
-				if(tagsNew[x] != undefined 
-						&& tagsNew[x] != t[x]) {
-					if((tagsNew[x].match(/^for:/) == null) 
-							|| t[x].length == 0)
-						break;
-					return suggestSendTo(tagsNew[x]);
-				}
-				x++;
-			}
-		}
-		
-	});
-}
-
 
 /** 
  * used in postPublication.jspx to toggle parsed post on and off
