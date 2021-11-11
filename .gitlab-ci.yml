@@ -12,7 +12,6 @@ variables:
 cache:
   paths:
     - .m2/repository/
-    - target/
 
 build:
   stage: build
@@ -48,9 +47,8 @@ report:
   stage: report
   when: always
   script:
-    - mvn allure:report
-    #- mkdir reports
-    #- mv target/allure-report/* reports
+    - mvn surefire-report:report-only -DoutputDirectory=public
+    - mvn site -DgenerateReports=false
   artifacts:
     when: always
     paths:
