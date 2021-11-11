@@ -49,10 +49,10 @@ report:
   when: always
   script:
     - mvn allure:report
-    - mkdir reports
-    - mv target/allure-report/* reports
+    #- mkdir reports
+    #- mv target/allure-report/* reports
   artifacts:
     when: always
     paths:
-      - reports
+      - target/
     expire_in: 1 day
