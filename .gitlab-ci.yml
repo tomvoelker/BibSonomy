@@ -4,31 +4,19 @@ stages:
   - build
   - test
 
-services:
-  - mariadb:10.3
-
 variables:
   #MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  # DB stuff
-  MARIADB_ROOT_PASSWORD: root
-  MARIADB_USER: bibsonomy
-  MARIADB_PASSWORD: ""
 
 cache:
   paths:
     - .m2/repository/
     - target/
 
-default:
-  before_script:
-    - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > bibsonomy.properties
-
-# TODO remove -N below!
 build:
   stage: build
   script:
-    - mvn clean install -DskipTests -N
+    - mvn clean install -DskipTests
   artifacts:
     untracked: true
     expire_in: 1 hour
@@ -38,6 +26,14 @@ build:
 
 test:
   stage: test
+  variables:
+    MARIADB_ROOT_PASSWORD: root
+    MARIADB_USER: bibsonomy
+    MARIADB_PASSWORD: ""
+  services:
+    - mariadb:10.3
+  before_script:
+    - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > bibsonomy.properties
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
   artifacts:
