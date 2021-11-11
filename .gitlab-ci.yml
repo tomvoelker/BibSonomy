@@ -17,10 +17,19 @@ build:
   stage: build
   script:
     - mvn clean install -DskipTests
+  artifacts:
+    untracked: true
+    expire_in: 1 hour
+    expose_as: jars
+    paths:
+      - target/
 
 test:
   stage: test
-  dependencies:
-    - build
   script:
-    - mvn $MAVEN_CLI_OPTS test
+    - mvn test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
