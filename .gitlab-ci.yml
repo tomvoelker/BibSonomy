@@ -47,6 +47,7 @@ report:
   stage: report
   when: always
   script:
+    - mvn jxr:jxr
     - mvn surefire-report:report-only -DoutputDirectory=public
     - mvn site -DgenerateReports=false
   artifacts:
