@@ -31,14 +31,14 @@ test:
     - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
-    - mvn jxr:jxr
-    - mvn surefire-report:report-only -DoutputDirectory=public
-    - mvn site -DgenerateReports=false
   artifacts:
+    untracked: true
     when: always
     expire_in: 1 hour
     reports:
       junit:
+        - target/surefire-reports/TEST-*.xml
         - bibsonomy-*/target/surefire-reports/TEST-*.xml
+    expose_as: testresults
     paths:
       - target/
