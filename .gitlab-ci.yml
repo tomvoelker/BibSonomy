@@ -44,15 +44,3 @@ test:
     expose_as: testresults
     paths:
       - target/
-
-pages:
-  stage: deploy
-  when: always
-  script:
-    - cp target/site/* public/
-  artifacts:
-    untracked: true
-    when: always
-    expire_in: 1 hour
-    paths:
-      - public/
