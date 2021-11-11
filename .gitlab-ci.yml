@@ -17,12 +17,15 @@ build:
   stage: build
   script:
     - mvn clean install -DskipTests
-  artifacts:
-    untracked: true
-    expire_in: 1 hour
-    expose_as: jars
-    paths:
-      - target/
+  # 👇🏻 should be replaced by artifacts
+  cache:
+    - "*"
+  #artifacts:
+  #  untracked: true
+  #  expire_in: 1 hour
+  #  expose_as: jars
+  #  paths:
+  #    - target/
 
 test:
   stage: test
