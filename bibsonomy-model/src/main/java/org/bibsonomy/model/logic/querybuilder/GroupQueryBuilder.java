@@ -20,11 +20,11 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
     private Boolean pending;
 
     /**
-     * @param order the group order
+     * @param sortKey the group sort key
      * @return the group builder
      */
-    public GroupQueryBuilder order(final GroupSortKey order) {
-        this.groupSortKey = order;
+    public GroupQueryBuilder sortKey(final GroupSortKey sortKey) {
+        this.groupSortKey = sortKey;
         return this;
     }
 

@@ -399,15 +399,15 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		if (!present(sortCriteria)) {
 			return sortParameters;
 		}
-		for (SortCriteria sortCrit : sortCriteria) {
-			SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
-			switch (sortCrit.getSortKey()) {
+		for (SortCriteria criteria : sortCriteria) {
+			SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(criteria.getSortOrder());
+			switch (criteria.getSortKey()) {
 				// only supported order type for bookmarks
 				case TITLE:
-					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.TITLE, sortOrder));
 					break;
 				case DATE:
-					sortParameters.add(new Pair<>(Fields.DATE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.DATE, sortOrder));
 					break;
 				default:
 					break;

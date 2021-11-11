@@ -86,7 +86,7 @@ public class GroupsListCommand extends EntitySearchAndFilterCommand {
 	/**
 	 * @return the member only filter flag
 	 */
-	public Boolean getMemberOfOnly() {
+	public Boolean isMemberOfOnly() {
 		return memberOfOnly;
 	}
 

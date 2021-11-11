@@ -25,7 +25,7 @@ public class GetGroupsByUser extends GroupChainElement {
     @Override
     protected List<Group> handle(final QueryAdapter<GroupQuery> param, DBSession session) {
         final GroupQuery query = param.getQuery();
-        return this.groupDb.getGroupsForUser(query.getUserName(), session);
+        return this.groupDb.getGroupsForUser(query.getUserName(), true, session);
     }
 
     @Override
