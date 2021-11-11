@@ -265,11 +265,11 @@ public class DOIUtils {
 	 */
 	public static String getDoiFromURL(final URL url)  {
 		if (present(url)) {
-			String decodedURL = null;
+			String decodedURL;
 			try {
 				decodedURL = URLDecoder.decode(url.toString(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				decodedURL = url.toString();
 			}
 			final String doi = extractDOI(decodedURL);
 			if (present(doi)) {
@@ -287,7 +287,7 @@ public class DOIUtils {
 	 */
 	public static String cleanDoiFromURL(String doi) {
 		if (doi.contains("?")) {
-			return doi.split("?")[0];
+			return doi.split("\\?")[0];
 		}
 		if (doi.contains("#")) {
 			return doi.split("#")[0];
