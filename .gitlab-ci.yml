@@ -12,22 +12,22 @@ cache:
   paths:
     - .m2/repository/
     - target/
-
+# TODO remove -N below!
 build:
   stage: build
   script:
-    - mvn clean install -DskipTests
+    - mvn clean install -DskipTests -N
   artifacts:
     untracked: true
     expire_in: 1 hour
     expose_as: jars
     paths:
       - target/
-
+# -Dmaven.test.failure.ignore=true ?
 test:
   stage: test
   script:
-    - mvn test
+    - mvn test --fail-at-end
   artifacts:
     when: always
     expire_in: 1 day
