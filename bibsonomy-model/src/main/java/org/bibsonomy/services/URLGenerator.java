@@ -112,6 +112,7 @@ public class URLGenerator {
 	public  static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
+	private static final String CV_PREFIX = "cv";
 	private static final String DOCUMENT_PREFIX = "documents";
 	private static final String DISAMBIGUATION_PREFIX = "person";
 	private static final String EXPLORE_PREFIX = "explore";
@@ -524,15 +525,6 @@ public class URLGenerator {
 		return "edit" + StringUtils.capitalizeWord(getResourceNameForEditForm(resourceClass));
 	}
 
-	public String getExploreUrlByGroup(final String groupName) {
-		final UrlBuilder builder = new UrlBuilder(this.projectHome);
-		builder.addPathElement(EXPLORE_PREFIX);
-		builder.addPathElement(GROUP_PREFIX);
-		builder.addPathElement(groupName);
-
-		return this.getUrl(builder.asString());
-	}
-
 	/**
 	 * @param resourceClass
 	 * @return
@@ -744,6 +736,24 @@ public class URLGenerator {
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
 		final String url = this.getGroupUrlString(groupName) + SLASH + UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	public String getCVUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(CV_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
+	}
+
+	public String getExploreUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(EXPLORE_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
 	}
 
 	/**
