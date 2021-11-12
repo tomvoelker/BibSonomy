@@ -44,6 +44,9 @@ public class GroupResourceViewCommand extends TagResourceViewCommand {
 	
 	/** bean for group members */
 	private Group group;
+
+	/** search query for explore page export and batch editing */
+	private String search;
 	
 	/**
 	 * @return requestedGroup name of the group whose resources are requested
@@ -72,5 +75,19 @@ public class GroupResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setGroup(Group group) {
 		this.group = group;
-	}		
+	}
+
+	/**
+	 * @return the search
+	 */
+	public String getSearch() {
+		return search;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(String search) {
+		this.search = search;
+	}
 }

@@ -2,39 +2,70 @@
  * on load
  */
 $(function () {
-    // only show allowed selection field in extended search
-    disableSearchFields();
-    // disable form action
-    formAction();
-    // add tag filters
-    initFilterButtons('entrytype');
-    initFilterButtons('year');
-    addTagFilters();
-    addCustomFilters();
-    // remove invalid year buttons
-    validateYearFilters();
-    // init 'show more' for year list
-    showRelevantYears();
-    // init sorting options
-    initSortOptions('sorting-dropdown-menu', updateResults);
-    // add init results
+    initExtendedSearch();
+    initFilters();
+    initResourceMenu();
+
+    // add initial results
     updateResults(0);
 });
 
-/**
- * input controls
- */
-
-/**
- * Prevent default of the search interface and now triggers the update of the counters and the post results.
- */
-function formAction() {
+function initExtendedSearch() {
+    /**
+     * Prevent default of the search interface and now triggers the update of the counters and the post results.
+     */
     $('#extendedSearchForm').on('submit', function (e) {
         e.preventDefault();
         updateCounters();
         updateResults(0);
     });
+
+    /**
+     * Only show allowed selection field in extended search
+     */
+    var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institution', 'doi', 'isbn', 'issn'];
+    $('#dropdownSelectionField').children('li').each(function () {
+        if (!allowedSearchFields.includes($(this).data('field'))) {
+            $(this).hide(0);
+        }
+    });
 }
+
+function initFilters() {
+    // add tag filters
+    initFilterButtons('entrytype');
+    initFilterButtons('year');
+    // add highlight tag filter
+    // addHighlightTagFilters();
+    // add custom tag filters
+    addCustomFilters();
+    // remove invalid year buttons
+    validateYearFilters();
+    // init 'show more' for year list
+    showRelevantYears();
+}
+
+function initResourceMenu() {
+    // init sorting options
+    initSortOptions('sorting-dropdown-menu', updateResults);
+
+    // add parameters for export and batch edit, when clicked
+    $('#batchEditButton, #export-dropdown-menu > li > a').click(function (e) {
+        e.preventDefault();
+
+        // append search query as a parameter to URL
+        var href = $(this).attr('href');
+        var query = buildSearchQuery();
+        var hrefWithParams = href + '?search=' + query;
+
+        // open URL with query in new tab
+        window.open(hrefWithParams, '_blank').focus();
+    })
+}
+
+/**
+ * input controls
+ */
 
 var lastSelectedFilter;
 
@@ -63,9 +94,7 @@ function initFilterButtons(field) {
  */
 function updateResults(page) {
     var groupName = $('#requestedGroup').data('group');
-    var search = $('#extendedSearchInput').val();
-    var filters = generateFilterQuery();
-    var query = addFiltersToSearchQuery(search, filters);
+    var query = buildSearchQuery();
     var selectedSort = $('#sorting-dropdown-menu > .sort-selected');
     var sortPage = selectedSort.data('key');
     var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
@@ -99,9 +128,7 @@ function updateResults(page) {
  */
 function updateCounters() {
     var groupName = $('#requestedGroup').data('group');
-    var search = $('#extendedSearchInput').val();
-    var filters = generateFilterQuery();
-    var query = addFiltersToSearchQuery(search, filters);
+    var query = buildSearchQuery();
 
     $.ajax({
         url: '/ajax/explore/group', // The url you are fetching the results.
@@ -152,21 +179,6 @@ function updateFieldCountsFailed(field) {
 }
 
 /**
- * query and filter builder for ONLY custom tags
- */
-function generateTagsFilterQuery() {
-    var filterQuery = [];
-
-    var customQuery = getFilterQuery($('#filter-list-custom'));
-    if (customQuery) filterQuery.push(customQuery);
-
-    var tagsQuery = getFilterQuery($('#filter-list-tags'));
-    if (tagsQuery) filterQuery.push(tagsQuery);
-
-    return filterQuery.join(' AND ');
-}
-
-/**
  * Initialize the show more functionality in the year filter section.
  * At the beginning show max. 10 entries and expand by clicking on the link below.
  */
@@ -189,7 +201,7 @@ function showRelevantYears() {
 /**
  * Get the list of highlighted tags for the current PUMA system and add it as an additional filter section.
  */
-function addTagFilters() {
+function addHighlightTagFilters() {
     var entries = $('#filter-entries-tags');
     $.ajax({
         url: '/resources_puma/addons/explore/highlightTags.json', // The url you are fetching the results.
@@ -283,22 +295,14 @@ function createFilterTree(items) {
     return tree;
 }
 
+function buildSearchQuery() {
+    var search = $('#extendedSearchInput').val();
+    var filters = generateFilterQuery();
+    return addFiltersToSearchQuery(search, filters);
+}
+
 function resetFilterSelection() {
     $('.filter-entry').removeClass('active');
     updateCounters();
     updateResults(0);
-}
-
-/**
- * Extended search interface
- */
-
-var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institution', 'doi', 'isbn', 'issn'];
-
-function disableSearchFields() {
-    $('#dropdownSelectionField').children('li').each(function () {
-        if (!allowedSearchFields.includes($(this).data('field'))) {
-            $(this).hide(0);
-        }
-    })
 }

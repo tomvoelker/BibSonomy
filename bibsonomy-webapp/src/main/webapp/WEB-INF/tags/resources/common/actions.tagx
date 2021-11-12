@@ -51,7 +51,7 @@
 		<c:if test="${isPublication}">
 			<div class="btn-group">
 				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.clipboard.title" />
-				<ul class="dropdown-menu">
+				<ul id="clipboard-dropdown-menu"  class="dropdown-menu">
 					<rc:clipboard isClipboard="${isClipboard}" />
 				</ul>
 			</div>
@@ -64,7 +64,7 @@
 	<c:if test="${not disableFiltering}">
 		<div class="btn-group">
 			<bsform:button size="xsmall" style="link" icon="filter" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.filter.title" />
-			<ul class="dropdown-menu">
+			<ul id="filter-dropdown-menu" class="dropdown-menu">
 				<!-- show / hide resource types -->
 				<c:if test="${not disableResourcetypeSelection}">
 					<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
@@ -103,7 +103,7 @@
 		+-->
 	<div class="btn-group">
 		<bsform:button size="xsmall" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.export.title" />
-		<ul class="dropdown-menu">
+		<ul id="export-dropdown-menu" class="dropdown-menu">
 			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
 		</ul>
 	</div>
