@@ -74,8 +74,14 @@ $(function() {
 			},
 			error: function(jqXHR, data, errorThrown) {
 				//TODO: Can be deleted as soon as no 405 error is returned regularly during HTTP PUT
-				window.location.reload(true);
-				handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+				$('#discussion').load(document.URL +  ' #discussion>*', function(){
+					onPageLoad();
+					plotRatingDistribution();
+					initStars();
+					$('.updatereview').hide()
+					$('.updatecomment').hide()
+				});
+
 			}
 		});
 		
