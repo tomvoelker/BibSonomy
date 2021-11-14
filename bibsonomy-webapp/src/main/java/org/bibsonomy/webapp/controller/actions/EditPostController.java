@@ -205,7 +205,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * (see Issue #2914)
 		 */
 		if(this instanceof AbstractEditPublicationController && this.errors.hasErrors()){
-			final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes("/postPublication");
+			final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes("/postPublication#bibtexPost");
 			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
 			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "error.scrape.redirect");
 			return redirectView;
