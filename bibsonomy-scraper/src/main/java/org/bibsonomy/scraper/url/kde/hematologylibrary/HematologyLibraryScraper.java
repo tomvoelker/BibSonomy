@@ -45,6 +45,8 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author Haile
  */
+// changed to AshPublicationsScraper
+@Deprecated
 public class HematologyLibraryScraper extends CitationManagerScraper implements ReferencesScraper{
 	
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download to citation manager</a>");
