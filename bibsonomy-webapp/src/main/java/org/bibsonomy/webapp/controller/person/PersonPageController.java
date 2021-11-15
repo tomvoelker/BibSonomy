@@ -46,7 +46,9 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
@@ -195,6 +197,9 @@ public class PersonPageController extends SingleResourceListController implement
 			postsQuery.setSearch(NO_THESIS_SEARCH);
 		}
 
+		final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) this.logic.getPosts(postsQuery);
+		command.setTotalCount(posts.getTotalCount());
+
 		DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
 				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply("entrytype"));
 		distinctFieldQuery.setPostQuery(postsQuery);
@@ -213,6 +218,9 @@ public class PersonPageController extends SingleResourceListController implement
 			// exclude theses, when CRIS disabled
 			postsQuery.setSearch(NO_THESIS_SEARCH);
 		}
+
+		final ResultList<Post<BibTex>> posts = (ResultList<Post<BibTex>>) this.logic.getPosts(postsQuery);
+		command.setTotalCount(posts.getTotalCount());
 
 		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
 				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply("entrytype"));

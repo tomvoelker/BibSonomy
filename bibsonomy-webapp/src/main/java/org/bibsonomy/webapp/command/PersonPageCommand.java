@@ -66,42 +66,40 @@ public class PersonPageCommand extends BaseCommand {
 	private boolean showProjects;
 	
 	private Person person;
+	private List<PersonName> alternativeNames;
 	private Post<? extends Resource> post;
 
 	private int personPostsPerPage;
 	private PersonPostsStyle personPostsStyle;
 	private String personPostsLayout;
-	private List<Post<BibTex>> myownPosts;
-	private Map<String, String> myownPostsRendered;
-	private List<PersonName> alternativeNames;
-
 	private List<SearchFilterElement> entrytypeFilters;
 
+	private List<Post<BibTex>> myownPosts;
+	private Map<String, String> myownPostsRendered;
+	private Map<String, String> renderedPosts;
 	private List<ResourcePersonRelation> thesis;
 	private List<ResourcePersonRelation> advisedThesis;
 	private List<ResourcePersonRelation> allPosts;
-	
-	private String responseString;
 	private List<ResourcePersonRelation> otherPubs;
 	private List<ResourcePersonRelation> otherAdvisedPubs;
-	
 	private List<ResourcePersonRelation> similarAuthorPubs;
-	
+	private int totalCount;
+
 	private List<PersonMatch> personMatchList;
-	
+
 	private Map<Integer, PersonMergeFieldConflict[]> mergeConflicts;
 	private List<PhDRecommendation> phdAdvisorRecForPerson;
 
 	private Integer start;
 	private Integer end;
 
+	private String responseString;
+
 	@Deprecated // TODO use posts per page as a var or use the listcommand class to get pagination for free
 	private Integer prevStart;
 
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
-
-	private Map<String, String> renderedPosts;
 
 	public Map<String, String> getRenderedPosts() {
 		return renderedPosts;
@@ -110,8 +108,6 @@ public class PersonPageCommand extends BaseCommand {
 	public void setRenderedPosts(Map<String, String> renderedPosts) {
 		this.renderedPosts = renderedPosts;
 	}
-
-
 
 	/**
 	 * @return the logicExceptions
@@ -453,5 +449,13 @@ public class PersonPageCommand extends BaseCommand {
 
 	public void setEntrytypeFilters(List<SearchFilterElement> entrytypeFilters) {
 		this.entrytypeFilters = entrytypeFilters;
+	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
 	}
 }

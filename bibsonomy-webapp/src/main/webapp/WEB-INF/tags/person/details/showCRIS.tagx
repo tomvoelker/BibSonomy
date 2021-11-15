@@ -20,7 +20,8 @@
 				<ul id="personContentNav" class="nav nav-tabs nav-justified">
 					<li role="presentation" class="active" data-tab="publications">
 						<a href="#" class="tab-link" data-tab="publications">
-							<strong><fmt:message key="person.show.publications"/></strong>
+							<strong><fmt:message key="person.show.publications"/></strong><c:out value=" "/>
+							<span class="badge badge-primary"><c:out value="${command.totalCount}"/></span>
 						</a>
 					</li>
 					<li role="presentation" data-tab="projects">
