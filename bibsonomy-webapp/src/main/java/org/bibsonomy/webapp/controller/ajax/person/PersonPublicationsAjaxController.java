@@ -67,6 +67,7 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
     private AdhocRenderer renderer;
     private CSLFilesManager cslFilesManager;
     private URLGenerator urlGenerator;
+    private boolean crisEnabled;
 
     @Override
     public View workOn(AjaxPersonPageCommand command) {
@@ -83,8 +84,8 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
         List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(SortUtils.parseSortKeys(command.getSortPage()), SortUtils.parseSortOrders(command.getSortPageOrder()));
         command.setSortCriteria(sortCriteria);
 
-        // exclude theses, when no search set
-        if (!present(command.getSearch())) {
+        // exclude theses, when no search set and CRIS disabled
+        if (!present(command.getSearch()) && !crisEnabled) {
             command.setSearch(NO_THESIS_SEARCH);
         }
 
@@ -141,5 +142,9 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
 
     public void setUrlGenerator(URLGenerator urlGenerator) {
         this.urlGenerator = urlGenerator;
+    }
+
+    public void setCrisEnabled(boolean crisEnabled) {
+        this.crisEnabled = crisEnabled;
     }
 }

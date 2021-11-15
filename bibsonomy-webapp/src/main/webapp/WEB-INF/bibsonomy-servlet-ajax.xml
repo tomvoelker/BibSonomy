@@ -405,6 +405,7 @@
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
+		<property name="crisEnabled" value="${system.cris}" />
 	</bean>
 
 	<bean id="personSimilarAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonSimilarAjaxController" scope="request" parent="ajaxController">

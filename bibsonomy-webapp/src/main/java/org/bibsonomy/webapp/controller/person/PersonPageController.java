@@ -86,6 +86,8 @@ public class PersonPageController extends SingleResourceListController implement
 	private Errors errors;
 	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
+	private boolean crisEnabled;
+
 	// TMP TEST
 	private AdhocRenderer renderer;
 	private CSLFilesManager cslFilesManager;
@@ -188,7 +190,10 @@ public class PersonPageController extends SingleResourceListController implement
 		PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(GoldStandardPublication.class);
 		postsQuery.setGrouping(GroupingEntity.PERSON);
 		postsQuery.setGroupingName(command.getPerson().getPersonId());
-		postsQuery.setSearch(NO_THESIS_SEARCH);
+		if (!crisEnabled) {
+			// exclude theses, when CRIS disabled
+			postsQuery.setSearch(NO_THESIS_SEARCH);
+		}
 
 		DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
 				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply("entrytype"));
@@ -204,7 +209,10 @@ public class PersonPageController extends SingleResourceListController implement
 		postsQuery.setGrouping(GroupingEntity.USER);
 		postsQuery.setGroupingName(command.getPerson().getUser());
 		postsQuery.setTags(Collections.singletonList("myown"));
-		postsQuery.setSearch(NO_THESIS_SEARCH);
+		if (!crisEnabled) {
+			// exclude theses, when CRIS disabled
+			postsQuery.setSearch(NO_THESIS_SEARCH);
+		}
 
 		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
 				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply("entrytype"));
@@ -252,5 +260,9 @@ public class PersonPageController extends SingleResourceListController implement
 
 	public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
 		this.mappers = mappers;
+	}
+
+	public void setCrisEnabled(boolean crisEnabled) {
+		this.crisEnabled = crisEnabled;
 	}
 }
