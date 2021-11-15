@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.firstmonday;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,12 +39,36 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class FirstMondayScraperTest {
+	String resultDirectory = "firstmonday/";
 	/**
 	 * JUnit test for url_263
 	 */
 	@Test
-	public void urlTestRun(){
-		assertScraperResult("http://journals.uic.edu/ojs/index.php/fm/article/view/2874", FirstMondayScraper.class, "FirstMondayScraperUnitURLTest.bib");
+	public void url1TestRun(){
+		final String url = "https://journals.uic.edu/ojs/index.php/fm/article/view/2874";
+		final String resultFile = resultDirectory + "FirstMondayScraperUnitURLTest1.bib";
+		assertScraperResult(url, FirstMondayScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://journals.uic.edu/ojs/index.php/fm/article/view/12351";
+		final String resultFile = resultDirectory + "FirstMondayScraperUnitURLTest2.bib";
+		assertScraperResult(url, FirstMondayScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://journals.uic.edu/ojs/index.php/fm/article/view/10631";
+		final String resultFile = resultDirectory + "FirstMondayScraperUnitURLTest3.bib";
+		assertScraperResult(url, FirstMondayScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://journals.uic.edu/ojs/index.php/fm/article/view/4347/3737";
+		final String resultFile = resultDirectory + "FirstMondayScraperUnitURLTest4.bib";
+		assertScraperResult(url, FirstMondayScraper.class, resultFile);
 	}
 	
 }
