@@ -67,7 +67,7 @@ public enum Views implements View {
 	PERSON_INTRO("persons"),
 
 	/** the details page of a person */
-	PERSON_SHOW("person/show"),
+	PERSON_SHOW("person/person"),
 
 	/** the person disambiguation page */
 	DISAMBIGUATION("disambiguation"),
