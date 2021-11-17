@@ -117,8 +117,8 @@
 					</c:if>
 				</c:if>
 			</c:if>
-			<!--+ 
-			 	| selection of citation format 
+			<!--+
+			 	| selection of citation format
 			 	+-->
 			<hr />
 			<h4 class="pub-details">

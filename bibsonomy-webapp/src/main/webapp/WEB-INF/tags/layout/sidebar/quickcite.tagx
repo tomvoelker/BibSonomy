@@ -6,6 +6,7 @@
           xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
           xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
           xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 >
 
 <!--    <jsp:directive.attribute name="content" fragment="true" required="true"/>-->
@@ -19,6 +20,7 @@
 <!--    <jsp:directive.attribute name="outTitleKey" type="java.lang.String" required="false" />-->
 
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+    <jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
 
     <!-- Quick cite -->
     <h3>
@@ -27,51 +29,53 @@
         <fmt:message key="publications.citations.headline" />
     </h3>
 
-    <bsform:button
-            titleKey="export.bibtex.title"
-            valueKey="export.bibtex.record"
-            style="primary"
-            size="defaultSize"
-            onclick="openModalWithBibTex()" />
-
-    <bsform:button
-            titleKey="export.endnote.record"
-            valueKey="export.endnote.record"
-            style="primary"
-            size="defaultSize"
-            onclick="openModalWithEndnote()" />
-
-
-    <c:set var="din1505CitationUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'layout/din1505').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-    <bsform:button
-            titleKey="bibtex.citation_format.din1505"
-            valueKey="bibtex.citation_format.din1505"
-            style="primary"
-            size="defaultSize"
-            onclick="openModalWithStyle('${din1505CitationUrl}')" />
-
-    <c:set var="apaCitationUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'layout/apa_html').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-    <bsform:button
-            titleKey="bibtex.citation_format.apa_html"
-            valueKey="bibtex.citation_format.apa_html"
-            style="primary"
-            size="defaultSize"
-            onclick="openModalWithStyle('${apaCitationUrl}')" />
-
-    <c:set var="harvardCitationUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'layout/harvardhtml').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-    <bsform:button
-            titleKey="bibtex.citation_format.harvardhtml"
-            valueKey="bibtex.citation_format.harvardhtml"
-            style="primary"
-            size="defaultSize"
-            onclick="openModalWithStyle('${harvardCitationUrl}')" />
-
-
-    <c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-
     <div class="sidebar-quick-cite-box">
+
+        <bsform:button
+                titleKey="export.bibtex.title"
+                valueKey="bibtex.actions.bibtex"
+                style="defaultStyle"
+                size="defaultSize"
+                onclick="openModalWithBibTex()" />
+
+        <bsform:button
+                titleKey="export.endnote.record"
+                valueKey="bibtex.actions.endnote"
+                style="defaultStyle"
+                size="defaultSize"
+                onclick="openModalWithEndnote()" />
+
+        <c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+            <!-- only show not SIMPLE citation formats. The simple formats are always shown by default above -->
+            <c:if test="${citation.source!='SIMPLE'}">
+                <c:choose>
+                    <c:when test="${isCommunityPost}">
+                        <c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation, null)}?formatEmbedded=true&amp;items=1" />
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
+                    </c:otherwise>
+                </c:choose>
+
+                <c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
+                <c:set var="shortName" value="${mtl:shorten(name, 25)}" />
+
+                <bsform:button
+                        title="${name}"
+                        value="${shortName}"
+                        style="defaultStyle"
+                        size="defaultSize"
+                        onclick="ajaxLoadLayout('${exportUrl}')" />
+
+            </c:if>
+        </c:forEach>
+
+
+
+
         <div class="form-group">
             <label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
+            <c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
             <select class="form-control" data-formaturl="${exportUrl}" id="quick-cite-select-dummy">
                 <option><fmt:message key="form.input.select" /></option>
             </select>
