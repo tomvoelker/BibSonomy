@@ -10,6 +10,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
@@ -21,7 +22,8 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	xmlns:spring="http://www.springframework.org/tags"
+>
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
@@ -62,38 +64,8 @@
 			+-->
 		<jsp:attribute name="sidebar">
 
+			<sidebar:quickcite post="${post}" />
 
-			<!-- Quick cite -->
-			<h3>
-				<fontawsome:icon icon="quote-right" />
-				<c:out value=" "/>
-				<fmt:message key="publications.citations.headline" />
-			</h3>
-
-			<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-
-			<div class="sidebar-quick-cite-box">
-				<div class="form-group">
-					<label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
-					<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite">
-						<option><fmt:message key="form.input.select" /></option>
-					</select>
-					<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
-				</div>
-
-				<div class="cust-loader">
-					<div class="loader">
-						<div class="loader--dot"><!-- KEEP ME --></div>
-						<div class="loader--dot"><!-- KEEP ME --></div>
-						<div class="loader--dot"><!-- KEEP ME --></div>
-						<div class="loader--dot"><!-- KEEP ME --></div>
-						<div class="loader--dot"><!-- KEEP ME --></div>
-						<div class="loader--dot"><!-- KEEP ME --></div>
-						<div class="loader--text"><!-- KEEP ME --></div>
-					</div>
-				</div>
-
-			</div>
 
 
 
@@ -168,6 +140,16 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
+
+
+
+			<!--+
+			| discussion and rating
+			+-->
+			<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+			<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
+
+
 		</jsp:attribute>
 
 		<jsp:attribute name="content">

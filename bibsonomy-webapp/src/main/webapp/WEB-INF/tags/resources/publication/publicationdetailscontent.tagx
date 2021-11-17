@@ -6,7 +6,6 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
@@ -33,8 +32,6 @@
 	<c:if test="${openAccessEnabled}"> 
 		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!-- keep me --></script>
 	</c:if>
-	
-	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 		
 		<!--+
 			| abstract 
@@ -153,16 +150,7 @@
 			<dd>
 				<a href="/bibtexkey/${mtl:encodePathSegment(publication.bibtexKey)}/${mtl:encodePathSegment(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a>
 			</dd>
-			
-			<!--+ TODO: disabled: only 2 users used this feature
-				| internal resource link
-				+
-			<dt><fmt:message key="discussion.resourceLink.title"/><c:out value=": "/></dt>
-			<dd>
-				<fmt:message var="helpText" key="discussion.resourceLink.help"/>
-				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodePathSegment(post.user.name)}]]" />
-				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
-			</dd>-->
+
 			<!--+ 
 				|
 				| dropdown menu from which you can pick an external literature site and try to find the publication there
@@ -177,12 +165,7 @@
 			</dd>
 		</dl>
 
-		
-		<!--+
-			| discussion and rating
-			+-->
-		<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
-		
+
 		<!--+
 			| tag list
 			+-->
@@ -250,8 +233,6 @@
 			</div>
 		</li>
 	</ul>
-
-
 
 
 </jsp:root>
