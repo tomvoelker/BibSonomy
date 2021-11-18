@@ -30,7 +30,7 @@
 				<c:forEach var="role" items="${availableRoles}">
 					<!-- TODO: replace by proper handling -->				
 					<c:if test="${role == 'DOCTOR_VATER' or role == 'FIRST_REVIEWER'}">
-						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"><!-- keep me --></per:editRoles>
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}" />
 					</c:if>
 				</c:forEach>
 			</ul>
@@ -40,7 +40,7 @@
 				<c:forEach var="role" items="${availableRoles}">
 					<!-- TODO: replace by proper handling -->				
 					<c:if test="${role != 'DOCTOR_VATER' and role != 'FIRST_REVIEWER'}">
-						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"><!-- keep me --></per:editRoles>
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}" />
 					</c:if>
 				</c:forEach>
 			</ul>
