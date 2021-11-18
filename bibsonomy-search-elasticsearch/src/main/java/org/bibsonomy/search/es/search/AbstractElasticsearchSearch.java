@@ -79,7 +79,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 				return results;
 			}
 			
-			final List<Pair<String, SortOrder>> sortOrder = this.getSortOrder(query);
+			final List<Pair<String, SortOrder>> sortCriteria = this.getSortCriteria(query);
 
 			/*
 			 * there is a limit in the es search how many entries we can skip (max result window)
@@ -99,7 +99,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query, maxResultWindow);
-			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
+			final SearchHits hits = this.manager.search(queryBuilder, sortCriteria, offset, limit, null, null);
 
 			if (hits == null) {
 				return results;
@@ -130,7 +130,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		}, statistics);
 	}
 
-	protected List<Pair<String, SortOrder>> getSortOrder(final Q query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final Q query) {
 		return null;
 	}
 

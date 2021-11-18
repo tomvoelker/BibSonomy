@@ -121,7 +121,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final ProjectQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
 		final ProjectSortKey sortKey = query.getSortKey();
 		switch (sortKey) {
