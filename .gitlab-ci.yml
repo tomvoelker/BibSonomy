@@ -11,7 +11,8 @@ cache:
 build:
   stage: build
   before_script:
-    - apt-get update && apt-get install -y mysql-client libmysqlclient-dev
+    - apt-get install -y mysql-client libmysqlclient-dev
+    - sudo apt-get install -y mysql-client libmysqlclient-dev
   script:
     - mvn clean install -DskipTests
   artifacts:
