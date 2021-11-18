@@ -1719,8 +1719,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		final GroupQuery query = GroupQuery.builder().pending(false).userName(DBLogicTest.TEST_USER_1).
-						start(0).end(100).build();
+		final GroupQuery query = GroupQuery.builder().pending(false).start(0).end(100).build();
 		final List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(8));

@@ -154,22 +154,32 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	}
 
 	/**
-	 * Returns pending groups.
+	 * Returns all pending groups.
 	 *
-	 * TODO: This method handles two cases:
-	 *   1) if a username is set, only pending groups for this user are retrieved.
-	 *   2) if username is set to null, all pending groups will be retrieved.
-	 *   => This should be refactored into two separate methods
-	 *
-	 *
-	 * @param userName a valid username. If set to <code>null</code>, all pending groups will be retrieved, otherwise only pending groups for the supplied user are retrieved.
 	 * @param start start index within the result set.
 	 * @param end end index within the result set.
 	 * @param session a database session.
 	 *
 	 * @return list of all pending groups
 	 */
-	public List<Group> getPendingGroups(final String userName, final int start, final int end, final DBSession session) {
+	public List<Group> getPendingGroups(final int start, final int end, final DBSession session) {
+		final GroupParam param = new GroupParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		return this.queryForList("getPendingGroups", param, Group.class, session);
+	}
+
+	/**
+	 * Returns only pending groups for this user are retrieved.
+	 *
+	 * @param userName a valid username.
+	 * @param start start index within the result set.
+	 * @param end end index within the result set.
+	 * @param session a database session.
+	 *
+	 * @return list of all pending groups
+	 */
+	public List<Group> getPendingGroupsByUsername(final String userName, final int start, final int end, final DBSession session) {
 		final GroupParam param = new GroupParam();
 		param.setUserName(userName);
 		param.setOffset(start);
