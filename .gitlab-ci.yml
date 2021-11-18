@@ -28,6 +28,7 @@ test:
   services:
     - mariadb:10.3
   before_script:
+    - sudo apt-get install -y mysql-client libmysqlclient-dev
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_unit_test;"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_recommender_unit_test;"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_item_recommender_unit_test;"
