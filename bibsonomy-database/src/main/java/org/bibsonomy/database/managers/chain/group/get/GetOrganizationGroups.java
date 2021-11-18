@@ -60,7 +60,7 @@ public class GetOrganizationGroups extends GroupChainElement {
 
 	@Override
 	protected boolean canHandle(final QueryAdapter<GroupQuery> param) {
-		final Boolean organization = param.getQuery().getOrganization();
-		return present(organization) && organization.booleanValue();
+		final boolean organization = param.getQuery().getOrganization();
+		return organization;
 	}
 }

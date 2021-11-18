@@ -72,7 +72,7 @@ public class GroupQuery extends BasicQuery {
     /**
      * if set only organizations or non organizations should be returned
      */
-    private Boolean organization;
+    private boolean organization;
 
     /**
      * if set to <code>true</code> this query will retrieve pending groups, otherwise only activated groups will be retrieved.
@@ -124,11 +124,11 @@ public class GroupQuery extends BasicQuery {
         this.userName = userName;
     }
 
-    public Boolean getOrganization() {
+    public boolean getOrganization() {
         return organization;
     }
 
-    public void setOrganization(Boolean organization) {
+    public void setOrganization(boolean organization) {
         this.organization = organization;
     }
 

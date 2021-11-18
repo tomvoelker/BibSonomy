@@ -16,8 +16,8 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
     private String userName;
     private String externalId;
 
-    private Boolean organization;
-    private Boolean pending;
+    private boolean organization;
+    private boolean pending;
 
     /**
      * @param sortKey the group sort key
@@ -41,7 +41,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
      * @param organization if only organizations should be retrieved
      * @return the group builder
      */
-    public GroupQueryBuilder organization(final Boolean organization) {
+    public GroupQueryBuilder organization(final boolean organization) {
         this.organization = organization;
         return this;
     }
@@ -60,7 +60,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
      * @param pending if pending groups should be queried
      * @return the group builder
      */
-    public GroupQueryBuilder pending(boolean pending) {
+    public GroupQueryBuilder pending(final boolean pending) {
         this.pending = pending;
         return this;
     }
