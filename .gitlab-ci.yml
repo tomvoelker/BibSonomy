@@ -1,18 +1,7 @@
 image: maven:3.3.3-jdk-8
 
-variables:
-  #MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-cache:
-  paths:
-    - .m2/repository/
-
 build:
   stage: build
-  before_script:
-    - apt-get install -y mysql-client libmysqlclient-dev
-    - sudo apt-get install -y mysql-client libmysqlclient-dev
   script:
     - mvn clean install -DskipTests
   artifacts:
@@ -25,24 +14,21 @@ build:
 test:
   stage: test
   variables:
-    MARIADB_ROOT_PASSWORD: root
-    MARIADB_USER: bibsonomy
-    MARIADB_PASSWORD: test
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: bibsonomy
+    MYSQL_PASSWORD: password
+    MYSQL_DATABASE: test
   services:
-    - mariadb:10.3
+    - name: mariadb:10.3
+      alias: main-db
+    - name: mariadb:10.3
+      alias: item-recommender-db
+    - name: mariadb:10.3
+      alias: tag-recommender-db
   before_script:
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_unit_test;"
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_recommender_unit_test;"
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_item_recommender_unit_test;"
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON bibsonomy_unit_test.* TO '$MARIADB_USER'@'localhost';"
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON bibsonomy_recommender_unit_test.* TO '$MARIADB_USER'@'localhost';"
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON bibsonomy_item_recommender_unit_test.* TO '$MARIADB_USER'@'localhost';"
-    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
-  #- echo "<settings><profiles><profile><id>bibsonomy-test-settings</id><properties><database.main.url>jdbc:mysql://mariadb:3306/bibsonomy_test?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8</database.main.url><database.main.username>bibsonomy</database.main.username><database.main.password></database.main.password></properties></profile></profiles><activeProfiles><activeProfile>bibsonomy-test-settings</activeProfile></activeProfiles>" > .m2/settings.xml
-  #- grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
-  #-P bibsonomy-test-settings
+    - cp misc/scripts/settings.xml .m2/settings.xml
   script:
-    - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
+    - mvn test --fail-at-end -Dmaven.test.failure.ignore=true -P bibsonomy-test-settings
     # no test html
     #- mvn surefire-report:report-only -Daggregate=true
     #- mvn site
