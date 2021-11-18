@@ -26,8 +26,7 @@ test:
     - name: mariadb:10.3
       alias: tag-recommender-db
   before_script:
-    - pwd
-    - ls -la
+    - ls -la misc/scripts
     - cp misc/scripts/settings.xml .m2/settings.xml
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true -P bibsonomy-test-settings
