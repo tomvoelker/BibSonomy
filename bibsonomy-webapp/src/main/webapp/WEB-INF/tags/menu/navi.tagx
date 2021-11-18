@@ -23,6 +23,22 @@
 	<c:set var="actualGroups" value="${mtl:getActualGroups(loginUser.groups)}" />
 	<c:set var="organizations" value="${mtl:getOrganizations(loginUser.groups)}" />
 
+	<!--+
+		| Navigation order
+		+-->
+	<c:choose>
+		<c:when test="${not crisSystem}">
+			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.order'],',')}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.cris'],',')}"/>
+		</c:otherwise>
+	</c:choose>
+
+
+	<!--+
+		| Map for navigation elements
+		+-->
 	<jsp:useBean id="navElements" class="java.util.HashMap"/>
 
 	<!--+
@@ -334,10 +350,6 @@
 			<div id="bs-navbar-collapse" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
-					<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.order'],',')}"/>
-					<c:if test="${crisSystem}">
-						<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.cris'],',')}"/>
-					</c:if>
 
 					<c:forEach var="navElement" items="${navElementsOrder}" varStatus="status">
 						<c:out value="${navElements.get(navElement)}" escapeXml="${false}" />

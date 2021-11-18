@@ -1025,6 +1025,12 @@ public class Functions {
 		return false;
 	}
 
+	/**
+	 * Filter a list of groups for just plain groups and not an organizations.
+	 *
+	 * @param groups list of groups
+	 * @return list of plain groups
+	 */
 	public static List<Group> getActualGroups(List<Group> groups) {
 		List<Group> actualGroups = new ArrayList<>();
 		for (Group group : groups) {
@@ -1035,6 +1041,12 @@ public class Functions {
 		return actualGroups;
 	}
 
+	/**
+	 * Filter a list of groups for organization.
+	 *
+	 * @param groups list of groups
+	 * @return list of organizations
+	 */
 	public static List<Group> getOrganizations(List<Group> groups) {
 		List<Group> organizations = new ArrayList<>();
 		for (Group group : groups) {

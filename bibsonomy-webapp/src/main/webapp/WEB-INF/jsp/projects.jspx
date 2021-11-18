@@ -44,7 +44,6 @@
 						<spring:eval var="projectStatusValues" expression="T(org.bibsonomy.model.enums.ProjectStatus).values()"/>
 						<fmt:message key="project.filter.status"/>:
 						<div class="btn-group" role="group" aria-label="...">
-							<!-- FIXME i18n -->
 							<c:set var="selectedProjectStatus" value="${command.projectStatus}"/>
 							<c:set var="noProjectStatusFilter" value="${empty selectedProjectStatus}"/>
 							<a href="${mtl:setParam(requPathAndQuery, 'projectStatus', '')}"
@@ -89,6 +88,9 @@
 					</div>
 				</div>
 
+				<!--+
+					| Projects overview
+					+-->
 				<c:set var="list" value="${projectListCommand.list}"/>
 				<c:set var="listLength" value="${fn:length(list)}"/>
 				<c:set var="columns" value="3"/>
@@ -104,9 +106,11 @@
 				</c:forEach>
 
 				<div id="projects-result-footer" class="row list-result-footer">
+					<!-- show projects pagination -->
 					<div class="col-md-4">
 						<rc:nextprev listView="${projectListCommand}" listViewStartParamName="projects.start"/>
 					</div>
+					<!-- show result infos -->
 					<div class="col-md-4 vcenter">
 						<lists:listResultInfo listCommand="${projectListCommand}" messageKey="projects.results.description"/>
 					</div>

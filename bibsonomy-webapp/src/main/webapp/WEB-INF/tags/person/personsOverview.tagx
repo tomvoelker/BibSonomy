@@ -27,6 +27,9 @@
     <div id="persons" class="list-result">
         <c:choose>
             <c:when test="${personListCommand.totalCount gt 0}">
+                <!--+
+					| Persons overview
+					+-->
                 <c:set var="list" value="${personListCommand.list}" />
                 <c:set var="listLength" value="${fn:length(list)}" />
                 <c:set var="columns" value="3" />
@@ -43,6 +46,7 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
+                <!-- No items found text shown -->
                 <div class="no-items-found">
                     <fmt:message key="persons.noResult" />
                 </div>

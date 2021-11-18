@@ -66,6 +66,9 @@
 
 						<c:choose>
 							<c:when test="${isGroupsPage}">
+								<!--+
+									| Groups overview
+									+-->
 								<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
 									<div class="row">
 										<c:forEach var="offset" begin="0" end="${columns - 1}">
@@ -78,6 +81,9 @@
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
+								<!--+
+									| Organization overview
+									+-->
 								<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
 									<div class="row">
 										<c:forEach var="offset" begin="0" end="${columns - 1}">
@@ -92,6 +98,7 @@
 						</c:choose>
 					</c:when>
 					<c:otherwise>
+						<!-- No items found text shown -->
 						<div class="no-items-found">
 							<c:out value="${noResultMessage}" />
 						</div>
@@ -99,13 +106,16 @@
 				</c:choose>
 			</div>
 			<div id="${type}-result-footer" class="row list-result-footer">
+				<!-- Show groups/organization pagination -->
 				<div class="col-md-4">
 					<rc:nextprev listView="${groupListCommand}" listViewStartParamName="groups.start"/>
 				</div>
+				<!-- Show list result -->
 				<div class="col-md-4 vcenter">
 					<lists:listResultInfo listCommand="${groupListCommand}" messageKey="${type}.results.description" />
 				</div>
 				<c:if test="${isGroupsPage}">
+					<!-- Show create group button -->
 					<div class="col-md-4 text-right vcenter">
 						<fmt:message var="groupCreateHint" key="groups.create.hint"/>
 						<a href="#" data-toggle="popover" data-placement="top" data-trigger="focus" data-content="${groupCreateHint}">
