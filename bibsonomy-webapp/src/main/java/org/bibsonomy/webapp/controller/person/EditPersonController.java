@@ -34,18 +34,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
-import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.Views;
-import org.json.simple.JSONObject;
-import org.springframework.validation.Errors;
 
 /**
  * Controller to edit person via AJAX.
@@ -67,14 +59,18 @@ public class EditPersonController extends AbstractEditPersonController implement
     public View workOn(EditPersonCommand command) {
         final RequestWrapperContext context = command.getContext();
         final PersonUpdateOperation operation = command.getUpdateOperation();
+        // Check, if edit operation is given
         if (!present(operation)) {
             return error(command, "person.edit.noOperation");
         }
 
+        // Check, if person id of the person to edit is given
         if (!present(command.getPersonId())) {
             return error(command, "person.edit.noPersonId");
         }
 
+        // Check, if ckey is given
+        // TODO check necessary?
         if (!context.isValidCkey()) {
             // return error(command, "error.field.valid.ckey");
         }
@@ -107,7 +103,8 @@ public class EditPersonController extends AbstractEditPersonController implement
                 return this.mergeController.getConflicts(command);
         }
 
-        return error(command, "No edit operation set.");
+        // No supported edit operation given
+        return error(command, "person.edit.noOperation");
     }
 
     @Override
