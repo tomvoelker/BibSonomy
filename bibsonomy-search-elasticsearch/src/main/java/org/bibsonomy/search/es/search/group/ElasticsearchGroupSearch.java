@@ -77,9 +77,9 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final GroupQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final GroupQuery query) {
 		final SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final GroupSortKey order = query.getGroupOrder();
+		final GroupSortKey order = query.getGroupSortKey();
 		if (present(order)) {
 			switch (order) {
 				case GROUP_NAME:
@@ -96,7 +96,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 			throw new IllegalArgumentException("order '" + order + "' not supported");
 		}
 
-		return super.getSortOrder(query);
+		return super.getSortCriteria(query);
 	}
 
 	@Override

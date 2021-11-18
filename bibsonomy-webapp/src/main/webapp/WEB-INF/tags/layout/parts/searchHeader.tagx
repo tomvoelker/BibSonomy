@@ -49,7 +49,7 @@
 								<c:set var="prefixMessage" value="${prefix}" />
 							</c:if>
 							<li class="${prefixSelected ? 'active' : ''}">
-								<a href="${mtl:removeParam(mtl:setParam(requPathAndQuery, 'prefix', prefix), 'groups.start')}">${prefixMessage}</a>
+								<a href="${mtl:removeParam(mtl:setParam(requPathAndQuery, 'prefix', prefix), 'persons.start')}">${prefixMessage}</a>
 							</li>
 						</c:forEach>
 					</ul>
