@@ -27,37 +27,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.jcb;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package org.bibsonomy.scraper.url.kde.rupress;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author hagen
  */
-@Deprecated // RupressScraper is the new Scraper for JCB
-public class JCBScraper extends GenericBibTeXURLScraper {
+public class RupressScraper extends CitationManager2Scraper {
 
-	private static final String SITE_NAME = "JCB";
-	private static final String SITE_URL = "http://jcb.rupress.org/";
+	private static final String SITE_NAME = "JEM";
+	private static final String SITE_URL = "https://rupress.org";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
-	
+
 	private static final List<Pair<Pattern,Pattern>> PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
-	
+
 	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile("jcb.rupress.org"), Pattern.compile("content")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile("rupress.org"), EMPTY_PATTERN));
 	}
-	
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 
 	@Override
 	public String getSupportedSiteName() {
@@ -72,20 +64,6 @@ public class JCBScraper extends GenericBibTeXURLScraper {
 	@Override
 	public String getInfo() {
 		return INFO;
-	}
-
-	@Override
-	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		try {
-			final String content = WebUtils.getContentAsString(url, cookies);
-			final Matcher m = BIBTEX_PATTERN.matcher(content);
-			if (m.find()) {
-				return SITE_URL + m.group(1);
-			}
-		} catch (final IOException e) {
-			throw new ScrapingException(e);
-		}
-		return null;
 	}
 
 	@Override

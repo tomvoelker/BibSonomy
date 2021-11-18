@@ -39,6 +39,8 @@ import org.junit.experimental.categories.Category;
  * @author hagen
  *
  */
+
+@Deprecated // RupressScraper is the new Scraper for JCB
 @Category(RemoteTest.class)
 public class JCBScraperTest {
 	/**
