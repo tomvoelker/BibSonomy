@@ -23,11 +23,11 @@ test:
     MYSQL_PASSWORD: password
     MYSQL_DATABASE: test
   services:
-    - name: mysql:5
+    - name: mariadb:10.3
       alias: main-db
-    - name: mysql:5
+    - name: mariadb:10.3
       alias: item-recommender-db
-    - name: mysql:5
+    - name: mariadb:10.3
       alias: tag-recommender-db
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings
