@@ -28,9 +28,10 @@ test:
   services:
     - mariadb:10.3
   before_script:
-    - grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
+    - echo "<settings><profiles><profile><id>bibsonomy-test-settings</id><properties><database.main.url>jdbc:mysql://mariadb:3306/bibsonomy_test?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8</database.main.url><database.main.username>bibsonomy</database.main.username><database.main.password></database.main.password></properties></profile></profiles><activeProfiles><activeProfile>bibsonomy-test-settings</activeProfile></activeProfiles>" > .m2/settings.xml
+    #- grep bibsonomy-webapp/src/main/webapp/WEB-INF/project.properties -e biblicious.org | sed s/biblicious.org/mariadb/g > ~/bibsonomy.properties
   script:
-    - mvn test --fail-at-end -Dmaven.test.failure.ignore=true
+    - mvn test --fail-at-end -Dmaven.test.failure.ignore=true -P bibsonomy-test-settings
     # no test html
     #- mvn surefire-report:report-only -Daggregate=true
     #- mvn site
