@@ -7,6 +7,12 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.object.FieldDescriptor;
 
+/**
+ * Data provider to apply a field descriptor.
+ * @param <E>
+ *
+ * @author kchoong
+ */
 public class ResourceMetaDataProvider<E> implements Function<FieldDescriptor<? extends Resource, E>, Set<E>>  {
 
     private final ResourceSearch<? extends Resource> resourceSearch;
