@@ -51,14 +51,14 @@ public class ProjectsPageCommand extends EntitySearchAndFilterCommand {
 	/**
 	 * @return the projectOrder
 	 */
-	public ProjectSortKey getProjectOrder() {
+	public ProjectSortKey getProjectSortKey() {
 		return projectSortKey;
 	}
 
 	/**
 	 * @param projectSortKey the projectOrder to set
 	 */
-	public void setProjectOrder(ProjectSortKey projectSortKey) {
+	public void setProjectSortKey(ProjectSortKey projectSortKey) {
 		this.projectSortKey = projectSortKey;
 	}
 

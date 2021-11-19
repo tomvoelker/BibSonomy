@@ -85,8 +85,8 @@
 															<small><a href="${fn:escapeXml(group.homepage)}">Homepage</a></small><c:out value=" "/>
 														</c:if>
 														<c:if test="${isGroupsPage}">
-															<!-- TODO: use url generator -->
-															<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
+															<small><a href="${relativeUrlGenerator.getCVUrlByGroup(group.name)}">CV</a></small><c:out value=" "/>
+															<small><a href="${relativeUrlGenerator.getExploreUrlByGroup(group.name)}">Explore</a></small><c:out value=" "/>
 														</c:if>
 													</div>
 												</div>

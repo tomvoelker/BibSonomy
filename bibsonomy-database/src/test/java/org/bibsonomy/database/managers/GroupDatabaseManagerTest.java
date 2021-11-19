@@ -132,7 +132,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getPendingGroups() {
-		final List<Group> pendingGroups = groupDb.getPendingGroups(null, 0, 100, this.dbSession);
+		final List<Group> pendingGroups = groupDb.getPendingGroups(0, 100, this.dbSession);
 		assertEquals(2, pendingGroups.size());
 
 		for (final Group group : pendingGroups) {
@@ -143,9 +143,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// make sure that limit and offset work
-		assertEquals(1, groupDb.getPendingGroups(null, 0, 1, this.dbSession).size());
-		assertEquals(1, groupDb.getPendingGroups(null, 1, 2, this.dbSession).size());
-		assertEquals(2, groupDb.getPendingGroups(null, 0, 3, this.dbSession).size());
+		assertEquals(1, groupDb.getPendingGroups(0, 1, this.dbSession).size());
+		assertEquals(1, groupDb.getPendingGroups(1, 2, this.dbSession).size());
+		assertEquals(2, groupDb.getPendingGroups(0, 3, this.dbSession).size());
 	}
 
 	/**
@@ -509,7 +509,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void activateGroup() {
-		final Group group = groupDb.getPendingGroups(null, 0, Integer.MAX_VALUE, this.dbSession).get(0);
+		final Group group = groupDb.getPendingGroups(0, Integer.MAX_VALUE, this.dbSession).get(0);
 		groupDb.activateGroup(group.getName(), USER_TESTUSER_1, this.dbSession);
 		final Group testgroup = groupDb.getGroupByName(group.getName(), this.dbSession);
 		assertEquals("testpendinggroup1", testgroup.getName());

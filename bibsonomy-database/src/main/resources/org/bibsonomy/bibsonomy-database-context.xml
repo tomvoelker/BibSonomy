@@ -258,6 +258,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsByUser">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsBySearch">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>

@@ -7,6 +7,14 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.util.object.FieldDescriptor;
 
+/**
+ * A field descriptor to get meta statistics in the search index.
+ *
+ * @param <T>
+ * @param <R>
+ *
+ * @author kchoong
+ */
 public class MetaFieldDescriptor<T,R> extends FieldDescriptor<T,R> {
 
     private MetaDataQuery<Set<R>> query;

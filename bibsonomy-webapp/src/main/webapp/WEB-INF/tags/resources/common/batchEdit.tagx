@@ -31,6 +31,6 @@
 		<c:set var="textKey" value="post.meta.batch_edit" />
 		<c:set var="block" value="${true}" />
 	</c:if>
-	<bs:linkButton block="${block}" style="link" href="${editUrl}" size="xsmall" textKey="${textKey}" titleKey="post.meta.edit.title" icon="pencil" />
+	<bs:linkButton id="batchEditButton" block="${block}" style="link" href="${editUrl}" size="xsmall" textKey="${textKey}" titleKey="post.meta.edit.title" icon="pencil" />
 	
 </jsp:root>

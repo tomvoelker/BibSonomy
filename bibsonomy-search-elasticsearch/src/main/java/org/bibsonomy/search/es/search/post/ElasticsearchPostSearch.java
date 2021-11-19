@@ -74,6 +74,7 @@ import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -444,15 +445,15 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		if (!present(sortCriteria)) {
 			return sortParameters;
 		}
-		for (SortCriteria sortCrit : sortCriteria) {
-			SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
-			switch (sortCrit.getSortKey()) {
+		for (SortCriteria criteria : sortCriteria) {
+			SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(criteria.getSortOrder());
+			switch (criteria.getSortKey()) {
 				// only supported order type for bookmarks
 				case TITLE:
-					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.TITLE, sortOrder));
 					break;
 				case DATE:
-					sortParameters.add(new Pair<>(Fields.DATE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.DATE, sortOrder));
 					break;
 				default:
 					break;
@@ -462,7 +463,12 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
-		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms);
+		/**
+		 * before 4.0?
+		 * return QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).useDisMax(false);
+		 */
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms)
+				.defaultOperator(Operator.AND);
 		// set the fields where the string query should search for the string
 		fields.forEach(builder::field);
 		// set the type to phrase prefix match

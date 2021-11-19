@@ -77,5 +77,18 @@ public class WileyIntersienceScraperTest {
 	public void url5TestRun(){
 		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest5.bib");
 
-	}	
+	}
+
+	@Test
+	public void url6TestRun(){
+		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2018GL079362", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest6.bib");
+
+	}
+
+	@Test
+	public void url7TestRun(){
+		assertScraperResult("https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1740-9713.2018.01209.x", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest7.bib");
+
+	}
+
 }

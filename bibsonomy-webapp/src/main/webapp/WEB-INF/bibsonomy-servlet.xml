@@ -534,10 +534,11 @@
 						<property name="allowedFields">
 							<list>
 								<value>format</value>
-								<value>organizations</value>
 								<value>search</value>
 								<value>prefix</value>
 								<value>groups.start</value>
+								<value>organizations</value>
+								<value>memberOfOnly</value>
 							</list>
 						</property>
 					</bean>
