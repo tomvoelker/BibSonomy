@@ -106,14 +106,6 @@
 				</sidebar:sidebarItem>
 			</c:if>
 
-
-			<sidebar:sidebarItem textKey="community">
-				<jsp:attribute name="content">
-
-
-
-				</jsp:attribute>
-			</sidebar:sidebarItem>
 			<!--+
 				| private note
 				+-->
