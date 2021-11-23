@@ -44,8 +44,6 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.List;
-
 /**
  * @author daill
  */
@@ -91,13 +89,6 @@ public class DeleteUserController extends SettingsPageController implements Vali
 				log.debug("answer is correct - deleting user: " + loginUserName);
 				try {
 					logic.deleteUser(loginUserName);
-
-					// delete the pending groups created by the user
-					for (Group pendingGroup: context.getLoginUser().getPendingGroups()) {
-						String groupName = pendingGroup.getName();
-						log.debug("grouprequest for group \"" + groupName + "\" automatically declined due to deletion of the requesting users account");
-						this.logic.deleteGroup(groupName, true, false);
-					}
 
 				} catch (final UnsupportedOperationException ex) {
 					// this happens when a user is a group
