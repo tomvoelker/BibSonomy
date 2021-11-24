@@ -70,7 +70,7 @@ public class GroupExplorePageController extends SingleResourceListController imp
         List<SearchFilterElement> filters = generateFilters(ENTRYTYPE_FILTER, 20,false);
         for (SearchFilterElement element : filters) {
             element.setMessageKey(String.format("post.resource.entrytype.%s.title", element.getName()));
-            element.setTooltipKey(String.format("explore.filter.entrytype.%s.tooltip", element.getName()));
+            element.setTooltipKey(String.format("post.resource.entrytype.%s.description", element.getName()));
         }
 
         return filters;
