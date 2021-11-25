@@ -105,7 +105,6 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	static {
 		FIELD_MAPPER.put(BibTex.ENTRYTYPE_FIELD_NAME, Fields.Publication.ENTRY_TYPE);
 		FIELD_MAPPER.put(BibTex.YEAR_FIELD_NAME, Fields.Publication.YEAR);
-		// FIELD_MAPPER.put(BibTex.AUTHOR_FIELD_NAME, Fields.Publication.AUTHORS);
 	}
 
 	/** post model converter */

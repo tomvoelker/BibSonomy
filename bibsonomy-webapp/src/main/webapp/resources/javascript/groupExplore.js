@@ -200,11 +200,13 @@ function showRelevantYears() {
 
 /**
  * Get the list of highlighted tags for the current PUMA system and add it as an additional filter section.
+ *
+ * IMPORTANT: This requested JSON file has to be overwritten in the individual PUMA instances to use.
  */
 function addHighlightTagFilters() {
     var entries = $('#filter-entries-tags');
     $.ajax({
-        url: '/resources_puma/addons/explore/highlightTags.json', // The url you are fetching the results.
+        url: '/resources/explore/highlightTags.json', // The url you are fetching the results.
         dataType: 'json',
         success: function (data) {
             $.each(data, function (index, entity) {
@@ -220,11 +222,13 @@ function addHighlightTagFilters() {
 
 /**
  * Get the list of custom tags (for example: subgroups/subentities identified by tags) for the current PUMA system and add it as an additional filter section.
+ *
+ * IMPORTANT: This requested JSON file has to be overwritten in the individual PUMA instances to use.
  */
 function addCustomFilters() {
     var entries = $('#filter-entries-custom');
     $.ajax({
-        url: '/resources_puma/addons/explore/customTags.json', // The url you are fetching the results.
+        url: '/resources/explore/customTags.json', // The url you are fetching the results.
         dataType: 'json',
         success: function (data) {
             data.results.bindings.forEach(function (entity) {
@@ -238,23 +242,6 @@ function addCustomFilters() {
     });
 }
 
-/**
- * Get the list of custom tags (for example: subgroups/subentities identified by tags) for the current PUMA system and add it as an additional filter section.
- */
-function addCustomTreeFilters() {
-    var entries = $('#filter-entries-custom');
-    $.ajax({
-        url: '/resources_puma/addons/explore/customTagsTree.json', // The url you are fetching the results.
-        dataType: 'json',
-        success: function (data) {
-            entries.append(createFilterTree(data));
-            // initFilterButtons('custom');
-
-            // show filter section
-            $('#filter-list-custom').removeClass('hidden');
-        }
-    });
-}
 
 /**
  * Simple search for the custom tag list.
@@ -270,29 +257,6 @@ function searchCustomFilters() {
             $(this).hide(0);
         }
     });
-}
-
-function createFilterTree(items) {
-    var tree = $('<ul/>');
-
-    $.each(items, function (i) {
-        var item = items[i];
-        var li = $("<li/>", {
-            'data-value': item.label,
-            'data-cnr': item.cnr,
-            'data-from': item.fromDate,
-            'data-until': item.untilDate
-        }).appendTo(tree);
-        var label = $("<span/>")
-            .text(item.facility)
-            .appendTo(li);
-        if (item.LowerTags) {
-            var children = createFilterTree(item.LowerTags);
-            children.appendTo(tree);
-        }
-    });
-
-    return tree;
 }
 
 function buildSearchQuery() {

@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.bibsonomy.model.BibTex.ENTRYTYPE_FIELD_NAME;
+import static org.bibsonomy.model.BibTex.YEAR_FIELD_NAME;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,10 +36,6 @@ import org.json.JSONObject;
  * @author kchoong
  */
 public class GroupExploreAjaxController extends AjaxController implements MinimalisticController<AjaxGroupExploreCommand> {
-
-    private static final String ENTRYTYPE_FILTER = "entrytype";
-    private static final String YEAR_FILTER = "year";
-    private static final String AUTHOR_FILTER = "author";
     
     private LogicInterface logic;
     private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
@@ -65,8 +64,8 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
             PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
             try {
                 JSONObject distinctCount = new JSONObject();
-                distinctCount.put(ENTRYTYPE_FILTER, filtersToJSON(generateFilters(distinctPostQuery, ENTRYTYPE_FILTER, 20)));
-                distinctCount.put(YEAR_FILTER, filtersToJSON(generateFilters(distinctPostQuery, YEAR_FILTER, 200)));
+                distinctCount.put(ENTRYTYPE_FIELD_NAME, filtersToJSON(generateFilters(distinctPostQuery, ENTRYTYPE_FIELD_NAME, 20)));
+                distinctCount.put(YEAR_FIELD_NAME, filtersToJSON(generateFilters(distinctPostQuery, YEAR_FIELD_NAME, 200)));
 
                 command.setFormat(Views.FORMAT_STRING_JSON);
                 command.setResponseString(distinctCount.toString());
