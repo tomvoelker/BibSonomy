@@ -54,7 +54,7 @@ public enum Views implements View {
 	HOMEPAGE("home"),
 
 	/**
-	 * the cris homepage (currently a static welcome page)
+	 * the cris homepage
 	 */
 	CRIS_HOMEPAGE("cris/home"),
 

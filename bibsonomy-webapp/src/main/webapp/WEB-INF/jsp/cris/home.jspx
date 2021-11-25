@@ -1,44 +1,138 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0"
-          xmlns="http://www.w3.org/1999/xhtml"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
 
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-    <!-- TODO: fix headline -->
-    <layout:paneLayout pageTitle="${command.pageTitle}"
-                           command="${command}"
-                           requPath="${requPath}"
-                           activeTab="home"
-                           showPageOptions="${true}"
-                           noSidebar="${true}">
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-        <jsp:attribute name="content">
-			<div class="row">
-				<div class="col-md-12">
-					<h1 class="text-center"><fmt:message key="cris.home.header" /></h1>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<img class="img-responsive img-rounded" src="/resources_puma/image/cris_home_header.jpg" id="cris-home-logo" />
-				</div>
-			</div>
+	<c:set var="userLoggedIn" value="${command.context.userLoggedIn}"/>
 
-			<div class="row">
-				<div class="col-md-12">
-					<p class="lead">
-						<fmt:message key="cris.home.description" />
-					</p>
-				</div>
-			</div>
-		</jsp:attribute>
+	<!-- TODO: fix headline -->
+	<layout:paneLayout pageTitle="${command.pageTitle}"
+					   command="${command}"
+					   requPath="${requPath}"
+					   activeTab="home"
+					   showPageOptions="${true}"
+					   noSidebar="${true}">
 
-        <jsp:attribute name="heading">
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
-    </layout:paneLayout>
+		<jsp:attribute name="content">
+			<c:if test="${not userLoggedIn}">
+				<div class="row">
+					<div class="col-md-12">
+						<h1 class="text-center"><fmt:message key="cris.home.header"/></h1>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p class="lead">
+							<fmt:message key="cris.home.description"/>
+						</p>
+					</div>
+				</div>
+			</c:if>
+
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<div id="home-news">
+						<c:set var="news" value="${command.news}"/>
+						<c:set var="newsLength" value="${fn:length(news)}"/>
+						<c:if test="${newsLength gt 0}">
+							<div id="news-carousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+								<!-- Indicators -->
+								<ol class="carousel-indicators">
+									<c:forEach var="i" begin="0" end="${newsLength - 1}" step="1">
+										<c:set var="item" value="${news[i]}"/>
+										<c:choose>
+											<c:when test="${i eq 0}">
+												<li class="active" data-target="#news-carousel" data-slide-to="${i}"><!-- keep me --></li>
+											</c:when>
+											<c:otherwise>
+												<li data-target="#news-carousel" data-slide-to="${i}"><!-- keep me --></li>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</ol>
+
+								<!-- Wrapper for slides -->
+								<div class="carousel-inner" role="listbox">
+									<c:forEach var="i" begin="0" end="${newsLength - 1}" step="1">
+										<c:set var="item" value="${news[i]}"/>
+										<c:choose>
+											<c:when test="${i eq 0}">
+												<div class="item active">
+													<div class="news-carousel-placeholder"><!-- keep me --></div>
+													<div class="carousel-caption">
+														<div class="carousel-content">
+															<h3><a href="${item.resource.url}">${item.resource.title}</a></h3>
+															<p>${item.description}</p>
+														</div>
+													</div>
+												</div>
+											</c:when>
+											<c:otherwise>
+												<div class="item">
+													<div class="news-carousel-placeholder"><!-- keep me --></div>
+													<div class="carousel-caption">
+														<div class="carousel-content">
+															<h3><a href="${item.resource.url}">${item.resource.title}</a></h3>
+															<p>${item.description}</p>
+														</div>
+													</div>
+												</div>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</div>
+
+								<!-- Controls -->
+								<a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
+									<fontawesome:icon icon="chevron-left" fixedWidth="${true}"/>
+								</a>
+								<a class="right carousel-control" href="#news-carousel" role="button" data-slide="next">
+									<fontawesome:icon icon="chevron-right" fixedWidth="${true}"/>
+								</a>
+							</div>
+						</c:if>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<h3><fmt:message key="cris.home.latest"/>:</h3>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12 publication-list" id="home-publications">
+					<resources:bibtexs listView="${command.goldStandardPublications}"
+									   loginUserName="${command.context.loginUser.name}"
+									   requPath="${requPath}"
+									   widthClassName="wide"
+									   isClipboard="${false}"
+									   showBookmark="${false}"
+									   showPublication="${true}"
+									   hideHeadline="${true}"
+									   hideCounts="${true}"
+									   hideMetaData="${false}"
+									   hidePostMenu="${true}"
+									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
+									   disableResourcetypeSelection="${true}">
+					</resources:bibtexs>
+				</div>
+			</div>
+		</jsp:attribute>
+
+	</layout:paneLayout>
 </jsp:root>
