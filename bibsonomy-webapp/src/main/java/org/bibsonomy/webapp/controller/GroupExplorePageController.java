@@ -55,8 +55,8 @@ public class GroupExplorePageController extends SingleResourceListController imp
         command.setGroup(this.group);
 
         // create filter list
-        command.setEntrytypeFilters(generateEntrytypeFilters());
-        command.setYearFilters(generateFilters(YEAR_FIELD_NAME, 200, true));
+        command.addFilters(ENTRYTYPE_FIELD_NAME, generateEntrytypeFilters());
+        command.addFilters(YEAR_FIELD_NAME, generateFilters(YEAR_FIELD_NAME, 200, true));
 
         return Views.GROUPEXPLOREPAGE;
     }

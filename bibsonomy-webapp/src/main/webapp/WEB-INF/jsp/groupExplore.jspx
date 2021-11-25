@@ -105,17 +105,13 @@
 								<div id="filter-entries-custom" class="filter-entries search-filter-selection"><!-- keep me --></div>
 							</div>
 						</c:if>
-						<c:if test="${not empty command.entrytypeFilters}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
+						<c:if test="${command.filterMap.containsKey('entrytype')}">
+							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.filterMap.get('entrytype')}"
 													  headerMessageKey="explore.filter.entrytype.header" headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
-						<c:if test="${not empty command.yearFilters}">
-							<sidebar:searchFilterList filterField="year" filterEntries="${command.yearFilters}"
+						<c:if test="${command.filterMap.containsKey('year')}">
+							<sidebar:searchFilterList filterField="year" filterEntries="${command.filterMap.get('year')}"
 													  headerMessageKey="explore.filter.pubyear.header" headerMessageIcon="calendar-alt" buttonClass="filter-entry-counter" showMore="${true}" />
-						</c:if>
-						<c:if test="${not empty command.authorFilters}">
-							<sidebar:searchFilterList filterField="author" filterEntries="${command.authorFilters}"
-													  headerMessageKey="explore.filter.author.header" headerMessageIcon="user" buttonClass="filter-counter-entry" />
 						</c:if>
 					</div>
 				</div>
