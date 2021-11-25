@@ -365,6 +365,14 @@ $(function() {
 			return false;
 		}
 	});
+
+	/*
+	 * initialize popover and allow HTML for CSS class: popover-hint
+	 */
+	$('.popover-hint[data-toggle="popover"]').popover({
+		html:true,
+		delay: { "hide": 3000 }
+	});
 	
 	$('a.doc-magnify').click(function() {
 		var previewModal = $('#preview-modal');

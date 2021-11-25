@@ -11,7 +11,7 @@
 		<c:set var="startIndex" value="${listCommand.start + 1}" />
 		<c:set var="endIndex" value="${startIndex + listCommand.entriesPerPage - 1}" />
 		<c:set var="endIndex" value="${endIndex ge totalNumberOfEntities ? totalNumberOfEntities : endIndex}" />
-		<div class="text-muted">
+		<div class="list-result-info text-muted">
 			<fmt:message key="${messageKey}">
 				<fmt:param value="${startIndex}" />
 				<fmt:param value="${endIndex}" />

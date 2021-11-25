@@ -36,11 +36,11 @@ import org.bibsonomy.model.Post;
 
 /**
  * fills the home page
- * 
+ *
  * @author Robert
  */
-public class HomepageCommand extends SimpleResourceViewCommand{
-	
+public class HomepageCommand extends SimpleResourceViewCommand {
+
 	/** fills the news box in the sidebar */
 	private List<Post<Bookmark>> news;
 
@@ -52,7 +52,7 @@ public class HomepageCommand extends SimpleResourceViewCommand{
 	}
 
 	/**
-	 * @param news 
+	 * @param news
 	 */
 	public void setNews(List<Post<Bookmark>> news) {
 		this.news = news;
