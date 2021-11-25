@@ -460,14 +460,8 @@
 	</function>
 
 	<function>
-		<name>getActualGroups</name>
+		<name>filterGroups</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.List getActualGroups(java.util.List)</function-signature>
-	</function>
-
-	<function>
-		<name>getOrganizations</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.List getOrganizations(java.util.List)</function-signature>
+		<function-signature>java.util.List filterGroups(java.util.List,boolean)</function-signature>
 	</function>
 </taglib>

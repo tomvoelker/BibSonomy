@@ -20,8 +20,8 @@
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
 
-	<c:set var="actualGroups" value="${mtl:getActualGroups(loginUser.groups)}" />
-	<c:set var="organizations" value="${mtl:getOrganizations(loginUser.groups)}" />
+	<c:set var="actualGroups" value="${mtl:filterGroups(loginUser.groups, false)}" />
+	<c:set var="organizations" value="${mtl:filterGroups(loginUser.groups, true)}" />
 
 	<!--+
 		| Navigation order
@@ -31,7 +31,7 @@
 			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.order'],',')}"/>
 		</c:when>
 		<c:otherwise>
-			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.cris'],',')}"/>
+			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.order.cris'],',')}"/>
 		</c:otherwise>
 	</c:choose>
 

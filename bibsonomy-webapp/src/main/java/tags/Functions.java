@@ -1026,34 +1026,18 @@ public class Functions {
 	}
 
 	/**
-	 * Filter a list of groups for just plain groups and not an organizations.
+	 * Filter a list of groups for just plain groups or organizations.
 	 *
-	 * @param groups list of groups
-	 * @return list of plain groups
+	 * @param groups list of groups to filter
+	 * @return filtered list of groups
 	 */
-	public static List<Group> getActualGroups(List<Group> groups) {
-		List<Group> actualGroups = new ArrayList<>();
+	public static List<Group> filterGroups(List<Group> groups, boolean organization) {
+		List<Group> result = new ArrayList<>();
 		for (Group group : groups) {
-			if (!group.isOrganization()) {
-				actualGroups.add(group);
+			if ((organization && group.isOrganization()) || (!organization && !group.isOrganization())) {
+				result.add(group);
 			}
 		}
-		return actualGroups;
-	}
-
-	/**
-	 * Filter a list of groups for organization.
-	 *
-	 * @param groups list of groups
-	 * @return list of organizations
-	 */
-	public static List<Group> getOrganizations(List<Group> groups) {
-		List<Group> organizations = new ArrayList<>();
-		for (Group group : groups) {
-			if (group.isOrganization()) {
-				organizations.add(group);
-			}
-		}
-		return organizations;
+		return result;
 	}
 }
