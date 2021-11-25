@@ -26,8 +26,7 @@ import org.bibsonomy.webapp.command.ajax.AjaxGroupExploreCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 /**
  * AJAX controller to support clickable filters of publication lists for groups, while maintaining the search input.
@@ -42,41 +41,46 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
 
     private User loggedInUser;
 
-    /** the requested group */
-    private String requestedGroup;
-    private Group group;
 
     @Override
     public View workOn(AjaxGroupExploreCommand command) {
         this.loggedInUser = command.getContext().getLoginUser();
 
         // get group details
-        this.requestedGroup = command.getRequestedGroup();
-        this.group = this.logic.getGroupDetails(requestedGroup, false);
+        final String requestedGroup = command.getRequestedGroup();
+        final Group group = this.logic.getGroupDetails(requestedGroup, false);
 
         PostQueryBuilder builder = new PostQueryBuilder()
                 .setGrouping(GroupingEntity.GROUP)
-                .setGroupingName(this.requestedGroup)
+                .setGroupingName(requestedGroup)
                 .search(command.getSearch());
 
         // check, if only the distinct counts of the query should be retrieved
         if (command.isDistinctCount()) {
-            PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
-            try {
-                JSONObject distinctCount = new JSONObject();
-                distinctCount.put(ENTRYTYPE_FIELD_NAME, filtersToJSON(generateFilters(distinctPostQuery, ENTRYTYPE_FIELD_NAME, 20)));
-                distinctCount.put(YEAR_FIELD_NAME, filtersToJSON(generateFilters(distinctPostQuery, YEAR_FIELD_NAME, 200)));
-
-                command.setFormat(Views.FORMAT_STRING_JSON);
-                command.setResponseString(distinctCount.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // returns a JSON response
-            return Views.AJAX_JSON;
+            return workOnDistinctCounts(command, builder);
         }
 
+        return workOnPublications(command, builder);
+    }
+
+    public View workOnDistinctCounts(AjaxGroupExploreCommand command, PostQueryBuilder builder) {
+        PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
+
+        final JSONObject response = new JSONObject();
+        JSONObject distinctCount = new JSONObject();
+        distinctCount.put(ENTRYTYPE_FIELD_NAME, filtersToJSON(generateFilters(distinctPostQuery, ENTRYTYPE_FIELD_NAME, 20)));
+        distinctCount.put(YEAR_FIELD_NAME, filtersToJSON(generateFilters(distinctPostQuery, YEAR_FIELD_NAME, 200)));
+        response.put("data", distinctCount);
+        response.put("success", true);
+
+        // returns a JSON response
+        command.setFormat(Views.FORMAT_STRING_JSON);
+        command.setResponseString(response.toString());
+
+        return Views.AJAX_JSON;
+    }
+
+    public View workOnPublications(AjaxGroupExploreCommand command, PostQueryBuilder builder) {
         // start + end
         final int postsPerPage = command.getPageSize();
         final int start = postsPerPage * command.getPage();
@@ -96,6 +100,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
 
         return Views.AJAX_BIBTEXS;
     }
+
 
     private FieldDescriptor<BibTex, ?> createFieldDescriptor(String field) {
         return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
@@ -123,9 +128,8 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
      *
      * @param filters list of pairs with name and count
      * @return JSONObject JSON representation of the count
-     * @throws JSONException
      */
-    private JSONObject filtersToJSON(Set<Pair<String, Long>> filters) throws JSONException {
+    private JSONObject filtersToJSON(Set<Pair<String, Long>> filters) {
         JSONObject res = new JSONObject();
         for (Pair<String, Long> filter : filters) {
             res.put(filter.getFirst(), filter.getSecond());

@@ -139,13 +139,16 @@ function updateCounters() {
             'distinctCount': true,
             'search': query
         },
-        success: function (data) {
-            updateFieldCounts('entrytype', data.entrytype);
-            updateFieldCounts('year', data.year);
-        },
-        error: function (xhr, status, error) {
-            updateFieldCountsFailed('entrytype');
-            updateFieldCountsFailed('year');
+        success: function (response) {
+            if (response.success) {
+                // request success
+                updateFieldCounts('entrytype', response.data.entrytype);
+                updateFieldCounts('year', response.data.year);
+            } else {
+                // error in request
+                updateFieldCountsFailed('entrytype');
+                updateFieldCountsFailed('year');
+            }
         }
     });
 }
