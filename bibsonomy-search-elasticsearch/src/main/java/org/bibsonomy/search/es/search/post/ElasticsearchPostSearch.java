@@ -256,10 +256,10 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		// TODO FIXME (kch) better way to pass through postquery and logged in user
 		MetaFieldDescriptor<? extends  Resource, E> metaFieldDescriptor = (MetaFieldDescriptor<? extends Resource, E>) fieldDescriptor;
 		DistinctFieldQuery<? extends Resource, E> metaDataQuery = (DistinctFieldQuery<? extends Resource, E>) metaFieldDescriptor.getQuery();
-		final User loggedinUser = metaFieldDescriptor.getLoggedInUser();
+		final User loggedInUser = metaFieldDescriptor.getLoggedInUser();
 		final PostSearchQuery<? extends Resource> postQuery = metaDataQuery.getPostQuery();
-		final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedinUser.getName());
-		final QueryBuilder queryBuilder = this.buildQuery(loggedinUser, allowedUsers, postQuery);
+		final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedInUser.getName());
+		final QueryBuilder queryBuilder = this.buildQuery(loggedInUser, allowedUsers, postQuery);
 
 		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(COUNT_AGGREGATION_ID);
 		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
