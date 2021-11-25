@@ -1839,6 +1839,110 @@ hr.option-result-divider {
   float: none;
 }
 
+.list-result {
+  .row {
+	padding-bottom: 10px;
+  }
+
+  .row:last-child {
+	padding-bottom: 0;
+  }
+
+  .row > div:nth-child(1) {
+	padding-left: 15px;
+	padding-right: 5px;
+  }
+
+  .row > div:nth-child(2) {
+	padding-left: 5px;
+	padding-right: 5px;
+  }
+
+  .row > div:nth-child(3) {
+	padding-right: 15px;
+	padding-left: 5px;
+  }
+
+}
+
+.list-result-footer {
+  margin-top: 30px;
+
+  .pagination {
+	margin: 0;
+  }
+
+  .list-result-info {
+	text-align: center;
+  }
+}
+
+@listResultEntityPadding: 10px;
+@listResultEntityImageSize: 70px;
+
+.list-result-entity {
+  position: relative;
+  height: 130px;
+  border: @background-color solid 1px;
+  border-radius: 5px;
+  padding: @listResultEntityPadding;
+
+  .media-heading {
+	margin: 0;
+  }
+
+  .media-description {
+	line-height: 1.5em;
+	height: 3em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+  }
+
+  .media-link-group {
+	position: absolute;
+	left: @listResultEntityPadding;
+	bottom: @listResultEntityPadding;
+
+	span {
+	  padding: 5px 10px;
+	  margin-right: 5px;
+	  background: @background-color;
+	  color: @link-color;
+	}
+  }
+
+  .media-button-group {
+	position: absolute;
+	right: @listResultEntityPadding;
+	bottom: @listResultEntityPadding;
+
+	a {
+	  margin-left: 5px;
+	}
+  }
+
+  .media-image {
+	height: @listResultEntityImageSize;
+	width: @listResultEntityImageSize;
+	background: @background-color;
+
+	overflow: hidden;
+	text-align: center;
+	font-size: @listResultEntityImageSize;
+  }
+
+  .media-object {
+	height: @listResultEntityImageSize;
+	width: @listResultEntityImageSize;
+  }
+
+  .media-circle {
+	border-radius: 50%;
+  }
+
+}
+
 
 #organizations{
 	img {

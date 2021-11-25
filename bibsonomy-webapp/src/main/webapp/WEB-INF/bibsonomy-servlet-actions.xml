@@ -1344,7 +1344,6 @@
 	<bean id="profileFileLogic" class="org.bibsonomy.webapp.util.file.profilepicture.ServerProfilePictureLogic">
 		<constructor-arg value="${project.picture.path}" />
 		<property name="defaultFileName" value="no_picture.png" />
-		<property name="hasDefaultProfilePicture" value="${profile.picture.default}" />
 		<property name="pictureScaler">
 			<bean class="org.bibsonomy.util.file.profilepicture.PictureToMaxSizeScaler">
 				<constructor-arg value="200" />

@@ -35,12 +35,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.EnumUtils;
@@ -195,5 +198,26 @@ public class FunctionsTest {
 		assertTrue(Functions.isSameHost("http://localhost/", "https://localhost/"));
 		assertFalse(Functions.isSameHost("http://localhost/", "http://localhost2/"));
 		assertFalse(Functions.isSameHost("http://localhost/", "http://www.localhost/"));
+	}
+
+	/**
+	 * tests  {@link Functions#filterGroups(List, boolean)}
+	 */
+	@Test
+	public void testFilterGroups() {
+		// Create test groups
+		Group actualGroup1 = new Group();
+		Group organization1 = new Group();
+		organization1.setOrganization(true);
+		List<Group> groups = Arrays.asList(actualGroup1, organization1);
+
+		final List<Group> actualGroups = Functions.filterGroups(groups, false);
+		final List<Group> organizations = Functions.filterGroups(groups, true);
+
+		assertEquals(1, actualGroups.size());
+		assertEquals( 1, organizations.size());
+
+		assertFalse(actualGroups.get(0).isOrganization());
+		assertTrue(organizations.get(0).isOrganization());
 	}
 }
