@@ -738,6 +738,11 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
+	/**
+	 * Constructs the URL for the group's CV page
+	 * @param groupName the group name
+	 * @return URL to group's CV page
+	 */
 	public String getCVUrlByGroup(final String groupName) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome);
 		builder.addPathElement(CV_PREFIX);
@@ -747,6 +752,11 @@ public class URLGenerator {
 		return this.getUrl(builder.asString());
 	}
 
+	/**
+	 * Constructs the URL for the group's explore page
+	 * @param groupName the group name
+	 * @return URL to group's explore page
+	 */
 	public String getExploreUrlByGroup(final String groupName) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome);
 		builder.addPathElement(EXPLORE_PREFIX);
@@ -1478,6 +1488,20 @@ public class URLGenerator {
 				+ "/"
 				+ UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the user's CV page
+	 * @param userName the group name
+	 * @return URL to user's CV page
+	 */
+	public String getCVUrlByUser(final String userName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(CV_PREFIX);
+		builder.addPathElement(USER_PREFIX);
+		builder.addPathElement(userName);
+
+		return this.getUrl(builder.asString());
 	}
 	
 	/**

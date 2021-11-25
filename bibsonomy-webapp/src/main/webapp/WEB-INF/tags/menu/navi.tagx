@@ -68,7 +68,7 @@
 
 					<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 						<li class="divider"><!-- KEEP ME --></li>
-						<li><a href="/cv/user/${fn:escapeXml(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+						<li><a href="${relativeUrlGenerator.getCVUrlByUser(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 						<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
 						<c:set var="urlGeneratorBib" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'bib')}" />
 						<li><a href="${urlGeneratorBib.getUserUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
@@ -114,10 +114,12 @@
 									<ul class="dropdown-menu">
 										<li><a href="${relativeUrlGenerator.getUserUrlByUserName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
 										<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.activity"/></a></li>
-										<li><c:if test="${grp.sharedDocuments}">
-											<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
+										<c:if test="${grp.sharedDocuments}">
+											<li>
+												<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
+											</li>
 										</c:if>
-										</li>
+										<li><a href="${relativeUrlGenerator.getExploreUrlByGroup(grp.name)}"><fmt:message key="group.explore.abbrev"/></a></li>
 										<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 											<li class="divider"><!-- keep me --></li>
 											<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
