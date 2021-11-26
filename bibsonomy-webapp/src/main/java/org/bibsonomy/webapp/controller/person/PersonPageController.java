@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.controller.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import static org.bibsonomy.model.BibTex.ENTRYTYPE_FIELD_NAME;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -201,7 +203,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setTotalCount(posts.getTotalCount());
 
 		DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
-				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply("entrytype"));
+				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply(ENTRYTYPE_FIELD_NAME));
 		distinctFieldQuery.setPostQuery(postsQuery);
 		distinctFieldQuery.setSize(20);
 
@@ -223,7 +225,7 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setTotalCount(posts.getTotalCount());
 
 		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
-				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply("entrytype"));
+				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(ENTRYTYPE_FIELD_NAME));
 		distinctFieldQuery.setPostQuery(postsQuery);
 		distinctFieldQuery.setSize(20);
 
@@ -242,7 +244,7 @@ public class PersonPageController extends SingleResourceListController implement
 		List<SearchFilterElement> filters = new ArrayList<>();
 		for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {
 			SearchFilterElement filterElement = new SearchFilterElement(filter.getFirst(), filter.getSecond());
-			filterElement.setField("entrytype");
+			filterElement.setField(ENTRYTYPE_FIELD_NAME);
 			filterElement.setMessageKey(String.format("post.resource.entrytype.%s.title", filterElement.getName()));
 			filters.add(filterElement);
 		}
