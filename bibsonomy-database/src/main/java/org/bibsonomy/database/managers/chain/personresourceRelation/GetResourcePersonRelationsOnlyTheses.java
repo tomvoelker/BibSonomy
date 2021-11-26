@@ -45,7 +45,6 @@ public class GetResourcePersonRelationsOnlyTheses extends ResourcePersonRelation
         final ResourcePersonRelationQuery query = param.getQuery();
         return present(query.getPersonId()) &&
                 query.isOnlyTheses() &&
-                !query.isExcludeTheses() &&
                 query.isWithPosts() &&
                 !present(query.getAuthorIndex()) &&
                 !present(query.getRelationType());
