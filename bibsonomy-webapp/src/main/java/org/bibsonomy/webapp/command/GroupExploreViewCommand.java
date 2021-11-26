@@ -29,7 +29,9 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.extra.SearchFilterElement;
@@ -39,17 +41,21 @@ import org.bibsonomy.model.extra.SearchFilterElement;
  */
 public class GroupExploreViewCommand extends SimpleResourceViewCommand {
 
+    // Requested group id
     private String requestedGroup;
+
+    // Group
     private Group group;
 
+    // Search string
     private String search;
 
-    private String customTagFiltersUrl;
-    private List<SearchFilterElement> customTagFilters;
+    // Search filter map with attribute field as key
+    private Map<String, List<SearchFilterElement>> filterMap = new HashMap<>();
 
-    private List<SearchFilterElement> entrytypeFilters;
-    private List<SearchFilterElement> yearFilters;
-    private List<SearchFilterElement> authorFilters;
+    public void addFilters(String field, List<SearchFilterElement> filters) {
+        filterMap.put(field, filters);
+    }
 
     public String getRequestedGroup() {
         return requestedGroup;
@@ -75,43 +81,11 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
         this.search = search;
     }
 
-    public String getCustomTagFiltersUrl() {
-        return customTagFiltersUrl;
+    public Map<String, List<SearchFilterElement>> getFilterMap() {
+        return filterMap;
     }
 
-    public void setCustomTagFiltersUrl(String customTagFiltersUrl) {
-        this.customTagFiltersUrl = customTagFiltersUrl;
-    }
-
-    public List<SearchFilterElement> getCustomTagFilters() {
-        return customTagFilters;
-    }
-
-    public void setCustomTagFilters(List<SearchFilterElement> customTagFilters) {
-        this.customTagFilters = customTagFilters;
-    }
-
-    public List<SearchFilterElement> getEntrytypeFilters() {
-        return entrytypeFilters;
-    }
-
-    public void setEntrytypeFilters(List<SearchFilterElement> entrytypeFilters) {
-        this.entrytypeFilters = entrytypeFilters;
-    }
-
-    public List<SearchFilterElement> getYearFilters() {
-        return yearFilters;
-    }
-
-    public void setYearFilters(List<SearchFilterElement> yearFilters) {
-        this.yearFilters = yearFilters;
-    }
-
-    public List<SearchFilterElement> getAuthorFilters() {
-        return authorFilters;
-    }
-
-    public void setAuthorFilters(List<SearchFilterElement> authorFilters) {
-        this.authorFilters = authorFilters;
+    public void setFilterMap(Map<String, List<SearchFilterElement>> filterMap) {
+        this.filterMap = filterMap;
     }
 }

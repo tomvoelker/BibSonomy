@@ -5,13 +5,17 @@
 	<select id="getBibTexCount" resultClass="int">
 		SELECT COUNT(DISTINCT(b.content_id))
 		FROM bibtex b
+		LEFT JOIN gold_standard gp USING (simhash1) <!-- dzo: delete line for slow generation fix -->
 		WHERE b.`group` = 0
+		AND gp.title IS NULL <!-- dzo: delete line for slow generation fix -->
 	</select>
 
 	<select id="getBookmarkCount" resultClass="int">
 		SELECT COUNT(DISTINCT(b.content_id))
 		FROM bookmark b
+		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1) <!-- dzo: delete line for slow generation fix -->
 		WHERE b.`group` = 0
+		AND gb.title IS NULL <!-- dzo: delete line for slow generation fix -->
 	</select>
 
 	<!-- get number of public goldstandard publication posts -->
@@ -48,7 +52,9 @@
 		(
 			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
 			FROM bibtex b
-			WHERE b.group = 0 <!-- only public posts -->
+			LEFT JOIN gold_standard gb USING (simhash1) <!-- to exclude publications that have already a community post --> <!-- dzo: delete line for slow generation fix -->
+			WHERE gb.title IS NULL <!-- dzo: delete line for slow generation fix -->
+			AND b.group = 0 <!-- only public posts -->
 			AND b.content_id &gt; #lastContentId#
 			ORDER BY b.content_id ASC
 			LIMIT #limit#
@@ -62,7 +68,9 @@
 		(
 			SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group
 			FROM bookmark b
-			WHERE b.group = 0 <!-- only public posts -->
+			LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1) <!-- to exclude publications that have already a community post --> <!-- dzo: delete line for slow generation fix -->
+			WHERE gb.title IS NULL <!-- dzo: delete line for slow generation fix -->
+			AND b.group = 0 <!-- only public posts -->
 			AND b.content_id &gt; #lastContentId#
 			ORDER BY b.content_id ASC
 			LIMIT #limit#
@@ -71,7 +79,7 @@
 		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
 	</select>
 
-	<!-- get list of all community publication posts -->
+	<!-- get list of all commuity publication posts -->
 	<select id="getGoldStandardPublicationForCommunityIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPostWithRelations">
 		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
 		FROM

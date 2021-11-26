@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.model.BibTex.ENTRYTYPE_FIELD_NAME;
+import static org.bibsonomy.model.BibTex.YEAR_FIELD_NAME;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,10 +36,6 @@ import org.springframework.validation.Errors;
  */
 public class GroupExplorePageController extends SingleResourceListController implements MinimalisticController<GroupExploreViewCommand>, ErrorAware {
 
-    private static final String ENTRYTYPE_FILTER = "entrytype";
-    private static final String YEAR_FILTER = "year";
-    private static final String AUTHOR_FILTER = "author";
-
     private LogicInterface logic;
     private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
@@ -56,8 +55,8 @@ public class GroupExplorePageController extends SingleResourceListController imp
         command.setGroup(this.group);
 
         // create filter list
-        command.setEntrytypeFilters(generateEntrytypeFilters());
-        command.setYearFilters(generateFilters(YEAR_FILTER, 200, true));
+        command.addFilters(ENTRYTYPE_FIELD_NAME, generateEntrytypeFilters());
+        command.addFilters(YEAR_FIELD_NAME, generateFilters(YEAR_FIELD_NAME, 200, true));
 
         return Views.GROUPEXPLOREPAGE;
     }
@@ -67,10 +66,10 @@ public class GroupExplorePageController extends SingleResourceListController imp
     }
 
     private List<SearchFilterElement> generateEntrytypeFilters() {
-        List<SearchFilterElement> filters = generateFilters(ENTRYTYPE_FILTER, 20,false);
+        List<SearchFilterElement> filters = generateFilters(ENTRYTYPE_FIELD_NAME, 20,false);
         for (SearchFilterElement element : filters) {
             element.setMessageKey(String.format("post.resource.entrytype.%s.title", element.getName()));
-            element.setTooltipKey(String.format("explore.filter.entrytype.%s.tooltip", element.getName()));
+            element.setTooltipKey(String.format("post.resource.entrytype.%s.description", element.getName()));
         }
 
         return filters;

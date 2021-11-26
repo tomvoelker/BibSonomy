@@ -115,8 +115,12 @@
                         <ul id="dropdownSelectionEntrytype" class="dropdown-menu">
                             <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
                                 <li data-entrytype="${entrytype}">
-                                    <a onclick="return switchSelection('Entrytype', '${entrytype}', this)"
-                                       class="dropdown-item"><fmt:message key="post.resource.entrytype.${entrytype}.title"/>
+                                    <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
+                                    <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
+                                        <c:set var="entrytypeMessage" value="${entrytype}" />
+                                    </c:if>
+                                    <a onclick="return switchSelection('Entrytype', '${entrytype}', this)" class="dropdown-item">
+                                        <c:out value="${entrytypeMessage}"/>
                                     </a>
                                 </li>
                             </c:forEach>

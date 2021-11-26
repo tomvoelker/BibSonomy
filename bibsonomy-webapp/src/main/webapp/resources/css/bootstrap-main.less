@@ -880,28 +880,29 @@ span.entrytype {
 	margin-top: 22px;
 }
 
+span.entrytype				{background-position:0 -542px;	  				height:49px; margin-left: 10px; margin-top: 14px;}
 span.article				{background-position: 0 0;      	width: 58px;height:53px; margin-left: 3px; 	margin-top: 14px;}
 span.book					{background-position:-4px -54px;  	width: 55px;height:46px; margin-left: 0; 	margin-top: 16px;}
 span.collection				{background-position:-8px -257px;				height:60px;					margin-top: 6px; }
 span.booklet				{background-position:-2px -101px; 				height:65px;					margin-top: 6px; }
 span.conference				{background-position:-2px -167px; 				height:44px;}
-span.electronic				{background-position: 0 -212px; 				height:45px; 					margin-top: 17px; }
+span.electronic				{background-position: 0 -212px; 				height:45px; 					margin-top: 17px;}
 span.inbook					{background-position:-2px -258px; 	width: 55px;height:60px; 					margin-top: 10px;}
-span.incollection			{background-position:-5px -319px; 	width: 56px;height:60px;  					margin-top: 8px;}
+span.incollection			{background-position:-5px -319px; 	width: 56px;height:60px;  					margin-top: 8px; }
 span.inproceedings			{background-position:-2px -380px; 				height:49px; margin-left: 9px; 	margin-top: 14px;}
 span.manual					{background-position:-2px -430px; 				height:46px;}
 span.mastersthesis			{background-position:0 -477px;    				height:64px;}
-span.misc					{background-position:0 -542px;	  				height:49px; margin-left: 10px; margin-top: 14px; }
+span.misc					{background-position:0 -542px;	  				height:49px; margin-left: 10px; margin-top: 14px;}
 span.patent					{background-position:0 -592px;		width:43px;	height:55px; margin-left: 6px; 	margin-top: 11px;}
 span.pdf					{background-position:0 -648px;		width:59px;	height:30px;}
 span.periodical				{background-position:0 -679px;		width:60px;	height:41px;}
 span.phdthesis				{background-position: -2px -721px;	width:59px;	height:64px; margin-left: 2px; 	margin-top: 7px; }
-span.preprint				{background-position: 0  -1160px;	width: 58px;height:53px; margin-left: 3px; margin-top: 14px;}
+span.preprint				{background-position: 0  -1160px;	width: 58px;height:53px; margin-left: 3px; margin-top: 14px; }
 span.preamble				{background-position:0 -786px;		width:50px;	height:53px;}
 span.presentation			{background-position:0 -840px;		width:55px;	height:46px;}
 span.proceedings			{background-position:0 -887px;		width:47px;	height:60px;}
 span.standard				{background-position:0 -948px;		width:42px;	height:54px; margin-left: 6px; 	margin-top: 13px;}
-span.techreport				{background-position:0 -1003px;		width:55px;	height:52px;				   	margin-top: 13px; }
+span.techreport				{background-position:0 -1003px;		width:55px;	height:52px;				   	margin-top: 13px;}
 span.unpublished			{background-position:0 -1056px;		width:36px;	height:49px; margin-left: 9px; 	margin-top: 13px;}
 span.web					{background-position:-2px -1106px;	width:61px;	height:37px; 					margin-top: 22px;}
 
@@ -1739,6 +1740,93 @@ ul.prefix-list {
   margin-bottom: 15px;
 }
 
+#home-news {
+  min-height: 400px;
+  max-height: 600px;
+  border-radius: 10px;
+
+  background-image: url("/resources_puma/image/cris_home_header.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+
+  .news-carousel-placeholder {
+	height: 500px;
+	overflow:hidden;
+  }
+
+  .carousel-caption {
+	background-color: rgba(0, 0, 0, 0.6);
+	left: 0;
+	right: 0;
+	padding-top: 0;
+
+	.carousel-content {
+	  padding: 0 10%;
+
+	  h3 {
+		margin: 10px 0;
+
+		a, a:hover, a:focus{
+		  font-weight: bold;
+		  color: @main-color-light;
+		}
+	  }
+
+	  p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		line-height: 1.5em;
+		height: 3em;
+	  }
+	}
+  }
+
+  .carousel-control {
+	background: none;
+
+	span {
+	  display: none;
+	}
+  }
+
+  .carousel-indicators {
+	li {
+	  width: 30px;
+	  height: 8px;
+	  margin: 0 3px;
+	  border-radius: 3px;
+	}
+
+	li.active {
+	  width: 30px;
+	  height: 8px;
+	  margin: 0 3px;
+	}
+  }
+}
+
+#home-publications {
+  .posts {
+	.media-heading {
+	  margin: 5px 0;
+	}
+
+	.post {
+	  padding: 0 5px 5px 10px;
+	  height: auto;
+	  border: none;
+	}
+
+	.post:nth-child(even) {
+	  background-color: #eee;
+	}
+
+	.pmeta {
+	  display: none;
+	}
+  }
+}
+
 div.no-items-found {
   text-align: center;
   font-weight: 600;
@@ -1756,6 +1844,110 @@ hr.option-result-divider {
   display: inline-block;
   vertical-align: middle;
   float: none;
+}
+
+.list-result {
+  .row {
+	padding-bottom: 10px;
+  }
+
+  .row:last-child {
+	padding-bottom: 0;
+  }
+
+  .row > div:nth-child(1) {
+	padding-left: 15px;
+	padding-right: 5px;
+  }
+
+  .row > div:nth-child(2) {
+	padding-left: 5px;
+	padding-right: 5px;
+  }
+
+  .row > div:nth-child(3) {
+	padding-right: 15px;
+	padding-left: 5px;
+  }
+
+}
+
+.list-result-footer {
+  margin-top: 30px;
+
+  .pagination {
+	margin: 0;
+  }
+
+  .list-result-info {
+	text-align: center;
+  }
+}
+
+@listResultEntityPadding: 10px;
+@listResultEntityImageSize: 70px;
+
+.list-result-entity {
+  position: relative;
+  height: 130px;
+  border: @background-color solid 1px;
+  border-radius: 5px;
+  padding: @listResultEntityPadding;
+
+  .media-heading {
+	margin: 0;
+  }
+
+  .media-description {
+	line-height: 1.5em;
+	height: 3em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+  }
+
+  .media-link-group {
+	position: absolute;
+	left: @listResultEntityPadding;
+	bottom: @listResultEntityPadding;
+
+	span {
+	  padding: 5px 10px;
+	  margin-right: 5px;
+	  background: @background-color;
+	  color: @link-color;
+	}
+  }
+
+  .media-button-group {
+	position: absolute;
+	right: @listResultEntityPadding;
+	bottom: @listResultEntityPadding;
+
+	a {
+	  margin-left: 5px;
+	}
+  }
+
+  .media-image {
+	height: @listResultEntityImageSize;
+	width: @listResultEntityImageSize;
+	background: @background-color;
+
+	overflow: hidden;
+	text-align: center;
+	font-size: @listResultEntityImageSize;
+  }
+
+  .media-object {
+	height: @listResultEntityImageSize;
+	width: @listResultEntityImageSize;
+  }
+
+  .media-circle {
+	border-radius: 50%;
+  }
+
 }
 
 

@@ -3,6 +3,7 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
           xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
 
     <jsp:directive.attribute name="header" fragment="true" required="false" />
@@ -28,10 +29,16 @@
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
                             <c:set var="label" value="${entry.name}" />
                              <c:if test="${not empty entry.messageKey}">
-                                <fmt:message var="label" key="${entry.messageKey}" />
+                                 <fmt:message var="label" key="${entry.messageKey}" />
+                                 <c:if test="${fn:startsWith(label, '???')}">
+                                     <c:set var="label" value="${entry.name}" />
+                                 </c:if>
                             </c:if>
                             <c:if test="${not empty entry.tooltipKey}">
                                 <fmt:message var="tooltip" key="${entry.tooltipKey}" />
+                                <c:if test="${fn:startsWith(tooltip, '???')}">
+                                    <c:set var="entrytypeMessage" value="" />
+                                </c:if>
                             </c:if>
                             <button type="button" class="btn btn-default btn-block filter-entry ${buttonClass}" title="${tooltip}" data-value="${entry.name}">
                                 <span class="filter-button-label"><c:out value="${label}" /></span>

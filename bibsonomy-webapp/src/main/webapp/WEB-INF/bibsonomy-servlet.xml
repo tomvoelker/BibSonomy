@@ -921,6 +921,7 @@
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
 		<property name="crisEnabled" value="${system.cris}" />
+		<property name="college" value="${system.cris.college}" />
 	</bean>
 	
 	<bean id="personPageController" class="org.bibsonomy.webapp.controller.person.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">

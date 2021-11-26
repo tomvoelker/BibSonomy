@@ -1024,4 +1024,20 @@ public class Functions {
 		}
 		return false;
 	}
+
+	/**
+	 * Filter a list of groups for just plain groups or organizations.
+	 *
+	 * @param groups list of groups to filter
+	 * @return filtered list of groups
+	 */
+	public static List<Group> filterGroups(List<Group> groups, boolean organization) {
+		List<Group> result = new ArrayList<>();
+		for (Group group : groups) {
+			if ((organization && group.isOrganization()) || (!organization && !group.isOrganization())) {
+				result.add(group);
+			}
+		}
+		return result;
+	}
 }

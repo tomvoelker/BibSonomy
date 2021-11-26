@@ -71,9 +71,6 @@ public class BibTex extends Resource {
 	/** the year field */
 	public static final String YEAR_FIELD_NAME = "year";
 
-	/** the author field */
-	public static final String AUTHOR_FIELD_NAME = "author";
-
 	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
@@ -873,9 +870,8 @@ public class BibTex extends Resource {
 	 */
 	public static final Function<String, FieldDescriptor<BibTex, ?>> METHOD_REFERENCE = (field) -> {
 		switch (field) {
-			case "entrytype": return new FieldDescriptor<>(ENTRYTYPE_FIELD_NAME, BibTex::getEntrytype);
-			case "year": return new FieldDescriptor<>(YEAR_FIELD_NAME, BibTex::getYear);
-			// case "author": return new FieldDescriptor<>(AUTHOR_FIELD_NAME, BibTex::getAuthor);
+			case ENTRYTYPE_FIELD_NAME: return new FieldDescriptor<>(ENTRYTYPE_FIELD_NAME, BibTex::getEntrytype);
+			case YEAR_FIELD_NAME: return new FieldDescriptor<>(YEAR_FIELD_NAME, BibTex::getYear);
 		}
 
 		return null;
