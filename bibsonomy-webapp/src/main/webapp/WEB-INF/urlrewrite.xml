@@ -609,6 +609,14 @@
 		<to last="true">/group</to>
 	</rule>
 
+	<!-- /explore/group/GROUP -->
+	<rule>
+		<name>/explore/group/GROUP</name>
+		<from>^/+explore/+group/+([^/]+)$</from>
+		<set type="parameter" name="requestedGroup">${unescapePath:$1}</set>
+		<to last="true">/explore/group</to>
+	</rule>
+
 	<!-- /settings/group/GROUP -->
 	<rule>
 		<name>/settings/group/GROUP</name>

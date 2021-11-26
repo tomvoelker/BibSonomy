@@ -30,12 +30,14 @@
 package org.bibsonomy.services.searcher;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
  * Interface for resource search operations
@@ -70,4 +72,11 @@ public interface ResourceSearch<R extends Resource> {
 	 * @return tags that are used for the posts matching the search query
 	 */
 	List<Tag> getTags(final User loggedinUser, final PostSearchQuery<?> postQuery);
+
+	/**
+	 * returns all values and counts for the specified field
+	 * @param fieldDescriptor#
+	 * @return
+	 */
+	<E> Set<E> getDistinctFieldCounts(final FieldDescriptor<? extends Resource, E> fieldDescriptor);
 }

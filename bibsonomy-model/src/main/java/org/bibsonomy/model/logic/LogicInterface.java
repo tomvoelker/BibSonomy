@@ -756,9 +756,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * returns the meta data the query requests
+	 * @param loggedInUser the logged in user
 	 * @param query
 	 * @param <R>
 	 * @return
 	 */
-	<R> R getMetaData(MetaDataQuery<R> query);
+	<R> R getMetaData(final User loggedInUser, final MetaDataQuery<R> query);
 }

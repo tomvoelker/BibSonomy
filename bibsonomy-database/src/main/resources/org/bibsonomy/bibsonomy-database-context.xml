@@ -514,15 +514,20 @@
 		<entry>
 			<key>
 				<bean class="java.lang.Class" factory-method="forName">
-					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery" />
+					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery" />
 				</bean>
 			</key>
-			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldValuesProvider">
+			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldProvider">
 				<constructor-arg>
 					<map>
 						<entry key-ref="projectClass">
 							<bean class="org.bibsonomy.database.managers.metadata.ProjectMetaDataAdapter">
 								<constructor-arg ref="projectSearch" />
+							</bean>
+						</entry>
+						<entry key-ref="publicationClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
+								<constructor-arg ref="publicationSearch" />
 							</bean>
 						</entry>
 					</map>

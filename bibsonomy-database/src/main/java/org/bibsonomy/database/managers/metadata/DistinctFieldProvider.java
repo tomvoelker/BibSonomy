@@ -33,7 +33,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.query.statistics.meta.MetaDataQuery;
 import org.bibsonomy.util.object.FieldDescriptor;
 
@@ -43,22 +44,24 @@ import org.bibsonomy.util.object.FieldDescriptor;
  * @param <E>
  * @author dzo
  */
-public class DistinctFieldValuesProvider<E> implements MetaDataProvider<Set<E>> {
+public class DistinctFieldProvider<E> implements MetaDataProvider<Set<E>> {
 
 	private Map<Class<?>, Function<FieldDescriptor<?, E>, Set<E>>> providers;
 
 	/**
 	 * @param providers the providers
 	 */
-	public DistinctFieldValuesProvider(final Map<Class<?>, Function<FieldDescriptor<?, E>, Set<E>>> providers) {
+	public DistinctFieldProvider(final Map<Class<?>, Function<FieldDescriptor<?, E>, Set<E>>> providers) {
 		this.providers = providers;
 	}
 
 	@Override
-	public Set<E> getMetaData(final MetaDataQuery<Set<E>> metaDataQuery) {
-		final DistinctFieldValuesQuery<?, E> query = (DistinctFieldValuesQuery<?, E>) metaDataQuery;
+	public Set<E> getMetaData(final User loggedInUser, final MetaDataQuery<Set<E>> metaDataQuery) {
+		final DistinctFieldQuery<?, E> query = (DistinctFieldQuery<?, E>) metaDataQuery;
 		final Class<?> clazzForMetaData = query.getClazz();
-		final FieldDescriptor<?, E> fieldDescriptor = query.getFieldDescriptor();
+		final MetaFieldDescriptor<?, E> fieldDescriptor = new MetaFieldDescriptor<>(query.getFieldDescriptor());
+		fieldDescriptor.setQuery(metaDataQuery);
+		fieldDescriptor.setLoggedInUser(loggedInUser);
 		return this.providers.get(clazzForMetaData).apply(fieldDescriptor);
 	}
 }

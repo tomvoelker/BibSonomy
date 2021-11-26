@@ -597,6 +597,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/explore/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupExplorePageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>search</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/reporting/projects">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="projectReportingPageController"/>
@@ -1108,6 +1119,17 @@
 
 	<bean id="organizationPageController" class="org.bibsonomy.webapp.controller.cris.OrganizationPageController" scope="request">
 		<property name="logic" ref="logic" />
+	</bean>
+
+	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.GroupExplorePageController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">

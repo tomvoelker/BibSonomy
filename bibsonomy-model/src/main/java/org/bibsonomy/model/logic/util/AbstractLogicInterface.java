@@ -1024,7 +1024,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(MetaDataQuery<R> query) {
+	public <R> R getMetaData(User loggedInUser, MetaDataQuery<R> query) {
 		this.doDefaultAction();
 		return null;
 	}

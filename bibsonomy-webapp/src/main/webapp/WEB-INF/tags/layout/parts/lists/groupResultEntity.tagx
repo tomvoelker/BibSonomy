@@ -41,7 +41,8 @@
 			<c:if test="${not empty group.homepage}">
 				<span class="badge"><a href="${fn:escapeXml(group.homepage)}">Homepage</a></span>
 			</c:if>
-			<span class="badge"><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></span>
+			<span class="badge"><a href="${relativeUrlGenerator.getCVUrlByGroup(group.name)}">CV</a></span>
+			<span class="badge"><a href="${relativeUrlGenerator.getExploreUrlByGroup(group.name)}">Explore</a></span>
 		</jsp:attribute>
 
 		<jsp:attribute name="buttons">

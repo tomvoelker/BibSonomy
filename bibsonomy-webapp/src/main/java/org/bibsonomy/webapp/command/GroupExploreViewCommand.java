@@ -29,65 +29,63 @@
  */
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.Group;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.extra.SearchFilterElement;
 
 /**
- * Bean for Group-Sites
- *
- * @author  Stefan Stuetzer
+ * @author kchoong
  */
-public class GroupResourceViewCommand extends TagResourceViewCommand {
+public class GroupExploreViewCommand extends SimpleResourceViewCommand {
 
-	/** the group whose resources are requested*/
-	private String requestedGroup = "";
-	
-	/** bean for group members */
-	private Group group;
+    // Requested group id
+    private String requestedGroup;
 
-	/** search query for explore page export and batch editing */
-	private String search;
-	
-	/**
-	 * @return requestedGroup name of the group whose resources are requested
-	 */
-	public String getRequestedGroup() {
-		return this.requestedGroup;
-	}
+    // Group
+    private Group group;
 
-	/**
-	 *  @param requestedGroup name of the group whose resources are requested
-	 */
-	public void setRequestedGroup(String requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
+    // Search string
+    private String search;
 
-	/** Get the group associated with this command.
-	 * 
-	 * @return The group associated with this command.
-	 */
-	public Group getGroup() {
-		return this.group;
-	}
+    // Search filter map with attribute field as key
+    private Map<String, List<SearchFilterElement>> filterMap = new HashMap<>();
 
-	/** Set the group associated with this command
-	 * @param group
-	 */
-	public void setGroup(Group group) {
-		this.group = group;
-	}
+    public void addFilters(String field, List<SearchFilterElement> filters) {
+        filterMap.put(field, filters);
+    }
 
-	/**
-	 * @return the search
-	 */
-	public String getSearch() {
-		return search;
-	}
+    public String getRequestedGroup() {
+        return requestedGroup;
+    }
 
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
+    public void setRequestedGroup(String requestedGroup) {
+        this.requestedGroup = requestedGroup;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public Map<String, List<SearchFilterElement>> getFilterMap() {
+        return filterMap;
+    }
+
+    public void setFilterMap(Map<String, List<SearchFilterElement>> filterMap) {
+        this.filterMap = filterMap;
+    }
 }
