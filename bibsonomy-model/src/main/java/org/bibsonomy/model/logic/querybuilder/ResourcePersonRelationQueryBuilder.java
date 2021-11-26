@@ -57,8 +57,6 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	private PersonResourceRelationOrder order;
 
 	private boolean onlyTheses;
-	private boolean excludeTheses;
-
 	private boolean groupByInterhash;
 
 
@@ -103,11 +101,6 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 		this.onlyTheses = onlyTheses;
 		return this;
 	}
-
-	public ResourcePersonRelationQueryBuilder excludeTheses(boolean excludeTheses) {
-		this.excludeTheses = excludeTheses;
-		return this;
-	}
 	
 	public ResourcePersonRelationQueryBuilder byRelationType(PersonResourceRelationType relationType) {
 		this.relationType = relationType;
@@ -135,7 +128,7 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	 */
 	public ResourcePersonRelationQuery build() {
 		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
-				relationType, interhash, authorIndex, personId, order, onlyTheses, excludeTheses, groupByInterhash);
+				relationType, interhash, authorIndex, personId, order, onlyTheses, groupByInterhash);
 	}
 
 	@Override

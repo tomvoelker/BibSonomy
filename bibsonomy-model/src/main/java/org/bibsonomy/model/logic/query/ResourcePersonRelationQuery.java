@@ -51,8 +51,6 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 	private PersonResourceRelationOrder order;
 
 	private boolean onlyTheses;
-	private boolean excludeTheses;
-
 	private boolean groupByInterhash;
 
 	public ResourcePersonRelationQuery(int start, int end, boolean withPersons, boolean withPosts, boolean withPersonsOfPosts,
@@ -62,7 +60,6 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 									 String personId,
 									 PersonResourceRelationOrder order,
 									 boolean onlyTheses,
-									 boolean excludeTheses,
 									 boolean groupByInterhash) {
 
 		super(start, end);
@@ -75,7 +72,6 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 		this.personId = personId;
 		this.order = order;
 		this.onlyTheses = onlyTheses;
-		this.excludeTheses = excludeTheses;
 		this.groupByInterhash = groupByInterhash;
 	}
 
@@ -113,10 +109,6 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 
 	public boolean isOnlyTheses() {
 		return onlyTheses;
-	}
-
-	public boolean isExcludeTheses() {
-		return excludeTheses;
 	}
 
 	public boolean isGroupByInterhash() {

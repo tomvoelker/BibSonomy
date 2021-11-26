@@ -639,7 +639,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 *
 	 * @param interhash a resource interhash.
 	 * @param authorIndex an author index.
-	 * @param role a list of relation types.
+	 * @param role a relation type.
 	 * @param session a database session.
 	 *
 	 * @return a list of relations.
@@ -716,20 +716,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsOnlyTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
 		return this.queryForList("getThesisRelationsForPerson",
-				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
-	}
-
-	/**
-	 * Get relations for the given person, that are only with an entrytype excluding thesis
-	 *
-	 * @param personId the person id
-	 * @param limit the result limit
-	 * @param offset the result offset
-	 * @param session the sesseion
-	 * @return list of relations
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsExcludeTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
-		return this.queryForList("getExcludeThesisRelationsForPerson",
 				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
 

@@ -278,7 +278,6 @@ public final class ESConstants {
 			/** field that contains all editors */
 			String ALL_EDITORS = "editor";
 			/** field that contains all person ids */
-			// TODO fix relations in index
 			String ALL_PERSONS = "person";
 
 			String AUTHORS = "authors";
