@@ -23,6 +23,7 @@
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
 	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 >
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -48,6 +49,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/quickcite.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
@@ -64,15 +66,22 @@
 			+-->
 		<jsp:attribute name="sidebar">
 
-			<sidebar:quickcite post="${post}" />
+			<!-- Quick cite -->
+			<sidebar:sidebarItem textKey="publications.citations.headline" faIcon="quote-right">
+				<jsp:attribute name="content">
+					<sidebar:quickcite post="${post}" />
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 
+			<!-- Search on... -->
+			<sidebar:sidebarItem textKey="resources.searchExternal.dropDownLabel" faIcon="search">
+				<jsp:attribute name="content">
+					<pub:externalSearchPublication loggedinUser="${command.context.loginUser}" publication="${publication}" buttonGroupClass="sidebar-links" />
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 
-
-
-
-
-
-			<sidebar:sidebarItem textKey="bibtex.details.meta">
+			<!-- Meta data... -->
+			<sidebar:sidebarItem textKey="bibtex.details.meta" faIcon="align-justify">
 				<jsp:attribute name="content">
 					<ul>
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
@@ -84,9 +93,9 @@
 			<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
 			<!-- edit tags -->
 			<c:if test="${isOwnPost}">
-				<sidebar:sidebarItem textKey="navi.editTags">
+				<sidebar:sidebarItem textKey="navi.editTags" faIcon="tags">
 					<jsp:attribute name="content">
-						<form action="/batchEdit?action=2" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
+						<form action="/batchEdit?action=2" method="POST" class="sidebar_collapse_content">
 							<div class="input-group">
 								<input class="form-control input-sm rename-tags" type="text" name="posts['${fn:escapeXml(publication.intraHash)}_${fn:escapeXml(post.user.name)}'].newTags" value="${fn:escapeXml(tagsString)}"/>
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
@@ -102,7 +111,7 @@
 							<input type="hidden" name="resourcetype" value="bibtex"/>
 							<input type="hidden" name="updateExistingPost" value="true"/>
 						</form>
-					</jsp:attribute>
+					</jsp:attribute>0px
 				</sidebar:sidebarItem>
 			</c:if>
 
@@ -110,7 +119,7 @@
 				| private note
 				+-->
 			<c:if test="${isOwnPost}">
-				<sidebar:sidebarItem textKey="post.resource.privnote">
+				<sidebar:sidebarItem textKey="post.resource.privnote" faIcon="pencil">
 					<jsp:attribute name="content">
 						<div id="privnote">
 							<form method="post" id="note" role="form">
@@ -133,15 +142,11 @@
 				</sidebar:sidebarItem>
 			</c:if>
 
-
-
 			<!--+
 			| discussion and rating
 			+-->
 			<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 			<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
-
-
 		</jsp:attribute>
 
 		<jsp:attribute name="content">

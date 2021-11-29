@@ -33,18 +33,18 @@ function openSelect2(element) {
 }
 
 function openModalWithBibTex() {
-    $("#sidebar-quick-cite-box-modal .modal-body").html($("#sidebar-quick-cite-box-bibtex").html());
+    $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea").html($("#sidebar-quick-cite-box-bibtex").html());
     $("#sidebar-quick-cite-box-modal").modal("show");
 }
 
 function openModalWithEndnote() {
-    $("#sidebar-quick-cite-box-modal .modal-body").html($("#sidebar-quick-cite-box-endnote").html());
+    $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea").html($("#sidebar-quick-cite-box-endnote").html());
     $("#sidebar-quick-cite-box-modal").modal("show");
 }
 
 function ajaxLoadLayout(url) {
 	url_parts = url.split("/");
-    container = $("#sidebar-quick-cite-box-modal .modal-body");
+    container = $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
     container.empty();
 
 	switch (url_parts[1]) {
@@ -56,13 +56,13 @@ function ajaxLoadLayout(url) {
 			if (url_parts[2] == "endnote") {
 				openModalWithEndnote();
 			} else {
-				container = $("#sidebar-quick-cite-box-modal .modal-body");
+				container = $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
                 container.empty();
 
                 $.ajax({
                     url: url,
                     success: function(data) {
-                        $("#sidebar-quick-cite-box-modal .modal-body").html(data);
+                        $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea").html(data);
                         $("#sidebar-quick-cite-box-modal").modal("show");
                     }
                 });
@@ -72,7 +72,7 @@ function ajaxLoadLayout(url) {
 			// load CSL via AJAX
 			csl_style = url_parts[2];
 			csl_url = "/csl/bibtex/" + url_parts[4];
-			container = $("#sidebar-quick-cite-box-modal .modal-body");
+			container = $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
 			container.empty();
 
 			$.ajax({
@@ -89,10 +89,16 @@ function ajaxLoadLayout(url) {
 }
 
 $(document).ready(function() {
+
+
+    // init clipboard for modal
+    initNewClipboard("#sidebar-quick-cite-box-modal-clipboard-button", "#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
+
 	// remove the dummy element and replace it by select2 combobox layout selection
-	$("#quick-cite-select-dummy").focus(function() {
+	$("#quick-cite-select-dummy").click(function() {
 		// show the loader
 		$(".cust-loader").show();
+		$(".select2-fake-placeholder").hide();
 		loadLayoutSelect($(this).data("formaturl"), this);
 	})
 })
