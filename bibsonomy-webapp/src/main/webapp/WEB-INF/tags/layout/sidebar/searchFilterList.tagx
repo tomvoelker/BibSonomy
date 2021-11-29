@@ -22,7 +22,7 @@
     </c:if>
 
     <div id="filter-list-${filterField}" class="filter-list  ${hidden}" data-field="${filterField}">
-        <sidebar:sidebarItem textKey="${headerMessageKey}" iconKey="${headerMessageIcon}">
+        <sidebar:sidebarItem textKey="${headerMessageKey}" faIcon="${headerMessageIcon}">
             <jsp:attribute name="content">
                 <div id="filter-entries-${filterField}" class="filter-entries">
                     <c:if test="${not empty filterEntries}">
