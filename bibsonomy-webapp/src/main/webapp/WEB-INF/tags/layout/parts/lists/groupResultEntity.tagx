@@ -14,6 +14,7 @@
 	<c:choose>
 		<c:when test="${not empty group.realname}">
 			<c:set var="groupName" value="${group.realname}"/>
+			<c:set var="groupDescription" value="${group.name}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="groupName" value="${group.name}"/>
@@ -31,7 +32,7 @@
 			columnSize="${columnSize}"
 			headingTitle="${groupName}"
 			headingUrl="${groupUrl}"
-			description="${group.description}"
+			subHeadingTitle="${groupDescription}"
 			iconUrl="${iconUrl}"
 			iconFallback="users"
 			iconCircle="${true}"

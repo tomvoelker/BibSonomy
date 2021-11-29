@@ -67,9 +67,9 @@ public class GroupsPageController extends SingleResourceListController implement
 		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
 
-		final boolean restrictToUser = present(command.isMemberOfOnly()) && command.isMemberOfOnly();
 		String userName = null;
-		if (restrictToUser && command.getContext().isUserLoggedIn()) {
+		if (command.isMemberOfOnly() && command.getContext().isUserLoggedIn()) {
+			// Restrict query to user's group/organization
 			userName = command.getContext().getLoginUser().getName();
 		}
 

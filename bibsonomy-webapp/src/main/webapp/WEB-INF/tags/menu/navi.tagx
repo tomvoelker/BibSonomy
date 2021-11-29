@@ -192,7 +192,9 @@
 					</li>
 				</c:when>
 				<c:otherwise>
-					<li><a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="navi.organizations"/></a></li>
+					<li class="${activeTab eq 'organizations' ? 'active' : ''}">
+						<a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="navi.organizations"/></a>
+					</li>
 				</c:otherwise>
 			</c:choose>
 		</c:if>
