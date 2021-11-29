@@ -63,6 +63,7 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							// group name
 							.startObject(GroupFields.NAME)
 								.field(TYPE_FIELD, KEYWORD_TYPE)
+								.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)
 							.endObject()
 							// real name
 							.startObject(GroupFields.REALNAME)

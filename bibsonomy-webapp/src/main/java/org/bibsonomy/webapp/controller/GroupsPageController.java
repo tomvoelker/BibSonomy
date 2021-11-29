@@ -57,22 +57,33 @@ public class GroupsPageController extends SingleResourceListController implement
 	public View workOn(final GroupsListCommand command) {
 		final String format = command.getFormat();
 		final ListCommand<Group> groupListCommand = command.getGroups();
+		groupListCommand.setEntriesPerPage(30);
+
 		/*
 		 * get requested groups
 		 */
 		final String search = command.getSearch();
 		final boolean searchPresent = present(search);
-		final GroupSortKey order = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
+		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
+
+		String userName = null;
+		if (command.isMemberOfOnly() && command.getContext().isUserLoggedIn()) {
+			// Restrict query to user's group/organization
+			userName = command.getContext().getLoginUser().getName();
+		}
+
 		final GroupQuery groupQuery = GroupQuery.builder()
-						.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
-						.pending(false)
-						.organization(command.getOrganizations())
-						.prefix(command.getPrefix())
-						.search(search)
-						.prefixMatch(true)
-						.order(order)
-						.sortOrder(sortOrder).build();
+				.search(search)
+				.prefixMatch(true)
+				.prefix(command.getPrefix())
+				.userName(userName)
+				.sortKey(sortKey)
+				.sortOrder(sortOrder)
+				.pending(false)
+				.organization(command.getOrganizations())
+				.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
+				.build();
 		groupListCommand.setList(this.logic.getGroups(groupQuery));
 
 		// html format - retrieve tags and return HTML view

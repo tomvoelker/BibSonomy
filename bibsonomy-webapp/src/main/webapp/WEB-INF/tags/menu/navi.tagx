@@ -16,12 +16,325 @@
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
 
-	<c:set var="showPopularNav" value="${properties['system.nav.popular']}" />
-	<c:set var="showProjectsNav" value="${properties['system.cris.project.links']}" />
-
 	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
+
+	<c:set var="exploreGroupId" value="${properties['explore.group.id']}" />
+	<c:set var="actualGroups" value="${mtl:filterGroups(loginUser.groups, false)}" />
+	<c:set var="organizations" value="${mtl:filterGroups(loginUser.groups, true)}" />
+
+	<!--+
+		| Navigation order
+		+-->
+	<c:choose>
+		<c:when test="${not crisSystem}">
+			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.order'],',')}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="navElementsOrder" value="${fn:split(properties['system.nav.order.cris'],',')}"/>
+		</c:otherwise>
+	</c:choose>
+
+
+	<!--+
+		| Map for navigation elements
+		+-->
+	<jsp:useBean id="navElements" class="java.util.HashMap"/>
+
+	<!--+
+		| Home
+		+-->
+	<c:set target="${navElements}" property="home">
+		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
+	</c:set>
+
+	<!--+
+		| myProjectName
+		+-->
+	<c:set target="${navElements}" property="user">
+		<c:if test="${not empty loginUserName}">
+			<li class="dropdown ${activeTab eq 'my' ? 'active' : ''}">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
+				<ul class="dropdown-menu">
+					<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
+					<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
+						<li><a href="${relativeUrlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
+						<li><a href="${relativeUrlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
+						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
+						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+						<li>
+							<fmt:message var="concepts" key="navi.concepts" />
+							<a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}" title="${concepts}">
+								<fmt:message key="navi.concepts" />
+							</a>
+						</li>
+					</c:if>
+					<li><a href="${urlGeneratorDiscussed.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+					<li><a href="/followers"><fmt:message key="navi.followedPosts"/></a></li>
+					<li><a href="/friends"><fmt:message key="navi.postsOfFriends"/></a></li>
+
+					<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
+						<li class="divider"><!-- KEEP ME --></li>
+						<li><a href="${relativeUrlGenerator.getCVUrlByUser(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+						<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
+						<c:set var="urlGeneratorBib" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'bib')}" />
+						<li><a href="${urlGeneratorBib.getUserUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+					</c:if>
+				</ul>
+			</li>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| post a post
+		+-->
+	<c:set target="${navElements}" property="posts">
+		<c:if test="${not empty loginUserName}">
+			<li class="dropdown ${activeTab eq 'post' ? 'active' : ''} ${systemReadOnly ? 'disabled' : ''}">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.postPost"/><b class="caret">&amp;nbsp;</b></a>
+				<ul class="dropdown-menu">
+					<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+					<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+					<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/bookmarks"><fmt:message key="navi.imports"/></a></li>
+					<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/publications"><fmt:message key="publication.import.title"/></a></li>
+				</ul>
+			</li>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| groups
+		+-->
+	<c:set target="${navElements}" property="groups">
+		<c:choose>
+			<c:when test="${not empty actualGroups}">
+				<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
+					<ul class="dropdown-menu">
+						<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
+						<li class="divider"><!-- keep me --></li>
+						<c:forEach var="grp" items="${actualGroups}">
+							<c:set var="role" value="${grp.getGroupMembershipForUser(loginUser).groupRole}" />
+							<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
+								<li class="dropdown-submenu">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
+									<ul class="dropdown-menu">
+										<li><a href="${relativeUrlGenerator.getUserUrlByUserName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
+										<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.activity"/></a></li>
+										<c:if test="${grp.sharedDocuments}">
+											<li>
+												<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
+											</li>
+										</c:if>
+										<li><a href="${relativeUrlGenerator.getExploreUrlByGroup(grp.name)}"><fmt:message key="group.explore.abbrev"/></a></li>
+										<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
+											<li class="divider"><!-- keep me --></li>
+											<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+											<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable" /></a></li>
+											<li><a href="${urlGeneratorDiscussed.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
+										</c:if>
+										<li class="divider"><!-- keep me --></li>
+										<c:set var="urlGeneratorSettings" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'settings')}" />
+										<li><a href="${urlGeneratorSettings.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.settings" /></a></li>
+									</ul>
+								</li>
+							</c:if>
+						</c:forEach>
+						<c:if test="${!loginUser.spammer}">
+							<li class="divider"><!-- keep me --></li>
+							<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+						</c:if>
+					</ul>
+				</li>
+			</c:when>
+			<c:otherwise>
+				<c:choose>
+					<c:when test="${not empty loginUserName}">
+						<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
+							<ul class="dropdown-menu">
+								<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
+								<c:if test="${!loginUser.spammer}">
+									<li class="divider"><!-- keep me --></li>
+									<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+								</c:if>
+							</ul>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
+					</c:otherwise>
+				</c:choose>
+			</c:otherwise>
+		</c:choose>
+	</c:set>
+
+	<!--+
+		| organizations
+		+-->
+	<c:set target="${navElements}" property="organizations">
+		<c:if test="${not showCRISNavBar}">
+			<c:choose>
+				<c:when test="${not empty organizations}">
+					<li class="dropdown ${activeTab eq 'organizations' ? 'active' : ''}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.organizations"/><b class="caret">&amp;nbsp;</b></a>
+						<ul class="dropdown-menu">
+							<li><a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="navi.organizations.all"/></a></li>
+							<li class="divider"><!-- keep me --></li>
+							<c:forEach var="organization" items="${organizations}">
+								<c:set var="role" value="${organization.getGroupMembershipForUser(loginUser).groupRole}" />
+								<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
+									<li><a href="${relativeUrlGenerator.getOrganizationUrlByName(organization.name)}">${organization.name}</a></li>
+								</c:if>
+							</c:forEach>
+						</ul>
+					</li>
+				</c:when>
+				<c:otherwise>
+					<li class="${activeTab eq 'organizations' ? 'active' : ''}">
+						<a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="navi.organizations"/></a>
+					</li>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| publications
+		+-->
+	<c:set target="${navElements}" property="publications">
+		<c:if test="${crisSystem}">
+			<li class="${activeTab eq 'publications' ? 'active' : ''}">
+				<a href="${relativeUrlGenerator.getPublicationsUrl()}">
+					<fmt:message key="publications"/>
+				</a>
+			</li>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| projects
+		+-->
+	<c:set target="${navElements}" property="projects">
+		<c:choose>
+			<c:when test="${not empty loginUser.claimedPerson.crisLinks}">
+				<li class="dropdown ${activeTab eq 'projects' ? 'active' : ''}">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.projects"/><b class="caret">&amp;nbsp;</b></a>
+					<ul class="dropdown-menu">
+						<li><a href="${relativeUrlGenerator.getProjectsUrl()}"><fmt:message key="navi.projects.all"/></a></li>
+						<li class="divider"><!-- keep me --></li>
+						<c:forEach var="crisLink" items="${loginUser.claimedPerson.crisLinks}">
+							<c:set var="pro" value="${crisLink.project}" />
+							<c:set var="role" value="${pro.getProjectMembershipForUser(loginUser).groupRole}" />
+							<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
+								<li class="dropdown-submenu">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${pro.title}"/></a>
+									<ul class="dropdown-menu">
+										<li><a href="${relativeUrlGenerator.getProjectUrlByProjectName(pro.title)}"><fmt:message key="navi.posts" /></a></li>
+										<li class="divider"><!-- keep me --></li>
+										<c:set var="urlGeneratorSettings" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'settings')}" />
+										<li><a href="${urlGeneratorSettings.getProjectUrlByProjectName(pro.title)}"><fmt:message key="navi.project.settings" /></a></li>
+									</ul>
+								</li>
+							</c:if>
+						</c:forEach>
+					</ul>
+				</li>
+			</c:when>
+			<c:otherwise>
+				<c:choose>
+					<c:when test="${not empty loginUserName}">
+						<li class="dropdown ${activeTab eq 'projects' ? 'active' : ''}">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.projects"/><b class="caret">&amp;nbsp;</b></a>
+							<ul class="dropdown-menu">
+								<li><a href="${relativeUrlGenerator.getProjectsUrl()}"><fmt:message key="navi.projects.all"/></a></li>
+								<c:if test="${userIsAdmin}">
+									<li class="divider"><!-- keep me --></li>
+									<li><a href="${relativeUrlGenerator.getProjectEditUrl()}"><fmt:message key="project.actions.create" /></a></li>
+								</c:if>
+							</ul>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="${activeTab eq 'projects' ? 'active' : ''}">
+							<a href="${relativeUrlGenerator.getProjectsUrl()}">
+								<fmt:message key="navi.projects"/>
+							</a>
+						</li>
+					</c:otherwise>
+				</c:choose>
+			</c:otherwise>
+		</c:choose>
+	</c:set>
+
+	<!--+
+		| persons
+		+-->
+	<c:set target="${navElements}" property="persons">
+		<c:if test="${showCRISNavBar}">
+			<li class="${activeTab eq 'person' ? 'active' : ''}">
+				<a href="${relativeUrlGenerator.getPersonsUrl()}">
+					<fmt:message key="persons"/>
+				</a>
+			</li>
+		</c:if>
+
+		<c:if test="${properties['genealogy.activated'] eq 'true' and not showCRISNavBar}">
+			<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| popular
+		+-->
+	<c:set target="${navElements}" property="popular">
+		<c:if test="${not showCRISNavBar}">
+			<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
+				<ul class="dropdown-menu">
+					<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
+					<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
+					<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
+					<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
+					<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
+				</ul>
+			</li>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| highlighted explore page
+		+-->
+	<c:set target="${navElements}" property="explore">
+		<c:if test="${not empty exploreGroupId}">
+			<li class="${activeTab eq 'explore' ? 'active' : ''}">
+				<a href="${relativeUrlGenerator.getExploreUrlByGroup(exploreGroupId)}">
+					<fmt:message key="explore.navi.title"/>
+				</a>
+			</li>
+		</c:if>
+	</c:set>
+
+	<!--+
+		| admin
+		+-->
+	<c:set target="${navElements}" property="admin">
+		<c:if test="${userIsAdmin}">
+			<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
+				<ul class="dropdown-menu">
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}">full text search</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
+				</ul>
+			</li>
+		</c:if>
+	</c:set>
 
 	<nav class="navbar navbar-bibsonomy" role="navigation" id="navigation">
 		<div class="container navi noborder">
@@ -61,232 +374,16 @@
 			<c:set var="urlGeneratorDiscussed" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'discussed')}" />
 			<div id="bs-navbar-collapse" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
-					<!--+ 
-				 		| myProjectName
-				 		+-->
-					<c:if test="${not empty loginUserName}">
-						<li class="dropdown ${activeTab eq 'my' ? 'active' : ''}">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
-							<ul class="dropdown-menu">
-								<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
-								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
-									<li><a href="${relativeUrlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
-									<li><a href="${relativeUrlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
-									<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
-									<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
-									<li> 
-										<fmt:message var="concepts" key="navi.concepts" />
-										<a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}" title="${concepts}">
-											<fmt:message key="navi.concepts" />
-										</a>
-									</li>
-								</c:if>
-								<li><a href="${urlGeneratorDiscussed.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
-								<li><a href="/followers"><fmt:message key="navi.followedPosts"/></a></li>
-								<li><a href="/friends"><fmt:message key="navi.postsOfFriends"/></a></li>
-								
-								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
-									<li class="divider"><!-- KEEP ME --></li>
-									<li><a href="/cv/user/${fn:escapeXml(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
-									<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
-									<c:set var="urlGeneratorBib" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'bib')}" />
-									<li><a href="${urlGeneratorBib.getUserUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
-								</c:if>
-							</ul>
-						</li>
-						<!--+
-							| post a post
-							+-->
-						<li class="dropdown ${activeTab eq 'post' ? 'active' : ''} ${systemReadOnly ? 'disabled' : ''}">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.postPost"/><b class="caret">&amp;nbsp;</b></a>
-							<ul class="dropdown-menu">
-								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
-								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
-								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/bookmarks"><fmt:message key="navi.imports"/></a></li>
-								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/publications"><fmt:message key="publication.import.title"/></a></li>
-							</ul>
-							
-						</li>
-					</c:if>
-					<!--+
-						| persons (cris system)
-						| only to reorder the menu and to rename the tab to persons
-						+-->
-					<c:if test="${showCRISNavBar}">
-						<li class="${activeTab eq 'person' ? 'active' : ''}">
-							<a href="${relativeUrlGenerator.getPersonsUrl()}">
-								<fmt:message key="persons"/>
-							</a>
-						</li>
-					</c:if>
-
-					<!--+
-						| groups
-						+-->
-					<c:choose>
-						<c:when test="${not showCRISNavBar}">
-							<c:choose>
-								<c:when test="${not empty loginUser.groups}">
-									<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
-										<ul class="dropdown-menu">
-											<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
-											<li class="divider"><!-- keep me --></li>
-											<c:forEach var="grp" items="${loginUser.groups}">
-												<c:set var="role" value="${grp.getGroupMembershipForUser(loginUser).groupRole}" />
-												<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
-													<li class="dropdown-submenu">
-														<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
-														<ul class="dropdown-menu">
-															<li><a href="${relativeUrlGenerator.getUserUrlByUserName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
-															<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.activity"/></a></li>
-															<li><c:if test="${grp.sharedDocuments}">
-															<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
-														</c:if>
-															</li>
-																<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
-																	<li class="divider"><!-- keep me --></li>
-																	<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
-																	<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable" /></a></li>
-																	<li><a href="${urlGeneratorDiscussed.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
-																</c:if>
-															<li class="divider"><!-- keep me --></li>
-															<c:set var="urlGeneratorSettings" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'settings')}" />
-															<li><a href="${urlGeneratorSettings.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.settings" /></a></li>
-														</ul>
-													</li>
-												</c:if>
-											</c:forEach>
-											<c:if test="${!loginUser.spammer}">
-												<li class="divider"><!-- keep me --></li>
-												<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
-											</c:if>
-										</ul>
-									</li>
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${not empty loginUserName}">
-											<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
-												<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
-												<ul class="dropdown-menu">
-													<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
-													<c:if test="${!loginUser.spammer}">
-														<li class="divider"><!-- keep me --></li>
-														<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
-													</c:if>
-												</ul>
-											</li>
-										</c:when>
-										<c:otherwise>
-											<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
-						</c:when>
-						<c:otherwise>
-							<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getOrganizationsUrl()}"><fmt:message key="person.show.organizations"/></a></li>
-						</c:otherwise>
-					</c:choose>
-
-					<!--+
-						| projects and publications
-						+-->
-					<c:if test="${crisSystem}">
-						<li class="${activeTab eq 'publications' ? 'active' : ''}">
-							<a href="${relativeUrlGenerator.getPublicationsUrl()}">
-								<fmt:message key="publications"/>
-							</a>
-						</li>
-						<c:if test="${showProjectsNav}">
-							<c:choose>
-								<c:when test="${not empty loginUser.claimedPerson.crisLinks}">
-									<li class="dropdown ${activeTab eq 'projects' ? 'active' : ''}">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.projects"/><b class="caret">&amp;nbsp;</b></a>
-										<ul class="dropdown-menu">
-											<li><a href="${relativeUrlGenerator.getProjectsUrl()}"><fmt:message key="navi.projects.all"/></a></li>
-											<li class="divider"><!-- keep me --></li>
-											<c:forEach var="crisLink" items="${loginUser.claimedPerson.crisLinks}">
-												<c:set var="pro" value="${crisLink.project}" />
-												<c:set var="role" value="${pro.getProjectMembershipForUser(loginUser).groupRole}" />
-												<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
-													<li class="dropdown-submenu">
-														<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${pro.title}"/></a>
-														<ul class="dropdown-menu">
-															<li><a href="${relativeUrlGenerator.getProjectUrlByProjectName(pro.title)}"><fmt:message key="navi.posts" /></a></li>
-															<li class="divider"><!-- keep me --></li>
-															<c:set var="urlGeneratorSettings" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'settings')}" />
-															<li><a href="${urlGeneratorSettings.getProjectUrlByProjectName(pro.title)}"><fmt:message key="navi.project.settings" /></a></li>
-														</ul>
-													</li>
-												</c:if>
-											</c:forEach>
-										</ul>
-									</li>
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${not empty loginUserName}">
-											<li class="dropdown ${activeTab eq 'projects' ? 'active' : ''}">
-												<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.projects"/><b class="caret">&amp;nbsp;</b></a>
-												<ul class="dropdown-menu">
-													<li><a href="${relativeUrlGenerator.getProjectsUrl()}"><fmt:message key="navi.projects.all"/></a></li>
-													<c:if test="${userIsAdmin}">
-														<li class="divider"><!-- keep me --></li>
-														<li><a href="${relativeUrlGenerator.getProjectEditUrl()}"><fmt:message key="project.actions.create" /></a></li>
-													</c:if>
-												</ul>
-											</li>
-										</c:when>
-										<c:otherwise>
-											<li class="${activeTab eq 'projects' ? 'active' : ''}">
-												<a href="${relativeUrlGenerator.getProjectsUrl()}">
-													<fmt:message key="navi.projects"/>
-												</a>
-											</li>
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
+					<!-- Home -->
+					<c:out value="${navElements.get('home')}" escapeXml="${false}" />
+					<!-- Iterate the selected elements in the navigation order -->
+					<c:forEach var="navElement" items="${navElementsOrder}" varStatus="status">
+						<c:if test="${navElements.containsKey(navElement)}">
+							<c:out value="${navElements.get(navElement)}" escapeXml="${false}" />
 						</c:if>
-					</c:if>
-
-					<!--+
-						| popular
-						+-->
-					<c:if test="${not showCRISNavBar and showPopularNav}">
-						<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
-							<ul class="dropdown-menu">
-								<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
-								<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
-								<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
-								<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
-								<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
-							</ul>
-						</li>
-					</c:if>
-					
-					<c:if test="${properties['genealogy.activated'] eq 'true' and not showCRISNavBar}">
-						<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
-					</c:if>
-					
-					<c:if test="${userIsAdmin}">
-						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
-							<ul class="dropdown-menu">
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}">full text search</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
-							</ul>
-						</li>
-					</c:if>
+					</c:forEach>
+					<!-- Admin menu -->
+					<c:out value="${navElements.get('admin')}" escapeXml="${false}" />
 				</ul>
 				<ul class="nav navbar-nav navbar-right hidden-xs">
 					<c:choose>

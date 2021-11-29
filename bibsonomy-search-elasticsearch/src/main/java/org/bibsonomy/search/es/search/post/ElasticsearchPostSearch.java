@@ -49,33 +49,43 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.model.util.SimHashUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
-import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.database.managers.metadata.MetaFieldDescriptor;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.converter.post.ResourceConverter;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
+import org.bibsonomy.services.searcher.PostSearchQuery;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.Sets;
+import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -89,6 +99,14 @@ import org.elasticsearch.search.sort.SortOrder;
 public class ElasticsearchPostSearch<R extends Resource> implements ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostSearch.class);
 
+
+	private static final String COUNT_AGGREGATION_ID = "count";
+	private static final Map<String, String> FIELD_MAPPER = new HashMap<>();
+	static {
+		FIELD_MAPPER.put(BibTex.ENTRYTYPE_FIELD_NAME, Fields.Publication.ENTRY_TYPE);
+		FIELD_MAPPER.put(BibTex.YEAR_FIELD_NAME, Fields.Publication.YEAR);
+	}
+
 	/** post model converter */
 	private ResourceConverter<R> resourceConverter;
 
@@ -98,7 +116,7 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	 */
 	protected SearchInfoLogic infoLogic;
 
-	private ElasticsearchManager<R, ?> manager;
+	protected ElasticsearchManager<R, ?> manager;
 
 	@Override
 	public ResultList<Post<R>> getPosts(final User loggedinUser, final PostSearchQuery<?> postQuery) {
@@ -230,6 +248,34 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		log.debug("Done calculating tag statistics");
 		// all done.
 		return tags;
+	}
+
+	@Override
+	public <E> Set<E> getDistinctFieldCounts(FieldDescriptor<? extends Resource, E> fieldDescriptor) {
+		// TODO FIXME (kch) better way to pass through postquery and logged in user
+		MetaFieldDescriptor<? extends  Resource, E> metaFieldDescriptor = (MetaFieldDescriptor<? extends Resource, E>) fieldDescriptor;
+		DistinctFieldQuery<? extends Resource, E> metaDataQuery = (DistinctFieldQuery<? extends Resource, E>) metaFieldDescriptor.getQuery();
+		final User loggedInUser = metaFieldDescriptor.getLoggedInUser();
+		final PostSearchQuery<? extends Resource> postQuery = metaDataQuery.getPostQuery();
+		final Set<String> allowedUsers = this.getUsersThatShareDocuments(loggedInUser.getName());
+		final QueryBuilder queryBuilder = this.buildQuery(loggedInUser, allowedUsers, postQuery);
+
+		final TermsAggregationBuilder distinctTermsAggregation = AggregationBuilders.terms(COUNT_AGGREGATION_ID);
+		distinctTermsAggregation.field(FIELD_MAPPER.get(fieldDescriptor.getFieldName()));
+		distinctTermsAggregation.size(metaDataQuery.getSize());
+
+		final Aggregations results = this.manager.aggregate(queryBuilder, distinctTermsAggregation);
+
+		final ParsedStringTerms aggregation = results.get(COUNT_AGGREGATION_ID);
+
+		Set<Pair<String, Long>> distinctCounts = new HashSet<>();
+		for (Terms.Bucket bucket : aggregation.getBuckets()) {
+			String key = bucket.getKey().toString();
+			long count = bucket.getDocCount();
+			distinctCounts.add(new Pair<>(key, count));
+		}
+
+		return (Set<E>) distinctCounts;
 	}
 
 	/**
@@ -398,15 +444,15 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 		if (!present(sortCriteria)) {
 			return sortParameters;
 		}
-		for (SortCriteria sortCrit : sortCriteria) {
-			SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
-			switch (sortCrit.getSortKey()) {
+		for (SortCriteria criteria : sortCriteria) {
+			SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(criteria.getSortOrder());
+			switch (criteria.getSortKey()) {
 				// only supported order type for bookmarks
 				case TITLE:
-					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.TITLE, sortOrder));
 					break;
 				case DATE:
-					sortParameters.add(new Pair<>(Fields.DATE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.DATE, sortOrder));
 					break;
 				default:
 					break;
@@ -416,7 +462,12 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 	}
 
 	private static QueryStringQueryBuilder buildStringQueryForSearchTerms(String searchTerms, final Set<String> fields) {
-		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms);
+		/**
+		 * before 4.0?
+		 * return QueryBuilders.queryStringQuery(searchTerms).defaultOperator(Operator.AND).useDisMax(false);
+		 */
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(searchTerms)
+				.defaultOperator(Operator.AND);
 		// set the fields where the string query should search for the string
 		fields.forEach(builder::field);
 		// set the type to phrase prefix match

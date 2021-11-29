@@ -77,26 +77,26 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final GroupQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final GroupQuery query) {
 		final SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final GroupSortKey order = query.getGroupOrder();
-		if (present(order)) {
-			switch (order) {
+		final GroupSortKey sortKey = query.getGroupSortKey();
+		if (present(sortKey)) {
+			switch (sortKey) {
 				case GROUP_NAME:
 					return Collections.singletonList(new Pair<>(GroupFields.NAME, sortOrder));
 				case GROUP_REALNAME:
 					// here we add the name as a second search order to handle groups without real names
 					return Arrays.asList(
-							new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder),
-							new Pair<>(GroupFields.NAME, sortOrder)
+							new Pair<>(GroupFields.NAME, sortOrder),
+							new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder)
 							);
 				case RANK:
-					return null; // default order is rank
+					return null; // default sort key is rank
 			}
-			throw new IllegalArgumentException("order '" + order + "' not supported");
+			throw new IllegalArgumentException("Sort key '" + sortKey + "' not supported");
 		}
 
-		return super.getSortOrder(query);
+		return super.getSortCriteria(query);
 	}
 
 	@Override

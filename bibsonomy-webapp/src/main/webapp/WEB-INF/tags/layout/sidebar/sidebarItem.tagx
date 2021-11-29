@@ -32,7 +32,7 @@
 			</c:otherwise>
 		</c:choose>
 	</c:set>
-	
+
 	<h4 class="sidebar">
 		<c:choose>
 			<c:when test="${not empty headingLink}">

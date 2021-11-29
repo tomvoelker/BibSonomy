@@ -177,7 +177,7 @@
 			<c:set var="showPublicationTab" value="${personHasPublications or isLoggedIn}" />
 			<!-- Thesis block -->
 			<div id="thesisBlock">
-				<ul class="nav nav-pills">
+				<ul class="nav nav-tabs">
 					<c:choose>
 						<c:when test="${useCRISView}" >
 							<c:if test="${showProjectLinks}">

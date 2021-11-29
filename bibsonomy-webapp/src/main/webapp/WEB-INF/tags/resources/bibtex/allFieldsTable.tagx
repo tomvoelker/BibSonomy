@@ -51,7 +51,7 @@
 			</dd>
 		</c:if>
 
-		<c:forEach var="field" items="${['chapter', 'edition', 'howpublished', 'institution', 'organization', 'journal', 'number', 'pages', 'publisher', 'school', 'series', 'volume', 'type']}">
+		<c:forEach var="field" items="${['year', 'month', 'day', 'chapter', 'edition', 'howpublished', 'institution', 'organization', 'journal', 'number', 'pages', 'publisher', 'school', 'series', 'volume', 'type', 'annote', 'crossref']}">
 			<c:set var="fieldValue" value="${publication[field]}"/>
 			<c:if test="${not empty fieldValue}">
 				<dt><fmt:message key="post.resource.${field}"/></dt>
@@ -169,16 +169,5 @@
 			<dd><c:out value="${mtl:cleanBibtex(publication.note)}" /></dd>
 		</c:if>
 	</dl>
-	
-<!-- 
-FIXME: the following fields are missing:
-
-private String annote;
-private String crossref;
-private String day;
-private String month;
-private String year;
-
--->
 
 </jsp:root>

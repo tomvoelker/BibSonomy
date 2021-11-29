@@ -54,7 +54,7 @@ public enum Views implements View {
 	HOMEPAGE("home"),
 
 	/**
-	 * the cris homepage (currently a static welcome page)
+	 * the cris homepage
 	 */
 	CRIS_HOMEPAGE("cris/home"),
 
@@ -125,6 +125,11 @@ public enum Views implements View {
 	 * group page showing all resources of a specified group
 	 */
 	GROUPPAGE("group"),
+
+	/**
+	 * group explore page
+	 */
+	GROUPEXPLOREPAGE("groupExplore"),
 
 	/**
 	 * group page showing all resources of a specified group
@@ -353,6 +358,11 @@ public enum Views implements View {
 	 * posts
 	 */
 	AJAX_POSTS("ajax/posts"),
+
+	/**
+	 * bibtex posts
+	 */
+	AJAX_BIBTEXS("ajax/bibtexs"),
 
 	/**
 	 * posts

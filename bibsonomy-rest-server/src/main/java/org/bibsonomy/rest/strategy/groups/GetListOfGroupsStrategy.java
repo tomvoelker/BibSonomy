@@ -47,7 +47,7 @@ import org.bibsonomy.util.UrlBuilder;
  */
 public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>> {
 	private final String internalId;
-	private final Boolean organization;
+	private final boolean organization;
 
 	/**
 	 * @param context
@@ -59,7 +59,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 		if (present(organizationFilter)) {
 			this.organization = Boolean.parseBoolean(organizationFilter);
 		} else {
-			this.organization = null; // no filter set groups can be also organizations
+			this.organization = false; // no filter set groups can be also organizations
 		}
 	}
 

@@ -43,7 +43,10 @@ public class GroupsListCommand extends EntitySearchAndFilterCommand {
 	private Group requestedGroup;
 
 	/** filter for only showing organizations */
-	private Boolean organizations;
+	private boolean organizations;
+
+	/** filter for only retrieving groups/organizations the user is a member of */
+	private boolean memberOfOnly;
 
 	/**
 	 * @return the groups
@@ -69,14 +72,28 @@ public class GroupsListCommand extends EntitySearchAndFilterCommand {
 	/**
 	 * @return the organizations
 	 */
-	public Boolean getOrganizations() {
+	public boolean getOrganizations() {
 		return organizations;
 	}
 
 	/**
 	 * @param organizations the organizations to set
 	 */
-	public void setOrganizations(Boolean organizations) {
+	public void setOrganizations(boolean organizations) {
 		this.organizations = organizations;
+	}
+
+	/**
+	 * @return the member only filter flag
+	 */
+	public boolean isMemberOfOnly() {
+		return memberOfOnly;
+	}
+
+	/**
+	 * @param memberOfOnly the member only flag to set
+	 */
+	public void setMemberOfOnly(boolean memberOfOnly) {
+		this.memberOfOnly = memberOfOnly;
 	}
 }

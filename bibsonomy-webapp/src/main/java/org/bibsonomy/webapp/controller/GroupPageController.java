@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -106,13 +105,13 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, command.getSearch(), command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) {
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, command.getSearch(), null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			}
 		}
 
