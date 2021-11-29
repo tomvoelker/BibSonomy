@@ -295,7 +295,7 @@
 
 				<entry key="/ajax/person/projects">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="personPublicationAjaxController" />
+						<property name="controllerBeanName" value="personProjectsAjaxController" />
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>

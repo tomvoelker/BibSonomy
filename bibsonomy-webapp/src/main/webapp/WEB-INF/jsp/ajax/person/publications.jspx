@@ -9,18 +9,30 @@
 
 	<c:choose>
 		<c:when test="${fn:length(command.otherPubs) gt 0}">
-			<person:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}"/>
+			<c:choose>
+				<c:when test="${empty command.personPostsLayout or command.personPostsLayout == 'DEFAULT'}">
+					<person:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}"/>
+				</c:when>
+				<c:otherwise>
+					<person:renderedPostList command="${command}" publications="${command.myownPosts}" hideHeadline="${true}" buttons="${true}" />
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:when test="${fn:length(command.myownPosts) gt 0}">
+			<c:choose>
+				<c:when test="${empty command.personPostsLayout or command.personPostsLayout == 'DEFAULT'}">
+					<person:publications command="${command}" publications="${command.myownPosts}" isSimilarAuthors="${false}"/>
+				</c:when>
+				<c:otherwise>
+					<person:renderedPostList command="${command}" publications="${command.myownPosts}" hideHeadline="${true}" buttons="${true}" />
+				</c:otherwise>
+			</c:choose>
 		</c:when>
 		<c:when test="${fn:length(command.similarAuthorPubs) gt 0}">
 			<person:publications command="${command}" relations="${command.similarAuthorPubs}" isSimilarAuthors="${true}"/>
-		</c:when>
-		<c:when test="${fn:length(command.myownPosts) gt 0}">
-			<person:publications command="${command}" publications="${command.myownPosts}" isSimilarAuthors="${true}"/>
 		</c:when>
 		<c:otherwise>
 
 		</c:otherwise>
 	</c:choose>
-
-
 </jsp:root>

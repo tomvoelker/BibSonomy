@@ -32,13 +32,22 @@ package org.bibsonomy.webapp.controller.ajax.person;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.webapp.controller.person.PersonPageController.NO_THESIS_SEARCH;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.layout.citeproc.CSLUtils;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
+import org.bibsonomy.layout.citeproc.renderer.LanguageFile;
 import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -64,6 +73,8 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class PersonPublicationsAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPageCommand> {
 
+    private static final Log log = LogFactory.getLog(PersonPublicationsAjaxController.class);
+
     private AdhocRenderer renderer;
     private CSLFilesManager cslFilesManager;
     private URLGenerator urlGenerator;
@@ -73,6 +84,13 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
     public View workOn(AjaxPersonPageCommand command) {
         final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
         final User user = this.logic.getUserDetails(person.getUser());
+
+        // user settings, or default if no user linked
+        final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+        final String personPostsLayout = user.getSettings().getPersonPostsLayout();
+        final String locale = user.getSettings().getDefaultLanguage();
+        command.setPersonPostsLayout(personPostsLayout);
+        command.setPersonPostsStyle(personPostsStyle);
 
         // start + end
         final int postsPerPage = command.getPageSize();
@@ -89,14 +107,23 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
             command.setSearch(NO_THESIS_SEARCH);
         }
 
-        if (present(user) && user.getSettings().getPersonPostsStyle() == PersonPostsStyle.MYOWN) {
-            return workOnMyOwnPosts(command, user);
+        if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
+            this.workOnMyOwnPosts(command, user);
         } else {
-            return workOnPublications(command, person);
+            this.workOnPublications(command, person);
         }
+
+        // rendered posts
+        // IMPORTANT: Experimental feature, TODO rework whole feature
+
+        if (personPostsLayout.startsWith("CUSTOM/")) {
+            this.renderPosts(command, personPostsStyle, personPostsLayout, locale);
+        }
+
+        return Views.AJAX_PERSON_PUBLICATIONS;
     }
 
-    public View workOnPublications(AjaxPersonPageCommand command, Person person) {
+    public void workOnPublications(AjaxPersonPageCommand command, Person person) {
         final PostQueryBuilder queryBuilder = new PostQueryBuilder()
                 .setGrouping(GroupingEntity.PERSON)
                 .setGroupingName(person.getPersonId())
@@ -107,11 +134,9 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
         final List<Post<GoldStandardPublication>> publications = this.logic.getPosts(queryBuilder.createPostQuery(GoldStandardPublication.class));
         final List<ResourcePersonRelation> relations = PersonUtils.convertToRelations(publications, person);
         command.setOtherPubs(relations);
-
-        return Views.AJAX_PERSON_PUBLICATIONS;
     }
 
-    public View workOnMyOwnPosts(AjaxPersonPageCommand command, User user) {
+    public void workOnMyOwnPosts(AjaxPersonPageCommand command, User user) {
         // Get 'myown' posts of the user
         final PostQueryBuilder queryBuilder = new PostQueryBuilder()
                 .setTags(Collections.singletonList("myown"))
@@ -123,8 +148,79 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
 
         final List<Post<BibTex>> posts = logic.getPosts(queryBuilder.createPostQuery(BibTex.class));
         command.setMyownPosts(posts);
+    }
 
-        return Views.AJAX_PERSON_PUBLICATIONS;
+    public void renderPosts(AjaxPersonPageCommand command, PersonPostsStyle personPostsStyle, String layout, String locale) {
+        // the prefix is set in settings->person
+        String prefix = "CUSTOM/";
+        CSLStyle cslStyle;
+
+        if (layout.startsWith(prefix)) {
+            cslStyle = cslFilesManager.getStyleByName(layout.substring(prefix.length()));
+        } else {
+            cslStyle = cslFilesManager.getStyleByName(layout);
+        }
+
+        if (!present(cslStyle)) {
+            // style not found? reset to default rendering
+            command.setPersonPostsLayout("DEFAULT");
+        } else {
+            // convert posts
+            List<Post<? extends BibTex>> postsToConvert = new ArrayList<>();
+            if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
+                postsToConvert.addAll(command.getMyownPosts());
+            } else {
+                postsToConvert.addAll(command.getOtherPubs().stream()
+                        .map(ResourcePersonRelation::getPost)
+                        .collect(Collectors.toList()));
+            }
+
+            LanguageFile localeProvider = new LanguageFile();
+            switch (locale) {
+                case "de":
+                    localeProvider.setLocale(cslFilesManager.getLocaleFile("de-DE"));
+                    break;
+                case "en":
+                default:
+                    localeProvider.setLocale(cslFilesManager.getLocaleFile("en-US"));
+                    break;
+            }
+
+            Map<String, String> renderedPosts;
+            try {
+                renderedPosts = AdhocRenderer.renderPosts(postsToConvert , cslStyle.getContent(), localeProvider, true);
+            } catch (Exception e) {
+                log.error("error while rendering posts", e);
+                renderedPosts = new HashMap<>();
+            }
+
+            command.setRenderedPosts(renderedPosts);
+
+            if (personPostsStyle.equals(PersonPostsStyle.MYOWN)) {
+                Map<String, String> myOwnPostsRendered = new HashMap<>();
+                for (Post<BibTex> post : command.getMyownPosts()) {
+                    String renderedPost = renderedPosts.get(post.getResource().getIntraHash());
+
+                    // CSL replacements
+                    renderedPost = CSLUtils.replacePlaceholdersFromCSLRendering(renderedPost, post, urlGenerator);
+
+                    myOwnPostsRendered.put(post.getResource().getIntraHash(), renderedPost);
+                }
+                command.setMyownPostsRendered(myOwnPostsRendered);
+            } else {
+                for (ResourcePersonRelation resourcePersonRelation: command.getOtherPubs()) {
+                    String renderedPost = renderedPosts.get(resourcePersonRelation.getPost().getResource().getIntraHash());
+
+                    // CSL replacements
+                    renderedPost = CSLUtils.replacePlaceholdersFromCSLRendering(renderedPost, resourcePersonRelation.getPost(), urlGenerator);
+
+                    resourcePersonRelation.setRenderedPost(renderedPost);
+                }
+            }
+
+        }
+
+
     }
 
     @Override
