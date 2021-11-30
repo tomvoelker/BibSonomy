@@ -235,6 +235,12 @@
 	</function>
 
 	<function>
+		<name>isUrl</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String isUrl(java.lang.String)</function-signature>
+	</function>
+
+	<function>
 		<name>setParam</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String setParam(java.lang.String, java.lang.String, java.lang.String)</function-signature>

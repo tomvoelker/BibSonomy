@@ -332,6 +332,17 @@ public class Functions {
 	}
 
 	/**
+	 * Wrapper for org.bibsonomy.util.UrlUtils.isUrl
+	 *
+	 * @see org.bibsonomy.util.UrlUtils
+	 * @param url
+	 * @return true, if valid url
+	 */
+	public static boolean isUrl(final String url) {
+		return UrlUtils.isUrl(url);
+	}
+
+	/**
 	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
 	 * 
 	 * @param url
