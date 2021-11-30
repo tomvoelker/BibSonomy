@@ -106,7 +106,7 @@ function showManualForm(titleText) {
 	$('#post\\.resource\\.title').focus().val(titleText);
 }
 
-var allowedTypes = [];
+var removedTypes = [];
 var extraTypes = [];
 
 /**
@@ -117,9 +117,9 @@ function adjustEntrytypes() {
 	var entrytypeSelect = $('#post\\.resource\\.entrytype');
 
 	// remove entrytypes, that are not allowed, if set
-	if (Array.isArray(allowedTypes) && allowedTypes.length) {
+	if (Array.isArray(removedTypes) && removedTypes.length) {
 		$(entrytypeSelect).children().each(function () {
-			if (!allowedTypes.includes(this.value)) {
+			if (!removedTypes.includes(this.value)) {
 				this.remove();
 			}
 		});
