@@ -90,7 +90,7 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 		final String academicDegree = personMergeTarget.getAcademicDegree();
 		if (present(academicDegree)) {
 			personToMerge.setAcademicDegree(academicDegree);
-			this.getLogic().updatePerson(personToMerge, PersonUpdateOperation.UPDATE_ACADEMIC_DEGREE);
+			this.getLogic().updatePerson(personToMerge, PersonUpdateOperation.UPDATE_DETAILS);
 		}
 		this.getLogic().updatePerson(personToMerge, PersonUpdateOperation.UPDATE_NAMES);
 		final PersonMatch personMatch = this.getLogic().getPersonMatches(personMergeTargetId).stream().

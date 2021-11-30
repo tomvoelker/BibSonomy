@@ -843,14 +843,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createPersonName(PersonName withPersonId) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(org.bibsonomy.model.enums.PersonIdType, java.lang.String)
 	 */
 	@Override
@@ -877,26 +869,10 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
-	 */
-	@Override
-	public void removePersonName(Integer personNameId) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
 	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
-	 */
-	@Override
-	public void unlinkUser(String username) {
 		throwReadOnlyException();
 	}
 

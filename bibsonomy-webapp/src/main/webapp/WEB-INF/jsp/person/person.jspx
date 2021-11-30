@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:modals="urn:jsptagdir:/WEB-INF/tags/person/modals"
+		  xmlns:clear="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+		  xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+>
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
+
+	<c:set var="isLoggedIn" value="${not empty command.context.loginUser.name}"/>
+
+	<c:set var="isAdmin" value="${command.context.loginUser.role eq 'ADMIN'}"/>
+	<c:set var="hasClaimedPerson" value="${not empty command.person.user and isLoggedIn and command.person.user eq command.context.loginUser.name and not command.context.loginUser.spammer}"/>
+	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}"/>
+
+	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}"/>
+
+	<c:set var="personId" value="${command.person.personId}"/>
+	<c:set var="personName" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}"/>
+	<c:choose>
+		<c:when test="${not empty command.person.academicDegree}">
+			<c:set var="personNameWithDegree" value="${command.person.academicDegree} ${personName}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="personNameWithDegree" value="${personName}"/>
+		</c:otherwise>
+	</c:choose>
+
+	<layout:paneLayout pageTitle="${personName}"
+					   headerLogoClass="publications"
+					   command="${command}"
+					   requPath="${requPath}"
+					   noSidebar="${true}"
+					   showPageOptions="${true}">
+
+		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src='/resources/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+			<script type='text/javascript' src='/resources/jquery/plugins/infinite-scroll-pagination/js/scrollpagination.js'><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='/resources/jquery/plugins/infinite-scroll-pagination/css/scrollpagination.css'/>
+
+			<!-- TODO (kch): combine more -->
+			<script type='text/javascript' src='/resources/javascript/person/theses.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
+            <script type='text/javascript' src='/resources/javascript/person/relations.js'><!-- keep me --></script>
+
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
+
+			<script type='text/javascript' src='/resources/javascript/explorePage.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/editPerson.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/mergePerson.js'><!-- keep me --></script>
+		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+			<!-- nothing to show -->
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:set var="groupsMain" value="${relativeUrlGenerator.getPersonsUrl()}"/>
+					<nav:crumb nameKey="navi.person" href="${groupsMain}" active="${active}"/>
+                    <c:set var="degTitle">
+                        <c:out value="${personNameWithDegree}"/>
+                    </c:set>
+					<nav:crumb name="${degTitle}" leadingIcon="fa-user" active="${active}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+			<!-- Error alerts -->
+			<errors:global/>
+			<div id="ajaxErrorAlerts"><!-- keep me for AJAX error --></div>
+
+			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
+				<div class="col-md-12">
+					<perdetails:profile command="${command}" title="${personNameWithDegree}" personName="${personName}">
+						<jsp:attribute name="icons">
+							<c:if test="${not useCRISView and not empty command.person.user}">
+								<div class="person-icons">
+									<fmt:message var="claimedHint" key="person.sidebar.linkedUserClaimedText"/>
+									<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"
+									   data-toggle="popover" data-placement="top" data-trigger="hover" data-content="${claimedHint}">
+										<fontawesome:icon icon="link" fixedWidth="${true}"/>
+									</a>
+								</div>
+							</c:if>
+						</jsp:attribute>
+						<jsp:attribute name="buttons">
+							<perdetails:buttons command="${command}" useCRISView="${useCRISView}"
+												hasClaimedPerson="${hasClaimedPerson}" isAdmin="${isAdmin}"/>
+						</jsp:attribute>
+					</perdetails:profile>
+				</div>
+			</div>
+
+			<div id="personContent">
+				<c:choose>
+					<c:when test="${not useCRISView}">
+						<perdetails:show command="${command}"/>
+					</c:when>
+					<c:otherwise>
+						<perdetails:showCRIS command="${command}"/>
+					</c:otherwise>
+				</c:choose>
+
+				<div class="row person-content person-tab-content" data-content="publications">
+					<div class="col-md-9">
+						<div class="row">
+							<div class="col-md-12">
+								<div style="clear: both;">
+        							<h3 class="list-headline">
+										<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+											<div class="btn-group">
+												<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
+												<ul id="sorting-dropdown-menu" class="dropdown-menu">
+													<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
+												</ul>
+											</div>
+										</div>
+									</h3>
+								</div>
+							</div>
+						</div>
+						<div id="personPublicationsContainer"><!-- keep me --></div>
+						<parts:spinner id="publications"/>
+					</div>
+					<div class="col-md-3 sidebar">
+						<c:if test="${not empty command.entrytypeFilters}">
+							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
+													  headerMessageKey="explore.filter.entrytype.header"
+													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
+						</c:if>
+					</div>
+				</div>
+			</div>
+		</jsp:attribute>
+	</layout:paneLayout>
+</jsp:root>

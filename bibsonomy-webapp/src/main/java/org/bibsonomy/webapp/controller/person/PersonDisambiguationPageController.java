@@ -27,7 +27,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -60,6 +60,7 @@ import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
+import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -159,7 +160,11 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final int requestedIndex = command.getRequestedIndex().intValue();
 
 		final BibTex publication = post.getResource();
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(new ResourcePersonRelationQueryBuilder().byInterhash(publication.getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).build());
+		final ResourcePersonRelationQueryBuilder relationsQuery = new ResourcePersonRelationQueryBuilder()
+				.byInterhash(publication.getInterHash())
+				.byRelationType(requestedRole)
+				.byAuthorIndex(requestedIndex);
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(relationsQuery.build());
 
 		/*
 		 * redirect to the person page of the author/editor

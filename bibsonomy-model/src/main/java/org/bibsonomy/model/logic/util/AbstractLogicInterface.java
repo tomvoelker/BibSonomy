@@ -160,22 +160,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
-	 */
-	@Override
-	public void removePersonName(Integer personNameId) {
-		this.doDefaultAction();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createPersonName(PersonName withPersonId) {
-		this.doDefaultAction();
-	}
-
 	@Override
 	public List<Person> getPersons(PersonQuery query) {
 		this.doDefaultAction();
@@ -915,14 +899,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	public int deleteInboxMessages(List<Post<? extends Resource>> posts, boolean clearInbox) {
 		this.doDefaultAction();
 		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
-	 */
-	@Override
-	public void unlinkUser(String username) {
-		this.doDefaultAction();
 	}
 
 	/* (non-Javadoc)

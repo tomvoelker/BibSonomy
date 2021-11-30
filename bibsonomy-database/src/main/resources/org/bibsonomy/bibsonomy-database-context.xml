@@ -298,6 +298,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPersonsByInterhash">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsOnlyTheses">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
@@ -523,6 +526,11 @@
 						<entry key-ref="projectClass">
 							<bean class="org.bibsonomy.database.managers.metadata.ProjectMetaDataAdapter">
 								<constructor-arg ref="projectSearch" />
+							</bean>
+						</entry>
+						<entry key-ref="goldStandardPublicationClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
+								<constructor-arg ref="goldStandardPublicationSearch" />
 							</bean>
 						</entry>
 						<entry key-ref="publicationClass">

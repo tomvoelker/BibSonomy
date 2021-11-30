@@ -779,6 +779,48 @@
 						</property>
 					</bean>
 				</entry>
+
+				<!-- edit person -->
+				<entry key="/editPerson">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="editPersonController" />
+						<property name="allowedFields">
+							<list>
+								<value>personId</value>
+								<value>claimedPerson</value>
+
+								<value>editAction</value>
+								<value>updateOperation</value>
+								<value>responseString</value>
+
+								<!-- name fields -->
+								<value>personName.firstName</value>
+								<value>personName.lastName</value>
+
+								<!-- person details fields -->
+								<value>person.academicDegree</value>
+								<value>person.college</value>
+								<value>person.email</value>
+								<value>person.homepage</value>
+								<value>person.orcid</value>
+								<value>person.researcherid</value>
+								<value>person.gender</value>
+
+								<value>selectedName</value>
+								<value>formMatchId</value>
+								<value>formPersonRoles</value>
+								<value>formPersonRole</value>
+								<value>formInterHash</value>
+								<value>formIntraHash</value>
+								<value>formResourceHash</value>
+
+								<value>formResourcePersonRelationId</value>
+								<value>formPersonIndex</value>
+								<value>resourcePersonRelation.personIndex</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -1441,4 +1483,27 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
 	</bean>
+
+	<bean id="editPersonDetailsController" class="org.bibsonomy.webapp.controller.person.EditPersonDetailsController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="editRelationController" class="org.bibsonomy.webapp.controller.person.EditRelationController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator"/>
+		<property name="crisCollege" value="${system.cris.college}"/>
+	</bean>
+
+	<bean id="mergePersonController" class="org.bibsonomy.webapp.controller.person.MergePersonController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="editPersonController" class="org.bibsonomy.webapp.controller.person.EditPersonController" scope="request">
+		<property name="detailsController" ref="editPersonDetailsController"/>
+		<property name="relationController" ref="editRelationController"/>
+		<property name="mergeController" ref="mergePersonController"/>
+	</bean>
+
 </beans>

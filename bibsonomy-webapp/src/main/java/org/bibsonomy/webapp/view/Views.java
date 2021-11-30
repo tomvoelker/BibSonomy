@@ -67,7 +67,7 @@ public enum Views implements View {
 	PERSON_INTRO("persons"),
 
 	/** the details page of a person */
-	PERSON_SHOW("person/show"),
+	PERSON_SHOW("person/person"),
 
 	/** the person disambiguation page */
 	DISAMBIGUATION("disambiguation"),
@@ -365,9 +365,9 @@ public enum Views implements View {
 	AJAX_BIBTEXS("ajax/bibtexs"),
 
 	/**
-	 * posts
+	 * person publications
 	 */
-	AJAX_PERSON_PUBLICATIONS("ajax/personPublications"),
+	AJAX_PERSON_PUBLICATIONS("ajax/person/publications"),
 
 	/**
 	 * spammer predictions

@@ -330,6 +330,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 		this.updatePersonAdditionalKeys(person, session);
 	}
 
+	@ Deprecated
 	private JobResult updatePersonField(final Person person, final String fieldName, final DBSession session) {
 		session.beginTransaction();
 		try {
@@ -685,8 +686,7 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 *
 	 * @return a list of all resources.
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, Integer limit,
-																																					Integer offset, final DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(final String personId, Integer limit, Integer offset, final DBSession session) {
 		return this.queryForList("getComunityBibTexRelationsForPerson",
 						new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
 	}
@@ -705,6 +705,19 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 						buildBibTexParam(personId), Integer.class, session);
 	}
 
+	/**
+	 * Get relations for the given person, that are only with an entrytype including thesis
+	 *
+	 * @param personId the person id
+	 * @param limit the result limit
+	 * @param offset the result offset
+	 * @param session the sesseion
+	 * @return list of relations
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelationsOnlyTheses(final String personId, final Integer limit, final Integer offset, final DBSession session) {
+		return this.queryForList("getThesisRelationsForPerson",
+				new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
+	}
 
 	private BibTexParam buildBibTexParam(String personId) {
 		final BibTexParam param = new BibTexParam();
@@ -728,6 +741,15 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
 		return this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
+	}
+
+	public void loadAllRelationsInPosts(final List<ResourcePersonRelation> relations, final DBSession session) {
+		// FIXME use a join to retrieve the necessary information
+		for (final ResourcePersonRelation resourcePersonRelation : relations) {
+			final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
+			final List<ResourcePersonRelation> relsOfPub = this.getResourcePersonRelationsWithPersonsByInterhash(interHash, session);
+			resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
+		}
 	}
 
 

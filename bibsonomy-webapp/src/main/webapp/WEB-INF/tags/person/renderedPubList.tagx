@@ -27,7 +27,7 @@
         <c:if test="${not hideHeadline}">
             <h3 class="list-headline">
 
-                <fmt:message key="person.show.otherPub" />
+                <fmt:message key="person.show.publications" />
 
                 <div class="pull-right btn-group dropdown-align-right all-resources-menu">
                     <div class="btn-group">

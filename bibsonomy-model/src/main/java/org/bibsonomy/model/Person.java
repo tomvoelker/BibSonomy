@@ -50,402 +50,413 @@ import org.bibsonomy.model.extra.AdditionalKey;
  */
 public class Person implements Linkable, Serializable {
 
-	private static final long serialVersionUID = 4578956154246424767L;
-	public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "researcherid", "gender", "college", "email", "homepage"};
+    private static final long serialVersionUID = 4578956154246424767L;
+    public static final String[] fieldsWithResolvableMergeConflicts = {"mainName", "academicDegree", "orcid", "researcherid", "gender", "college", "email", "homepage"};
 
-	private Integer personChangeId;
-	/** null means new non-persistent object */
-	private String personId;
-	/** usually current real name */
-	private PersonName mainName;
-	/** other names like former names or pseudonyms */
-	private List<PersonName> names;
-	/** something like "Dr. rer. nat." */
-	private String academicDegree;
-	/** researcher id on http://orcid.org/ */
-	private String orcid;
-	/** researcher id on http://researcherID.com/ */
-	private String researcherid;
-	/** sameAs relation to a user */
-	private String user;
-	/** {@link User} who last modified this {@link Person} */
-	private String changedBy;
-	/** point in time when the last change was made */
-	private Date changeDate;
-	/** the number of posts in the system, which this {@link Person} as an author */
-	private int postCounter;
-	/** place to link to the original entries when imported from Deutsche Nationalbibliothek */
-	private String dnbPersonId;
-	/** the gender */
-	private Gender gender;
-	/** the college of the person */
-	private String college;
-	/** the email of the person */
-	private String email;
-	/** the homepage of the person */
-	private URL homepage;
+    private Integer personChangeId;
+    /** null means new non-persistent object */
+    private String personId;
+    /** usually current real name */
+    private PersonName mainName;
+    /** other names like former names or pseudonyms */
+    private List<PersonName> names;
+    /** something like "Dr. rer. nat." */
+    private String academicDegree;
+    /** researcher id on http://orcid.org/ */
+    private String orcid;
+    /** researcher id on http://researcherID.com/ */
+    private String researcherid;
+    /** sameAs relation to a user */
+    private String user;
+    /** {@link User} who last modified this {@link Person} */
+    private String changedBy;
+    /** point in time when the last change was made */
+    private Date changeDate;
+    /** the number of posts in the system, which this {@link Person} as an author */
+    private int postCounter;
+    /** place to link to the original entries when imported from Deutsche Nationalbibliothek */
+    private String dnbPersonId;
+    /** the gender */
+    private Gender gender;
+    /** the college of the person */
+    private String college;
+    /** the email of the person */
+    private String email;
+    /** the homepage of the person */
+    private URL homepage;
 
-	/** cris links that are connected to this project */
-	private List<CRISLink> crisLinks = new LinkedList<>();
+    /** cris links that are connected to this project */
+    private List<CRISLink> crisLinks = new LinkedList<>();
 
-	private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
+    private List<ResourcePersonRelation> resourceRelations = new LinkedList<>();
 
-	/** additional keys for person */
-	private List<AdditionalKey> additionalKeys = new LinkedList<>();
-	/**
-	 * default constructor
-	 */
-	public Person() {
-		this.names = new ArrayList<>();
-	}
+    /** additional keys for person */
+    private List<AdditionalKey> additionalKeys = new LinkedList<>();
+    /**
+     * default constructor
+     */
+    public Person() {
+        this.names = new ArrayList<>();
+    }
 
-	/**
-	 * @return synthetic id. null means new non-persistent object
-	 */
-	public String getPersonId() {
-		return this.personId;
-	}
+    /**
+     * @return synthetic id. null means new non-persistent object
+     */
+    public String getPersonId() {
+        return this.personId;
+    }
 
-	/**
-	 * @param string synthetic id. null means new non-persistent object
-	 */
-	public void setPersonId(String string) {
-		this.personId = string;
-		for (PersonName name : this.names)
-			name.setPersonId(this.personId);
-	}
+    /**
+     * @param string synthetic id. null means new non-persistent object
+     */
+    public void setPersonId(String string) {
+        this.personId = string;
+        for (PersonName name : this.names)
+            name.setPersonId(this.personId);
+    }
 
-	/**
-	 * @return usually current real name
-	 */
-	public PersonName getMainName() {
-		if (this.mainName == null) {
-			for (PersonName name : this.names) {
-				if (name.isMain()) {
-					this.mainName = name;
-				}
-			}
-		}
-		return this.mainName;
-	}
+    /**
+     * @return usually current real name
+     */
+    public PersonName getMainName() {
+        if (this.mainName == null) {
+            for (PersonName name : this.names) {
+                if (name.isMain()) {
+                    this.mainName = name;
+                }
+            }
+        }
+        return this.mainName;
+    }
 
-	/**
-	 * @param id usually current real name
-	 */
-	public void setMainName(int id) {
-		for (PersonName name : this.names) {
-			if (name.getPersonNameChangeId() == id) {
-				name.setMain(true);
-				this.mainName = name;
-			} else {
-				name.setMain(false);
-			}
-		}
-	}
+    /**
+     * @param id usually current real name
+     */
+    public void setMainName(int id) {
+        for (PersonName name : this.names) {
+            if (name.getPersonNameChangeId() == id) {
+                name.setMain(true);
+                this.mainName = name;
+            } else {
+                name.setMain(false);
+            }
+        }
+    }
 
-	/**
-	 *
-	  @param name
-	 */
-	public void setMainName(PersonName name) {
-		if (!this.names.contains(name)) {
-			name.setPersonId(this.getPersonId());
-			name.setMain(true);
-			this.names.add(name);
-		}
-		this.mainName = name;
-	}
+    /**
+     *
+     @param name
+     */
+    public void setMainName(PersonName name) {
+        if (!this.names.contains(name)) {
+            name.setPersonId(this.getPersonId());
+            name.setMain(true);
+            this.names.add(name);
+        }
+        this.mainName = name;
+    }
 
-	/**
-	 *
-	 * @param name name
-	 */
-	public void addName(PersonName name) {
-		if(this.getNames().contains(name)) {
-			return;
-		}
+    /**
+     *
+     * @param name the person name to add
+     *
+     * @return true, if added and false, if already exists
+     */
+    public boolean addName(PersonName name) {
+        if(this.getNames().contains(name)) {
+            return false;
+        }
 
-		if (name != null) {
-			name.setPersonId(this.getPersonId());
-			name.setMain(false);
-			this.getNames().add(name);
-		}
-	}
+        if (name != null) {
+            name.setPersonId(this.getPersonId());
+            name.setMain(false);
+            this.getNames().add(name);
+            return true;
+        }
 
-	/**
-	 *
-	 * @param name the person name to remove
-	 */
-	public void removeName(PersonName name) {
-		if (!this.getNames().contains(name)) {
-			return;
-		}
-		if (name != null) {
-			this.names.remove(name);
-		}
-	}
+        return false;
+    }
 
-	/**
-	 * @return something like "Dr. rer. nat."
-	 */
-	public String getAcademicDegree() {
-		return this.academicDegree;
-	}
+    /**
+     *
+     * @param name the person name to remove
+     *
+     * @return true, if removed and false, if not found
+     */
+    public boolean removeName(PersonName name) {
+        if (!this.getNames().contains(name)) {
+            return false;
+        }
 
-	/**
-	 * @param scientificDegree something like "Dr. rer. nat."
-	 */
-	public void setAcademicDegree(String scientificDegree) {
-		this.academicDegree = scientificDegree;
-	}
+        if (name != null) {
+            this.names.remove(name);
+            return true;
+        }
 
-	/**
-	 * @return user who last modified this {@link Person}
-	 */
-	public String getChangedBy() {
-		return this.changedBy;
-	}
+        return false;
+    }
 
-	/**
-	 * @param modifiedBy user who last modified this {@link Person}
-	 */
-	public void setChangedBy(String modifiedBy) {
-		this.changedBy = modifiedBy;
-	}
+    /**
+     * @return something like "Dr. rer. nat."
+     */
+    public String getAcademicDegree() {
+        return this.academicDegree;
+    }
 
-	/**
-	 * @return date of last modification
-	 */
-	public Date getChangeDate() {
-		return this.changeDate;
-	}
+    /**
+     * @param scientificDegree something like "Dr. rer. nat."
+     */
+    public void setAcademicDegree(String scientificDegree) {
+        this.academicDegree = scientificDegree;
+    }
 
-	/**
-	 * @param modifiedAt date of last modification
-	 */
-	public void setChangeDate(Date modifiedAt) {
-		this.changeDate = modifiedAt;
-	}
+    /**
+     * @return user who last modified this {@link Person}
+     */
+    public String getChangedBy() {
+        return this.changedBy;
+    }
 
-	/**
-	 * @return the names
-	 */
-	public List<PersonName> getNames() {
-		return this.names;
-	}
+    /**
+     * @param modifiedBy user who last modified this {@link Person}
+     */
+    public void setChangedBy(String modifiedBy) {
+        this.changedBy = modifiedBy;
+    }
 
-	/**
-	 * @param names the names to set
-	 */
-	public void setNames(List<PersonName> names) {
-		this.names = names;
-	}
+    /**
+     * @return date of last modification
+     */
+    public Date getChangeDate() {
+        return this.changeDate;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (personId == null) {
-			return obj == this;
-		}
+    /**
+     * @param modifiedAt date of last modification
+     */
+    public void setChangeDate(Date modifiedAt) {
+        this.changeDate = modifiedAt;
+    }
 
-		return ((obj instanceof Person) && (this.getPersonId().equals(((Person) obj).getPersonId())));
-	}
+    /**
+     * @return the names
+     */
+    public List<PersonName> getNames() {
+        return this.names;
+    }
 
-	@Override
-	public int hashCode() {
-		if (personId == null) {
-			return System.identityHashCode(this);
-		}
-		return personId.hashCode();
-	}
+    /**
+     * @param names the names to set
+     */
+    public void setNames(List<PersonName> names) {
+        this.names = names;
+    }
 
-	/**
-	 * @return {@link User} in sameAs relation to this {@link Person} 
-	 */
-	public String getUser() {
-		return this.user;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (personId == null) {
+            return obj == this;
+        }
 
-	/**
-	 * @param user {@link User} in sameAs relation to this {@link Person} 
-	 */
-	public void setUser(String user) {
-		this.user = user;
-	}
+        return ((obj instanceof Person) && (this.getPersonId().equals(((Person) obj).getPersonId())));
+    }
 
-	/**
-	 * @return researcher id on http://orcid.org/
-	 */
-	public String getOrcid() {
-		return this.orcid;
-	}
+    @Override
+    public int hashCode() {
+        if (personId == null) {
+            return System.identityHashCode(this);
+        }
+        return personId.hashCode();
+    }
 
-	/**
-	 * @param orcid researcher id on http://orcid.org/
-	 */
-	public void setOrcid(String orcid) {
-		this.orcid = orcid;
-	}
+    /**
+     * @return {@link User} in sameAs relation to this {@link Person}
+     */
+    public String getUser() {
+        return this.user;
+    }
 
-	/**
-	 * @return researcher id on http://researcherID.com/
-	 */
-	public String getResearcherid() {
-		return this.researcherid;
-	}
+    /**
+     * @param user {@link User} in sameAs relation to this {@link Person}
+     */
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-	/**
-	 * @param researcherid researcher id on http://researcherID.com/
-	 */
-	public void setResearcherid(String researcherid) {
-		this.researcherid = researcherid;
-	}
+    /**
+     * @return researcher id on http://orcid.org/
+     */
+    public String getOrcid() {
+        return this.orcid;
+    }
 
-	/**
-	 * @return the number of posts in the system, which this {@link Person} as an author
-	 */
-	public int getPostCounter() {
-		return this.postCounter;
-	}
+    /**
+     * @param orcid researcher id on http://orcid.org/
+     */
+    public void setOrcid(String orcid) {
+        this.orcid = orcid;
+    }
 
-	/**
-	 * @param postCounter the number of posts in the system, which this {@link Person} as an author
-	 */
-	public void setPostCounter(int postCounter) {
-		this.postCounter = postCounter;
-	}
+    /**
+     * @return researcher id on http://researcherID.com/
+     */
+    public String getResearcherid() {
+        return this.researcherid;
+    }
+
+    /**
+     * @param researcherid researcher id on http://researcherID.com/
+     */
+    public void setResearcherid(String researcherid) {
+        this.researcherid = researcherid;
+    }
+
+    /**
+     * @return the number of posts in the system, which this {@link Person} as an author
+     */
+    public int getPostCounter() {
+        return this.postCounter;
+    }
+
+    /**
+     * @param postCounter the number of posts in the system, which this {@link Person} as an author
+     */
+    public void setPostCounter(int postCounter) {
+        this.postCounter = postCounter;
+    }
 
 
-	public Integer getPersonChangeId() {
-		return this.personChangeId;
-	}
+    public Integer getPersonChangeId() {
+        return this.personChangeId;
+    }
 
-	public void setPersonChangeId(Integer personChangeId) {
-		this.personChangeId = personChangeId;
-	}
+    public void setPersonChangeId(Integer personChangeId) {
+        this.personChangeId = personChangeId;
+    }
 
-	public String getDnbPersonId() {
-		return this.dnbPersonId;
-	}
+    public String getDnbPersonId() {
+        return this.dnbPersonId;
+    }
 
-	public void setDnbPersonId(String dnbPersonId) {
-		this.dnbPersonId = dnbPersonId;
-	}
+    public void setDnbPersonId(String dnbPersonId) {
+        this.dnbPersonId = dnbPersonId;
+    }
 
-	public Gender getGender() {
-		return this.gender;
-	}
+    public Gender getGender() {
+        return this.gender;
+    }
 
-	public void setGender(Gender gender) {
-		this.gender = gender;
-	}
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 
-	/**
-	 * @return the college
-	 */
-	public String getCollege() {
-		return this.college;
-	}
+    /**
+     * @return the college
+     */
+    public String getCollege() {
+        return this.college;
+    }
 
-	/**
-	 * @param college the college to set
-	 */
-	public void setCollege(String college) {
-		this.college = college;
-	}
+    /**
+     * @param college the college to set
+     */
+    public void setCollege(String college) {
+        this.college = college;
+    }
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return this.email;
-	}
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return this.email;
+    }
 
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	/**
-	 * @return the homepage
-	 */
-	public URL getHomepage() {
-		return this.homepage;
-	}
+    /**
+     * @return the homepage
+     */
+    public URL getHomepage() {
+        return this.homepage;
+    }
 
-	/**
-	 * @param homepage the homepage to set
-	 */
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
-	}
+    /**
+     * @param homepage the homepage to set
+     */
+    public void setHomepage(URL homepage) {
+        this.homepage = homepage;
+    }
 
-	/**
-	 * @return the crisLinks
-	 */
-	public List<CRISLink> getCrisLinks() {
-		return crisLinks;
-	}
+    /**
+     * @return the crisLinks
+     */
+    public List<CRISLink> getCrisLinks() {
+        return crisLinks;
+    }
 
-	/**
-	 * @param crisLinks the crisLinks to set
-	 */
-	public void setCrisLinks(List<CRISLink> crisLinks) {
-		this.crisLinks = crisLinks;
-	}
+    /**
+     * @param crisLinks the crisLinks to set
+     */
+    public void setCrisLinks(List<CRISLink> crisLinks) {
+        this.crisLinks = crisLinks;
+    }
 
-	/**
-	 * @return the resourceRelations
-	 */
-	public List<ResourcePersonRelation> getResourceRelations() {
-		return resourceRelations;
-	}
+    /**
+     * @return the resourceRelations
+     */
+    public List<ResourcePersonRelation> getResourceRelations() {
+        return resourceRelations;
+    }
 
-	/**
-	 * @param resourceRelations the resourceRelations to set
-	 */
-	public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
-		this.resourceRelations = resourceRelations;
-	}
+    /**
+     * @param resourceRelations the resourceRelations to set
+     */
+    public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
+        this.resourceRelations = resourceRelations;
+    }
 
-	/**
-	 * @return	list of additional keys
-	 */
-	public List<AdditionalKey> getAdditionalKeys() {
-		return additionalKeys;
-	}
+    /**
+     * @return	list of additional keys
+     */
+    public List<AdditionalKey> getAdditionalKeys() {
+        return additionalKeys;
+    }
 
-	/**
-	 * @param additionalKeys to set
-	 */
-	public void setAdditionalKeys(List<AdditionalKey> additionalKeys) {
-		this.additionalKeys = additionalKeys;
-	}
+    /**
+     * @param additionalKeys to set
+     */
+    public void setAdditionalKeys(List<AdditionalKey> additionalKeys) {
+        this.additionalKeys = additionalKeys;
+    }
 
-	@Override
-	public String getLinkableId() {
-		return this.getPersonId();
-	}
+    @Override
+    public String getLinkableId() {
+        return this.getPersonId();
+    }
 
-	@Override
-	public Integer getId() {
-		return this.personChangeId;
-	}
+    @Override
+    public Integer getId() {
+        return this.personChangeId;
+    }
 
-	/**
-	 * returns true if specific attributes are equal or at least null for one person
-	 * @param person
-	 * @return
-	 */
-	public boolean equalsTo(Person person) {
-		return (this.academicDegree == null || person.getAcademicDegree() == null || this.academicDegree.equals(person.getAcademicDegree())) &&
-						(this.college == null || person.getCollege() == null || this.college.equals(person.getCollege())) &&
-						(this.gender == null || person.getGender() == null || this.gender.equals(person.getGender())) &&
-						(this.email == null || person.getEmail() == null || this.email.equals(person.getEmail())) &&
-						(this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage())) &&
-						(this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid)) &&
-						(this.researcherid == null || person.researcherid == null || this.researcherid.equals(person.researcherid)) &&
-						(this.user == null || person.user == null);
-	}
+    /**
+     * returns true if specific attributes are equal or at least null for one person
+     * @param person
+     * @return
+     */
+    public boolean equalsTo(Person person) {
+        return (this.academicDegree == null || person.getAcademicDegree() == null || this.academicDegree.equals(person.getAcademicDegree())) &&
+                (this.college == null || person.getCollege() == null || this.college.equals(person.getCollege())) &&
+                (this.gender == null || person.getGender() == null || this.gender.equals(person.getGender())) &&
+                (this.email == null || person.getEmail() == null || this.email.equals(person.getEmail())) &&
+                (this.homepage == null || person.getHomepage() == null || this.homepage.equals(person.getHomepage())) &&
+                (this.orcid == null || person.orcid == null || this.orcid.equals(person.orcid)) &&
+                (this.researcherid == null || person.researcherid == null || this.researcherid.equals(person.researcherid)) &&
+                (this.user == null || person.user == null);
+    }
 }

@@ -27,60 +27,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command.ajax;
+package org.bibsonomy.webapp.controller.ajax.person;
 
-
-import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.command.ajax.AjaxPersonPageCommand;
+import org.bibsonomy.webapp.controller.ajax.AjaxController;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.View;
 
 /**
- * @author mho
+ * Controller to handle AJAX requests for the projects of a given person.
+ *
+ * @author kchoong
  */
-public class AjaxPersonPublicationCommand extends PersonPageCommand {
+public class PersonProjectsAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPageCommand> {
 
-	private int page;
-	private int size;
+    @Override
+    public View workOn(AjaxPersonPageCommand command) {
+        return null;
+    }
 
-	private int pageSize;
-
-	/**
-	 * @return the page
-	 */
-	public int getPage() {
-		return page;
-	}
-
-	/**
-	 * @param page the page to set
-	 */
-	public void setPage(int page) {
-		this.page = page;
-	}
-
-	/**
-	 * @return the size
-	 */
-	public int getSize() {
-		return size;
-	}
-
-	/**
-	 * @param size the size to set
-	 */
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	/**
-	 * @return the pageSize
-	 */
-	public int getPageSize() {
-		return pageSize;
-	}
-
-	/**
-	 * @param pageSize the pageSize to set
-	 */
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
+    @Override
+    public AjaxPersonPageCommand instantiateCommand() {
+        return new AjaxPersonPageCommand();
+    }
 }

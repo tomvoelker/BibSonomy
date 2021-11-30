@@ -15,7 +15,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.services.searcher.PostSearchQuery;
@@ -35,8 +34,7 @@ import org.json.simple.JSONObject;
  * @author kchoong
  */
 public class GroupExploreAjaxController extends AjaxController implements MinimalisticController<AjaxGroupExploreCommand> {
-    
-    private LogicInterface logic;
+
     private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
     private User loggedInUser;
@@ -101,7 +99,6 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         return Views.AJAX_BIBTEXS;
     }
 
-
     private FieldDescriptor<BibTex, ?> createFieldDescriptor(String field) {
         return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
     }
@@ -140,13 +137,6 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
     @Override
     public AjaxGroupExploreCommand instantiateCommand() {
         return new AjaxGroupExploreCommand();
-    }
-
-    /**
-     * @param logic the logic to set
-     */
-    public void setLogic(LogicInterface logic) {
-        this.logic = logic;
     }
 
     public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {

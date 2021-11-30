@@ -35,39 +35,57 @@ package org.bibsonomy.common.enums;
  */
 public enum PersonUpdateOperation {
 
-	/** Update the orcid of a person */
-	UPDATE_ORCID,
-
-	/** Update the researcherid of a person */
-	UPDATE_RESEARCHERID,
-
-	/** Update the academic degree of a person */
-	UPDATE_ACADEMIC_DEGREE,
-
-	/** Update the names of a person */
-	UPDATE_NAMES,
-	
 	/** Updates all attributes of a person */
 	UPDATE_ALL,
 
-	/** Updates the college */
-	UPDATE_COLLEGE,
-	
-	/** Updates the college */
-	UPDATE_EMAIL,
-	
-	/** Updates the college */
-	UPDATE_HOMEPAGE,
+	/** Updates all details of a person */
+	UPDATE_DETAILS,
 
-	/** updates the linked user */
-	LINK_USER,
-	
+	/** Update the names of a person */
+	UPDATE_NAMES,
+
+	/** Update the additional keys of a person */
+	UPDATE_ADDITIONAL_KEYS,
+
 	/** Creates a new person */
 	CREATE_PERSON,
-	
+
+	/** Add alternative name of a person */
+	ADD_NAME,
+
+	/** Delete alternative name of a person */
+	DELETE_NAME,
+
+	/** Select alternative name as main name of a person */
+	SELECT_MAIN_NAME,
+
+	/** Add role of person to a resource relation */
+	ADD_ROLE,
+
+	/** Delete role of person to a resource relation */
+	DELETE_ROLE,
+
+	/** Update role of a person to a resource relation */
+	UPDATE_ROLE,
+
+	/** link person to a user */
+	LINK_USER,
+
+	/** unlink person to a user */
+	UNLINK_USER,
+
 	/** accepts merge */
 	MERGE_ACCEPT,
 	
 	/** denies merge */
-	MERGE_DENIED
+	MERGE_DENIED,
+
+	/** merge conflicts */
+	MERGE_CONFLICTS,
+
+	// TODO: not an actual update
+	/** get merge conflicts */
+	MERGE_GET_CONFLICTS,
+
+
 }
