@@ -111,7 +111,7 @@
 							<input type="hidden" name="resourcetype" value="bibtex"/>
 							<input type="hidden" name="updateExistingPost" value="true"/>
 						</form>
-					</jsp:attribute>0px
+					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
 
