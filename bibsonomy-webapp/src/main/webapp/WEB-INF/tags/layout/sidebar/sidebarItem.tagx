@@ -9,14 +9,19 @@
 
 	<jsp:directive.attribute name="text" fragment="true" required="false" />
 	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
-	<jsp:directive.attribute name="iconKey" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="helpLink" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="headingLink" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="headingTitleKey" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="outLink" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="outTitleKey" type="java.lang.String" required="false" />
-	
-	
+	<jsp:directive.attribute name="faIcon" type="java.lang.String" required="false" />
+
+	<c:set var="headingIcon">
+		<c:if test="${not empty faIcon}">
+			<fontawesome:icon icon="${faIcon}" spaceAfter="5" />
+		</c:if>
+	</c:set>
+
 	<c:set var="itemHeading">
 		<c:choose>
 			<c:when test="${not empty textKey}">
@@ -27,8 +32,7 @@
 			</c:otherwise>
 		</c:choose>
 	</c:set>
-	
-	
+
 	<h4 class="sidebar">
 		<c:choose>
 			<c:when test="${not empty headingLink}">
@@ -37,18 +41,12 @@
 					<fmt:message var="title" key="${headingTitleKey }"/>
 				</c:if>
 				<a href="${headingLink}" title="${title}">
-					<c:if test="${not empty iconKey}">
-						<fontawesome:icon icon="${iconKey}" fixedWidth="${true}" />
-						<c:out value=" "/>
-					</c:if>
+					<c:out value="${headingIcon}" escapeXml="false" />
 					<c:out value="${itemHeading}"/>
 				</a>
 			</c:when>
 			<c:otherwise>
-				<c:if test="${not empty iconKey}">
-					<fontawesome:icon icon="${iconKey}" fixedWidth="${true}" />
-					<c:out value=" "/>
-				</c:if>
+				<c:out value="${headingIcon}" escapeXml="false" />
 				<c:out value="${itemHeading}"/>
 			</c:otherwise>
 		</c:choose>

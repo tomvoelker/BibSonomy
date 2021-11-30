@@ -127,7 +127,7 @@
 		</c:if>
 		<!-- append "(eds.)" -->
 		<c:if test="${empty publication.author and not empty publication.editor}">
-			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>).
+			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>)
 		</c:if>
 	</span>
 	<c:out value=". "/>
