@@ -12,7 +12,7 @@
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" />
 	
-	<h3 class="pub-details"><span class="pull-left"><spann class="fa fa-comments"><!-- --></spann><c:out value=" " /><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
+	<h3 class="pub-details"><span class="pull-left"><span class="fa fa-comments"><!-- --></span><c:out value=" " /><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
 		<discussion:rating post="${post}" />
 	</h3>
 	<div id="discussion" style="margin-top: 0.5em;">
