@@ -96,11 +96,40 @@ $(function() {
 		$('#whitespace').attr('disabled', $(this).val() == " ");
 	});
 
-
+	// adjust displayed entrytypes for certain PUMA instances
+	adjustEntrytypes();
 });
 
 function showManualForm(titleText) {
 	var manualButton = $('.btn[data-target=manual]');
 	manualButton.click();
 	$('#post\\.resource\\.title').focus().val(titleText);
+}
+
+var allowedTypes = [];
+var extraTypes = [];
+
+/**
+ * Adjust displayed entrytypes for custom PUMA instances,
+ * where some default entrytypes should be hidden and extra ones are added.
+ */
+function adjustEntrytypes() {
+	var entrytypeSelect = $('#post\\.resource\\.entrytype');
+
+	// remove entrytypes, that are not allowed, if set
+	if (Array.isArray(allowedTypes) && allowedTypes.length) {
+		$(entrytypeSelect).children().each(function () {
+			if (!allowedTypes.includes(this.value)) {
+				this.remove();
+			}
+		});
+	}
+
+	// add extra entrytypes, if set
+	if (Array.isArray(extraTypes) && extraTypes.length) {
+		extraTypes.forEach(function (element) {
+			var newOption = $('<option></option>').val(element).html(element);
+			entrytypeSelect.append(newOption);
+		});
+	}
 }

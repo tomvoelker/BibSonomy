@@ -47,7 +47,7 @@
 				<div class="col-sm-9">
 					<div class="row">
 						<div class="col-md-7">
-							<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control">
+							<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control" data-selected-entrytype="${post.resource.entrytype}">
 								<c:forEach items="${entryTypes}" var="optionLabel" varStatus="cnt">
 									<c:choose>
 										<c:when test="${entryTypes[cnt.index] eq post.resource.entrytype}">
