@@ -9,7 +9,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/action/edit/publication">
+	xmlns:bibtex="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
     <!-- 
     
         Shows the required form fields entrytype, bibtexkey, title, author, 
@@ -38,6 +38,12 @@
 	</script>
 	
 	<spring:eval expression="T(org.bibsonomy.model.util.BibTexUtils).ENTRYTYPES" var="entryTypes" />
+
+	<!-- entrytype help modal -->
+	<bibtex:helpEntrtypes id="entrytypeHelp"/>
+	<fmt:message key="post.resource.entrytype.help.title" var="entrytypeHelpTitle" />
+	<fmt:message key="post.resource.entrytype.description" var="entrytypeHelpDescription" />
+
 	<c:choose>
 		<c:when test="${empty hideBibTeXKey or not hideBibTeXKey}">
 			<div class="form-group">
@@ -60,10 +66,10 @@
 								</c:forEach>
 							</select>
 							<p class="help-block">
-								<fmt:message key="post.resource.entrytype.help" var="entrytypeHelp" />
-								<fmt:message key="post.resource.entrytype.help.title" var="entrytypeHelpTitle" />
-								<fmt:message key="post.resource.entrytype.description" /><c:out value=" " />
-								<a href="javascript:void(0);" data-container="body" data-toggle="popover" data-placement="bottom" data-content="${fn:escapeXml(entrytypeHelp)}" title="${fn:escapeXml(entrytypeHelpTitle)}"><fmt:message key="general.learnmore" /></a>
+								<c:out value="${entrytypeHelpDescription} "/>
+								<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
+									<fmt:message key="general.learnmore" />
+								</a>
 							</p>
 						</div>
 						
@@ -93,11 +99,10 @@
 				size="1" 
 				items="${entryTypes}" noHelp="true">
 				<jsp:attribute name="helpBlock">
-					<!-- TODO: remove duplicate code -->
-					<fmt:message key="post.resource.entrytype.help" var="entrytypeHelp" />
-					<fmt:message key="post.resource.entrytype.help.title" var="entrytypeHelpTitle" />
-					<fmt:message key="post.resource.entrytype.description" /><c:out value=" " />
-					<a href="javascript:void(0);" data-container="body" data-toggle="popover" data-placement="bottom" data-content="${fn:escapeXml(entrytypeHelp)}" title="${fn:escapeXml(entrytypeHelpTitle)}"><fmt:message key="general.learnmore" /></a>
+					<c:out value="${entrytypeHelpDescription} "/>
+					<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
+						<fmt:message key="general.learnmore" />
+					</a>
 				</jsp:attribute>
 			</bsform:select>
 		</c:otherwise>
