@@ -25,7 +25,7 @@
                                 <c:set var="description" value="-"/>
                             </c:if>
                             <div class="entrytype-description" data-entrytype="${entrytype}">
-                                <dt><c:out value="${title}"/></dt>
+                                <dt><c:out value="${title}"/><span><c:out value=" (${entrytype})"/></span></dt>
                                 <dd><c:out value="${description}" escapeXml="${false}"/></dd>
                             </div>
                         </c:forEach>
