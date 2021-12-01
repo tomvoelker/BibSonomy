@@ -1,8 +1,8 @@
 /**
  * IMPORTANT: Variables are only to be overwritten in custom PUMA instances
  */
-var removedEntrytypes = ['article'];
-var extraEntrytypes = ['software'];
+var removedEntrytypes = [];
+var extraEntrytypes = [];
 
 $(function() {
     // check, if a list to remove is set
