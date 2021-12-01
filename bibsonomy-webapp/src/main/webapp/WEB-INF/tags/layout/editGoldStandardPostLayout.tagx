@@ -58,7 +58,12 @@
             <jsp:invoke fragment="headerExtResource"/>
             
             <script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
-            
+
+			<!-- script for custom entrytypes in PUMA instances -->
+			<c:if test="${resourceType eq 'Publication' or resourceType eq 'GoldStandardPublication'}">
+				<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
+			</c:if>
+
             <!--+
 				| JAVASCRIPT FOR TAG RECOMMENDATION
 				+-->

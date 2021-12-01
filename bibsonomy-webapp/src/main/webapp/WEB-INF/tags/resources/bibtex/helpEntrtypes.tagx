@@ -17,15 +17,17 @@
         <jsp:attribute name="modalBody">
             <div class="container-fluid">
                 <div class="scrollable-content">
-                    <dl>
+                    <dl class="help-description-list">
                         <c:forEach var="entrytype" items="${entrytypes}" varStatus="status">
                             <fmt:message key="post.resource.entrytype.${entrytype}.title" var="title" />
                             <fmt:message key="post.resource.entrytype.${entrytype}.description" var="description" />
                             <c:if test="${fn:startsWith(description, '???')}">
-                                <c:set var="description" value=""/>
+                                <c:set var="description" value="-"/>
                             </c:if>
-                            <dt><c:out value="${title}"/></dt>
-                            <dd><c:out value="${description}"/></dd>
+                            <div class="entrytype-description" data-entrytype="${entrytype}">
+                                <dt><c:out value="${title}"/></dt>
+                                <dd><c:out value="${description}"/></dd>
+                            </div>
                         </c:forEach>
                     </dl>
                 </div>
