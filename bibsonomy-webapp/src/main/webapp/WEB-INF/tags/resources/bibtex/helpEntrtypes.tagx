@@ -26,7 +26,7 @@
                             </c:if>
                             <div class="entrytype-description" data-entrytype="${entrytype}">
                                 <dt><c:out value="${title}"/></dt>
-                                <dd><c:out value="${description}"/></dd>
+                                <dd><c:out value="${description}" escapeXml="${false}"/></dd>
                             </div>
                         </c:forEach>
                     </dl>
