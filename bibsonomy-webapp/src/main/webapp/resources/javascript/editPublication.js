@@ -6,54 +6,54 @@ var MISC_ADD_CONTAINER_ID = 'add-field-container';
 var MISC_ADD_CONTAINER_SELECTOR = '#' + MISC_ADD_CONTAINER_ID;
 
 var tagRecoOptions = {
-		type: "POST",
-		url: '/ajax/getPublicationRecommendedTags',
-		data: $('#postForm').serialize(),
-		dataType: "json",
-		success : function showResponse(responseText, statusText) {
-			handleRecommendedTags(responseText);
-		}
-	}; 
+	type: "POST",
+	url: '/ajax/getPublicationRecommendedTags',
+	data: $('#postForm').serialize(),
+	dataType: "json",
+	success : function showResponse(responseText, statusText) {
+		handleRecommendedTags(responseText);
+	}
+};
 
 var getFriends = null;
 
 var getGroups = null;
 
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",
-		"month","day","edition","chapter","key","type","annote","note",
-		"howpublished","institution","organization",
-		"school","series","crossref","misc"];
+	"month","day","edition","chapter","key","type","annote","note",
+	"howpublished","institution","organization",
+	"school","series","crossref","misc"];
 
 var inproceedingsField = ["publisher","booktitle","volume","number","series","pages","address","month","organization","misc.language","misc.DOI","misc.ISBN","misc.ISSN","misc.eventdate","misc.eventtitle","misc.venue","note"];
 
 var requiredForType = {
-        "article":["journal","volume","number","pages","month","misc.language","misc.DOI","misc.ISBN","misc.ISSN","note"],
-        "book":["publisher","volume","number","series","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "booklet":["howpublished","address","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "conference":inproceedingsField,
-        "dataset":["misc.DOI", "url"],
-        "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "inproceedings":inproceedingsField,
-        "manual":["organization","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "masterthesis":["school","type","address","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "misc":["howpublished","month","misc.language","misc.DOI","note"],
-        "phdthesis":["school","address","type","month","misc.language","misc.DOI","misc.ISBN","note"],
-        "proceedings":["publisher","volume","number","series","address","month","misc.language","misc.DOI","misc.ISBN","misc.eventdate","misc.eventtitle","misc.venue","organization","note"],
-        "techreport":["institution","number","type","address","month","misc.language","misc.DOI","note"],
-        "unpublished":["misc.language", "misc.DOI","misc.ISBN", "misc.ISSN","misc.eventdate","misc.eventtitle","misc.venue","note"],
-		"periodical":["misc.language", "misc.DOI", "misc.ISSN","note"],
-		"presentation":["misc.language","misc.eventdate","misc.eventtitle","misc.venue","note"],
-		"electronic":["misc.language","misc.DOI","note"]
+	"article":["misc.identifier", "misc.subjectarea", "journal","volume","number","pages","misc.publisher","month","misc.language","misc.DOI","misc.ISBN","misc.ISSN","note"],
+	"book":["misc.identifier", "misc.subjectarea", "publisher","volume","number","series","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"booklet":["misc.identifier", "misc.subjectarea", "howpublished","address","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"conference":inproceedingsField,
+	"dataset":["misc.identifier", "misc.subjectarea", "misc.DOI", "url"],
+	"inbook":["misc.identifier", "misc.subjectarea", "chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"incollection":["misc.identifier", "misc.subjectarea", "publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"inproceedings":inproceedingsField,
+	"manual":["misc.identifier", "misc.subjectarea", "organization","address","edition","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"masterthesis":["misc.identifier", "misc.subjectarea", "school","type","address","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"misc":["misc.identifier", "misc.subjectarea", "howpublished","month","misc.language","misc.DOI","note"],
+	"phdthesis":["misc.identifier", "misc.subjectarea", "school","address","type","month","misc.language","misc.DOI","misc.ISBN","note"],
+	"proceedings":["misc.identifier", "misc.subjectarea", "publisher","volume","number","series","address","month","misc.language","misc.DOI","misc.ISBN","misc.eventdate","misc.eventtitle","misc.venue","organization","note"],
+	"techreport":["misc.identifier", "misc.subjectarea", "institution","number","type","address","month","misc.language","misc.DOI","note"],
+	"unpublished":["misc.identifier", "misc.subjectarea", "misc.language", "misc.DOI","misc.ISBN", "misc.ISSN","misc.eventdate","misc.eventtitle","misc.venue","note"],
+	"periodical":["misc.identifier", "misc.subjectarea", "misc.language", "misc.DOI", "misc.ISSN","note"],
+	"presentation":["misc.identifier", "misc.subjectarea", "misc.language","misc.eventdate","misc.eventtitle","misc.venue","note"],
+	"electronic":["misc.identifier", "misc.subjectarea", "misc.repository", "misc.language","misc.DOI","note"]
 }
 
 /* update view when user selects another type of publication in list */
 function changeView(showAll) {
 	var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 	var message = getString('post.resource.fields.detailed.show.all');
-	var noRequiredFields = (requiredFields === undefined); 
+	var noRequiredFields = (requiredFields === undefined);
 	var collapse = $('#collapse');
-	
+
 	if (showAll || noRequiredFields) {
 		requiredFields = fields;
 		if (noRequiredFields) {
@@ -65,9 +65,9 @@ function changeView(showAll) {
 	} else {
 		collapse.parent().removeClass("hidden");
 	}
-	
+
 	collapse.text(message);
-	
+
 	for (var i = 0; i < fields.length; i++) {
 		var bibtexField = fields[i];
 		var field = $("#post\\.resource\\." + bibtexField);
@@ -96,7 +96,7 @@ function changeView(showAll) {
 				return false;
 			}
 		});
-		
+
 		$.each($(".extraInputs"), function(){
 			var hasValue = false;
 			$(this).find("input[type='text']").each(function(){
@@ -106,7 +106,7 @@ function changeView(showAll) {
 					return false;
 				}
 			});
-			
+
 			if (!hasValue){
 				$(this).remove();
 			}
@@ -127,14 +127,14 @@ function miscFieldHasError() {
 }
 
 /* checks if element is member of given array */
-function in_array(array, element) {    	
+function in_array(array, element) {
 	for(var j = 0; j < array.length; j++) {
 		if(array[j] == element) {
 			return true;
 		}
 	}
 	return false;
-}  
+}
 
 /* checks if element is member of given array in lowerCase*/
 function in_array_lower(array, element) {
@@ -143,10 +143,10 @@ function in_array_lower(array, element) {
 			if(array[j].toLowerCase() == element) {
 				return true;
 			}
-		}		
+		}
 	}
 	return false;
-}  
+}
 
 function generateBibTexKey(obj) {
 	var buffer  = "";
@@ -154,7 +154,7 @@ function generateBibTexKey(obj) {
 	/* get author */
 	buffer += getFirstPersonsLastName(document.getElementById("post.resource.author").value);
 
-	/* the year */ 
+	/* the year */
 	var year = document.getElementById("post.resource.year").value;
 	if (year != null) {
 		buffer += year.trim();
@@ -227,13 +227,13 @@ function toggleView() {
 
 function activateAffixEntry (el) {
 	$(el).addClass("active").siblings().each(function(h, g){
-			$(g).removeClass("active");
+		$(g).removeClass("active");
 	});
 }
 
 /**
- * provide each input field with suggestions from multiple post values passed as json data 
- * 
+ * provide each input field with suggestions from multiple post values passed as json data
+ *
  * @param json - posts as json data
  * @return
  */
@@ -244,7 +244,7 @@ function buildGoodPostSuggestion(json) {
 		while(j.length > h.length)
 			h.push(h.length);
 		for(i = 0; i < j.length; i++) {
-			for(k = i+1; k < j.length; k++) 
+			for(k = i+1; k < j.length; k++)
 				if(j[h[i]] < j[h[k]]) {
 					h[i] = h[i]+h[k];
 					h[k] = h[i]-h[k];
@@ -286,16 +286,16 @@ function buildGoodPostSuggestion(json) {
 			 * loop over posts
 			 */
 			var fieldVal;
-			
+
 			for(var z = 0; json.items.length > z; z++) {
 				var post = json.items[z];
-				if(((fieldVal = post[inputFieldName.substring(postResource.length, inputFieldName.length)]) != undefined 
-						|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
+				if(((fieldVal = post[inputFieldName.substring(postResource.length, inputFieldName.length)]) != undefined
+					|| (fieldVal = post[inputFieldMap[inputFieldName]])) && fieldVal.length > 0) {
 					var name = "";
 					if(typeof fieldVal == "object") {
-						var delimiter = " "; 
+						var delimiter = " ";
 						/*
-						 * special handling for person names: 
+						 * special handling for person names:
 						 * - join them using ", "
 						 * - prepend the prefix (last name) to our first name chain if present
 						 */
@@ -325,22 +325,22 @@ function buildGoodPostSuggestion(json) {
 				}
 			} // loop over posts
 			/*
-			 * no suggestions or the suggestion count is 1 AND field value is the same as the suggestion value 
-			 * - skip in both cases 
+			 * no suggestions or the suggestion count is 1 AND field value is the same as the suggestion value
+			 * - skip in both cases
 			 */
-			if (!suggestions.length || fieldVal === undefined || (suggestions.length == 1 
-			&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
-			
+			if (!suggestions.length || fieldVal === undefined || (suggestions.length == 1
+				&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
+
 			inputField.tooltip({
 				trigger : 'focus',
 				placement : 'top',
 				title: getString('post.resource.suggestion.hint')
 			}).tooltip('show');
-			
+
 			inputField.after('<span class="autocompletion fa fa-caret-down form-control-feedback"><!-- --></span>');
 			inputField.popover('destroy');  //remove popover help
-			
-			
+
+
 			/* we have a bijective mapping therefore (f:suggestion->occurrence) we sort our indices by descending order */
 			var indices = sortIndices(occurrences);
 			/* occurrences are sorted and aligned to the corresponding suggestions */
@@ -353,12 +353,12 @@ function buildGoodPostSuggestion(json) {
 				};
 			});
 			inputField.autocomplete(
-					{
-						source : labels,
-						minLength : 0,
-						delay : 0
-					}
-			).bind("focus", 
+				{
+					source : labels,
+					minLength : 0,
+					delay : 0
+				}
+			).bind("focus",
 				function(){
 					$(this).autocomplete("search", "");
 				}
@@ -367,29 +367,30 @@ function buildGoodPostSuggestion(json) {
 		}
 	} // loop over input fields
 }
+
 /* ugly hack to keep the up and down key working if no suggestions are shown */
 function applyKeyDownHandler(element) {
 	var widget = element.autocomplete("widget");
 	var keyHandler = function (e) {
 		var p = widget.hasClass("ui-autocomplete-disabled");
 		if((e.keyCode == 38 || e.keyCode == 40)
-		&& !p
-		&& widget[0].style.display == 'none') {
+			&& !p
+			&& widget[0].style.display == 'none') {
 			element.autocomplete( "disable" );
 		} else if(p)
 			element.autocomplete( "enable" );
 	};
 	element
-	.bind( "autocompleteopen", function(event, ui) {
-		widget.prepend("<li class='fsInputRecoHelp'>" + getString("post.resource.suggestion.help") + "</li>");
-	})
-	.bind("keydown",function(e) {keyHandler(e);});
+		.bind( "autocompleteopen", function(event, ui) {
+			widget.prepend("<li class='fsInputRecoHelp'>" + getString("post.resource.suggestion.help") + "</li>");
+		})
+		.bind("keydown",function(e) {keyHandler(e);});
 }
 
 // adds the send:<username> tag when clicking the save and send to button
 function sendToBibliography(username) {
 	$("#inpf_tags").val(function(index, val) {
-		return val + " send:" + username;
+		return val + "send:" + username;
 	});
 	// this is called onclick of every submit button, so we call it here as well
 	clear_tags();
@@ -404,7 +405,7 @@ function sendGroupToBibliography(groupname) {
 	clear_tags();
 }
 
-/*  
+/*
  * change appearance of misc and transfer data
  */
 $(document).ready(function() {
@@ -423,7 +424,7 @@ $(document).ready(function() {
 	var misc = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
 	var miscError = miscFieldHasError();
-	
+
 	/*
 	 * functions
 	 */
@@ -435,10 +436,10 @@ $(document).ready(function() {
 		} else {
 			$(wrapper).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
 		}
-	};
+	}
 
 	// FIXME: show error message if misc field has errors
-	
+
 	function transferMiscFieldValuesToOldField(){
 		var fieldString = [];
 		for (var i = 0; i < miscFieldValues.length; i+=2){
@@ -448,14 +449,14 @@ $(document).ready(function() {
 		}
 		$(misc).val(fieldString.join(", \n"));
 	}
-	
+
 	function transferDataFromOldToNew() {
 		// gets the data from misc
 		var miscVal = $(misc).val();
 		var pairs = miscVal.split(/,\s*\n/);
 		var values = [];
-		
-		//split the pairs and delete the characters not needed then save data 
+
+		//split the pairs and delete the characters not needed then save data
 		$.each(pairs, function(index, item){
 			item = item.trim();
 			var itemValues = item.split(/\s*=\s*{/);
@@ -481,7 +482,7 @@ $(document).ready(function() {
 		if (values.length === 1){
 			values = [];
 		}
-		
+
 		for(var i = 0; i < values.length; i+=2){
 			var isStandardField = false;
 			$("#standardFieldsWrap :input[type=text]").each(function(){
@@ -498,19 +499,19 @@ $(document).ready(function() {
 			}
 		}
 	}
-	
+
 	// adds fields, that have a special input
 	function addStandardFields(){
 		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 		var existingInputs = [];
-		
+
 		// remove not required inputs for this entry type
 		var standardInputs  = $('.standardInputs');
 		$.each(standardInputs, function(){
 			var input = $(this).find("input");
 			var inputName = "misc." + $(input).attr("name").toLowerCase();
 
-			
+
 			if (!$(input).val() && !in_array_lower(requiredFields, inputName)) {
 				$(this).remove();
 			} else {
@@ -536,10 +537,10 @@ $(document).ready(function() {
 			addInputs();
 		}
 	}
-	
+
 	function refreshOldView() {
 		miscFieldValues = [];
-		
+
 		//standard fields
 		$("#standardFieldsWrap :input[type=text]").each(function() {
 			/*
@@ -550,7 +551,7 @@ $(document).ready(function() {
 				miscFieldValues.push($(this).val());
 			}
 		});
-		
+
 		//extra fields
 		$("#extraFieldsWrap :input[type=text]").each(function() {
 			/*
@@ -565,15 +566,15 @@ $(document).ready(function() {
 		});
 
 		transferMiscFieldValuesToOldField();
-	};
-	
+	}
+
 	function showNewMiscView() {
 		if ($(".standardInputs").length == 0) {
 			addInputs();
 		}
 		$(misc).closest(".form-group").addClass("hidden");
 		$("#allFieldsWrap").removeClass("hidden");
-	};
+	}
 
 	/*
 	 * after loading
@@ -583,7 +584,7 @@ $(document).ready(function() {
 	transferDataFromOldToNew();
 	// hides old view
 	$(misc).parent("div").parent("div").addClass("hidden");
-	
+
 	//on add input button click
 	$(add_button).click(function(e) {
 		addInputs();
@@ -593,24 +594,24 @@ $(document).ready(function() {
 	// user click on remove button
 	$(wrapper).on("click",".remove_field", function(e) {
 		e.preventDefault();
-		var parentDiv = $(this).parent('div').parent('div'); 
+		var parentDiv = $(this).parent('div').parent('div');
 		var labelText = parentDiv.find("label").first().text();
-		
+
 		parentDiv.remove();
 		$(".extraInputs").first().find("label").first().text(getString('post.resource.misc'));
-		
+
 		//this refreshes the values in the array/old misc-field
 		refreshOldView();
 	});
-	
+
 	// reloads standard fields for new entry type
 	$("#post\\.resource\\.entrytype").change(function(e) {
 		addStandardFields();
 	});
-	
+
 	// transfer field values of new design to array
 	$("#allFieldsWrap").focusout(refreshOldView);
-	
+
 	// change view to old or new
 	$("#expertView").change(function() {
 		if (this.checked){
@@ -625,7 +626,7 @@ $(document).ready(function() {
 		} else {
 			// new/normal view
 			transferDataFromOldToNew();
-			
+
 			//actually changes the view
 			showNewMiscView();
 		}
@@ -655,4 +656,38 @@ $(document).ready(function() {
 				buildGoodPostSuggestion(data);
 		}
 	});
+
+	adjustEntrytypes();
 });
+
+var removedTypes = [];
+var extraTypes = [];
+
+/**
+ * Adjust displayed entrytypes for custom PUMA instances,
+ * where some default entrytypes should be hidden and extra ones are added.
+ */
+function adjustEntrytypes() {
+	var entrytypeSelect = $('#post\\.resource\\.entrytype');
+	var selected = entrytypeSelect.data('selected-entrytype');
+
+	// remove entrytypes, that are not allowed, if set
+	if (Array.isArray(removedTypes) && removedTypes.length) {
+		$(entrytypeSelect).children().each(function () {
+			if (removedTypes.includes(this.value)) {
+				this.remove();
+			}
+		});
+	}
+
+	// add extra entrytypes, if set
+	if (Array.isArray(extraTypes) && extraTypes.length) {
+		extraTypes.forEach(function (element) {
+			var newOption = $('<option></option>').val(element).html(element);
+			entrytypeSelect.append(newOption);
+		});
+
+		// set selected if non is selected
+		$(entrytypeSelect).find('option[value=' + selected + ']').attr('selected', 'selected');
+	}
+}

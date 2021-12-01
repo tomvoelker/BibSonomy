@@ -184,6 +184,10 @@
 	<bean id="projectTheme" class="java.lang.String">
 		<constructor-arg value="${project.theme}" />
 	</bean>
+
+	<bean id="helpTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme.help}" />
+	</bean>
 	
 	<bean id="projectEmail" class="java.lang.String">
 		<constructor-arg value="${project.email}" />

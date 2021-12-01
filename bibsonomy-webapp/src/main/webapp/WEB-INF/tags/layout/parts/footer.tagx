@@ -106,22 +106,34 @@
 					<dt><fmt:message key="footer.socialMedia"/></dt>
 					<c:set var="twitter" value="${properties['project.social.twitter']}" />
 					<c:if test="${not empty twitter}">
-						<dd><fontawsome:icon icon="twitter" fixedWidth="${true}" />&amp;nbsp;<a href="https://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
+						<c:if test="${not mtl:isUrl(twitter)}">
+							<c:set var="twitter" value="https://twitter.com/${twitter}"/>
+						</c:if>
+						<dd><fontawsome:icon icon="twitter" fixedWidth="${true}" />&amp;nbsp;<a href="${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
 					</c:if>
 
 					<c:set var="facebook" value="${properties['project.social.facebook']}" />
 					<c:if test="${not empty facebook}">
-						<dd><fontawsome:icon icon="facebook" fixedWidth="${true}" />&amp;nbsp;<a href="https://facebook.com/${facebook}"><fmt:message key="footer.social.facebook"/></a></dd>
+						<c:if test="${not mtl:isUrl(facebook)}">
+							<c:set var="facebook" value="https://facebook.com/${facebook}"/>
+						</c:if>
+						<dd><fontawsome:icon icon="facebook" fixedWidth="${true}" />&amp;nbsp;<a href="${facebook}"><fmt:message key="footer.social.facebook"/></a></dd>
 					</c:if>
 
 					<c:set var="youtube" value="${properties['project.social.youtube']}" />
 					<c:if test="${not empty youtube}">
-						<dd><fontawsome:icon icon="youtube-play" fixedWidth="${true}" />&amp;nbsp;<a href="https://youtube.com/${youtube}"><fmt:message key="footer.social.youtube"/></a></dd>
+						<c:if test="${not mtl:isUrl(youtube)}">
+							<c:set var="youtube" value="https://youtube.com/${youtube}"/>
+						</c:if>
+						<dd><fontawsome:icon icon="youtube-play" fixedWidth="${true}" />&amp;nbsp;<a href="${youtube}"><fmt:message key="footer.social.youtube"/></a></dd>
 					</c:if>
 
 					<c:set var="instagram" value="${properties['project.social.instagram']}" />
 					<c:if test="${not empty instagram}">
-						<dd><fontawsome:icon icon="instagram" fixedWidth="${true}" />&amp;nbsp;<a href="https://instagram.com/${instagram}"><fmt:message key="footer.social.instagram"/></a></dd>
+						<c:if test="${not mtl:isUrl(instagram)}">
+							<c:set var="instagram" value="https://instagram.com/${instagram}"/>
+						</c:if>
+						<dd><fontawsome:icon icon="instagram" fixedWidth="${true}" />&amp;nbsp;<a href="${instagram}"><fmt:message key="footer.social.instagram"/></a></dd>
 					</c:if>
 				</div>
 			</dl>

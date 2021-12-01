@@ -92,6 +92,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/** the project theme */
 	private String projectTheme;
+
+	/** the help theme */
+	private String helpTheme;
 	
 	/** the url of the project */
 	private String projectHome;
@@ -135,12 +138,23 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		if (!present(theme)) {
 			theme = this.projectTheme;
 		}
-		
+
+		// Override help theme if parameter set
+		String helpTheme = command.getHelpTheme();
+		if (!present(helpTheme)) {
+			// Fall back to project theme, if none set
+			if (present(this.helpTheme)) {
+				helpTheme = this.helpTheme;
+			} else {
+				helpTheme = this.projectTheme;
+			}
+		}
+
 		/* Image request */
 		final String image = command.getFilename();
 		if (present(image)) {
 			// Project specific image
-			String filename = this.helpPath + language + "/" + HELP_IMG_DIR + "/" + theme + "/" + image;
+			String filename = this.helpPath + language + "/" + HELP_IMG_DIR + "/" + helpTheme + "/" + image;
 			
 			File imageFile = new File(filename);
 			if (!imageFile.exists()) {
@@ -312,7 +326,14 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	public void setProjectTheme(String projectTheme) {
 		this.projectTheme = projectTheme;
 	}
-	
+
+	/**
+	 * @param helpTheme the helpTheme to set
+	 */
+	public void setHelpTheme(String helpTheme) {
+		this.helpTheme = helpTheme;
+	}
+
 	/**
 	 * @param requestLogic the requestLogic to set
 	 */
