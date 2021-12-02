@@ -4,6 +4,7 @@
 var removedEntrytypes = [];
 var extraEntrytypes = [];
 
+
 $(function() {
     // check, if a list to remove is set
     if (Array.isArray(removedEntrytypes) && removedEntrytypes.length) {
@@ -45,7 +46,6 @@ function adjustEntrytypesRemoved() {
 }
 
 
-
 /**
  * Adjust displayed entrytypes for custom PUMA instances,
  * where extra entrytypes are added.
@@ -64,7 +64,8 @@ function adjustEntrytypesExtra() {
         var newDescription = $('<div></div>', {
             class: 'entrytype-description'
         }).data('entrytype', element);
-        $('<dt></dt>').html(getString('post.resource.entrytype.' + element + '.title'))
+        $('<dt></dt>').html(getString('post.resource.entrytype.' + element + '.title')
+            + '<span> (' + element + ')</span>')
             .appendTo(newDescription);
         $('<dd></dd>').html(getString('post.resource.entrytype.' + element + '.description'))
             .appendTo(newDescription);
