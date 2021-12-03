@@ -31,6 +31,7 @@ test:
       alias: tag-recommender-db
   script:
     - mvn test --fail-at-end -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings
+    # empty commit
     # no test html
     #- mvn surefire-report:report-only -Daggregate=true
     #- mvn site
