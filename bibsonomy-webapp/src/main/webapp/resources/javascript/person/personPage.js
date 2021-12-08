@@ -69,6 +69,7 @@ function initPublicationPagination(page) {
 			'sortPage': sortPage,
 			'sortPageOrder': sortPageOrder,
 			'page': page, // Which page at the first time
+			'size': 1000, // Number of pages FIXME: controller should get the actual number after fixing the controller
 			'pageSize': 20,
 		},
 		'scroller': $(window), // Who gonna scroll? default is the full window
@@ -83,6 +84,7 @@ function initPublicationPagination(page) {
 		},
 		'after': function(){
 			$("#loader-publications").hide(0);
+			//$('#personPublications').attr("scrollpagination", "enabled");
 		}
 	});
 }
