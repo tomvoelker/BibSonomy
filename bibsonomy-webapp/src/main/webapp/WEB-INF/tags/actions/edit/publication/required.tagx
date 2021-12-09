@@ -55,12 +55,18 @@
 						<div class="col-md-7">
 							<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control" data-selected-entrytype="${post.resource.entrytype}">
 								<c:forEach items="${entryTypes}" var="optionLabel" varStatus="cnt">
+
+									<fmt:message key="post.resource.entrytype.${optionLabel}.title" var="messageString" />
+									<c:if test="${fn:startsWith(messageString,'???')}">
+										<c:set var="messageString" value="${optionLabel}"/>
+									</c:if>
+
 									<c:choose>
 										<c:when test="${entryTypes[cnt.index] eq post.resource.entrytype}">
-											<option value="${entryTypes[cnt.index]}" selected="selected"><c:out value="${optionLabel}" /></option>
+											<option value="${entryTypes[cnt.index]}" selected="selected"><c:out value="${messageString}" /></option>
 										</c:when>
 										<c:otherwise>
-											<option value="${entryTypes[cnt.index]}"><c:out value="${optionLabel}" /></option>
+											<option value="${entryTypes[cnt.index]}"><c:out value="${messageString}" /></option>
 										</c:otherwise>
 									</c:choose>
 								</c:forEach>
@@ -72,7 +78,7 @@
 								</a>
 							</p>
 						</div>
-						
+
 						<div class="col-md-5">
 							<div class="input-group">
 								<fmt:message var="bibtexKey" key="post.resource.bibtexKey" />
@@ -90,24 +96,36 @@
 			</div>
 		</c:when>
 		<c:otherwise>
-			<bsform:select 
-				multiple="${false}" 
-				path="post.resource.entrytype" 
-				id="post.resource.entrytype"
-				labelColSpan="3" 
-				tabindex="2" 
-				size="1" 
-				items="${entryTypes}" noHelp="true">
-				<jsp:attribute name="helpBlock">
-					<c:out value="${entrytypeHelpDescription} "/>
-					<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
-						<fmt:message key="general.learnmore" />
-					</a>
-				</jsp:attribute>
-			</bsform:select>
+
+		    <!-- TODO FIXME: Copy/Past code from above :56-:79 -->
+			<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control" data-selected-entrytype="${post.resource.entrytype}">
+				<c:forEach items="${entryTypes}" var="optionLabel" varStatus="cnt">
+
+					<fmt:message key="post.resource.entrytype.${optionLabel}.title" var="messageString" />
+					<c:if test="${fn:startsWith(messageString,'???')}">
+						<c:set var="messageString" value="${optionLabel}"/>
+					</c:if>
+
+					<c:choose>
+						<c:when test="${entryTypes[cnt.index] eq post.resource.entrytype}">
+							<option value="${entryTypes[cnt.index]}" selected="selected"><c:out value="${messageString}" /></option>
+						</c:when>
+						<c:otherwise>
+							<option value="${entryTypes[cnt.index]}"><c:out value="${messageString}" /></option>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+			</select>
+			<p class="help-block">
+				<c:out value="${entrytypeHelpDescription} "/>
+				<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
+					<fmt:message key="general.learnmore" />
+				</a>
+			</p>
+
 		</c:otherwise>
 	</c:choose>
-	
+
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 	
 	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
