@@ -7,7 +7,9 @@
     <jsp:directive.attribute name="returnUrl" type="java.lang.Boolean" required="false"/>
 
     <c:if test="${not empty researcherid}">
-        <c:set var="formattedId" value="${fn:substring(researcherid, 0, 1)}-${fn:substring(researcherid, 1, 5)}-${fn:substring(researcherid, 5, 9)}" />
+        <c:set var="formattedId" value="${fn:replace(researcherid, '-', '')}" />
+
+        <c:set var="formattedId" value="${fn:substring(researcherid, 0, fn:length(researcherid)-8)}-${fn:substring(researcherid, fn:length(researcherid)-8, fn:length(researcherid)-4)}-${fn:substring(researcherid, fn:length(researcherid)-4, fn:length(researcherid))}" />
         <c:choose>
             <c:when test="${returnUrl}">
                 <a href="https://researcherid.com/rid/${formattedId}" target="_blank" rel="external nofollow">
