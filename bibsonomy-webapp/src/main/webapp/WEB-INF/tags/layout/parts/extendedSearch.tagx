@@ -13,8 +13,8 @@
     <jsp:directive.attribute name="enableReset" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="toggleFiltersOption" type="java.lang.Boolean" required="false"/>
 
-    <c:set var="entrytypes" value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,mastersthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
-    <c:set var="searchfields" value="title,author,editor,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+    <c:set var="entrytypes" value="${properties['extendedSearch.entrytypes']}"/>
+    <c:set var="searchfields" value="${properties['extendedSearch.searchFields']}"/>
 
     <c:if test="${not alwaysShow}">
         <c:set var="hideExtSearch" value="display: none;"/>
