@@ -29,6 +29,7 @@
 	<c:set var="hasClaimedOrIsAdmin" value="${hasClaimedPerson or isAdmin}"/>
 
 	<c:set var="useCRISView" value="${properties['system.cris'] eq 'true'}"/>
+	<c:set var="showProjectLinks" value="${properties['system.cris.project.links']}"/>
 
 	<c:set var="personId" value="${command.person.personId}"/>
 	<c:set var="personName" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}"/>
@@ -129,6 +130,10 @@
 							<div class="col-md-12">
 								<div style="clear: both;">
         							<h3 class="list-headline">
+										<c:if test="${!showProjectLinks}">
+											<strong><fmt:message key="person.show.publications"/></strong><c:out value=" "/>
+											<span class="badge badge-primary"><c:out value="${command.totalCount}"/></span>
+										</c:if>
 										<div class="pull-right btn-group dropdown-align-right all-resources-menu">
 											<div class="btn-group">
 												<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
