@@ -41,8 +41,8 @@
                                 </c:if>
                             </c:if>
                             <button type="button" class="btn btn-default btn-block filter-entry ${buttonClass}" title="${tooltip}" data-value="${entry.name}">
-                                <span class="filter-button-label"><c:out value="${label}" /></span>
                                 <span class="badge badge-light"><c:out value="${entry.count}" /></span>
+                                <span class="filter-button-label"><c:out value="${label}" /></span>
                             </button>
                         </c:forEach>
                     </c:if>
