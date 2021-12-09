@@ -143,7 +143,7 @@ public class RemoteTestAssert {
 		return testSC;
 	}
 
-	private static void compareBibTeXs(String actual, String expected) throws ParseException, ExpansionException, AssertionError, IOException {
+	protected static void compareBibTeXs(String expected, String actual) throws ParseException, ExpansionException, AssertionError, IOException {
 		final BibtexParser parser = new BibtexParser(true);
 		final PersonListExpander personListExpander = new PersonListExpander(true, true);
 		final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, true, true);
@@ -195,7 +195,7 @@ public class RemoteTestAssert {
 				// asymmetric difference both ways to get extra or missing keys of actual and expected Bibtex
 				checkAsymmetricDifferenceBothWays(expectedBibTexValues.keySet(), actualBibTexValues.keySet(), null);
 			} catch (AssertionError ae) {
-				throw new AssertionError("\nDifferent Bibtex-tags\n" + ae.getMessage());
+				throw new AssertionError("\nDifferent Bibtex-tags:\n" + ae.getMessage());
 			}
 
 			// expectedBibtexValues.keySet() and actualBibtexValues.keySet() should contain the same elements or checkAsymmetricDifferenceBothWays should have already thrown an error
@@ -230,7 +230,7 @@ public class RemoteTestAssert {
 				}
 			}
 		}catch (AssertionError ae){
-			throw new ComparisonFailure(ae.getMessage(), expected, actual);
+			throw new ComparisonFailure(ae.getMessage() + "\n", expected, actual);
 		}
 
 	}
@@ -269,11 +269,11 @@ public class RemoteTestAssert {
 
 		}
 		if (actualSet.size() != 0 && expectedSet.size() != 0){
-			throw new AssertionError("Elements not contained in expected Set: " + actualSet + "\nElements not contained in actual Set: " + expectedSet);
+			throw new AssertionError("Elements not contained in expected Set: " + actualSet + "\nElements not contained in actual Set:   " + expectedSet);
 		}else if (actualSet.size() != 0){
 			throw new AssertionError("Elements not contained in expected Set: " + actualSet);
 		}else if (expectedSet.size() != 0){
-			throw new AssertionError("Elements not contained in actual Set" + expectedSet);
+			throw new AssertionError("Elements not contained in actual Set: " + expectedSet );
 		}
 	}
 }
