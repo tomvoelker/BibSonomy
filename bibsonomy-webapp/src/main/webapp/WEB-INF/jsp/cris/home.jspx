@@ -28,14 +28,14 @@
 
 		<jsp:attribute name="content">
 			<c:if test="${not userLoggedIn}">
-				<div class="row">
+				<div class="row cris-header">
 					<div class="col-md-12">
 						<h1 class="text-center"><fmt:message key="cris.home.header"/></h1>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row cris-header">
 					<div class="col-md-12">
-						<p class="lead">
+						<p>
 							<fmt:message key="cris.home.description"/>
 						</p>
 					</div>
@@ -128,7 +128,8 @@
 									   hideMetaData="${false}"
 									   hidePostMenu="${true}"
 									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
-									   disableResourcetypeSelection="${true}">
+									   disableResourcetypeSelection="${true}"
+									   headlineInBody="${true}">
 					</resources:bibtexs>
 				</div>
 			</div>
