@@ -5,7 +5,7 @@ var removedEntrytypes = [];
 var extraEntrytypes = [];
 
 
-$(function() {
+$(function () {
     // check, if a list to remove is set
     if (Array.isArray(removedEntrytypes) && removedEntrytypes.length) {
         adjustEntrytypesRemoved();
@@ -18,7 +18,25 @@ $(function() {
     // set selected if non is selected
     var entrytypeSelect = $('#post\\.resource\\.entrytype');
     var selected = entrytypeSelect.data('selected-entrytype');
-    $(entrytypeSelect).find('option[value=' + selected + ']').attr('selected', 'selected');
+    $(entrytypeSelect).find('option[value="' + selected + '"]').attr('selected', 'selected');
+
+    // on change of select, show description popover
+    $(entrytypeSelect).popover({
+        html: true,
+        placement: 'top',
+        trigger: 'manual',
+        content: function () {
+            return $(entrytypeSelect).find(':selected').data('description');
+        }
+    });
+
+    $(entrytypeSelect).change(function () {
+        $(entrytypeSelect).popover('show');
+    });
+
+    $(entrytypeSelect).focusout(function () {
+        $(entrytypeSelect).popover('hide');
+    })
 });
 
 
@@ -71,4 +89,21 @@ function adjustEntrytypesExtra() {
             .appendTo(newDescription);
         entrytypeHelp.append(newDescription);
     });
+}
+
+function showEntrytypeHint(element) {
+    /*
+    $(element).popover({
+        content: $(element).data('description')
+    }).on({
+        "hide.bs.popover": function() {
+            if ($(this).is(":focus")) return false;
+        },
+        "blur": function() {
+            $(this).popover('destroy');
+        }
+    });
+    */
+
+
 }

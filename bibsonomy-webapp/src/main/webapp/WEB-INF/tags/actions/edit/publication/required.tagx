@@ -9,7 +9,8 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:bibtex="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
+	xmlns:bibtex="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
     <!-- 
     
         Shows the required form fields entrytype, bibtexkey, title, author, 
@@ -44,78 +45,41 @@
 	<fmt:message key="post.resource.entrytype.help.title" var="entrytypeHelpTitle" />
 	<fmt:message key="post.resource.entrytype.description" var="entrytypeHelpDescription" />
 
-	<c:choose>
-		<c:when test="${empty hideBibTeXKey or not hideBibTeXKey}">
-			<div class="form-group">
-				<label class="col-sm-3 control-label" for="post.resource.entrytype">
-					<fmt:message key="post.resource.entrytype" />
-				</label>
-				<div class="col-sm-9">
-					<div class="row">
-						<div class="col-md-7">
-							<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control" data-selected-entrytype="${post.resource.entrytype}">
-								<c:forEach items="${entryTypes}" var="optionLabel" varStatus="cnt">
+	<div class="form-group">
+		<label class="col-sm-3 control-label" for="post.resource.entrytype">
+			<fmt:message key="post.resource.entrytype" />
+		</label>
+		<div class="col-sm-9">
+			<div class="row">
+				<c:set var="selectColWidth" value="12"/>
+				<c:if test="${empty hideBibTeXKey or not hideBibTeXKey}">
+					<c:set var="selectColWidth" value="7"/>
+				</c:if>
 
-									<fmt:message key="post.resource.entrytype.${optionLabel}.title" var="messageString" />
-									<c:if test="${fn:startsWith(messageString,'???')}">
-										<c:set var="messageString" value="${optionLabel}"/>
-									</c:if>
-
-									<c:choose>
-										<c:when test="${entryTypes[cnt.index] eq post.resource.entrytype}">
-											<option value="${entryTypes[cnt.index]}" selected="selected"><c:out value="${messageString}" /></option>
-										</c:when>
-										<c:otherwise>
-											<option value="${entryTypes[cnt.index]}"><c:out value="${messageString}" /></option>
-										</c:otherwise>
-									</c:choose>
-								</c:forEach>
-							</select>
-							<p class="help-block">
-								<c:out value="${entrytypeHelpDescription} "/>
-								<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
-									<fmt:message key="general.learnmore" />
-								</a>
-							</p>
-						</div>
-
-						<div class="col-md-5">
-							<div class="input-group">
-								<fmt:message var="bibtexKey" key="post.resource.bibtexKey" />
-								<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
-								<span class="input-group-btn">
-									<a class="btn btn-default" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)">
-										<span class="fa fa-refresh"><!--  --></span>
-									</a>
-								</span>
-								<form:input placeholder="BibTeX key" id="post.resource.bibtexKey" path="post.resource.bibtexKey" cssClass="form-control" data-toggle="tooltip" data-placement="top" title="${bibtexKey}"/>
-							</div><!-- /input-group -->
-						</div>
-					</div>
-				</div>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<div class="form-group">
-				<label class="col-sm-3 control-label" for="post.resource.entrytype">
-					<fmt:message key="post.resource.entrytype" />
-				</label>
-				<div class="col-sm-9">
-					<!-- TODO FIXME: Copy/Past code from above :56-:79 -->
-					<select name="post.resource.entrytype" id="post.resource.entrytype" class="blablabla form-control" data-selected-entrytype="${post.resource.entrytype}">
+				<div class="col-md-${selectColWidth}">
+					<select name="post.resource.entrytype" id="post.resource.entrytype" class="form-control" data-selected-entrytype="${post.resource.entrytype}">
 						<c:forEach items="${entryTypes}" var="optionLabel" varStatus="cnt">
-
-							<fmt:message key="post.resource.entrytype.${optionLabel}.title" var="messageString" />
+							<fmt:message key="post.resource.entrytype.${optionLabel}.title" var="messageString"/>
 							<c:if test="${fn:startsWith(messageString,'???')}">
 								<c:set var="messageString" value="${optionLabel}"/>
 							</c:if>
 
+							<fmt:message key="post.resource.entrytype.${optionLabel}.description" var="descriptionString"/>
+							<c:if test="${fn:startsWith(descriptionString,'???')}">
+								<c:set var="descriptionString" value=""/>
+							</c:if>
+
 							<c:choose>
 								<c:when test="${entryTypes[cnt.index] eq post.resource.entrytype}">
-									<option value="${entryTypes[cnt.index]}" selected="selected"><c:out value="${messageString}" /></option>
+									<option value="${entryTypes[cnt.index]}" data-description="${descriptionString}"
+											selected="selected">
+										<c:out value="${messageString}"/>
+									</option>
 								</c:when>
 								<c:otherwise>
-									<option value="${entryTypes[cnt.index]}"><c:out value="${messageString}" /></option>
+									<option value="${entryTypes[cnt.index]}" data-description="${descriptionString}">
+										<c:out value="${messageString}"/>
+									</option>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
@@ -127,9 +91,23 @@
 						</a>
 					</p>
 				</div>
+				<c:if test="${empty hideBibTeXKey or not hideBibTeXKey}">
+					<div class="col-md-5">
+						<div class="input-group">
+							<fmt:message var="bibtexKey" key="post.resource.bibtexKey" />
+							<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+							<span class="input-group-btn">
+								<a class="btn btn-default" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)">
+									<span class="fa fa-refresh"><!--  --></span>
+								</a>
+							</span>
+							<form:input placeholder="BibTeX key" id="post.resource.bibtexKey" path="post.resource.bibtexKey" cssClass="form-control" data-toggle="tooltip" data-placement="top" title="${bibtexKey}"/>
+						</div><!-- /input-group -->
+					</div>
+				</c:if>
 			</div>
-		</c:otherwise>
-	</c:choose>
+		</div>
+	</div>
 
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 	
