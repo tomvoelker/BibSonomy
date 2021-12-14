@@ -31,6 +31,9 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.enums.GroupSortKey;
@@ -50,6 +53,8 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class GroupsPageController extends SingleResourceListController implements MinimalisticController<GroupsListCommand> {
 
+	private String defaultRealnameSearch;
+
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
@@ -59,6 +64,14 @@ public class GroupsPageController extends SingleResourceListController implement
 		final ListCommand<Group> groupListCommand = command.getGroups();
 		groupListCommand.setEntriesPerPage(30);
 
+		final boolean isOrganizationPage = command.getOrganizations();
+
+		String userName = null;
+		if (command.isMemberOfOnly() && command.getContext().isUserLoggedIn()) {
+			// Restrict query to user's group/organization
+			userName = command.getContext().getLoginUser().getName();
+		}
+
 		/*
 		 * get requested groups
 		 */
@@ -67,21 +80,25 @@ public class GroupsPageController extends SingleResourceListController implement
 		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
 
-		String userName = null;
-		if (command.isMemberOfOnly() && command.getContext().isUserLoggedIn()) {
-			// Restrict query to user's group/organization
-			userName = command.getContext().getLoginUser().getName();
+		// default realname search case for organizations
+		Set<String> realnames = new HashSet<>();
+		if (isOrganizationPage && !searchPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0) {
+			for (String realname : defaultRealnameSearch.split(",")) {
+				realnames.add(String.format("\"%s\"", realname));
+			}
 		}
+		final String realnameSearch = String.join(" OR ", realnames);
 
 		final GroupQuery groupQuery = GroupQuery.builder()
 				.search(search)
 				.prefixMatch(true)
 				.prefix(command.getPrefix())
+				.realnameSearch(realnameSearch)
 				.userName(userName)
 				.sortKey(sortKey)
 				.sortOrder(sortOrder)
 				.pending(false)
-				.organization(command.getOrganizations())
+				.organization(isOrganizationPage)
 				.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
 				.build();
 		groupListCommand.setList(this.logic.getGroups(groupQuery));
@@ -101,5 +118,9 @@ public class GroupsPageController extends SingleResourceListController implement
 	@Override
 	public GroupsListCommand instantiateCommand() {
 		return new GroupsListCommand();
+	}
+
+	public void setDefaultRealnameSearch(String defaultRealnameSearch) {
+		this.defaultRealnameSearch = defaultRealnameSearch;
 	}
 }

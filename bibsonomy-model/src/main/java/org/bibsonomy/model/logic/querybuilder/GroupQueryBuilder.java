@@ -1,5 +1,7 @@
 package org.bibsonomy.model.logic.querybuilder;
 
+import java.util.Set;
+
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.GroupSortKey;
@@ -12,6 +14,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
     private GroupSortKey groupSortKey = GroupSortKey.GROUP_NAME;
     private SortOrder sortOrder = SortOrder.ASC;
     private Prefix prefix;
+    private String realnameSearch;
 
     private String userName;
     private String externalId;
@@ -56,6 +59,11 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
         return this;
     }
 
+    public GroupQueryBuilder realnameSearch(final String realnameSearch) {
+        this.realnameSearch = realnameSearch;
+        return this;
+    }
+
     /**
      * @param pending if pending groups should be queried
      * @return the group builder
@@ -97,6 +105,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
         groupQuery.setSearch(this.search);
         groupQuery.setUsePrefixMatch(this.usePrefixMatch);
         groupQuery.setPrefix(this.prefix);
+        groupQuery.setRealnameSearch(this.realnameSearch);
         groupQuery.setGroupSortKey(this.groupSortKey);
         groupQuery.setSortOrder(this.sortOrder);
         groupQuery.setUserName(this.userName);

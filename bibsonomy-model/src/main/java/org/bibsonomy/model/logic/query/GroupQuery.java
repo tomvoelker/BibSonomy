@@ -48,6 +48,8 @@ public class GroupQuery extends BasicQuery {
      */
     private Prefix prefix;
 
+    private String realnameSearch;
+
     /**
      * the group sort key
      */
@@ -92,6 +94,14 @@ public class GroupQuery extends BasicQuery {
         this.prefix = prefix;
     }
 
+    public String getRealnameSearch() {
+        return realnameSearch;
+    }
+
+    public void setRealnameSearch(String realnameSearch) {
+        this.realnameSearch = realnameSearch;
+    }
+
     public GroupSortKey getGroupSortKey() {
         return groupSortKey;
     }
@@ -124,7 +134,7 @@ public class GroupQuery extends BasicQuery {
         this.userName = userName;
     }
 
-    public boolean getOrganization() {
+    public boolean isOrganization() {
         return organization;
     }
 

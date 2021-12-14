@@ -38,20 +38,22 @@ import java.util.Map;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
-import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.group.GroupFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -75,6 +77,8 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	public List<Group> getGroups(final User loggedinUser, final GroupQuery query) {
 		return searchEntities(loggedinUser, query);
 	}
+
+
 
 	@Override
 	protected List<Pair<String, SortOrder>> getSortCriteria(final GroupQuery query) {
@@ -107,11 +111,33 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, GroupFields.REALNAME_PREFIX));
 		}
 
-		final Boolean organization = query.getOrganization();
-		if (present(organization)) {
-			filterQuery.must(QueryBuilders.termQuery(GroupFields.ORGANIZATION, organization));
-		}
+		final boolean organization = query.isOrganization();
+		filterQuery.must(QueryBuilders.termQuery(GroupFields.ORGANIZATION, organization));
 
 		return filterQuery;
+	}
+
+	@Override
+	protected BoolQueryBuilder buildMainQuery(User loggedinUser, GroupQuery query) {
+		final BoolQueryBuilder mainQueryBuilder = super.buildMainQuery(loggedinUser, query);
+		final String realnameSearch = query.getRealnameSearch();
+		if (present(realnameSearch)) {
+			final QueryStringQueryBuilder queryStringQueryBuilder = buildStringQueryForGroupRealnames(realnameSearch);
+			mainQueryBuilder.must(queryStringQueryBuilder);
+		}
+
+		return mainQueryBuilder;
+	}
+
+	/**
+	 *
+	 * @param realnameSearch
+	 * @return
+	 */
+	private static QueryStringQueryBuilder buildStringQueryForGroupRealnames(String realnameSearch) {
+		// FIXME use match query
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(GroupFields.REALNAME + "." + ESConstants.RAW_SUFFIX + ":" + realnameSearch)
+				.defaultOperator(Operator.OR);
+		return builder;
 	}
 }
