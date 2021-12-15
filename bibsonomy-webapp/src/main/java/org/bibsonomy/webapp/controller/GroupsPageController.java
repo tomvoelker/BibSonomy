@@ -90,13 +90,12 @@ public class GroupsPageController extends SingleResourceListController implement
 		if (useDefaultRealnameSearch) {
 			realnames.addAll(Arrays.asList(defaultRealnameSearch.split(",")));
 		}
-		final String realnameSearch = String.format("\"%s\"", String.join("\" OR \"", realnames));
 
 		final GroupQuery groupQuery = GroupQuery.builder()
 				.search(search)
 				.prefixMatch(true)
 				.prefix(command.getPrefix())
-				.realnameSearch(realnameSearch)
+				.realnameSearch(realnames)
 				.userName(userName)
 				.sortKey(sortKey)
 				.sortOrder(sortOrder)
@@ -105,6 +104,7 @@ public class GroupsPageController extends SingleResourceListController implement
 				.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
 				.build();
 		final List<Group> groups = this.logic.getGroups(groupQuery);
+		groupListCommand.setList(groups);
 
 		if (useDefaultRealnameSearch) {
 			// TODO shouldn't be necessary, if exact match in ES works

@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
@@ -107,7 +108,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	protected BoolQueryBuilder buildFilterQuery(final User loggedinUser, final GroupQuery query) {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, GroupFields.REALNAME_PREFIX));
 		}
 
@@ -120,7 +121,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	@Override
 	protected BoolQueryBuilder buildMainQuery(User loggedinUser, GroupQuery query) {
 		final BoolQueryBuilder mainQueryBuilder = super.buildMainQuery(loggedinUser, query);
-		final String realnameSearch = query.getRealnameSearch();
+		final Set<String> realnameSearch = query.getRealnameSearch();
 		if (present(realnameSearch)) {
 			final QueryStringQueryBuilder queryStringQueryBuilder = buildStringQueryForGroupRealnames(realnameSearch);
 			mainQueryBuilder.must(queryStringQueryBuilder);
@@ -134,9 +135,11 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	 * @param realnameSearch
 	 * @return
 	 */
-	private static QueryStringQueryBuilder buildStringQueryForGroupRealnames(String realnameSearch) {
-		// FIXME use match query
-		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(GroupFields.REALNAME + "." + ESConstants.RAW_SUFFIX + ":" + realnameSearch)
+	private static QueryStringQueryBuilder buildStringQueryForGroupRealnames(Set<String> realnameSearch) {
+		// TODO use match query
+		final String field = GroupFields.REALNAME + "." + ESConstants.RAW_SUFFIX;
+		final String fieldQuery = String.format("\"%s\"", String.join("\" OR \"", realnameSearch));
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(String.format("%s:%s", field, fieldQuery))
 				.defaultOperator(Operator.OR);
 		return builder;
 	}

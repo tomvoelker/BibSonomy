@@ -14,7 +14,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
     private GroupSortKey groupSortKey = GroupSortKey.GROUP_NAME;
     private SortOrder sortOrder = SortOrder.ASC;
     private Prefix prefix;
-    private String realnameSearch;
+    private Set<String> realnameSearch;
 
     private String userName;
     private String externalId;
@@ -59,7 +59,7 @@ public class GroupQueryBuilder extends BasicQueryBuilder<GroupQueryBuilder> {
         return this;
     }
 
-    public GroupQueryBuilder realnameSearch(final String realnameSearch) {
+    public GroupQueryBuilder realnameSearch(final Set<String> realnameSearch) {
         this.realnameSearch = realnameSearch;
         return this;
     }
