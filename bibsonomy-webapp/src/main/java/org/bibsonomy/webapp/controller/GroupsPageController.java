@@ -31,11 +31,14 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
@@ -77,17 +80,17 @@ public class GroupsPageController extends SingleResourceListController implement
 		 */
 		final String search = command.getSearch();
 		final boolean searchPresent = present(search);
+		final boolean prefixPresent = present(command.getPrefix());
 		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
 
 		// default realname search case for organizations
+		final boolean useDefaultRealnameSearch = isOrganizationPage && !searchPresent && !prefixPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0;
 		Set<String> realnames = new HashSet<>();
-		if (isOrganizationPage && !searchPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0) {
-			for (String realname : defaultRealnameSearch.split(",")) {
-				realnames.add(String.format("\"%s\"", realname));
-			}
+		if (useDefaultRealnameSearch) {
+			realnames.addAll(Arrays.asList(defaultRealnameSearch.split(",")));
 		}
-		final String realnameSearch = String.join(" OR ", realnames);
+		final String realnameSearch = String.format("\"%s\"", String.join("\" OR \"", realnames));
 
 		final GroupQuery groupQuery = GroupQuery.builder()
 				.search(search)
@@ -101,7 +104,12 @@ public class GroupsPageController extends SingleResourceListController implement
 				.organization(isOrganizationPage)
 				.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
 				.build();
-		groupListCommand.setList(this.logic.getGroups(groupQuery));
+		final List<Group> groups = this.logic.getGroups(groupQuery);
+
+		if (useDefaultRealnameSearch) {
+			// TODO shouldn't be necessary, if exact match in ES works
+			groupListCommand.setList(this.removeRealnameSearch(groups, realnames));
+		}
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
@@ -110,6 +118,16 @@ public class GroupsPageController extends SingleResourceListController implement
 
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
+	}
+
+	private List<Group> removeRealnameSearch(List<Group> groups, Set<String> realnames) {
+		groups.removeIf(group -> !present(group.getRealname()) || !realnames.contains(group.getRealname()));
+		if (groups instanceof ResultList<?>) {
+			ResultList<Group> resultList = (ResultList<Group>) groups;
+			resultList.setTotalCount(resultList.size());
+			return resultList;
+		}
+		return groups;
 	}
 
 	/**
