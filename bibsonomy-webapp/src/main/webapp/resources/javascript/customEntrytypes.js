@@ -4,7 +4,7 @@
 var removedEntrytypes = [];
 var extraEntrytypes = [];
 
-
+// TODO create JS constant file for all overwrites, include editPublications
 $(function () {
     // check, if a list to remove is set
     if (Array.isArray(removedEntrytypes) && removedEntrytypes.length) {
@@ -75,7 +75,9 @@ function adjustEntrytypesExtra() {
     // add new extra entrytypes to selection and help description list
     extraEntrytypes.forEach(function (element) {
         // Create new entry for selection
-        var newOption = $('<option></option>').val(element).html(element);
+        var newOption = $('<option></option>', {
+            'data-description': getString('post.resource.entrytype.' + element + '.description')
+        }).val(element).html(element);
         entrytypeSelect.append(newOption);
 
         // Create new entry for description list
@@ -89,21 +91,4 @@ function adjustEntrytypesExtra() {
             .appendTo(newDescription);
         entrytypeHelp.append(newDescription);
     });
-}
-
-function showEntrytypeHint(element) {
-    /*
-    $(element).popover({
-        content: $(element).data('description')
-    }).on({
-        "hide.bs.popover": function() {
-            if ($(this).is(":focus")) return false;
-        },
-        "blur": function() {
-            $(this).popover('destroy');
-        }
-    });
-    */
-
-
 }
