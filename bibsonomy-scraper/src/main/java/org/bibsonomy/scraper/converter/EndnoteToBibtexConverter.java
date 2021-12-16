@@ -68,6 +68,12 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 	 * TODO explain pattern: We should clearly state which kind of Endnote is handled by this Converter
 	 */
 	private static final Pattern LINE_PATTERN       = Pattern.compile("(?s)((%\\S)\\s+(([^%]|%\\s)*))");
+	/**
+	 * start of String has to be "%" , non whitespace char and a whitespace char.
+	 * It should work fine  on user input, but can be tricked by constructing strings, which start with this pattern, but are not EndNote.
+	 */
+	private static final Pattern ENDNOTE_START_PATTERN = Pattern.compile("^%\\S\\s");
+
 
 
 
@@ -362,7 +368,7 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 	 * @return true if snippet is endnote
 	 */
 	public static boolean canHandle(final String snippet) {
-		final Matcher _eachLineMatcher = LINE_PATTERN.matcher(snippet.trim());
+		final Matcher _eachLineMatcher = ENDNOTE_START_PATTERN.matcher(snippet.trim());
 		return _eachLineMatcher.find();	// true if the first line looks like endnote with "%"
 	}
 
