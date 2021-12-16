@@ -86,29 +86,26 @@ public class GroupsPageController extends SingleResourceListController implement
 
 		// default realname search case for organizations
 		final boolean useDefaultRealnameSearch = isOrganizationPage && !searchPresent && !prefixPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0;
-		Set<String> realnames = new HashSet<>();
 		if (useDefaultRealnameSearch) {
-			realnames.addAll(Arrays.asList(defaultRealnameSearch.split(",")));
-		}
-
-		final GroupQuery groupQuery = GroupQuery.builder()
-				.search(search)
-				.prefixMatch(true)
-				.prefix(command.getPrefix())
-				.realnameSearch(realnames)
-				.userName(userName)
-				.sortKey(sortKey)
-				.sortOrder(sortOrder)
-				.pending(false)
-				.organization(isOrganizationPage)
-				.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
-				.build();
-		final List<Group> groups = this.logic.getGroups(groupQuery);
-		groupListCommand.setList(groups);
-
-		if (useDefaultRealnameSearch) {
-			// TODO shouldn't be necessary, if exact match in ES works
-			groupListCommand.setList(this.removeRealnameSearch(groups, realnames));
+			ResultList<Group> groups = new ResultList<>();
+			for (String groupName : defaultRealnameSearch.split(",")) {
+				groups.add(this.logic.getGroupDetails(groupName, false));
+			}
+			groups.setTotalCount(groups.size());
+			groupListCommand.setList(groups);
+		} else {
+			final GroupQuery groupQuery = GroupQuery.builder()
+					.search(search)
+					.prefixMatch(true)
+					.prefix(command.getPrefix())
+					.userName(userName)
+					.sortKey(sortKey)
+					.sortOrder(sortOrder)
+					.pending(false)
+					.organization(isOrganizationPage)
+					.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
+					.build();
+			groupListCommand.setList(this.logic.getGroups(groupQuery));
 		}
 
 		// html format - retrieve tags and return HTML view
@@ -118,16 +115,6 @@ public class GroupsPageController extends SingleResourceListController implement
 
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
-	}
-
-	private List<Group> removeRealnameSearch(List<Group> groups, Set<String> realnames) {
-		groups.removeIf(group -> !present(group.getRealname()) || !realnames.contains(group.getRealname()));
-		if (groups instanceof ResultList<?>) {
-			ResultList<Group> resultList = (ResultList<Group>) groups;
-			resultList.setTotalCount(resultList.size());
-			return resultList;
-		}
-		return groups;
 	}
 
 	/**
