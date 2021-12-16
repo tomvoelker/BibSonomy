@@ -6,6 +6,9 @@ var extraEntrytypes = [];
 
 // TODO create JS constant file for all overwrites, include editPublications
 $(function () {
+    var entrytypeSelect = $('#post\\.resource\\.entrytype');
+    var entrytypeHelp = $('#entrytypeHelp .help-description-list');
+
     // check, if a list to remove is set
     if (Array.isArray(removedEntrytypes) && removedEntrytypes.length) {
         adjustEntrytypesRemoved();
@@ -15,10 +18,20 @@ $(function () {
         adjustEntrytypesExtra();
     }
 
-    // set selected if non is selected
-    var entrytypeSelect = $('#post\\.resource\\.entrytype');
+    // sort entries after entrytypes have been added/removed
+    // sort entrytype dropdown by translated entrytype name
+    entrytypeSelect.html($(entrytypeSelect).children('option').sort(function(a, b) {
+        return $(a).text().toLowerCase() < $(b).text().toLowerCase() ? -1 : 1;
+    }));
+
+    // sort help menu by translated entrytype name
+    entrytypeHelp.html($(entrytypeHelp).children('div').sort(function(a, b) {
+        return $(a).data('entrytype-title').toLowerCase() < $(b).data('entrytype-title').toLowerCase() ? -1 : 1;
+    }));
+
+    // set selected entrytype
     var selected = entrytypeSelect.data('selected-entrytype');
-    $(entrytypeSelect).find('option[value="' + selected + '"]').attr('selected', 'selected');
+    $(entrytypeSelect).val(selected).change();
 
     // on change of select, show description popover
     $(entrytypeSelect).popover({
@@ -36,7 +49,7 @@ $(function () {
 
     $(entrytypeSelect).focusout(function () {
         $(entrytypeSelect).popover('hide');
-    })
+    });
 });
 
 
@@ -74,20 +87,22 @@ function adjustEntrytypesExtra() {
 
     // add new extra entrytypes to selection and help description list
     extraEntrytypes.forEach(function (element) {
+        var title = getString('post.resource.entrytype.' + element + '.title');
+        var description = getString('post.resource.entrytype.' + element + '.description');
         // Create new entry for selection
-        var newOption = $('<option></option>', {
-            'data-description': getString('post.resource.entrytype.' + element + '.description')
-        }).val(element).html(getString('post.resource.entrytype.' + element + '.title'));
+        var newOption = $('<option></option>')
+            .data('description', description)
+            .val(element)
+            .html(title);
         entrytypeSelect.append(newOption);
 
         // Create new entry for description list
-        var newDescription = $('<div></div>', {
-            class: 'entrytype-description'
-        }).data('entrytype', element);
-        $('<dt></dt>').html(getString('post.resource.entrytype.' + element + '.title')
-            + '<span> (' + element + ')</span>')
+        var newDescription = $('<div></div>', {class: 'entrytype-description'})
+            .data('entrytype', element)
+            .data('entrytype-title', title);
+        $('<dt></dt>').html(title + '<span> (' + element + ')</span>')
             .appendTo(newDescription);
-        $('<dd></dd>').html(getString('post.resource.entrytype.' + element + '.description'))
+        $('<dd></dd>').html(description)
             .appendTo(newDescription);
         entrytypeHelp.append(newDescription);
     });

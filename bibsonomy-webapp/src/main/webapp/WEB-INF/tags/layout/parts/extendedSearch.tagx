@@ -114,11 +114,11 @@
                         </button>
                         <ul id="dropdownSelectionEntrytype" class="dropdown-menu">
                             <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
-                                <li data-entrytype="${entrytype}">
-                                    <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
-                                    <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
-                                        <c:set var="entrytypeMessage" value="${entrytype}" />
-                                    </c:if>
+                                <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
+                                <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
+                                    <c:set var="entrytypeMessage" value="${entrytype}" />
+                                </c:if>
+                                <li data-entrytype="${entrytype}" data-entrytype-title="${entrytypeMessage}">
                                     <a onclick="return switchSelection('Entrytype', '${entrytype}', this)" class="dropdown-item">
                                         <c:out value="${entrytypeMessage}"/>
                                     </a>

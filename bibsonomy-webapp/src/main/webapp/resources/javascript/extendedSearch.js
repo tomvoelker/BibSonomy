@@ -6,6 +6,14 @@ const AND = 'AND';
 const OR = 'OR';
 const NOT = 'NOT';
 
+$(function () {
+    // sort entrytype dropdown
+    var entrytypeSelect = $('#dropdownSelectionEntrytype');
+    entrytypeSelect.html($(entrytypeSelect).children('li').sort(function(a, b) {
+        return $(a).data('entrytype-title').toLowerCase() < $(b).data('entrytype-title').toLowerCase() ? -1 : 1;
+    }));
+})
+
 function toggleFilters() {
     $('#extendedFilters').slideToggle();
     $('#expandFilterLink').toggle(0);

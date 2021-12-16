@@ -63,25 +63,13 @@
 							<c:if test="${fn:startsWith(messageString,'???')}">
 								<c:set var="messageString" value="${optionLabel}"/>
 							</c:if>
-
 							<fmt:message key="post.resource.entrytype.${optionLabel}.description" var="descriptionString"/>
 							<c:if test="${fn:startsWith(descriptionString,'???')}">
 								<c:set var="descriptionString" value=""/>
 							</c:if>
-
-							<c:choose>
-								<c:when test="${entryTypes[cnt.index] eq post.resource.entrytype}">
-									<option value="${entryTypes[cnt.index]}" data-description="${descriptionString}"
-											selected="selected">
-										<c:out value="${messageString}"/>
-									</option>
-								</c:when>
-								<c:otherwise>
-									<option value="${entryTypes[cnt.index]}" data-description="${descriptionString}">
-										<c:out value="${messageString}"/>
-									</option>
-								</c:otherwise>
-							</c:choose>
+							<option value="${entryTypes[cnt.index]}" data-description="${descriptionString}">
+								<c:out value="${messageString}"/>
+							</option>
 						</c:forEach>
 					</select>
 					<p class="help-block">

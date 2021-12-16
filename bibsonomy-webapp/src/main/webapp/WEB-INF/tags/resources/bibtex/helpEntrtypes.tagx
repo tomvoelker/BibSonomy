@@ -24,7 +24,7 @@
                             <c:if test="${fn:startsWith(description, '???')}">
                                 <c:set var="description" value="-"/>
                             </c:if>
-                            <div class="entrytype-description" data-entrytype="${entrytype}">
+                            <div class="entrytype-description" data-entrytype="${entrytype}" data-entrytype-title="${title}">
                                 <dt><c:out value="${title}"/><span><c:out value=" (${entrytype})"/></span></dt>
                                 <dd><c:out value="${description}" escapeXml="${false}"/></dd>
                             </div>
