@@ -77,7 +77,7 @@ function adjustEntrytypesExtra() {
         // Create new entry for selection
         var newOption = $('<option></option>', {
             'data-description': getString('post.resource.entrytype.' + element + '.description')
-        }).val(element).html(element);
+        }).val(element).html(getString('post.resource.entrytype.' + element + '.title'));
         entrytypeSelect.append(newOption);
 
         // Create new entry for description list
