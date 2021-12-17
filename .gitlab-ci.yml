@@ -87,4 +87,4 @@ deploy_biblicious:
   only:
     - biblicious
   script:
-    - deploy.sh thewhite
+    - bash deploy.sh thewhite
