@@ -81,3 +81,10 @@ test-scraper:
     expose_as: scrapertestresults
     paths:
       - target/
+
+deploy_biblicious:
+  stage: deploy
+  only:
+    - biblicious
+  script:
+    - deploy.sh thewhite
