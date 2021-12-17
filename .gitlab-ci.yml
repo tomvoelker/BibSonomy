@@ -66,8 +66,9 @@ test:
 
 test-scraper:
   stage: test
-  only:
-    - "/^.*scraper.*$/"
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i
+      when: manual
   script:
     - mvn test $MAVEN_OPTS --fail-at-end -Dmaven.test.failure.ignore=true -pl bibsonomy-scraper -P allTests
   artifacts:
@@ -84,7 +85,8 @@ test-scraper:
 
 deploy_biblicious:
   stage: deploy
-  only:
-    - "/biblicious/"
+  rules:
+    - if: $CI_COMMIT_TAG = "biblicious"
+      when: manual
   script:
     - bash deploy.sh thewhite
