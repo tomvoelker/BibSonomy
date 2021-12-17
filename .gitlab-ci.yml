@@ -14,7 +14,7 @@ build:
     - mvn clean install $MAVEN_OPTS -DskipTests
   artifacts:
     untracked: true
-    expire_in: 1 days
+    expire_in: 1 hour
     expose_as: jars
     paths:
       - target/
@@ -55,7 +55,7 @@ test:
   artifacts:
     untracked: true
     when: always
-    expire_in: 1 days
+    expire_in: 1 hour
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
@@ -73,7 +73,7 @@ test-scraper:
   artifacts:
     untracked: true
     when: always
-    expire_in: 1 days
+    expire_in: 1 hour
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
