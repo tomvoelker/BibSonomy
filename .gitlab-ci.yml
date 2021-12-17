@@ -86,7 +86,7 @@ test-scraper:
 deploy_biblicious:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_TAG = "biblicious"
+    - if: $CI_COMMIT_TAG == "biblicious"
       when: manual
   script:
     - mvn tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious
