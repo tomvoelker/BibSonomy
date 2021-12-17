@@ -1,0 +1,36 @@
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+          xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
+
+    <div class="row">
+        <div class="col-md-12 publication-list">
+            <resources:bibtexs listView="${command.bibtex}"
+                               loginUserName="${command.context.loginUser.name}"
+                               requPath="${requPath}"
+                               widthClassName="wide"
+                               isClipboard="${false}"
+                               showBookmark="${false}"
+                               showPublication="${true}"
+                               hideHeadline="${true}"
+                               hideCounts="${true}"
+                               hideMetaData="${false}"
+                               hidePostMenu="${false}"
+                               onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
+                               disableResourcetypeSelection="${true}">
+                <jsp:attribute name="additionalSorting">
+                    <!-- no options -->
+                </jsp:attribute>
+                <jsp:attribute name="addAsLastItem">
+                    <div id="publicationsfooter">
+                        <rc:nextprev listView="${command.bibtex}" listViewStartParamName="${command.bibtex.start}" onClickOverride="updateResults" />
+                    </div>
+                </jsp:attribute>
+            </resources:bibtexs>
+        </div>
+    </div>
+</jsp:root>

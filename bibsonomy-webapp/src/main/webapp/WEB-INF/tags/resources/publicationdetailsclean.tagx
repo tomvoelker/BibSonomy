@@ -117,15 +117,6 @@
 					</c:if>
 				</c:if>
 			</c:if>
-			<!--+ 
-			 	| selection of citation format 
-			 	+-->
-			<hr />
-			<h4 class="pub-details">
-				<span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" />
-				<export:favLayoutHint />
-			</h4>
-			<pub:citation post="${post}"/>
 		</div>
 	</div>
 	</div>

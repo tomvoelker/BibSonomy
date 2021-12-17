@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model.logic.querybuilder;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
@@ -45,12 +48,17 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
-	private PersonResourceRelationType relationType;
+
 	private String interhash;
 	private Integer authorIndex;
 	private String personId;
+
+	private PersonResourceRelationType relationType;
 	private PersonResourceRelationOrder order;
+
+	private boolean onlyTheses;
 	private boolean groupByInterhash;
+
 
 	/**
 	 * @param withPersons whether to initialize the person references in the result objects
@@ -88,6 +96,11 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 		this.personId = personId;
 		return this;
 	}
+
+	public ResourcePersonRelationQueryBuilder onlyTheses(boolean onlyTheses) {
+		this.onlyTheses = onlyTheses;
+		return this;
+	}
 	
 	public ResourcePersonRelationQueryBuilder byRelationType(PersonResourceRelationType relationType) {
 		this.relationType = relationType;
@@ -115,7 +128,7 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	 */
 	public ResourcePersonRelationQuery build() {
 		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
-						relationType, interhash, authorIndex, personId, order, groupByInterhash);
+				relationType, interhash, authorIndex, personId, order, onlyTheses, groupByInterhash);
 	}
 
 	@Override

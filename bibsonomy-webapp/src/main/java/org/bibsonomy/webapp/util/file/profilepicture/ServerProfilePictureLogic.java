@@ -51,7 +51,6 @@ import org.bibsonomy.util.file.profilepicture.PictureScaler;
 public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	private final String path;
 	private String defaultFileName;
-	private boolean hasDefaultProfilePicture;
 	
 	private TempFileLogic tempFileLogic;
 	private final ExtensionChecker extensionChecker = new ListExtensionChecker(PICTURE_EXTENSIONS);
@@ -98,13 +97,7 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 
 	@Override
 	public boolean hasProfilePicture(final String username) {
-		File profilePicture;
-		if (this.hasDefaultProfilePicture) {
-			profilePicture = getProfilePictureForUser(username);
-		} else {
-			profilePicture = new File(getPicturePath(username));
-		}
-
+		File profilePicture = new File(getPicturePath(username));
 		return profilePicture.exists();
 	}
 
@@ -161,10 +154,6 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	 */
 	public void setDefaultFileName(String defaultFileName) {
 		this.defaultFileName = defaultFileName;
-	}
-
-	public void setHasDefaultProfilePicture(boolean hasDefaultProfilePicture) {
-		this.hasDefaultProfilePicture = hasDefaultProfilePicture;
 	}
 
 	/**

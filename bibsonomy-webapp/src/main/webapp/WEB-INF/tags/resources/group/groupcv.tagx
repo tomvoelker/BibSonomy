@@ -5,6 +5,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 
     <!--+
@@ -13,11 +14,13 @@
     	|
     	+-->
 
-	
 	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
 
    	<fmt:message key="group.cv.title" var="cvtitle">
    		<fmt:param value="${group.name}"/>
    	</fmt:message>
-	<a class="btn btn-default btn-primary btn-xs" href="/cv/group/${fn:escapeXml(group.name)}"><span class="fa fa-group"><!--  --></span><c:out value=" "/><fmt:message key="navi.cv.abbrev"/></a>
+	<a class="btn btn-default btn-primary btn-xs" href="${relativeUrlGenerator.getCVUrlByGroup(group.name)}" title="${cvtitle}">
+		<fontawesome:icon icon="group" fixedWidth="${true}"/>
+		<fmt:message key="navi.cv.abbrev"/>
+	</a>
 </jsp:root>

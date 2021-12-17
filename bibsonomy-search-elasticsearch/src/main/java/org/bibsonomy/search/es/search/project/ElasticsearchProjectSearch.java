@@ -201,7 +201,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_PREFIX));
 		}
 

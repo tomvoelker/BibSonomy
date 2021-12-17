@@ -64,16 +64,8 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 		final int limit = BasicQueryUtils.calcLimit(query);
 		final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(query.getPersonId(), limit, offset, session);
 
-		// FIXME use a join to retrieve the necessary information
 		if (query.isWithPersonsOfPosts()) {
-			for (final ResourcePersonRelation resourcePersonRelation : relations) {
-				final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
-
-				final List<ResourcePersonRelation> relsOfPub = this.getPersonDatabaseManager()
-								.getResourcePersonRelationsWithPersonsByInterhash(interHash, session);
-
-				resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
-			}
+			this.getPersonDatabaseManager().loadAllRelationsInPosts(relations, session);
 		}
 
 		return relations;

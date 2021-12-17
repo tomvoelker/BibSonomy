@@ -31,7 +31,21 @@
 				<jsp:invoke fragment="pubActionButtons" />
 				<span itemprop="name"><c:out value="${pubTitle}" /></span>
 			</h1>
-			<p><bib:desc post="${post}" publication="${post.resource}" restrictToFirstAuthors="${false}" /></p>
+
+			<bib:desc
+					publication="${post.resource}"
+					post="${post}"
+					restrictToFirstAuthors="${false}"
+			/>
+			<c:set var="doi" value="${post.resource.miscFields['doi']}" />
+			<c:if test="${not empty doi}">
+				<br />
+				<span class="additional-entrytype-information">
+					DOI: <a href="https://dx.doi.org/${doi}"><c:out value="${doi}" /></a>
+				</span>
+			</c:if>
+
+
 		</div>
 	</div>
 </jsp:root>

@@ -6,6 +6,14 @@ const AND = 'AND';
 const OR = 'OR';
 const NOT = 'NOT';
 
+$(function () {
+    // sort entrytype dropdown
+    var entrytypeSelect = $('#dropdownSelectionEntrytype');
+    entrytypeSelect.html($(entrytypeSelect).children('li').sort(function(a, b) {
+        return $(a).data('entrytype-title').toLowerCase() < $(b).data('entrytype-title').toLowerCase() ? -1 : 1;
+    }));
+})
+
 function toggleFilters() {
     $('#extendedFilters').slideToggle();
     $('#expandFilterLink').toggle(0);
@@ -83,6 +91,8 @@ function addFilter() {
     input.val(query);
 }
 
+var escapedFields = ['title', 'author', 'editor', 'publisher', 'institution']
+
 function appendFilter(query, operator, key, value) {
 
     // check, if empty key or value
@@ -94,6 +104,10 @@ function appendFilter(query, operator, key, value) {
     const unselected = '<span class="unselected">';
     if (key.includes(unselected) || value.includes(unselected)) {
         return query;
+    }
+
+    if (escapedFields.includes(key)) {
+        value = '"' + value + '"';
     }
 
     const term = key + ':' + value;

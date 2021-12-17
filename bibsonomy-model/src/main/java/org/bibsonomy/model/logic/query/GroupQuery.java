@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import java.util.Set;
+
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.GroupSortKey;
@@ -47,6 +49,8 @@ public class GroupQuery extends BasicQuery {
      * if set only get groups with names starting with prefix
      */
     private Prefix prefix;
+
+    private Set<String> realnameSearch;
 
     /**
      * the group sort key
@@ -92,6 +96,14 @@ public class GroupQuery extends BasicQuery {
         this.prefix = prefix;
     }
 
+    public Set<String> getRealnameSearch() {
+        return realnameSearch;
+    }
+
+    public void setRealnameSearch(Set<String> realnameSearch) {
+        this.realnameSearch = realnameSearch;
+    }
+
     public GroupSortKey getGroupSortKey() {
         return groupSortKey;
     }
@@ -124,7 +136,7 @@ public class GroupQuery extends BasicQuery {
         this.userName = userName;
     }
 
-    public boolean getOrganization() {
+    public boolean isOrganization() {
         return organization;
     }
 

@@ -31,7 +31,9 @@ package org.bibsonomy.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -159,6 +161,14 @@ public class UrlUtilsTest {
 		assertEquals("test%20test", UrlUtils.encodePathSegment("test test"));
 		assertEquals("%c3%a4%c3%bc%c3%b6", UrlUtils.encodePathSegment("äüö"));
 		assertEquals("test+test", UrlUtils.encodePathSegment("test+test"));
+	}
+
+	@Test
+	public void testIsUrl() {
+		assertTrue(UrlUtils.isUrl("https://bibsonomy.org"));
+		assertTrue(UrlUtils.isUrl("https://www.bibsonomy.org"));
+		assertTrue(UrlUtils.isUrl("https://www.bibsonomy.org?test=parameter"));
+		assertFalse(UrlUtils.isUrl("bibsonomy"));
 	}
 
 }
