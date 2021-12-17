@@ -89,4 +89,4 @@ deploy_biblicious:
     - if: $CI_COMMIT_TAG = "biblicious"
       when: manual
   script:
-    - bash deploy.sh thewhite
+    - mvn tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious
