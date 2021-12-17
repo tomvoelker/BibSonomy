@@ -1,6 +1,6 @@
 image: tomvoelker/maven-mariadb
 
-variables: 
+variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 cache:
@@ -11,10 +11,10 @@ cache:
 build:
   stage: build
   script:
-    - mvn clean install -DskipTests $MAVEN_OPTS
+    - mvn clean install $MAVEN_OPTS -DskipTests
   artifacts:
     untracked: true
-    expire_in: 3 days
+    expire_in: 1 days
     expose_as: jars
     paths:
       - target/
@@ -24,7 +24,7 @@ test:
   variables:
     MARIADB_ROOT_PASSWORD: root
     MARIADB_USER: bibsonomy
-    MARIADB_PASSWORD: password                                       
+    MARIADB_PASSWORD: password
   services:
     - mariadb:10.3
   before_script:
@@ -55,7 +55,7 @@ test:
   artifacts:
     untracked: true
     when: always
-    expire_in: 3 days
+    expire_in: 1 days
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
@@ -68,12 +68,12 @@ test-scraper:
   stage: test
   only:
     - /^.*scraper.*$/
-  script: 
-    - mvn test $MAVEN_OPTS --fail-at-end -Dmaven.test.failure.ignore=true -pl bibsonomy-scraper -P allTests 
+  script:
+    - mvn test $MAVEN_OPTS --fail-at-end -Dmaven.test.failure.ignore=true -pl bibsonomy-scraper -P allTests
   artifacts:
     untracked: true
     when: always
-    expire_in: 3 days
+    expire_in: 1 days
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
@@ -81,3 +81,8 @@ test-scraper:
     expose_as: scrapertestresults
     paths:
       - target/
+
+deploy_biblicious:
+  stage: deploy
+  script:
+    - deploy.sh thewhite
