@@ -4,7 +4,7 @@
             <id>bibsonomy-test-settings</id>
             <properties>
                 <database.main.url>
-                    jdbc:mysql://main-db/test?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                    jdbc:mysql://mariadb/main_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
                 </database.main.url>
                 <database.main.username>
                     bibsonomy
@@ -14,7 +14,7 @@
                 </database.main.password>
 
                 <database.recommender.item.url>
-                    jdbc:mysql://item-recommender-db/test?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                    jdbc:mysql://mariadb/item_recommender_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
                 </database.recommender.item.url>
                 <database.recommender.item.username>
                     bibsonomy
@@ -24,7 +24,7 @@
                 </database.recommender.item.password>
 
                 <database.recommender.tag.url>
-                    jdbc:mysql://tag-recommender-db/test?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                    jdbc:mysql://mariadb/tag_recommender_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
                 </database.recommender.tag.url>
                 <database.recommender.tag.username>
                     bibsonomy

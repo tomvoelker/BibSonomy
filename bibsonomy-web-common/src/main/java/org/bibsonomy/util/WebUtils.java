@@ -99,24 +99,18 @@ public class WebUtils {
 	 */
 	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
 
-	/**
-	 * according to http://hc.apache.org/httpclient-3.x/threading.html
-	 * HttpClient is thread safe and we can use one instance for several requests.
-	 */
-	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
-	private static final HttpClient CLIENT = getHttpClient();
-
+	
 	/**
 	 * default config for http client
 	 */
 	private static final RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig.custom()
-		.setConnectTimeout(CONNECTION_TIMEOUT)
-		.setSocketTimeout(READ_TIMEOUT)
-		.setConnectionRequestTimeout(READ_TIMEOUT)
-		.setMaxRedirects(MAX_REDIRECT_COUNT)
-		.setCircularRedirectsAllowed(ALLOW_CIRCULAR_REDIRECT)
-		.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
-
+	.setConnectTimeout(CONNECTION_TIMEOUT)
+	.setSocketTimeout(READ_TIMEOUT)
+	.setConnectionRequestTimeout(READ_TIMEOUT)
+	.setMaxRedirects(MAX_REDIRECT_COUNT)
+	.setCircularRedirectsAllowed(ALLOW_CIRCULAR_REDIRECT)
+	.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+	
 	/**
 	 * @return the default request config used for instances of http client
 	 */
@@ -132,10 +126,18 @@ public class WebUtils {
 	 *
 	 * @return the configured {@link HttpClient}
 	 */
+
+	/**
+	 * according to http://hc.apache.org/httpclient-3.x/threading.html
+	 * HttpClient is thread safe and we can use one instance for several requests.
+	 */
+	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+	private static final HttpClient CLIENT = getHttpClient();
+
 	public static HttpClient getHttpClient(final RequestConfig defaultRequestConfig) {
 		/*
-		 * configure client
-		 */
+		* configure client
+		*/
 		final HttpClientBuilder builder = HttpClientBuilder.create();
 		builder.setDefaultRequestConfig(defaultRequestConfig);
 		builder.setConnectionManager(CONNECTION_MANAGER);
