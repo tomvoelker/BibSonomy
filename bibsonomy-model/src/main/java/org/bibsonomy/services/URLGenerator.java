@@ -112,8 +112,10 @@ public class URLGenerator {
 	public  static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
+	private static final String CV_PREFIX = "cv";
 	private static final String DOCUMENT_PREFIX = "documents";
 	private static final String DISAMBIGUATION_PREFIX = "person";
+	private static final String EXPLORE_PREFIX = "explore";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
@@ -150,7 +152,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 	private static final String USER_RELATION = "handleUserRelation";
-  private static final String SCRAPER_INFO = "scraperinfo";
+  	private static final String SCRAPER_INFO = "scraperinfo";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -522,7 +524,7 @@ public class URLGenerator {
 	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
 		return "edit" + StringUtils.capitalizeWord(getResourceNameForEditForm(resourceClass));
 	}
-	
+
 	/**
 	 * @param resourceClass
 	 * @return
@@ -734,6 +736,34 @@ public class URLGenerator {
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
 		final String url = this.getGroupUrlString(groupName) + SLASH + UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the group's CV page
+	 * @param groupName the group name
+	 * @return URL to group's CV page
+	 */
+	public String getCVUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(CV_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * Constructs the URL for the group's explore page
+	 * @param groupName the group name
+	 * @return URL to group's explore page
+	 */
+	public String getExploreUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(EXPLORE_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
 	}
 
 	/**
@@ -1458,6 +1488,20 @@ public class URLGenerator {
 				+ "/"
 				+ UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the user's CV page
+	 * @param userName the group name
+	 * @return URL to user's CV page
+	 */
+	public String getCVUrlByUser(final String userName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(CV_PREFIX);
+		builder.addPathElement(USER_PREFIX);
+		builder.addPathElement(userName);
+
+		return this.getUrl(builder.asString());
 	}
 	
 	/**

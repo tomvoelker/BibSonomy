@@ -29,7 +29,7 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -37,8 +37,11 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.HomepageCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -62,6 +65,7 @@ public class HomepageController extends SingleResourceListController implements 
 	private String newsTag = "bibsonomynews";
 
 	private boolean crisEnabled;
+	private String college;
 
 	/*
 	 * on the homepage, only 50 tags are shown in the tag cloud
@@ -74,9 +78,29 @@ public class HomepageController extends SingleResourceListController implements 
 		final boolean userLoggedin = context.isUserLoggedIn();
 
 		/*
-		 * if the user is not logged in show a static cris home
+		 * Show news carousel and latest publication of the configured college in CRIS mode
 		 */
-		if (!userLoggedin && this.crisEnabled) {
+		if (this.crisEnabled) {
+			/*
+			 * Get 10 latest publications
+			 */
+			ListCommand<Post<GoldStandardPublication>> publications = command.getGoldStandardPublications();
+			publications.setEntriesPerPage(10);
+			final Calendar calendar = Calendar.getInstance();
+			final PostQueryBuilder publicationsQuery = new PostQueryBuilder()
+					.college(this.college)
+					.entriesStartingAt(publications.getEntriesPerPage(), publications.getStart())
+					.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.YEAR))
+					.search(String.format("year:[* TO %s]", calendar.get(Calendar.YEAR)));
+
+			publications.setList(this.logic.getPosts(publicationsQuery.createPostQuery(GoldStandardPublication.class)));
+
+			/*
+			 * Add news posts (= latest blog posts) for carousel news
+			 */
+			this.setNews(command, 5);
+
+			this.endTiming();
 			return Views.CRIS_HOMEPAGE;
 		}
 
@@ -112,26 +136,36 @@ public class HomepageController extends SingleResourceListController implements 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, MAX_TAGS, null);
-			
+
 			/*
-			 * add news posts (= latest blog posts)
+			 * add news posts (= latest blog posts) for sidebar
 			 */
-			final PostQuery<Bookmark> query = new PostQuery<>(Bookmark.class);
-			query.setGrouping(GroupingEntity.GROUP);
-			query.setGroupingName(this.newsGroup);
-			query.setTags(Collections.singletonList(this.newsTag));
-			query.setStart(0);
-			query.setEnd(3);
-			query.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC));
-			command.setNews(this.logic.getPosts(query));
+			this.setNews(command, 3);
+
 			this.endTiming();
-			
 			return Views.HOMEPAGE;
 		}
 		
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
+	}
+
+	/**
+	 * Get the latest news of the configured news group and tag and set it for the command
+	 *
+	 * @param command the command
+	 * @param numOfNews number of news posts
+	 */
+	private void setNews(final HomepageCommand command, final int numOfNews) {
+		final PostQuery<Bookmark> newsQuery = new PostQuery<>(Bookmark.class);
+		newsQuery.setGrouping(GroupingEntity.GROUP);
+		newsQuery.setGroupingName(this.newsGroup);
+		newsQuery.setTags(Collections.singletonList(this.newsTag));
+		newsQuery.setStart(0);
+		newsQuery.setEnd(numOfNews);
+		newsQuery.setSortCriteria(SortUtils.singletonSortCriteria(SortKey.DATE, SortOrder.DESC));
+		command.setNews(this.logic.getPosts(newsQuery));
 	}
 
 	/**
@@ -167,5 +201,12 @@ public class HomepageController extends SingleResourceListController implements 
 	 */
 	public void setCrisEnabled(boolean crisEnabled) {
 		this.crisEnabled = crisEnabled;
+	}
+
+	/**
+	 * @param college the college to set
+	 */
+	public void setCollege(String college) {
+		this.college = college;
 	}
 }

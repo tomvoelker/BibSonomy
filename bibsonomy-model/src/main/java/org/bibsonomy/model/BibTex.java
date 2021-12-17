@@ -29,27 +29,25 @@
  */
 package org.bibsonomy.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
@@ -66,6 +64,13 @@ public class BibTex extends Resource {
 	
 	/** Logging used for problems cloning objects **/
 	private static final Log log = LogFactory.getLog(BibTex.class);
+
+	/** the entrytype field */
+	public static final String ENTRYTYPE_FIELD_NAME = "entrytype";
+
+	/** the year field */
+	public static final String YEAR_FIELD_NAME = "year";
+
 	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
@@ -859,5 +864,17 @@ public class BibTex extends Resource {
 			return null;
 		}
 	}
+
+	/**<
+	 * a lookup method for method references for this class
+	 */
+	public static final Function<String, FieldDescriptor<BibTex, ?>> METHOD_REFERENCE = (field) -> {
+		switch (field) {
+			case ENTRYTYPE_FIELD_NAME: return new FieldDescriptor<>(ENTRYTYPE_FIELD_NAME, BibTex::getEntrytype);
+			case YEAR_FIELD_NAME: return new FieldDescriptor<>(YEAR_FIELD_NAME, BibTex::getYear);
+		}
+
+		return null;
+	};
 
 }

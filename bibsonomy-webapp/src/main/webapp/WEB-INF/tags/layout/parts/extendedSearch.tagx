@@ -5,7 +5,7 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="headerMessage" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="searchPlaceholderKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
@@ -13,8 +13,8 @@
     <jsp:directive.attribute name="enableReset" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="toggleFiltersOption" type="java.lang.Boolean" required="false"/>
 
-    <c:set var="entrytypes" value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,masterthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
-    <c:set var="searchfields" value="title,author,editor,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+    <c:set var="entrytypes" value="${properties['extendedSearch.entrytypes']}"/>
+    <c:set var="searchfields" value="${properties['extendedSearch.searchFields']}"/>
 
     <c:if test="${not alwaysShow}">
         <c:set var="hideExtSearch" value="display: none;"/>
@@ -28,7 +28,7 @@
     <div id="extendedSearch" class="jumbotron search" style="${hideExtSearch}">
         <div class="row">
             <div class="col-md-10">
-                <h2><fmt:message key="${headerMessageKey}"/></h2>
+                <h2>${headerMessage}</h2>
             </div>
             <div class="col-md-2" style="padding-top: 20px;">
                 <c:if test="${not alwaysShow}">
@@ -61,7 +61,7 @@
         </div>
 
         <c:if test="${toggleFiltersOption}">
-            <div class="row" style="text-align: right;">
+            <div id="extendedFiltersToggle" class="row" style="text-align: right;">
                 <div class="col-md-12">
                     <a href="#" id="expandFilterLink" onclick="toggleFilters()"><fmt:message key="search.extended.header" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></a>
                     <a href="#" id="hideFilterLink" style="display: none;" onclick="toggleFilters()"><fmt:message key="search.extended.hide" /> <fontawesome:icon icon="angle-double-up" fixedWidth="${true}"/></a>
@@ -89,10 +89,12 @@
                                     <fmt:message key="search.extended.field"/>
                                 </span> <span class="caret"><!-- keep me  --></span>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul id="dropdownSelectionField" class="dropdown-menu">
                                 <c:forEach var="field" items="${fn:split(searchfields, ',')}">
-                                    <li><a onclick="return switchSelection('Field', '${field}', this)"
-                                           class="dropdown-item"><fmt:message key="search.extended.field.${field}"/></a>
+                                    <li data-field="${field}">
+                                        <a onclick="return switchSelection('Field', '${field}', this)" class="dropdown-item">
+                                            <fmt:message key="search.extended.field.${field}"/>
+                                        </a>
                                     </li>
                                 </c:forEach>
                             </ul>
@@ -110,10 +112,16 @@
                             <fmt:message key="search.extended.entrytype"/>
                         </span> <span class="caret"><!-- keepme --></span>
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul id="dropdownSelectionEntrytype" class="dropdown-menu">
                             <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
-                                <li><a onclick="return switchSelection('Entrytype', '${entrytype}', this)"
-                                       class="dropdown-item"><fmt:message key="search.extended.entrytype.${entrytype}"/></a>
+                                <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
+                                <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
+                                    <c:set var="entrytypeMessage" value="${entrytype}" />
+                                </c:if>
+                                <li data-entrytype="${entrytype}" data-entrytype-title="${entrytypeMessage}">
+                                    <a onclick="return switchSelection('Entrytype', '${entrytype}', this)" class="dropdown-item">
+                                        <c:out value="${entrytypeMessage}"/>
+                                    </a>
                                 </li>
                             </c:forEach>
                         </ul>

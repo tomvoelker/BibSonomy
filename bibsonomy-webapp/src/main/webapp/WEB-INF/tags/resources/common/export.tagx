@@ -19,7 +19,7 @@
 		<li><a href="${rssPath}"><fontawesome:icon icon="rss" spaceAfter="5" /> <fmt:message key="post.meta.rss"/></a></li>
 		<c:url var="bibPath" value="/bib${escapedRequestPathAndQuery}"/>
 		<li><a href="${bibPath}" id="bibtexListExport"><fontawesome:icon icon="book" spaceAfter="5" /><fmt:message key="bibtex.actions.bibtex"/></a></li>
-		<c:url var="burstPath"  value="/burst/${escapedRequestPathAndQuery}" />
+		<c:url var="burstPath"  value="/burst${escapedRequestPathAndQuery}" />
 		<li><a href="${burstPath}"><fontawesome:icon icon="code-fork" spaceAfter="5" /><fmt:message key="post.meta.rdf"/></a></li>
 		<c:url var="morePath" value="/export${escapedRequestPathAndQuery}" />
 		<li class="divider"><!-- keep me --></li>

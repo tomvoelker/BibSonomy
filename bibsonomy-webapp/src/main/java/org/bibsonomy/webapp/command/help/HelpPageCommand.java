@@ -57,9 +57,12 @@ public class HelpPageCommand extends DownloadFileCommand {
 	
 	/** <code>true</code> if the requested help page could not be found. */
 	private boolean pageNotFound = false;
-	
+
 	/** The project theme */
 	private String theme;
+
+	/** The help theme */
+	private String helpTheme;
 	
 	/** the language */
 	private String language;
@@ -150,6 +153,20 @@ public class HelpPageCommand extends DownloadFileCommand {
 	 */
 	public void setTheme(String theme) {
 		this.theme = theme;
+	}
+
+	/**
+	 * @return the help theme
+	 */
+	public String getHelpTheme() {
+		return helpTheme;
+	}
+
+	/**
+	 * @param helpTheme the help theme to set
+	 */
+	public void setHelpTheme(String helpTheme) {
+		this.helpTheme = helpTheme;
 	}
 
 	/**

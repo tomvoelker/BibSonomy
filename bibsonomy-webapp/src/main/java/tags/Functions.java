@@ -332,6 +332,17 @@ public class Functions {
 	}
 
 	/**
+	 * Wrapper for org.bibsonomy.util.UrlUtils.isUrl
+	 *
+	 * @see org.bibsonomy.util.UrlUtils
+	 * @param url
+	 * @return true, if valid url
+	 */
+	public static boolean isUrl(final String url) {
+		return UrlUtils.isUrl(url);
+	}
+
+	/**
 	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
 	 * 
 	 * @param url
@@ -1023,5 +1034,21 @@ public class Functions {
 			log.error("error while checking for same host", e);
 		}
 		return false;
+	}
+
+	/**
+	 * Filter a list of groups for just plain groups or organizations.
+	 *
+	 * @param groups list of groups to filter
+	 * @return filtered list of groups
+	 */
+	public static List<Group> filterGroups(List<Group> groups, boolean organization) {
+		List<Group> result = new ArrayList<>();
+		for (Group group : groups) {
+			if ((organization && group.isOrganization()) || (!organization && !group.isOrganization())) {
+				result.add(group);
+			}
+		}
+		return result;
 	}
 }

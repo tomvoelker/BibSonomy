@@ -184,6 +184,10 @@
 	<bean id="projectTheme" class="java.lang.String">
 		<constructor-arg value="${project.theme}" />
 	</bean>
+
+	<bean id="helpTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme.help}" />
+	</bean>
 	
 	<bean id="projectEmail" class="java.lang.String">
 		<constructor-arg value="${project.email}" />
@@ -367,45 +371,10 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
-								<value>formResponseString</value>
-								<value>formMatchId</value>
-								<value>formAction</value>
-								<value>formPersonRoles</value>
-								<value>formPersonRole</value>
-								<value>formPersonId</value>
-								<value>formInterHash</value>
-								<value>formIntraHash</value>
-								<value>formResourceHash</value>
-								<value>formThatsMe</value>
-								<value>formPersonNameId</value>
-								<value>formFirstName</value>
-								<value>formMiddleName</value>
-								<value>formLastName</value>
-								<value>formSelectedName</value>
-								<value>formResourcePersonRelationId</value>
-								
-								<value>formPersonIndex</value>
-								<value>resourcePersonRelation.personIndex</value>
-								
-								<value>updateOperation</value>
-								
-								
-								<value>person.personId</value>
-								<value>person.orcid</value>
-								<value>person.researcherid</value>
-								<value>person.academicDegree</value>
-								<value>person.college</value>
-								<value>person.email</value>
-								<value>person.homepage</value>
-								<value>person.gender</value>
-								
-								<value>newName.firstName</value>
-								<value>newName.lastName</value>
-
 								<value>limitResultsToCRISCollege</value>
-								
 								<value>start</value>
 								<value>end</value>
+								<value>responseString</value>
 							</list>
 						</property>
 					</bean>
@@ -593,6 +562,17 @@
 								<value>publications.start</value>
 								<value>projects.start</value>
 								<value>persons.start</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/explore/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupExplorePageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>search</value>
 							</list>
 						</property>
 					</bean>
@@ -945,21 +925,28 @@
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
 		<property name="crisEnabled" value="${system.cris}" />
+		<property name="college" value="${system.cris.college}" />
 	</bean>
 	
-	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
-		<property name="supportedResources" ref="allResources"/>
-		<property name="requestLogic" ref="requestLogic"/>
-		<property name="personRoleRenderer" ref="personRoleRenderer"/>
-		<property name="urlGenerator" ref="relativeUrlGenerator" />
-		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
-		<property name="crisCollege" value="${system.cris.college}" />
-		<property name="adminLogic" ref="adminLogic"/>
+	<bean id="personPageController" class="org.bibsonomy.webapp.controller.person.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="logic" ref="adminLogic"/>
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
+		<property name="supportedResources" ref="allResources"/>
+		<property name="mappers">
+			<map>
+				<entry key-ref="goldStandardPublicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
+		<property name="crisEnabled" value="${system.cris}" />
 	</bean>
 
-	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
+	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.person.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
@@ -1103,10 +1090,22 @@
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
+		<property name="defaultRealnameSearch" value="${organizations.overview.default.realnames}"/>
 	</bean>	
 
 	<bean id="organizationPageController" class="org.bibsonomy.webapp.controller.cris.OrganizationPageController" scope="request">
 		<property name="logic" ref="logic" />
+	</bean>
+
+	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.GroupExplorePageController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">

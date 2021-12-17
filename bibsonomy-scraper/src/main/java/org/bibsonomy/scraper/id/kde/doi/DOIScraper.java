@@ -114,7 +114,7 @@ public class DOIScraper implements Scraper {
 					//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
 					try {
 						scrapingContext.setDoiURL(DOIUtils.getURL(doi));
-					} catch (MalformedURLException ex) {
+					} catch (final MalformedURLException ex) {
 						//scrape with other scrapers (without use of {@link ContentNegotiationDOIScraper}
 						scrapingContext.setDoiURL(null);
 					}
@@ -129,7 +129,7 @@ public class DOIScraper implements Scraper {
 					 */
 					scrapingContext.setSelectedText(null);
 				}
-			} catch (MalformedURLException e) {
+			} catch (final MalformedURLException e) {
 				log.debug("selected text is not a URL", e);
 			}
 		/*

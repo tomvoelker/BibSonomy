@@ -10,6 +10,7 @@
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
@@ -20,7 +21,10 @@
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+>
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!--+
@@ -31,7 +35,12 @@
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<layout:paneLayout pageTitle="${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}">
+	<layout:paneLayout
+			pageTitle="${title}"
+			command="${command}"
+			requestedUser="${command.requestedUser}"
+			requPath="${requPath}"
+			showPageOptions="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
@@ -40,6 +49,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/quickcite.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
@@ -55,7 +65,23 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="bibtex.details.meta">
+
+			<!-- Quick cite -->
+			<sidebar:sidebarItem textKey="publications.citations.headline" faIcon="quote-right">
+				<jsp:attribute name="content">
+					<sidebar:quickcite post="${post}" />
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+
+			<!-- Search on... -->
+			<sidebar:sidebarItem textKey="resources.searchExternal.dropDownLabel" faIcon="search">
+				<jsp:attribute name="content">
+					<pub:externalSearchPublication loggedinUser="${command.context.loginUser}" publication="${publication}" buttonGroupClass="sidebar-links" />
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+
+			<!-- Meta data... -->
+			<sidebar:sidebarItem textKey="bibtex.details.meta" faIcon="align-justify">
 				<jsp:attribute name="content">
 					<ul>
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
@@ -67,9 +93,9 @@
 			<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
 			<!-- edit tags -->
 			<c:if test="${isOwnPost}">
-				<sidebar:sidebarItem textKey="navi.editTags">
+				<sidebar:sidebarItem textKey="navi.editTags" faIcon="tags">
 					<jsp:attribute name="content">
-						<form action="/batchEdit?action=2" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
+						<form action="/batchEdit?action=2" method="POST" class="sidebar_collapse_content">
 							<div class="input-group">
 								<input class="form-control input-sm rename-tags" type="text" name="posts['${fn:escapeXml(publication.intraHash)}_${fn:escapeXml(post.user.name)}'].newTags" value="${fn:escapeXml(tagsString)}"/>
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
@@ -88,46 +114,12 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
-			<sidebar:sidebarItem textKey="community">
-				<jsp:attribute name="content">
-					<ul>
-						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
-							<li>
-								<h5><fmt:message key="bibtex.details.related_users"/></h5>
-								<ul style="margin-left: 1em; list-style:disc;">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-										<li class="${userclass}">
-											<user:username user="${user}" />
-										</li>
-									</c:forEach>
-								</ul>
-							</li>
-						</c:if>
 
-							
-						<!--+
-							| 
-							| tags
-							|
-							+-->
-						<li><h5><fmt:message key="tags"/>
-								<small style="font-size:80%;">
-									(<user:username user="${post.user}" />
-									<fmt:message key="tags.highlighted.by_user"/>)
-								</small>
-							</h5>
-							<div class="sidebar_collapse_content">
-								<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
-							</div>
-						</li>
-					</ul>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
 			<!--+
 				| private note
 				+-->
 			<c:if test="${isOwnPost}">
-				<sidebar:sidebarItem textKey="post.resource.privnote">
+				<sidebar:sidebarItem textKey="post.resource.privnote" faIcon="pencil">
 					<jsp:attribute name="content">
 						<div id="privnote">
 							<form method="post" id="note" role="form">
@@ -149,6 +141,12 @@
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>
+
+			<!--+
+			| discussion and rating
+			+-->
+			<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+			<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">

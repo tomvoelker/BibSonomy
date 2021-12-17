@@ -31,7 +31,8 @@
 		<jsp:attribute name="content">
 			<div class="row">
 				<div class="col-md-12">
-					<parts:extendedSearch headerMessageKey="publications.header" searchPlaceholderKey="publications.search"
+					<fmt:message var="headerMessage" key="publications.header" />
+					<parts:extendedSearch headerMessage="${headerMessage}" searchPlaceholderKey="publications.search"
 										  formAction="${requPathAndQuery}" formInputValue="${command.search}"
 										  enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
 				</div>

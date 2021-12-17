@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
@@ -28,6 +29,10 @@
 
 	<c:if test="${empty hideMetaData}">
 		<c:set var="hideMetaData" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty headlineInBody}">
+		<c:set var="headlineInBody" value="${false}" />
 	</c:if>
 
 	<c:if test="${empty hideCounts}">
@@ -77,16 +82,18 @@
 	<!-- FIXME: replace 2 with constant! -->
 	<li data-intrahash="2${post.resource.intraHash}" itemtype="${itemtype}" itemscope="itemscope" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
-		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
-			<div>
-			<div class="clearline">&#160;</div>
-			<c:if test="${not hideCounts}">
-				<rc:otherpeople post="${post}" />
-			</c:if>
-			<span class="ptitle"><jsp:invoke fragment="title"/></span>
-			<div class="clearline">&#160;</div>
-			</div>
-		</h4>
+		<c:if test="${!headlineInBody}">
+			<h4 class="media-heading" data-ident="${post.resource.intraHash}">
+				<div>
+				<div class="clearline">&#160;</div>
+				<c:if test="${not hideCounts}">
+					<rc:otherpeople post="${post}" />
+				</c:if>
+				<span class="ptitle"><jsp:invoke fragment="title"/></span>
+				<div class="clearline">&#160;</div>
+				</div>
+			</h4>
+		</c:if>
 		<c:if test="${not hideMetaData}">
 			<div class="hidden-xs hidden-md media-left thumbnail-container">
 
@@ -121,6 +128,19 @@
 			</div>
 		</c:if>
 		<div class="media-body">
+			<c:if test="${headlineInBody}">
+				<h4 class="media-heading" data-ident="${post.resource.intraHash}">
+					<div>
+						<div class="clearline">&#160;</div>
+						<c:if test="${not hideCounts}">
+							<rc:otherpeople post="${post}" />
+						</c:if>
+						<span class="ptitle"><jsp:invoke fragment="title"/></span>
+						<div class="clearline">&#160;</div>
+					</div>
+				</h4>
+			</c:if>
+
 			<div class="pdesc ellipsis">
 				<div class="ellipsis-content"><jsp:invoke fragment="desc"/></div>
 			</div>
@@ -153,11 +173,11 @@
 				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
-			<div class="pull-left">
+			<div class="post-rating pull-left">
 				<discussion:rating post="${post}" />
 			</div>
 			<c:if test="${not hidePostMenu}">
-				<div class="pull-right">
+				<div class="post-buttons pull-right">
 					<jsp:invoke fragment="actions"/>
 				</div>
 			</c:if>

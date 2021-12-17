@@ -26,6 +26,7 @@
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="showSortInfoHeadline" type="java.lang.Boolean" required="false" />
@@ -60,6 +61,11 @@
 		<c:set var="hideMetaData" value="${false}" />
 	</c:if>
 
+	<c:if test="${empty headlineInBody}">
+		<c:set var="headlineInBody" value="${false}" />
+	</c:if>
+
+
 	<c:if test="${empty hidePostMenu}">
 		<c:set var="hidePostMenu" value="${false}" />
 	</c:if>
@@ -80,6 +86,7 @@
 		widthClassName="${widthClassName}"
 		extTitle="${extTitle}"
 		hideMetaData="${hideMetaData}"
+		headlineInBody="${headlineInBody}"
 		hideCounts="${hideCounts}"
 		hidePostMenu="${hidePostMenu}"
 		hideHeadline="${hideHeadline}"

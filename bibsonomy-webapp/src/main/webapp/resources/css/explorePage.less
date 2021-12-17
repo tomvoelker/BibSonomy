@@ -1,0 +1,123 @@
+#groupExploreContent {
+  .filter-list {
+    .btn.active {
+      background-color: @main-color-light;
+    }
+
+    .filter-entries {
+      button {
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .filter-button-label {
+          padding-left: 5px;
+        }
+      }
+    }
+
+    .show-more-link:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+  .search-filter-selection {
+    max-height: 230px;
+    margin-top: 5px;
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-right: 5px;
+  }
+
+  .sidebar {
+    h4 {
+      border: none;
+    }
+  }
+}
+
+#groupExplorePublications {
+  .posts {
+    .media-heading {
+      margin: 5px 0;
+    }
+
+    .post {
+      padding: 0 5px 0 10px;
+      height: auto;
+      border: none;
+      margin-bottom: 5px;
+
+      .thumbnail {
+        height: 73px;
+
+        span.entrytype      {margin-top: 6px;}
+        span.article		{margin-top: 3px;}
+        span.book			{margin-top: 6px;}
+        span.collection		{margin-top: 0px;}
+        span.booklet		{margin-top: 0px;}
+        span.conference		{margin-top: 8px;}
+        span.electronic		{margin-top: 8px;}
+        span.inbook			{margin-top: 0px;}
+        span.incollection	{margin-top: 0px;}
+        span.inproceedings	{margin-top: 6px; margin-left: 10px;}
+        span.manual			{margin-top: 6px;}
+        span.mastersthesis	{margin-top: 0px;}
+        span.misc			{margin-top: 6px;}
+        span.patent			{margin-top: 3px;}
+        span.pdf			{margin-top: 3px;}
+        span.periodical		{margin-top: 8px;}
+        span.phdthesis		{margin-top: 0px;}
+        span.preprint		{margin-top: 3px;}
+        span.preamble		{margin-top: 3px;}
+        span.presentation	{margin-top: 8px;}
+        span.proceedings	{margin-top: 0px; margin-left: 3px;}
+        span.standard		{margin-top: 3px;}
+        span.techreport		{margin-top: 3px;}
+        span.unpublished	{margin-top: 5px;}
+        span.web			{margin-top: 3px;}
+      }
+
+      .media-body {
+        position: relative;
+      }
+
+      .ptags {
+        margin-right: 120px;
+      }
+
+      .post-buttons {
+        position: absolute;
+        bottom: 10px;
+        right: 0;
+      }
+
+      .post-rating {
+        display: none;
+      }
+
+      .in-my-collection {
+        top: -75px
+      }
+    }
+
+    .post:nth-child(even) {
+      background-color: #eee;
+    }
+  }
+}
+
+#groupExploreFilterHeader {
+  position: relative;
+
+  h3 {
+    padding-top: 0;
+    font-weight: bold;
+  }
+
+  #resetFilterLink {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

@@ -1,19 +1,19 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:spring="http://www.springframework.org/tags">
-	
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:spring="http://www.springframework.org/tags">
+
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
-	
+
 	<!--+
 		|
 		| setting (global) variables
@@ -21,10 +21,10 @@
 		+-->
 	<!-- TODO: extract into separate JSP file? -->
 	<c:set var="resdir" scope="application" value="/resources" />
-	
-	<!--+ 
+
+	<!--+
 		| To have the locale available on all pages we set the scope to "request".
-		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp
 		|-->
 	<c:set var="locale" value="${pageContext.response.locale}" scope="request"/>
 	<!--+
@@ -32,7 +32,7 @@
 		+-->
 	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 
-	<!-- prepare hidden system tags for handling in custom.js --> 
+	<!-- prepare hidden system tags for handling in custom.js -->
 	<c:set var="hiddenSystemTags" value="" />
 	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTags}" varStatus="status">
 		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${markUpSystemTags.name}", toHide: ${markUpSystemTags.toHide}, hasArguments: ${markUpSystemTags.hasArguments()} },' />
@@ -65,35 +65,35 @@
 		+-->
 	<head>
 		<meta charset="UTF-8" />
-		
+
 		<!--+
-			| BOOTSTRAP SETTINGS 
+			| BOOTSTRAP SETTINGS
 			+-->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 		<!-- latest compiled and minified CSS -->
 		<mtl:styleSheet path="${resdir}/css/bootstrap-style.css" />
 
 		<!--+
-			| END BOOTSTRAP SETTINGS 
+			| END BOOTSTRAP SETTINGS
 			+ -->
 		<c:if test="${not empty personalized and personalized}">
 			<!-- FIXME: personalized style sheet -->
 			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" /> -->
 		</c:if>
-		
+
 		<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
-		
+
 		<!--+
 			|
-			| JavaScript files 
-			| 
+			| JavaScript files
+			|
 		 	+-->
-		<!--+ 
+		<!--+
 		 	| merged jquery.js, functions.js, style.js
 		 	| and jQuery plugins jquery.corner.js
-			| 
-			| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
+			|
+			| To add other files, add a line to ${resdir}/javascript/merged/global.js and
 		 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 		 	+-->
 
@@ -123,27 +123,27 @@
 					];
 				]]>
 		</script>
-		
+
 		<parts:messages locale="${locale}" />
-		
+
 		<!-- include tooltip JavaScript only for users that have tooltips enabled -->
-		<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
+		<c:if test="${loginUser.settings.tagboxTooltip == 1}">
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 		</c:if>
-		
+
 		<!-- enable on-site spammer killing when user is admin -->
 		<c:if test="${loginUser.role eq 'ADMIN'}">
 			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
 		</c:if>
-		
+
 		<spring:theme code="javascript.additional" var="additionalJS" text="" />
 		<c:if test="${not empty additionalJS}">
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
-	
-<!--	<meta name="email" content="${properties['project.email']}"/> -->
+
+		<!--	<meta name="email" content="${properties['project.email']}"/> -->
 		<parts:meta fieldName="author" />
-<!--	<parts:meta fieldName="copyright" /> -->
+		<!--	<parts:meta fieldName="copyright" /> -->
 		<parts:meta fieldName="keywords" />
 		<parts:meta fieldName="description" />
 		<!-- TODO: use feed links for bibsonomy in puma? -->
