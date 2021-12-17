@@ -67,7 +67,7 @@ test:
 test-scraper:
   stage: test
   only:
-    - /^.*scraper.*$/
+    - "/^.*scraper.*$/"
   script:
     - mvn test $MAVEN_OPTS --fail-at-end -Dmaven.test.failure.ignore=true -pl bibsonomy-scraper -P allTests
   artifacts:
@@ -85,6 +85,6 @@ test-scraper:
 deploy_biblicious:
   stage: deploy
   only:
-    - biblicious
+    - "/biblicious/"
   script:
     - bash deploy.sh thewhite
