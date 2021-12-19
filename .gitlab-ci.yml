@@ -1,5 +1,11 @@
 image: tomvoelker/maven-mariadb
 
+stages:
+  - build
+  - test
+  - visualize
+  - deploy
+
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
@@ -82,6 +88,18 @@ test-scraper:
     expose_as: scrapertestresults
     paths:
       - target/
+
+# https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
+coverage:
+  stage: visualize
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  script:
+    # convert report from jacoco to cobertura, using relative project path
+    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > target/site/cobertura.xml
+  needs: ["test"]
+  artifacts:
+    reports:
+      cobertura: target/site/cobertura.xml
 
 deploy_biblicious:
   stage: deploy
