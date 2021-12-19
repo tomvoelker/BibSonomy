@@ -95,7 +95,7 @@ coverage:
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura, using relative project path
-    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > target/site/cobertura.xml
+    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/bibsonomy-webapp/src/main/java/ > target/site/cobertura.xml
   needs: ["test"]
   artifacts:
     reports:
