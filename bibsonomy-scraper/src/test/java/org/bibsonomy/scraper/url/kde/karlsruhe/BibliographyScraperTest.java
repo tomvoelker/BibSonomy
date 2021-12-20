@@ -47,7 +47,7 @@ public class BibliographyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://liinwww.ira.uka.de/cgi-bin/bibshow?e=Uifpsz0iboecppl/qspc/fyqboefe}56124&r=bibtex&mode=intra", BibliographyScraper.class, "BibliographyScraperUnitURLTest.bib");
+		assertScraperResult("https://liinwww.ira.uka.de/cgi-bin/bibshow?e=Uifpsz0iboecppl/qspc/fyqboefe%7d56124&r=bibtex&mode=intra", BibliographyScraper.class, "BibliographyScraperUnitURLTest.bib");
 	}
 
 }
