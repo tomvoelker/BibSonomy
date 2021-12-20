@@ -54,7 +54,7 @@ build:
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON tag_recommender_db.* TO '$MARIADB_USER'@'%';"
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
 #   script:
-#     - mvn test $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings
+#     - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings 
 #     # no test html
 #     #- mvn surefire-report:report-only -Daggregate=true
 #     #- mvn site
@@ -92,10 +92,8 @@ test-scraper:
 simple-test:
   stage: test
   script: 
-    - 'mvn $MAVEN_OPTS -pl Bibsonomy-Rest-Client clean 
-                           org.jacoco:jacoco-maven-plugin:prepare-agent
-                           test
-                           org.jacoco:jacoco-maven-plugin:report-aggregate'
+    - mvn $MAVEN_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent -pl bibsonomy-scraper
+    - mvn $MAVEN_OPTS test org.jacoco:jacoco-maven-plugin:report-aggregate -pl bibsonomy-scraper
   artifacts:
     expire_in: 1 hour
     paths:
