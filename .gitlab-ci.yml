@@ -97,7 +97,7 @@ simple-test:
   artifacts:
     expire_in: 1 hour
     paths:
-      - target/site/jacoco/jacoco.xml
+      - bibsonomy-scraper/target/site/jacoco/jacoco.xml
 
 
 # https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
@@ -106,12 +106,12 @@ coverage:
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura, using relative project path
-    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/bibsonomy-scraper/src/main/java > target/site/coverage.xml
+    - python /opt/cover2cover.py bibsonomy-scraper/target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/bibsonomy-scraper/src/main/java > bibsonomy-scraper/target/site/coverage.xml
   needs: ["simple-test"]
   artifacts:
     expire_in: 1 hour
     reports:
-      cobertura: target/site/coverage.xml
+      cobertura: bibsonomy-scraper/target/site/coverage.xml
 
 deploy_biblicious:
   stage: deploy
