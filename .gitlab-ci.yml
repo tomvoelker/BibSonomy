@@ -14,16 +14,17 @@ cache:
     - .m2/repository/
     - target/
 
-build:
-  stage: build
-  script:
-    - mvn clean install $MAVEN_OPTS -DskipTests
-  artifacts:
-    untracked: true
-    expire_in: 1 hour
-    expose_as: jars
-    paths:
-      - target/
+# build:
+#   stage: build
+#   script:
+#     - mvn $MAVEN_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent
+#     - mvn install $MAVEN_OPTS -DskipTests
+#   artifacts:
+#     untracked: true
+#     expire_in: 1 hour
+#     expose_as: jars
+#     paths:
+#       - target/
 
 # test:
 #   stage: test
@@ -37,7 +38,7 @@ build:
 #     - mysql --version
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL time_zone = 'Europe/Paris';"
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL default_storage_engine='InnoDB';"
-#     # Setting SQL Modes
+
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode="STRICT_TRANS_TABLES";"
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_DATE');"
 #     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_AUTO_CREATE_USER');"
@@ -58,6 +59,8 @@ build:
 #     # no test html
 #     #- mvn surefire-report:report-only -Daggregate=true
 #     #- mvn site
+#   after_script:
+#     - cat jacoco/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
 #   artifacts:
 #     untracked: true
 #     when: always
@@ -98,6 +101,7 @@ simple-test:
     expire_in: 1 hour
     paths:
       - bibsonomy-scraper/target/site/jacoco/jacoco.xml
+      - bibsonomy-scraper/target/jacoco.exec
 
 
 # https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
