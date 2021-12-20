@@ -40,6 +40,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NEJMScraperTest {
+	String resultDirectory = "nejm/";
 
 	/**
 	 * starts URL test with id url_215
@@ -47,7 +48,7 @@ public class NEJMScraperTest {
 	@Test
 	public void urlTest1Run() {
 		final String url = "http://www.nejm.org/doi/full/10.1056/NEJMra1100109";
-		final String resultFile = "NEJMScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "NEJMScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, NEJMScraper.class, resultFile);
 	}
 }

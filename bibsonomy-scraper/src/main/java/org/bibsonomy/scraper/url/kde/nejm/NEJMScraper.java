@@ -35,12 +35,12 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
+import org.bibsonomy.scraper.generic.CitMgrScraper;
 
 /**
  * @author clemens
  */
-public class NEJMScraper extends LiteratumScraper {
+public class NEJMScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "The New England Journal of Medicine";
 	private static final String SITE_HOST = "nejm.org";
