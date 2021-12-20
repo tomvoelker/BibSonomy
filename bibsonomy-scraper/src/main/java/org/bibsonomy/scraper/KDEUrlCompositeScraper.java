@@ -123,7 +123,6 @@ import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.neurips.NeurIPSScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
-import org.bibsonomy.scraper.url.kde.nrc.NRCScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
@@ -214,7 +213,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new HogrefeScraper());
 		addScraper(new APHAScraper());
 		addScraper(new EmeraldScraper());
-		addScraper(new NRCScraper());
 		addScraper(new ATSScraper());
 		addScraper(new NEJMScraper());
 		addScraper(new MorganClaypoolScraper());
