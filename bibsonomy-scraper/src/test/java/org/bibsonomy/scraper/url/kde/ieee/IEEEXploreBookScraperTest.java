@@ -51,9 +51,30 @@ public class IEEEXploreBookScraperTest {
 	 * starts URL test with id url_36
 	 */
 	@Test
-	public void urlTestRun1() {
+	public void urlTest1Run() {
 		final String url = "https://ieeexplore.ieee.org/book/5263132";
-		final String resultFile = resultDirectory + "IEEEXploreBookScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "IEEEXploreBookScraperUnitURLTest1.bib";
+		assertScraperResult(url, IEEEXploreBookScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest2Run() {
+		final String url = "https://ieeexplore.ieee.org/book/9127393";
+		final String resultFile = resultDirectory + "IEEEXploreBookScraperUnitURLTest2.bib";
+		assertScraperResult(url, IEEEXploreBookScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest3Run() {
+		final String url = "https://ieeexplore.ieee.org/book/8503971";
+		final String resultFile = resultDirectory + "IEEEXploreBookScraperUnitURLTest3.bib";
+		assertScraperResult(url, IEEEXploreBookScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest4Run() {
+		final String url = "https://ieeexplore.ieee.org/book/6267205";
+		final String resultFile = resultDirectory + "IEEEXploreBookScraperUnitURLTest4.bib";
 		assertScraperResult(url, IEEEXploreBookScraper.class, resultFile);
 	}
 }
