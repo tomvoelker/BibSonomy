@@ -45,6 +45,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class IEEEXploreBookScraperTest {
+	String resultDirectory = "ieee/xplore/book/";
 	
 	/**
 	 * starts URL test with id url_36
@@ -52,7 +53,7 @@ public class IEEEXploreBookScraperTest {
 	@Test
 	public void urlTestRun1() {
 		final String url = "https://ieeexplore.ieee.org/book/5263132";
-		final String resultFile = "IEEEXploreBookScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "IEEEXploreBookScraperUnitURLTest.bib";
 		assertScraperResult(url, IEEEXploreBookScraper.class, resultFile);
 	}
 }
