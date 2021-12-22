@@ -29,19 +29,22 @@
  */
 package org.bibsonomy.scraper.url.kde.arxiv;
 
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.OAIToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -59,6 +62,8 @@ public class ArxivScraper extends AbstractUrlScraper {
 
 	protected static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(ArxivUtils.ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	private static final Pattern DOI_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*?)\"/>");
+
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		final URL url = sc.getUrl();
@@ -73,26 +78,26 @@ public class ArxivScraper extends AbstractUrlScraper {
 
 		if (present(identifier)) {
 			try {
-				// build url for oai_dc export
-				final String exportURL = "https://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + identifier + "&metadataPrefix=oai_dc";
-
-				// download oai_dc reference
-				final String reference = WebUtils.getContentAsString(exportURL);
-
-				String bibtex = OAI_CONVERTER.toBibtex(reference);
-
-				// add arxiv citation to note
-				if (bibtex.contains("note = {")) {
-					bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + identifier + "\n");
-					// if note not exist
-				} else {
-					bibtex = bibtex.replaceFirst("},", "},\nnote = {cite arxiv:" + identifier + "},");
-				}
-				// set result
+				// first we try to scrape arxiv directly.
+				final String exportURL = ArxivUtils.SITE_URL + "bibtex/" +identifier;
+				String bibtex = WebUtils.getContentAsString(exportURL);
 				sc.setBibtexResult(bibtex);
 				return true;
-			} catch (IOException e) {
-				throw new InternalFailureException(e);
+			}catch (IOException io){
+				try {
+					//if scraping directly does not work we extract the doi and scrape api.crossref.org
+					String pageContent = WebUtils.getContentAsString(ArxivUtils.SITE_URL + "abs/" + identifier);
+					Matcher m_doi = DOI_PATTERN.matcher(pageContent);
+					if (m_doi.find()){
+						HttpGet get = new HttpGet("https://api.crossref.org/v1/works/" + UrlUtils.safeURIEncode(m_doi.group(1)) + "/transform");
+						get.setHeader("Accept", "text/bibliography; style=bibtex");
+						String contentAsString = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+						sc.setBibtexResult(contentAsString);
+						return true;
+					}
+				} catch (IOException | HttpException e) {
+					throw new ScrapingException(e);
+				}
 			}
 		}
 
