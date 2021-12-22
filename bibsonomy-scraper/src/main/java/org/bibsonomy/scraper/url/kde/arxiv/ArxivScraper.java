@@ -34,7 +34,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.OAIToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
@@ -56,8 +55,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
  * @author rja
  */
 public class ArxivScraper extends AbstractUrlScraper {
-	/** OAI to bibtex converter */
-	private static final OAIToBibtexConverter OAI_CONVERTER = new OAIToBibtexConverter();
 	private static final String info = "This scraper parses a publication page from " + href(ArxivUtils.SITE_URL, ArxivUtils.SITE_NAME)+".";
 
 	protected static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(ArxivUtils.ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -76,32 +73,40 @@ public class ArxivScraper extends AbstractUrlScraper {
 			identifier = ArxivUtils.extractArxivIdentifier(selection);
 		}
 
+		String bibtex;
 		if (present(identifier)) {
 			try {
 				// first we try to scrape arxiv directly.
 				final String exportURL = ArxivUtils.SITE_URL + "bibtex/" +identifier;
-				String bibtex = WebUtils.getContentAsString(exportURL);
-				sc.setBibtexResult(bibtex);
-				return true;
+				bibtex = WebUtils.getContentAsString(exportURL);
 			}catch (IOException io){
 				try {
 					//if scraping directly does not work we extract the doi and scrape api.crossref.org
-					String pageContent = WebUtils.getContentAsString(ArxivUtils.SITE_URL + "abs/" + identifier);
+					String articleUrl = ArxivUtils.SITE_URL + "abs/" + identifier;
+					String pageContent = WebUtils.getContentAsString(articleUrl);
 					Matcher m_doi = DOI_PATTERN.matcher(pageContent);
+
 					if (m_doi.find()){
 						HttpGet get = new HttpGet("https://api.crossref.org/v1/works/" + UrlUtils.safeURIEncode(m_doi.group(1)) + "/transform");
 						get.setHeader("Accept", "text/bibliography; style=bibtex");
-						String contentAsString = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
-						sc.setBibtexResult(contentAsString);
-						return true;
+						bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+					}else {
+						throw new ScrapingException("The content of the Get-Request to " + articleUrl + " did not contain a doi");
 					}
 				} catch (IOException | HttpException e) {
 					throw new ScrapingException(e);
 				}
 			}
+		}else {
+			throw new ScrapingFailureException("no arxiv id found in URL");
 		}
 
-		throw new ScrapingFailureException("no arxiv id found in URL");
+		if (present(bibtex)){
+			sc.setBibtexResult(bibtex);
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	@Override
