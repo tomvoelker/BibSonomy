@@ -60,7 +60,6 @@ import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
-import org.bibsonomy.scraper.url.kde.catinist.CatinistScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
@@ -259,7 +258,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		//addScraper(new PNASScraper());
 		addScraper(new ScienceMagScraper());
 		addScraper(new JStorScraper());
-		addScraper(new EricScraper());
+		//addScraper(new EricScraper());
 		addScraper(new IWAPonlineScraper());
 		addScraper(new JMLRScraper());
 		addScraper(new AclScraper());
@@ -335,7 +334,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new FRONTIERSINScraper());
 		addScraper(new SpieDigitalLibraryScraper());
 		addScraper(new BioOneScraper());
-		addScraper(new CatinistScraper());
 		addScraper(new AappublicationsScraper());
 		addScraper(new ThiemeConnectScraper());
 		addScraper(new JamaNetScraper());
