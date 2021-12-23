@@ -46,15 +46,22 @@ public class ApsScraperTest {
 	 */
 	@Test
 	public void url1Test1Run(){
-		final String url = "http://physrev.physiology.org/content/91/4/1281.short";
-		final String resultFile = resultDirectory + "ApsScraperUnitURLTest.bib";
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00032.2010";
+		final String resultFile = resultDirectory + "ApsScraperUnitURLTest1.bib";
 		assertScraperResult(url, ApsScraper.class, resultFile);
 	}
 
 	@Test
-	public void url1Test2Run(){
-		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00032.2010";
-		final String resultFile = resultDirectory + "ApsScraperUnitURLTest.bib";
+	public void url2Test1Run(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00033.2021";
+		final String resultFile = resultDirectory + "ApsScraperUnitURLTest2.bib";
+		assertScraperResult(url, ApsScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3Test1Run(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00011.2010";
+		final String resultFile = resultDirectory + "ApsScraperUnitURLTest3.bib";
 		assertScraperResult(url, ApsScraper.class, resultFile);
 	}
 
