@@ -799,6 +799,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			}
 
 			/*
+			 * If the user had unaccepted group requests, they are getting deleted
+			 */
+			final List<Group> requestedGroups = groupDBManager.getPendingGroupsByUsername(userName, 0, Integer.MAX_VALUE, session);
+			for (final Group group : requestedGroups) {
+				groupDBManager.deletePendingGroup(group.getName(), session);
+			}
+
+			/*
 			 * We remove the user's open ID and LDAP entry from the corresponding table.
 			 * Otherwise, a new registration with that ID is not possible.
 			 */
