@@ -48,7 +48,7 @@ public class IOPScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		assertScraperResult("http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008", IOPScraper.class, "IOPScraperUnitURLTest1.bib");
+		assertScraperResult("https://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008#artAbst", IOPScraper.class, "IOPScraperUnitURLTest1.bib");
 	}
 	
 	/*
@@ -65,5 +65,9 @@ public class IOPScraperTest {
 	@Test
 	public void url2TestRun(){
 		assertScraperResult("http://iopscience.iop.org/article/10.1088/2041-8205/730/1/L11", IOPScraper.class, "IOPScraperUnitURLTest2.bib");
+	}
+	@Test
+	public void url3TestRun(){
+		assertScraperResult("http://iopscience.iop.org/article/10.1088/1751-8121/aacaa3", IOPScraper.class, "IOPScraperUnitURLTest3.bib");
 	}
 }
