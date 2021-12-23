@@ -57,7 +57,7 @@ public class BioRxivScraper extends GenericBibTeXURLScraper {
 			Pattern.compile("/content" + ".*")
 			));
 
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"([^\"]+)\".*>BibTeX</a>");
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
