@@ -64,7 +64,6 @@ import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
-import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
 import org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
@@ -75,7 +74,6 @@ import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
-import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
@@ -96,10 +94,10 @@ import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
 import org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper;
 import org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper;
 import org.bibsonomy.scraper.url.kde.jap.JAPScraper;
+import org.bibsonomy.scraper.url.kde.jbc.JBCScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
 import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
-import org.bibsonomy.scraper.url.kde.jneurosci.JNeurosciScraper;
 import org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper;
 import org.bibsonomy.scraper.url.kde.jstage.JStageScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
@@ -300,7 +298,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new StanfordInfoLabScraper());
 		addScraper(new RSCScraper());
 		addScraper(new FASEBJournalScraper());
-		addScraper(new JNeurosciScraper());
 		addScraper(new BiologistsScraper());
 		addScraper(new OpenUniversityScraper());
 		addScraper(new AAAIScraper());
@@ -320,12 +317,12 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new TheLancetScraper());
 		addScraper(new NowPublishersScraper());
 		addScraper(new GenomeBiologyScraper());
-		addScraper(new CSHLPScraper());
 		addScraper(new RWTHAachenScraper());
 		addScraper(new OstiScraper());
 		addScraper(new ScientificScraper());
 		addScraper(new CopacScraper());
 		addScraper(new CiniiScraper());
+		addScraper(new JBCScraper());
 		/*
 		 * rja, 2018-03-07, now handled by HighwireScraper
 		 */

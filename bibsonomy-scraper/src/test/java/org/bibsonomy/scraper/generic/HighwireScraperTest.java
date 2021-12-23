@@ -42,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class HighwireScraperTest {
+	String resultDirectory = "highwire/";
 
 	/**
 	 * Test method for {@link org.bibsonomy.scraper.generic.HighwireScraper#scrape(org.bibsonomy.scraper.ScrapingContext)}.
 	 */
 	@Test
 	public void testScrape1() {
-		assertScraperResult("http://www.pnas.org/content/115/4/E639", null, HighwireScraper.class, "HighwireScraperTest1.bib");
+		final String url = "http://www.pnas.org/content/115/4/E639";
+		final String resultFile = resultDirectory + "HighwireScraperTest1.bib";
+		assertScraperResult(url, HighwireScraper.class, resultFile);
 	}
 
 	/**
@@ -56,7 +59,9 @@ public class HighwireScraperTest {
 	 */
 	@Test
 	public void testScrape2() {
-		assertScraperResult("http://err.ersjournals.com/content/27/147/170106", null, HighwireScraper.class, "HighwireScraperTest2.bib");
+		final String url = "http://err.ersjournals.com/content/27/147/170106";
+		final String resultFile = resultDirectory + "HighwireScraperTest2.bib";
+		assertScraperResult(url, HighwireScraper.class, resultFile);
 	}
 
 	/**
@@ -64,7 +69,9 @@ public class HighwireScraperTest {
 	 */
 	@Test
 	public void testScrape3() {
-		assertScraperResult("http://eel.ecsdl.org/content/4/1/A4.abstract", null, HighwireScraper.class, "HighwireScraperTest3.bib");
+		final String url = "https://www.jneurosci.org/content/32/42/14465.short?rss=1";
+		final String resultFile = resultDirectory + "HighwireScraperTest3.bib";
+		assertScraperResult(url, HighwireScraper.class, resultFile);
 	}
 
 	/**
@@ -72,7 +79,9 @@ public class HighwireScraperTest {
 	 */
 	@Test
 	public void testScrape4() {
-		assertScraperResult("http://horttech.ashspublications.org/content/28/1/10.abstract", null, HighwireScraper.class, "HighwireScraperTest4.bib");
+		final String url = "https://cshperspectives.cshlp.org/content/3/3/a004994.full";
+		final String resultFile = resultDirectory + "HighwireScraperTest4.bib";
+		assertScraperResult(url, HighwireScraper.class, resultFile);
 	}
 
 	/**
@@ -80,14 +89,15 @@ public class HighwireScraperTest {
 	 */
 	@Test
 	public void testScrape5() {
-		assertScraperResult("https://pubs.geoscienceworld.org/paleobiol/article-abstract/43/4/620/520315/sexual-dimorphism-and-sexual-selection-in", null, HighwireScraper.class, "HighwireScraperTest5.bib");
+		final String url = "https://cancerres.aacrjournals.org/content/81/24/6259";
+		final String resultFile = resultDirectory + "HighwireScraperTest5.bib";
+		assertScraperResult(url, HighwireScraper.class, resultFile);
 	}
 
-	/**
-	 * Test method for {@link org.bibsonomy.scraper.generic.HighwireScraper#scrape(org.bibsonomy.scraper.ScrapingContext)}.
-	 */
 	@Test
 	public void testScrape6() {
-		assertScraperResult("http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract", null, HighwireScraper.class, "AhaJournalsScraperUnitURLTest1.bib");
-	} 
+		final String url = "http://www.jimmunol.org/content/183/11/7569.full.pdf+html";
+		final String resultFile = resultDirectory + "HighwireScraperTest6.bib";
+		assertScraperResult(url, null, HighwireScraper.class, resultFile);
+	}
 }

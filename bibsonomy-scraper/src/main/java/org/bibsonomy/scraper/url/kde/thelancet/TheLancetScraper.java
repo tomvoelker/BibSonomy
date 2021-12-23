@@ -29,47 +29,24 @@
  */
 package org.bibsonomy.scraper.url.kde.thelancet;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpException;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.CitationManager4Scraper;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  *
  * @author Haile
  */
-public class TheLancetScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(TheLancetScraper.class);
-	
+public class TheLancetScraper extends CitationManager4Scraper {
 	private static final String SITE_NAME = "THE LANCET";
-	private static final String SITE_URL = "http://www.thelancet.com";
+	private static final String SITE_URL = "https://www.thelancet.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "thelancet.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final String  DOWNLOAD_URL = "https://www.thelancet.com/action/downloadCitationSecure";
-	private static final Pattern OBJECT_URI_PATTERN = Pattern.compile("article/PIIS(.*?)/");
-	private static final RisToBibtexConverter conv = new RisToBibtexConverter();
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
@@ -102,47 +79,4 @@ public class TheLancetScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		//we need the cookies from the first url. If we follow the redirects, we don't get the needed cookies.
-		HttpClient client = HttpClientBuilder.create().disableRedirectHandling().build();
-		String url = sc.getUrl().toString();
-
-		try {
-			Matcher m_objectURI = OBJECT_URI_PATTERN.matcher(url);
-			if (m_objectURI.find()){
-				//extracting the objectUri from the url. The objectUri always starts with "pii:S" and after that only consists of numbers.
-				String objectUri = "pii:S" + m_objectURI.group(1).replaceAll("[^\\d]", "");
-				/*
-				the url redirects to https://secure.jbs.elsevierhealth.com/action/getSharedSiteSession where the session cookies can be obtained.
-				We can't get these cookies directly.
-				 */
-				String cookies = WebUtils.getCookies(client, new URL("https://secure.jbs.elsevierhealth.com/action/getSharedSiteSession?rc=0&redirect=" + UrlUtils.safeURIEncode(url)));
-
-				HttpPost post = new HttpPost(DOWNLOAD_URL);
-				post.setHeader("Cookie", cookies);
-				ArrayList<NameValuePair> postData = new ArrayList<>();
-				postData.add(new BasicNameValuePair("objectUri", objectUri));
-				postData.add(new BasicNameValuePair("include", "abs"));
-				postData.add(new BasicNameValuePair("direct", "true"));
-				post.setEntity(new UrlEncodedFormEntity(postData));
-
-				String responseRis = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
-				if (!present(responseRis)){
-					throw new ScrapingException("response was empty");
-				}
-				String bibtex = conv.toBibtex(responseRis);
-				sc.setBibtexResult(bibtex);
-				return true;
-
-			}else {
-				throw new ScrapingException("can't find objectUri in URL: " + url);
-			}
-		} catch (IOException | HttpException e) {
-			throw new ScrapingException(e);
-		}
-	}
-
 }
