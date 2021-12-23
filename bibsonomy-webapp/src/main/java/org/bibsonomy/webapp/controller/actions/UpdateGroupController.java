@@ -364,6 +364,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			try {
 				this.fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
 			} catch (final Exception ex) {
+				this.errors.reject("settings.picture.change.error",  new Object[]{ex.getMessage()}, "error while writing group picture");
 				log.error("error while writing group picture", ex);
 			}
 		} else if (command.getDeletePicture()) {
