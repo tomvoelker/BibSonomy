@@ -46,7 +46,7 @@ public class SpieDigitalLibraryScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "https://remotesensing.spiedigitallibrary.org/article.aspx?articleid=2099648";
+		final String url = "https://www.spiedigitallibrary.org/journals/journal-of-applied-remote-sensing/volume-9/issue-01/097099/Economic-impacts-of-climate-change-on-agriculture--the-AgMIP/10.1117/1.JRS.9.097099.full?SSO=1";
 		final String resultFile = resultDirectory + "SpieDigitalLibraryScraperUnitURLTest1.bib";
 		assertScraperResult(url, SpieDigitalLibraryScraper.class, resultFile);
 	}

@@ -46,7 +46,7 @@ public class ProjectEuclidScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "https://projecteuclid.org/euclid.aoms/1177704711";
+		final String url = "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-33/issue-1/The-Future-of-Data-Analysis/10.1214/aoms/1177704711.full";
 		final String resultFile = resultDirectory + "ProjectEuclidScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, ProjectEuclidScraper.class, resultFile);
 	}

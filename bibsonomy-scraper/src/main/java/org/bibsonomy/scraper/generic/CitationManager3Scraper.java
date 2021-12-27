@@ -30,10 +30,7 @@ public abstract class CitationManager3Scraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
-			URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
-			if (!present(url)){
-				url = scrapingContext.getUrl();
-			}
+			URL url = scrapingContext.getUrl();
 			// removes the parameters of the url
 			url = new URL(url.getProtocol() + "://" + url.getHost() + url.getPath());
 
