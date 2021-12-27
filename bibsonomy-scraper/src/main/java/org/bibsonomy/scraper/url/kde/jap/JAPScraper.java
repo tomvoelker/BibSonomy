@@ -36,7 +36,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
@@ -48,15 +48,13 @@ import java.util.regex.Pattern;
 /**
  * @author hagen
  */
-public class JAPScraper extends CitMgrScraper implements ReferencesScraper{
+public class JAPScraper extends LiteratumScraper implements ReferencesScraper{
 	private static final Log log = LogFactory.getLog(JAPScraper.class);
 	private static final String SITE_NAME = "Journal of Applied Physiology";
-	private static final String SITE_URL = "http://jap.physiology.org/";
+	private static final String SITE_URL = "https://journals.physiology.org/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern BIBTEX_URL = Pattern.compile("<a href=\"(.+?)\".*?>BibTeX</a></li>");
-	
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jap.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "journals.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<h2>REFERENCES</h2><ul class=\"rlist separator\">([\\s\\S]+?)</ul>");
 
 	@Override

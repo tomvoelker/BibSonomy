@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.faseb;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 /**
  * @author wla
  */
-public class FASEBJournalScraper extends CitMgrScraper {
+public class FASEBJournalScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "The FASEB Journal";
 	private static final String SITE_URL = "https://faseb.onlinelibrary.wiley.com";

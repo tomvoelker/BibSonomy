@@ -52,14 +52,14 @@ public class JAPScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://jap.physiology.org/content/110/4/1003.short";
+		final String url = "https://journals.physiology.org/doi/full/10.1152/japplphysiol.00991.2010";
 		final String resultFile = resultDirectory + "JAPScraperUnitURLTest.bib";
 		assertScraperResult(url, null, JAPScraper.class, resultFile);
 	}
 	
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://jap.physiology.org/content/110/4/1003"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.physiology.org/doi/full/10.1152/japplphysiol.00991.2010"));
 		JAPScraper js = new JAPScraper();
 		assertTrue(js.scrape(sc));
 		assertTrue(js.scrapeReferences(sc));

@@ -30,7 +30,7 @@
 package org.bibsonomy.scraper.url.kde.rsoc;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * @author wbi
  */
-public class RSOCScraper extends CitMgrScraper {
+public class RSOCScraper extends LiteratumScraper {
 	private static final String SITE_NAME = "Royal Society Publishing";
 	private static final String SITE_URL = "https://royalsocietypublishing.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);

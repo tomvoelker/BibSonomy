@@ -30,7 +30,7 @@
 package org.bibsonomy.scraper.url.kde.sage;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * @author wla
  */
-public class SageJournalScraper extends CitMgrScraper {
+public class SageJournalScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Sage Journal";
 	private static final String SITE_URL = "https://journals.sagepub.com/";

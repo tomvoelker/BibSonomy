@@ -32,19 +32,18 @@ package org.bibsonomy.scraper.url.kde.ahajournals;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 /**
  * @author Mohammed Abed
  */
-public class AhaJournalsScraper extends CitMgrScraper {
+public class AhaJournalsScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Aha Journals";
 	private static final String SITE_URL = "https://www.ahajournals.org/";
@@ -52,24 +51,19 @@ public class AhaJournalsScraper extends CitMgrScraper {
 	private static final String AHA_JOURNALS_HOST = "ahajournals.org";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 
-	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
-
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AHA_JOURNALS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
+	private static final Pattern NO_COMMA_AFTER_DOI_PATTERN = Pattern.compile("(doi = \\{.*}[^,])");
 
 	@Override
-	protected Map<String, String> getPostData() {
-		Map<String, String> postData = super.getPostData();
-		postData.put("format", "ris");
-		return postData;
+	protected String postProcessBibtex(ScrapingContext scrapingContext, String bibtex) {
+		Matcher m_noComma = NO_COMMA_AFTER_DOI_PATTERN.matcher(bibtex);
+		if (m_noComma.find()){
+			return bibtex.replace(m_noComma.group(1), m_noComma.group(1) + "," );
+		}
+		return super.postProcessBibtex(scrapingContext, bibtex);
 	}
-
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return RIS2BIB.toBibtex(bibtex);
-	}
-
 
 	@Override
 	public String getSupportedSiteName() {

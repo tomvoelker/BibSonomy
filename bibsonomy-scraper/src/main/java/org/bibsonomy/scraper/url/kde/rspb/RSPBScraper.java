@@ -30,7 +30,7 @@
 package org.bibsonomy.scraper.url.kde.rspb;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  *
  * @author Johannes
  */
-public class RSPBScraper extends CitMgrScraper {
+public class RSPBScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Proceedings of the Royal Society Biology";
 	private static final String SITE_HOST = "royalsocietypublishing.org";
