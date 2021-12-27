@@ -47,14 +47,14 @@ public class WileyIntersienceScraperTest {
 
 	@Test
 	public void url1TestRun(){
-		final String url = "http://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338";
+		final String url = "https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338";
 		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest1.bib";
 		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 	}
 
 	@Test
 	public void url2TestRun(){
-		final String url = "http://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384";
+		final String url = "https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384";
 		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest2.bib";
 		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 	}
@@ -64,7 +64,7 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		final String url = "http://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2575.2007.00275.x";
+		final String url = "https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2575.2007.00275.x";
 		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest3.bib";
 		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 

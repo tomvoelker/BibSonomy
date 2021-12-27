@@ -43,17 +43,15 @@ import java.util.regex.Pattern;
  * @author clemens
  */
 public class ScienceMagScraper extends CitMgrScraper {
-	private static final String SITE_NAME = "Science Magazine";
-	private static final String SITE_HOST = "sciencemag.org";
-	private static final String SITE_NAME_NEW = "Science";
-	private static final String SITE_HOST_NEW = "science.org";
-	private static final String SITE_URL = "http://www." + SITE_HOST;
+	private static final String SITE_NAME = "Science";
+	private static final String SITE_HOST = "science.org";
+	private static final String SITE_URL = "https://www.science.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new LinkedList<>();
 
 	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), Pattern.compile("/content" + ".*")));
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST_NEW), EMPTY_PATTERN));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), EMPTY_PATTERN));
+
 	}
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 

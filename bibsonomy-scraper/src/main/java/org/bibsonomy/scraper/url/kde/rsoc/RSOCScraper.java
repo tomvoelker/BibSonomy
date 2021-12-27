@@ -41,11 +41,10 @@ import java.util.regex.Pattern;
  */
 public class RSOCScraper extends CitMgrScraper {
 	private static final String SITE_NAME = "Royal Society Publishing";
-	private static final String SITE_URL = "http://royalsocietypublishing.org/";
+	private static final String SITE_URL = "https://royalsocietypublishing.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "royalsocietypublishing.org"), 
-			Pattern.compile("/content" + ".*")
+			Pattern.compile(".*" + "royalsocietypublishing.org"), EMPTY_PATTERN
 		));
 
 	@Override

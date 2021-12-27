@@ -50,8 +50,7 @@ public class AsmScraper extends CitMgrScraper {
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(
-					Pattern.compile(".*" + "asm.org"),
-					Pattern.compile("/content" + ".*")
+					Pattern.compile(".*" + "journals.asm.org"), EMPTY_PATTERN
 	));
 
 	@Override

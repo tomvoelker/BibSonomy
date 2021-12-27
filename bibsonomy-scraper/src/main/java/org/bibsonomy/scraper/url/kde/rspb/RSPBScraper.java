@@ -44,12 +44,12 @@ import java.util.regex.Pattern;
 public class RSPBScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "Proceedings of the Royal Society Biology";
-	private static final String SITE_HOST = "rspb.royalsocietypublishing.org";
-	private static final String SITE_URL = "http://" + SITE_HOST;
+	private static final String SITE_HOST = "royalsocietypublishing.org";
+	private static final String SITE_URL = "https://royalsocietypublishing.org/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
 			Pattern.compile(".*" + SITE_HOST), 
-			Pattern.compile("/content" + ".*")
+			EMPTY_PATTERN
 			));
 	
 

@@ -43,10 +43,11 @@ import java.util.regex.Pattern;
 public class FASEBJournalScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "The FASEB Journal";
-	private static final String SITE_URL = "http://www.fasebj.org";
+	private static final String SITE_URL = "https://faseb.onlinelibrary.wiley.com";
+	private static final String SITE_HOST = "faseb.onlinelibrary.wiley.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "www.fasebj.org"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 
 	@Override

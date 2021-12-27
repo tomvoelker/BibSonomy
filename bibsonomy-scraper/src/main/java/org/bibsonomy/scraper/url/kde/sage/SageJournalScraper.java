@@ -42,11 +42,11 @@ import java.util.regex.Pattern;
 public class SageJournalScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "Sage Journal";
-	private static final String SITE_URL = "http://online.sagepub.com/";
+	private static final String SITE_URL = "https://journals.sagepub.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "sagepub.com"), 
-			Pattern.compile("/content" + ".*")
+			Pattern.compile(".*" + "journals.sagepub.com"),
+			EMPTY_PATTERN
 		));
 
 	@Override

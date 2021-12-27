@@ -47,13 +47,13 @@ public class SageJournalScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://jis.sagepub.com/content/38/3/297.abstract", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest1.bib");
+		assertScraperResult("https://journals.sagepub.com/doi/abs/10.1177/0165551512438353", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest1.bib");
 	}
 	/**
 	 * starts URL test with id url_242
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://cdp.sagepub.com/content/12/4/105.short", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest2.bib");
+		assertScraperResult("https://journals.sagepub.com/doi/abs/10.1111/1467-8721.01242", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest2.bib");
 	}
 }

@@ -47,7 +47,7 @@ public class FASEBJournalScraperTest {
 	 */
 	@Test
 	public void urlTestRun1() {
-		assertScraperResult("http://www.fasebj.org/content/early/2012/06/15/fj.12-211441.short", FASEBJournalScraper.class, resultDirectory + "FASEBJournalScraperUnitTest1.bib");
+		assertScraperResult("https://faseb.onlinelibrary.wiley.com/doi/10.1096/fj.12-211441", FASEBJournalScraper.class, resultDirectory + "FASEBJournalScraperUnitTest1.bib");
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class FASEBJournalScraperTest {
 	 */
 	@Test
 	public void urlTestRun2() {
-		assertScraperResult("http://www.fasebj.org/content/26/8/3100.full", FASEBJournalScraper.class, resultDirectory +"FASEBJournalScraperUnitTest2.bib");
+		assertScraperResult("https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.12-0802ufm", FASEBJournalScraper.class, resultDirectory +"FASEBJournalScraperUnitTest2.bib");
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class FASEBJournalScraperTest {
 	 */
 	@Test
 	public void urlTestRun3() {
-		assertScraperResult("http://www.fasebj.org/content/15/14/2565.abstract", FASEBJournalScraper.class, resultDirectory + "FASEBJournalScraperUnitTest3.bib");
+		assertScraperResult("https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.01-0431rev", FASEBJournalScraper.class, resultDirectory + "FASEBJournalScraperUnitTest3.bib");
 	}
 
 }

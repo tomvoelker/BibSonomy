@@ -49,7 +49,7 @@ public class AsmScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		final String url = "http://aem.asm.org/content/61/10/3567";
+		final String url = "https://journals.asm.org/doi/10.1128/aem.61.10.3567-3572.1995?permanently=true";
 		final String resultFile = resultDirectory + "AsmScraperUnitURL1Test.bib";
 		assertScraperResult(url, AsmScraper.class, resultFile);
 	}

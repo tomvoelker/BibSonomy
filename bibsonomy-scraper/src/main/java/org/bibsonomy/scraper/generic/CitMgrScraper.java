@@ -57,10 +57,7 @@ public abstract class CitMgrScraper extends AbstractUrlScraper {
 	@Override
 	protected final boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-		URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
-		if (!present(url)){
-			url = scrapingContext.getUrl();
-		}
+		URL url = scrapingContext.getUrl();
 
 		try {
 			final String doi = DOIUtils.getDoiFromURL(new URL(url.getProtocol(), url.getHost(), url.getPath()));

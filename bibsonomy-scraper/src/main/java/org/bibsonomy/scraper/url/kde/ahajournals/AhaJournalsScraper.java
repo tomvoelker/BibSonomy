@@ -47,18 +47,15 @@ import java.util.regex.Pattern;
 public class AhaJournalsScraper extends CitMgrScraper {
 
 	private static final String SITE_NAME = "Aha Journals";
-	private static final String SITE_URL = "http://circ.ahajournals.org/";
-	private static final String NEW_SITE_URL = "https://www.ahajournals.org/";
+	private static final String SITE_URL = "https://www.ahajournals.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final String AHA_JOURNALS_HOST = "circ.ahajournals.org";
-	private static final String NEW_AHA_JOURNALS_HOST = "ahajournals.org";
+	private static final String AHA_JOURNALS_HOST = "ahajournals.org";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AHA_JOURNALS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEW_AHA_JOURNALS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	@Override
