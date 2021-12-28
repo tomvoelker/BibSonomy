@@ -31,10 +31,9 @@ package org.bibsonomy.scraper.url.kde.citeseer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,22 +49,30 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author tst
  */
-public class CiteseerxScraper extends AbstractUrlScraper {
+public class CiteseerScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "CiteSeerX";
 	private static final String SITE_URL  = "http://citeseerx.ist.psu.edu/";
 
 	private static final String INFO = "This scraper parses a publication page from the " +
 									   "Scientific Literature Digital Library and Search Engine " + href(SITE_URL, SITE_NAME);
-	
-	private static final String HOST = "citeseerx.ist.psu.edu";
+	/*
+	 * The content of both hosts is exactly the same with the same querys.
+	 */
+	private static final String HOST1 = "citeseerx.ist.psu.edu";
+	private static final String HOST2 = "citeseer.ist.psu.edu";
+
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST1), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST2), AbstractUrlScraper.EMPTY_PATTERN));
+	}
+
+	private static final Pattern DOI_PATTERN = Pattern.compile("(10\\.1\\.1\\.\\d{1,4}\\.\\d{1,4})");
 	private static final Pattern bibtexPattern = Pattern.compile("<div id=\"bibtex\" class=\"block\">.*?<h3>BibTeX</h3>.*?<p>(.+?)</p>.*?</div>", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern abstractPattern = Pattern.compile("<h3>Abstract</h3>.*?<p>(.*?)</p>", Pattern.MULTILINE | Pattern.DOTALL);
-	
-	private static final Pattern brokenUrlFixPattern = Pattern.compile(".*summary\\d+.*");
 
-	
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final String ARTICLE_PATH = "/viewdoc/summary?doi=";
 	
 	@Override
 	public String getInfo() {
@@ -75,25 +82,19 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
-		
-		try {
-			// test if url is valid
-			WebUtils.getContentAsString(sc.getUrl());
-		} catch (IOException e) {
-			// if not, try to solve the known citeseerx problem
-			String url = sc.getUrl().toString();
-			final Matcher m = brokenUrlFixPattern.matcher(url);
-			
-			if (m.matches()) {
-				url = url.replace("summary", "summary?doi=");
-				try {
-					sc.setUrl(new URL(url));
-				} catch (MalformedURLException ex) {
-					throw new ScrapingException("Couldn't build new URL");
-				}
-			}
+		/*
+		 * There seem to be problems with the url. We extract the doi and append it to a working url-base.
+		 * Also, the doi doesn't seem to follow the official format
+		 */
+		Matcher m_doi = DOI_PATTERN.matcher(sc.getUrl().toString());
+		if (m_doi.find()){
+			try {
+				URL url = new URL("https://" + sc.getUrl().getHost() + ARTICLE_PATH + m_doi.group(1));
+				sc.setUrl(url);
+				//should it throw an exception we just use the url in the scrapingContext
+			} catch (MalformedURLException ignored) {}
 		}
-		
+
 		// TODO: why do we need this check?
 		// check for selected bibtex snippet
 		if (present(sc.getSelectedText())) {
@@ -101,7 +102,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 			sc.setScraper(this);
 			return true;
 		}
-		
+
 		// no snippet selected
 		String page = sc.getPageContent();
 		

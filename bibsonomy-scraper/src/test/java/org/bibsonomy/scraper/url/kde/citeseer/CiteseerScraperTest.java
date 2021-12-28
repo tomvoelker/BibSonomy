@@ -48,14 +48,21 @@ import org.junit.experimental.categories.Category;
  *
  */
 @Category(RemoteTest.class)
-public class CiteseerxScraperTest {
-	
-	/**
-	 * starts URL test with id url_112
-	 */
+public class CiteseerScraperTest {
+	String resultDirectory = "citeseer/";
+
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185", CiteseerxScraper.class, "CiteseerxScraperUnitURLTest1.bib");
+		final String url = "https://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.1064.4804&rank=1&q=The%20anatomy%20of%20a%20large-scale%20hypertextual%20{Web}%20search%20engine&osm=&ossid=";
+		final String resultFile = resultDirectory + "CiteseerScraperUnitURLTest1.bib";
+		assertScraperResult(url, CiteseerScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185";
+		final String resultFile = resultDirectory + "CiteseerScraperUnitURLTest2.bib";
+		assertScraperResult(url, CiteseerScraper.class, resultFile);
 	}
 	
 	@Test
@@ -63,7 +70,7 @@ public class CiteseerxScraperTest {
 		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185";
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
 		
-		final CiteseerxScraper scraper = new CiteseerxScraper();
+		final CiteseerScraper scraper = new CiteseerScraper();
 		
 		try {
 			final boolean scrape = scraper.scrape(sc);
@@ -77,7 +84,7 @@ public class CiteseerxScraperTest {
 	public void testTemporaryMalformed() throws MalformedURLException {
 		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary10.1.1.14.7185&description=Conceptual+Clustering+of+Text+Clusters";
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
-		final CiteseerxScraper scraper = new CiteseerxScraper();
+		final CiteseerScraper scraper = new CiteseerScraper();
 		
 		try {
 			final boolean scrape = scraper.scrape(sc);
@@ -90,7 +97,7 @@ public class CiteseerxScraperTest {
 	@Test
 	public void runTest1() throws MalformedURLException {
 		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary;jsessionid=352C9BD0F67928E2EDAFA8B58ACFBFB9?doi=10.1.1.110.903";
-		final CiteseerxScraper scraper = new CiteseerxScraper();
+		final CiteseerScraper scraper = new CiteseerScraper();
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
 		
 		try {
