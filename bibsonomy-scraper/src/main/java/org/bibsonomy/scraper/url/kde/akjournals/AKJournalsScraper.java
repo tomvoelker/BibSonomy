@@ -38,10 +38,7 @@ public class AKJournalsScraper extends AbstractUrlScraper{
 		scrapingContext.setScraper(this);
 
 		try {
-			URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
-			if (!present(url)){
-				url = scrapingContext.getUrl();
-			}
+			URL url = scrapingContext.getUrl();
 			// documentUri ist a part of the path of the url and is needed for the json
 			String documentUri;
 			Matcher m_documentUri = JSON_DOCUMENT_URI_PATTERN.matcher(url.getPath());

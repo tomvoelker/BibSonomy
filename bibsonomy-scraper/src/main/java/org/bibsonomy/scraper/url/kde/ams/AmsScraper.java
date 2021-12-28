@@ -40,6 +40,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
@@ -71,16 +72,14 @@ public class AmsScraper extends AbstractUrlScraper implements CitedbyScraper, Re
 
 	private static final String DOWNLOAD_URL = "https://journals.ametsoc.org/rest/citation/export";
 	private static final Pattern JSON_DOCUMENT_URI_PATTERN = Pattern.compile("(/journals.*)");
+	private static final RisToBibtexConverter RTBC = new RisToBibtexConverter();
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 
 		try {
-			URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
-			if (!present(url)){
-				url = scrapingContext.getUrl();
-			}
+			URL url = scrapingContext.getUrl();
 			// documentUri ist a part of the path of the url and is needed for the json
 			String documentUri;
 			Matcher m_documentUri = JSON_DOCUMENT_URI_PATTERN.matcher(url.getPath());
@@ -92,13 +91,13 @@ public class AmsScraper extends AbstractUrlScraper implements CitedbyScraper, Re
 			// creating a post-request with the json as body. post returns the bibtex
 			HttpPost post = new HttpPost(DOWNLOAD_URL);
 			post.setHeader("Content-Type", "application/json");
-			String jsonForPost = "{\"format\":\"bibtex\",\"citationExports\":[{\"documentUri\":\""+ documentUri + "\",\"citationId\":null}]}";
+			String jsonForPost = "{\"format\":\"ris\",\"citationExports\":[{\"documentUri\":\""+ documentUri + "\",\"citationId\":null}]}";
 			post.setEntity(new StringEntity(jsonForPost));
-			String bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
-
-			if (!present(bibtex)){
+			String ris = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			if (!present(ris)){
 				throw new ScrapingException("can't get bibtex from " + DOWNLOAD_URL);
 			}
+			String bibtex = RTBC.toBibtex(ris);
 			scrapingContext.setBibtexResult(bibtex);
 			return true;
 		} catch (final IOException | HttpException e) {
