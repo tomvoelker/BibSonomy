@@ -27,36 +27,71 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.apsphysics;
+package org.bibsonomy.scraper.url.kde.microsoft;
 
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class APSPhysicsScraper extends GenericBibTeXURLScraper {
-	private static final String SITE_NAME = "APS Physics";
-	private static final String SITE_URL = "https://journals.aps.org/";
-	private static final String SITE_HOST = "journals.aps.org";
-	private static final String INFO = "For selected BibTeX snippets and articles from " + href(SITE_URL , SITE_NAME)+".";
-	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<meta content=\"([^<]*?)\" name=\"description\" />");
+public class AcademicMicrosoftScraper extends AbstractUrlScraper {
 
+	private static final String SITE_NAME = "Microsoft Academic";
+	private static final String SITE_HOST = "academic.microsoft.com";
+	private static final String SITE_URL = "https://academic.microsoft.com/";
+	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
+					new Pair<>(Pattern.compile(".*" + SITE_HOST), Pattern.compile("paper"))
+	);
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final String DOWNLOAD_URL = "https://academic.microsoft.com/api/bib";
+	private static final Pattern URL_ID_PATTERN = Pattern.compile("paper/(\\d+)/");
+
+	private static final Pattern EXTRACT_BIBTEX_PATTERN = Pattern.compile("(@.*})");
 
 	@Override
-	public String getInfo() {
-		return INFO;
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+
+		try {
+			Matcher m_id = URL_ID_PATTERN.matcher(sc.getUrl().getPath());
+			String id;
+			if (m_id.find()){
+				id = m_id.group(1);
+			}else {
+				throw new ScrapingException("id not found in URL " + sc.getUrl().toString());
+			}
+			HttpPost post = new HttpPost(DOWNLOAD_URL);
+			String postBody = "{\"format\":1,\"paperIds\":["+ id +"]}";
+			post.setHeader("Content-Type", "application/json; charset=utf-8");
+			post.setEntity(new StringEntity(postBody));
+			String bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			bibtex = postProcessBibtex(bibtex);
+			sc.setBibtexResult(bibtex);
+			return true;
+
+		} catch (HttpException | IOException e) {
+			throw new ScrapingException(e);
+		}
+	}
+
+	private String postProcessBibtex(String bibtex) throws ScrapingException {
+		Matcher m_bibtex = EXTRACT_BIBTEX_PATTERN.matcher(bibtex);
+		if (m_bibtex.find()){
+			return m_bibtex.group(1).replaceAll("\\\\r\\\\n(?:\\\\t)?", "\r\n\t").replace("\\\"", "\"");
+		}else {
+			throw new ScrapingException("no bibtex found in " + bibtex);
+		}
 	}
 
 	@Override
@@ -74,27 +109,8 @@ public class APSPhysicsScraper extends GenericBibTeXURLScraper {
 		return SITE_URL;
 	}
 
-
 	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		String urlPath = url.getPath();
-		urlPath = urlPath.replaceAll("abstract|references|pdf|cited-by|supplemental", "export");
-		return "https://"+ url.getHost() +"/" + urlPath + "?type=bibtex&download=true";
+	public String getInfo() {
+		return INFO;
 	}
-
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext sc, String bibtex) {
-		try {
-			String pageContent = WebUtils.getContentAsString(sc.getUrl().toString().replaceAll("references|pdf|cited-by|supplemental|export", "abstract"));
-			Matcher m_abstract = PATTERN_ABSTRACT.matcher(pageContent);
-			if (m_abstract.find()){
-				String abstractOfBibtex = m_abstract.group(1);
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractOfBibtex);
-			}
-		} catch (IOException ignored) {}
-		return bibtex;
-	}
-
-
-
 }

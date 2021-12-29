@@ -99,7 +99,6 @@ import org.bibsonomy.scraper.url.kde.jbc.JBCScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
 import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
-import org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper;
 import org.bibsonomy.scraper.url.kde.jstage.JStageScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karger.KargerScraper;
@@ -288,7 +287,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		//addScraper(new WebOfKnowledgeScraper());
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());
-		addScraper(new JournalogyScraper());
 		addScraper(new InspireScraper());
 		addScraper(new TaylorAndFrancisScraper());
 		addScraper(new GoogleBooksScraper());
