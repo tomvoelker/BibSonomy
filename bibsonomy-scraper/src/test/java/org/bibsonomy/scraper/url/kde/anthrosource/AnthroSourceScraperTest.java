@@ -29,43 +29,39 @@
  */
 package org.bibsonomy.scraper.url.kde.anthrosource;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-/**
- * @author wbi
- */
-public class AnthroSourceScraper extends LiteratumScraper {
-
-	private static final String SITE_NAME = "AnthroSource";
-	private static final String SITE_URL = "https://anthrosource.onlinelibrary.wiley.com/";
-	private static final String AS_HOST  = "anthrosource.onlinelibrary.wiley.com";
-	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AS_HOST), EMPTY_PATTERN));
-	}
-	
-	public String getInfo() {
-		return info;
+@Category(RemoteTest.class)
+public class AnthroSourceScraperTest {
+	String resultDirectory = "anthrosource/";
+	@Test
+	public void url1TestRun(){
+		final String url = "https://anthrosource.onlinelibrary.wiley.com/doi/full/10.1111/aman.13671";
+		final String resultFile = resultDirectory + "AnthroSourceScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AnthroSourceScraper.class, resultFile);
 	}
 
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+	@Test
+	public void url2TestRun(){
+		final String url = "https://anthrosource.onlinelibrary.wiley.com/doi/abs/10.1111/epic.12052";
+		final String resultFile = resultDirectory + "AnthroSourceScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, AnthroSourceScraper.class, resultFile);
 	}
 
-	public String getSupportedSiteName() {
-		return SITE_NAME;
+	@Test
+	public void url3TestRun(){
+		final String url = "https://anthrosource.onlinelibrary.wiley.com/doi/abs/10.1002/j.sda2.20120301.0007";
+		final String resultFile = resultDirectory + "AnthroSourceScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, AnthroSourceScraper.class, resultFile);
 	}
 
-	public String getSupportedSiteURL() {
-		return SITE_URL;
+	@Test
+	public void url4TestRun(){
+		final String url = "https://anthrosource.onlinelibrary.wiley.com/doi/abs/10.1525/sol.1992.14.3.27";
+		final String resultFile = resultDirectory + "AnthroSourceScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, AnthroSourceScraper.class, resultFile);
 	}
-
 }
