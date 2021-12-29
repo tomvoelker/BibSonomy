@@ -14,11 +14,10 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.tag pageEncoding="UTF-8"/> 
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.GroupSettingsPageCommand" required="true" />
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
 
-	<jsp:directive.attribute name="group" required="true" type="org.bibsonomy.model.Group"/>
-
-	<div id="selTab3" class="tab-pane ${(command.selTab eq 3) ? 'active' : ''}">
+	<div id="selTab4" class="tab-pane ${(command.selTab eq 4) ? 'active' : ''}">
 		<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
 		<c:set var="privlevel" value="${group.privlevel}" />
 		<c:set var="loginUser" value="${command.context.loginUser}" />

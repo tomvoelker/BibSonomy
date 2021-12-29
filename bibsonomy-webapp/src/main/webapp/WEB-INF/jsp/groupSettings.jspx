@@ -56,13 +56,15 @@
 			<!-- display potential errors -->
 			<errors:global />
 			
-			<groupsettings:profile command="${command}" />
-			
-			<groupsettings:cv command="${command}" />
-			
-			<groupsettings:userlists group="${group}" />
-			
-			<groupsettings:delete group="${group}" />
+			<groupsettings:profile command="${command}" group="${group}" />
+
+			<groupsettings:userlists command="${command}" group="${group}" />
+
+			<groupsettings:predefinedTags command="${command}" group="${group}" />
+
+			<groupsettings:cv command="${command}" group="${group}" />
+
+			<groupsettings:delete command="${command}" group="${group}" />
 		</jsp:attribute>
 
 	</layout:tabLayout>

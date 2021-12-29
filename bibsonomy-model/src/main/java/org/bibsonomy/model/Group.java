@@ -103,6 +103,12 @@ public class Group implements Linkable, Serializable {
 	 * to his post. A tagset has the following form: Map<SetName,Tags>.
 	 */
 	private List<TagSet> tagSets;
+
+	/**
+	 * List of predefined tags to regulate posts,
+	 * that have been added to the group via the ForGroup function when posting or editing a post.
+	 */
+	private List<Tag> predefinedTags;
 	
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
@@ -315,6 +321,23 @@ public class Group implements Linkable, Serializable {
 	 */
 	public void setTagSets(List<TagSet> tagSets) {
 		this.tagSets = tagSets;
+	}
+
+	/**
+	 * @return the predefined tags
+	 */
+	public List<Tag> getPredefinedTags() {
+		if (this.predefinedTags == null) {
+			this.predefinedTags = new LinkedList<>();
+		}
+		return this.predefinedTags;
+	}
+
+	/**
+	 * @param predefinedTags 	the predefined tags to set
+	 */
+	public void setPredefinedTags(List<Tag> predefinedTags) {
+		this.predefinedTags = predefinedTags;
 	}
 
 	/** Get the real (long) name of this group.
