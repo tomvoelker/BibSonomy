@@ -40,6 +40,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.cris.Linkable;
+import org.bibsonomy.model.extra.GroupPresetTag;
 
 /**
  * A group groups users.
@@ -105,10 +106,10 @@ public class Group implements Linkable, Serializable {
 	private List<TagSet> tagSets;
 
 	/**
-	 * List of predefined tags to regulate posts,
+	 * List of preset tags to regulate posts,
 	 * that have been added to the group via the ForGroup function when posting or editing a post.
 	 */
-	private List<Tag> predefinedTags;
+	private List<GroupPresetTag> presetTags;
 	
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
@@ -324,20 +325,20 @@ public class Group implements Linkable, Serializable {
 	}
 
 	/**
-	 * @return the predefined tags
+	 * @return the preset tags
 	 */
-	public List<Tag> getPredefinedTags() {
-		if (this.predefinedTags == null) {
-			this.predefinedTags = new LinkedList<>();
+	public List<GroupPresetTag> getPresetTags() {
+		if (this.presetTags == null) {
+			this.presetTags = new LinkedList<>();
 		}
-		return this.predefinedTags;
+		return this.presetTags;
 	}
 
 	/**
-	 * @param predefinedTags 	the predefined tags to set
+	 * @param presetTags 	the preset tags to set
 	 */
-	public void setPredefinedTags(List<Tag> predefinedTags) {
-		this.predefinedTags = predefinedTags;
+	public void setPresetTags(List<GroupPresetTag> presetTags) {
+		this.presetTags = presetTags;
 	}
 
 	/** Get the real (long) name of this group.

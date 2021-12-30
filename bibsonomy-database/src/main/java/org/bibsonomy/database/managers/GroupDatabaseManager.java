@@ -61,6 +61,7 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.model.extra.GroupPresetTag;
 import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
@@ -223,7 +224,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param groupname - the name of the group
 	 * @param session
 	 * @return Return a list of {@link TagSet} objects if the group exists and
-	 *         if there are tagsets related to th group
+	 *         if there are tagsets related to the group
 	 */
 	public List<TagSet> getGroupTagSets(final String groupname, final DBSession session) {
 		return this.queryForList("getTagSetsForGroup", groupname, TagSet.class, session);
@@ -242,6 +243,18 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		param.setSetName(setName);
 		param.setGroupId(groupId);
 		return this.queryForObject("getTagSetBySetNameAndGroup", param, TagSet.class, session);
+	}
+
+	/**
+	 * Returns a list of preset tags for a group
+	 *
+	 * @param groupname - the name of the group
+	 * @param session
+	 * @return Return a list of {@link GroupPresetTag} objects if the group exists and
+	 *         if there are preset tags related to the group
+	 */
+	public List<GroupPresetTag> getPresetTagsForGroup(final String groupname, final DBSession session) {
+		return this.queryForList("getPresetTagsForGroup", groupname, GroupPresetTag.class, session);
 	}
 
 	/**

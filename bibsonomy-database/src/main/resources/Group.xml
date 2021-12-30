@@ -156,6 +156,12 @@
 		WHERE s.group = #groupId#
 		AND s.set_name = #setName#
 	</select>
+
+	<select id="getPresetTagsForGroup" resultMap="GroupCommon.presetTags" parameterClass="string">
+		SELECT tag_name, group_name, `group`, description
+		FROM group_preset_tags gpt
+		WHERE gpt.group_name = #groupname#
+	</select>
 	
 	<insert id="insertTagSet" parameterClass="tagSetParam">
 		INSERT INTO group_tagsets (set_name, tag_name, `group`) VALUES (#setName#, #tagName#, #groupId#)

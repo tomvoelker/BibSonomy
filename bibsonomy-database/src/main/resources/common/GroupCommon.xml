@@ -115,6 +115,13 @@
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
 
+	<resultMap id="presetTags" class="groupPresetTag">
+		<result property="name"      	column="tag_name"       javaType="string"  />
+		<result property="groupId"     	column="group"       	javaType="int"     />
+		<result property="groupName"    column="group_name"     javaType="string"  />
+		<result property="description"  column="description"    javaType="string"  />
+	</resultMap>
+
 	<sql id="basicColumns">
 		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.internal_id
 	</sql>

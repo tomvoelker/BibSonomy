@@ -6,35 +6,35 @@
 -->
 <sqlMap namespace="TypeAliases">
 	<!-- Model types -->
-	<typeAlias alias="tag"                type="org.bibsonomy.model.Tag" />
-	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
-	<typeAlias alias="bibtex"             type="org.bibsonomy.model.BibTex" />
+	<typeAlias alias="tag"                	type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="bookmark"           	type="org.bibsonomy.model.Bookmark" />
+	<typeAlias alias="bibtex"             	type="org.bibsonomy.model.BibTex" />
 	<typeAlias alias="goldStandardPublication" type="org.bibsonomy.model.GoldStandardPublication" />
 	<typeAlias alias="goldStandardBookmark" type="org.bibsonomy.model.GoldStandardBookmark" />
-	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
-	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
-	<typeAlias alias="repository"         type="org.bibsonomy.model.Repository" />
-	<typeAlias alias="wiki"               type="org.bibsonomy.model.Wiki" />
-	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
-	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
-	<typeAlias alias="layoutSettings"     type="org.bibsonomy.model.user.settings.LayoutSettings" />
-	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
-	<typeAlias alias="groupMembership"    type="org.bibsonomy.model.GroupMembership" />
+	<typeAlias alias="post"               	type="org.bibsonomy.model.Post" />
+	<typeAlias alias="resource"           	type="org.bibsonomy.model.Resource" />
+	<typeAlias alias="repository"         	type="org.bibsonomy.model.Repository" />
+	<typeAlias alias="wiki"               	type="org.bibsonomy.model.Wiki" />
+	<typeAlias alias="user"               	type="org.bibsonomy.model.User" />
+	<typeAlias alias="userSettings"       	type="org.bibsonomy.model.UserSettings" />
+	<typeAlias alias="layoutSettings"     	type="org.bibsonomy.model.user.settings.LayoutSettings" />
+	<typeAlias alias="group"              	type="org.bibsonomy.model.Group" />
+	<typeAlias alias="groupMembership"    	type="org.bibsonomy.model.GroupMembership" />
 	<typeAlias alias="publicationReportingSettings" type="org.bibsonomy.model.GroupPublicationReportingSettings" />
-	<typeAlias alias="groupRequest"       type="org.bibsonomy.model.GroupRequest" />
-	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
-	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
-	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
-	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
+	<typeAlias alias="groupRequest"       	type="org.bibsonomy.model.GroupRequest" />
+	<typeAlias alias="tagset"             	type="org.bibsonomy.model.TagSet" />
+	<typeAlias alias="document"           	type="org.bibsonomy.model.Document" />
+	<typeAlias alias="author"			  	type="org.bibsonomy.model.Author" />
+	<typeAlias alias="scraperMetadata"	  	type="org.bibsonomy.model.ScraperMetadata" />
 	<typeAlias alias="discussionItem"		type="org.bibsonomy.model.DiscussionItem" />
 	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
 	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
 
-	<typeAlias alias="statisticsValues" type="org.bibsonomy.model.statistics.StatisticsValues" />
-	<typeAlias alias="statistics"				type="org.bibsonomy.model.statistics.Statistics" />
-	<typeAlias alias="postMetaData"				type="org.bibsonomy.model.metadata.PostMetaData" />
-	<typeAlias alias="personNameList"				type="java.util.List" />
-	<typeAlias alias="samlRemoteUserId"    type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
+	<typeAlias alias="statisticsValues" 	type="org.bibsonomy.model.statistics.StatisticsValues" />
+	<typeAlias alias="statistics"			type="org.bibsonomy.model.statistics.Statistics" />
+	<typeAlias alias="postMetaData"			type="org.bibsonomy.model.metadata.PostMetaData" />
+	<typeAlias alias="personNameList"		type="java.util.List" />
+	<typeAlias alias="samlRemoteUserId"     type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
 	
 	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation" />
 	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
@@ -53,7 +53,6 @@
 	<typeAlias alias="personResourceRelation" 		type="org.bibsonomy.model.ResourcePersonRelation" />
 	<typeAlias alias="personResourceRelationType" 	type="org.bibsonomy.model.enums.PersonResourceRelationType" />
 	<typeAlias alias="personMatch"					type="org.bibsonomy.model.PersonMatch" />
-	<typeAlias alias="additionalKey"				type="org.bibsonomy.model.extra.AdditionalKey"/>
 	<typeAlias alias="personPostsStyle" 			type="org.bibsonomy.model.enums.PersonPostsStyle"/>
 
 	<!-- Synchronization -->
@@ -70,6 +69,8 @@
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
 	<typeAlias alias="extendedBibtex"     type="org.bibsonomy.model.extra.ExtendedField" />
 	<typeAlias alias="extendedBibtexList" type="org.bibsonomy.model.extra.ExtendedFieldList" />
+	<typeAlias alias="additionalKey"	  type="org.bibsonomy.model.extra.AdditionalKey"/>
+	<typeAlias alias="groupPresetTag"     type="org.bibsonomy.model.extra.GroupPresetTag" />
 
 	<!-- Parameters -->
 	<typeAlias alias="genericParam"       type="org.bibsonomy.database.params.GenericParam" />

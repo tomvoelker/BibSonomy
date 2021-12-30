@@ -954,13 +954,21 @@ public class DBLogic implements LogicInterface {
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
+
+			// set group tagsets
 			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+
+			// set preset tags
+			myGroup.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
+
+			// set pending memberships
 			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
 				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 				if (present(pendingMembershipsGroup)) {
 					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
 				}
 			}
+
 			return myGroup;
 		}
 	}

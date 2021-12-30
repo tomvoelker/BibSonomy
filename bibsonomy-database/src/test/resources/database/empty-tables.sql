@@ -34,7 +34,7 @@ DELETE FROM `extended_fields_data`;
 DELETE FROM `extended_fields_map`;
 DELETE FROM `friends`;
 DELETE FROM `group_tagsets`;
-DELETE FROM `group_tags`;
+DELETE FROM `group_preset_tags`;
 DELETE FROM `groupids`;
 DELETE FROM `group_memberships`;
 DELETE FROM `grouptas`;

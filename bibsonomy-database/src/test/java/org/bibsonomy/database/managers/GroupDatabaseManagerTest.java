@@ -47,6 +47,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.extra.GroupPresetTag;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.TestDatabaseManager;
@@ -870,6 +871,17 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		int numberOfLoggedUsers = testDb.getCountOfLoggedGroupMemberships();
 
 		assertThat(numberOfLoggedUsers, equalTo(4));
+	}
+
+	@Test
+	public void testGetPresetTagsForGroup() {
+		final List<GroupPresetTag> presetTags1 = groupDb.getPresetTagsForGroup("testgroup1", dbSession);
+		final List<GroupPresetTag> presetTags2 = groupDb.getPresetTagsForGroup("testgroup2", dbSession);
+		final List<GroupPresetTag> presetTags3 = groupDb.getPresetTagsForGroup("testgroup3", dbSession);
+
+		assertEquals(3, presetTags1.size());
+		assertEquals(1, presetTags2.size());
+		assertTrue(presetTags3.isEmpty());
 	}
 
 }
