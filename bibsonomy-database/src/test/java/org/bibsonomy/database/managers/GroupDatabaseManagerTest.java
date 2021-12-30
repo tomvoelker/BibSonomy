@@ -884,4 +884,67 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(presetTags3.isEmpty());
 	}
 
+	@Test
+	public void testCreatePresetTagsForGroup() {
+		final String groupName = "testgroup1";
+		final Integer groupId = groupDb.getGroupIdByGroupName(groupName, dbSession);
+
+		// Before insert
+		final List<GroupPresetTag> beforePresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(3, beforePresetTags.size());
+
+		// Create new preset tag
+		GroupPresetTag newTag = new GroupPresetTag();
+		newTag.setName("newPresetTag");
+		newTag.setGroupId(groupId);
+		newTag.setGroupName(groupName);
+		newTag.setDescription("A new tag description.");
+
+		groupDb.createOrUpdatePresetTag(newTag, dbSession);
+
+		// After insert
+		final List<GroupPresetTag> afterPresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(4, afterPresetTags.size());
+	}
+
+	@Test
+	public void testUpdatePresetTagsForGroup() {
+		final String groupName = "testgroup1";
+		final Integer groupId = groupDb.getGroupIdByGroupName(groupName, dbSession);
+
+		// Before update
+		final List<GroupPresetTag> beforePresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		GroupPresetTag toUpdateTag = beforePresetTags.get(0);
+		final String oldDescription = toUpdateTag.getDescription();
+		final String newDescription = toUpdateTag.getDescription() + toUpdateTag.getDescription();
+		toUpdateTag.setDescription(newDescription);
+
+		// After update
+		groupDb.createOrUpdatePresetTag(toUpdateTag, dbSession);
+
+		final List<GroupPresetTag> afterPresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		GroupPresetTag updatedTag = afterPresetTags.get(0);
+
+		assertEquals(newDescription, updatedTag.getDescription());
+	}
+
+	@Test
+	public void testRemovePresetTagsForGroup() {
+		final String groupName = "testgroup1";
+		final Integer groupId = groupDb.getGroupIdByGroupName(groupName, dbSession);
+
+		// Before remove
+		final List<GroupPresetTag> beforePresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(3, beforePresetTags.size());
+
+		// Create new preset tag
+		GroupPresetTag toRemoveTag = beforePresetTags.get(0);
+
+		groupDb.removePresetTag(toRemoveTag.getName(), toRemoveTag.getGroupId(), dbSession);
+
+		// After remove
+		final List<GroupPresetTag> afterPresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(2, afterPresetTags.size());
+	}
+
 }

@@ -137,4 +137,8 @@
 	<sql id="parentColumns">
 		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription, pt.organization as pt_organization, upt.user_realname as upt_user_realname, upt.user_homepage as upt_user_homepage
 	</sql>
+
+	<sql id="commonPresetTagsColumns">
+		tag_name, group_name, `group`, description
+	</sql>
 </sqlMap>

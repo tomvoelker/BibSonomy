@@ -59,7 +59,9 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
+import org.bibsonomy.database.params.group.GroupPresetTagParam;
 import org.bibsonomy.database.params.group.InsertParentRelations;
+import org.bibsonomy.database.params.person.PersonAdditionalKeyParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.extra.GroupPresetTag;
 import org.bibsonomy.services.searcher.GroupSearch;
@@ -255,6 +257,32 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 */
 	public List<GroupPresetTag> getPresetTagsForGroup(final String groupname, final DBSession session) {
 		return this.queryForList("getPresetTagsForGroup", groupname, GroupPresetTag.class, session);
+	}
+
+	/**
+	 * Creates a new preset tag for the group.
+	 * Updates if unique key (name, group) already exists.
+	 *
+	 * @param presetTag		specified person
+	 * @param session		db session
+	 */
+	public void createOrUpdatePresetTag(GroupPresetTag presetTag, final DBSession session) {
+		final GroupPresetTagParam param = new GroupPresetTagParam(presetTag);
+		this.insert("insertOrUpdatePresetTag", param, session);
+	}
+
+	/**
+	 * Remove a preset tag for the group.
+	 *
+	 * @param tagName		tag name
+	 * @param group			group ID
+	 * @param session		db session
+	 */
+	public void removePresetTag(final String tagName, final int group, final DBSession session) {
+		final GroupPresetTagParam param = new GroupPresetTagParam();
+		param.setName(tagName);
+		param.setGroupId(group);
+		this.delete("deletePresetTag", param, session);
 	}
 
 	/**
