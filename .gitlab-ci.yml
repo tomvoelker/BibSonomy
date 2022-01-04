@@ -60,7 +60,7 @@ test:
     #- mvn surefire-report:report-only -Daggregate=true
     #- mvn site
   after_script:
-    - cat /coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
+    - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
   artifacts:
     untracked: true
     when: always
