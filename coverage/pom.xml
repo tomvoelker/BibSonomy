@@ -1,0 +1,285 @@
+<?xml version="1.0"?>
+<!--
+
+	BibSonomy Coverage Test - Module for serving the test coverage
+
+	Copyright (C) 2006 - 2021 Data Science Chair,
+								  University of Würzburg, Germany
+								  https://www.informatik.uni-wuerzburg.de/datascience/home/
+							  Information Processing and Analytics Group,
+								  Humboldt-Universität zu Berlin, Germany
+								  https://www.ibi.hu-berlin.de/en/research/Information-processing/
+							  Knowledge & Data Engineering Group,
+								  University of Kassel, Germany
+								  https://www.kde.cs.uni-kassel.de/
+							  L3S Research Center,
+								  Leibniz University Hannover, Germany
+								  https://www.l3s.de/
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<project
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>bibsonomy</artifactId>
+		<groupId>org.bibsonomy</groupId>
+		<version>4.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>coverage</artifactId>
+	<name>BibSonomy Coverage Test</name>
+	<description>Module for serving the test coverage</description>
+
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3 or later</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-bibtex-parser</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-marc-parser</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-common</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-database-common</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-model</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-database</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-recommender</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-client-oauth</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-rest-common</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-server</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-rest-server</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-web-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-web-common</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-exporter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-exporter</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<scope>test</scope>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-wiki</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-pingback</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-opensocial</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-qrcode</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-webapp</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-scraper</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-scrapingservice</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-synchronization</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-importer</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-layout</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-logging</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-search</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-search</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--			<type>test-jar</type>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-search-elasticsearch</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.bibsonomy</groupId>-->
+<!--			<artifactId>bibsonomy-openaccess</artifactId>-->
+<!--			<version>${project.version}</version>-->
+<!--		</dependency>-->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+					<configuration>
+						<excludes>
+							<exclude>**/bibsonomy/layout/jabref/self/MSOfficeXMLLayout *</exclude>
+						</excludes>
+					</configuration>
+				<executions>
+					<execution>
+						<id>report-aggregate</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
