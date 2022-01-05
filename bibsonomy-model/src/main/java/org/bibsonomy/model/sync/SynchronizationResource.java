@@ -29,11 +29,16 @@
  */
 package org.bibsonomy.model.sync;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 /**
  * @author wla
  */
+@Getter
+@Setter
 public abstract class SynchronizationResource {
 
 	/**
@@ -48,48 +53,6 @@ public abstract class SynchronizationResource {
 	 * @return true if resources are same
 	 */
 	public abstract boolean isSame(SynchronizationResource resource);
-
-	/**
-	 * @param createDate the create date and time of this resource to set
-	 */
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-	/**
-	 * @return the create date of this resource to set
-	 */
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	/**
-	 * @param changeDate the date and time of the last change of this resource to set
-	 */
-	public void setChangeDate(Date changeDate) {
-		this.changeDate = changeDate;
-	}
-
-	/**
-	 * @return date and time of the last change of this resource
-	 */
-	public Date getChangeDate() {
-		return changeDate;
-	}
-
-	/**
-	 * @param action the synchronization state to set
-	 */
-	public void setAction(SynchronizationAction action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the state 
-	 */
-	public SynchronizationAction getAction() {
-		return action;
-	}
 
 	@Override
 	public String toString() {

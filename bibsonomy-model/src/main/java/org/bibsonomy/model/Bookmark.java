@@ -31,12 +31,16 @@ package org.bibsonomy.model;
 
 import java.net.URL;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.StringUtils;
 
 /**
  * This is a bookmark, which is derived from {@link Resource}.
  * 
  */
+@Getter
+@Setter
 public class Bookmark extends Resource {
 	private static final long serialVersionUID = 8540672660698453421L;
 	
@@ -45,20 +49,6 @@ public class Bookmark extends Resource {
 	 * FIXME: Use URI instead of String
 	 */
 	private String url;
-
-	/**
-	 * @return url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
 
 	/**
 	 * bookmarks use the same hash value for both intrahash and interhash

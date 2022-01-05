@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
@@ -37,6 +38,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  *
  * @author ada
  */
+@Getter
 public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 
 	private boolean withPersons;
@@ -75,43 +77,4 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 		this.groupByInterhash = groupByInterhash;
 	}
 
-	public boolean isWithPersons() {
-		return withPersons;
-	}
-
-	public boolean isWithPosts() {
-		return withPosts;
-	}
-
-	public boolean isWithPersonsOfPosts() {
-		return withPersonsOfPosts;
-	}
-
-	public PersonResourceRelationType getRelationType() {
-		return relationType;
-	}
-
-	public String getInterhash() {
-		return interhash;
-	}
-
-	public Integer getAuthorIndex() {
-		return authorIndex;
-	}
-
-	public String getPersonId() {
-		return personId;
-	}
-
-	public PersonResourceRelationOrder getOrder() {
-		return order;
-	}
-
-	public boolean isOnlyTheses() {
-		return onlyTheses;
-	}
-
-	public boolean isGroupByInterhash() {
-		return groupByInterhash;
-	}
 }

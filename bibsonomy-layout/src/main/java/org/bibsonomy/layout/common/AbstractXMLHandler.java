@@ -98,7 +98,7 @@ public abstract class AbstractXMLHandler<L extends Layout> extends DefaultHandle
 		} else if ("mimeType".equals(name)) {
 			currentLayoutDefinition.setMimeType(getBuf());
 		} else if ("isFavorite".equals(name)) {
-			currentLayoutDefinition.setIsFavorite(Boolean.parseBoolean(getBuf()));
+			currentLayoutDefinition.setFavorite(Boolean.parseBoolean(getBuf()));
 		}
 		
 		this.endElement(uri, name, qName, currentLayoutDefinition);
