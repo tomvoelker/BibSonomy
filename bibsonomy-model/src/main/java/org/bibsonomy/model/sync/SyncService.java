@@ -101,4 +101,18 @@ public class SyncService {
 		}
 		return true;
 	}
+
+	/**
+	 * @return the clientUser
+	 */
+	public Properties getServerUser() {
+		return this.user;
+	}
+
+	/**
+	 * @param serverUser the clientUser to set
+	 */
+	public void setServerUser(final Properties serverUser) {
+		this.user = serverUser;
+	}
 }
