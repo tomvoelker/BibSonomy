@@ -72,49 +72,49 @@
 			<artifactId>bibsonomy-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-common</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-database-common</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-model</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-database</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-recommender</artifactId>
@@ -135,49 +135,49 @@
 			<artifactId>bibsonomy-rest-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-rest-common</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-common</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-rest-server</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-server</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-web-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-web-common</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-web-common</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-exporter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-exporter</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<scope>test</scope>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-exporter</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-wiki</artifactId>
@@ -240,22 +240,22 @@
 			<artifactId>bibsonomy-search</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-search</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--			<type>test-jar</type>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-search</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-search-elasticsearch</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.bibsonomy</groupId>-->
-<!--			<artifactId>bibsonomy-openaccess</artifactId>-->
-<!--			<version>${project.version}</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-openaccess</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
