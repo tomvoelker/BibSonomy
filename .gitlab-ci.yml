@@ -72,7 +72,7 @@ test:
     expose_as: testresults
     paths:
       - target/
-      - coverage/target/site/jacoco-aggregate/jacoco.xml
+      - coverage/target
 
 test-scraper:
   stage: test
