@@ -49,6 +49,7 @@
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
 	</licenses>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.poi</groupId>

@@ -45,7 +45,6 @@
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
 	</licenses>
-
 	<artifactId>bibsonomy-wiki</artifactId>
 	<name>BibSonomy CV Wiki</name>
 	<description>Wiki for user and group CVs</description>
