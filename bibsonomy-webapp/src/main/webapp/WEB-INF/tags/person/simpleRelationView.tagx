@@ -29,7 +29,8 @@
 	<per:simplePublicationView post="${post}"
 							   showButtons="${showButtons}"
 							   onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
-							   referer="${relativeUrlGenerator.getPersonUrl(personId)}">
+							   referer="${relativeUrlGenerator.getPersonUrl(personId)}"
+							   enforceCommunityPost="${true}">
 		<jsp:attribute name="buttons">
 			<c:choose>
 				<c:when test="${addPub}">
