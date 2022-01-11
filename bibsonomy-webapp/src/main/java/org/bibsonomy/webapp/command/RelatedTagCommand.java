@@ -32,6 +32,8 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -40,6 +42,8 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Stefan Stuetzer
  */
+@Setter
+@Getter
 public class RelatedTagCommand extends BaseCommand {
 
 	/** the requested tag(s) for whose to find related tags*/
@@ -50,46 +54,4 @@ public class RelatedTagCommand extends BaseCommand {
 	
 	/** the global count of the tag these tags are related to */
 	private Integer tagGlobalCount = 1;
-
-	/**
-	 * @return the requestedTags
-	 */
-	public String getRequestedTags() {
-		return this.requestedTags;
-	}
-
-	/**
-	 * @param requestedTags the requestedTags to set
-	 */
-	public void setRequestedTags(String requestedTags) {
-		this.requestedTags = requestedTags;
-	}
-
-	/**
-	 * @return the relatedTags
-	 */
-	public List<Tag> getRelatedTags() {
-		return this.relatedTags;
-	}
-
-	/**
-	 * @param relatedTags the relatedTags to set
-	 */
-	public void setRelatedTags(List<Tag> relatedTags) {
-		this.relatedTags = relatedTags;
-	}
-
-	/**
-	 * @return the tagGlobalCount
-	 */
-	public Integer getTagGlobalCount() {
-		return this.tagGlobalCount;
-	}
-
-	/**
-	 * @param tagGlobalCount the tagGlobalCount to set
-	 */
-	public void setTagGlobalCount(Integer tagGlobalCount) {
-		this.tagGlobalCount = tagGlobalCount;
-	}
 }

@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -39,22 +41,10 @@ import org.bibsonomy.model.Post;
  *
  * @author Robert
  */
-public class HomepageCommand extends SimpleResourceViewCommand {
 
+@Setter
+@Getter
+public class HomepageCommand extends SimpleResourceViewCommand {
 	/** fills the news box in the sidebar */
 	private List<Post<Bookmark>> news;
-
-	/**
-	 * @return the latest news posts.
-	 */
-	public List<Post<Bookmark>> getNews() {
-		return this.news;
-	}
-
-	/**
-	 * @param news
-	 */
-	public void setNews(List<Post<Bookmark>> news) {
-		this.news = news;
-	}
 }

@@ -31,11 +31,15 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author Clemens Baier
  */
+@Getter
+@Setter
 public class UserActivationCommand extends BaseCommand implements Serializable {
 	private static final long serialVersionUID = 952301302153030500L;
 	
@@ -43,18 +47,5 @@ public class UserActivationCommand extends BaseCommand implements Serializable {
 	 * the activation code
 	 */
 	private String activationCode = "";
-	
-	/**
-	 * @return String
-	 */
-	public String getActivationCode() {
-		return this.activationCode;
-	}
 
-	/**
-	 * @param activationCode
-	 */
-	public void setActivationCode(String activationCode) {
-		this.activationCode = activationCode;
-	}
 }

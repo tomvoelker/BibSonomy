@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 
@@ -37,6 +39,8 @@ import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
  * 
  * @author dbenz
  */
+@Getter
+@Setter
 public class RankingCommand {
 	
 	/** 
@@ -59,48 +63,6 @@ public class RankingCommand {
 	 * whether to normalize the ranking or not
 	 */
 	private boolean normalize = false;
-	
-	/**
-	 * @return the period
-	 */
-	public Integer getPeriod() {
-		return this.period;
-	}
-
-	/**
-	 * @param period the period to set
-	 */
-	public void setPeriod(Integer period) {
-		this.period = period;
-	}
-
-	/**
-	 * @return the periodStart
-	 */
-	public Integer getPeriodStart() {
-		return this.periodStart;
-	}
-
-	/**
-	 * @param periodStart the periodStart to set
-	 */
-	public void setPeriodStart(Integer periodStart) {
-		this.periodStart = periodStart;
-	}
-
-	/**
-	 * @return the periodEnd
-	 */
-	public Integer getPeriodEnd() {
-		return this.periodEnd;
-	}
-
-	/**
-	 * @param periodEnd the periodEnd to set
-	 */
-	public void setPeriodEnd(Integer periodEnd) {
-		this.periodEnd = periodEnd;
-	}
 
 	/**
 	 * @return the name of the {@link #method} (lower case)
@@ -126,20 +88,6 @@ public class RankingCommand {
 				this.method = newMethod;
 			}
 		}
-	}
-	
-	/**
-	 * @return the normalize
-	 */
-	public boolean getNormalize() {
-		return this.normalize;
-	}
-	
-	/**
-	 * @param normalize the normalize to set
-	 */
-	public void setNormalize(boolean normalize) {
-		this.normalize = normalize;
 	}
 
 	/**

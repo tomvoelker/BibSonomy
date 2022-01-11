@@ -35,6 +35,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 import recommender.core.database.params.RecAdminOverview;
@@ -45,16 +47,23 @@ import recommender.core.interfaces.model.RecommendationResult;
  * 
  * @author bsc
  */
+@Getter
+@Setter
 public class AdminRecommenderViewCommand extends BaseCommand {
 	private Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> recommenderOverviewMap;
+	/** number of values which will be fetched from the database to calculate average recommender-latencies */
 	private Long queriesPerLatency;
-	
+
+	/** the action which will be executed by the controller and set to null again */
 	private String action;
 	private Class<? extends RecommendationResult> recommendationResultClass;
 	private Long recommenderId;
+
+	/** url of new recommender to be added */
 	private URL newrecurl;
 	private boolean trusted = false;
-	
+
+	/** response-message to the last action executed (e.g. failure, success etc.) set by the controller */
 	private String adminResponse;
 	
 	/**
@@ -66,20 +75,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 	
 	/**
-	 * @param action the action which will be executed by the controller and set to null again
-	 */
-	public void setAction(final String action){
-		this.action = action;
-	}
-	
-	/**
-	 * @return the action which will be executed by the controller and set to null again
-	 */
-	public String getAction(){
-		return this.action;
-	}
-	
-	/**
 	 * @param queriesPerLatency number of values which will be fetched from the database to calculate average recommender-latencies
 	 */
 	public void setQueriesPerLatency(final Long queriesPerLatency){
@@ -88,95 +83,5 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 			this.queriesPerLatency = queriesPerLatency;
 		}
 	}
-	/**
-	 * @return number of values which will be fetched from the database to calculate average recommender-latencies
-	 */
-	public Long getQueriesPerLatency(){
-		return this.queriesPerLatency;
-	}
-	
-	/**
-	 * @param adminResponse response-message to the last action executed (e.g. failure, success etc.) set by the controller
-	 */
-	public void setAdminResponse(final String adminResponse){
-		this.adminResponse = adminResponse;
-	}
-	/**
-	 * @return response-message to the last action executed (e.g. failure, success etc.) set by the controller
-	 */
-	public String getAdminResponse(){
-		return this.adminResponse;
-	}
-	
-	/**
-	 * @param recurl url of new recommender to be added
-	 */
-	public void setNewrecurl(final URL recurl){
-		this.newrecurl = recurl;
-	}
-	
-	/**
-	 * @return url of new recommender to be added
-	 */
-	public URL getNewrecurl(){
-		return this.newrecurl;
-	}
-	
-	/**
-	 * @return the recommendationResultClass
-	 */
-	public Class<? extends RecommendationResult> getRecommendationResultClass() {
-		return this.recommendationResultClass;
-	}
 
-	/**
-	 * @param recommendationResultClass the recommendationResultClass to set
-	 */
-	public void setRecommendationResultClass(
-			Class<? extends RecommendationResult> recommendationResultClass) {
-		this.recommendationResultClass = recommendationResultClass;
-	}
-
-	/**
-	 * @return the recommenderOverviewMap
-	 */
-	public Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> getRecommenderOverviewMap() {
-		return this.recommenderOverviewMap;
-	}
-
-	/**
-	 * @param recommenderOverviewMap the recommenderOverviewMap to set
-	 */
-	public void setRecommenderOverviewMap(
-			Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> recommenderOverviewMap) {
-		this.recommenderOverviewMap = recommenderOverviewMap;
-	}
-
-	/**
-	 * @return the recommenderId
-	 */
-	public Long getRecommenderId() {
-		return this.recommenderId;
-	}
-
-	/**
-	 * @param recommenderId the recommenderId to set
-	 */
-	public void setRecommenderId(Long recommenderId) {
-		this.recommenderId = recommenderId;
-	}
-
-	/**
-	 * @return the trusted
-	 */
-	public boolean isTrusted() {
-		return this.trusted;
-	}
-
-	/**
-	 * @param trusted the trusted to set
-	 */
-	public void setTrusted(boolean trusted) {
-		this.trusted = trusted;
-	}
 }

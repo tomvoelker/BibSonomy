@@ -30,28 +30,17 @@
 package org.bibsonomy.webapp.command;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * command for providing the search string
  * 
  * @author Beate Krause
  */
+@Setter
+@Getter
 public class SearchViewCommand extends TagResourceViewCommand {
-	
 	/** String to search for */
 	private String requestedSearch = "";
-
-	/**
-	 * sets the requested search string
-	 * @param requestedSearch
-	 */
-	public void setRequestedSearch(final String requestedSearch) {
-		this.requestedSearch = requestedSearch; 
-	}
-		
-	/**
-	 * @return the requested search string
-	 */
-	public String getRequestedSearch() {
-		return requestedSearch;
-	}
 }
