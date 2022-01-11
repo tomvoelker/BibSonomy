@@ -61,4 +61,12 @@ public class CvPageViewCommand extends ResourceViewCommand {
 		this.wikiText = wikiText.trim();
 	}
 
+	public boolean getIsGroup() {
+		return this.isGroup;
+	}
+
+	public void setIsGroup(boolean isGroup) {
+		this.isGroup = isGroup;
+	}
+
 }

@@ -135,14 +135,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	}
 
 	/**
-	 *
-	 * @return
-	 */
-	public boolean getEditBeforeImport() {
-		return this.editBeforeImport;
-	}
-
-	/**
 	 * @return The list of publication posts.
 	 */
 	@Override
@@ -155,13 +147,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	 */
 	public void setBibtex(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
-	}
-
-	/**
-	 * @param overwrite the overwrite to set
-	 */
-	public void setOverwrite(boolean overwrite) {
-		this.overwrite = overwrite;
 	}
 	
 }

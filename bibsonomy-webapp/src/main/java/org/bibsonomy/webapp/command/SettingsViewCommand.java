@@ -252,4 +252,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		return this.isGroup;
 	}
 
+	public void setIsGroup(boolean isGroup) {
+		this.isGroup = isGroup;
+	}
 }

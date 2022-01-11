@@ -243,7 +243,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
 				for (final User u : followersOfUser){
 					if (u.getName().equals(groupingName)) {
-						command.setIsFollowerOfUser(true);
+						command.setFollowerOfUser(true);
 						break;
 					}
 				}
