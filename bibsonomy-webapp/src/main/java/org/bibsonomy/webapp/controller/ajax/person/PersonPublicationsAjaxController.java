@@ -137,12 +137,17 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
     }
 
     public void workOnMyOwnPosts(AjaxPersonPageCommand command, User user) {
+        StringBuilder searchSB = new StringBuilder("tags:myown");
+        if (present(command.getSearch())) {
+            searchSB.append(" AND ");
+            searchSB.append(command.getSearch());
+        }
+
         // Get 'myown' posts of the user
         final PostQueryBuilder queryBuilder = new PostQueryBuilder()
-                .setTags(Collections.singletonList("myown"))
                 .setGrouping(GroupingEntity.USER)
                 .setGroupingName(user.getName())
-                .search(command.getSearch())
+                .search(searchSB.toString())
                 .setSortCriteria(command.getSortCriteria())
                 .entriesStartingAt(command.getPageSize(), command.getStart());
 
