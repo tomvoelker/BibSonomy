@@ -261,6 +261,7 @@
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-exporter</module>
+		<module>coverage</module>
 	</modules>
 	<build>
 		<pluginManagement>
@@ -393,6 +394,29 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<executions>
+					<!-- to avoid bugs in some situations -->
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+
+					<!-- create report during maven verify phase -->
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -465,6 +489,11 @@
 	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>coverage</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-bibtex-parser</artifactId>
