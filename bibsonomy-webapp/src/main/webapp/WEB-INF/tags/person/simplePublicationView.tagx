@@ -11,6 +11,7 @@
 	<jsp:directive.attribute name="showButtons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" description="ID of the person"/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.attribute name="buttons" fragment="true" />
 
@@ -32,8 +33,9 @@
 
 		<c:if test="${showButtons and not empty loggedinUserName}">
 			<div class="simplePubEntry-buttons btn-group">
-				<c:if test="${empty post.user or post.user.name eq loggedinUserName}">
-					<buttons:editPostButton post="${post}" resourceType="publication" buttonClasses="btn btn-default btn-xs" referer="${referer}" />
+				<c:if test="${enforceCommunityPost or empty post.user or post.user.name eq loggedinUserName}">
+					<buttons:editPostButton post="${post}" resourceType="publication" buttonClasses="btn btn-default btn-xs"
+											referer="${referer}" enforceCommunityPost="${enforceCommunityPost}" />
 				</c:if>
 				<jsp:invoke fragment="buttons" />
 			</div>
