@@ -56,7 +56,7 @@ test:
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON tag_recommender_db.* TO '$MARIADB_USER'@'%';"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
   script:
-    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings 
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings
     # no test html
     #- mvn surefire-report:report-only -Daggregate=true
     #- mvn site
@@ -98,10 +98,7 @@ report:
   stage: visualize
   image: ubuntu
   script:
-    - mkdir allure-results
-    - cp -r $PROJECT_DIR/bibsonomy-webapp/allure-results/. $PROJECT_DIR/allure-results
-    - cp -r $PROJECT_DIR/bibsonomy-database/allure-results/. $PROJECT_DIR/allure-results
-    - cp -r $PROJECT_DIR/bibsonomy-scraper/allure-results/. $PROJECT_DIR/allure-results
+    - cd /bibsonomy-webapp
     - docker run -d -p 5050:5050 -e CHECK_RESULTS_EVERY_SECONDS=3 -e KEEP_HISTORY=1 -v ${PWD}/allure-results:/app/allure-results -v ${PWD}/allure-reports:/app/default-reports frankescobar/allure-docker-service
     - cd target
     - mkdir allure-output
@@ -118,7 +115,7 @@ report:
     expire_in: 1 hour
     expose_as: allureresults
     paths:
-      - target/allure-output
+      - target/
 
 # https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
 coverage:
