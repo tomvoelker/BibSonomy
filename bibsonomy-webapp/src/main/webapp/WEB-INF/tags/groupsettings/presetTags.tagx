@@ -28,6 +28,31 @@
 				<c:set var="allowEditTagList" value="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}" />
 				<c:if test="${allowEditTagList}">
 					<!-- Input to add new tags -->
+					<form:form cssClass="form-horizontal" name="presetTagForm" method="post" action="" enctype="multipart/form-data">
+						<bsform:fieldset legendKey="settings.group.tagList.add">
+							<jsp:attribute name="content">
+								<div class="form-group">
+									<form:label cssClass="col-sm-3 control-label" path="presetTagName">
+										<fmt:message key="settings.group.tagList.name" />
+									</form:label>
+
+									<div class="col-sm-9">
+										<form:input path="presetTagName" cssClass="form-control" />
+									</div>
+								</div>
+
+								<bsform:textarea id="presetTagDescription" path="presetTagDescription"
+												 labelKey="settings.group.tagList.description"
+												 labelColSpan="3" inputColSpan="9"/>
+							</jsp:attribute>
+						</bsform:fieldset>
+
+						<div class="col-sm-offset-3 col-sm-9">
+							<fmt:message var="submitButton" key="settings.group.tagList.add.submit" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
+						</div>
+						<p class="clearfix"><br /></p>
+					</form:form>
 				</c:if>
 
 				<bsform:fieldset legendKey="settings.group.tagList">
@@ -36,10 +61,10 @@
 						<table class="table table-striped" data-toggle="table" data-locale="${locale}">
 							<thead>
 								<tr>
-									<th class="col-md-4" data-field="name" data-sortable="true">
+									<th class="col-md-3" data-field="name" data-sortable="true">
 										<fmt:message key="settings.group.tagList.name"/>
 									</th>
-									<th class="col-md-6">
+									<th class="col-md-7">
 										<fmt:message key="settings.group.tagList.description"/>
 									</th>
 									<th class="col-md-2">
@@ -47,23 +72,23 @@
 									</th>
 								</tr>
 							</thead>
+
+							<c:forEach items="${group.presetTags}" var="tag">
+								<tr>
+									<td class="col-md-3" data-field="name" data-sortable="true">
+										<c:out value="${tag.name}"/>
+									</td>
+									<td class="col-md-7">
+										<c:out value="${tag.description}"/>
+									</td>
+									<td class="col-md-2">
+										<c:if test="${allowEditTagList}">
+											DELETE
+										</c:if>
+									</td>
+								</tr>
+							</c:forEach>
 						</table>
-
-						<c:forEach items="${group.predefinedTags}" var="tag">
-							<tr>
-								<td class="col-md-4" data-field="name" data-sortable="true">
-									<c:out value="${tag.name}"/>
-								</td>
-								<td class="col-md-6">
-
-								</td>
-								<td class="col-md-2">
-									<c:if test="${allowEditTagList}">
-										DELETE
-									</c:if>
-								</td>
-							</tr>
-						</c:forEach>
 					</jsp:attribute>
 				</bsform:fieldset>
 			</c:when>

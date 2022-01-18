@@ -76,6 +76,10 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// TODO: boolean type
 	private int sharedDocuments;
 	private boolean allowJoin;
+
+	// preset tags
+	private String presetTagName;
+	private String presetTagDescription;
 	
 	// specific settings for the group user
 	private CommonsMultipartFile file;
@@ -263,7 +267,23 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	public void setGroupname(String groupname) {
 		this.groupname = groupname;
 	}
-	
+
+	public String getPresetTagName() {
+		return presetTagName;
+	}
+
+	public void setPresetTagName(String presetTagName) {
+		this.presetTagName = presetTagName;
+	}
+
+	public String getPresetTagDescription() {
+		return presetTagDescription;
+	}
+
+	public void setPresetTagDescription(String presetTagDescription) {
+		this.presetTagDescription = presetTagDescription;
+	}
+
 	public String getErrorMessage() {
 		return this.errorMessage;
 	}

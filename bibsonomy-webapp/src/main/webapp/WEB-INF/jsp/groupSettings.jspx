@@ -60,7 +60,7 @@
 
 			<groupsettings:userlists command="${command}" group="${group}" />
 
-			<groupsettings:predefinedTags command="${command}" group="${group}" />
+			<groupsettings:presetTags command="${command}" group="${group}" />
 
 			<groupsettings:cv command="${command}" group="${group}" />
 

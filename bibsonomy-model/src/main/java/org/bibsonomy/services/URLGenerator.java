@@ -715,14 +715,22 @@ public class URLGenerator {
 	 * build group settings path
 	 * @param groupName
 	 * @param selectedTab
+	 * @param errorKey
 	 * @return the group settings url for the specified group
 	 */
-	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
-		String url = this.projectHome + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.encodePathSegment(groupName);
+	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab, String errorKey) {
+		// TODO: remove error key here, when proper error handling
+		final UrlBuilder builder = new UrlBuilder(this.projectHome)
+				.addPathElement(SETTINGS_PREFIX)
+				.addPathElement(GROUP_PREFIX)
+				.addPathElement(UrlUtils.encodePathSegment(groupName));
 		if (present(selectedTab)) {
-			url += "?selTab=" + selectedTab.intValue();
+			builder.addParameter("selTab", selectedTab.toString());
 		}
-		return this.getUrl(url);
+		if (present(errorKey)) {
+			builder.addParameter("errorMessage", errorKey);
+		}
+		return this.getUrl(builder.toString());
 	}
 
 	/**
