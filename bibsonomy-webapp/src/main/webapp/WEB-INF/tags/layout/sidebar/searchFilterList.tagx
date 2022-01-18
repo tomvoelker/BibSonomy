@@ -14,6 +14,7 @@
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
     <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="hide" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false" />
     <jsp:directive.attribute name="buttonClass" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="showMore" type="java.lang.Boolean" required="false"/>
 
@@ -34,15 +35,19 @@
                                      <c:set var="label" value="${entry.name}" />
                                  </c:if>
                             </c:if>
+                            <c:set var="tooltip" value="${entry.tooltip}" />
+                            <!-- Overwrite tooltip, if tooltip key is set -->
                             <c:if test="${not empty entry.tooltipKey}">
                                 <fmt:message var="tooltip" key="${entry.tooltipKey}" />
                                 <c:if test="${fn:startsWith(tooltip, '???')}">
-                                    <c:set var="entrytypeMessage" value="" />
+                                    <c:set var="tooltip" value="" />
                                 </c:if>
                             </c:if>
                             <button type="button" class="btn btn-default btn-block filter-entry ${buttonClass}" title="${tooltip}" data-value="${entry.name}">
-                                <span class="badge badge-light"><c:out value="${entry.count}" /></span>
-                                <c:out value=" "/>
+                                <c:if test="${not hideCounts}">
+                                    <span class="badge badge-light"><c:out value="${entry.count}" /></span>
+                                    <c:out value=" "/>
+                                </c:if>
                                 <span class="filter-button-label"><c:out value="${label}" /></span>
                             </button>
                         </c:forEach>

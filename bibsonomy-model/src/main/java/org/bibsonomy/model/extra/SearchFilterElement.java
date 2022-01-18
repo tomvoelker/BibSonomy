@@ -40,7 +40,7 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      * unique name
      */
     private final String name;
-    private final long count;
+    private long count = 0;
 
     /**
      * the elasticsearch index field
@@ -57,6 +57,14 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     private String tooltipKey;
 
+    /**
+     * message for tooltip
+     */
+    private String tooltip;
+
+    public SearchFilterElement(final String name) {
+        this.name = name;
+    }
 
     public SearchFilterElement(final String name, final long count) {
         this.name = name;
@@ -84,6 +92,13 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     public long getCount() {
         return count;
+    }
+
+    /**
+     * @param count the count to set
+     */
+    public void setCount(long count) {
+        this.count = count;
     }
 
     /**
@@ -126,5 +141,19 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     public void setTooltipKey(String tooltipKey) {
         this.tooltipKey = tooltipKey;
+    }
+
+    /**
+     * @return the tooltip message
+     */
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    /**
+     * @param tooltip the tooltip message to set
+     */
+    public void setTooltip(String tooltip) {
+        this.tooltip = tooltip;
     }
 }

@@ -19,24 +19,13 @@ function initExtendedSearch() {
         updateCounters();
         updateResults(0);
     });
-
-    /**
-     * Only show allowed selection field in extended search
-     */
-    var allowedSearchFields = ['title', 'author', 'editor', 'publisher', 'institution', 'doi', 'isbn', 'issn'];
-    $('#dropdownSelectionField').children('li').each(function () {
-        if (!allowedSearchFields.includes($(this).data('field'))) {
-            $(this).hide(0);
-        }
-    });
 }
 
 function initFilters() {
     // add tag filters
     initFilterButtons('entrytype');
     initFilterButtons('year');
-    // add highlight tag filter
-    // addHighlightTagFilters();
+    initFilterButtons('preset');
     // add custom tag filters
     addCustomFilters();
     // remove invalid year buttons
@@ -197,28 +186,6 @@ function showRelevantYears() {
         $('#filter-entries-year button:lt(' + num + ')').removeClass('hidden');
         if (num === listSize) {
             $('#filter-more-year').hide(0);
-        }
-    });
-}
-
-/**
- * Get the list of highlighted tags for the current PUMA system and add it as an additional filter section.
- *
- * IMPORTANT: This requested JSON file has to be overwritten in the individual PUMA instances to use.
- */
-function addHighlightTagFilters() {
-    var entries = $('#filter-entries-tags');
-    $.ajax({
-        url: '/resources/explore/highlightTags.json', // The url you are fetching the results.
-        dataType: 'json',
-        success: function (data) {
-            $.each(data, function (index, entity) {
-                entries.append(createFilterButton(entity.tag, 'tags:' + entity.tag, entity.description));
-            });
-            initFilterButtons('tags');
-
-            // show filter section
-            $('#filter-list-tags').removeClass('hidden');
         }
     });
 }
