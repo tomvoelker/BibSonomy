@@ -58,7 +58,7 @@ test:
   script:
     - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings
     # no test html
-    #- mvn surefire-report:report-only -Daggregate=true
+    #- mvn surefire-report:report-only -Daggregate=true -fn
     #- mvn site
   after_script:
     - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
@@ -96,16 +96,11 @@ test-scraper:
 
 report:
   stage: visualize
-  image: ubuntu
+  image: tomvoelker/simple-allure-cli
   script:
-    - cd /bibsonomy-webapp
-    - docker run -d -p 5050:5050 -e CHECK_RESULTS_EVERY_SECONDS=3 -e KEEP_HISTORY=1 -v ${PWD}/allure-results:/app/allure-results -v ${PWD}/allure-reports:/app/default-reports frankescobar/allure-docker-service
-    - cd target
-    - mkdir allure-output
-    - cd target/allure-output
-    - 'curl -X GET "http://localhost:5050/allure-docker-service/report/export?project_id=default" -H  "accept: */*" -o "allure-report.zip"'
-    - 'curl -X GET "http://localhost:5050/allure-docker-service/emailable-report/render?project_id=default" -H  "accept: */*"'
-    - 'curl -X GET "http://localhost:5050/allure-docker-service/emailable-report/export?project_id=default" -H  "accept: */*" -o "allure-email.report.html"'
+    - ls
+    - allure --version
+    - allure generate -c -o target/report allure-results
   needs: ["test"]
   dependencies:
     - test
@@ -115,7 +110,7 @@ report:
     expire_in: 1 hour
     expose_as: allureresults
     paths:
-      - target/
+      - target/report
 
 # https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
 coverage:
