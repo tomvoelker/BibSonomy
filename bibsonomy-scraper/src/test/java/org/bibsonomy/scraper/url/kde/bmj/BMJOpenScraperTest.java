@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BMJOpenScraperTest {
+	String resultDirectory = "bmj/bmjopen/";
 	
 	/**
 	 * starts URL test with id url_249
@@ -48,7 +49,7 @@ public class BMJOpenScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://bmjopen.bmj.com/content/3/1/e002072.short?g=w_open_current_tab";
-		final String resultFile = "BMJOpenScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "BMJOpenScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, BMJOpenScraper.class, resultFile);
 	}
 	/**
@@ -57,7 +58,7 @@ public class BMJOpenScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://bmjopen.bmj.com/content/7/4/e012851";
-		final String resultFile = "BMJOpenScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "BMJOpenScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, BMJOpenScraper.class, resultFile);
 	}
 }
