@@ -44,13 +44,28 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class HindawiScraperTest {
+	String resultDirectory = "hindawi/";
 	/**
 	 * starts URL test with id url_256
 	 */
 	@Test
-	public void urlTestRun() {
+	public void url1Test1Run() {
 		final String url = "https://www.hindawi.com/journals/ijcb/2010/507821/cta/";
-		final String resultFile = "HindawiScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "HindawiScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, HindawiScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2Test1Run() {
+		final String url = "https://www.hindawi.com/journals/ijcb/2010/507821/#abstract";
+		final String resultFile = resultDirectory + "HindawiScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, HindawiScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest2Run() {
+		final String url = "https://www.hindawi.com/journals/ijcb/2018/9852791/";
+		final String resultFile = resultDirectory + "HindawiScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, HindawiScraper.class, resultFile);
 	}
 	/**
