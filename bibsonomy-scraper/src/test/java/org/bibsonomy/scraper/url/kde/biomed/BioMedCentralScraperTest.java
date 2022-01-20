@@ -42,15 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BioMedCentralScraperTest {
+	String resultDirectory = "biomed/";
 	
 	/**
 	 * starts URL test with id url_62
 	 */
 	@Test
-	public void url2TestRun(){
+	public void url1TestRun(){
 		final String url = "https://bmchematol.biomedcentral.com/articles/10.1186/1471-2326-6-7";
 		// http://citation-needed.springer.com/v2/references/10.1186/1471-2326-6-7?format=bibtex&flavour=citation
-		final String resultFile = "BioMedCentralScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "BioMedCentralScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
 	
@@ -58,19 +59,19 @@ public class BioMedCentralScraperTest {
 	 * starts URL test with id url_343
 	 */
 	@Test
-	public void url3TestRun(){
+	public void url2TestRun(){
 		// http://citation-needed.springer.com/v2/references/10.1186/2041-1480-1-S1-S6?format=bibtex&flavour=citation
 		final String url = "http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6";
-		final String resultFile = "BioMedCentralScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "BioMedCentralScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test for Cases Journal
 	 */
 	@Test
-	public void url4TestRun(){
+	public void url3TestRun(){
 		final String url = "https://casesjournal.biomedcentral.com/articles/10.1186/1757-1626-2-164";
-		final String resultFile = "BioMedCentralScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "BioMedCentralScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
 }
