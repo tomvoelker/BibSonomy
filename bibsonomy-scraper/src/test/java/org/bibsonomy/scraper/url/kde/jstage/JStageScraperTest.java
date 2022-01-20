@@ -46,13 +46,14 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JStageScraperTest {
+	String resultDirectory = "jstage/";
 	/**
 	 * starts URL test with id url_267
 	 */
 	@Test
 	public void url1TestRun(){
 		final String url = "https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article";
-		final String resultFile = "JStageScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "JStageScraperUnitURLTest.bib";
 		assertScraperResult(url, null, JStageScraper.class, resultFile);
 	}
 	/**
@@ -61,7 +62,7 @@ public class JStageScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "https://www.jstage.jst.go.jp/article/abas/13/2/13_67/_article";
-		final String resultFile = "JStageScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "JStageScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, JStageScraper.class, resultFile);
 	}
 	@Test
