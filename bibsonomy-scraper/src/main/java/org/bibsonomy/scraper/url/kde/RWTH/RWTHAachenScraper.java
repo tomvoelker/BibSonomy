@@ -68,7 +68,9 @@ public class RWTHAachenScraper extends AbstractUrlScraper {
 			final String content = WebUtils.getContentAsString(sc.getUrl() + DOWNLOAD_BIBTEX_FORMAT);
 			final Matcher m = PATTERN_TO_PICK_BIBTEX_FROM_PAGE_CONTENT.matcher(content);
 			if (m.find()) {
-				final String bibtexresult = m.group(1);
+				String bibtexresult = m.group(1);
+				//removes the Warning that it is UTF-8 encoded
+				bibtexresult = bibtexresult.replaceAll("(?s)^.*?(?=@)","");
 				sc.setBibtexResult(bibtexresult);
 				return true;
 			}
