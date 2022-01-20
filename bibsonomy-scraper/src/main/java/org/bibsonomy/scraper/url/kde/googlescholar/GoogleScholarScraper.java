@@ -32,13 +32,11 @@ package org.bibsonomy.scraper.url.kde.googlescholar;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
@@ -70,30 +68,25 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 			//a link to the bibtex cannot be found on the page of the article, but on the page of the search engine
 			String pageContent1 = WebUtils.getContentAsString(url);
 			Matcher m_allVersion = ALL_VERSIONS_PATTERN.matcher(pageContent1);
-
-			if (m_allVersion.find()){
-				String allVersionsUrl = "https://scholar.google.com/scholar?oi=bibs&hl=en&cluster=" + m_allVersion.group(1);
-				String pageContent2 = WebUtils.getContentAsString(allVersionsUrl);
-				// here again it is not possible to get to the bibtex directly, because the button is loaded with js.
-				Matcher m_citationsUrl = CITATIONS_URL_PATTERN.matcher(pageContent2);
-
-				if (m_citationsUrl.find()){
-					//url of the page where the link to the bibtex is not loaded with js and therefore can be scraped
-					String citationsUrl = "https://scholar.google.com/scholar?q=info:" + m_citationsUrl.group(1) + ":scholar.google.com/&output=cite&scirp=3&scfhb=1&hl=en";
-					String pageContent3 = WebUtils.getContentAsString(citationsUrl);
-					Matcher m_bibtexUrl = BIBTEX_URL_PATTERN.matcher(pageContent3);
-
-					if (m_bibtexUrl.find()){
-						return "https://scholar.googleusercontent.com/scholar.bib?output=citation&scisf=4&q=info:" + m_citationsUrl.group(1) + ":scholar.google.com/&scisig=" + m_bibtexUrl.group(1);
-					}else {
-						throw new ScrapingException("couldn't find link to bibtex");
-					}
-				}else {
-					throw new ScrapingException("couldn't find link to all citations");
-				}
-			}else {
+			if (!m_allVersion.find()){
 				throw new ScrapingException("couldn't find link to all versions");
 			}
+			String allVersionsUrl = "https://scholar.google.com/scholar?oi=bibs&hl=en&cluster=" + m_allVersion.group(1);
+			String pageContent2 = WebUtils.getContentAsString(allVersionsUrl);
+			// here again it is not possible to get to the bibtex directly, because the button is loaded with js.
+			Matcher m_citationsUrl = CITATIONS_URL_PATTERN.matcher(pageContent2);
+			if (!m_citationsUrl.find()){
+				throw new ScrapingException("couldn't find link to all citations");
+			}
+			//url of the page where the link to the bibtex is not loaded with js and therefore can be scraped
+			String citationsUrl = "https://scholar.google.com/scholar?q=info:" + m_citationsUrl.group(1) + ":scholar.google.com/&output=cite&scirp=3&scfhb=1&hl=en";
+			String pageContent3 = WebUtils.getContentAsString(citationsUrl);
+			Matcher m_bibtexUrl = BIBTEX_URL_PATTERN.matcher(pageContent3);
+			if (!m_bibtexUrl.find()){
+				throw new ScrapingException("couldn't find link to bibtex");
+			}
+			return "https://scholar.googleusercontent.com/scholar.bib?output=citation&scisf=4&q=info:" + m_citationsUrl.group(1) + ":scholar.google.com/&scisig=" + m_bibtexUrl.group(1);
+
 		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}
