@@ -4,9 +4,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -34,7 +34,7 @@ public abstract class CitationManager4Scraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		//we need the cookies from the first url. If we follow the redirects, we don't get the needed cookies.
-		HttpClient client = HttpClientBuilder.create().disableRedirectHandling().build();
+		HttpClient client = WebUtils.getHttpClient(RequestConfig.custom().setRedirectsEnabled(false).build());
 		String url = sc.getUrl().toString();
 		String downloadUrl = this.getSupportedSiteURL() + DOWNLOAD_PATH;
 
