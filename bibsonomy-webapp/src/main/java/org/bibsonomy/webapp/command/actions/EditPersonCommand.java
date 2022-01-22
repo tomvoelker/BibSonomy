@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -41,6 +43,8 @@ import org.bibsonomy.webapp.command.PersonPageCommand;
  *
  * @author kchoong
  */
+@Getter
+@Setter
 public class EditPersonCommand extends PersonPageCommand {
 
     private String personId;
@@ -76,171 +80,4 @@ public class EditPersonCommand extends PersonPageCommand {
     private int formPersonIndex = -1;
     private int formMatchId;
 
-    public String getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(String personId) {
-        this.personId = personId;
-    }
-
-    public boolean isClaimedPerson() {
-        return claimedPerson;
-    }
-
-    public void setClaimedPerson(boolean claimedPerson) {
-        this.claimedPerson = claimedPerson;
-    }
-
-    public PersonName getPersonName() {
-        return personName;
-    }
-
-    public void setPersonName(PersonName personName) {
-        this.personName = personName;
-    }
-
-    /**
-     * @return the updateOperation
-     */
-    public PersonUpdateOperation getUpdateOperation() {
-        return this.updateOperation;
-    }
-
-    /**
-     * @param updateOperation the updateOperation to set
-     */
-    public void setUpdateOperation(PersonUpdateOperation updateOperation) {
-        this.updateOperation = updateOperation;
-    }
-
-    /**
-     * @return
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * @param type
-     */
-    public void setType (String type) {
-        this.type = type;
-    }
-
-    /**
-     * @return
-     */
-    public String getInterhash() {
-        return interhash;
-    }
-
-    /**
-     * @param interhash
-     */
-    public void setInterhash(String interhash) {
-        this.interhash = interhash;
-    }
-
-    /**
-     * @return
-     */
-    public String getIndex() {
-        return index;
-    }
-
-    /**
-     * @param index
-     */
-    public void setIndex(String index) {
-        this.index = index;
-    }
-
-    public String getSelectedName() {
-        return selectedName;
-    }
-
-    public void setSelectedName(String selectedName) {
-        this.selectedName = selectedName;
-    }
-
-    public String getFormResourceHash() {
-        return formResourceHash;
-    }
-
-    public void setFormResourceHash(String formResourceHash) {
-        this.formResourceHash = formResourceHash;
-    }
-
-    public PersonResourceRelationType getFormPersonRole() {
-        return formPersonRole;
-    }
-
-    public void setFormPersonRole(PersonResourceRelationType formPersonRole) {
-        this.formPersonRole = formPersonRole;
-    }
-
-    public String getFormThesisId() {
-        return formThesisId;
-    }
-
-    public void setFormThesisId(String formThesisId) {
-        this.formThesisId = formThesisId;
-    }
-
-    public List<String> getFormPersonRoles() {
-        return formPersonRoles;
-    }
-
-    public void setFormPersonRoles(List<String> formPersonRoles) {
-        this.formPersonRoles = formPersonRoles;
-    }
-
-    public String getFormRequestType() {
-        return formRequestType;
-    }
-
-    public void setFormRequestType(String formRequestType) {
-        this.formRequestType = formRequestType;
-    }
-
-    public String getFormResourcePersonRelationId() {
-        return formResourcePersonRelationId;
-    }
-
-    public void setFormResourcePersonRelationId(String formResourcePersonRelationId) {
-        this.formResourcePersonRelationId = formResourcePersonRelationId;
-    }
-
-    public String getFormInterHash() {
-        return formInterHash;
-    }
-
-    public void setFormInterHash(String formInterHash) {
-        this.formInterHash = formInterHash;
-    }
-
-    public String getFormIntraHash() {
-        return formIntraHash;
-    }
-
-    public void setFormIntraHash(String formIntraHash) {
-        this.formIntraHash = formIntraHash;
-    }
-
-    public int getFormPersonIndex() {
-        return formPersonIndex;
-    }
-
-    public void setFormPersonIndex(int formPersonIndex) {
-        this.formPersonIndex = formPersonIndex;
-    }
-
-    public int getFormMatchId() {
-        return formMatchId;
-    }
-
-    public void setFormMatchId(int formMatchId) {
-        this.formMatchId = formMatchId;
-    }
 }

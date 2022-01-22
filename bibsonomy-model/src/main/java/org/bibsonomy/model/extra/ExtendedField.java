@@ -29,10 +29,13 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
-/**
- */
+@Getter
+@Setter
 public class ExtendedField {
 
 	private Date created;
@@ -41,59 +44,4 @@ public class ExtendedField {
 	private String key;
 	private String value;
 
-	/**
-	 * @return created
-	 */
-	public Date getCreated() {
-		return this.created;
-	}
-
-	/**
-	 * @param created
-	 */
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	/**
-	 * @return lastModified
-	 */
-	public Date getLastModified() {
-		return this.lastModified;
-	}
-
-	/**
-	 * @param lastModified
-	 */
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
-	}
-
-	/**
-	 * @return key
-	 */
-	public String getKey() {
-		return this.key;
-	}
-
-	/**
-	 * @param key
-	 */
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	/**
-	 * @return value
-	 */
-	public String getValue() {
-		return this.value;
-	}
-
-	/**
-	 * @param value
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
 }

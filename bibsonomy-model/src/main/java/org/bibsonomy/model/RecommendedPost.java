@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 
@@ -39,9 +42,11 @@ import java.io.Serializable;
  * 
  * @param <T> the resourcetype
  */
+@Getter
+@Setter
 public class RecommendedPost<T extends Resource> implements Serializable {
 
-private static final long serialVersionUID = -1872430526599241544L;
+	private static final long serialVersionUID = -1872430526599241544L;
 	
 	private double score;
 	private double confidence;
@@ -53,48 +58,6 @@ private static final long serialVersionUID = -1872430526599241544L;
 	 */
 	public RecommendedPost(Post<T> post) {
 		this.post = post;
-	}
-	
-	/**
-	 * @return the post
-	 */
-	public Post<T> getPost() {
-		return this.post;
-	}
-	
-	/**
-	 * @param post the post
-	 */
-	public void setPost(Post<T> post) {
-		this.post = post;
-	}
-	
-	/**
-	 * @return the score
-	 */
-	public double getScore() {
-		return this.score;
-	}
-
-	/**
-	 * @param score the score to set
-	 */
-	public void setScore(double score) {
-		this.score = score;
-	}
-
-	/**
-	 * @return the confidence
-	 */
-	public double getConfidence() {
-		return this.confidence;
-	}
-
-	/**
-	 * @param confidence the confidence to set
-	 */
-	public void setConfidence(double confidence) {
-		this.confidence = confidence;
 	}
 	
 }

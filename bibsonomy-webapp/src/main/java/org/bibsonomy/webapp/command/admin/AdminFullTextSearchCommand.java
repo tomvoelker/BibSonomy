@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.BaseCommand;
 
@@ -43,6 +45,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author Sven Stefani
  * @author bsc
  */
+@Getter
+@Setter
 public class AdminFullTextSearchCommand extends BaseCommand {
 	
 	/**
@@ -70,53 +74,5 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	private String entity;
 	
 	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
-	
-	/**
-	 * @return the action
-	 */
-	public AdminFullTextAction getAction() {
-		return this.action;
-	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return this.id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(final AdminFullTextAction action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the entity
-	 */
-	public String getEntity() {
-		return entity;
-	}
-
-	/**
-	 * @param entity the entity to set
-	 */
-	public void setEntity(String entity) {
-		this.entity = entity;
-	}
-
-	/**
-	 * @return the searchIndexInfo
-	 */
-	public Map<String, List<SearchIndexInfo>> getSearchIndexInfo() {
-		return this.searchIndexInfo;
-	}
 }

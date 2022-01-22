@@ -31,12 +31,16 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author Stefan Stützer
  */
+@Getter
+@Setter
 public class UserIDRegistrationCommand extends BaseCommand implements Serializable {
 	
 	/** serial uid */
@@ -51,40 +55,11 @@ public class UserIDRegistrationCommand extends BaseCommand implements Serializab
 	 * Registration step
 	 */
 	private int step = 1;
-	
+
+	/** True if the user wants to stay logged in. */
 	private boolean rememberMe;
 
 	private boolean forceRemoteUserIdAsUsername;
-	
-	/**
-	 * @return register user
-	 */
-	public User getRegisterUser() {
-		return this.registerUser;
-	}
-	
-	/**
-	 * Sets register user 
-	 * @param registerUser
-	 */
-	public void setRegisterUser(User registerUser) {
-		this.registerUser = registerUser;
-	}
-	
-	/**
-	 * @return registration step
-	 */
-	public int getStep() {
-		return this.step;
-	}
-	
-	/**
-	 * Sets registration step
-	 * @param step
-	 */
-	public void setStep(int step) {
-		this.step = step;
-	}
 
 	/**
 	 * @return If the user wants to stay logged in. 
@@ -93,24 +68,4 @@ public class UserIDRegistrationCommand extends BaseCommand implements Serializab
 		return this.rememberMe;
 	}
 
-	/**
-	 * @param rememberMe
-	 */
-	public void setRememberMe(boolean rememberMe) {
-		this.rememberMe = rememberMe;
-	}
-
-	/**
-	 * @return the forceRemoteUserIdAsUsername
-	 */
-	public boolean isForceRemoteUserIdAsUsername() {
-		return forceRemoteUserIdAsUsername;
-	}
-
-	/**
-	 * @param forceRemoteUserIdAsUsername the forceRemoteUserIdAsUsername to set
-	 */
-	public void setForceRemoteUserIdAsUsername(boolean forceRemoteUserIdAsUsername) {
-		this.forceRemoteUserIdAsUsername = forceRemoteUserIdAsUsername;
-	}
 }

@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.services.information;
 
+import lombok.Getter;
 import org.bibsonomy.common.information.JobInformation;
 import org.bibsonomy.model.ResourcePersonRelation;
 
@@ -37,6 +38,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
  *
  * @author dzo
  */
+@Getter
 public class PersonResourceLinkInformationAdded implements JobInformation {
 
 	private final ResourcePersonRelation relation;
@@ -49,10 +51,4 @@ public class PersonResourceLinkInformationAdded implements JobInformation {
 		this.relation = relation;
 	}
 
-	/**
-	 * @return the relation
-	 */
-	public ResourcePersonRelation getRelation() {
-		return relation;
-	}
 }

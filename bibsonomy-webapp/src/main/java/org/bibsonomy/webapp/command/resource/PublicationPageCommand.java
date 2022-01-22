@@ -32,11 +32,15 @@ package org.bibsonomy.webapp.command.resource;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.BibTex;
 
 /**
  * @author dzo
  */
+@Setter
+@Getter
 public class PublicationPageCommand extends ResourcePageCommand<BibTex> {
 	/**
 	 * additional metadata for bibtex resource
@@ -58,17 +62,4 @@ public class PublicationPageCommand extends ResourcePageCommand<BibTex> {
 	 */
 	private Map<String, List<String>> additionalMetadata;
 
-	/**
-	 * @return the additionalMetadata
-	 */
-	public Map<String, List<String>> getAdditionalMetadata() {
-		return this.additionalMetadata;
-	}
-
-	/**
-	 * @param additionalMetadata the additionalMetadata to set
-	 */
-	public void setAdditionalMetadata(final Map<String, List<String>> additionalMetadata) {
-		this.additionalMetadata = additionalMetadata;
-	}
 }

@@ -29,11 +29,15 @@
  */
 package org.bibsonomy.model.user.remote;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
  */
+@Getter
+@Setter
 public class SimpleRemoteUserId implements RemoteUserId {
 	private static final long serialVersionUID = -5200167887496639288L;
 	
@@ -54,20 +58,7 @@ public class SimpleRemoteUserId implements RemoteUserId {
 		this.remoteUserId = remoteUserId;
 	}
 	
-	/**
-	 * @return the remoteUserId
-	 */
-	public String getRemoteUserId() {
-		return this.remoteUserId;
-	}
 
-	/**
-	 * @param remoteUserId the remoteUserId to set
-	 */
-	public void setRemoteUserId(String remoteUserId) {
-		this.remoteUserId = remoteUserId;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return ((obj == this) || ((obj != null) && (obj.getClass() == this.getClass()) && (this.remoteUserId.equals(((SimpleRemoteUserId)obj).remoteUserId))));

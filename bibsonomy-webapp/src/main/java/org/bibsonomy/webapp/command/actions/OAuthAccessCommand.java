@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.UserInfoCommand;
 
 /**
@@ -36,6 +38,8 @@ import org.bibsonomy.webapp.command.UserInfoCommand;
  * 
  * @author fei
  */
+@Getter
+@Setter
 public class OAuthAccessCommand extends UserInfoCommand {
 	/**
 	 * different states during the OAuth process
@@ -87,49 +91,5 @@ public class OAuthAccessCommand extends UserInfoCommand {
 	private String errorMessage;
 	/** in case of an authentication error the oauth error type */
 	private ErrorType errorType;
-	
-	/**
-	 * @param state
-	 */
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	/**
-	 * @return current OAuth state
-	 */
-	public State getState() {
-		return state;
-	}
-
-	/**
-	 * @param token
-	 */
-	public void setAccessToken(String token) {
-		this.accessToken = token;
-	}
-
-	/**
-	 * @return the auth token
-	 */
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public void setErrorType(ErrorType errorType) {
-		this.errorType = errorType;
-	}
-
-	public ErrorType getErrorType() {
-		return errorType;
-	}
 	
 }

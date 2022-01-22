@@ -29,11 +29,16 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
  * @author mwa
  */
+@Getter
+@Setter
 public class TagSet {
 
 	/**
@@ -60,34 +65,6 @@ public class TagSet {
 	public TagSet(String setName, List<Tag> tags){
 		this.setName = setName;
 		this.tags = tags;
-	}
-	
-	/**
-	 * @return the tags
-	 */
-	public List<Tag> getTags() {
-		return this.tags;
-	}
-
-	/**
-	 * @param tags the tags to set
-	 */
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @return the setName
-	 */
-	public String getSetName() {
-		return this.setName;
-	}
-
-	/**
-	 * @param setName the setName to set
-	 */
-	public void setSetName(String setName) {
-		this.setName = setName;
 	}
 
 	@Override

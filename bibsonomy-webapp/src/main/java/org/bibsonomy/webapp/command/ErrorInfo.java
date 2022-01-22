@@ -1,11 +1,16 @@
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author dng
  */
+@Setter
+@Getter
 public class ErrorInfo implements Comparable<ErrorInfo>{
 	
 	/**
@@ -58,18 +63,7 @@ public class ErrorInfo implements Comparable<ErrorInfo>{
 		this.positions = positions;
 		this.setErrorType(errorType);
 	}
-	
-	/**
-	 * @return the errorField
-	 */
-	public String getErrorField() {
-		return this.errorField;
-	}
-	
-	public void setErrorField(String errorField) {
-		this.errorField = errorField;
-	}
-	
+
 	/**
 	 * 
 	 * @param position
@@ -77,34 +71,6 @@ public class ErrorInfo implements Comparable<ErrorInfo>{
 	 */
 	public void addPosition(int position) {
 		this.positions.add(position);
-	}
-	
-	/**
-	 * @return the list of positions
-	 */
-	public List<Integer> getPositions() {
-		return this.positions;
-	}
-	
-	/**
-	 * @param positions
-	 */
-	public void setPositions(final List<Integer> positions) {
-		this.positions = positions;
-	}
-	
-	/**
-	 * @return error type
-	 */
-	public ErrorType getErrorType() {
-		return errorType;
-	}
-	
-	/**
-	 * @param errorType
-	 */
-	public void setErrorType(ErrorType errorType) {
-		this.errorType = errorType;
 	}
 
 	@Override

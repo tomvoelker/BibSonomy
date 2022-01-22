@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
@@ -38,6 +40,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
 /**
  * @author bsc
  */
+@Getter
+@Setter
 public class UserSearchCommand extends BaseCommand {
 	private String search;
 	private int limit;
@@ -46,67 +50,19 @@ public class UserSearchCommand extends BaseCommand {
 	
 	//for ajax callbacks
 	private String callback = "";
-	
-	/**
-	 * @return the users
-	 */
-	public List<User> getUsers() {
-		return this.users;
-	}
-	/**
-	 * @param users the users to set
-	 */
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-	/**
-	 * @return the search
-	 */
-	public String getSearch() {
-		return this.search;
-	}
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
-	/**
-	 * @return the limit
-	 */
-	public int getLimit() {
-		return this.limit;
-	}
+
 	/**
 	 * @param limit the limit to set
 	 */
 	public void setLimit(int limit) {
 		this.limit = (limit > 0 ? limit : 10);
 	}
-	/**
-	 * @param showSpammers the showSpammers to set
-	 */
-	public void setShowSpammers(boolean showSpammers) {
-		this.showSpammers = showSpammers;
-	}
+
 	/**
 	 * @return the showSpammers
 	 */
 	public boolean showSpammers() {
 		return showSpammers;
 	}
-	
-	/**
-	 * @return the callback
-	 */
-	public String getCallback() {
-		return this.callback;
-	}
 
-	/**
-	 * @param callback the callback to set
-	 */
-	public void setCallback(final String callback) {
-		this.callback = callback;
-	}
 }

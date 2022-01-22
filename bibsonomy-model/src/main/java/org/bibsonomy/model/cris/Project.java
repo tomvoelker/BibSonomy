@@ -34,6 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.object.FieldDescriptor;
 
 /**
@@ -41,6 +43,8 @@ import org.bibsonomy.util.object.FieldDescriptor;
  *
  * @author dzo
  */
+@Getter
+@Setter
 public class Project implements Linkable {
 
 	/** the sponsor field */
@@ -108,195 +112,6 @@ public class Project implements Linkable {
 	@Override
 	public Integer getId() {
 		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the internalId
-	 */
-	public String getExternalId() {
-		return externalId;
-	}
-
-	/**
-	 * @param externalId the internalId to set
-	 */
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
-	}
-
-	/**
-	 * @return the internalId
-	 */
-	public String getInternalId() {
-		return internalId;
-	}
-
-	/**
-	 * @param internalId the internalId to set
-	 */
-	public void setInternalId(String internalId) {
-		this.internalId = internalId;
-	}
-
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * @param title the title to set
-	 */
-	public void setTitle(final String title) {
-		this.title = title;
-	}
-
-	/**
-	 * @return the subTitle
-	 */
-	public String getSubTitle() {
-		return subTitle;
-	}
-
-	/**
-	 * @param subTitle the subTitle to set
-	 */
-	public void setSubTitle(String subTitle) {
-		this.subTitle = subTitle;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * @return the sponsor
-	 */
-	public String getSponsor() {
-		return sponsor;
-	}
-
-	/**
-	 * @param sponsor the sponsor to set
-	 */
-	public void setSponsor(String sponsor) {
-		this.sponsor = sponsor;
-	}
-
-	/**
-	 * @return the budget
-	 */
-	public Float getBudget() {
-		return budget;
-	}
-
-	/**
-	 * @param budget the budget to set
-	 */
-	public void setBudget(Float budget) {
-		this.budget = budget;
-	}
-
-	/**
-	 * @return the startDate
-	 */
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	/**
-	 * @return the endDate
-	 */
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	/**
-	 * @return the parentProject
-	 */
-	public Project getParentProject() {
-		return parentProject;
-	}
-
-	/**
-	 * @param parentProject the parentProject to set
-	 */
-	public void setParentProject(Project parentProject) {
-		this.parentProject = parentProject;
-	}
-
-	/**
-	 * @return the subProjects
-	 */
-	public List<Project> getSubProjects() {
-		return subProjects;
-	}
-
-	/**
-	 * @param subProjects the subProjects to set
-	 */
-	public void setSubProjects(List<Project> subProjects) {
-		this.subProjects = subProjects;
-	}
-
-	/**
-	 * @return the crisLinks
-	 */
-	public List<CRISLink> getCrisLinks() {
-		return crisLinks;
-	}
-
-	/**
-	 * @param crisLinks the crisLinks to set
-	 */
-	public void setCrisLinks(List<CRISLink> crisLinks) {
-		this.crisLinks = crisLinks;
 	}
 
 	@Override

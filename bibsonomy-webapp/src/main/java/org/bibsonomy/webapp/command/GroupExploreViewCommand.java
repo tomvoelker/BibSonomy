@@ -33,12 +33,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.extra.SearchFilterElement;
 
 /**
  * @author kchoong
  */
+@Setter
+@Getter
 public class GroupExploreViewCommand extends SimpleResourceViewCommand {
 
     // Requested group id
@@ -57,35 +61,4 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
         filterMap.put(field, filters);
     }
 
-    public String getRequestedGroup() {
-        return requestedGroup;
-    }
-
-    public void setRequestedGroup(String requestedGroup) {
-        this.requestedGroup = requestedGroup;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public String getSearch() {
-        return search;
-    }
-
-    public void setSearch(String search) {
-        this.search = search;
-    }
-
-    public Map<String, List<SearchFilterElement>> getFilterMap() {
-        return filterMap;
-    }
-
-    public void setFilterMap(Map<String, List<SearchFilterElement>> filterMap) {
-        this.filterMap = filterMap;
-    }
 }

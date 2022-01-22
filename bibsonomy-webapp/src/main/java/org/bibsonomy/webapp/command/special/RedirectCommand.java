@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.special;
 
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -46,6 +48,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author rja
  */
+@Setter
+@Getter
 public class RedirectCommand extends BaseCommand {
 
 	/**
@@ -62,7 +66,7 @@ public class RedirectCommand extends BaseCommand {
 	 */
 	private String scope;
 	/**
-	 * The user to restrict the author search to.  
+	 * requested user - only relevant for /author pages, i.e., when scope=author.
 	 */
 	private String requUser;
 
@@ -73,94 +77,8 @@ public class RedirectCommand extends BaseCommand {
 	
 	/**
 	 * The URL to be used for content negotation and memento access
+	 * only relevant for /author pages, i.e., when scope=author.
 	 */
 	private String url;
-	
-	/**
-	 * @return datetime
-	 */
-	public Date getDatetime() {
-		return datetime;
-	}
-	
-	/**
-	 * @param datetime
-	 */
-	public void setDatetime(final Date datetime) {
-		this.datetime = datetime;
-	}
-	
-	/** Requested URL for content negotiation and memento access
-	 * 
-	 * @return The URL for content negotiation.
-	 */
-	public String getUrl() {
-		return this.url;
-	}
 
-	/** Sets the requested URL for content negotiation.
-	 * @param url 
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	/** Return the requested user - only relevant for /author pages, i.e., when scope=author.
-	 * 
-	 * @return The requested user name.
-	 */
-	public String getRequUser() {
-		return this.requUser;
-	}
-
-	/** Set the requested user name - only relevant for /author pages, i.e., when scope=author. 
-	 * @param requUser
-	 */
-	public void setRequUser(String requUser) {
-		this.requUser = requUser;
-	}
-
-	/**
-	 * @return The name of the /my* page, e.g., "myRelations".
-	 */
-	public String getMyPage() {
-		return this.myPage;
-	}
-
-	/** Set the name of the /my* page, e.g., "myRelations".
-	 * @param myPage
-	 */
-	public void setMyPage(String myPage) {
-		this.myPage = myPage;
-	}
-
-	/** 
-	 * 
-	 * @return The search string.
-	 */
-	public String getSearch() {
-		return this.search;
-	}
-
-	/** Set the search string.
-	 * 
-	 * @param search
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
-
-	/**
-	 * @return The scope of a search.
-	 */
-	public String getScope() {
-		return this.scope;
-	}
-
-	/** Sets the scope of a search.
-	 * @param scope
-	 */
-	public void setScope(String scope) {
-		this.scope = scope;
-	}
 }
