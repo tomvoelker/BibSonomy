@@ -1,5 +1,11 @@
 image: tomvoelker/maven-mariadb
 
+stages:
+  - build
+  - test
+  - visualize
+  - deploy
+
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
@@ -11,7 +17,8 @@ cache:
 build:
   stage: build
   script:
-    - mvn clean install $MAVEN_OPTS -DskipTests
+    - mvn $MAVEN_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent
+    - mvn install $MAVEN_OPTS -DskipTests
   artifacts:
     untracked: true
     expire_in: 1 hour
@@ -31,7 +38,7 @@ test:
     - mysql --version
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL time_zone = 'Europe/Paris';"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL default_storage_engine='InnoDB';"
-    # Setting SQL Modes
+
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode="STRICT_TRANS_TABLES";"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_DATE');"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_AUTO_CREATE_USER');"
@@ -48,10 +55,12 @@ test:
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON tag_recommender_db.* TO '$MARIADB_USER'@'%';"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
   script:
-    - mvn test $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -Dmaven.test.failure.ignore=true -s misc/scripts/settings.xml -P bibsonomy-test-settings 
     # no test html
     #- mvn surefire-report:report-only -Daggregate=true
     #- mvn site
+  after_script:
+    - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
   artifacts:
     untracked: true
     when: always
@@ -63,6 +72,7 @@ test:
     expose_as: testresults
     paths:
       - target/
+      - coverage/target
 
 test-scraper:
   stage: test
@@ -82,6 +92,49 @@ test-scraper:
     expose_as: scrapertestresults
     paths:
       - target/
+
+# https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
+coverage:
+  stage: visualize
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  script:
+    # convert report from jacoco to cobertura, using relative project path
+    - 'python /opt/cover2cover.py coverage/target/site/jacoco-aggregate/jacoco.xml
+                        $CI_PROJECT_DIR/bibsonomy-bibtex-parser/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-common/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-database/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-database-common/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-exporter/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-importer/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-layout/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-logging/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-marc-parser/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-model/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-openaccess/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-opensocial/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-pingback/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-qrcode/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-recommender/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-rest-client/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-rest-client-oauth/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-rest-common/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-rest-server/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-scraper/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-scrapingservice/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-search/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-search-elasticsearch/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-synchronization/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-web-common/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-webapp/src/main/java/
+                        $CI_PROJECT_DIR/bibsonomy-wiki/src/main/java/
+                         > coverage/target/site/coverage.xml'
+  needs: ["test"]
+  dependencies:
+    - test
+  artifacts:
+    expire_in: 1 hour
+    reports:
+      cobertura: coverage/target/site/coverage.xml
 
 deploy_biblicious:
   stage: deploy
