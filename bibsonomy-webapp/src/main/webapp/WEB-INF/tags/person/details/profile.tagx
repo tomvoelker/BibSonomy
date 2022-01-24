@@ -21,9 +21,11 @@
 	<div class="media">
 		<div class="media-left media-top">
 			<div class="media-image">
-				<c:set var="personIconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}"/>
-				<c:if test="${not empty personIconUrl}">
-					<img class="media-object" src="${personIconUrl}" alt="${personName}" />
+				<c:if test="${not empty command.person.user}">
+					<c:set var="personIconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}"/>
+					<c:if test="${not empty personIconUrl}">
+						<img class="media-object" src="${personIconUrl}" alt="${personName}" />
+					</c:if>
 				</c:if>
 			</div>
 		</div>

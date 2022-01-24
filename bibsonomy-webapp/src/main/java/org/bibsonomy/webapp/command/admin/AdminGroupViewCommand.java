@@ -32,6 +32,8 @@ package org.bibsonomy.webapp.command.admin;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -43,6 +45,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  *
  * @author bsc
  */
+@Getter
+@Setter
 public class AdminGroupViewCommand extends BaseCommand {
 
 	/** specific action for admin page */
@@ -67,48 +71,6 @@ public class AdminGroupViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the group
-	 */
-	public Group getGroup() {
-		return this.group;
-	}
-
-	/**
-	 * @param group the group to set
-	 */
-	public void setGroup(final Group group) {
-		this.group = group;
-	}
-
-	/**
-	 * @return the action
-	 */
-	public AdminGroupOperation getAction() {
-		return this.action;
-	}
-
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(final AdminGroupOperation action) {
-		this.action = action;
-	}
-
-	/**
-	 * @param adminResponse
-	 */
-	public void setAdminResponse(final String adminResponse) {
-		this.adminResponse = adminResponse;
-	}
-
-	/**
-	 * @return the admin response
-	 */
-	public String getAdminResponse() {
-		return this.adminResponse;
-	}
-
-	/**
 	 * @return the pendingGroups
 	 */
 	public List<Group> getPendingGroups() {
@@ -116,13 +78,6 @@ public class AdminGroupViewCommand extends BaseCommand {
 			this.pendingGroups = new LinkedList<Group>();
 		}
 		return this.pendingGroups;
-	}
-
-	/**
-	 * @param pendingGroups the pendingGroups to set
-	 */
-	public void setPendingGroups(final List<Group> pendingGroups) {
-		this.pendingGroups = pendingGroups;
 	}
 
 	@Deprecated
@@ -133,64 +88,6 @@ public class AdminGroupViewCommand extends BaseCommand {
 	@Deprecated
 	public void setCommunityPostInspectionPermission(final boolean communityPostInspectionPermission) {
 		this.communityPostInspectionPermission = communityPostInspectionPermission;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isPermissionsUpdated() {
-		return this.permissionsUpdated;
-	}
-
-	/**
-	 * @param permissionsUpdated
-	 */
-	public void setPermissionsUpdated(final boolean permissionsUpdated) {
-		this.permissionsUpdated = permissionsUpdated;
-	}
-
-	/**
-	 * @return the declineMessage
-	 */
-	public String getDeclineMessage() {
-		return this.declineMessage;
-	}
-
-	/**
-	 * @param declineMessage the declineMessage to set
-	 */
-	public void setDeclineMessage(final String declineMessage) {
-		this.declineMessage = declineMessage;
-	}
-
-	/**
-	 * @return the allGroups
-	 */
-	public List<String> getAllGroupNames() {
-		return this.allGroupNames;
-	}
-
-	/**
-	 * @return the allDeletedGroups
-	 */
-	public List<String> getAllDeletedGroupNames() {
-		return this.allDeletedGroupNames;
-	}
-	
-	/**
-	 * @param allGroups
-	 *            the allGroups to set
-	 */
-	public void setAllGroupNames(final List<String> allGroups) {
-		this.allGroupNames = allGroups;
-	}
-	
-	/**
-	 * @param allGroups
-	 *            the allGroups to set
-	 */
-	public void setAllDeletedGroupNames(final List<String> allDeletedGroups) {
-		this.allDeletedGroupNames = allDeletedGroups;
 	}
 
 }

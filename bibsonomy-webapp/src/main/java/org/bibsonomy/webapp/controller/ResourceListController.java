@@ -158,7 +158,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			/*
 			 * check user's settings
 			 */
-			if (this.userSettings.getIsMaxCount()) {
+			if (this.userSettings.isMaxCount()) {
 				tagSortKey = SortKey.FREQUENCY;
 				tagMax = Math.min(max, this.userSettings.getTagboxMaxCount());
 			} else {

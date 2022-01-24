@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.help;
 
 import java.util.SortedSet;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.services.help.HelpSearchResult;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 
@@ -39,6 +41,8 @@ import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
  *
  * @author Johannes Blum
  */
+@Getter
+@Setter
 public class HelpPageCommand extends DownloadFileCommand {
 
 	private static final long serialVersionUID = -1480991183960187327L;
@@ -70,145 +74,5 @@ public class HelpPageCommand extends DownloadFileCommand {
 	private SortedSet<HelpSearchResult> searchResults;
 	
 	private String search;
-
-	/**
-	 * @return the helpPage
-	 */
-	public String getHelpPage() {
-		return this.helpPage;
-	}
-
-	/**
-	 * @param helpPage the helpPage to set
-	 */
-	public void setHelpPage(String helpPage) {
-		this.helpPage = helpPage;
-	}
-
-	/**
-	 * @return the helpPageTitle
-	 */
-	public String getHelpPageTitle() {
-		return helpPageTitle;
-	}
-
-	/**
-	 * @param helpPageTitle the helpPageTitle to set
-	 */
-	public void setHelpPageTitle(String helpPageTitle) {
-		this.helpPageTitle = helpPageTitle;
-	}
-
-	/**
-	 * @return the content of the requested helpPage
-	 */
-	public String getContent() {
-		return content;
-	}
 	
-	/**
-	 * @param content The new content
-	 */
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	/**
-	 * @return the content of the sidebar
-	 */
-	public String getSidebar() {
-		return this.sidebar;
-	}
-	
-	/**
-	 * @param sidebar The new content of the sidebar
-	 */
-	public void setSidebar(String sidebar) {
-		this.sidebar = sidebar;
-	}
-
-	/**
-	 * @return <code>true</code> if the requested file could not be found.
-	 */
-	public boolean isPageNotFound() {
-		return this.pageNotFound;
-	}
-
-	/**
-	 * @param pageNotFound the new value for pageNotFound
-	 */
-	public void setPageNotFound(boolean pageNotFound) {
-		this.pageNotFound = pageNotFound;
-	}
-
-	/**
-	 * @return the theme
-	 */
-	public String getTheme() {
-		return this.theme;
-	}
-
-	/**
-	 * @param theme the theme to set
-	 */
-	public void setTheme(String theme) {
-		this.theme = theme;
-	}
-
-	/**
-	 * @return the help theme
-	 */
-	public String getHelpTheme() {
-		return helpTheme;
-	}
-
-	/**
-	 * @param helpTheme the help theme to set
-	 */
-	public void setHelpTheme(String helpTheme) {
-		this.helpTheme = helpTheme;
-	}
-
-	/**
-	 * @return the language
-	 */
-	public String getLanguage() {
-		return this.language;
-	}
-
-	/**
-	 * @param language the language to set
-	 */
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
-	/**
-	 * @return the searchResults
-	 */
-	public SortedSet<HelpSearchResult> getSearchResults() {
-		return this.searchResults;
-	}
-
-	/**
-	 * @param searchResults the searchResults to set
-	 */
-	public void setSearchResults(SortedSet<HelpSearchResult> searchResults) {
-		this.searchResults = searchResults;
-	}
-
-	/**
-	 * @return the search
-	 */
-	public String getSearch() {
-		return this.search;
-	}
-
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
-
 }

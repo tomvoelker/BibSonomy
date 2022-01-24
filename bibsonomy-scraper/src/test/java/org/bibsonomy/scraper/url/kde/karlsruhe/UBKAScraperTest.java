@@ -42,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class UBKAScraperTest {
+	String resultDirectory = "karlsruhe/ubka/";
 	
 	/**
 	 * starts URL test with id url_31
@@ -49,7 +50,7 @@ public class UBKAScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC087550059&amp;indx=3&amp;recIds=KITSRC087550059&amp;recIdxs=2&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full";
-		final String resultFile = "UBKAScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "UBKAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, UBKAScraper.class, resultFile);
 	}
 
@@ -59,7 +60,21 @@ public class UBKAScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC349648727&amp;indx=5&amp;recIds=KITSRC349648727&amp;recIdxs=4&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full";
-		final String resultFile = "UBKAScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "UBKAScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, UBKAScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&ct=display&fn=search&doc=KITSRC395813166&indx=1&recIds=KITSRC395813166&recIdxs=0&elementId=0&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&&dscnt=0&scp.scps=scope%3A%28HSKA%29%2Cscope%3A%28KIT%29%2Cscope%3A%28%22PRIMO%22%29%2Cscope%3A%28KIT_CS%29%2Cscope%3A%28KIT_CN%29%2Cscope%3A%28TRAINING3%29%2Cscope%3A%28INF%29%2Cscope%3A%28Trainining4%29%2Cscope%3A%28TRAINING3A%29&mode=Basic&vid=default&srt=rank&tab=default_tab&vl(freeText0)=Bibsonomy&dum=true&dstmp=1640787683628";
+		final String resultFile = resultDirectory + "UBKAScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, UBKAScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&ct=display&fn=search&doc=KITSRC31812243X&indx=1&recIds=KITSRC31812243X&recIdxs=0&elementId=0&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&&dscnt=0&scp.scps=scope%3A%28HSKA%29%2Cscope%3A%28KIT%29%2Cscope%3A%28%22PRIMO%22%29%2Cscope%3A%28KIT_CS%29%2Cscope%3A%28KIT_CN%29%2Cscope%3A%28TRAINING3%29%2Cscope%3A%28INF%29%2Cscope%3A%28Trainining4%29%2Cscope%3A%28TRAINING3A%29&mode=Basic&vid=default&srt=rank&tab=default_tab&vl(freeText0)=web%203.0&dum=true&dstmp=1640787721677";
+		final String resultFile = resultDirectory + "UBKAScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, UBKAScraper.class, resultFile);
 	}
 

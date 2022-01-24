@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.enums.Gender;
@@ -48,6 +50,8 @@ import org.bibsonomy.model.extra.AdditionalKey;
  *
  * @author jil
  */
+@Getter
+@Setter
 public class Person implements Linkable, Serializable {
 
     private static final long serialVersionUID = 4578956154246424767L;
@@ -99,12 +103,6 @@ public class Person implements Linkable, Serializable {
         this.names = new ArrayList<>();
     }
 
-    /**
-     * @return synthetic id. null means new non-persistent object
-     */
-    public String getPersonId() {
-        return this.personId;
-    }
 
     /**
      * @param string synthetic id. null means new non-persistent object
@@ -196,61 +194,6 @@ public class Person implements Linkable, Serializable {
         return false;
     }
 
-    /**
-     * @return something like "Dr. rer. nat."
-     */
-    public String getAcademicDegree() {
-        return this.academicDegree;
-    }
-
-    /**
-     * @param scientificDegree something like "Dr. rer. nat."
-     */
-    public void setAcademicDegree(String scientificDegree) {
-        this.academicDegree = scientificDegree;
-    }
-
-    /**
-     * @return user who last modified this {@link Person}
-     */
-    public String getChangedBy() {
-        return this.changedBy;
-    }
-
-    /**
-     * @param modifiedBy user who last modified this {@link Person}
-     */
-    public void setChangedBy(String modifiedBy) {
-        this.changedBy = modifiedBy;
-    }
-
-    /**
-     * @return date of last modification
-     */
-    public Date getChangeDate() {
-        return this.changeDate;
-    }
-
-    /**
-     * @param modifiedAt date of last modification
-     */
-    public void setChangeDate(Date modifiedAt) {
-        this.changeDate = modifiedAt;
-    }
-
-    /**
-     * @return the names
-     */
-    public List<PersonName> getNames() {
-        return this.names;
-    }
-
-    /**
-     * @param names the names to set
-     */
-    public void setNames(List<PersonName> names) {
-        this.names = names;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -269,170 +212,6 @@ public class Person implements Linkable, Serializable {
         return personId.hashCode();
     }
 
-    /**
-     * @return {@link User} in sameAs relation to this {@link Person}
-     */
-    public String getUser() {
-        return this.user;
-    }
-
-    /**
-     * @param user {@link User} in sameAs relation to this {@link Person}
-     */
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    /**
-     * @return researcher id on http://orcid.org/
-     */
-    public String getOrcid() {
-        return this.orcid;
-    }
-
-    /**
-     * @param orcid researcher id on http://orcid.org/
-     */
-    public void setOrcid(String orcid) {
-        this.orcid = orcid;
-    }
-
-    /**
-     * @return researcher id on http://researcherID.com/
-     */
-    public String getResearcherid() {
-        return this.researcherid;
-    }
-
-    /**
-     * @param researcherid researcher id on http://researcherID.com/
-     */
-    public void setResearcherid(String researcherid) {
-        this.researcherid = researcherid;
-    }
-
-    /**
-     * @return the number of posts in the system, which this {@link Person} as an author
-     */
-    public int getPostCounter() {
-        return this.postCounter;
-    }
-
-    /**
-     * @param postCounter the number of posts in the system, which this {@link Person} as an author
-     */
-    public void setPostCounter(int postCounter) {
-        this.postCounter = postCounter;
-    }
-
-
-    public Integer getPersonChangeId() {
-        return this.personChangeId;
-    }
-
-    public void setPersonChangeId(Integer personChangeId) {
-        this.personChangeId = personChangeId;
-    }
-
-    public String getDnbPersonId() {
-        return this.dnbPersonId;
-    }
-
-    public void setDnbPersonId(String dnbPersonId) {
-        this.dnbPersonId = dnbPersonId;
-    }
-
-    public Gender getGender() {
-        return this.gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    /**
-     * @return the college
-     */
-    public String getCollege() {
-        return this.college;
-    }
-
-    /**
-     * @param college the college to set
-     */
-    public void setCollege(String college) {
-        this.college = college;
-    }
-
-    /**
-     * @return the email
-     */
-    public String getEmail() {
-        return this.email;
-    }
-
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    /**
-     * @return the homepage
-     */
-    public URL getHomepage() {
-        return this.homepage;
-    }
-
-    /**
-     * @param homepage the homepage to set
-     */
-    public void setHomepage(URL homepage) {
-        this.homepage = homepage;
-    }
-
-    /**
-     * @return the crisLinks
-     */
-    public List<CRISLink> getCrisLinks() {
-        return crisLinks;
-    }
-
-    /**
-     * @param crisLinks the crisLinks to set
-     */
-    public void setCrisLinks(List<CRISLink> crisLinks) {
-        this.crisLinks = crisLinks;
-    }
-
-    /**
-     * @return the resourceRelations
-     */
-    public List<ResourcePersonRelation> getResourceRelations() {
-        return resourceRelations;
-    }
-
-    /**
-     * @param resourceRelations the resourceRelations to set
-     */
-    public void setResourceRelations(List<ResourcePersonRelation> resourceRelations) {
-        this.resourceRelations = resourceRelations;
-    }
-
-    /**
-     * @return	list of additional keys
-     */
-    public List<AdditionalKey> getAdditionalKeys() {
-        return additionalKeys;
-    }
-
-    /**
-     * @param additionalKeys to set
-     */
-    public void setAdditionalKeys(List<AdditionalKey> additionalKeys) {
-        this.additionalKeys = additionalKeys;
-    }
 
     @Override
     public String getLinkableId() {

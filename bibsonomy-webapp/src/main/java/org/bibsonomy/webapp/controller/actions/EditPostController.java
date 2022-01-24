@@ -592,7 +592,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			post.setDescription(newPost.getDescription());
 			break;
 		case "approved":
-			post.setApproved(newPost.getApproved());
+			post.setApproved(newPost.isApproved());
 			break;
 		case "groups":
 			post.setGroups(newPost.getGroups());
@@ -600,7 +600,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
-		if (newPost.getApproved()) {
+		if (newPost.isApproved()) {
 			post.setApproved(true);
 		}
 	}
@@ -973,7 +973,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
 
-		if (post.getApproved()) {
+		if (post.isApproved()) {
 			command.setApproved(true);
 		}
 

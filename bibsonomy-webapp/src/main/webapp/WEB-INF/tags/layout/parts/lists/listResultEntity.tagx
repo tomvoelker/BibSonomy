@@ -28,7 +28,7 @@
 		<div class="media list-result-entity">
 			<div class="media-body">
 				<a href="${headingUrl}">
-					<h4 class="media-heading"><c:out value="${headingTitle}"/></h4>
+					<h4 class="media-heading" title="${headingTitle}"><c:out value="${headingTitle}"/></h4>
 				</a>
 				<c:if test="${not empty subHeadingTitle}">
 					<small><span class="media-sub-heading"><c:out value="${subHeadingTitle}"/></span></small>

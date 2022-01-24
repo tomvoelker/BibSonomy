@@ -25,6 +25,7 @@
 		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/extraEntrytypes.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">

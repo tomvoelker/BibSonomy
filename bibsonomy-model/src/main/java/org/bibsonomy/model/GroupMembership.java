@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupRole;
 
 import java.util.Date;
@@ -39,6 +41,8 @@ import java.util.Date;
  * 
  * @author niebler
  */
+@Getter
+@Setter
 public class GroupMembership {
 	
 	private User user;
@@ -65,62 +69,6 @@ public class GroupMembership {
 		this.userSharedDocuments = userSharedDocuments;
 	}
 
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the groupRole
-	 */
-	public GroupRole getGroupRole() {
-		return this.groupRole;
-	}
-
-	/**
-	 * @param groupRole the groupRole to set
-	 */
-	public void setGroupRole(GroupRole groupRole) {
-		this.groupRole = groupRole;
-	}
-
-	/**
-	 * @return the userSharedDocuments
-	 */
-	public boolean isUserSharedDocuments() {
-		return this.userSharedDocuments;
-	}
-
-	/**
-	 * @param userSharedDocuments the userSharedDocuments to set
-	 */
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
-	}
-	
-	/**
-	 * @return the joinDate
-	 */
-	public Date getJoinDate() {
-		return this.joinDate;
-	}
-
-	/**
-	 * @param joinDate the joinDate to set
-	 */
-	public void setJoinDate(Date joinDate) {
-		this.joinDate = joinDate;
-	}
-	
 	/**
 	 * toString. User GroupRole userSharedDocuments
 	 * @return string

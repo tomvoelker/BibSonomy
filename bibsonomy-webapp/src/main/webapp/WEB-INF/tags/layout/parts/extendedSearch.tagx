@@ -13,8 +13,8 @@
     <jsp:directive.attribute name="enableReset" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="toggleFiltersOption" type="java.lang.Boolean" required="false"/>
 
-    <c:set var="entrytypes" value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,mastersthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
-    <c:set var="searchfields" value="title,author,editor,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+    <c:set var="entrytypes" value="${properties['extendedSearch.entrytypes']}"/>
+    <c:set var="searchfields" value="${properties['extendedSearch.searchFields']}"/>
 
     <c:if test="${not alwaysShow}">
         <c:set var="hideExtSearch" value="display: none;"/>
@@ -61,7 +61,7 @@
         </div>
 
         <c:if test="${toggleFiltersOption}">
-            <div class="row" style="text-align: right;">
+            <div id="extendedFiltersToggle" class="row" style="text-align: right;">
                 <div class="col-md-12">
                     <a href="#" id="expandFilterLink" onclick="toggleFilters()"><fmt:message key="search.extended.header" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></a>
                     <a href="#" id="hideFilterLink" style="display: none;" onclick="toggleFilters()"><fmt:message key="search.extended.hide" /> <fontawesome:icon icon="angle-double-up" fixedWidth="${true}"/></a>
@@ -114,11 +114,11 @@
                         </button>
                         <ul id="dropdownSelectionEntrytype" class="dropdown-menu">
                             <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
-                                <li data-entrytype="${entrytype}">
-                                    <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
-                                    <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
-                                        <c:set var="entrytypeMessage" value="${entrytype}" />
-                                    </c:if>
+                                <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
+                                <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
+                                    <c:set var="entrytypeMessage" value="${entrytype}" />
+                                </c:if>
+                                <li data-entrytype="${entrytype}" data-entrytype-title="${entrytypeMessage}">
                                     <a onclick="return switchSelection('Entrytype', '${entrytype}', this)" class="dropdown-item">
                                         <c:out value="${entrytypeMessage}"/>
                                     </a>

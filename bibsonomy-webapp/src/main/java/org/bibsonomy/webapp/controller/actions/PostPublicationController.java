@@ -453,7 +453,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * the publications are saved in the database
 			 */
-			this.storePosts(postsToStore, command.getOverwrite());
+			this.storePosts(postsToStore, command.isOverwrite());
 			command.setUpdateExistingPost(true);
 		}
 
@@ -657,7 +657,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * Posts that have errors will be rejected in any case.
 	 *
 	 * FIXME: the error handling here is almost identical to that
-	 * in {@link BatchEditController#storePosts}
+	 * in {@link BatchEditController#storePosts(List, Class, Map, List, boolean, String)}
 	 *
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if

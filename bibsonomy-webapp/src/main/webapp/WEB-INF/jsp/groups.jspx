@@ -42,7 +42,8 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
-			<parts:searchHeader headerMessageKey="${requPath}.header" searchPlaceholderKey="${requPath}.search"
+			<c:set var="startOverviewPrefix" value="${not empty properties['organizations.overview.default.realnames'] and not isGroupsPage}"/>
+			<parts:searchHeader headerMessageKey="${requPath}.header" searchPlaceholderKey="${requPath}.search" startOverviewPrefix="${startOverviewPrefix}"
 								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
 
 			<c:set var="type" value="${isGroupsPage ? 'groups' : 'organizations'}" />

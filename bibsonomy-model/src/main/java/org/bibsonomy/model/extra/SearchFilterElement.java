@@ -29,11 +29,16 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Class to represent result of an elasticsearch aggregation count.
  *
  * @author kchoong
  */
+@Getter
+@Setter
 public class SearchFilterElement implements Comparable<SearchFilterElement> {
 
     /**
@@ -72,59 +77,5 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
         return nameCompare;
     }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
 
-    /**
-     * @return the count
-     */
-    public long getCount() {
-        return count;
-    }
-
-    /**
-     * @return the index field
-     */
-    public String getField() {
-        return field;
-    }
-
-    /**
-     * @param field the index field to set
-     */
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    /**
-     * @return the message key
-     */
-    public String getMessageKey() {
-        return messageKey;
-    }
-
-    /**
-     * @param messageKey the message key to set
-     */
-    public void setMessageKey(String messageKey) {
-        this.messageKey = messageKey;
-    }
-
-    /**
-     * @return the tooltip message key
-     */
-    public String getTooltipKey() {
-        return tooltipKey;
-    }
-
-    /**
-     * @param tooltipKey the tooltip message key to set
-     */
-    public void setTooltipKey(String tooltipKey) {
-        this.tooltipKey = tooltipKey;
-    }
 }

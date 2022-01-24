@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -48,6 +50,8 @@ import org.bibsonomy.model.statistics.StatisticsValues;
  * @author Jens Illig
  * @author Dominik Benz
  */
+@Getter
+@Setter
 public class SimpleResourceViewCommand extends ResourceViewCommand implements BibtexViewCommand, LayoutViewCommand {
 	// TODO: rename to bookmarks
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<>(this);
@@ -95,68 +99,12 @@ public class SimpleResourceViewCommand extends ResourceViewCommand implements Bi
 	}
 	
 	/**
-	 * @param bibtex the bibtex ListView
-	 */
-	public void setBibtex(final ListCommand<Post<BibTex>> bibtex) {
-		this.bibtex = bibtex;
-	}
-	
-	/**
-	 * @return the bookmark ListView
-	 */
-	public ListCommand<Post<Bookmark>> getBookmark() {
-		return this.bookmark;
-	}
-	
-	/**
-	 * @param bookmark the bookmark ListView
-	 */
-	public void setBookmark(final ListCommand<Post<Bookmark>> bookmark) {
-		this.bookmark = bookmark;
-	}
-
-	/**
-	 * @param goldStandardPublications the goldStandardPublications to set
-	 */
-	public void setGoldStandardPublications(final ListCommand<Post<GoldStandardPublication>> goldStandardPublications) {
-		this.goldStandardPublications = goldStandardPublications;
-	}
-
-	/**
-	 * @return the goldStandardPublications
-	 */
-	public ListCommand<Post<GoldStandardPublication>> getGoldStandardPublications() {
-		return goldStandardPublications;
-	}
-
-	/**
-	 * @return the goldStandardBookmarks
-	 */
-	public ListCommand<Post<GoldStandardBookmark>> getGoldStandardBookmarks() {
-		return this.goldStandardBookmarks;
-	}
-
-	/**
-	 * @param goldStandardBookmarks the goldStandardBookmarks to set
-	 */
-	public void setGoldStandardBookmarks(final ListCommand<Post<GoldStandardBookmark>> goldStandardBookmarks) {
-		this.goldStandardBookmarks = goldStandardBookmarks;
-	}
-
-	/**
 	 * @param statistics the discussionsStatistic to set
 	 */
 	public void setDiscussionsStatistic(final Statistics statistics) {
 		if (statistics instanceof StatisticsValues) {
 			this.discussionsStatistic = (StatisticsValues) statistics;
 		} 
-	}
-
-	/**
-	 * @return the discussionsStatistic
-	 */
-	public StatisticsValues getDiscussionsStatistic() {
-		return discussionsStatistic;
 	}
 	
 }

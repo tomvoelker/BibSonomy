@@ -40,13 +40,34 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ProjectEuclidScraperTest {
+	String resultDirectory = "projecteuclid/";
 	/**
 	 * starts URL test with id url_359
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "https://projecteuclid.org/euclid.aoms/1177704711";
-		final String resultFile = "ProjectEuclidScraperUnitURLTest.bib";
+		final String url = "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-33/issue-1/The-Future-of-Data-Analysis/10.1214/aoms/1177704711.full";
+		final String resultFile = resultDirectory + "ProjectEuclidScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, ProjectEuclidScraper.class, resultFile);
+	}
+	@Test
+	public void url2TestRun(){
+		final String url = "https://projecteuclid.org/journals/experimental-mathematics/volume-21/issue-4/Twisted-Alexander-Polynomials-of-Hyperbolic-Knots/em/1356038817.full";
+		final String resultFile = resultDirectory + "ProjectEuclidScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, ProjectEuclidScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3Test1Run(){
+		final String url = "https://projecteuclid.org/journals/advances-in-operator-theory/volume-4/issue-1/The-Bishop-Phelps-Bollob%c3%a1s-modulus-for-functionals-on-classical-Banach/10.15352/aot.1712-1280.short";
+		final String resultFile = resultDirectory + "ProjectEuclidScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, ProjectEuclidScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3Test2Run(){
+		final String url = "https://projecteuclid.org/journals/advances-in-operator-theory/volume-4/issue-1/The-Bishop-Phelps-Bollob%c3%a1s-modulus-for-functionals-on-classical-Banach/10.15352/aot.1712-1280.short?tab=ArticleFirstPage";
+		final String resultFile = resultDirectory + "ProjectEuclidScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, ProjectEuclidScraper.class, resultFile);
 	}
 }

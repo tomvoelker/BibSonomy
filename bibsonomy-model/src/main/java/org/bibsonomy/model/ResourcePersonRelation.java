@@ -29,49 +29,22 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * TODO: add documentation to this class
  *
  * @author jensi
  */
+@Getter
+@Setter
 public class ResourcePersonRelation extends ResourcePersonRelationBase {
+
 	private Person person;
 	private Post<? extends BibTex> post;
 	private String renderedPost;
 
-	/**
-	 * @return the personName
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-	/**
-	 * @param person the {@link Person} to set
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	/**
-	 * @return the post
-	 */
-	public Post<? extends BibTex> getPost() {
-		return this.post;
-	}
-	/**
-	 * @param post the post to set
-	 */
-	public void setPost(Post<? extends BibTex> post) {
-		this.post = post;
-	}
-
-	public String getRenderedPost() {
-		return renderedPost;
-	}
-
-	public void setRenderedPost(String renderedPost) {
-		this.renderedPost = renderedPost;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

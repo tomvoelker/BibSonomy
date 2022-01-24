@@ -107,7 +107,7 @@
 						</div>
 						<div class="col-md-8">
 							<fmt:message var="researcherPlaceholder" key="person.show.researcherid.placeholder"/>
-							<input type="text" class="form-control" id="editResearcherId" name="person.researcherId" data-reset="${person.researcherid}"
+							<input type="text" class="form-control" id="editResearcherId" name="person.researcherid" data-reset="${person.researcherid}"
 								   placeholder="${researcherPlaceholder}" value="${person.researcherid}"/>
 						</div>
 						<div class="col-md-1">

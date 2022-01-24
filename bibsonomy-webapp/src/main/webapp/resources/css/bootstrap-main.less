@@ -1750,6 +1750,15 @@ ul.prefix-list {
   margin-bottom: 15px;
 }
 
+.cris-header {
+	h1 {
+		font-size: 28px;
+	}
+	p {
+		font-size: 16px;
+	}
+}
+
 #home-news {
   min-height: 400px;
   max-height: 600px;
@@ -1822,12 +1831,33 @@ ul.prefix-list {
 	}
 
 	.post {
-	  padding: 0 5px 5px 10px;
-	  height: auto;
-	  border: none;
+		padding: 10px;
+		height: auto;
+		border: none;
+		display: inline-block;
+		width: 50%;
+
+		.media-body {
+			h4 {
+				margin-top: 0;
+			}
+
+			.ptitle {
+				height: auto;
+				max-height: 38px;
+				white-space: normal;
+			}
+
+			.ellipsis::after,
+			.ellipsis::before {
+				display: none;
+			}
+
+		}
 	}
 
-	.post:nth-child(even) {
+	.even:nth-of-type(4n),
+	.odd:nth-of-type(4n+1){
 	  background-color: #eee;
 	}
 

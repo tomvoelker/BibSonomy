@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.ajax;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.GroupExploreViewCommand;
 
 /**
@@ -36,6 +38,8 @@ import org.bibsonomy.webapp.command.GroupExploreViewCommand;
  *
  * @author kchoong
  */
+@Getter
+@Setter
 public class AjaxGroupExploreCommand extends GroupExploreViewCommand {
 
     /**
@@ -57,59 +61,4 @@ public class AjaxGroupExploreCommand extends GroupExploreViewCommand {
      */
     private String responseString;
 
-    /**
-     * @return the page
-     */
-    public int getPage() {
-        return page;
-    }
-
-    /**
-     * @param page the page to set
-     */
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    /**
-     * @return the page size
-     */
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    /**
-     * @param pageSize the page size to set
-     */
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    /**
-     * @return the distinct count flag
-     */
-    public boolean isDistinctCount() {
-        return distinctCount;
-    }
-
-    /**
-     * @param distinctCount set the distinct count flag
-     */
-    public void setDistinctCount(boolean distinctCount) {
-        this.distinctCount = distinctCount;
-    }
-
-    /**
-     * @return the response string
-     */
-    public String getResponseString() {
-        return responseString;
-    }
-
-    /**
-     * @param responseString the response string to set
-     */
-    public void setResponseString(String responseString) {
-        this.responseString = responseString;
-    }
 }

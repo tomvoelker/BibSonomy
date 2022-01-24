@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.webapp.command.GroupingCommand;
 
@@ -38,6 +40,8 @@ import org.bibsonomy.webapp.command.GroupingCommand;
  * @author dzo
  * @param <D> 
  */
+@Getter
+@Setter
 public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCommand implements GroupingCommand {
 	
 	/**
@@ -51,11 +55,13 @@ public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCom
 	private String hash;
 	
 	/**
-	 * the user name who owns the original post
+	 * the name of the post's owner
+	 * The post is the one, that the discussing user chose to start the discussion
 	 */
 	private String postUserName;
 	/**
-	 * the user name who owns the original post
+	 * the intraHash of the post owner
+	 * The post is the one, that the discussing user chose to start the discussion
 	 */
 	private String intraHash;
 	
@@ -102,60 +108,4 @@ public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCom
 		this.groups = groups;
 	}
 
-	/**
-	 * @return the comment
-	 */
-	public D getDiscussionItem() {
-		return this.discussionItem;
-	}
-	
-	/**
-	 * @param discussionItem the comment to set
-	 */
-	public void setDiscussionItem(final D discussionItem) {
-		this.discussionItem = discussionItem;
-	}
-	
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-	
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-
-	/**
-	 * @return the name of the post's owner
-	 * The post is the one, that the discussing user chose to start the discussion
-	 */
-	public String getPostUserName() {
-		return postUserName;
-	}
-
-	/**
-	 * @param userName
-	 */
-	public void setPostUserName(String userName) {
-		this.postUserName = userName;
-	}	
-	/**
-	 * @return the intraHash of the post owner
-	 * The post is the one, that the discussing user chose to start the discussion
-	 */
-	public String getIntraHash() {
-		return this.intraHash;
-	}
-
-	/**
-	 * @param intraHash
-	 */
-	public void setIntraHash(String intraHash) {
-		this.intraHash = intraHash;
-	}	
 }

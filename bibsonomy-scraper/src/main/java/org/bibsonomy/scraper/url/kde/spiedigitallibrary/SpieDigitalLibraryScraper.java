@@ -29,43 +29,32 @@
  */
 package org.bibsonomy.scraper.url.kde.spiedigitallibrary;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.generic.CitationManager3Scraper;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Mohammed abed
  */
-public class SpieDigitalLibraryScraper extends GenericBibTeXURLScraper{
+public class SpieDigitalLibraryScraper extends CitationManager3Scraper {
 
 	private static final String SITE_NAME = "SPIE Digital Library";
 	private static final String SITE_URL = "http://remotesensing.spiedigitallibrary.org/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	private static final String SPIE_DIGITAL_LIBRARY_HOST = "remotesensing.spiedigitallibrary.org";
-	private static final String DOWNLOAD_URL = "http://remotesensing.spiedigitallibrary.org/downloadCitation.aspx?format=bib&articleid=";
-	private static final Pattern ID_PATERN_FROM_URL = Pattern.compile(".+?articleid=(.+)$");
+	private static final String SPIE_DIGITAL_LIBRARY_NEW_HOST = "spiedigitallibrary.org";
+
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPIE_DIGITAL_LIBRARY_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPIE_DIGITAL_LIBRARY_NEW_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException,IOException {
-		final Matcher m = ID_PATERN_FROM_URL.matcher(url.toString());
-		if (m.find()) {
-			final String id = m.group(1);
-			return DOWNLOAD_URL + id;
-		}
-		return null;
-	}
+
 	
 	@Override
 	public String getSupportedSiteName() {

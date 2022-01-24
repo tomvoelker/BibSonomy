@@ -29,6 +29,10 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.enums.GroupSortKey;
@@ -41,12 +45,16 @@ import org.bibsonomy.model.logic.querybuilder.GroupQueryBuilder;
  *
  * @author ada, pda
  */
+@Getter
+@Setter
 public class GroupQuery extends BasicQuery {
 
     /**
      * if set only get groups with names starting with prefix
      */
     private Prefix prefix;
+
+    private Set<String> realnameSearch;
 
     /**
      * the group sort key
@@ -84,59 +92,4 @@ public class GroupQuery extends BasicQuery {
         return new GroupQueryBuilder();
     }
 
-    public Prefix getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(Prefix prefix) {
-        this.prefix = prefix;
-    }
-
-    public GroupSortKey getGroupSortKey() {
-        return groupSortKey;
-    }
-
-    public void setGroupSortKey(GroupSortKey groupSortKey) {
-        this.groupSortKey = groupSortKey;
-    }
-
-    public SortOrder getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(SortOrder sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public String getExternalId() {
-        return externalId;
-    }
-
-    public void setExternalId(String externalId) {
-        this.externalId = externalId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public boolean getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(boolean organization) {
-        this.organization = organization;
-    }
-
-    public boolean isPending() {
-        return pending;
-    }
-
-    public void setPending(boolean pending) {
-        this.pending = pending;
-    }
 }

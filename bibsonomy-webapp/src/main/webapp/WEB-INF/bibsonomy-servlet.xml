@@ -1090,6 +1090,7 @@
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
+		<property name="defaultRealnameSearch" value="${organizations.overview.default.realnames}"/>
 	</bean>	
 
 	<bean id="organizationPageController" class="org.bibsonomy.webapp.controller.cris.OrganizationPageController" scope="request">
