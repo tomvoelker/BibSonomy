@@ -32,6 +32,7 @@ package org.bibsonomy.scraper.url.kde.openuniversity;
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.pnas.PNASScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OpenUniversityScraperTest {
+	String resultDirectory = "openuniversity/";
 	
 	/**
 	 * starts URL test with id url_236
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://oro.open.ac.uk/19554/", OpenUniversityScraper.class, "OpenUniversityScraperUnitURLTest1.bib");
+		final String url = "http://oro.open.ac.uk/19554/";
+		final String resultFile = resultDirectory + "OpenUniversityScraperUnitURLTest1.bib";
+		assertScraperResult(url, OpenUniversityScraper.class, resultFile);
 	}
 
 }

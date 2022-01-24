@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class EditLibScraperTest {
+	String resultDirectory = "editlib/";
 	
 	/**
 	 * starts URL test with id url_70
@@ -48,7 +49,7 @@ public class EditLibScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.editlib.org/index.cfm?fuseaction=Reader.ViewAbstract&paper_id=12795";
-		final String resultFile = "EditLibScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "EditLibScraperUnitURLTest.bib";
 		assertScraperResult(url, null, EditLibScraper.class, resultFile);
 	}
 	
@@ -58,7 +59,7 @@ public class EditLibScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://www.editlib.org/index.cfm?fuseaction=Reader.ChooseCitationFormat&paper_id=12795";
-		final String resultFile = "EditLibScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "EditLibScraperUnitURLTest.bib";
 		assertScraperResult(url, null, EditLibScraper.class, resultFile);
 	}
 }

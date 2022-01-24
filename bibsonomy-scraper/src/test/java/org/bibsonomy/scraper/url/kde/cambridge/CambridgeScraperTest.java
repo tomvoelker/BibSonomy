@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CambridgeScraperTest {
+	String resultDirectory = "cambridge/";
 
 	/**
 	 * starts URL test with id url_73
@@ -48,7 +49,7 @@ public class CambridgeScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://www.cambridge.org/core/journals/central-european-history/article/max-rubner-and-the-biopolitics-of-rational-nutrition/8A076B9FF653BF6A34C870B7718AFAD5";
-		final String resultFile = "CambridgeScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "CambridgeScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, CambridgeScraper.class, resultFile);
 	}
 	
@@ -58,7 +59,7 @@ public class CambridgeScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/separatedflow-model-for-collapsibletube-oscillations/F8B8F4ABDC08F5B156B6C574F9DF4C01";
-		final String resultFile = "CambridgeScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "CambridgeScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, CambridgeScraper.class, resultFile);
 	}
 }
