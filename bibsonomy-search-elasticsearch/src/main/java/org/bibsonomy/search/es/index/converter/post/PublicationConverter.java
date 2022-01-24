@@ -431,6 +431,15 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 
 			serializedPersonNames.add(convertedPerson);
 			index++;
+
+			// TODO FIXME ATTENTION!!!!! THIS IS TEMPORARY!!!
+			// PLEASE REFACTOR ACCORDINGLY IN THE FUTURE
+			// this "fix" has been introduced, to circumvent ES errors with publications
+			// that have a lot of authors (+500)
+			// all authors after the 500th are now simply cut off and not indexed
+			if (index > 500) {
+				break;
+			}
 		}
 
 		return serializedPersonNames;
