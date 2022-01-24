@@ -29,17 +29,25 @@
  */
 package org.bibsonomy.scraper.url.kde.nasaads;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.UrlUtils;
 
 /**
  * Scraper for NASA ADS.
@@ -47,7 +55,7 @@ import org.bibsonomy.util.UrlUtils;
  *   
  * @author rja
  */
-public class NasaAdsScraper extends GenericBibTeXURLScraper {
+public class NasaAdsScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "The SAO/NASA Astrophysics Data System";
 	private static final String SITE_HOST = "adsabs.harvard.edu";
@@ -58,25 +66,64 @@ public class NasaAdsScraper extends GenericBibTeXURLScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	private static final Pattern URL_BIBCODE_PATTERN = Pattern.compile("/abs/([A-Za-z\\d.]*)");
+	private static final String DOWNLOAD_URL = "https://ui.adsabs.harvard.edu/v1/export/bibtex";
+	private static final String AUTHORIZATION_URL = "https://ui.adsabs.harvard.edu/v1/accounts/bootstrap";
+
+
+	@Override
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
+
+		try {
+			URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
+			if (!present(url)){
+				url = scrapingContext.getUrl();
+			}
+
+			String authorizationJson = WebUtils.getContentAsString(AUTHORIZATION_URL);
+			if (!present(authorizationJson)){
+				throw new ScrapingException("can't get authorization-json from " + authorizationJson);
+			}
+			String authorizationHeaderValue = getAuthorizationTokenFromJson(authorizationJson);
+			if (!present(authorizationHeaderValue)){
+				throw new ScrapingException("couln't get authorization token from " + authorizationJson);
+			}
+
+			String bibcode;
+			Matcher m_bibcode = URL_BIBCODE_PATTERN.matcher(url.getPath());
+			if (m_bibcode.find()){
+				bibcode = m_bibcode.group(1);
+			}else {
+				throw new ScrapingException(url + " did not contain bibcode");
+			}
+
+			HttpPost post = new HttpPost(DOWNLOAD_URL);
+			post.setHeader("Content-Type", "application/json");
+			post.setHeader("Authorization", authorizationHeaderValue);
+			String jsonForPost = "{\"bibcode\":[\""+ bibcode +"\"],\"sort\":[\"date desc, bibcode desc\"],\"maxauthor\":[0],\"authorcutoff\":[200],\"journalformat\":[1]}";
+			post.setEntity(new StringEntity(jsonForPost));
+
+			String bibtexJson = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			if (!present(bibtexJson)){
+				throw new ScrapingException("can't get json of bibtex from " + DOWNLOAD_URL);
+			}
+
+			String bibtex = JsonToBibtex(bibtexJson);
+			if (!present(bibtex)){
+				throw new ScrapingException(bibtexJson + " did not contain bibtex");
+			}
+
+			scrapingContext.setBibtexResult(bibtex);
+			return true;
+		} catch (final IOException | HttpException e) {
+			throw new ScrapingFailureException(e);
+		}
+	}
+
 	@Override
 	public String getInfo() {
 		return INFO;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
-	 */
-	@Override
-	protected String getDownloadURL(final URL url, final String cookies) throws ScrapingException, IOException {
-		final String path = url.getPath();
-		if (path.startsWith("/abs/")) {
-			final String id = path.substring(5);
-			
-			return SITE_URL + "/cgi-bin/nph-bib_query?bibcode=" + UrlUtils.safeURIDecode(id) + "&data_type=BIBTEX&db_key=AST&nocookieset=1";
-		} else if (url.getQuery().toLowerCase().contains("data_type=bibtex")) {
-			return url.toExternalForm();
-		}
-		return null;
 	}
 
 	@Override
@@ -92,6 +139,27 @@ public class NasaAdsScraper extends GenericBibTeXURLScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	protected String JsonToBibtex(String json) {
+		JSONArray hostArray = JSONArray.fromObject("["+json+"]");
+		JSONObject hostObject = hostArray.getJSONObject(0);
+		String bibtex = hostObject.getString("export");
+		if (present(bibtex)){
+			return bibtex;
+		}
+		return null;
+	}
+
+	protected String getAuthorizationTokenFromJson(String json) {
+		JSONArray hostArray = JSONArray.fromObject("["+json+"]");
+		JSONObject hostObject = hostArray.getJSONObject(0);
+		String tokenType = hostObject.getString("token_type");
+		String accessToken = hostObject.getString("access_token");
+		if (present(tokenType)&&present(accessToken)){
+			return tokenType + ":" +  accessToken;
+		}
+		return null;
 	}
 
 }

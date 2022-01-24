@@ -42,12 +42,13 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class EconstorScraperTest {
-	/**
-	 * 
-	 */
+	String resultDirectory = "econstor/";
+
 	@Test
 	public void urlTestRun() {
-		assertScraperResult("https://www.econstor.eu/handle/10419/64547", EconstorScraper.class, "EconstorScraperUnitURLTest.bib");
+		final String url = "https://www.econstor.eu/handle/10419/64547";
+		final String resultFile = resultDirectory + "EconstorScraperUnitURLTest.bib";
+		assertScraperResult(url, null, EconstorScraper.class, resultFile);
 	}
 
 }

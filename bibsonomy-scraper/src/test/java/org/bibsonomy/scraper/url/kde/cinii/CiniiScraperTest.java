@@ -32,6 +32,7 @@ package org.bibsonomy.scraper.url.kde.cinii;
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,11 +42,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CiniiScraperTest {
+	String resultDirectory = "cinii/";
 	/**
 	 * starts URL test with id url_345
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://ci.nii.ac.jp/naid/110009888944", CiniiScraper.class, "CiniiScraperUnitURLTest.bib");
+		final String url = "http://ci.nii.ac.jp/naid/110009888944";
+		final String resultFile = resultDirectory + "CiniiScraperUnitURLTest.bib";
+		assertScraperResult(url, CiniiScraper.class, resultFile);
 	}
+
 }

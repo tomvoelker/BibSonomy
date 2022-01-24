@@ -33,13 +33,12 @@ import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.net.URL;
-
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.net.URL;
 
 /**
  * @author hagen
@@ -47,19 +46,20 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JAPScraperTest {
+	String resultDirectory = "jap/";
 	/**
 	 * starts URL test with id url_211
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://jap.physiology.org/content/110/4/1003.short";
-		final String resultFile = "JAPScraperUnitURLTest.bib";
+		final String url = "https://journals.physiology.org/doi/full/10.1152/japplphysiol.00991.2010";
+		final String resultFile = resultDirectory + "JAPScraperUnitURLTest.bib";
 		assertScraperResult(url, null, JAPScraper.class, resultFile);
 	}
 	
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://jap.physiology.org/content/110/4/1003"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.physiology.org/doi/full/10.1152/japplphysiol.00991.2010"));
 		JAPScraper js = new JAPScraper();
 		assertTrue(js.scrape(sc));
 		assertTrue(js.scrapeReferences(sc));
@@ -67,7 +67,7 @@ public class JAPScraperTest {
 		final String reference = sc.getReferences();
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<ol class=\"cit-list ref-use-labels\"><li><span class=\"ref-label\">".trim(), reference.substring(0, 64).trim());
+		assertEquals("<li id=\"B1\" class=\"&#xA;                references__item&#xA;            \"><span class=\"references__note\"><a href=\"#B1R\" class=\"ref__number\">".trim(), reference.substring(0, 141).trim());
 		assertTrue(reference.contains("Lambert"));
 	}
 }

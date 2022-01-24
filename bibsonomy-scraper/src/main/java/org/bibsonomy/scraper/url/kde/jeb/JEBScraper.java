@@ -29,37 +29,27 @@
  */
 package org.bibsonomy.scraper.url.kde.jeb;
 
-import java.io.IOException;
-import java.net.URL;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for publications from http://jeb.biologists.org/
  *
  * @author Johannes
  */
-public class JEBScraper extends GenericBibTeXURLScraper{
+public class JEBScraper extends CitationManager2Scraper {
 
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	private static final String SITE_NAME = "Journal of Experimental Biology";
-	private static final String SITE_HOST = "jeb.biologists.org";
-	private static final String SITE_URL = "http://" + SITE_HOST;
+	private static final String SITE_HOST = "journals.biologists.com";
+	private static final String SITE_URL = "https://" + SITE_HOST;
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + SITE_HOST), 
-			Pattern.compile("/content" + ".*")
-			));
-	
-	
-	
+			Pattern.compile(".*" + SITE_HOST), EMPTY_PATTERN));
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -73,20 +63,6 @@ public class JEBScraper extends GenericBibTeXURLScraper{
 	@Override
 	public String getInfo() {
 		return INFO;
-	}
-
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		try {
-			final String content = WebUtils.getContentAsString(url, cookies);
-			final Matcher m = BIBTEX_PATTERN.matcher(content);
-			if (m.find()) {
-				return SITE_URL + m.group(1);
-			}
-		} catch (final IOException e) {
-			throw new ScrapingException(e);
-		}
-		return null;
 	}
 
 	@Override
