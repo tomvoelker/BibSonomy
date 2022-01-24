@@ -67,7 +67,7 @@ public class GroupsPageController extends SingleResourceListController implement
 		final ListCommand<Group> groupListCommand = command.getGroups();
 		groupListCommand.setEntriesPerPage(30);
 
-		final boolean isOrganizationPage = command.getOrganizations();
+		final boolean isOrganizationPage = command.isOrganizations();
 
 		String userName = null;
 		if (command.isMemberOfOnly() && command.getContext().isUserLoggedIn()) {

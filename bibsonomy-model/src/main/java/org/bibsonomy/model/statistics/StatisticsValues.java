@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model.statistics;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 
@@ -36,20 +39,10 @@ import java.util.List;
  * @author sven
  */
 
+@Getter
+@Setter
 public class StatisticsValues extends Statistics {
+
 	private List<Statistics> values;
 
-	/**
-	 * @return the list of values
-	 */
-	public List<Statistics> getValues() {
-		return this.values;
-	}
-
-	/**
-	 * @param values the list of values to set
-	 */
-	public void setValues(List<Statistics> values) {
-		this.values = values;
-	}
 }

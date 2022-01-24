@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
@@ -44,6 +45,7 @@ import java.util.Date;
  *
  * @author dzo
  */
+@Getter
 public class ProjectQuery extends BasicQuery {
 
 	private final Prefix prefix;
@@ -112,74 +114,9 @@ public class ProjectQuery extends BasicQuery {
 		return new ProjectQueryBuilder();
 	}
 
-	public String getSponsor() {
-		return sponsor;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
 	/**
-	 * @return the sort key
+	 *
 	 */
-	public ProjectSortKey getSortKey() {
-		return sortKey;
-	}
-
-	/**
-	 * @return the sort order
-	 */
-	public SortOrder getSortOrder() {
-		return sortOrder;
-	}
-
-	/**
-	 * @return the projectStatus
-	 */
-	public ProjectStatus getProjectStatus() {
-		return projectStatus;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public Prefix getPrefix() {
-		return prefix;
-	}
-
-	/**
-	 * @return the internalId
-	 */
-	public String getInternalId() {
-		return internalId;
-	}
-
-	/**
-	 * @return the organization
-	 */
-	public Group getOrganization() {
-		return organization;
-	}
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return person;
-	}
-
 	public static class ProjectQueryBuilder extends BasicQueryBuilder<ProjectQueryBuilder> {
 		/**
 		 * the order of the projects, default {@link ProjectSortKey#TITLE}

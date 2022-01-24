@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.LinkedList;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.TabsCommand;
@@ -40,6 +42,8 @@ import org.bibsonomy.webapp.command.TabsCommand;
  * 
  * @author Stefan Stützer
  */
+@Getter
+@Setter
 public class AdminViewCommand extends TabsCommand<User> {
 
 	/*
@@ -105,71 +109,14 @@ public class AdminViewCommand extends TabsCommand<User> {
 		infos = new LinkedList<String>();
 	}
 
-
-	public AdminSettingsCommand getSettingsCommand() {
-		return this.settingsCommand;
-	}
-
-	public void setSettingsCommand(AdminSettingsCommand settingsCommand) {
-		this.settingsCommand = settingsCommand;
-	}	
-
-	public AdminStatisticsCommand getStatisticsCommand() {
-		return this.statisticsCommand;
-	}
-
-	public void setStatisticsCommand(AdminStatisticsCommand statisticsCommand) {
-		this.statisticsCommand = statisticsCommand;
-	}
-
 	public void setClassifierSetting(final ClassifierSettings setting, final String value) {
 		settingsCommand.setAdminSetting(setting, value);
 	}
 
-	public Integer[] getInterval() {
-		return this.interval;
-	}
-
-	public void setInterval(final Integer[] interval) {
-		this.interval = interval;
-	}
-
 	public String getAclUserInfo() {
-
 		return this.aclUserInfo;
 	}
 
-	public void setAclUserInfo(String aclUserInfo) {
-		this.aclUserInfo = aclUserInfo;
-	}
-
-	public Integer getLimit() {
-		return this.limit;
-	}
-
-	public void setLimit(Integer limit) {
-		this.limit = limit;
-	}
-
-	public User getUser() {
-		return this.user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public String getAction() {
-		return this.action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	public LinkedList<String> getInfos() {
-		return this.infos;
-	}
 
 	public void addInfo(String info) {
 		this.infos.add(info);

@@ -32,12 +32,16 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 
 /**
  * @author mho
  */
+@Getter
+@Setter
 public class AjaxPersonPageCommand extends PersonPageCommand {
 
 	private String search;
@@ -50,80 +54,4 @@ public class AjaxPersonPageCommand extends PersonPageCommand {
 
 	private List<SortCriteria> sortCriteria;
 
-	/**
-	 * @return the search string
-	 */
-	public String getSearch() {
-		return search;
-	}
-
-	/**
-	 * @param search the search string to set
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
-
-	/**
-	 * @return the page
-	 */
-	public int getPage() {
-		return page;
-	}
-
-	/**
-	 * @param page the page to set
-	 */
-	public void setPage(int page) {
-		this.page = page;
-	}
-
-	/**
-	 * @return the pageSize
-	 */
-	public int getPageSize() {
-		return pageSize;
-	}
-
-	/**
-	 * @param pageSize the pageSize to set
-	 */
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-	/**
-	 * @return the sortPage
-	 */
-	public String getSortPage() {
-		return this.sortPage;
-	}
-
-	/**
-	 * @param sortPage the sortPage to set
-	 */
-	public void setSortPage(final String sortPage) {
-		this.sortPage = sortPage;
-	}
-
-	/**
-	 * @return the sortPageOrder
-	 */
-	public String getSortPageOrder() {
-		return this.sortPageOrder;
-	}
-
-	/**
-	 * @param sortPageOrder the sortPageOrder to set
-	 */
-	public void setSortPageOrder(final String sortPageOrder) {
-		this.sortPageOrder = sortPageOrder;
-	}
-
-	public List<SortCriteria> getSortCriteria() {
-		return sortCriteria;
-	}
-
-	public void setSortCriteria(List<SortCriteria> sortCriteria) {
-		this.sortCriteria = sortCriteria;
-	}
 }

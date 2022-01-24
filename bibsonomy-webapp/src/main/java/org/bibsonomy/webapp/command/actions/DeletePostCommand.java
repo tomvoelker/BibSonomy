@@ -31,11 +31,15 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author Christian Kramer
  */
+@Getter
+@Setter
 public class DeletePostCommand extends BaseCommand implements Serializable{
 	private static final long serialVersionUID = -6623936347565283765L;
 	
@@ -43,31 +47,4 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 	
 	private String owner;
 
-	/**
-	 * @return resourceHash
-	 */
-	public String getResourceHash() {
-		return this.resourceHash;
-	}
-
-	/**
-	 * @param resourceHash
-	 */
-	public void setResourceHash(final String resourceHash) {
-		this.resourceHash = resourceHash;
-	}
-
-	/**
-	 * @return the owner
-	 */
-	public String getOwner() {
-		return this.owner;
-	}
-
-	/**
-	 * @param owner
-	 */
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
 }

@@ -29,12 +29,17 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author philipp
  */
+@Getter
+@Setter
 public class Wiki implements Serializable {
 
 	/**
@@ -51,34 +56,6 @@ public class Wiki implements Serializable {
 	 */
 	public Wiki() {
 		wikiText = "";
-	}
-
-	/**
-	 * @param wikiText the wikiText to set
-	 */
-	public void setWikiText(String wikiText) {
-		this.wikiText = wikiText;
-	}
-
-	/**
-	 * @return the wikiText1
-	 */
-	public String getWikiText() {
-		return wikiText;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return date;
 	}
 
 }

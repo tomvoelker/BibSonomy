@@ -33,12 +33,16 @@ package org.bibsonomy.webapp.command;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Layout;
 
 /**
  * @author daill, lsc
  */
+@Setter
+@Getter
 public class ExportPageCommand extends ResourceViewCommand {
 
 	private Map<String, Layout> layoutMap;
@@ -54,45 +58,4 @@ public class ExportPageCommand extends ResourceViewCommand {
 		this.customCslLayoutMap = new TreeMap<>();
 	}
 
-	/**
-	 * @return layout map
-	 */
-	public Map<String, Layout> getLayoutMap() {
-		return this.layoutMap;
-	}
-
-	/**
-	 * @return the cslLayoutMap
-	 */
-	public Map<String, CSLStyle> getCslLayoutMap() {
-		return this.cslLayoutMap;
-	}
-
-	/**
-	 * @return the customCslLayoutMap
-	 */
-	public Map<String, CSLStyle> getCustomCslLayoutMap() {
-		return customCslLayoutMap;
-	}
-	
-	/**
-	 * @param map
-	 */
-	public void setCslLayoutMap(final Map<String, CSLStyle> map) {
-		this.cslLayoutMap = map;
-	}
-
-	/**
-	 * @param layoutMap the layoutMap to set
-	 */
-	public void setLayoutMap(final Map<String, Layout> layoutMap) {
-		this.layoutMap = layoutMap;
-	}
-
-	/**
-	 * @param customCslLayoutMap the customCslLayoutMap to set
-	 */
-	public void setCustomCslLayoutMap(final Map<String, CSLStyle> customCslLayoutMap) {
-		this.customCslLayoutMap = customCslLayoutMap;
-	}
 }

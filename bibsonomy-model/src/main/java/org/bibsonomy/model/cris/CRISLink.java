@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model.cris;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -37,6 +40,8 @@ import java.util.Objects;
  *
  * @author dzo
  */
+@Getter
+@Setter
 public class CRISLink {
 
 	/** the database id; only use in database module */
@@ -53,104 +58,6 @@ public class CRISLink {
 	private CRISLinkType linkType;
 
 	private CRISLinkDataSource dataSource;
-
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the source
-	 */
-	public Linkable getSource() {
-		return source;
-	}
-
-	/**
-	 * @param source the source to set
-	 */
-	public void setSource(Linkable source) {
-		this.source = source;
-	}
-
-	/**
-	 * @return the target
-	 */
-	public Linkable getTarget() {
-		return target;
-	}
-
-	/**
-	 * @param target the target to set
-	 */
-	public void setTarget(Linkable target) {
-		this.target = target;
-	}
-
-	/**
-	 * @return the startDate
-	 */
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	/**
-	 * @return the endDate
-	 */
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	/**
-	 * @return the linkType
-	 */
-	public CRISLinkType getLinkType() {
-		return linkType;
-	}
-
-	/**
-	 * @param linkType the linkType to set
-	 */
-	public void setLinkType(CRISLinkType linkType) {
-		this.linkType = linkType;
-	}
-
-	/**
-	 * @return the dataSource
-	 */
-	public CRISLinkDataSource getDataSource() {
-		return dataSource;
-	}
-
-	/**
-	 * @param dataSource the dataSource to set
-	 */
-	public void setDataSource(CRISLinkDataSource dataSource) {
-		this.dataSource = dataSource;
-	}
 
 	@Override
 	public boolean equals(Object o) {

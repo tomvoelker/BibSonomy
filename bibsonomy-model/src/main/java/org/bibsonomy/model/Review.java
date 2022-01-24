@@ -29,9 +29,14 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author dzo
  */
+@Getter
+@Setter
 public class Review extends DiscussionItem {
 	
 	/**
@@ -55,32 +60,5 @@ public class Review extends DiscussionItem {
 	private double rating;
 	
 	private String text;
-	
-	/**
-	 * @return the rating
-	 */
-	public double getRating() {
-		return this.rating;
-	}
 
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(final double rating) {
-		this.rating = rating;
-	}
-	
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(final String text) {
-		this.text = text;
-	}
-
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
-	}
 }

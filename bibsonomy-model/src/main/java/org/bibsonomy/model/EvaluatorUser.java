@@ -29,12 +29,16 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.Role;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  * 
  */
+@Getter
+@Setter
 public class EvaluatorUser extends User {
 	private static final long serialVersionUID = 222500173040042092L;
 
@@ -64,31 +68,4 @@ public class EvaluatorUser extends User {
 		super.setRole(Role.ADMIN); // TODO: check, if this has any bad implications!
 	}
 
-	/**
-	 * @return the evaluator
-	 */
-	public String getEvaluator() {
-		return this.evaluator;
-	}
-
-	/**
-	 * @param evaluator the evaluator to set
-	 */
-	public void setEvaluator(String evaluator) {
-		this.evaluator = evaluator;
-	}
-
-	/**
-	 * @return the evalDate
-	 */
-	public String getEvalDate() {
-		return this.evalDate;
-	}
-
-	/**
-	 * @param evalDate the evalDate to set
-	 */
-	public void setEvalDate(String evalDate) {
-		this.evalDate = evalDate;
-	}
 }
