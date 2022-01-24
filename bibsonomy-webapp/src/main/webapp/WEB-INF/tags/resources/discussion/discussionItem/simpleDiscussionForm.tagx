@@ -65,6 +65,7 @@
 				<c:if test="${not empty additionalInputs}">
 					<jsp:invoke fragment="additionalInputs" />
 				</c:if>
+<!--			FIXME: Width of the text field in the update action is not limited-->
 				<textarea placeholder="${placeholder}" class="form-control reqinput" rows="${rows}" name="discussionItem.text" data-autosize="autosize">
 					<c:if test="${not empty discussionItem}">
 						<c:out value="${discussionItem.text}" />
