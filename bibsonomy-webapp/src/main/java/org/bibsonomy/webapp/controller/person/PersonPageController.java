@@ -58,6 +58,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
+import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.Sets;
@@ -86,6 +87,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 	public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
+	private static final int DEFAULT_NO_OF_ENTRYTYPES = 25;
 
 	private Errors errors;
 	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
@@ -191,43 +193,51 @@ public class PersonPageController extends SingleResourceListController implement
 
 	private void setGoldStandards(PersonPageCommand command) {
 		// build query for person ID to aggregate for counts
-		PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(GoldStandardPublication.class);
-		postsQuery.setGrouping(GroupingEntity.PERSON);
-		postsQuery.setGroupingName(command.getPerson().getPersonId());
+		final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+				.setGrouping(GroupingEntity.PERSON)
+				.setGroupingName(command.getPerson().getPersonId());
+
 		if (!crisEnabled) {
 			// exclude theses, when CRIS disabled
-			postsQuery.setSearch(NO_THESIS_SEARCH);
+			queryBuilder.search(NO_THESIS_SEARCH);
 		}
 
+		final PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(queryBuilder.createPostQuery(GoldStandardPublication.class));
 		final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) this.logic.getPosts(postsQuery);
 		command.setTotalCount(posts.getTotalCount());
 
 		DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
 				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply(ENTRYTYPE_FIELD_NAME));
 		distinctFieldQuery.setPostQuery(postsQuery);
-		distinctFieldQuery.setSize(20);
+		distinctFieldQuery.setSize(DEFAULT_NO_OF_ENTRYTYPES);
 
 		command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
 	}
 
 	private void setMyOwnPosts(PersonPageCommand command) {
 		// build query for 'myown' posts to aggregate for counts
-		PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>();
-		postsQuery.setGrouping(GroupingEntity.USER);
-		postsQuery.setGroupingName(command.getPerson().getUser());
-		postsQuery.setTags(Collections.singletonList("myown"));
+		final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+				.setGrouping(GroupingEntity.USER)
+				.setGroupingName(command.getPerson().getUser());
+
 		if (!crisEnabled) {
+			queryBuilder.setTags(Collections.singletonList("myown"));
 			// exclude theses, when CRIS disabled
-			postsQuery.setSearch(NO_THESIS_SEARCH);
+			queryBuilder.search(NO_THESIS_SEARCH);
+		} else {
+			// has to be set as search and not tag here to avoid the tag chain element
+			queryBuilder.search("tags:myown");
 		}
 
+
+		final PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>(queryBuilder.createPostQuery(BibTex.class));
 		final ResultList<Post<BibTex>> posts = (ResultList<Post<BibTex>>) this.logic.getPosts(postsQuery);
 		command.setTotalCount(posts.getTotalCount());
 
 		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
 				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(ENTRYTYPE_FIELD_NAME));
 		distinctFieldQuery.setPostQuery(postsQuery);
-		distinctFieldQuery.setSize(20);
+		distinctFieldQuery.setSize(DEFAULT_NO_OF_ENTRYTYPES);
 
 		command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
 	}

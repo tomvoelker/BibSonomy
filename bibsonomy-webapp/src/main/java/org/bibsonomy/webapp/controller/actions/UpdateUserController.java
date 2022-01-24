@@ -133,7 +133,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		 */
 		if (present(file) && file.getSize() > 0) {
 			loginUser.setProfilePicture( new ServerUploadedFile(file) );
-		} else if (command.getDeletePicture()) {
+		} else if (command.isDeletePicture()) {
 			loginUser.setProfilePicture( new ServerDeletedFile() );
 		}
 	}

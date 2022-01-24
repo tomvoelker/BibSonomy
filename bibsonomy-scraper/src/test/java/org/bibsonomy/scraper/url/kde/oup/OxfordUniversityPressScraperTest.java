@@ -42,28 +42,35 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OxfordUniversityPressScraperTest {
+	String resultDirectory = "oup/";
 
 	/**
 	 * starts URL test with id url_371
 	 */
 	@Test
-	public void urlTest1Run() {
-		assertScraperResult("https://academic.oup.com/rev/article/22/3/157/1521720", null, OxfordUniversityPressScraper.class, "OxfordUniversityPressUnitURLTest.bib");
+	public void url1Test1Run() {
+		final String url = "https://academic.oup.com/rev/article/22/3/157/1521720";
+		final String resultFile = resultDirectory + "OxfordUniversityPressUnitURLTest1.bib";
+		assertScraperResult(url, null, OxfordUniversityPressScraper.class, resultFile);
 	}
 
 	/**
 	 * starts URL test with id url_372
 	 */
 	@Test
-	public void urlTest2Run() {
-		assertScraperResult("https://academic.oup.com/rev/article/22/3/157/1521720/A-study-of-global-and-local-visibility-as-web", null, OxfordUniversityPressScraper.class, "OxfordUniversityPressUnitURLTest.bib");	    
+	public void url1Test2Run() {
+		final String url = "https://academic.oup.com/rev/article/22/3/157/1521720/A-study-of-global-and-local-visibility-as-web";
+		final String resultFile = resultDirectory + "OxfordUniversityPressUnitURLTest1.bib";
+		assertScraperResult(url, null, OxfordUniversityPressScraper.class, resultFile);
 	}
 	
 	/**
 	 * 
 	 */
 	@Test
-	public void url1Test1Run(){		
-		assertScraperResult("https://academic.oup.com/comjnl/article-abstract/55/1/82/511672/Orange4WS-Environment-for-Service-Oriented-Data", null, OxfordUniversityPressScraper.class, "OxfordJournalsScraperUnitURLTest.bib");
+	public void url2Test1Run(){
+		final String url = "https://academic.oup.com/comjnl/article-abstract/55/1/82/511672/Orange4WS-Environment-for-Service-Oriented-Data";
+		final String resultFile = resultDirectory + "OxfordUniversityPressUnitURLTest2.bib";
+		assertScraperResult(url, null, OxfordUniversityPressScraper.class, resultFile);
 	}
 }

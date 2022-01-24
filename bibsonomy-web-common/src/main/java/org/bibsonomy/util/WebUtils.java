@@ -30,17 +30,6 @@
 package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHeaders;
@@ -59,6 +48,16 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author rja
@@ -99,18 +98,25 @@ public class WebUtils {
 	 */
 	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
 
-	
 	/**
 	 * default config for http client
 	 */
 	private static final RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig.custom()
-	.setConnectTimeout(CONNECTION_TIMEOUT)
-	.setSocketTimeout(READ_TIMEOUT)
-	.setConnectionRequestTimeout(READ_TIMEOUT)
-	.setMaxRedirects(MAX_REDIRECT_COUNT)
-	.setCircularRedirectsAllowed(ALLOW_CIRCULAR_REDIRECT)
-	.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
-	
+		.setConnectTimeout(CONNECTION_TIMEOUT)
+		.setSocketTimeout(READ_TIMEOUT)
+		.setConnectionRequestTimeout(READ_TIMEOUT)
+		.setMaxRedirects(MAX_REDIRECT_COUNT)
+		.setCircularRedirectsAllowed(ALLOW_CIRCULAR_REDIRECT)
+		.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+
+
+	/**
+	 * according to http://hc.apache.org/httpclient-3.x/threading.html
+	 * HttpClient is thread safe and we can use one instance for several requests.
+	 */
+	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+	private static final HttpClient CLIENT = getHttpClient();
+
 	/**
 	 * @return the default request config used for instances of http client
 	 */
@@ -126,18 +132,10 @@ public class WebUtils {
 	 *
 	 * @return the configured {@link HttpClient}
 	 */
-
-	/**
-	 * according to http://hc.apache.org/httpclient-3.x/threading.html
-	 * HttpClient is thread safe and we can use one instance for several requests.
-	 */
-	private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
-	private static final HttpClient CLIENT = getHttpClient();
-
 	public static HttpClient getHttpClient(final RequestConfig defaultRequestConfig) {
 		/*
-		* configure client
-		*/
+		 * configure client
+		 */
 		final HttpClientBuilder builder = HttpClientBuilder.create();
 		builder.setDefaultRequestConfig(defaultRequestConfig);
 		builder.setConnectionManager(CONNECTION_MANAGER);
@@ -358,16 +356,18 @@ public class WebUtils {
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	public static String getContentAsString(final HttpClient client, final HttpGet method) throws HttpException, IOException {
+	public static String getContentAsString(final HttpClient client, final HttpRequestBase method) throws HttpException, IOException {
 		try {
 			final HttpResponse response = client.execute(method);
-			switch (response.getStatusLine().getStatusCode()) {
-				case HttpStatus.SC_OK:
-				final String charset = extractCharset(response.getFirstHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+			if (response.getStatusLine().getStatusCode()==HttpStatus.SC_OK){
+				String charset = "UTF-8";
+				Header firstHeader = response.getFirstHeader(CONTENT_TYPE_HEADER_NAME);
+				if (present(firstHeader)){
+					charset = extractCharset(firstHeader.getValue());
+				}
 				return inputStreamToStringBuilder(response.getEntity().getContent(), charset).toString();
-				default:
-					return null;
 			}
+			return null;
 		} finally {
 			// required, see http://hc.apache.org/httpclient-3.x/threading.html
 			method.releaseConnection();
@@ -387,7 +387,7 @@ public class WebUtils {
 	/**
 	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
 	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
-	 * otherwise return null. 
+	 * otherwise return null.
 	 *
 	 * @param url The location to start.
 	 * @param headers Additional headers to be added to the request
@@ -446,25 +446,38 @@ public class WebUtils {
 	 *
 	 * @param client
 	 * @param url
-	 * @return the cookies
+	 * @return cookies of a getMethod
 	 * @throws IOException
 	 */
-	public static String getCookies(final HttpClient client, final URL url) throws IOException {
+	public static String getCookies(final HttpClient client, final URL url) throws IOException{
 		final HttpGet get = new HttpGet(url.toString());
+		return WebUtils.getHeaders(client, get, "Set-Cookie");
+	}
+
+	/**
+	 *
+	 * @param client
+	 * @param request
+	 * @param headerName
+	 * @return values of headers with headerName
+	 * @throws IOException
+	 */
+	public static String getHeaders(final HttpClient client,HttpRequestBase request, String headerName) throws IOException {
+
 		final List<String> cookies = new ArrayList<>();
 		try {
-			final HttpResponse response = client.execute(get);
-
-			final Header[] responseHeaders = response.getHeaders("Set-Cookie");
+			final HttpResponse response = client.execute(request);
+			final Header[] responseHeaders = response.getHeaders(headerName);
 			for (int i = 0; i < responseHeaders.length; i++) {
 				cookies.add(responseHeaders[i].getValue());
 			}
 		} finally {
 			// required, see http://hc.apache.org/httpclient-3.x/threading.html
-			get.releaseConnection();
+			request.releaseConnection();
 		}
 		return buildCookieString(cookies);
 	}
+
 	/**
 	 * @param url the url
 	 * @return the proper configured http connection for the url
@@ -598,7 +611,7 @@ public class WebUtils {
 			sb.append(line).append(NEWLINE);
 		}
 		buf.close();
-		
+
 		return sb;
 	}
 

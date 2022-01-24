@@ -29,37 +29,38 @@
  */
 package org.bibsonomy.scraper.url.kde.phcogres;
 
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-
 /**
  * bibtex download is broken (not correctly formatted) so we use RIS instead
  * 
  * @author hagen
  */
-public class PharmacognosyResearchScraper extends GenericRISURLScraper {
+public class PharmacognosyResearchScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Pharmacognosy Research";
 	private static final String SITE_URL = "http://www.phcogres.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern URL_PATTERN = Pattern.compile(".*/(.*).asp.*");
+	private static final Pattern BIBTEX_DOWNLOAD_URL_PATTERN = Pattern.compile("<a href=\"(.*?)\" title=\"Click to download the BibTEX formatted file\".*?>BibTex</a>");
 	
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 	
 	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + "www.phcogres.com"), AbstractUrlScraper.EMPTY_PATTERN));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + "phcogres.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	@Override
@@ -86,20 +87,17 @@ public class PharmacognosyResearchScraper extends GenericRISURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		String st_url = url.toString();
-		Matcher m = URL_PATTERN.matcher(st_url);
-		if(m.find()){
-			return url.toString().replace(m.group(1), "citeman") + ";t=3";
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		String pageContent = WebUtils.getContentAsString(url);
+		Matcher m_downloadUrl = BIBTEX_DOWNLOAD_URL_PATTERN.matcher(pageContent);
+		if (m_downloadUrl.find()){
+			return SITE_URL + m_downloadUrl.group(1);
 		}
 		return null;
 	}
-	
+
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		bibtex = bibtex.replaceAll("<i>", "");
-		bibtex = bibtex.replaceAll("</i>", "");
-		
-		return bibtex;
+		return bibtex.replaceAll("<[A-z]+ .*?/?>", "");
 	}
 }

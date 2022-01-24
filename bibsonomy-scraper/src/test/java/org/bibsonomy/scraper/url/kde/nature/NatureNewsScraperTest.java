@@ -49,11 +49,4 @@ public class NatureNewsScraperTest {
 		final String resultFile = "NatureNewsScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, NatureNewsScraper.class, resultFile);		
 	}
-	
-	@Test
-	public void urlTest2Run() {
-		final String url = "http://www.nature.com/news/how-facebook-fake-news-and-friends-are-warping-your-memory-1.21596";
-		final String resultFile = "NatureNewsScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, NatureNewsScraper.class, resultFile);		
-	}
 }

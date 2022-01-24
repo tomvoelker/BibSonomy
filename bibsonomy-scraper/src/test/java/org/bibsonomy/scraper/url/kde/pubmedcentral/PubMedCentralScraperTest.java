@@ -42,14 +42,36 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class PubMedCentralScraperTest {
+	String resultDirectory = "pubmedcentral/";
 	
 	/**
 	 * starts URL test with id url_26
 	 */
 	@Test
-	public void urlTestRun(){
+	public void url1TestRun(){
 		final String url = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1770189/?tool=pmcentrez&rendertype=abstract";
-		final String resultFile = "PubMedCentralScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "PubMedCentralScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PubMedCentralScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8040549/";
+		final String resultFile = resultDirectory + "PubMedCentralScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, PubMedCentralScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3Test1Run(){
+		final String url = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7006706/";
+		final String resultFile = resultDirectory + "PubMedCentralScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, PubMedCentralScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3Test2Run(){
+		final String url = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7006706/#s0005title";
+		final String resultFile = resultDirectory + "PubMedCentralScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, PubMedCentralScraper.class, resultFile);
 	}
 }

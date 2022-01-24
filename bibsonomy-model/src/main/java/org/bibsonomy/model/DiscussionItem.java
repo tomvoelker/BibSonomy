@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -38,11 +41,11 @@ import java.util.Set;
 
 /**
  * @author dzo
- */
-/**
  * @author rja
  *
  */
+@Getter
+@Setter
 public class DiscussionItem implements Serializable {
 
 	/**
@@ -122,55 +125,6 @@ public class DiscussionItem implements Serializable {
 	}
 
 	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(final User user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(final Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return the changeDate
-	 */
-	public Date getChangeDate() {
-		return this.changeDate;
-	}
-
-	/**
-	 * @param changeDate the changeDate to set
-	 */
-	public void setChangeDate(final Date changeDate) {
-		this.changeDate = changeDate;
-	}
-
-	/**
-	 * @param groups the groups to set
-	 */
-	public void setGroups(final Set<Group> groups) {
-		this.groups = groups;
-	}
-
-	/**
 	 * @return the groups
 	 */
 	public Set<Group> getGroups() {
@@ -179,76 +133,5 @@ public class DiscussionItem implements Serializable {
 		}
 		return this.groups;
 	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return this.id;
-	}
-
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(final String hash) {
-		this.hash = hash;
-	}
-
-	/**
-	 * @return the parentHash
-	 */
-	public String getParentHash() {
-		return this.parentHash;
-	}
-
-	/**
-	 * @param parentHash the parentHash to set
-	 */
-	public void setParentHash(final String parentHash) {
-		this.parentHash = parentHash;
-	}
-
-	/**
-	 * @return the anonymous
-	 */
-	public boolean isAnonymous() {
-		return this.anonymous;
-	}
-
-	/**
-	 * @param anonymous the anonymous to set
-	 */
-	public void setAnonymous(final boolean anonymous) {
-		this.anonymous = anonymous;
-	}
-
-	/**
-	 * @return - the resource type of the posts belonging to this discussion.
-	 */
-	public Class<? extends Resource> getResourceType() {
-		return this.resourceType;
-	}
-
-	/**
-	 * @param resourceType
-	 */
-	public void setResourceType(Class<? extends Resource> resourceType) {
-		this.resourceType = resourceType;
-	}
-
 
 }

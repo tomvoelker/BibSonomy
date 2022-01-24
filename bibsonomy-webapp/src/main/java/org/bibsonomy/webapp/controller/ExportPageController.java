@@ -106,7 +106,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		command.setCslLayoutMap(this.cslFilesManager.getCslFiles());
 		command.setLayoutMap(layoutMap);
 
-		if (command.getFormatEmbedded()) {
+		if (command.isFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
 		}
 

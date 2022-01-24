@@ -30,8 +30,8 @@
 package org.bibsonomy.scraper.url.kde.ssrn;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,19 +39,22 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.XmlUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
+
 
 /**
  * Scraper for http://www.ssrn.com/
@@ -67,10 +70,12 @@ public class SSRNScraper extends AbstractUrlScraper {
 			"and extracts the adequate BibTeX entry.";
 
 	private static final String SSRN_ABSTRACT_PATH = "sol3/papers.cfm?abstract_id=";
+	private static final String SSRN_LOGIN_URL = "https://hq.ssrn.com/login/cfc/hqLoginServices.cfc?method=signinService";
 	private static final String SSRN_BIBTEX_PATH   = "sol3/RefExport.cfm";
 	private static final String SSRN_BIBTEX_PATH_QUERY = SSRN_BIBTEX_PATH + "?abstract_id=";
 	private static final String SSRN_BIBTEX_PARAMS = "?function=download&format=2&abstract_id=";
 
+	private static final Pattern BIBTEX_PATTERN	= Pattern.compile("<input type=\"Hidden\" name=\"hdnContent\" value=\"([\\s\\S]*?)\">");
 	private static final Pattern AUTHOR_PATTERN	= Pattern.compile("author\\s*=\\s*[{]+(.+)[}]+");
 	private static final Pattern EDITOR_PATTERN	= Pattern.compile("editor\\s*=\\s*[{]+(.+)[}]+");
 	private static final Pattern TITLE_PATTERN	= Pattern.compile("title\\s*=\\s*[{]+(.+)[}]+");
@@ -85,55 +90,53 @@ public class SSRNScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
+		sc.setScraper(this);
+		//the bibtex can only be obtained when logged in. Key from a 10Min E-Mail, which already expired
+		final String loginKey = "aXVvNDMwODJAY3VvbHkuY29tfEhUNUsmUVVZXzRhYyY5U3xbb2JqZWN0IE9iamVjdF0=";
 		final URL url = sc.getUrl();
 		final String id = getId(url.toString());
-
-		if (ValidationUtils.present(id)) {
-			final String downloadLink = SSRN_BASE_URL + SSRN_BIBTEX_PATH + SSRN_BIBTEX_PARAMS + id;
-			String cookies = null;
-
-
-			try {
-				cookies = getCookies(url);
-			} catch (IOException ex) {
-				throw new InternalFailureException("Could not store cookies from " + url);
-			}
-
-			
-			try {
-				final String content = WebUtils.getContentAsString(new URL(downloadLink), cookies);
-				final Document doc = XmlUtils.getDOM(content);
-				final NodeList list = doc.getElementsByTagName("input");
-
-				String bibtex  = null;
-				
-				for (int i = 0; i < list.getLength(); i++) {
-					final NamedNodeMap attributes = list.item(i).getAttributes();
-
-					if (ValidationUtils.present(attributes.getNamedItem("value"))) {
-						bibtex = attributes.getNamedItem("value").getNodeValue().replaceAll("},", "},\n");
-						final String bibtexKey = BibTexUtils.generateBibtexKey(getMatch(bibtex, AUTHOR_PATTERN), getMatch(bibtex, EDITOR_PATTERN), getMatch(bibtex, YEAR_PATTERN), getMatch(bibtex, TITLE_PATTERN));
-						bibtex = bibtex.replaceFirst(" ", bibtexKey + ",\n ");
+		try {
+			if (ValidationUtils.present(id)) {
+				//post to log in and get the SSRN_LOGIN Cookie
+				HttpPost post = new HttpPost(SSRN_LOGIN_URL);
+				post.setEntity(new UrlEncodedFormEntity(Collections.singletonList(new BasicNameValuePair("key", loginKey))));
+				HttpResponse execute = WebUtils.getHttpClient().execute(post);
+				Header[] headers = execute.getHeaders("Set-Cookie");
+				String cookie = null;
+				for (Header header : headers) {
+					if (header.getValue().startsWith("SSRN_LOGIN")){
+						cookie = header.getValue();
 					}
 				}
-				
-				if (ValidationUtils.present(bibtex)) {
-					sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(url)));
-					sc.setScraper(this);
+
+				HttpGet get = new HttpGet(SSRN_BASE_URL + SSRN_BIBTEX_PATH + SSRN_BIBTEX_PARAMS + id);
+				get.addHeader("Cookie", cookie);
+				String contentAsString = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+
+				Matcher m_bibtex = BIBTEX_PATTERN.matcher(contentAsString);
+				if (m_bibtex.find()){
+					String bibtex = m_bibtex.group(1);
+					//bibtex is missing key, so we create one
+					final String bibtexKey = BibTexUtils.generateBibtexKey(
+									getMatch(bibtex, AUTHOR_PATTERN),
+									getMatch(bibtex, EDITOR_PATTERN),
+									getMatch(bibtex, YEAR_PATTERN),
+									getMatch(bibtex, TITLE_PATTERN));
+
+					bibtex = bibtex.replaceFirst(" ", bibtexKey + ", ");
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", getAbstract(url));
+					sc.setBibtexResult(bibtex);
 					return true;
+				}else {
+					throw new ScrapingException("can't get Bibtex");
 				}
-			} catch (MalformedURLException ex) {
-				throw new InternalFailureException("The url "+ downloadLink + " is not valid");
-			} catch (IOException ex) {
-				throw new ScrapingFailureException("BibTex download failed. Result is null!");
+			} else {
+				throw new ScrapingFailureException("ID for donwload link is missing.");
 			}
-
-
-		} else {
-			throw new ScrapingFailureException("ID for donwload link is missing.");
+		} catch (IOException | HttpException e) {
+			throw new ScrapingException(e);
 		}
 
-		return false;
 	}
 
 	/**
@@ -169,7 +172,6 @@ public class SSRNScraper extends AbstractUrlScraper {
 
 	/**
 	 * @param bibtex
-	 * @param authors
 	 * @param pattern
 	 * @return
 	 */
@@ -179,19 +181,6 @@ public class SSRNScraper extends AbstractUrlScraper {
 			return m.group(1);
 		}
 		return null;
-	}
-
-	private static String getCookies(URL queryURL) throws IOException {
-		final StringBuilder cookieString = new StringBuilder(WebUtils.getCookies(queryURL));
-
-		cookieString.append(" ; CFCLIENT_SSRN=loginexpire%3D%7Bts%20%272009%2D12%2D12%2012%3A35%3A00%27%7D%23blnlogedin%3D1401777%23;domain=hq.ssrn.com;path=/; ");
-		//login: wbi@cs.uni-kassel.de
-		cookieString.append("SSRN_LOGIN=092026079048019002070010027035037114047052089011063088001026083003082103106066127064089084103; ");
-		cookieString.append("SSRN_PW=002008020074048016097064090009116110016084070087029069024; ");
-
-		System.out.println(cookieString);
-		
-		return cookieString.toString();
 	}
 
 	@Override

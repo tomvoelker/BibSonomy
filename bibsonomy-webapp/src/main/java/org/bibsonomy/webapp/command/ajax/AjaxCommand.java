@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.ajax;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -37,6 +39,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author Stefan Stützer
  */
+@Getter
+@Setter
 public class AjaxCommand<A> extends BaseCommand {
 
 	/** what this command shall do */
@@ -48,45 +52,4 @@ public class AjaxCommand<A> extends BaseCommand {
 	/** the response string */
 	protected String responseString;
 
-	/**
-	 * @return the action
-	 */
-	public A getAction() {
-		return this.action;
-	}
-
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(A action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the forward
-	 */
-	public String getForward() {
-		return this.forward;
-	}
-
-	/**
-	 * @param forward the forward to set
-	 */
-	public void setForward(String forward) {
-		this.forward = forward;
-	}
-
-	/**
-	 * @return the responseString
-	 */
-	public String getResponseString() {
-		return this.responseString;
-	}
-
-	/**
-	 * @param responseString the responseString to set
-	 */
-	public void setResponseString(String responseString) {
-		this.responseString = responseString;
-	}
 }

@@ -29,43 +29,42 @@
  */
 package org.bibsonomy.scraper.url.kde.openrepository;
 
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-
 /**
  * Scraper for openrepository pages
  * @author tst
  */
-public class OpenrepositoryScraper extends GenericRISURLScraper {
+public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_URL = "http://openrepository.com/";
 	private static final String SITE_NAME = "Open Repository";
 	private static final String SUPPORTED_HOST_OPENREPOSITORY = "openrepository.com";
-	private static final String SUPPORTED_HOST_E_SPACE = "e-space.mmu.ac.uk";
-	private static final String SUPPORTED_HOST_E_SPACE_PATH = "/e-space";
-	private static final String SUPPORTED_HOST_HIRSLA = "hirsla.lsh.is";
-	private static final String SUPPORTED_HOST_HIRSLA_PATH = "/lsh";
-	private static final String SUPPORTED_HOST_GTCNI = "arrts.gtcni.org.uk";
-	private static final String SUPPORTED_HOST_GTCNI_PATH = "/gtcni";
-	private static final String SUPPORTED_HOST_EXETER = "eric.exeter.ac.uk";
-	private static final String SUPPORTED_HOST_EXETER_PATH = "/exeter";
 	private static final String PATTERN_HANDLE = "handle/(.*)";
 	private static final String INFO = "Supports the following repository: " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>(); 
 	
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_OPENREPOSITORY), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_E_SPACE), Pattern.compile(SUPPORTED_HOST_E_SPACE_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_EXETER), Pattern.compile(SUPPORTED_HOST_EXETER_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_GTCNI), Pattern.compile(SUPPORTED_HOST_GTCNI_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_HIRSLA), Pattern.compile(SUPPORTED_HOST_HIRSLA_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_OPENREPOSITORY), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "repository\\..*\\.[A-z]+"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "stor.scot.nhs.uk"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "fieldresearch.msf.org"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "t-stor.teagasc.ie"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "soar.usi.edu"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "oar.marine.ie"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scholarworks.alaska.edu"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "ir.icscanada.edu"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "lenus.ie"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "repositorioacademico.upc.edu.pe"), Pattern.compile("handle")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hirsla.lsh.is"), Pattern.compile("handle")));
+
 	}
 	
 	@Override
@@ -104,18 +103,6 @@ public class OpenrepositoryScraper extends GenericRISURLScraper {
 	
 	@Override
 	public String getDownloadURL(URL url, String cookies) {
-		final String sturl = url.toString();
-		if (sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)) {
-			return "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sturl);
-		} else if(sturl.contains(SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH)) {
-			return  "http://www." + SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH + "/references?format=refman&handle=" + getHandle(sturl);
-		}else if(sturl.contains(SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH)) {
-			return "http://www." + SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH + "/references?format=refman&handle=" + getHandle(sturl);
-		}else if(sturl.contains(SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH)){
-			return "http://www." + SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH + "/references?format=refman&handle=" + getHandle(sturl);
-		}else if(sturl.contains(SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH)){
-			return "http://" + SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH + "/references?format=refman&handle=" + getHandle(sturl);
-		}
-		return null;
+		return "https://" + url.getHost() + "/discover/export?format=bibtex&handle=" + getHandle(url.toString());
 	}
 }

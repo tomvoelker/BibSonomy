@@ -48,8 +48,7 @@ import org.bibsonomy.scraper.generic.LiteratumScraper;
 public class LiebertScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Liebert Online";
-	private static final String SITE_HOST = "www.liebertonline.com";
-	private static final String SITE_HOST2 = "online.liebertpub.com";
+	private static final String SITE_HOST = "liebertpub.com";
 
 	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses publications from " + href(SITE_URL, SITE_NAME) + ".";
@@ -62,9 +61,7 @@ public class LiebertScraper extends LiteratumScraper {
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),  Pattern.compile(PATH_DOI_ABS + ".*")));
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST2), Pattern.compile(PATH_DOI_ABS + ".*")));
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST),  Pattern.compile(PATH_SHOWCITFORMATS + ".*")));
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST2), Pattern.compile(PATH_SHOWCITFORMATS + ".*")));
 	}
 
 	@Override

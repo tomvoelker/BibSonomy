@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,10 +38,9 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /** Scraper for AIFB.
@@ -47,7 +48,7 @@ import org.bibsonomy.util.WebUtils;
  * @author ccl
  *
  */
-public class AIFBScraper extends AbstractUrlScraper {
+public class AIFBScraper extends GenericBibTeXURLScraper {
 	
 	private static final String SITE_NAME = "Institut AIFB Universität Karlsruhe";
 	private static final String AIFB_SITE_NAME = "AIFB";
@@ -57,11 +58,8 @@ public class AIFBScraper extends AbstractUrlScraper {
 	private static final String info =	"This scraper parses institute, research group and " +
 										"people-specific pages from the " +
 										href("http://www.aifb.uni-karlsruhe.de/", SITE_NAME);
-	
-	private static final String DOWNLOAD_HREF_STRING = "<a href=\"(.+?format%3Dkiteva[^\"]+)\"";
-	private static final Pattern DOWNLOAD_HREF_PATTERN = Pattern.compile(DOWNLOAD_HREF_STRING);
 
-	private static final String URL = "url";
+	private static final Pattern DOWNLOAD_HREF_PATTERN = Pattern.compile("<a href=\"(.*?)\".*?\">BibTeX</a>");
 
 	private static final String WC = ".*";
 	private static final String ARTICLE = "Article\\d+";
@@ -89,27 +87,22 @@ public class AIFBScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		String bibtex = null;
-		Matcher _m = DOWNLOAD_HREF_PATTERN.matcher(sc.getPageContent());
-		
-		if (_m.find()) {
-			try {
-				bibtex = WebUtils.getContentAsString(AIFB_HOST_NAME + _m.group(1));
-			} catch (Exception e) {
-				throw new InternalFailureException(e);
-			}
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		String pageContent = WebUtils.getContentAsString(url);
+		Matcher href_matcher = DOWNLOAD_HREF_PATTERN.matcher(pageContent);
+		if (href_matcher.find()){
+			return AIFB_HOST_NAME + href_matcher.group(1);
+
 		}
-		
-		if (bibtex != null) {
-			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, URL, sc.getUrl().toString());
-			sc.setBibtexResult(bibtex.toString());
-			return true;
-		}
-		return false;
+		return null;
 	}
-	
+
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return BibTexUtils.addFieldIfNotContained(bibtex, "url", scrapingContext.getUrl().toString());
+
+	}
+
 	@Override
 	public String getInfo() {
 		return info;

@@ -32,11 +32,15 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * @author lka
  */
+@Getter
+@Setter
 public class EditGoldstandardRelationCommand extends AjaxCommand {
 	private String hash;
 	private Set<String> references;
@@ -48,21 +52,7 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 		this.references = new HashSet<String>();
 	}
 	
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-	
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return hash;
-	}
-	
-	/**
+		/**
 	 * @param relation the relation to set
 	 */
 	public void setRelation(String relation) {
@@ -84,24 +74,5 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 			}
 		}
 	}
-	/**
-	 * @return the relation
-	 */
-	public GoldStandardRelation getRelation() {
-		return relation;
-	}
 
-	/**
-	 * @param references the references to set
-	 */
-	public void setReferences(Set<String> references) {
-		this.references = references;
-	}
-
-	/**
-	 * @return the references
-	 */
-	public Set<String> getReferences() {
-		return references;
-	}
 }

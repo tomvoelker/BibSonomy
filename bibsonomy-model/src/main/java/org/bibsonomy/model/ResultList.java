@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.LinkedList;
 
 /**
@@ -39,6 +42,8 @@ import java.util.LinkedList;
  * 
  * @param <T> resource type
  */
+@Getter
+@Setter
 public class ResultList<T> extends LinkedList<T> {
 	private static final long serialVersionUID = -5889003340930421319L;
 
@@ -52,31 +57,4 @@ public class ResultList<T> extends LinkedList<T> {
 	 */
 	private Integer paginationLimit;
 
-	/**
-	 * @return the totalCount
-	 */
-	public int getTotalCount() {
-		return this.totalCount;
-	}
-
-	/**
-	 * @param totalCount the totalCount to set
-	 */
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
-	}
-
-	/**
-	 * @return the paginationLimit
-	 */
-	public Integer getPaginationLimit() {
-		return paginationLimit;
-	}
-
-	/**
-	 * @param paginationLimit the paginationLimit to set
-	 */
-	public void setPaginationLimit(Integer paginationLimit) {
-		this.paginationLimit = paginationLimit;
-	}
 }

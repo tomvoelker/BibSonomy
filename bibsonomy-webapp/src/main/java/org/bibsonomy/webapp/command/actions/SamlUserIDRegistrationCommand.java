@@ -29,27 +29,18 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 
 /**
  * @author jensi
  */
+@Getter
+@Setter
 public class SamlUserIDRegistrationCommand extends UserIDRegistrationCommand {
 	private static final long serialVersionUID = -2989822342885077454L;
 
 	private SamlRemoteUserId samlId = new SamlRemoteUserId();
 
-	/**
-	 * @return the samlId
-	 */
-	public SamlRemoteUserId getSamlId() {
-		return this.samlId;
-	}
-
-	/**
-	 * @param samlId the samlId to set
-	 */
-	public void setSamlId(SamlRemoteUserId samlId) {
-		this.samlId = samlId;
-	}
 }

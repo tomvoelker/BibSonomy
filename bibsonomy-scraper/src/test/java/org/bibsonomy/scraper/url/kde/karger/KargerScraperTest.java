@@ -40,6 +40,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class KargerScraperTest {
+	String resultDirectory = "karger/";
 
 	/**
 	 * starts URL test with id url_178
@@ -47,7 +48,7 @@ public class KargerScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.karger.com/Article/FullText/210432";
-		final String resultFile = "KargerScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "KargerScraperUnitURLTest.bib";
 		assertScraperResult(url, null, KargerScraper.class, resultFile);
 	}
 	
@@ -57,7 +58,7 @@ public class KargerScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://www.karger.com/Article/Abstract/210432";
-		final String resultFile = "KargerScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "KargerScraperUnitURLTest.bib";
 		assertScraperResult(url, null, KargerScraper.class, resultFile);
 	}
 	
@@ -67,7 +68,7 @@ public class KargerScraperTest {
 	@Test
 	public void url3TestRun(){
 		final String url = "http://www.karger.com/Article/PDF/210432";
-		final String resultFile = "KargerScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "KargerScraperUnitURLTest.bib";
 		assertScraperResult(url, null, KargerScraper.class, resultFile);
 	}
 }

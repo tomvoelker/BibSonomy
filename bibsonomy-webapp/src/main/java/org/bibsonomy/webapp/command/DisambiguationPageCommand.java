@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -42,6 +44,8 @@ import org.bibsonomy.services.person.PersonRoleRenderer;
 /**
  * @author Christian Pfeiffer
  */
+@Getter
+@Setter
 public class DisambiguationPageCommand extends BaseCommand {
 	
 	@Deprecated // Use a Java JSPTag
@@ -58,137 +62,4 @@ public class DisambiguationPageCommand extends BaseCommand {
 	private List<Post<GoldStandardPublication>> suggestedPosts;
 	private List<Person> personSuggestions;
 
-	/**
-	 * @return the requestedHash
-	 */
-	public String getRequestedHash() {
-		return this.requestedHash;
-	}
-
-	/**
-	 * @param requestedHash the requestedHash to set
-	 */
-	public void setRequestedHash(String requestedHash) {
-		this.requestedHash = requestedHash;
-	}
-
-	/**
-	 * @return the post
-	 */
-	public Post<? extends BibTex> getPost() {
-		return this.post;
-	}
-
-	/**
-	 * @param post the post to set
-	 */
-	public void setPost(Post<? extends BibTex> post) {
-		this.post = post;
-	}
-
-	/**
-	 * @return
-	 */
-	public PersonResourceRelationType getRequestedRole() {
-		return this.requestedRole;
-	}
-
-	/**
-	 * @param requestedRole the requestedRole to set
-	 */
-	public void setRequestedRole(PersonResourceRelationType requestedRole) {
-		this.requestedRole = requestedRole;
-	}
-
-	/**
-	 * @return the requestedPersonId
-	 */
-	public String getRequestedPersonId() {
-		return this.requestedPersonId;
-	}
-
-	/**
-	 * @param requestedPersonId the requestedPersonId to set
-	 */
-	public void setRequestedPersonId(String requestedPersonId) {
-		this.requestedPersonId = requestedPersonId;
-	}
-
-	/**
-	 * @return the personName
-	 */
-	public PersonName getPersonName() {
-		return this.personName;
-	}
-
-	/**
-	 * @param personName the personName to set
-	 */
-	public void setPersonName(PersonName personName) {
-		this.personName = personName;
-	}
-
-	/**
-	 * @return the requestedIndex
-	 */
-	public Integer getRequestedIndex() {
-		return this.requestedIndex;
-	}
-
-	/**
-	 * @param requestedIndex the requestedIndex to set
-	 */
-	public void setRequestedIndex(final Integer requestedIndex) {
-		this.requestedIndex = requestedIndex;
-	}
-
-	public String getRequestedAction() {
-		return this.requestedAction;
-	}
-
-	public void setRequestedAction(String requestedAction) {
-		this.requestedAction = requestedAction;
-	}
-
-	/**
-	 * @return the personSuggestions
-	 */
-	public List<Person> getPersonSuggestions() {
-		return personSuggestions;
-	}
-
-	/**
-	 * @param personSuggestions the personSuggestions to set
-	 */
-	public void setPersonSuggestions(List<Person> personSuggestions) {
-		this.personSuggestions = personSuggestions;
-	}
-
-	/**
-	 * @return the personRoleRenderer
-	 */
-	public PersonRoleRenderer getPersonRoleRenderer() {
-		return personRoleRenderer;
-	}
-
-	/**
-	 * @param personRoleRenderer the personRoleRenderer to set
-	 */
-	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
-		this.personRoleRenderer = personRoleRenderer;
-	}
-
-	/**
-	 * @return the suggestedPosts
-	 */
-	public List<Post<GoldStandardPublication>> getSuggestedPosts() {
-		return this.suggestedPosts;
-	}
-
-	/**
-	 * @param otherAdvisorPosts the suggestedPosts to set
-	 */
-	public void setSuggestedPosts(List<Post<GoldStandardPublication>> otherAdvisorPosts) {
-		this.suggestedPosts = otherAdvisorPosts;
-	}
 }

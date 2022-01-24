@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.ajax;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.wiki.enums.DefaultLayout;
 
 /**
@@ -37,6 +39,8 @@ import org.bibsonomy.wiki.enums.DefaultLayout;
  * 
  * @author Bernd
  */
+@Getter
+@Setter
 public class AjaxCvCommand extends AjaxCommand {
 	
 	/**
@@ -54,62 +58,6 @@ public class AjaxCvCommand extends AjaxCommand {
 	 */
 	private String wikiText;
 
-	private String requestedGroup;	
-	
-	/**
-	 * @return the layout
-	 */
-	public DefaultLayout getLayout() {
-		return layout;
-	}
-
-	/**
-	 * @param layout the layout to set
-	 */
-	public void setLayout(final DefaultLayout layout) {
-		this.layout = layout;
-	}
-
-	/**
-	 * @return the wikiText
-	 */
-	public String getWikiText() {
-		return wikiText;
-	}
-
-	/**
-	 * @param wikiText the wikiText to set
-	 */
-	public void setWikiText(final String wikiText) {
-		this.wikiText = wikiText;
-	}
-
-	/**
-	 * @return the renderOptions
-	 */
-	public String getRenderOptions() {
-		return renderOptions;
-	}
-
-	/**
-	 * @param renderOptions the renderOptions to set
-	 */
-	public void setRenderOptions(final String renderOptions) {
-		this.renderOptions = renderOptions;
-	}
-	
-	/**
-	 * @return the requestedGroup
-	 */
-	public String getRequestedGroup() {
-		return this.requestedGroup;
-	}
-
-	/**
-	 * @param requestedGroup the requestedGroup to set
-	 */
-	public void setRequestedGroup(String requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
+	private String requestedGroup;
 
 }

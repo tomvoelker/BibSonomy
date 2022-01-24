@@ -29,6 +29,11 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
@@ -38,75 +43,15 @@ import java.util.Date;
  * 
  * @author Christian Schenk
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BibTexExtra implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4004329258093393977L;
 	private URL url;
 	private String text;
 	private Date date;
 
-	/**
-	 * default constructor
-	 */
-	public BibTexExtra() {
-		// noop
-	}
-
-	/**
-	 * Constructor setting all three fields.
-	 * @param url
-	 * @param text
-	 * @param date
-	 */
-	public BibTexExtra(URL url, String text, Date date) {
-		super();
-		this.url = url;
-		this.text = text;
-		this.date = date;
-	}
-
-	/**
-	 * @return date
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return text
-	 */
-	public String getText() {
-		return this.text;
-	}
-
-	/**
-	 * @param text
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	/**
-	 * @return url
-	 */
-	public URL getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(URL url) {
-		this.url = url;
-	}
 }

@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.aps;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,13 +39,30 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ApsScraperTest {
+	String resultDirectory = "aps/";
 
 	/**
 	 * runs test with url 255  for {@link ApsScraper}
 	 */
 	@Test
-	public void urlTestRun(){
-		assertScraperResult("http://physrev.physiology.org/content/91/4/1281.short", ApsScraper.class, "ApsScraperUnitURLTest.bib");
+	public void url1Test1Run(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00032.2010";
+		final String resultFile = resultDirectory + "ApsScraperUnitURLTest1.bib";
+		assertScraperResult(url, ApsScraper.class, resultFile);
 	}
-	
+
+	@Test
+	public void url2Test1Run(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00033.2021";
+		final String resultFile = resultDirectory + "ApsScraperUnitURLTest2.bib";
+		assertScraperResult(url, ApsScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3Test1Run(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00011.2010";
+		final String resultFile = resultDirectory + "ApsScraperUnitURLTest3.bib";
+		assertScraperResult(url, ApsScraper.class, resultFile);
+	}
+
 }

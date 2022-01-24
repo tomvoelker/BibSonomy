@@ -30,9 +30,14 @@
 package org.bibsonomy.model;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author dzo
  */
+@Getter
+@Setter
 public class Comment extends DiscussionItem {
 	
 	/**
@@ -41,18 +46,5 @@ public class Comment extends DiscussionItem {
 	public static int MAX_TEXT_LENGTH = 50000;
 	
 	private String text;
-	
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return this.text;
-	}
 
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(final String text) {
-		this.text = text;
-	}
 }

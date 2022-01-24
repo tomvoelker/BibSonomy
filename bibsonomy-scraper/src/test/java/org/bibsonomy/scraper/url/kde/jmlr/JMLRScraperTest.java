@@ -31,6 +31,7 @@ package org.bibsonomy.scraper.url.kde.jmlr;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,13 +41,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JMLRScraperTest {
+	String resultDirectory = "jmlr/";
 	
 	/**
 	 * starts URL test with id url_101
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://jmlr.csail.mit.edu/papers/v4/petridis03a.html", JMLRScraper.class, "JMLRScraperUnitURLTest1.bib");
+		final String url = "http://jmlr.csail.mit.edu/papers/v4/petridis03a.html";
+		final String resultFile = resultDirectory + "JMLRScraperUnitURLTest1.bib";
+		assertScraperResult(url, JMLRScraper.class, resultFile);
 	}
 	
 	/**
@@ -54,7 +58,9 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://jmlr.csail.mit.edu/papers/v9/henrich08a.html", JMLRScraper.class, "JMLRScraperUnitURLTest2.bib");
+		final String url = "http://jmlr.csail.mit.edu/papers/v9/henrich08a.html";
+		final String resultFile = resultDirectory + "JMLRScraperUnitURLTest2.bib";
+		assertScraperResult(url, JMLRScraper.class, resultFile);
 	}
 	
 	/**
@@ -62,7 +68,9 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertScraperResult("http://jmlr.csail.mit.edu/papers/v8/list07a.html", JMLRScraper.class, "JMLRScraperUnitURLTest3.bib");
+		final String url = "http://jmlr.csail.mit.edu/papers/v8/list07a.html";
+		final String resultFile = resultDirectory + "JMLRScraperUnitURLTest3.bib";
+		assertScraperResult(url, JMLRScraper.class, resultFile);
 	}
 	
 }

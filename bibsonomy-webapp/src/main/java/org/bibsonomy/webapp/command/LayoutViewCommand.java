@@ -56,5 +56,5 @@ public interface LayoutViewCommand extends PublicationViewCommand {
 	/**
 	 * @return the formatEmbedded
 	 */
-	public boolean getFormatEmbedded();
+	public boolean isFormatEmbedded();
 }

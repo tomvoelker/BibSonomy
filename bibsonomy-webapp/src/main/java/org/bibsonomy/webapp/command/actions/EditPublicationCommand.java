@@ -32,6 +32,8 @@ package org.bibsonomy.webapp.command.actions;
 import java.net.URL;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
@@ -44,6 +46,8 @@ import org.bibsonomy.scraper.ScrapingContext;
  * @author rja
  * @author dzo
  */
+@Getter
+@Setter
 public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	
 	/**
@@ -90,48 +94,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 */
 	private Person claimedPerson;
 	
-	/**
-	 * @return the userFriends
-	 */
-	public List<User> getFriendsOfUser() {
-		return this.friendsOfUser;
-	}
-	
-	/**
-	 * @param friendsOfUser the friendsOfUser to set
-	 */
-	public void setFriendsOfUser(List<User> friendsOfUser) {
-		this.friendsOfUser = friendsOfUser;
-	}
-	
-	/**
-	 * @param userFriends the userFriends to set
-	 */
-	public void setUserFriends(List<User> userFriends) {
-		this.userFriends = userFriends;
-	}
-	
-	/**
-	 * @param claimedPerson the claimedPerson to set
-	 */
-	public void setClaimedPerson(Person claimedPerson) {
-		this.claimedPerson = claimedPerson;
-	}
-	
-	/**
-	 * @return the url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
 
-	/**
-	 * @param url the url to set
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
-	
 	/**
 	 * Sets the title of a post.
 	 * Needed for the (old) postBookmark button and "copy" links.
@@ -152,19 +115,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 		this.getPost().setDescription(description); // TODO
 	}
 
-	/**
-	 * @param selection the selection to set
-	 */
-	public void setSelection(final String selection) {
-		this.selection = selection;
-	}
 
-	/**
-	 * @return the selection
-	 */
-	public String getSelection() {
-		return this.selection;
-	}
 
 	/**
 	 * @return The scraping context which describes where this bookmark is 
@@ -183,20 +134,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	public void setScrapingContext(final ScrapingContext scrapingContext) {
 		this.scrapingContext = scrapingContext;
 	}
-	
-	/**
-	 * @return the myown
-	 */
-	public boolean isMyOwn() {
-		return this.myOwn;
-	}
 
-	/**
-	 * @param myown the myown to set
-	 */
-	public void setMyOwn(boolean myown) {
-		this.myOwn = myown;
-	}
 	
 	/**
 	 * @return the personId
@@ -218,54 +156,5 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 		this.person.setPersonId(personId);
 	}
 
-	public Integer getPersonIndex() {
-		return this.personIndex;
-	}
-
-	public void setPersonIndex(Integer personIndex) {
-		this.personIndex = personIndex;
-	}
-
-	/**
-	 * @param person
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	/**
-	 * @return
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-
-	/**
-	 * @return
-	 */
-	public PersonResourceRelationType getPersonRole() {
-		return this.personRole;
-	}
-
-	/**
-	 * @param personRole
-	 */
-	public void setPersonRole(PersonResourceRelationType personRole) {
-		this.personRole = personRole;
-	}
-
-	/**
-	 * @return
-	 */
-	public List<User> getUserFriends() {
-		return userFriends;
-	}
-
-	/**
-	 * @return
-	 */
-	public Person getClaimedPerson() {
-		return claimedPerson;
-	}
 }
 

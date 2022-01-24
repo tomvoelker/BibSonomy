@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.util.DidYouKnowMessage;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 
@@ -44,10 +46,13 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * 
  * @author Jens Illig
  */
+@Getter
+@Setter
 public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 	
 	private RequestWrapperContext context;
 
+	/** a message-key to display a message on any jspx */
 	private String messageKey;
 	
 	private List<String> messageParams;
@@ -90,34 +95,6 @@ public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 	@Override
 	public void setContext(final RequestWrapperContext context) {
 		this.context = context;
-	}
-
-	/**
-	 * @param messageKey
-	 */
-	public void setMessageKey(String messageKey) {
-		this.messageKey = messageKey;
-	}
-
-	/**
-	 * @return a message-key to display a message on any jspx
-	 */
-	public String getMessageKey() {
-		return messageKey;
-	}
-	
-	/**
-	 * @return Message Params
-	 */
-	public List<String> getMessageParams() {
-		return this.messageParams;
-	}
-
-	/**
-	 * @param messageParams
-	 */
-	public void setMessageParams(List<String> messageParams) {
-		this.messageParams = messageParams;
 	}
 	
 	/**

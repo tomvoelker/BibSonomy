@@ -29,101 +29,36 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
+import static org.bibsonomy.scraper.AbstractUrlScraper.href;
+import org.bibsonomy.scraper.UrlCompositeScraper;
 
 /**
  * Scraper for csdl2.computer.org
  * @author tst
  */ 
-public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
-	private static final Log log = LogFactory.getLog(IEEEComputerSocietyScraper.class);
+public class IEEEComputerSocietyScraper extends UrlCompositeScraper {
 	private static final String SITE_NAME = "IEEE Computer Society";
-	private static final String SITE_URL = "http://www.computer.org/portal/web/guest/home";
+	private static final String SITE_URL = "https://www.computer.org";
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME);
-	private static final String HOST_OLD= "csdl2.computer.org";
-	private static final String HOST_NEW = "computer.org";
-	
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\" />");
-	private static final Pattern REPLACE_PATTERN = Pattern.compile("replace\\(\"(.*)\"\\)");
-	
-	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
-					new Pair<>(Pattern.compile(".*" + HOST_OLD), AbstractUrlScraper.EMPTY_PATTERN),
-					new Pair<>(Pattern.compile(".*" + HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN)
-	);
-	
-	@Override
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+
+	public IEEEComputerSocietyScraper(){
+		addScraper(new IEEEComputerSocietyProceedingScraper());
+		addScraper(new IEEEComputerSocietyJournalMagazineScraper());
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-	
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-	
+
 	@Override
 	public String getInfo() {
 		return INFO;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {		
-		final String urlAsString = url.toString();
-		final String queryUrl;
-		if (urlAsString.endsWith(".pdf")) {
-			queryUrl = urlAsString.replaceAll(".pdf", "-reference.bib");
-		} else {
-			queryUrl = urlAsString.replaceAll("-.*", "-reference.bib");
-		}
-		
-		try {
-			final String content = WebUtils.getContentAsString(new URL(queryUrl), cookies);
-			final Matcher m = REPLACE_PATTERN.matcher(content);
-			if (m.find()) {
-				return m.group(1);
-			}
-		} catch (IOException e) {
-			throw new ScrapingException(e);
-		}
-		
-		return null;	
-	}
-	
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		try {
-			bibtex = bibtex.replaceAll("<br/>\\s*", "\n");
-			bibtex = bibtex.replaceAll(",\\s*\\},", "},");
-			
-			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if (m.find())
-				return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", m.group(1));
-		} catch(IOException e) {
-			log.debug("abstract could not be found", e);
-		}
-		return bibtex;
 	}
 }

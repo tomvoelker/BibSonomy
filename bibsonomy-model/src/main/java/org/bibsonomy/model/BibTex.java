@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
@@ -58,6 +61,8 @@ import org.bibsonomy.util.object.FieldDescriptor;
  * @author jensi
  * @author tom 
  */
+@Getter
+@Setter
 public class BibTex extends Resource {
 	/** for persistence (Serializable) */
 	private static final long serialVersionUID = -8528225443908615779L;
@@ -86,6 +91,8 @@ public class BibTex extends Resource {
 
 	// TODO: document me..
 	private String misc;
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private String bibtexAbstract;
 	private String entrytype;
 	private String address;
@@ -122,6 +129,7 @@ public class BibTex extends Resource {
 
 	private List<BibTexExtra> extraUrls;
 
+	// meta data from the scraper which scraped this publication.
 	private ScraperMetadata scraperMetadata;
 
 	/**
@@ -139,62 +147,6 @@ public class BibTex extends Resource {
 	private List<Document> documents;
 
 	/**
-	 * @return privnote
-	 */
-	public String getPrivnote() {
-		return this.privnote;
-	}
-
-	/**
-	 * @param privnote
-	 */
-	public void setPrivnote(final String privnote) {
-		this.privnote = privnote;
-	}
-
-	/**
-	 * @return address
-	 */
-	public String getAddress() {
-		return this.address;
-	}
-
-	/**
-	 * @param address
-	 */
-	public void setAddress(final String address) {
-		this.address = address;
-	}
-
-	/**
-	 * @return annote
-	 */
-	public String getAnnote() {
-		return this.annote;
-	}
-
-	/**
-	 * @param annote
-	 */
-	public void setAnnote(final String annote) {
-		this.annote = annote;
-	}
-
-	/**
-	 * @return author
-	 */
-	public List<PersonName> getAuthor() {
-		return this.author;
-	}
-
-	/**
-	 * @param author
-	 */
-	public void setAuthor(final List<PersonName> author) {
-		this.author = author;
-	}
-
-	/**
 	 * @return bibtexAbstract
 	 */
 	public String getAbstract() {
@@ -206,175 +158,6 @@ public class BibTex extends Resource {
 	 */
 	public void setAbstract(final String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
-	}
-
-	/**
-	 * @return bibtexKey
-	 */
-	public String getBibtexKey() {
-		return this.bibtexKey;
-	}
-
-	/**
-	 * @param bibtexKey
-	 */
-	public void setBibtexKey(final String bibtexKey) {
-		this.bibtexKey = bibtexKey;
-	}
-
-	/**
-	 * @return bkey
-	 */
-	public String getKey() {
-		return this.key;
-	}
-
-	/**
-	 * @param key
-	 */
-	public void setKey(final String key) {
-		this.key = key;
-	}
-
-	/**
-	 * @return booktitle
-	 */
-	public String getBooktitle() {
-		return this.booktitle;
-	}
-
-	/**
-	 * @param booktitle
-	 */
-	public void setBooktitle(final String booktitle) {
-		this.booktitle = booktitle;
-	}
-
-	/**
-	 * @return chapter
-	 */
-	public String getChapter() {
-		return this.chapter;
-	}
-
-	/**
-	 * @param chapter
-	 */
-	public void setChapter(final String chapter) {
-		this.chapter = chapter;
-	}
-
-	/**
-	 * @return crossref
-	 */
-	public String getCrossref() {
-		return this.crossref;
-	}
-
-	/**
-	 * @param crossref
-	 */
-	public void setCrossref(final String crossref) {
-		this.crossref = crossref;
-	}
-
-	/**
-	 * @return day
-	 */
-	public String getDay() {
-		return this.day;
-	}
-
-	/**
-	 * @param day
-	 */
-	public void setDay(final String day) {
-		this.day = day;
-	}
-
-	/**
-	 * @return edition
-	 */
-	public String getEdition() {
-		return this.edition;
-	}
-
-	/**
-	 * @param edition
-	 */
-	public void setEdition(final String edition) {
-		this.edition = edition;
-	}
-
-	/**
-	 * @return editor
-	 */
-	public List<PersonName> getEditor() {
-		return this.editor;
-	}
-
-
-	/**
-	 * @param editor
-	 */
-	public void setEditor(final List<PersonName> editor) {
-		this.editor = editor;
-	}
-
-	/**
-	 * @return entrytype
-	 */
-	public String getEntrytype() {
-		return this.entrytype;
-	}
-
-	/**
-	 * @param entrytype
-	 */
-	public void setEntrytype(final String entrytype) {
-		this.entrytype = entrytype;
-	}
-
-	/**
-	 * @return howpublished
-	 */
-	public String getHowpublished() {
-		return this.howpublished;
-	}
-
-	/**
-	 * @param howpublished
-	 */
-	public void setHowpublished(final String howpublished) {
-		this.howpublished = howpublished;
-	}
-
-	/**
-	 * @return institution
-	 */
-	public String getInstitution() {
-		return this.institution;
-	}
-
-	/**
-	 * @param institution
-	 */
-	public void setInstitution(final String institution) {
-		this.institution = institution;
-	}
-
-	/**
-	 * @return journal
-	 */
-	public String getJournal() {
-		return this.journal;
-	}
-
-	/**
-	 * @param journal
-	 */
-	public void setJournal(final String journal) {
-		this.journal = journal;
 	}
 
 	/**
@@ -403,160 +186,6 @@ public class BibTex extends Resource {
 			this.misc = oldmisc;  // in case our sync went wrong
 			throw new InvalidModelException("Misc string " + misc + " could not be set."); 
 		}	
-	}	
-
-	/**
-	 * @return month
-	 */
-	public String getMonth() {
-		return this.month;
-	}
-
-	/**
-	 * @param month
-	 */
-	public void setMonth(final String month) {
-		this.month = month;
-	}
-
-	/**
-	 * @return note
-	 */
-	public String getNote() {
-		return this.note;
-	}
-
-	/**
-	 * @param note
-	 */
-	public void setNote(final String note) {
-		this.note = note;
-	}
-
-	/**
-	 * @return number
-	 */
-	public String getNumber() {
-		return this.number;
-	}
-
-	/**
-	 * @param number
-	 */
-	public void setNumber(final String number) {
-		this.number = number;
-	}
-
-	/**
-	 * @return organization
-	 */
-	public String getOrganization() {
-		return this.organization;
-	}
-
-	/**
-	 * @param organization
-	 */
-	public void setOrganization(final String organization) {
-		this.organization = organization;
-	}
-
-	/**
-	 * @return pages
-	 */
-	public String getPages() {
-		return this.pages;
-	}
-
-	/**
-	 * @param pages
-	 */
-	public void setPages(final String pages) {
-		this.pages = pages;
-	}
-
-	/**
-	 * @return publisher
-	 */
-	public String getPublisher() {
-		return this.publisher;
-	}
-
-	/**
-	 * @param publisher
-	 */
-	public void setPublisher(final String publisher) {
-		this.publisher = publisher;
-	}
-
-	/**
-	 * @return school
-	 */
-	public String getSchool() {
-		return this.school;
-	}
-
-	/**
-	 * @param school
-	 */
-	public void setSchool(final String school) {
-		this.school = school;
-	}
-
-	/**
-	 * @return series
-	 */
-	public String getSeries() {
-		return this.series;
-	}
-
-	/**
-	 * @param series
-	 */
-	public void setSeries(final String series) {
-		this.series = series;
-	}
-
-	/**
-	 * @return volume
-	 */
-	public String getVolume() {
-		return this.volume;
-	}
-
-	/**
-	 * @param volume
-	 */
-	public void setVolume(final String volume) {
-		this.volume = volume;
-	}
-
-	/**
-	 * @return year
-	 */
-	public String getYear() {
-		return this.year;
-	}
-
-	/**
-	 * @param year
-	 */
-	public void setYear(final String year) {
-		this.year = year;
-	}
-
-	/**
-	 * @return type
-	 */
-	public String getType() {
-		return this.type;
-	}
-
-	/**
-	 * @param type
-	 */
-	public void setType(final String type) {
-		this.type = type;
 	}
 
 	/**
@@ -587,19 +216,6 @@ public class BibTex extends Resource {
 		return SimHash.getSimHash3();
 	}
 
-	/**
-	 * @return url
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
 
 	@Override
 	public void recalculateHashes() {
@@ -648,65 +264,6 @@ public class BibTex extends Resource {
 			this.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
 		};
 		return this.miscFields;
-	}
-
-	/**
-	 * @return The list of documents associated with this BibTeX post.
-	 */
-	public List<Document> getDocuments() {
-		return this.documents;
-	}
-
-	/**
-	 * @param documents
-	 */
-	public void setDocuments(final List<Document> documents) {
-		this.documents = documents;
-	}
-
-	/**
-	 * The meta data from the scraper which scraped this publication.
-	 *
-	 * @return The scraper meta data
-	 */
-	public ScraperMetadata getScraperMetadata() {
-		return this.scraperMetadata;
-	}
-
-	/**
-	 * Set the metadata from the scraper which scraped this publication.
-	 *
-	 * @param scraperMetadata
-	 */
-	public void setScraperMetadata(final ScraperMetadata scraperMetadata) {
-		this.scraperMetadata = scraperMetadata;
-	}
-	/**
-	 * @return scraperId
-	 */
-	public int getScraperId() {
-		return this.scraperId;
-	}
-
-	/**
-	 * @param scraperId
-	 */
-	public void setScraperId(final int scraperId) {
-		this.scraperId = scraperId;
-	}
-
-	/**
-	 * @param extraUrls the extraUrls to set
-	 */
-	public void setExtraUrls(final List<BibTexExtra> extraUrls) {
-		this.extraUrls = extraUrls;
-	}
-
-	/**
-	 * @return the extraUrls
-	 */
-	public List<BibTexExtra> getExtraUrls() {
-		return extraUrls;
 	}
 
 	@Override

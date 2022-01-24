@@ -42,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class GenomeBiologyScraperTest {
+	String resultDirectory = "genome/";
 	
 	/**
 	 * starts URL test with id url_287
@@ -49,14 +50,14 @@ public class GenomeBiologyScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0424-0#Bib1";
-		final String resultFile = "GenomeBiologyScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "GenomeBiologyScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, GenomeBiologyScraper.class, resultFile);
 	}
 	
 	@Test
 	public void url2TestRun(){
 		final String url = "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0424-0";
-		final String resultFile = "GenomeBiologyScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "GenomeBiologyScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, GenomeBiologyScraper.class, resultFile);
 	}
 }
