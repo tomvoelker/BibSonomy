@@ -46,7 +46,7 @@
 	</div>
 	<!-- FIXME: remove check -->
 	<mtl:exists path="command.ofFriendUser">
-	<c:if test="${not ownPage}">
+	<c:if test="${not ownPage and command.context.userLoggedIn}">
 		<div class="row">
 			<div class="col-sm-6">
 				<user:userRelationForm friendName="${friendName}" addClass="addFriend" addKey="friend.add" hasRelation="${command.ofFriendUser}" infoKey="friendoverview.friend" removeClass="removeFriend" />
