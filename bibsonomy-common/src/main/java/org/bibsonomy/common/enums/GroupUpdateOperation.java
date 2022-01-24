@@ -83,8 +83,8 @@ public enum GroupUpdateOperation {
 	/** Add a preset tag */
 	ADD_PRESET_TAG,
 
-	/** Remove a preset tag */
-	REMOVE_PRESET_TAG,
+	/** Delete a preset tag */
+	DELETE_PRESET_TAG,
 	
 	/** updates the API key of the group user **/
 	REGENERATE_API_KEY;

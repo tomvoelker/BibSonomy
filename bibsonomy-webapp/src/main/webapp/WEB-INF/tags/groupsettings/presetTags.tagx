@@ -28,8 +28,8 @@
 				<c:set var="allowEditTagList" value="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}" />
 				<c:if test="${allowEditTagList}">
 					<!-- Input to add new tags -->
-					<form:form cssClass="form-horizontal" name="presetTagForm" method="post" action="" enctype="multipart/form-data">
-						<bsform:fieldset legendKey="settings.group.tagList.add">
+					<form:form cssClass="form-horizontal" name="presetTagForm" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
+						<bsform:fieldset legendKey="settings.group.tagList.action.add.title">
 							<jsp:attribute name="content">
 								<div class="form-group">
 									<form:label cssClass="col-sm-3 control-label" path="presetTagName">
@@ -40,15 +40,16 @@
 										<form:input path="presetTagName" cssClass="form-control" />
 									</div>
 								</div>
-
 								<bsform:textarea id="presetTagDescription" path="presetTagDescription"
 												 labelKey="settings.group.tagList.description"
 												 labelColSpan="3" inputColSpan="9"/>
 							</jsp:attribute>
 						</bsform:fieldset>
 
+						<input type="hidden" name="groupname" value="${group.name}"/>
+						<input type="hidden" name="operation" value="ADD_PRESET_TAG" />
 						<div class="col-sm-offset-3 col-sm-9">
-							<fmt:message var="submitButton" key="settings.group.tagList.add.submit" />
+							<fmt:message var="submitButton" key="settings.group.tagList.action.add" />
 							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
 						</div>
 						<p class="clearfix"><br /></p>
@@ -58,6 +59,7 @@
 				<bsform:fieldset legendKey="settings.group.tagList">
 					<jsp:attribute name="content">
 						<fmt:message var="locale" key="settings.locales.IETF"/>
+						<fmt:message var="deleteHint" key="settings.group.tagList.action.delete.hint"/>
 						<table class="table table-striped" data-toggle="table" data-locale="${locale}">
 							<thead>
 								<tr>
@@ -83,7 +85,8 @@
 									</td>
 									<td class="col-md-2">
 										<c:if test="${allowEditTagList}">
-											DELETE
+											<bs:linkButton title="${deleteHint}" textKey="settings.group.tagList.action.delete" icon="times" style="danger" size="xsmall"
+														   href="/updateGroup?operation=DELETE_PRESET_TAG&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;presetTagName=${mtl:encodePathSegment(tag.name)}&amp;ckey=${ckey}" />
 										</c:if>
 									</td>
 								</tr>

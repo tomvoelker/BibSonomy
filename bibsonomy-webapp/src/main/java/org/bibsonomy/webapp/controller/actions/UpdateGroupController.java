@@ -157,8 +157,8 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				case ADD_PRESET_TAG: {
 					return this.addPresetTag(command, groupToUpdate);
 				}
-				case REMOVE_PRESET_TAG: {
-					return this.removePresetTag(command, groupToUpdate);
+				case DELETE_PRESET_TAG: {
+					return this.deletePresetTag(command, groupToUpdate);
 				}
 				case REGENERATE_API_KEY: {
 					return this.regenerateApiKey(command, groupToUpdate);
@@ -401,10 +401,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	}
 
 	private ExtendedRedirectView addPresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
+		// TODO implement in DBLogic
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
 	}
 
-	private ExtendedRedirectView removePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
+	private ExtendedRedirectView deletePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
+		// TODO implement in DBLogic
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
 	}
 
