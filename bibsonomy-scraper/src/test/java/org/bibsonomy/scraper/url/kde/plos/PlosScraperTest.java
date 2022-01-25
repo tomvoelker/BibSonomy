@@ -35,6 +35,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -188,6 +189,7 @@ public class PlosScraperTest {
 	/**
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.plos.org/plosntds/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305#references"));

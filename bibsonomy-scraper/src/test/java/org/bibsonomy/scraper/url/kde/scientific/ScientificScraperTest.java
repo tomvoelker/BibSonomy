@@ -32,7 +32,6 @@ package org.bibsonomy.scraper.url.kde.scientific;
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

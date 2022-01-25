@@ -124,7 +124,7 @@ public class OpenrepositoryScraperTest {
 
 	@Test
 	public void url12TestRun(){
-		final String url = "https://t-stor.teagasc.ie/handle/11019/2308";
+		final String url = "https://t-stor.teagasc.ie/handle/11019/1399";
 		final String resultFile = resultDirectory + "OpenrepositoryScraperUnitURLTest12.bib";
 		assertScraperResult(url, null, OpenrepositoryScraper.class, resultFile);
 	}

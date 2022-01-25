@@ -43,6 +43,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ContentNegotiationDOIScraperTest {
+	String resultDirectory = "cndoi/";
 	
 	/**
 	 * tests the function of the ContentNegotiationDOIScraper for DOI URLs
@@ -52,7 +53,7 @@ public class ContentNegotiationDOIScraperTest {
 	@Test
 	public void testCNDOIScraper1() throws ScrapingException, IOException {
 		final String url = "http://dx.doi.org/10.1108/07378831211213265";
-		final String resultFile = "ContentNegotiationDOIScraper1.bib";
+		final String resultFile = resultDirectory + "ContentNegotiationDOIScraper1.bib";
 		assertScraperResult(url, null, ContentNegotiationDOIScraper.class, resultFile);
 	}
 
@@ -64,7 +65,7 @@ public class ContentNegotiationDOIScraperTest {
 	@Test
 	public void testCNDOIScraper2() throws ScrapingException, IOException {
 		final String url = "http://www.example.com";
-		final String resultFile = "ContentNegotiationDOIScraper1.bib";
+		final String resultFile = resultDirectory + "ContentNegotiationDOIScraper1.bib";
 		final String selection = "DOI:    10.1108/07378831211213265";
 		assertScraperResult(url, selection, ContentNegotiationDOIScraper.class, resultFile);
 	}

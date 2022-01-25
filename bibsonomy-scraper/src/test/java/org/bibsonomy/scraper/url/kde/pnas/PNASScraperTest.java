@@ -38,7 +38,6 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.oapen.OapenScraper;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

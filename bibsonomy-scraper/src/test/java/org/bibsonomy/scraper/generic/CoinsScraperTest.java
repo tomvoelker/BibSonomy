@@ -43,14 +43,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CoinsScraperTest {
-	
+	String resultDirectory = "coins/";
 	/**
 	 * starts URL test with id url_130
 	 */
 	@Ignore
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm", CoinsScraper.class, "CoinsScraperUnitURLTest1.bib");
+		final String url = "http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm";
+		final String resultFile = resultDirectory + "CoinsScraperUnitURLTest1.bib";
+		assertScraperResult(url, CoinsScraper.class, resultFile);
 	}
 	
 	/**
@@ -60,7 +62,9 @@ public class CoinsScraperTest {
 	@Test
 	@Ignore
 	public void url3TestRun(){
-		assertScraperResult("http://revista.ibict.br/ciinf/index.php/ciinf/article/view/2262/1879", CoinsScraper.class, "CoinsScraperUnitURLTest5.bib");
+		final String url = "http://revista.ibict.br/ciinf/index.php/ciinf/article/view/2262/1879";
+		final String resultFile = resultDirectory + "CoinsScraperUnitURLTest5.bib";
+		assertScraperResult(url, CoinsScraper.class, resultFile);
 	}
 	
 	/**
@@ -68,6 +72,8 @@ public class CoinsScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertScraperResult("http://katalogplus.ub.uni-bielefeld.de/cgi-bin/new_titel.cgi?katkey=2014704&art=f&kat1=freitext&kat2=ti&kat3=aup&op1=AND&op2=AND&var1=clustering&var2=&var3=&vr=1&pagesize=10&sprache=GER&bestand=lok&sess=4f5e41e8d8e96721f5500fd05eed192a", CoinsScraper.class, "CoinsScraperUnitURLTest3.bib");
+		final String url = "http://katalogplus.ub.uni-bielefeld.de/cgi-bin/new_titel.cgi?katkey=2014704&art=f&kat1=freitext&kat2=ti&kat3=aup&op1=AND&op2=AND&var1=clustering&var2=&var3=&vr=1&pagesize=10&sprache=GER&bestand=lok&sess=4f5e41e8d8e96721f5500fd05eed192a";
+		final String resultFile = resultDirectory + "CoinsScraperUnitURLTest3.bib";
+		assertScraperResult(url, CoinsScraper.class, resultFile);
 	}
 }
