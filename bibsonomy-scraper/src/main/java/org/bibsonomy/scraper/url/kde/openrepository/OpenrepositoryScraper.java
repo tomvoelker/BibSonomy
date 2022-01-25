@@ -64,8 +64,6 @@ public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "lenus.ie"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "repositorioacademico.upc.edu.pe"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hirsla.lsh.is"), Pattern.compile("handle")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "library.oapen.org"), Pattern.compile("handle")));
-
 	}
 	
 	@Override
