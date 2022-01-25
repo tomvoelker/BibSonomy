@@ -429,17 +429,17 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				convertedPerson.put(Fields.Publication.PERSON_COLLEGE, claimedPerson.getCollege());
 			}
 
-			serializedPersonNames.add(convertedPerson);
-			index++;
-
 			// TODO FIXME ATTENTION!!!!! THIS IS TEMPORARY!!!
 			// PLEASE REFACTOR ACCORDINGLY IN THE FUTURE
 			// this "fix" has been introduced, to circumvent ES errors with publications
 			// that have a lot of authors (+500)
-			// all authors after the 500th are now simply cut off and not indexed
-			if (index > 500) {
-				break;
+			// all authors after the 500th are now simply cut off, except if they are already linked
+			if (index < 500 || personIndexRelationMap.containsKey(key)) {
+				serializedPersonNames.add(convertedPerson);
 			}
+
+			index++;
+
 		}
 
 		return serializedPersonNames;
