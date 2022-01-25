@@ -38,6 +38,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -80,6 +81,7 @@ public class AmsScraperTest {
 		assertScraperResult(url, null, AmsScraper.class, resultFile);
 	}
 
+	@Ignore
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.ametsoc.org/view/journals/bams/89/6/2008bams2375_1.xml"));
@@ -93,7 +95,8 @@ public class AmsScraperTest {
 		assertEquals("<div class=\"citedByEntry\"><span class=\"author\">John D. Horel</span>, <span class=\"author\">Donna Ziegenfuss</span>".trim(), cby.substring(0, 113).trim());
 		assertTrue(cby.contains("Lodovica Illari"));
 	}
-	
+
+	@Ignore
 	@Test
 	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.ametsoc.org/view/journals/bams/89/6/2008bams2375_1.xml"));

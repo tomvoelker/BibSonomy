@@ -40,13 +40,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class LccnLocScraperTest {
+	String resultDirectory = "lccnloc/";
 	
 	/**
 	 * starts URL test with id url_360
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://lccn.loc.gov/2005929872", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest.bib");
+		final String url = "https://lccn.loc.gov/2005929872";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -54,7 +57,9 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("https://lccn.loc.gov/2005929872/dc", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest.bib");
+		final String url = "https://lccn.loc.gov/2005929872/dc";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -62,7 +67,9 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		assertScraperResult("https://lccn.loc.gov/95790943", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest2.bib");
+		final String url = "https://lccn.loc.gov/95790943";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest2.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -70,7 +77,9 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url4TestRun() {
-		assertScraperResult("https://lccn.loc.gov/77368709/dc", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest3.bib");
+		final String url = "https://lccn.loc.gov/77368709/dc";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest3.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -78,6 +87,8 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url5TestRun() {
-		assertScraperResult("https://catalog.loc.gov/vwebv/holdingsInfo?searchId=6242&recCount=25&recPointer=1&bibId=1781294", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest4.bib");
+		final String url = "https://catalog.loc.gov/vwebv/holdingsInfo?searchId=6242&recCount=25&recPointer=1&bibId=1781294";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest4.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 }

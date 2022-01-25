@@ -40,12 +40,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class MendeleyScraperTest {
+	String resultDirectory = "mendeley/";
 	/**
 	 * 
 	 */
 	@Test
 	public void urlTestRun() {
-		assertScraperResult("http://www.mendeley.com/catalog/social-bookmarking-beispiel-bibsonomy/", MendeleyScraper.class, "MendeleyScraperUnitURLTest.bib");
+		final String url = "http://www.mendeley.com/catalog/social-bookmarking-beispiel-bibsonomy/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,6 +56,8 @@ public class MendeleyScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/", MendeleyScraper.class, "MendeleyScraperUnitURLTest1.bib");
+		final String url = "http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest1.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
 	}
 }

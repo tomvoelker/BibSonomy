@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BibSonomyScraperTest {
+	String resultDirectory = "bibsonomy/";
 	
 	/**
 	 * tests old path 'bibtex'
@@ -48,7 +49,7 @@ public class BibSonomyScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "https://www.bibsonomy.org/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "BibSonomyScraperUnitURLTest.bib";
 		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 	
@@ -58,7 +59,7 @@ public class BibSonomyScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "https://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "BibSonomyScraperUnitURLTest.bib";
 		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 	
@@ -68,7 +69,7 @@ public class BibSonomyScraperTest {
 	@Test
 	public void url3TestRun() {
 		final String url = "https://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "BibSonomyScraperUnitURLTest.bib";
 		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 
@@ -78,7 +79,7 @@ public class BibSonomyScraperTest {
 	@Test
 	public void url4TestRun() {
 		final String url = "https://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "BibSonomyScraperUnitURLTest.bib";
 		assertScraperResult(url, BibSonomyScraper.class, resultFile);
 	}
 }

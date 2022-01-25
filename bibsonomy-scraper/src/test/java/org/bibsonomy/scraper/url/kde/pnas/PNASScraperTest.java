@@ -49,13 +49,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class PNASScraperTest {
+	String resultDirectory = "pnas/";
 
 	/**
 	 * starts URL test with id url_190
 	 */
 	@Test
 	public void urlTest1Run() {
-		assertScraperResult("https://www.pnas.org/content/106/52/22480.abstract", PNASScraper.class, "PNASScraperUnitURLTest1.bib");
+		final String url = "https://www.pnas.org/content/106/52/22480.abstract";
+		final String resultFile = resultDirectory + "PNASScraperUnitURLTest1.bib";
+		assertScraperResult(url, PNASScraper.class, resultFile);
 	}
 
 	/**
@@ -63,7 +66,9 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		assertScraperResult("https://www.pnas.org/content/101/22/8281.abstract", PNASScraper.class, "PNASScraperUnitURLTest2.bib");
+		final String url = "https://www.pnas.org/content/101/22/8281.abstract";
+		final String resultFile = resultDirectory + "PNASScraperUnitURLTest2.bib";
+		assertScraperResult(url, PNASScraper.class, resultFile);
 	}
 	
 	@Test

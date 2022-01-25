@@ -38,6 +38,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -69,6 +70,7 @@ public class MDPIScraperTest {
 	/**
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
 	public void testCitedBy() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.mdpi.com/2072-4292/5/10/5122"));
