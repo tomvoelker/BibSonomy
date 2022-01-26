@@ -7,24 +7,21 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-
-    <!-- 
-
-        shows a list of groups this post might be relevant for  
-    
-    -->
-
+	<!--+
+		| shows a list of groups this post might be relevant for
+		+-->
 
 	<jsp:directive.attribute name="groups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
-  
+
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
   
 	<div class="form-group">
-	
-		<label class="col-sm-3 control-label" for="${fn:escapeXml(id)}">
+		<label class="col-sm-${labelColSpan} control-label">
 			<fmt:message key="post.resource.relevantfor" />
 		</label>
 	
-		<div class="col-sm-9">
+		<div class="col-sm-${inputColSpan}">
 			<!-- select box for "other" groups -->
 	    	<form:select cssClass="form-control" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
 	      		<fmt:message var="pleaseselect" key="form.input.select"/>

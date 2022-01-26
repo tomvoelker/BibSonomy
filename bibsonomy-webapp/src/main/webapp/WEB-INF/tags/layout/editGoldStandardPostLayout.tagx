@@ -174,9 +174,7 @@
 						<c:if test="${not empty detailedInformation}">
 							<jsp:invoke fragment="detailedInformation"/>
 						</c:if>
-						
-						
-							
+
 						<!--+
 							| a Captcha for our spammers ...
 							+-->

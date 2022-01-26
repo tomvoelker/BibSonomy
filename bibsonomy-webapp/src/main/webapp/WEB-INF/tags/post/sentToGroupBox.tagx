@@ -1,0 +1,40 @@
+<jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+
+	<!--+
+		| show selection of groups to send the post to
+		+-->
+
+	<jsp:directive.attribute name="groups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
+
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+
+	<div class="form-group">
+		<label class="col-sm-${labelColSpan} control-label">
+			<fmt:message key="post.resource.sentTo" />
+		</label>
+
+		<div class="col-sm-${inputColSpan}">
+			<select id="sentToGroupSelect" class="form-control">
+				<c:forEach items="${groups}" var="group">
+					<option value="${group.name}">${group.name}</option>
+				</c:forEach>
+			</select>
+			<p class="help-block"><fmt:message key="post.resource.sentTo.help"/></p>
+		</div>
+
+		<c:forEach items="${groups}" var="group">
+			<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
+				<post:groupPresetTagBox group="${group}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
+			</div>
+		</c:forEach>
+	</div>
+</jsp:root>
