@@ -42,6 +42,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -401,12 +402,33 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	}
 
 	private ExtendedRedirectView addPresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
-		// TODO implement in DBLogic
+		final String tagName = command.getPresetTagName();
+		final String tagDescription = command.getPresetTagDescription();
+
+		if(present(tagName) && GroupUtils.addPresetTag(groupToUpdate, tagName, tagDescription)) {
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_PRESET_TAG, null);
+			} catch (final Exception ex) {
+				log.error("error while adding the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
+			}
+		} else {
+			this.errors.reject("settings.group.presetTags.error.exists", tagName);
+		}
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
 	}
 
 	private ExtendedRedirectView deletePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
-		// TODO implement in DBLogic
+		final String tagName = command.getPresetTagName();
+
+		if(present(tagName) && GroupUtils.deletePresetTag(groupToUpdate, tagName)) {
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DELETE_PRESET_TAG, null);
+			} catch (final Exception ex) {
+				log.error("error while deleting the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
+			}
+		} else {
+			this.errors.reject("settings.group.presetTags.error.notFound", tagName);
+		}
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
 	}
 

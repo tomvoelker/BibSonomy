@@ -29,8 +29,10 @@
  */
 package org.bibsonomy.model.util;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -38,6 +40,7 @@ import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
 /**
@@ -305,5 +308,41 @@ public class GroupUtils {
 		}
 		
 		return list;
+	}
+
+	public static boolean addPresetTag(Group group, String tagName, String tagDescription) {
+		Tag presetTag = new Tag(tagName);
+		presetTag.setDescription(tagDescription);
+
+		// TODO: maybe option to update exisiting tag
+		final List<Tag> groupPresetTags = group.getPresetTags();
+		if (groupPresetTags.contains(presetTag)) {
+			return false;
+		}
+
+		groupPresetTags.add(presetTag);
+		return true;
+	}
+
+	public static boolean deletePresetTag(Group group, String tagName) {
+		Tag presetTag = new Tag(tagName);
+
+		final List<Tag> groupPresetTags = group.getPresetTags();
+
+		if (groupPresetTags.contains(presetTag)) {
+			groupPresetTags.remove(presetTag);
+			return true;
+		}
+
+		return false;
+	}
+
+	public static Map<String, Tag> buildPresetTagMap(List<Tag> presetTags) {
+		Map<String, Tag> presetTagsMap = new HashMap<>();
+		for (Tag tag : presetTags) {
+			presetTagsMap.put(tag.getName(), tag);
+		}
+
+		return presetTagsMap;
 	}
 }

@@ -1384,6 +1384,7 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, hasAdminPrivileges, session);
+			group.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1551,6 +1552,31 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
+				break;
+			case ADD_PRESET_TAG:
+			case DELETE_PRESET_TAG:
+				if(!this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR)) {
+					throw new AccessDeniedException("You are not allowed to edit preset tags.");
+				}
+
+				final List<Tag> oldPresetTags = group.getPresetTags();
+				final List<Tag> newPresetTags = paramGroup.getPresetTags();
+				final Map<String, Tag> oldPresetTagMap = GroupUtils.buildPresetTagMap(oldPresetTags);
+				final Map<String, Tag> newPresetTagMap = GroupUtils.buildPresetTagMap(newPresetTags);
+
+				// add new preset tags
+				for (final Tag newTag : newPresetTags) {
+					if (!oldPresetTagMap.containsKey(newTag.getName())) {
+						this.groupDBManager.createOrUpdatePresetTag(group, newTag, session);
+					}
+				}
+
+				// delete preset tags
+				for (final Tag oldTag : oldPresetTags) {
+					if (!newPresetTagMap.containsKey(oldTag.getName())) {
+						this.groupDBManager.removePresetTag(group, oldTag, session);
+					}
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");

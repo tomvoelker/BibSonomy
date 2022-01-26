@@ -24,7 +24,7 @@
 			<div class="panel-body">
 				<div class="preset-tag-form form-group">
 					<label class="col-sm-${labelColSpan} control-label">
-						<fmt:message key="settings.group.tagList.tag" />
+						<fmt:message key="settings.group.presetTags.tag" />
 					</label>
 					<div class="col-sm-${inputColSpan}">
 						<form:input cssClass="form-control" id="" autocomplete="off" path="" onclick="" onfocus="" onblur="" tabindex="1" />

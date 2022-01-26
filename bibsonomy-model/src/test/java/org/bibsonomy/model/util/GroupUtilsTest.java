@@ -35,8 +35,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
 /**
@@ -88,7 +94,42 @@ public class GroupUtilsTest {
 		assertFalse(GroupUtils.isExclusiveGroup(GroupID.FRIENDS.getId()));
 		assertFalse(GroupUtils.isExclusiveGroup(GroupID.FRIENDS_SPAM.getId()));
 	}
-	
-	
-	
+
+	@Test
+	public void testAddPresetTag() {
+		Group group = new Group();
+		List<Tag> groupPresetTags = new ArrayList<>(Collections.singletonList(new Tag("tagtagtag")));
+		group.setPresetTags(groupPresetTags);
+
+		// case tag doesn't exist yet
+		assertTrue(GroupUtils.addPresetTag(group, "newTag1", null));
+		assertTrue(GroupUtils.addPresetTag(group, "newTag2", null));
+
+		// case tag exists already
+		assertFalse(GroupUtils.addPresetTag(group, "newTag1", null));
+		assertFalse(GroupUtils.addPresetTag(group, "tagtagtag", null));
+
+		// check size of group's preset tags
+		assertEquals(3, group.getPresetTags().size());
+	}
+
+	@Test
+	public void testDeletePresetTag() {
+		Group group = new Group();
+		List<Tag> groupPresetTags = new ArrayList<>();
+		groupPresetTags.add(new Tag("tag1"));
+		groupPresetTags.add(new Tag("tag2"));
+		groupPresetTags.add(new Tag("tag3"));
+		group.setPresetTags(groupPresetTags);
+
+		// case tag doesn't exist
+		assertFalse(GroupUtils.deletePresetTag(group, "tag4"));
+
+		// case tag exists already
+		assertTrue(GroupUtils.deletePresetTag(group, "tag1"));
+		assertTrue(GroupUtils.deletePresetTag(group, "tag3"));
+
+		// check size of group's preset tags
+		assertEquals(1, group.getPresetTags().size());
+	}
 }
