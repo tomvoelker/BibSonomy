@@ -31,6 +31,7 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.cris.Linkable;
-import org.bibsonomy.model.extra.GroupPresetTag;
 
 /**
  * A group groups users.
@@ -113,7 +113,7 @@ public class Group implements Linkable, Serializable {
 	 * List of preset tags to regulate posts,
 	 * that have been added to the group via the ForGroup function when posting or editing a post.
 	 */
-	private List<GroupPresetTag> presetTags;
+	private List<Tag> presetTags;
 
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
@@ -143,7 +143,7 @@ public class Group implements Linkable, Serializable {
 	 * default constructor
 	 */
 	public Group() {
-		// noop
+		this.presetTags = new ArrayList<>();
 	}
 
 	/**

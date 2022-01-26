@@ -362,6 +362,8 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#DELETE_GROUP_REQUEST}</dt><dd>Deletes the pending group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ADD_PRESET_TAG}</dt><dd>Adds a preset tag.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE_PRESET_TAG}</dt><dd>Deletes a preset tag.</dd>
 	 * </dl>
 	 *
 	 *

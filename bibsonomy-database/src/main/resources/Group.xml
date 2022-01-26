@@ -167,20 +167,20 @@
 	</delete>
 
 	<select id="getPresetTagsForGroup" resultMap="GroupCommon.presetTags" parameterClass="string">
-		SELECT tag_name, group_name, `group`, description
+		SELECT tag_name, description
 		FROM group_preset_tags
 		WHERE group_name = #groupname#
 	</select>
 
 	<insert id="insertOrUpdatePresetTag" parameterClass="org.bibsonomy.database.params.group.GroupPresetTagParam">
 		INSERT INTO group_preset_tags (<include refid="commonPresetTagsColumns"/>)
-		VALUES (#name#, #groupName#, #groupId#, #description#)
-		ON DUPLICATE KEY UPDATE description = #description#
+		VALUES (#tagName#, #groupName#, #groupId#, #tagDescription#)
+		ON DUPLICATE KEY UPDATE description = #tagDescription#
 	</insert>
 
 	<delete id="deletePresetTag" parameterClass="org.bibsonomy.database.params.group.GroupPresetTagParam">
 		DELETE FROM group_preset_tags
-		WHERE tag_name = #name#
+		WHERE tag_name = #tagName#
 		AND `group` = #groupId#
 	</delete>
 

@@ -115,10 +115,8 @@
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
 
-	<resultMap id="presetTags" class="groupPresetTag">
+	<resultMap id="presetTags" class="tag">
 		<result property="name"      	column="tag_name"       javaType="string"  />
-		<result property="groupId"     	column="group"       	javaType="int"     />
-		<result property="groupName"    column="group_name"     javaType="string"  />
 		<result property="description"  column="description"    javaType="string"  />
 	</resultMap>
 

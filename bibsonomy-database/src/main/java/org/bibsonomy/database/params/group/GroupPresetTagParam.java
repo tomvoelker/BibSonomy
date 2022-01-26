@@ -1,49 +1,19 @@
 package org.bibsonomy.database.params.group;
 
-import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.model.extra.GroupPresetTag;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class GroupPresetTagParam extends TagParam {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class GroupPresetTagParam {
 
     private int groupId;
     private String groupName;
-    private String description;
+    private String tagName;
+    private String tagDescription;
 
-    public GroupPresetTagParam() {
-    }
-
-    public GroupPresetTagParam(GroupPresetTag presetTag) {
-        this.setName(presetTag.getName());
-        this.groupId = presetTag.getGroupId();
-        this.groupName = presetTag.getGroupName();
-        this.description = presetTag.getDescription();
-    }
-
-    @Override
-    public int getGroupId() {
-        return groupId;
-    }
-
-    @Override
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

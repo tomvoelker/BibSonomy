@@ -14,8 +14,8 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.extra.GroupPresetTag;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
@@ -69,9 +69,9 @@ public class GroupExplorePageController extends SingleResourceListController imp
         return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
     }
 
-    private List<SearchFilterElement> generatePresetTagFilters(List<GroupPresetTag> presetTags) {
+    private List<SearchFilterElement> generatePresetTagFilters(List<Tag> presetTags) {
         List<SearchFilterElement> filters = new ArrayList<>();
-        for (GroupPresetTag tag : presetTags) {
+        for (Tag tag : presetTags) {
             SearchFilterElement filterElement = new SearchFilterElement(tag.getName());
             filterElement.setField(PRESET_FIELD_NAME);
             filterElement.setTooltip(tag.getDescription());

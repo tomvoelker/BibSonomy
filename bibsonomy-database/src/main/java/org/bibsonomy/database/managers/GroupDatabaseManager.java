@@ -61,10 +61,7 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
 import org.bibsonomy.database.params.group.GroupPresetTagParam;
 import org.bibsonomy.database.params.group.InsertParentRelations;
-import org.bibsonomy.database.params.person.PersonAdditionalKeyParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.model.extra.GroupPresetTag;
-import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -76,6 +73,7 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
 
@@ -252,36 +250,35 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 *
 	 * @param groupname - the name of the group
 	 * @param session
-	 * @return Return a list of {@link GroupPresetTag} objects if the group exists and
+	 * @return Return a list of {@link Tag} objects if the group exists and
 	 *         if there are preset tags related to the group
 	 */
-	public List<GroupPresetTag> getPresetTagsForGroup(final String groupname, final DBSession session) {
-		return this.queryForList("getPresetTagsForGroup", groupname, GroupPresetTag.class, session);
+	public List<Tag> getPresetTagsForGroup(final String groupname, final DBSession session) {
+		return this.queryForList("getPresetTagsForGroup", groupname, Tag.class, session);
 	}
 
 	/**
 	 * Creates a new preset tag for the group.
 	 * Updates if unique key (name, group) already exists.
 	 *
-	 * @param presetTag		specified person
+	 * @param group			the group
+	 * @param presetTag		the preset tag for the group
 	 * @param session		db session
 	 */
-	public void createOrUpdatePresetTag(GroupPresetTag presetTag, final DBSession session) {
-		final GroupPresetTagParam param = new GroupPresetTagParam(presetTag);
+	public void createOrUpdatePresetTag(final Group group, final Tag presetTag, final DBSession session) {
+		final GroupPresetTagParam param = new GroupPresetTagParam(group.getGroupId(), group.getName(), presetTag.getName(), presetTag.getDescription());
 		this.insert("insertOrUpdatePresetTag", param, session);
 	}
 
 	/**
 	 * Remove a preset tag for the group.
 	 *
-	 * @param tagName		tag name
-	 * @param group			group ID
+	 * @param group			the group
+	 * @param presetTag		the preset tag for the group
 	 * @param session		db session
 	 */
-	public void removePresetTag(final String tagName, final int group, final DBSession session) {
-		final GroupPresetTagParam param = new GroupPresetTagParam();
-		param.setName(tagName);
-		param.setGroupId(group);
+	public void removePresetTag(final Group group, final Tag presetTag, final DBSession session) {
+		final GroupPresetTagParam param = new GroupPresetTagParam(group.getGroupId(), group.getName(), presetTag.getName(), presetTag.getDescription());
 		this.delete("deletePresetTag", param, session);
 	}
 

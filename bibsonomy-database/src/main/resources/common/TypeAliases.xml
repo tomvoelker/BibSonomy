@@ -70,7 +70,6 @@
 	<typeAlias alias="extendedBibtex"     type="org.bibsonomy.model.extra.ExtendedField" />
 	<typeAlias alias="extendedBibtexList" type="org.bibsonomy.model.extra.ExtendedFieldList" />
 	<typeAlias alias="additionalKey"	  type="org.bibsonomy.model.extra.AdditionalKey"/>
-	<typeAlias alias="groupPresetTag"     type="org.bibsonomy.model.extra.GroupPresetTag" />
 
 	<!-- Parameters -->
 	<typeAlias alias="genericParam"       type="org.bibsonomy.database.params.GenericParam" />
