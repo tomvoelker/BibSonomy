@@ -24,6 +24,9 @@ $(function() {
 	});
 	//only add this listener one time
 	$("#recommendationReloadButton").click(reloadRecommendation);
+
+	// init preset tags for groups
+	initSentToGroupBox();
 });
 
 function enableHandler() {
@@ -890,4 +893,38 @@ function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
 	$("#" + divId).slideToggle("slow"); 
 	var pic = $("#" + pictureId);
 	pic.attr('src', pic.attr("src") == pictureActive ? pictureInactive : pictureActive);
+}
+
+function initSentToGroupBox() {
+	$('#sentToGroupSelect').children('option:not(:selected)').click(function () {
+		togglePresetTagsPanel($(this).val());
+	});
+
+	$('.preset-tags-close').click(function () {
+		togglePresetTagsPanel($(this).data('close'));
+	});
+
+	$('.preset-tags-list').children('li').click(function () {
+		var groupId = $(this).data('group');
+		var tag = $(this).data('tag');
+		var input = $('#presetTagsInput-' + groupId);
+		var valArr = input.val().split(' ');
+
+		// check, if tag already selected
+		var tagIndex = valArr.indexOf(tag);
+		if (tagIndex >= 0) {
+			// remove, if already selected
+			valArr.splice(tagIndex, 1);
+		} else {
+			// add otherwise
+			valArr.push(tag);
+		}
+		input.val(valArr.join(' '));
+	});
+}
+
+function togglePresetTagsPanel(groupId) {
+	var panel = $('#presetTagsPanel-' + groupId);
+	panel.val('');
+	panel.toggleClass('hidden');
 }

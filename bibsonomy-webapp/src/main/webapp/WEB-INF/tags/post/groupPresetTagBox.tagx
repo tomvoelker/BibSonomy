@@ -15,9 +15,9 @@
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
 
-	<div class="panel panel-default preset-tags-panel" data-sent-to="${group.name}">
+	<div id="presetTagsPanel-${group.name}" class="panel panel-default preset-tags-panel hidden">
 		<div class="panel-heading">
-			<button type="button" class="close" aria-hidden="true">&amp;times;</button>
+			<button type="button" class="close preset-tags-close" aria-hidden="true" data-close="${group.name}">&amp;times;</button>
 			<h4>${group.name}</h4>
 		</div>
 		<c:if test="${not empty group.presetTags}">
@@ -27,12 +27,12 @@
 						<fmt:message key="settings.group.presetTags.tag" />
 					</label>
 					<div class="col-sm-${inputColSpan}">
-						<form:input cssClass="form-control" id="" autocomplete="off" path="" onclick="" onfocus="" onblur="" tabindex="1" />
+						<input class="form-control" id="presetTagsInput-${group.name}" readonly="readonly"/>
 					</div>
 					<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
 						<ul class="list-inline preset-tags-list">
 							<c:forEach var="presetTag" items="${group.presetTags}">
-								<li><button type="button" class="btn btn-default btn-xs" title="${presetTag.description}">${presetTag.name}</button></li>
+								<li class="btn btn-default btn-xs" title="${presetTag.description}" data-group="${group.name}" data-tag="${presetTag.name}">${presetTag.name}</li>
 							</c:forEach>
 						</ul>
 					</div>

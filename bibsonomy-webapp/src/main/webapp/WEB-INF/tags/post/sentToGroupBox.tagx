@@ -24,6 +24,7 @@
 
 		<div class="col-sm-${inputColSpan}">
 			<select id="sentToGroupSelect" class="form-control">
+				<option value="" selected="selected"><fmt:message key="form.input.select"/></option>
 				<c:forEach items="${groups}" var="group">
 					<option value="${group.name}">${group.name}</option>
 				</c:forEach>
