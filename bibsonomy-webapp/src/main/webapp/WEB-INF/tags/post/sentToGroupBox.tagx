@@ -24,11 +24,12 @@
 
 		<div class="col-sm-${inputColSpan}">
 			<select id="sentToGroupSelect" class="form-control">
-				<option value="" selected="selected"><fmt:message key="form.input.select"/></option>
+				<option class="option-placeholder" value=""><fmt:message key="form.input.select"/></option>
 				<c:forEach items="${groups}" var="group">
 					<option value="${group.name}">${group.name}</option>
 				</c:forEach>
 			</select>
+			<input type="hidden" id="presetTagsForGroups" path="presetTagsForGroups"/>
 			<p class="help-block"><fmt:message key="post.resource.sentTo.help"/></p>
 		</div>
 

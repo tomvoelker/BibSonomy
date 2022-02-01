@@ -238,14 +238,15 @@
 										<div class="btn-group">
 											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="clear_tags();" tabindex="2"/>
 										</div>
-	
-										<c:if test="${not empty properties['bibliography.bibliographyUser']}">
+
+										<c:set var="bibliographyUser" value="${properties['bibliography.bibliographyUser']}" />
+										<c:if test="${not empty bibliographyUser}">
 											<fmt:message key="save.and.send_to" var="saveAndSendTo">
-												<fmt:param value="${properties['bibliography.bibliographyUser']}"/>
+												<fmt:param value="${bibliographyUser}"/>
 											</fmt:message>
 									
 											<div class="btn-group">
-												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendToBibliography('${properties['bibliography.bibliographyUser']}');" tabindex="2"/>
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="addForFriendTag('${bibliographyUser}');" tabindex="2"/>
 											</div>
 										</c:if>
 										<c:if test="${not empty groups}">
@@ -254,7 +255,7 @@
 											</fmt:message>
 									
 											<div class="btn-group">
-												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendGroupToBibliography('${groups}');" tabindex="2"/>
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="addForGroupTag('${groups}');" tabindex="2"/>
 											</div>
 										</c:if>			
 									</div>

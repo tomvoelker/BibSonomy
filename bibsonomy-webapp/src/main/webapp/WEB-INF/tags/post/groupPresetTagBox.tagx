@@ -15,7 +15,7 @@
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
 
-	<div id="presetTagsPanel-${group.name}" class="panel panel-default preset-tags-panel hidden">
+	<div id="presetTagsPanel-${group.name}" class="panel panel-default preset-tags-panel hidden" data-group="${group.name}">
 		<div class="panel-heading">
 			<button type="button" class="close preset-tags-close" aria-hidden="true" data-close="${group.name}">&amp;times;</button>
 			<h4>${group.name}</h4>
@@ -27,7 +27,7 @@
 						<fmt:message key="settings.group.presetTags.tag" />
 					</label>
 					<div class="col-sm-${inputColSpan}">
-						<input class="form-control" id="presetTagsInput-${group.name}" readonly="readonly"/>
+						<input class="form-control preset-tags-input" id="presetTagsInput-${group.name}" readonly="readonly"/>
 					</div>
 					<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
 						<ul class="list-inline preset-tags-list">

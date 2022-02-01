@@ -414,6 +414,7 @@
 								<value>intraHashToUpdate</value>
 								<value>referer</value>
 								<value>relevantGroups</value>
+								<value>presetTagsForGroups</value>
 								<value>acceptComma</value>
 								<value>postID</value>
 								<value>hash</value>

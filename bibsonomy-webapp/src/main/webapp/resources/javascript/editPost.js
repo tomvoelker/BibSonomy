@@ -18,7 +18,7 @@ var collect;
 
 
 $(function() {
-	startTagAutocompletion($('#inpf_tags'), false, true, true, true, true);
+	startTagAutocompletion($('#inpf_tags'), false, true, true, true, false);
 	$("#copiedTags li, .tagbox li a").each(function() {
 		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
 	});
@@ -896,7 +896,7 @@ function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
 }
 
 function initSentToGroupBox() {
-	$('#sentToGroupSelect').children('option:not(:selected)').click(function () {
+	$('#sentToGroupSelect').children('option:not(.option-placeholder)').click(function () {
 		togglePresetTagsPanel($(this).val());
 	});
 
@@ -908,7 +908,7 @@ function initSentToGroupBox() {
 		var groupId = $(this).data('group');
 		var tag = $(this).data('tag');
 		var input = $('#presetTagsInput-' + groupId);
-		var valArr = input.val().split(' ');
+		var valArr = (input.val()) ? input.val().split(' ') : [];
 
 		// check, if tag already selected
 		var tagIndex = valArr.indexOf(tag);
@@ -925,6 +925,19 @@ function initSentToGroupBox() {
 
 function togglePresetTagsPanel(groupId) {
 	var panel = $('#presetTagsPanel-' + groupId);
-	panel.val('');
+	var input = $('#presetTagsInput-' + groupId);
+	input.val('');
 	panel.toggleClass('hidden');
+}
+
+function preparePresetTagsForm() {
+	var formData = {};
+	$('.preset-tags-panel:not(.hidden)').each(function () {
+		var panel = $(this);
+		var groupId = panel.data('group');
+		var input = panel.find('#presetTagsInput-' + groupId);
+		formData[groupId] = input.val().trim();
+	});
+	console.log(formData);
+	$('#presetTagsForGroups').val(formData);
 }

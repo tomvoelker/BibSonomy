@@ -51,8 +51,8 @@
 			</bsform:fieldset>
 
 			<!-- group options -->
-			<c:set var="groups" value="${mtl:filterGroups(postOwner.groups, false)}" />
 			<c:if test="${not empty postOwner.groups}">
+				<c:set var="groups" value="${mtl:filterGroups(postOwner.groups, false)}" />
 				<a name="group-options"><!-- keep me --></a>
 				<bsform:fieldset legendKey="post.resource.groups.options">
 					<jsp:attribute name="content">
