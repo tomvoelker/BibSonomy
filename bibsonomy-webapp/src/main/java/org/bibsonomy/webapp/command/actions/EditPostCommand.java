@@ -102,6 +102,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private List<String> relevantGroups;
 
+	private List<String> forGroups;
+
 	private String presetTagsForGroups;
 
 	private SortedSet<RecommendedTag> recommendedTags;

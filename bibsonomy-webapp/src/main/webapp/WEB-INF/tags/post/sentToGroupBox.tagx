@@ -29,7 +29,7 @@
 					<option value="${group.name}">${group.name}</option>
 				</c:forEach>
 			</select>
-			<input type="hidden" id="presetTagsForGroups" path="presetTagsForGroups"/>
+			<input type="hidden" id="presetTagsForGroups" name="presetTagsForGroups"/>
 			<p class="help-block"><fmt:message key="post.resource.sentTo.help"/></p>
 		</div>
 

@@ -39,7 +39,7 @@ function myownTagInit(chkbox, tagbox) {
 
 	chkbox.click(
 			function() {
-				clear_tags ();
+				clearTagInput();
 				if(this.checked 
 						&& tagbox.val().search(expr) == -1){
 					tagbox.removeClass('descriptiveLabel').val('myown '+tagbox.val());

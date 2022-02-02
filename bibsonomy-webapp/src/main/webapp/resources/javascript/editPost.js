@@ -702,7 +702,7 @@ function setActiveInputField(id) {
 }
 
 function toggleTag(target, tagname) {
-	clear_tags(); // remove getString("navi.tag.hint") 
+	clearTagInput(); // remove getString("navi.tag.hint")
 
 	activeTag = "";
 
@@ -931,13 +931,44 @@ function togglePresetTagsPanel(groupId) {
 }
 
 function preparePresetTagsForm() {
-	var formData = {};
+	var presetTags = [];
 	$('.preset-tags-panel:not(.hidden)').each(function () {
 		var panel = $(this);
 		var groupId = panel.data('group');
-		var input = panel.find('#presetTagsInput-' + groupId);
-		formData[groupId] = input.val().trim();
+		var inputVal = panel.find('#presetTagsInput-' + groupId).val().trim();
+		var tags = inputVal.split(' ');
+		var sysTags = createSysTagsForGroup(groupId, tags);
+
+		presetTags.push.apply(presetTags, sysTags);
+
+		// add for:group system tag to tag list
+		addForGroupTag(groupId);
 	});
-	console.log(formData);
-	$('#presetTagsForGroups').val(formData);
+
+	// set group preset tag list
+	$('#presetTagsForGroups').val(presetTags.join(' '));
+}
+
+function createSysTagsForGroup(groupId, tags) {
+	var sysTags = [];
+	tags.forEach(function (tag) {
+		sysTags.push('sys:group:' + groupId + ':' + tag);
+	})
+
+	return sysTags;
+}
+
+/**
+ * Clears #inpf_tags if it's value is equal to the tag hint.
+ *
+ * @return
+ */
+function clearTagInput() {
+	var tag = $("#inpf_tags");
+	if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
+}
+
+function beforeSubmitForm() {
+	preparePresetTagsForm();
+	clearTagInput();
 }
