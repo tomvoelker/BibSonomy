@@ -101,7 +101,6 @@ $(function() {
 		document.getElementById('publication-snippet').style.display = "block";
 	}
 
-
 });
 
 function showManualForm(titleText) {
