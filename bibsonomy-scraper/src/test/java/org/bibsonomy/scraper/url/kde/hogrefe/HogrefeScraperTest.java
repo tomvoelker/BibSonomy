@@ -42,14 +42,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class HogrefeScraperTest {
+	String resultDirectory = "hogrefe/";
 
 	/**
 	 * new URL
 	 */
 	@Test
-	public void url4TestRun(){
+	public void url1TestRun(){
 		final String url = "https://econtent.hogrefe.com/doi/abs/10.1027/1864-9335/a000179";
-		final String resultFile = "LiteratumScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "HogrefeScraperUnitURLTest1.bib";
 		assertScraperResult(url, HogrefeScraper.class, resultFile);
 	}
 

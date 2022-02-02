@@ -28,6 +28,7 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 			
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
 		</jsp:attribute>
 		

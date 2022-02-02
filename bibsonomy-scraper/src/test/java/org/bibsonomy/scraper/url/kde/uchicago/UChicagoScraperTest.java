@@ -40,24 +40,24 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class UChicagoScraperTest {
-	
-	/**
-	 * starts URL test with id url_352
-	 */
-	@Test
-	public void url1TestRun(){
-		final String url = "http://www.journals.uchicago.edu/doi/abs/10.1086/685556";
-		final String resultFile = "UChicagoScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, UChicagoScraper.class, resultFile);
-	}
-	
+	String resultDirectory = "uchicago/";
+
 	/**
 	 * starts URL test with id url_353
 	 */
 	@Test
+	public void url1TestRun(){
+		final String url = "https://www.journals.uchicago.edu/doi/full/10.1086/685557";
+		final String resultFile = resultDirectory + "UChicagoScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, UChicagoScraper.class, resultFile);
+	}
+	/**
+	 * starts URL test with id url_352
+	 */
+	@Test
 	public void url2TestRun(){
-		final String url = "http://www.journals.uchicago.edu/doi/full/10.1086/685557";
-		final String resultFile = "UChicagoScraperUnitURLTest1.bib";
+		final String url = "https://www.journals.uchicago.edu/doi/abs/10.1086/685556";
+		final String resultFile = resultDirectory + "UChicagoScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, UChicagoScraper.class, resultFile);
 	}
 }

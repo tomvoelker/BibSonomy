@@ -32,6 +32,7 @@ package org.bibsonomy.model.logic.querybuilder;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
@@ -39,6 +40,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  *
  * @author jensi
  */
+@Getter
 public abstract class AbstractSuggestionQueryBuilder<T extends AbstractSuggestionQueryBuilder<?>> {
 	private final String query;
 	private boolean withNonEntityPersons;
@@ -71,19 +73,4 @@ public abstract class AbstractSuggestionQueryBuilder<T extends AbstractSuggestio
 		return getThis();
 	}
 
-	public boolean isWithNonEntityPersons() {
-		return this.withNonEntityPersons;
-	}
-
-	public boolean isWithEntityPersons() {
-		return this.withEntityPersons;
-	}
-
-	public Set<PersonResourceRelationType> getRelationTypes() {
-		return this.relationTypes;
-	}
-
-	public String getQuery() {
-		return this.query;
-	}
 }

@@ -59,7 +59,7 @@ public class JStageScraper extends GenericBibTeXURLScraper implements References
 	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + 
 			". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jstage.jst.go.jp"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<div class=\"abst_p normal\"\\s*>\\s+<br>\\s+(.*)\\s+</div>");
+	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<div class=\"section-title-18\">Abstract</div>\\s*<p.*>([\\s\\S]*?)</p>");
 	private static final Pattern PATTERN_REFERENCES = Pattern.compile("(?s)<ul class=\"mod-list-citation\">(.*)</ul>");
 	
 	@Override
@@ -76,11 +76,12 @@ public class JStageScraper extends GenericBibTeXURLScraper implements References
 	public String getInfo() {
 		return INFO;
 	}
+
 	private static String abstractParser(URL url){
 		try{
 			Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
 			if(m.find()) {
-				return m.group(1);
+				return m.group(1).trim();
 			}
 		} catch (final IOException e) {
 			log.error("error while getting abstract " + url, e);

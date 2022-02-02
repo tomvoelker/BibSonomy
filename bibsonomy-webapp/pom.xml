@@ -176,6 +176,9 @@
 				<configuration>
 					<messageSources>
 						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/custom/messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/themes/bibsonomy_messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/themes/puma_messages</messageSource>
 					</messageSources>
 					<locales>
 						<locale>en</locale>
@@ -743,6 +746,10 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-exporter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>

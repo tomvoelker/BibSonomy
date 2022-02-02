@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.database.managers.chain.group.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.chain.group.GroupChainElement;
@@ -41,10 +43,10 @@ import java.util.List;
 /**
  * Handles retrieval of pending groups.
  *
- * This relies on {@link GroupDatabaseManager#getPendingGroups(String, int, int, DBSession)} and therefore handles two
- * cases:
+ * This relies on {@link GroupDatabaseManager#getPendingGroups(int, int, DBSession)} and {@link GroupDatabaseManager#getPendingGroupsByUsername(String, int, int, DBSession)}.
+ * Therefore handles two cases:
  * 1) If no username is set in the query object, all pending groups will be retrieved
- * 2) If a username is set, only pending groups requestes by this user are retrieved
+ * 2) If a username is set, only pending groups requested by this user are retrieved
  *
  * @author ada
  */
@@ -57,7 +59,11 @@ public class GetPendingGroups extends GroupChainElement {
 	@Override
 	protected List<Group> handle(final QueryAdapter<GroupQuery> param, DBSession session) {
 		final GroupQuery query = param.getQuery();
-		return this.groupDb.getPendingGroups(query.getUserName(), query.getStart(), query.getEnd(), session);
+		if (present(query.getUserName())) {
+			return this.groupDb.getPendingGroupsByUsername(query.getUserName(), query.getStart(), query.getEnd(), session);
+		} else {
+			return this.groupDb.getPendingGroups(query.getStart(), query.getEnd(), session);
+		}
 	}
 
 	@Override

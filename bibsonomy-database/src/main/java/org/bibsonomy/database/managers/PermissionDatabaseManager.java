@@ -588,7 +588,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureApprovalStatusAllowed(final Post<? extends Resource> post, final User loginUser) {
-		if (post.getApproved() && !this.ensureApprovePermission(loginUser)) {
+		if (post.isApproved() && !this.ensureApprovePermission(loginUser)) {
 			throw new AccessDeniedException();
 		}
 	}

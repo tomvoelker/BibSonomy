@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AmazonScraperTest {
+	String resultDirectory = "amazon/";
 	
 	/**
 	 * starts URL test with id url_42
@@ -48,7 +49,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://www.amazon.com/Semantic-Primer-Cooperative-Information-Systems/dp/0262012103/ref=pd_bbs_sr_1?ie=UTF8&amp&s=books&amp&qid=1200485020&amp&sr=1-1";
-		final String resultFile = "AmazonScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 	
@@ -58,7 +59,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://www.amazon.de/gp/product//3827415020/ref=br_fq_2";
-		final String resultFile = "AmazonScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 
@@ -68,7 +69,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url3TestRun(){
 		final String url = "http://www.amazon.ca/Digital-Photography-Book-Scott-Kelby/dp/032147404X/ref=sr_1_3?ie=UTF8&s=books&qid=1201615938&sr=1-3";
-		final String resultFile = "AmazonScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 
@@ -78,7 +79,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url4TestRun(){
 		final String url = "http://www.amazon.fr/Mac-programmation-AppleScript-Dashboard-Core-Animation/dp/2100500767/ref=sr_1_5?ie=UTF8&s=books&qid=1201616015&r=1-5";
-		final String resultFile = "AmazonScraperUnitURLTest4.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 
@@ -88,7 +89,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url5TestRun(){
 		final String url = "http://www.amazon.co.jp/Programming-Collective-Intelligence-Building-Applications/dp/0596529325/ref=sr_1_1/249-7857785-0612358?ie=UTF8&s=gateway&qid=1201616160&sr=8-1";
-		final String resultFile = "AmazonScraperUnitURLTest5.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest5.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 
@@ -98,7 +99,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url6TestRun(){
 		final String url = "http://www.amazon.co.uk/Pro-2008-NET-Platform-Fourth/dp/1590598849/ref=sr_1_1?ie=UTF8&s=books&qid=1201616235&sr=1-1";
-		final String resultFile = "AmazonScraperUnitURLTest6.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest6.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 	
@@ -108,7 +109,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url7TestRun(){
 		final String url = "http://www.amazon.com/Text-Mining-Predictive-Unstructured-Information/dp/0387954333";
-		final String resultFile = "AmazonScraperUnitURLTest7.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest7.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 
@@ -118,7 +119,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url8TestRun(){
 		final String url = "http://www.amazon.de/Web-2-0-Unternehmenspraxis-Grundlagen-Fallstudien/dp/3486585797/ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1214381841&sr=8-1";
-		final String resultFile = "AmazonScraperUnitURLTest8.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest8.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 	
@@ -128,7 +129,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url9TestRun(){
 		final String url = "http://www.amazon.de/gp/product/3426274914/ref=s9_top_bw_i3/278-8327421-8514538?pf_rd_m=A3JWKAKR8XB7XF&pf_rd_s=center-4&pf_rd_r=0QDEYW5TCNM11354JY22&pf_rd_t=101&pf_rd_p=473590033&pf_rd_i=299956";
-		final String resultFile = "AmazonScraperUnitURLTest9.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest9.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 	
@@ -138,7 +139,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url10TestRun(){
 		final String url = "https://www.amazon.de/Sebastian-Deisler-Zur%C3%BCck-Geschichte-Fu%C3%9Fballspielers/dp/3941378287%3FSubscriptionId%3DAKIAJOMMTFWDOHFJSJXQ%26tag%3Dws%26linkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3D3941378287";
-		final String resultFile = "AmazonScraperUnitURLTest10.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest10.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 	/**
@@ -147,7 +148,7 @@ public class AmazonScraperTest {
 	@Test
 	public void url11TestRun(){
 		final String url = "http://www.amazon.de/Computational-Intelligence-Cyber-Security-Models-ebook/dp/B00GXY5FFC/ref=sr_1_1";
-		final String resultFile = "AmazonScraperUnitURLTest11.bib";
+		final String resultFile = resultDirectory + "AmazonScraperUnitURLTest11.bib";
 		assertScraperResult(url, null, AmazonScraper.class, resultFile);
 	}
 }

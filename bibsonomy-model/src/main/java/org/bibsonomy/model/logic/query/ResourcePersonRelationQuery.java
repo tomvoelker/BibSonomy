@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
@@ -37,19 +38,21 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  *
  * @author ada
  */
+@Getter
 public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
 
-	private PersonResourceRelationType relationType;
-
 	private String interhash;
 	private Integer authorIndex;
 	private String personId;
+
+	private PersonResourceRelationType relationType;
 	private PersonResourceRelationOrder order;
 
+	private boolean onlyTheses;
 	private boolean groupByInterhash;
 
 	public ResourcePersonRelationQuery(int start, int end, boolean withPersons, boolean withPosts, boolean withPersonsOfPosts,
@@ -58,6 +61,7 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 									 Integer authorIndex,
 									 String personId,
 									 PersonResourceRelationOrder order,
+									 boolean onlyTheses,
 									 boolean groupByInterhash) {
 
 		super(start, end);
@@ -69,42 +73,8 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 		this.authorIndex = authorIndex;
 		this.personId = personId;
 		this.order = order;
+		this.onlyTheses = onlyTheses;
 		this.groupByInterhash = groupByInterhash;
 	}
 
-	public boolean isWithPersons() {
-		return withPersons;
-	}
-
-	public boolean isWithPosts() {
-		return withPosts;
-	}
-
-	public boolean isWithPersonsOfPosts() {
-		return withPersonsOfPosts;
-	}
-
-	public PersonResourceRelationType getRelationType() {
-		return relationType;
-	}
-
-	public String getInterhash() {
-		return interhash;
-	}
-
-	public Integer getAuthorIndex() {
-		return authorIndex;
-	}
-
-	public String getPersonId() {
-		return personId;
-	}
-
-	public PersonResourceRelationOrder getOrder() {
-		return order;
-	}
-
-	public boolean isGroupByInterhash() {
-		return groupByInterhash;
-	}
 }

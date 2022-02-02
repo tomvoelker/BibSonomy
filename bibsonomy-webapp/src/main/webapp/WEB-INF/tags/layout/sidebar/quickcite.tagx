@@ -1,0 +1,128 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+>
+    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+    <jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
+
+    <div class="sidebar-quick-cite-box">
+
+        <bsform:button
+                titleKey="export.bibtex.title"
+                valueKey="bibtex.actions.bibtex"
+                style="defaultStyle"
+                size="defaultSize"
+                onclick="openModalWithBibTex()" />
+
+        <bsform:button
+                titleKey="export.endnote.record"
+                valueKey="bibtex.actions.endnote"
+                style="defaultStyle"
+                size="defaultSize"
+                onclick="openModalWithEndnote()" />
+
+        <c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+            <!-- only show not SIMPLE citation formats. The simple formats are always shown by default above -->
+            <c:if test="${citation.source!='SIMPLE'}">
+                <c:choose>
+                    <c:when test="${isCommunityPost}">
+                        <c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation, null)}?formatEmbedded=true&amp;items=1" />
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
+                    </c:otherwise>
+                </c:choose>
+
+                <c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
+                <c:set var="shortName" value="${mtl:shorten(name, 25)}" />
+
+                <bsform:button
+                        title="${name}"
+                        value="${shortName}"
+                        style="defaultStyle"
+                        size="defaultSize"
+                        onclick="ajaxLoadLayout('${exportUrl}')" />
+
+            </c:if>
+        </c:forEach>
+
+
+        <div class="sidebar-quick-cite-box-addition-style-form">
+
+            <h5><fmt:message key="sidebar.quickCite.label" /></h5>
+            <c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
+            <span class="select2-fake-container" data-formaturl="${exportUrl}" id="quick-cite-select-dummy">
+                <span class="selection">
+                    <span class="select2-fake-container-selection">
+                        <span class="select2-fake-container-selection-container">
+                            <span class="select2-fake-placeholder">
+                                <fmt:message key="sidebar.quickCite.placeholder" />
+                            </span>
+                        </span>
+                        <span class="select2-fake-arrow">
+                            <b><!--keep me --></b>
+                        </span>
+                    </span>
+                </span>
+            </span>
+
+            <div id="quick-cite-select"><!-- keep me --></div>
+
+            <div class="cust-loader">
+                <div class="loader">
+                    <div class="loader--dot"><!-- KEEP ME --></div>
+                    <div class="loader--dot"><!-- KEEP ME --></div>
+                    <div class="loader--dot"><!-- KEEP ME --></div>
+                    <div class="loader--dot"><!-- KEEP ME --></div>
+                    <div class="loader--dot"><!-- KEEP ME --></div>
+                    <div class="loader--dot"><!-- KEEP ME --></div>
+                    <div class="loader--text"><!-- KEEP ME --></div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="">
+            <jsp:attribute name="modalBody">
+                <div id="sidebar-quick-cite-box-modal-textarea">
+                    <!-- keep me -->
+                </div>
+            </jsp:attribute>
+
+            <jsp:attribute name="modalFooter">
+                <bsform:button
+                        id="sidebar-quick-cite-box-modal-clipboard-button"
+                        size="defaultSize"
+                        style="defaultStyle"
+                        valueKey="export.copyToLocalClipboard"
+                        icon="clipboard"/>
+
+                <fmt:message key="box.close" var="modalCloseText"/>
+                <bsform:button
+                        size="defaultSize"
+                        style="secondary"
+                        dataDismiss="modal"
+                        title="${modalCloseText}"
+                        value="${modalCloseText}"
+                />
+
+            </jsp:attribute>
+        </bsold:modal>
+
+        <div class="hidden" id="sidebar-quick-cite-box-endnote">
+            <div class="white-space-pre"><export:endnote post="${post}" escapeXml="${true}" /></div>
+        </div>
+
+        <div class="hidden" id="sidebar-quick-cite-box-bibtex">
+            <div class="white-space-pre"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></div>
+        </div>
+
+    </div>
+
+</jsp:root>

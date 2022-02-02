@@ -29,11 +29,16 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Bean for Concept Sites
  * 
  * @author Michael Wagner
  */
+@Getter
+@Setter
 public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the user whose resources are requested */
@@ -53,40 +58,5 @@ public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	public String getRequestedUser() {
 		return this.requestedUser;
 	}
-
-	/**
-	 * @param requestedUser the name of the user whose resources are requested
-	 */
-	@Override
-	public void setRequestedUser(String requestedUser) {
-		this.requestedUser = requestedUser;
-	}
 	
-	/**	
-	 * @return the name of the group that resources are requested
-	 */
-	public String getRequestedGroup() {
-		return this.requestedGroup;
-	}
-
-	/**
-	 * @param requestedGroup the group
-	 */
-	public void setRequestedGroup(String requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
-
-	/**
-	 * @return the concepts
-	 */
-	public ConceptsCommand getConcepts() {
-		return this.concepts;
-	}
-
-	/**
-	 * @param concepts
-	 */
-	public void setConcepts(ConceptsCommand concepts) {
-		this.concepts = concepts;
-	}	
 }

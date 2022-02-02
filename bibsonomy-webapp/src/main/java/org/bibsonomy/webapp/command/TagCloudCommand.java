@@ -35,6 +35,8 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.model.Tag;
@@ -44,25 +46,31 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Dominik Benz
  */
+@Getter
+@Setter
 public class TagCloudCommand extends BaseCommand {
+	/** list of contained tags */
 	private List<Tag> tags = new ArrayList<Tag>();
-	private int minFreq = 0; // threshold which tags to display
-	private int maxFreq = 100; // maximum occurrence frequency of all tags
-	private int maxCount = 0; // used for set the value via URL
+
+	/** threshold which tags to display */
+	private int minFreq = 0;
+
+	/** maximum occurrence frequency of all tags */
+	private int maxFreq = 100;
+
+	/**  used for set the value via URL */
+	private int maxCount = 0;
+
+	/** display mode */
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
+
+	/** sorting mode */
 	private TagCloudSort sort = TagCloudSort.ALPHA;
 	private int maxTagCount = Integer.MIN_VALUE;
 	private int minTagCount = Integer.MAX_VALUE;
 	private int maxUserTagCount = Integer.MIN_VALUE;
 	private int minUserTagCount = Integer.MAX_VALUE;
 	
-	/**
-	 * @return the maxUserTagCount
-	 */
-	public int getMaxUserTagCount() {
-		return this.maxUserTagCount;
-	}
-
 	/**
 	 * find the max Tag Count
 	 */
@@ -86,109 +94,11 @@ public class TagCloudCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the maxTagCount
-	 */
-	public int getMaxTagCount() {
-		return this.maxTagCount;
-	}
-
-	/**
-	 * @return the list of contained tags
-	 */
-	public List<Tag> getTags() {
-		return this.tags;
-	}
-
-	/**
-	 * @return the minTagCount
-	 */
-	public int getMinTagCount() {
-		return this.minTagCount;
-	}
-
-	/**
-	 * @return the minUserTagCount
-	 */
-	public int getMinUserTagCount() {
-		return this.minUserTagCount;
-	}
-
-	/**
 	 * @param tags a list of tags
 	 */
 	public void setTags(final List<Tag> tags) {
 		this.tags = tags;
 		calculateMinMaxTagCount();
-	}
-
-	/**
-	 * @return minimum occurrence frequency
-	 */
-	public int getMinFreq() {
-		return this.minFreq;
-	}
-
-	/**
-	 * @param minFreq minimum occurrence frequency
-	 */
-	public void setMinFreq(final int minFreq) {
-		this.minFreq = minFreq;
-	}
-
-	/**
-	 * @return maximum occurrence frequency
-	 */
-	public int getMaxFreq() {
-		return this.maxFreq;
-	}
-
-	/**
-	 * @param maxFreq the maximum occurrence frequency
-	 */
-	public void setMaxFreq(final int maxFreq) {
-		this.maxFreq = maxFreq;
-	}
-
-	/**
-	 * @return the display mode
-	 */
-	public TagCloudStyle getStyle() {
-		return this.style;
-	}
-
-	/**
-	 * @param mode the display mode
-	 */
-	public void setStyle(final TagCloudStyle mode) {
-		this.style = mode;
-	}
-
-	/**
-	 * @return the sorting mode
-	 */
-	public TagCloudSort getSort() {
-		return this.sort;
-	}
-
-	/**
-	 * @param sort the sorting mode
-	 */
-	public void setSort(final TagCloudSort sort) {
-		this.sort = sort;
-	}
-
-	/**
-	 * @param maxCount the maxCount to set
-	 */
-	public void setMaxCount(final int maxCount) {
-		this.maxCount = maxCount;
-	}
-
-	/**
-	 * @return the tagboxMaxCount
-	 */
-	public int getMaxCount() {
-		return maxCount;
 	}
 		
 }

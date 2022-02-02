@@ -73,7 +73,7 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 			doi = getDoiFromWebPage(scrapingContext.getUrl());
 		}
 		
-		if(present(doi)) {
+		if (present(doi)) {
 			scrapingContext.setSelectedText(doi);
 		}
 		
@@ -88,13 +88,13 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 			if (present(doi)) {
 				return doi;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ScrapingException(e);
 		}
 		return null;
 	}
 	
-	protected static String getDoiFromURL(URL url) throws ScrapingException {
+	protected static String getDoiFromURL(final URL url) {
 		final String doi = DOIUtils.extractDOI(url.toString());
 		if (present(doi)) {
 			return cleanDoiFromURL(doi);			
@@ -107,7 +107,7 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 	 * @return
 	 * @throws ScrapingException
 	 */
-	protected String getDoiFromMetaData(URL url) throws ScrapingException{
+	protected String getDoiFromMetaData(final URL url) throws ScrapingException{
 		try {
 			final String content = WebUtils.getContentAsString(url);
 
@@ -157,7 +157,7 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 	 */
 	@Override
 	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
+		return Collections.singletonList(this);
 	}
 
 	/* (non-Javadoc)

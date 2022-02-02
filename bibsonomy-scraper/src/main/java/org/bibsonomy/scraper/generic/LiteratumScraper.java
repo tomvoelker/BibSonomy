@@ -33,6 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +41,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -59,11 +61,9 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(LiteratumScraper.class);
 
 	private static final String BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
-	private static final String BIBTEX_PARAMS = "?include=abs&format=bibtex&direct=on&doi=";
-	// private static final String BIBTEX_PARAMS = "?downloadFileName=f&include=cit&format=bibtex&direct=on&doi=";
 
 	// to extract the DOI from the URL
-	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi(/?(abs|full|pdf|pdfplus))?/(10\\.\\d+\\/[^\\s\"'}]+)?$");
+	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi(/?(abs|full|pdf|pdfplus|book))?/(10\\.\\d+/[^\\s\"'}]+)?$");
 	private static final int PATH_ABSTRACT_PATTERN_DOI_GROUP = 3;
 	// to extract the DOI from the query
 	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=(.+?)(&.+)?$");
@@ -88,13 +88,16 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 
 		if (present(doi)) {
 			try {
-				final List<NameValuePair> postContent = this.getPostContent(doi);
-				final StringBuilder citUrl = new StringBuilder(url.getProtocol() + "://" + url.getHost() + BIBTEX_DOWNLOAD_PATH);
-				if (!present(postContent)) {
-					citUrl.append(BIBTEX_PARAMS + UrlUtils.safeURIEncode(doi));	
-				}
+				final List<NameValuePair> downloadData = this.getData(doi);
+				final StringBuilder citUrl = new StringBuilder("https://" + url.getHost() + BIBTEX_DOWNLOAD_PATH);
 				final String cookies = getCookies(url);
-				final String bibtex = WebUtils.getContentAsString(citUrl.toString(), cookies, postContent, null);
+				String bibtex;
+				if (this.doPost()) {
+					bibtex = WebUtils.getContentAsString(citUrl.toString(), cookies, downloadData, null);
+				}else {
+					citUrl.append(constructDownloadQuery(downloadData));
+					bibtex = WebUtils.getContentAsString(citUrl.toString(), cookies, null, null);
+				}
 
 				if (present(bibtex)) {
 					// download and add abstract, if necessary
@@ -144,7 +147,6 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 
 	/**
 	 * Override this method if a cookie must be retrieved before downloading BibTeX
-	 * @param url
 	 * @return <code>true</code> if cookie shall be downloaded
 	 */
 	protected boolean requiresCookie() {
@@ -162,12 +164,24 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 	}
 
 	/**
-	 * Override this if a HTTP POST request shall be made
+	 * The Parameter, which should be used for a post or get request
 	 * @param doi
-	 * @return the string representing the content of the POST request's body
+	 * @return parameter which shoudld used for a get or post request
 	 */
-	protected List<NameValuePair> getPostContent(final String doi) {
-		return null;
+	protected List<NameValuePair> getData(final String doi) {
+		ArrayList<NameValuePair> data = new ArrayList<>();
+		data.add(new BasicNameValuePair("doi", doi));
+		data.add(new BasicNameValuePair("format", "bibtex"));
+		data.add(new BasicNameValuePair("include", "abs"));
+		data.add(new BasicNameValuePair("submit", "Download"));
+		return data;
+	}
+
+	/**
+	 * @return if a POST-request or a GET-Request should be made
+	 */
+	protected boolean doPost(){
+		return false;
 	}
 
 	/**
@@ -186,6 +200,20 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 			return UrlUtils.safeURIDecode(m2.group(QUERY_DOI_PATTERN_DOI_GROUP));
 		}
 		return null;
+	}
+
+	/**
+	 * Constructs a query for an url with the params
+	 * @param params of the query
+	 * @return
+	 */
+	private static String constructDownloadQuery(List<NameValuePair> params){
+		String query = "?";
+		for (NameValuePair param : params) {
+			query += param.getName() + "=" + UrlUtils.safeURIEncode(param.getValue()) + "&";
+		}
+		query = query.substring(0, query.length()-1);
+		return query;
 	}
 
 	/**

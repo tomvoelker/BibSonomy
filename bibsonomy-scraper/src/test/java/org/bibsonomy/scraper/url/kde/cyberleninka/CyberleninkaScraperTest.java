@@ -40,12 +40,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CyberleninkaScraperTest {
+	String resultDirectory = "cyberleninka/";
 
 	/**
 	 * starts URL test with id url_368
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii", CyberleninkaScraper.class, "CyberleninkaScraperUnitURLTest1.bib");
+		final String url = "http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii";
+		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
 	}
 }

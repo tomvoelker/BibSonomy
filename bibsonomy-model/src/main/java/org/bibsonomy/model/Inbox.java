@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -36,23 +39,11 @@ import java.io.Serializable;
  * 
  * @author sdo
  */
+@Getter
+@Setter
 public class Inbox implements Serializable {
 	private static final long serialVersionUID = 1875652508506761506L;
 	
 	private int numPosts;
 
-	/**
-	 * @return the numPosts
-	 */
-	public int getNumPosts() {
-		return this.numPosts;
-	}
-
-	/**
-	 * @param numPosts the numPosts to set
-	 */
-	public void setNumPosts(int numPosts) {
-		this.numPosts = numPosts;
-	}
-	
 }

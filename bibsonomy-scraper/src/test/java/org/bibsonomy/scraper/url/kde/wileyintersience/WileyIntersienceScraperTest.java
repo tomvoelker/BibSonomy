@@ -43,15 +43,20 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class WileyIntersienceScraperTest {
+	String resultDirectory = "wileyintersience/";
 
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest1.bib");
+		final String url = "https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest1.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 	}
 
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest2.bib");
+		final String url = "https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest2.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 	}
 	
 	/**
@@ -59,7 +64,10 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2575.2007.00275.x", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest3.bib");
+		final String url = "https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2575.2007.00275.x";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest3.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+
 	}
 	
 	/**
@@ -67,27 +75,35 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertScraperResult("https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest4.bib");
-	}	
+		final String url = "https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest4.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
 	
 	/**
 	 * starts URL test with id url_189
 	 */
 	@Test
 	public void url5TestRun(){
-		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest5.bib");
+		final String url = "https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest5.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 
 	}
 
 	@Test
 	public void url6TestRun(){
-		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2018GL079362", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest6.bib");
+		final String url = "https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2018GL079362";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest6.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 
 	}
 
 	@Test
 	public void url7TestRun(){
-		assertScraperResult("https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1740-9713.2018.01209.x", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest7.bib");
+		final String url = "https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1740-9713.2018.01209.x";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest7.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 
 	}
 

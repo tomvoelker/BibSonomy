@@ -40,20 +40,21 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JamaNetScraperTest {
+	String resultDirectory = "jamanet/";
 	/**
 	 * starts URL test with id url_358
 	 */
 	@Test
 	public void url1TestRun(){
 		final String url = "http://jamanetwork.com/journals/jama/fullarticle/2469891";
-		final String resultFile = "JamaNetworkScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "JamaNetworkScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, JamaNetScraper.class, resultFile);
 	}
 	
 	@Test
 	public void url2TestRun(){
 		final String url = "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2767009";
-		final String resultFile = "JamaNetworkScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory +  "JamaNetworkScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, JamaNetScraper.class, resultFile);
 	}
 }

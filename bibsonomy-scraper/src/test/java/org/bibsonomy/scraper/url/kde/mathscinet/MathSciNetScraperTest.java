@@ -42,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class MathSciNetScraperTest {
+	String resultDirectory = "mathscinet/";
 
 	/**
 	 * starts URL test with id url_20
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://www.ams.org/mathscinet/search/publdoc.html?pg1=IID&s1=198275&r=1", MathSciNetScraper.class, "MathSciNetScraperUnitURLTest1.bib");
+		final String url = "http://www.ams.org/mathscinet/search/publdoc.html?pg1=IID&s1=198275&r=1";
+		final String resultFile = resultDirectory + "MathSciNetScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, MathSciNetScraper.class, resultFile);
 	}
 
 	/**
@@ -56,7 +59,9 @@ public class MathSciNetScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://www.ams.org/mathscinet/search/publications.html?fmt=bibtex&pg1=MR&s1=2305904", MathSciNetScraper.class, "MathSciNetScraperUnitURLTest2.bib");
+		final String url = "http://www.ams.org/mathscinet/search/publications.html?fmt=bibtex&pg1=MR&s1=2305904";
+		final String resultFile = resultDirectory + "MathSciNetScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, MathSciNetScraper.class, resultFile);
 	}
 
 }

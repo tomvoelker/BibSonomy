@@ -36,7 +36,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -143,8 +142,8 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
-		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
-		if (userSettings.getIsMaxCount()) {
+		userSettings.setMaxCount(commandSettings.isMaxCount());
+		if (userSettings.isMaxCount()) {
 			userSettings.setTagboxMaxCount(command.getChangeTo());
 		} else {
 			userSettings.setTagboxMinfreq(command.getChangeTo());

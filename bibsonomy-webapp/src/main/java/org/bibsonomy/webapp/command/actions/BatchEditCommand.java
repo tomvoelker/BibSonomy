@@ -32,6 +32,8 @@ package org.bibsonomy.webapp.command.actions;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.util.PostChangeInfo;
@@ -41,6 +43,8 @@ import org.bibsonomy.webapp.util.PostChangeInfo;
  * @author pbu
  * @author dzo
  */
+@Getter
+@Setter
 public class BatchEditCommand extends TagResourceViewCommand implements GroupingCommand {
 
 	/**
@@ -98,103 +102,6 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 		this.groups = groups;
 	}
 
-	/**
-	 * @return the tags
-	 */
-	public String getTags() {
-		return this.tags;
-	}
-
-	/**
-	 * @param tags the tags to set
-	 */
-	public void setTags(final String tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @return the posts
-	 */
-	public Map<String, PostChangeInfo> getPosts() {
-		return this.posts;
-	}
-
-	/**
-	 * @param posts the posts to set
-	 */
-	public void setPosts(final Map<String, PostChangeInfo> posts) {
-		this.posts = posts;
-	}
-
-	/**
-	 * @return the action
-	 */
-	public List<Integer> getAction() {
-		return this.action;
-	}
-
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(final List<Integer> action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the editBeforeImport
-	 */
-	public boolean isEditBeforeImport() {
-		return this.editBeforeImport;
-	}
-
-	/**
-	 * @param editBeforeImport the editBeforeImport to set
-	 */
-	public void setEditBeforeImport(final boolean editBeforeImport) {
-		this.editBeforeImport = editBeforeImport;
-	}
-
-	/**
-	 * @return the overwrite
-	 */
-	public boolean isOverwrite() {
-		return this.overwrite;
-	}
-
-	/**
-	 * @param overwrite the overwrite to set
-	 */
-	public void setOverwrite(final boolean overwrite) {
-		this.overwrite = overwrite;
-	}
-
-	/**
-	 * @return the directEdit
-	 */
-	public boolean isDirectEdit() {
-		return this.directEdit;
-	}
-
-	/**
-	 * @param directEdit the directEdit to set
-	 */
-	public void setDirectEdit(final boolean directEdit) {
-		this.directEdit = directEdit;
-	}
-
-	/**
-	 * @return the updateExistingPost
-	 */
-	public boolean isUpdateExistingPost() {
-		return this.updateExistingPost;
-	}
-
-	/**
-	 * @param updateExistingPost the updateExistingPost to set
-	 */
-	public void setUpdateExistingPost(final boolean updateExistingPost) {
-		this.updateExistingPost = updateExistingPost;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.command.GroupingCommand#getAbstractGrouping()

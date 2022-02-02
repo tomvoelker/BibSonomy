@@ -32,7 +32,6 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -113,7 +112,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		command.setUser(loginUser);
 
 		// used to set the user specific value of maxCount/minFreq
-		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
+		command.setChangeTo((loginUser.getSettings().isMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 
 		// check whether the user is a group
 		// TODO: unused ?
@@ -142,8 +141,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * Get pending requested groups
 		 */
-		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE).
-						userName(loggedInUserName).pending(true).build();
+		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE)
+				.userName(loggedInUserName).pending(true).build();
 		command.setPendingRequestedgroups(this.logic.getGroups(groupQuery));
 
 		/*

@@ -32,11 +32,15 @@ package org.bibsonomy.model.sync;
 import java.net.URI;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
  */
+@Getter
+@Setter
 public class SynchronizationData {
 
 	private URI service;
@@ -46,108 +50,6 @@ public class SynchronizationData {
 	private String deviceInfo;
 	private String deviceId;
 	private String info;
-	
-	/**
-	 * @return the lastSyncDate
-	 */
-	public Date getLastSyncDate() {
-		return this.lastSyncDate;
-	}
-	
-	/**
-	 * @param lastSyncDate the lastSyncDate to set
-	 */
-	public void setLastSyncDate(final Date lastSyncDate) {
-		this.lastSyncDate = lastSyncDate;
-	}
-	
-	/**
-	 * @return the status
-	 */
-	public SynchronizationStatus getStatus() {
-		return this.status;
-	}
-	
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(final SynchronizationStatus status) {
-		this.status = status;
-	}
-	
-	/**
-	 * 
-	 * @return URI
-	 */
-	public URI getService() {
-		return this.service;
-	}
-	
-	/**
-	 * 
-	 * @param service
-	 */
-	public void setService(final URI service) {
-		this.service = service;
-	}
-	
-	/**
-	 * 
-	 * @return class of the resource
-	 */
-	public Class<? extends Resource> getResourceType() {
-		return this.resourceType;
-	}
-	
-	/**
-	 * 
-	 * @param resourceType
-	 */
-	public void setResourceType(final Class<? extends Resource> resourceType) {
-		this.resourceType = resourceType;
-	}
-	
-	/**
-	 * @return the info
-	 */
-	public String getInfo() {
-		return this.info;
-	}
-	
-	/**
-	 * @param info the info to set
-	 */
-	public void setInfo(final String info) {
-		this.info = info;
-	}
-	
-	/**
-	 * @return the deviceInfo
-	 */
-	public String getDeviceInfo() {
-		return this.deviceInfo;
-	}
-	
-	/**
-	 * @param deviceInfo the deviceInfo to set
-	 */
-	public void setDeviceInfo(final String deviceInfo) {
-		this.deviceInfo = deviceInfo;
-	}
-	
-	/**
-	 * @return the deviceId
-	 */
-	public String getDeviceId() {
-		return this.deviceId;
-	}
-	
-	/**
-	 * @param deviceId the deviceId to set
-	 */
-	public void setDeviceId(final String deviceId) {
-		this.deviceId = deviceId;
-	}
 	
 	@Override
 	public String toString() {

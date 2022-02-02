@@ -44,6 +44,7 @@
 			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href='${resdir}/typeahead.js/css/typeahead.css'/>
 			<publication:feeds path="${relativeUrlGenerator.getPublicationUrl(publication)}" />
+			<script type="text/javascript" src="${resdir}/javascript/quickcite.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">

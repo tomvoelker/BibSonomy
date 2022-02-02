@@ -40,20 +40,25 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class RSCScraperTest {
+	String resultDirectory = "rsc/";
 
 	/**
 	 * starts URL test with id url_223
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c", RSCScraper.class, "RSCScraperUnitTest1.bib");
+		final String url = "http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c";
+		final String resultFile = resultDirectory + "RSCScraperUnitTest1.bib";
+		assertScraperResult(url, RSCScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_247
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&utm_content=Google+Reader", RSCScraper.class, "RSCScraperUnitTest2.bib");
+		final String url = "http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&utm_content=Google+Reader";
+		final String resultFile = resultDirectory + "RSCScraperUnitTest2.bib";
+		assertScraperResult(url, RSCScraper.class, resultFile);
 	}
 
 }

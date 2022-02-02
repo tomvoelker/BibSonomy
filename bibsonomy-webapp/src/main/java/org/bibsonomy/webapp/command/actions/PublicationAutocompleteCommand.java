@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 /**
@@ -36,21 +38,9 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
  *
  * @author dzo
  */
+@Getter
+@Setter
 public class PublicationAutocompleteCommand extends SimpleResourceViewCommand {
 	
 	private String search;
-
-	/**
-	 * @return the search
-	 */
-	public String getSearch() {
-		return this.search;
-	}
-
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(String search) {
-		this.search = search;
-	}
 }

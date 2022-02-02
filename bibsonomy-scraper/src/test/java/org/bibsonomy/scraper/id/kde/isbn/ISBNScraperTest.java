@@ -43,6 +43,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ISBNScraperTest {
+	String resultDirectory = "isbn/";
 
 	/**
 	 * starts URL test with id url_166
@@ -50,7 +51,7 @@ public class ISBNScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String selection = "978-3404201600";
-		final String resultFile = "ISBNScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ISBNScraperUnitURLTest1.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
@@ -60,7 +61,7 @@ public class ISBNScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String selection = "9780387485300";
-		final String resultFile = "ISBNScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "ISBNScraperUnitURLTest2.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
@@ -71,7 +72,7 @@ public class ISBNScraperTest {
 	@Test
 	public void url3TestRun(){
 		final String selection = "0025-5858";
-		final String resultFile = "ISSNScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ISSNScraperUnitURLTest1.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
@@ -81,7 +82,7 @@ public class ISBNScraperTest {
 	@Test
 	public void url4TestRun(){
 		final String selection = "9783921568705";
-		final String resultFile = "ISSNScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "ISSNScraperUnitURLTest2.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 

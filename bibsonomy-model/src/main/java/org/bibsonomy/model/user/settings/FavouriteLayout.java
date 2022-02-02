@@ -29,12 +29,14 @@
  */
 package org.bibsonomy.model.user.settings;
 
+import lombok.Getter;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.enums.SimpleExportLayout;
 
 /**
  * @author jp
  */
+@Getter
 public class FavouriteLayout {
 	private FavouriteLayoutSource source;
 	private String style;
@@ -71,27 +73,6 @@ public class FavouriteLayout {
 				this.displayName = style.substring(style.indexOf('_', style.indexOf('_')+1)+1, style.toLowerCase().indexOf(".csl")).trim();
 			}
 		}
-	}
-	
-	/**
-	 * @return the source
-	 */
-	public FavouriteLayoutSource getSource() {
-		return this.source;
-	}
-	
-	/**
-	 * @return the displayName
-	 */
-	public String getDisplayName() {
-		return this.displayName;
-	}
-	
-	/**
-	 * @return the style
-	 */
-	public String getStyle() {
-		return this.style;
 	}
 	
 	/* (non-Javadoc)

@@ -41,14 +41,36 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class PharmacognosyResearchScraperTest {
+	String resultDirectory = "pharmacognosyresearch/";
 	
 	/**
 	 * starts URL test with id url_251
 	 */
 	@Test
-	public void urlTestRun(){
-		final String url = "http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6";
-		final String resultFile = "PharmacognosyResearchScraperUnitURLTest1.bib";
+	public void url1TestRun(){
+		final String url = "https://www.phcogres.com/article/2009/1/4/nil-1";
+		final String resultFile = resultDirectory + "PharmacognosyResearchScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://www.phcogres.com/article/2021/13/4/105530pres13410";
+		final String resultFile = resultDirectory + "PharmacognosyResearchScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://phcogres.com/article/2016/8/5/1041030974-8490178646";
+		final String resultFile = resultDirectory + "PharmacognosyResearchScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://phcogres.com/article/2009/1/6/nil-3";
+		final String resultFile = resultDirectory + "PharmacognosyResearchScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, PharmacognosyResearchScraper.class, resultFile);
 	}
 }

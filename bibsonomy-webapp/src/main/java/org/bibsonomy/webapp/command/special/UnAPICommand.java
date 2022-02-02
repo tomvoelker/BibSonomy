@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.special;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -39,34 +41,11 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author rja
  */
+@Getter
+@Setter
 public class UnAPICommand extends BaseCommand {
-
+	/** The requested id of the post. */
 	private String id;
+	/** the format the post should be returned */
 	private String format;
-	
-	/**
-	 * @return The requested id of the post.
-	 */
-	public String getId() {
-		return this.id;
-	}
-	/** 
-	 * @param id - the id of the post.
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	/**
-	 * @return The requested format.
-	 */
-	public String getFormat() {
-		return this.format;
-	}
-	/**
-	 * @param format - the format the post should be returned.
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
-	
 }

@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.util.data.Data;
 
 /**
@@ -36,6 +38,7 @@ import org.bibsonomy.model.util.data.Data;
  * 
  * XXX: find solution without subclassing bibtex
  */
+@Getter
 public final class ImportResource extends BibTex {
 
 	private static final long serialVersionUID = -7090432859414957747L;
@@ -76,27 +79,6 @@ public final class ImportResource extends BibTex {
 
 	@Override
 	public void recalculateHashes() {
-	}
-
-	/**
-	 * @return the data
-	 */
-	public Data getData() {
-		return this.data;
-	}
-
-	/**
-	 * @return the alreadyParsed
-	 */
-	public boolean isAlreadyParsed() {
-		return this.alreadyParsed;
-	}
-
-	/**
-	 * @return the resource
-	 */
-	public BibTex getResource() {
-		return this.resource;
 	}
 
 }

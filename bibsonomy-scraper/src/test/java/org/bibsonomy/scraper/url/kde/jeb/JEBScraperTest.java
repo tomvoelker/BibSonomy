@@ -42,18 +42,20 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JEBScraperTest {
+	String resultDirectory = "jeb/";
 
 	@Test
 	public void url1TestRun(){
-		final String url = "http://jeb.biologists.org/content/219/19/3137";
-		final String resultFile = "JEBScraperUnitURLTest1.bib";
+		final String url = "https://journals.biologists.com/jeb/article/219/19/3137/15588/Ontogeny-of-learning-walks-and-the-acquisition-of";
+		final String resultFile = resultDirectory + "JEBScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, JEBScraper.class, resultFile);
 	}
 	
 	@Test
 	public void url2TestRun(){
-		final String url = "http://jeb.biologists.org/content/early/2017/04/05/jeb.140509";
-		final String resultFile = "JEBScraperUnitURLTest2.bib";
+		final String url = "https://journals.biologists.com/jeb/article/220/12/2236/34091/Interactive-effects-of-oxygen-carbon-dioxide-and";
+		final String resultFile = resultDirectory + "JEBScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, JEBScraper.class, resultFile);
 	}
+
 }
