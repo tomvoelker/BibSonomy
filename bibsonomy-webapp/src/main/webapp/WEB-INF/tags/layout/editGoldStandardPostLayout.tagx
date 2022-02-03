@@ -64,6 +64,10 @@
 				<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 			</c:if>
 
+			<!-- plugin for multi select form -->
+			<script type='text/javascript' src='/resources/bootstrap/plugins/bootstrap-select/js/bootstrap-select.min.js'><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='/resources/bootstrap/plugins/bootstrap-select/css/bootstrap-select.min.css'/>
+
             <!--+
 				| JAVASCRIPT FOR TAG RECOMMENDATION
 				+-->

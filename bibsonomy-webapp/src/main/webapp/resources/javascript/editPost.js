@@ -25,8 +25,8 @@ $(function() {
 	//only add this listener one time
 	$("#recommendationReloadButton").click(reloadRecommendation);
 
-	// init preset tags for groups
-	initSentToGroupBox();
+	// init group options
+	initGroupOptions();
 });
 
 function enableHandler() {
@@ -895,13 +895,16 @@ function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
 	pic.attr('src', pic.attr("src") == pictureActive ? pictureInactive : pictureActive);
 }
 
-function initSentToGroupBox() {
-	$('#sentToGroupSelect').children('option:not(.option-placeholder)').click(function () {
-		togglePresetTagsPanel($(this).val());
+function initGroupOptions() {
+	// Relevant for group selection
+	$('#relevantGroupsSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+		showTagSets($(this));
 	});
 
-	$('.preset-tags-close').click(function () {
-		togglePresetTagsPanel($(this).data('close'));
+	// Sent to group selection
+	$('#sentToGroupSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+		var groupId = $(this).find('option').eq(clickedIndex).val();
+		togglePresetTagsPanel(groupId, isSelected);
 	});
 
 	$('.preset-tags-list').children('li').click(function () {
@@ -923,11 +926,19 @@ function initSentToGroupBox() {
 	});
 }
 
-function togglePresetTagsPanel(groupId) {
+function togglePresetTagsPanel(groupId, isSelected) {
 	var panel = $('#presetTagsPanel-' + groupId);
-	var input = $('#presetTagsInput-' + groupId);
-	input.val('');
-	panel.toggleClass('hidden');
+	// check if panel exists
+	if (panel.length) {
+		// empty potential earlier input
+		var input = $('#presetTagsInput-' + groupId);
+		input.val('');
+		if (isSelected) {
+			panel.show(0);
+		} else {
+			panel.hide(0);
+		}
+	}
 }
 
 function preparePresetTagsForm() {
@@ -940,19 +951,20 @@ function preparePresetTagsForm() {
 		var sysTags = createSysTagsForGroup(groupId, tags);
 
 		presetTags.push.apply(presetTags, sysTags);
-
-		// add for:group system tag to tag list
-		addForGroupTag(groupId);
 	});
 
 	// set group preset tag list
-	$('#presetTagsForGroups').val(presetTags.join(' '));
+	if(presetTags.length) {
+		$('#presetTagsForGroups').val(presetTags.join(' '));
+	}
 }
 
 function createSysTagsForGroup(groupId, tags) {
 	var sysTags = [];
 	tags.forEach(function (tag) {
-		sysTags.push('sys:group:' + groupId + ':' + tag);
+		if (tag) {
+			sysTags.push('sys:group:' + groupId + ':' + tag);
+		}
 	})
 
 	return sysTags;

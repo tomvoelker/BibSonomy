@@ -23,10 +23,14 @@
 		</label>
 
 		<div class="col-sm-${inputColSpan}">
-			<select id="sentToGroupSelect" class="form-control">
-				<option class="option-placeholder" value=""><fmt:message key="form.input.select"/></option>
+			<fmt:message var="selectPlaceholder" key="form.input.select"/>
+			<select id="sentToGroupSelect" name="sentToGroups" class="selectpicker show-tick form-control"
+					title="${selectPlaceholder}" iconBase="fa" data-tickIcon="fa-check" multiple="multiple">
 				<c:forEach items="${groups}" var="group">
-					<option value="${group.name}">${group.name}</option>
+					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
+					<option data-content="${displayName}" value="${group.name}">
+						${displayName}
+					</option>
 				</c:forEach>
 			</select>
 			<input type="hidden" id="presetTagsForGroups" name="presetTagsForGroups"/>
@@ -34,9 +38,11 @@
 		</div>
 
 		<c:forEach items="${groups}" var="group">
-			<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
-				<post:groupPresetTagBox group="${group}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
-			</div>
+			<c:if test="${not empty group.presetTags}">
+				<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
+					<post:groupPresetTagBox group="${group}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
+				</div>
+			</c:if>
 		</c:forEach>
 	</div>
 </jsp:root>

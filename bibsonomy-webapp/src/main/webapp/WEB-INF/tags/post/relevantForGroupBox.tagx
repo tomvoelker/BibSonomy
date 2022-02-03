@@ -23,11 +23,16 @@
 	
 		<div class="col-sm-${inputColSpan}">
 			<!-- select box for "other" groups -->
-	    	<form:select cssClass="form-control" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
-	      		<fmt:message var="pleaseselect" key="form.input.select"/>
-				<form:option value="" label="${pleaseselect}"/>
-	   	  		<form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
-	       	</form:select>
+			<fmt:message var="selectPlaceholder" key="form.input.select"/>
+			<select id="relevantGroupsSelect" name="relevantGroups" class="selectpicker show-tick form-control"
+					title="${selectPlaceholder}" iconBase="fa" data-tickIcon="fa-check" multiple="multiple">
+				<c:forEach items="${groups}" var="group">
+					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
+					<option data-content="${displayName}" value="${group.name}">
+						${displayName}
+					</option>
+				</c:forEach>
+			</select>
 				
 	       	<p class="help-block"><fmt:message key="post.resource.relevant"/></p>
 		</div>

@@ -102,7 +102,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private List<String> relevantGroups;
 
-	private List<String> forGroups;
+	private List<String> sentToGroups;
 
 	private String presetTagsForGroups;
 
