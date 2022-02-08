@@ -243,8 +243,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
-		 * set user, init post groups, relevant for tags (FIXME: candidate for
-		 * system tags) and recommender
+		 * set user, init post groups, group system tags and recommender
 		 */
 		this.initPost(command, post, postOwner);
 
@@ -444,13 +443,22 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		final String postOwnerName = postOwner.getName();
 
-		// editing of a group post - check if the user is in the group and has an appropriate role
+		// editing of a group post
 		if (present(command.getGroupUser())) {
 			final Group group = this.logic.getGroupDetails(command.getGroupUser().getName(), false);
 			if (present(group)) {
+				// check if the user is in the group and has an appropriate role
 				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUserName);
 				if (!(present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR)))) {
 					throw new AccessDeniedException("You have no rights to update this post");
+				}
+
+				// check if the group requires preset tags to be selected
+				final List<Tag> groupPresetTags = group.getPresetTags();
+				if (present(groupPresetTags) && Collections.disjoint(groupPresetTags, post.getTags())) {
+					// no preset tags selected for the group
+					this.errors.reject("error.post.group.presetTags", this.urlGenerator.getGroupSettingsUrlByGroupName(group.getName(), 2, null));
+					return this.getEditPostView(command, context.getLoginUser());
 				}
 			}
 		}

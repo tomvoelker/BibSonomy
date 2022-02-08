@@ -51,7 +51,8 @@
 			</bsform:fieldset>
 
 			<!-- group options -->
-			<c:if test="${not empty postOwner.groups}">
+			<c:set var="isGroupPost" value="${not empty postOwner and postOwner ne command.context.loginUser}" />
+			<c:if test="${not empty postOwner.groups and not isGroupPost}">
 				<c:set var="groups" value="${mtl:filterGroups(postOwner.groups, false)}" />
 				<a name="group-options"><!-- keep me --></a>
 				<bsform:fieldset legendKey="post.resource.groups.options">
