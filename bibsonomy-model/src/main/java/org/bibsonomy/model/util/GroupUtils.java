@@ -30,10 +30,12 @@
 package org.bibsonomy.model.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -344,5 +346,32 @@ public class GroupUtils {
 		}
 
 		return presetTagsMap;
+	}
+
+	public static Set<Tag> extractPresetTagsForGroup(final Group group, final Set<Tag> tags) {
+		final String groupname = group.getName();
+		final List<Tag> allowedTags = group.getPresetTags();
+
+		Set<Tag> foundTags = tags.stream().filter(p -> p.getName().startsWith("sys:group:" + groupname)).collect(Collectors.toSet());
+		Set<Tag> acceptedTags = new HashSet<>();
+		for (Tag tag : foundTags) {
+			String cleanName = GroupUtils.cleanInputPresetTag(tag.getName());
+			Tag presetTag = new Tag(cleanName);
+			if (allowedTags.contains(presetTag)) {
+				acceptedTags.add(presetTag);
+			}
+		}
+
+		return acceptedTags;
+	}
+
+	/**
+	 * Cleans a preset tag name, that were used as input in create/edit.
+	 *
+	 * @param tagName the tag name
+	 * @return cleaned version of the tag
+	 */
+	private static String cleanInputPresetTag(final String tagName) {
+		return tagName.substring(tagName.lastIndexOf(':') + 1);
 	}
 }

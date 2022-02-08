@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -100,9 +101,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private List<String> groups;
 
-	private List<String> relevantGroups;
+	private List<String> relevantGroups = new ArrayList<>();
 
-	private List<String> sentToGroups;
+	private List<String> sentToGroups = new ArrayList<>();
 
 	private String presetTagsForGroups;
 

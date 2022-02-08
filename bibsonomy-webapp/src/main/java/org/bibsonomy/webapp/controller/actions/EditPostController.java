@@ -57,6 +57,7 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.executable.ForGroupTag;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
@@ -699,6 +700,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 * the post which should not be overwritten
 			 */
 			post.getTags().addAll(TagUtils.parse(command.getTags()));
+			/*
+			 * add all group preset tags
+			 */
+			post.getTags().addAll(TagUtils.parse(command.getPresetTagsForGroups()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
 			this.errors.rejectValue(TAGS_KEY, "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
@@ -1008,12 +1013,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
-	 * Adds the relevant groups from the command as system tags to the post.
+	 * Adds system tags for groups to the post.
+	 * Currently, supports: Relevant for and sent to group tags.
 	 *
 	 * @param command
 	 * @param post
 	 */
-	private void initRelevantForTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	private void initForGroupTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		final User postOwner;
 		if (present(command.getGroupUser())) {
 			postOwner = command.getGroupUser();
@@ -1023,21 +1029,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final Set<Tag> tags = post.getTags();
 		final List<Group> groups = postOwner.getGroups();
-		final List<String> relevantGroups = command.getRelevantGroups();
-		/*
-		 * null check neccessary, because Spring sets the list to null, when no
-		 * group has been selected. :-(
-		 */
-		if (relevantGroups != null) {
-			for (final String relevantGroup : relevantGroups) {
-				/*
-				 * ignore groups the user is not a member of
-				 */
-				if (groups.contains(new Group(relevantGroup))) {
-					tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
-				} else {
-					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
-				}
+
+		for (final String relevantGroup : command.getRelevantGroups()) {
+			/*
+			 * ignore groups the user is not a member of
+			 */
+			if (groups.contains(new Group(relevantGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
+			} else {
+				log.info("ignored relevantfor: group '" + relevantGroup + "' because user is not member of it");
+			}
+		}
+
+		for (final String sentToGroup : command.getSentToGroups()) {
+			/*
+			 * ignore groups the user is not a member of
+			 */
+			if (groups.contains(new Group(sentToGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(ForGroupTag.NAME, sentToGroup)));
+			} else {
+				log.info("ignored for: group '" + sentToGroup + "' because user is not member of it");
 			}
 		}
 	}
@@ -1060,9 +1071,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		GroupingCommandUtils.initGroups(command, post.getGroups());
 		/*
-		 * initialize relevantFor-tags FIXME: candidate for system tags
+		 * initialize system tags for groups:
+		 * relevantfor:-tags and for:-tags
 		 */
-		this.initRelevantForTags(command, post);
+		this.initForGroupTags(command, post);
 		/*
 		 * For each post process an unique identifier is generated. This is used
 		 * for mapping posts to recommendations.

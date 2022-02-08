@@ -25,7 +25,7 @@
 		<div class="col-sm-${inputColSpan}">
 			<fmt:message var="selectPlaceholder" key="form.input.select"/>
 			<select id="sentToGroupSelect" name="sentToGroups" class="selectpicker show-tick form-control"
-					title="${selectPlaceholder}" iconBase="fa" data-tickIcon="fa-check" multiple="multiple">
+					title="${selectPlaceholder}" data-icon-base="fas" data-tick-icon="fa-check" multiple="multiple">
 				<c:forEach items="${groups}" var="group">
 					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
 					<option data-content="${displayName}" value="${group.name}">

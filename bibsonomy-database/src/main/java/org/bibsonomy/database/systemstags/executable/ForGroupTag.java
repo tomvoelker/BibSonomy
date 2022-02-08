@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -77,7 +78,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
-	private static final String NAME = "for";
+	public static final String NAME = "for";
 	private static boolean toHide = true;
 
 	private DBLogicNoAuthInterfaceFactory logicInterfaceFactory = null;
@@ -246,7 +247,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
-		if (!present(groupDBLogic.getGroupDetails(groupName, false))) {
+		final Group group = groupDBLogic.getGroupDetails(groupName, false);
+		if (!present(group)) {
 			/*
 			 *  We decided to ignore errors in systemTags. Thus the user
 			 *  is free use any tag. XXX: The drawback: If it is the user's
@@ -287,8 +289,12 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 * Copy Tags: 
 		 * remove all systemTags to avoid any side effects and contradictions 
 		 */
-		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
+		Set<Tag> groupTags = new HashSet<>(userTags);
 		SystemTagsExtractor.removeAllExecutableSystemTags(groupTags);
+		if (present(group.getPresetTags())) {
+			groupTags = GroupUtils.extractPresetTagsForGroup(group, groupTags);
+		}
+
 		/*
 		 * adding this tag also guarantees, that the new post will
 		 * have an empty tag set (which would be illegal)!
