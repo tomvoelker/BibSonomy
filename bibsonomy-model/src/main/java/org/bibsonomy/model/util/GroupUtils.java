@@ -348,6 +348,13 @@ public class GroupUtils {
 		return presetTagsMap;
 	}
 
+	/**
+	 * Extract the selected preset tags for the given group.
+	 *
+	 * @param group the group
+	 * @param tags the tag list
+	 * @return filtered preset tags for group
+	 */
 	public static Set<Tag> extractPresetTagsForGroup(final Group group, final Set<Tag> tags) {
 		final String groupname = group.getName();
 		final List<Tag> allowedTags = group.getPresetTags();
@@ -363,6 +370,25 @@ public class GroupUtils {
 		}
 
 		return acceptedTags;
+	}
+
+	/**
+	 * Removes all selected preset tags for any group.
+	 *
+	 * @param tags
+	 */
+	public static void removePresetTags(final Set<Tag> tags) {
+		tags.removeIf(tag -> tag.getName().startsWith("sys:group:"));
+	}
+
+	/**
+	 * Removes all selected preset tags for any group.
+	 *
+	 * @param tags
+	 */
+	public static void removePresetTagsForGroup(final Group group, final Set<Tag> tags) {
+		final String groupname = group.getName();
+		tags.removeIf(tag -> tag.getName().startsWith("sys:group:" + groupname));
 	}
 
 	/**

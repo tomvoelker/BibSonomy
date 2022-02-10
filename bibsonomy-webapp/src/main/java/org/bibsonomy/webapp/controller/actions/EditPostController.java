@@ -53,8 +53,8 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.executable.ForGroupTag;
@@ -97,7 +97,6 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
 import recommender.core.RecommendationService;
 import recommender.core.database.RecommenderStatisticsManager;
 
@@ -451,14 +450,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUserName);
 				if (!(present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR)))) {
 					throw new AccessDeniedException("You have no rights to update this post");
-				}
-
-				// check if the group requires preset tags to be selected
-				final List<Tag> groupPresetTags = group.getPresetTags();
-				if (present(groupPresetTags) && Collections.disjoint(groupPresetTags, post.getTags())) {
-					// no preset tags selected for the group
-					this.errors.reject("error.post.group.presetTags", this.urlGenerator.getGroupSettingsUrlByGroupName(group.getName(), 2, null));
-					return this.getEditPostView(command, context.getLoginUser());
 				}
 			}
 		}
@@ -984,7 +975,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * after initializing the relevantFor groups, because there the
 		 * relevantFor tags are removed from the post)
 		 */
-		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		final Set<Tag> tags = post.getTags();
+		GroupUtils.removePresetTags(tags);
+		command.setTags(TagUtils.toTagString(tags, " "));
 
 		if (post.isApproved()) {
 			command.setApproved(true);

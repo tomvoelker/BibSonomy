@@ -48,9 +48,13 @@
 							</jsp:attribute>
 						</bsform:fieldset>
 
-						<input type="hidden" name="groupname" value="${group.name}"/>
-						<input type="hidden" name="operation" value="ADD_PRESET_TAG" />
 						<div class="col-sm-offset-3 col-sm-9">
+							<p class="help-block">
+								<fmt:message key="settings.group.presetTags.action.add.hint"/>
+							</p>
+
+							<input type="hidden" name="groupname" value="${group.name}"/>
+							<input type="hidden" name="operation" value="ADD_PRESET_TAG" />
 							<fmt:message var="submitButton" key="settings.group.presetTags.action.add" />
 							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
 						</div>

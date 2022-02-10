@@ -37,6 +37,7 @@ import java.util.SortedSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -151,6 +152,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private List<String> differentEntryKeys;
 
 	private User groupUser;
+	private Group groupUserAsGroup;
 
 	private List<JobResult> jobResults;
 	private String redirectUrl;

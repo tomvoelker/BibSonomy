@@ -291,9 +291,15 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 */
 		Set<Tag> groupTags = new HashSet<>(userTags);
 		SystemTagsExtractor.removeAllExecutableSystemTags(groupTags);
-		if (present(group.getPresetTags())) {
-			groupTags = GroupUtils.extractPresetTagsForGroup(group, groupTags);
-		}
+
+		// Remove preset tags for this group from original post
+		GroupUtils.removePresetTagsForGroup(group, userTags);
+
+		// Add selected preset tags for this group
+		groupTags.addAll(GroupUtils.extractPresetTagsForGroup(group, groupTags));
+
+		// Remove selected preset tags for other groups
+		GroupUtils.removePresetTags(groupTags);
 
 		/*
 		 * adding this tag also guarantees, that the new post will

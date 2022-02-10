@@ -84,4 +84,8 @@
 			</div>
 		</div>
 	</c:if>
+
+	<!--+
+		| show preset tags if editing a group post
+		+-->
 </jsp:root>
