@@ -95,9 +95,9 @@
 				<fmt:message key="post.resource.presetTags" />
 			</label>
 			<div class="col-sm-${inputColSpan}">
-				<ul id="presetTags" class="list-inline">
-					<c:forEach var="tag" items="${command.presetTagsOfGroupUser}">
-						<li><c:out value="${tag.name} "/></li>
+				<ul id="presetTagRecommendations" class="list-inline">
+					<c:forEach var="presetTag" items="${command.presetTagsOfGroupUser}">
+						<li class="btn btn-default btn-xs" title="${presetTag.description}">${presetTag.name}</li>
 					</c:forEach>
 				</ul>
 			</div>

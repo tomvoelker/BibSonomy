@@ -24,7 +24,7 @@ $(function() {
             .removeAttr("href")
             .css("cursor", "pointer")
             .click(function () {
-                copyTag("inpf_tags", $(this).val());
+                copyTag("inpf_tags", $(this).text());
             })
     });
     //only add this listener one time
@@ -210,7 +210,7 @@ function handleRecommendedTags(json) {
         var tagName = value.name;
         var newTag = $("<li tabindex='1'>" + tagName + " </li>");
         newTag.click(function () {
-            copyTag("inpf_tags", $(this).val());
+            copyTag("inpf_tags", $(this).html());
         });
         tagField.append(newTag);
         var suggestion = new Object;
@@ -677,7 +677,7 @@ function addToggleRelations() {
     $("#relations > li ul li a").each(function() {
         $(this).click(function() {
             var delete_lo = $("#delete_lo");
-            delete_lo.val(addTagIfNotContained(delete_lo.val(), this.childNodes[0].nodeValue.replace(/ /, "")));
+            delete_lo.val(toggleTagInString(delete_lo.val(), this.childNodes[0].nodeValue.replace(/ /, "")));
             delete_lo.focus();
         })
             .css("cursor", "pointer")
@@ -717,27 +717,31 @@ function toggleTag(target, tagname) {
     }
 
     target.focus();
-    target.val(addTagIfNotContained(target.val()), tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_"));
+    target.val(toggleTagInString(target.val(), tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_")));
 }
 
 
 /**
  * Given the string of tags, checks if new tag is contained.
- * If not, the new tag is added to the string
+ * If not, the new tag is added to the string, otherwise removes it.
  *
  * @param tags
  * @param newTag
  * @return
  *
  */
-function addTagIfNotContained(tags, newTag) {
-    var tagsArr = tags.trim().split(" ");
+function toggleTagInString(tags, newTag) {
+    var trimmedTags = tags.trim();
+    var tagsArr = (trimmedTags) ? trimmedTags.split(' ') : [];
 
     // check, if new tag is already in
     var tagIndex = tagsArr.indexOf(newTag);
     if (tagIndex < 0) {
-        // add tag
+        // add tag, if not in
         tagsArr.push(newTag);
+    } else {
+        // remove tag
+        tagsArr.splice(tagIndex, 1);
     }
 
     return tagsArr.join(' ');
@@ -894,25 +898,27 @@ function initGroupOptions() {
         togglePresetTagsPanel(groupId, isSelected);
     });
 
+    // Init preset tag selection, when adding post
     $('.preset-tags-list').children('li').click(function () {
         var groupId = $(this).data('group');
         var tag = $(this).data('tag');
         var input = $('#presetTagsInput-' + groupId);
-        var valArr = (input.val()) ? input.val().split(' ') : [];
 
-        // check, if tag already selected
-        var tagIndex = valArr.indexOf(tag);
-        if (tagIndex >= 0) {
-            // remove, if already selected
-            valArr.splice(tagIndex, 1);
-        } else {
-            // add otherwise
-            valArr.push(tag);
-        }
-        input.val(valArr.join(' '));
+        input.val(toggleTagInString(input.val(), tag));
+    });
+
+    // Init preset tag recommendations, when editing post
+    $('#presetTagRecommendations').children('li').click(function () {
+        copyTag("inpf_tags", $(this).text());
     });
 }
 
+/**
+ * Toggle visibility for each group's preset tag panel.
+ *
+ * @param groupId
+ * @param isSelected
+ */
 function togglePresetTagsPanel(groupId, isSelected) {
     var panel = $('#presetTagsPanel-' + groupId);
     // check if panel exists
@@ -928,6 +934,9 @@ function togglePresetTagsPanel(groupId, isSelected) {
     }
 }
 
+/**
+ * Set hidden input for selected preset tags
+ */
 function preparePresetTagsForm() {
     var presetTags = [];
     $('.preset-tags-panel:not(.hidden)').each(function () {
@@ -946,13 +955,19 @@ function preparePresetTagsForm() {
     }
 }
 
+/**
+ * Create a list of group preset system tags
+ * @param groupId
+ * @param tags
+ * @returns {*[]}
+ */
 function createSysTagsForGroup(groupId, tags) {
     var sysTags = [];
     tags.forEach(function (tag) {
         if (tag) {
             sysTags.push('sys:group:' + groupId + ':' + tag);
         }
-    })
+    });
 
     return sysTags;
 }
@@ -964,7 +979,9 @@ function createSysTagsForGroup(groupId, tags) {
  */
 function clearTagInput() {
 	var tag = $("#inpf_tags");
-	if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
+	if (tag.val() === getString("navi.tag.hint")) {
+        tag.val('');
+    }
 }
 
 function beforeSubmitForm() {
