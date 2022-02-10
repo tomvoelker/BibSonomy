@@ -190,7 +190,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final User loginUser = context.getLoginUser();
 		if (present(command.getGroupUser())) {
-			command.setGroupUser(this.logic.getUserDetails(command.getGroupUser().getName()));
+			final String groupName = command.getGroupUser().getName();
+			command.setGroupUser(this.logic.getUserDetails(groupName));
+			final Group groupUserAsGroup = this.logic.getGroupDetails(groupName, false);
+			command.setPresetTagsOfGroupUser(groupUserAsGroup.getPresetTags());
 		}
 
 		/*

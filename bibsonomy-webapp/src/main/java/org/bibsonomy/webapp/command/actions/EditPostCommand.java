@@ -152,7 +152,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private List<String> differentEntryKeys;
 
 	private User groupUser;
-	private Group groupUserAsGroup;
+	private List<Tag> presetTagsOfGroupUser;
 
 	private List<JobResult> jobResults;
 	private String redirectUrl;

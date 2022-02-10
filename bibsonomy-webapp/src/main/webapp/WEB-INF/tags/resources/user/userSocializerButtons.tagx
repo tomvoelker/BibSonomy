@@ -52,7 +52,7 @@
 				<user:userRelationForm friendName="${friendName}" addClass="addFriend" addKey="friend.add" hasRelation="${command.ofFriendUser}" infoKey="friendoverview.friend" removeClass="removeFriend" />
 			</div>
 			<div class="col-sm-6">
-				<user:userRelationForm friendName="${friendName}" addClass="follow" addKey="follow.link.text.follow" hasRelation="${command.isFollowerOfUser}" infoKey="follow.following" removeClass="unfollow" />
+				<user:userRelationForm friendName="${friendName}" addClass="follow" addKey="follow.link.text.follow" hasRelation="${command.followerOfUser}" infoKey="follow.following" removeClass="unfollow" />
 			</div>
 		</div>
 	</c:if>

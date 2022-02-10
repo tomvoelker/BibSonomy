@@ -88,4 +88,19 @@
 	<!--+
 		| show preset tags if editing a group post
 		+-->
+	<c:if test="${not empty command.presetTagsOfGroupUser}">
+		<div class="form-group">
+			<fmt:message var="labelHint" key="post.resource.presetTags.hint" />
+			<label class="col-sm-${labelColSpan} control-label" title="${labelHint}">
+				<fmt:message key="post.resource.presetTags" />
+			</label>
+			<div class="col-sm-${inputColSpan}">
+				<ul id="presetTags" class="list-inline">
+					<c:forEach var="tag" items="${command.presetTagsOfGroupUser}">
+						<li><c:out value="${tag.name} "/></li>
+					</c:forEach>
+				</ul>
+			</div>
+		</div>
+	</c:if>
 </jsp:root>
