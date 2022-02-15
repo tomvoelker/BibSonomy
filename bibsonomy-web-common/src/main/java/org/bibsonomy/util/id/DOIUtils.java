@@ -30,34 +30,35 @@
 package org.bibsonomy.util.id;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.util.WebUtils;
-
 /**
  * Helper methods to simplify <a href="http://www.doi.org/">DOI</a>s (digital object identifiers).
- *  
- *  
+ *
+ *
  *  FIXME: how to support DOI URLs like
  *  http://doi.acm.org/10.1145/160688.160713
- *  i.e., how to extract/match them?  
- * 
+ *  i.e., how to extract/match them?
+ *
  * @author rja
  */
 public class DOIUtils {
 
 	/**
-	 * Host name of the DOI resolver. 
+	 * Host name of the DOI resolver.
 	 */
 	public static final String DX_DOI_ORG = "dx.doi.org";
-	
+
 	/**
-	 * DOI host name and possible alternative host name of the DOI resolver. 
+	 * DOI host name and possible alternative host name of the DOI resolver.
 	 */
 	public static final String DOI_ORG = "doi.org";
 	/**
@@ -71,27 +72,27 @@ public class DOIUtils {
 
 
 	/**
-	 * The first variant is too strict, according to 
-	 *  
-	 * http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page 
-	 * 
+	 * The first variant is too strict, according to
+	 *
+	 * http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page
+	 *
 	 * Changes:
 	 * <ul>
 	 * <li>added "doi:" as possible prefix</li>
 	 * <li>replaced the last \d by [^\s"'], thus allowing everything but whitespace and some
-	 * "closing" characters (which are in principle allowed but makes detection of the end of a 
-	 * DOI almost impossible). We in particular disallow "}", because it is at the end of BibTeX 
+	 * "closing" characters (which are in principle allowed but makes detection of the end of a
+	 * DOI almost impossible). We in particular disallow "}", because it is at the end of BibTeX
 	 * DOIs (which we otherwise would extract wrong).</li>
 	 * </ul>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	//	private static final String DOI = "(10\\.\\d+\\/\\d+?)";
-	private static final String DOI = "(doi:\\s*)?(10\\.\\d+\\/[^\\s\"'}]+)";
+	private static final String DOI = "(doi:\\s*)?(10\\.[0-9a-zA-Z]+/(?:(?![\"&'])\\S)+)\\b";
 	private static final String DOI_END = "[\\s\"'}]*";
 
 	/**
-	 * Matches a pure DOI. Disregards case. 
+	 * Matches a pure DOI. Disregards case.
 	 */
 	private static final Pattern DOI_PATTERN = Pattern.compile("^" + DOI + "$", Pattern.CASE_INSENSITIVE);
 
@@ -114,8 +115,8 @@ public class DOIUtils {
 	 */
 	private static final int MAX_SELECTION_LENGTH = 200;
 
-	/** Checks, if the given URL is a DOI URL (i.e., points to dx.doi.org) 
-	 * 
+	/** Checks, if the given URL is a DOI URL (i.e., points to dx.doi.org)
+	 *
 	 * @param url
 	 * @return <code>true</code> if the URL points to the DOI resolver.
 	 */
@@ -126,7 +127,7 @@ public class DOIUtils {
 
 	/**
 	 * Resolves DOI to a URL using the official DOI resolver {@value #DX_DOI_ORG}.
-	 * 
+	 *
 	 * @param doi DOI as String
 	 * @return URL from the referenced DOI resource, null if resolve failed
 	 */
@@ -141,10 +142,10 @@ public class DOIUtils {
 
 	/**
 	 * Creates a URL for the given DOI which points to the DOI resolver.
-	 * 
+	 *
 	 * @param doi - the DOI which the URL should resolve
 	 * @return A URL pointing to the DOI resolver.
-	 * 
+	 *
 	 * @throws MalformedURLException
 	 */
 	public static URL getURL(final String doi) throws MalformedURLException {
@@ -155,7 +156,7 @@ public class DOIUtils {
 	 * Extracts a DOI from the given string.
 	 * Do not use this method for large text!
 	 * FIXME: add a check for the string length
-	 * 
+	 *
 	 * @param string
 	 * @return The extracted DOI.
 	 */
@@ -170,9 +171,9 @@ public class DOIUtils {
 	}
 
 	/**
-	 * Checks, whether the selection contains a DOI and is not too long (i.e., 
-	 * hopefully only contains the DOI and nothing else. 
-	 * 
+	 * Checks, whether the selection contains a DOI and is not too long (i.e.,
+	 * hopefully only contains the DOI and nothing else.
+	 *
 	 * @param selection
 	 * @return
 	 */
@@ -185,7 +186,7 @@ public class DOIUtils {
 	 * This method checks, if <strong>somewhere</strong> in the string something
 	 * like a DOI can be found. If you want to check, if the string contains almost
 	 * only a DOI, use {@link #containsOnlyDOI(String)}.
-	 * 
+	 *
 	 * @param string
 	 * @return <code>true</code>, if the given string contains a DOI.
 	 */
@@ -195,7 +196,7 @@ public class DOIUtils {
 
 	/**
 	 * Checks, if the given string contains (almost only) a DOI.
-	 * 
+	 *
 	 * @param string
 	 * @return <code>true</code>, if the given string contains almost only the DOI, i.e.,
 	 * no surrounding text (only whitespace or symbols like ",", "'", ")", etc.)
@@ -206,7 +207,7 @@ public class DOIUtils {
 
 	/**
 	 * Checks, if the given string represents a DOI.
-	 * 
+	 *
 	 * @param doi
 	 * @return <code>true</code>, if the given string is a DOI
 	 */
@@ -217,7 +218,7 @@ public class DOIUtils {
 	/**
 	 * Cleans up a doi entry. The string s can be a single Line or
 	 * a whole BibTeX string.
-	 * 
+	 *
 	 * @param s
 	 * @return a modification of the String s. Changes occurences of
 	 * <i>doi = {http://dx.doi....</i> or <i>doi = {doi:...</i> to
@@ -264,9 +265,15 @@ public class DOIUtils {
 	 */
 	public static String getDoiFromURL(final URL url)  {
 		if (present(url)) {
-			final String doi = extractDOI(url.toString());
+			String decodedURL;
+			try {
+				decodedURL = URLDecoder.decode(url.toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				decodedURL = url.toString();
+			}
+			final String doi = extractDOI(decodedURL);
 			if (present(doi)) {
-				return cleanDoiFromURL(doi);			
+				return cleanDoiFromURL(doi);
 			}
 		}
 		return null;
@@ -280,7 +287,7 @@ public class DOIUtils {
 	 */
 	public static String cleanDoiFromURL(String doi) {
 		if (doi.contains("?")) {
-			return doi.split("?")[0];
+			return doi.split("\\?")[0];
 		}
 		if (doi.contains("#")) {
 			return doi.split("#")[0];

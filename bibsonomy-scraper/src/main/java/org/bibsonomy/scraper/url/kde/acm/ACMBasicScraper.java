@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.json.JSON;
@@ -85,6 +86,7 @@ public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements 
 	);
 
 	private final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
+	private final static Pattern ACM_DIGITAL_LIBRARY_URL_PATTERN = Pattern.compile("<a href=\"(.*?)\".*>ACM Digital Library</a>");
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
@@ -92,8 +94,22 @@ public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements 
 	}
 
 	@Override
-	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
-		final String doi = DOIUtils.extractDOI(url.getPath());
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
+		String doi = DOIUtils.extractDOI(url.getPath());
+
+		if (!present(doi)){
+			try {
+				String pageContent = WebUtils.getContentAsString(url);
+				Matcher m_ACMLibrary = ACM_DIGITAL_LIBRARY_URL_PATTERN.matcher(pageContent);
+				if (!m_ACMLibrary.find()){
+					throw new ScrapingException("couldn't find ACM Digital Library Url on page");
+				}
+				URL acmLibraryUrl = WebUtils.getRedirectUrl(new URL(m_ACMLibrary.group(1)));
+				doi =  DOIUtils.extractDOI(acmLibraryUrl.getPath());
+			} catch (IOException e) {
+				throw new ScrapingException(e);
+			}
+		}
 
 		return Arrays.asList(
 						new BasicNameValuePair("dois", doi),

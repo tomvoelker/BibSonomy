@@ -944,6 +944,7 @@
 			</map>
 		</property>
 		<property name="crisEnabled" value="${system.cris}" />
+		<property name="hideAdditionalKeysList" value="${person.additionalKeys.hide}" />
 	</bean>
 
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.person.PersonDisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">

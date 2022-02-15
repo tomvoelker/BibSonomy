@@ -53,7 +53,7 @@ public class PubMedCentralScraper extends GenericRISURLScraper {
 	private static final String HOST = "pubmedcentral.nih.gov";
 	private static final String NEWER_HOST = "ncbi.nlm.nih.gov";
 	
-	private static final Pattern IDS = Pattern.compile("articles/(.*?)/");
+	private static final Pattern IDS = Pattern.compile("articles/PMC(.*?)/");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	
@@ -62,8 +62,7 @@ public class PubMedCentralScraper extends GenericRISURLScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEWER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
-	
-	private static final Pattern PUBMED_LINK_PATTERN = Pattern.compile("<a[^>]*?href=\"(/pubmed/\\d++/)\"[^>]*+>PubMed</a>");
+
 	
 
 	@Override
@@ -93,7 +92,7 @@ public class PubMedCentralScraper extends GenericRISURLScraper {
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final Matcher m  = IDS.matcher(url.toExternalForm());
 		if(m.find())
-			return "http://" + url.getHost().toString() + "/pmc/utils/ctxp/?ids=" + m.group(1) + "&report=ris&format=ris";
+			return "https://api.ncbi.nlm.nih.gov/lit/ctxp/v1/pmc/?format=ris&id=" + m.group(1);
 		return null;
 	}
 

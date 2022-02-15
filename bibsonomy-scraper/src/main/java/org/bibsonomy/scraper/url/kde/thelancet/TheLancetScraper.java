@@ -29,31 +29,24 @@
  */
 package org.bibsonomy.scraper.url.kde.thelancet;
 
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.scraper.generic.CitationManager4Scraper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author Haile
  */
-public class TheLancetScraper extends GenericRISURLScraper {
-	private static final Log log = LogFactory.getLog(TheLancetScraper.class);
-	
+public class TheLancetScraper extends CitationManager4Scraper {
 	private static final String SITE_NAME = "THE LANCET";
-	private static final String SITE_URL = "http://www.thelancet.com";
+	private static final String SITE_URL = "https://www.thelancet.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "thelancet.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("/article/(.*?)/");
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
@@ -86,22 +79,4 @@ public class TheLancetScraper extends GenericRISURLScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
-	 */
-	@Override
-	public String getDownloadURL(URL url, String cookies) {
-		try{
-			final Matcher m = BIBTEX_PATTERN.matcher(url.toString());
-			if (m.find()) {
-				final String PII = m.group(1).replaceAll("%28|%29|-","").replace("PII","pii:");
-				return "http://www.thelancet.com/action/downloadCitation?objectUri=" + PII + "&direct=true&include=abs&submit=Export";
-			}
-		} catch (final Exception e) {
-			log.error("error while getting ris url", e);
-		}
-		return null;
-	}
-
 }

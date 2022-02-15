@@ -1,0 +1,21 @@
+<jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<jsp:directive.attribute name="additionalKeys" type="java.util.List" required="true" />
+
+	<c:forEach var="additionalKey" items="${additionalKeys}" varStatus="status">
+		<div class="row person-property">
+			<div class="col-md-2">
+				<b><c:out value="${additionalKey['keyName']}" /></b>
+			</div>
+
+			<div class="col-md-10">
+				<i>
+					<c:out value="${additionalKey['keyValue']}"/>
+				</i>
+			</div>
+		</div>
+	</c:forEach>
+
+</jsp:root>

@@ -29,22 +29,23 @@
  */
 package org.bibsonomy.scraper.url.kde.iucr;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * scraper for jornals from iucr.org. Because of the frame structure of 
@@ -88,35 +89,48 @@ public class IucrScraper extends GenericBibTeXURLScraper {
 	);
 
 	/** Download link */
-	private static final String DOWNLOAD_LINK_PART = "http://scripts.iucr.org/cgi-bin/biblio?Action=download&saveas=BIBTeX&cnor=";
-	
-	private static final Pattern DC_LINK_PATTERN = Pattern.compile("<meta name=\"DC.link\" content=\"(.*)\" />");
+	private static final String DOWNLOAD_URL = "https://scripts.iucr.org/cgi-bin/biblio";
+	private static final Pattern CNOR_PATTERN_1 = Pattern.compile("<input type=\"hidden\" value=\"(.{6})\" name=\"cnor\" \\/>");
+	private static final Pattern CNOR_PATTERN_2 = Pattern.compile("<input name=\"cnor\" value=\"(.{6})\" type=\"hidden\"/>");
+
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return DOWNLOAD_URL;
+	}
+
+	@Override
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException{
+		try {
+			String html = WebUtils.getContentAsString(url);
+
+			String cnor;
+			Matcher m1_cnor = CNOR_PATTERN_1.matcher(html);
+			Matcher m2_cnor = CNOR_PATTERN_2.matcher(html);
+			if (m1_cnor.find()){
+				cnor = m1_cnor.group(1);
+			}else {
+				if (m2_cnor.find()){
+					cnor = m2_cnor.group(1);
+				}else {
+					throw new ScrapingException("can't get cnor from html of " + url);
+				}
+			}
+
+			List<NameValuePair> postData = new LinkedList<>();
+			postData.add(new BasicNameValuePair("cnor", cnor));
+
+			return postData;
+		}catch (IOException e){
+			throw new ScrapingException(e);
+		}
+
+	}
 
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
-	 */
-	@Override
-	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException {
-		try {
-			final String pageContent = WebUtils.getContentAsString(url);
-			final Matcher matcher = DC_LINK_PATTERN.matcher(pageContent);
-			if (matcher.find()) {
-				final String id = matcher.group(1);
-				if (present(id)) {
-					return DOWNLOAD_LINK_PART + id.replace("http://scripts.iucr.org/cgi-bin/paper?", "");
-				}
-			}
-		} catch (final IOException e) {
-			log.error("can't get pape content", e);
-		}
-		return null;
-	}
-	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;

@@ -48,6 +48,7 @@ import java.io.IOException;
  */
 @Category(RemoteTest.class)
 public class ZenodoScraperTest {
+	String resultDirectory = "zenodo/";
 
 	/**
 	 * starts URL test with id url_30
@@ -58,7 +59,9 @@ public class ZenodoScraperTest {
 	}
     	@Test
 	public void url1ScrapeTest() {
-		assertScraperResult("https://zenodo.org/record/580587", null, ZenodoScraper.class, "ZenodoScraperUnitURLTest1.bib");
+				final String url = "https://zenodo.org/record/580587";
+				final String resultFile = resultDirectory + "ZenodoScraperUnitURLTest1.bib";
+				assertScraperResult(url, ZenodoScraper.class, resultFile);
 	}
 
     

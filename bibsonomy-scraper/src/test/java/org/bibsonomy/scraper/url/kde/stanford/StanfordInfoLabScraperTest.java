@@ -41,11 +41,14 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class StanfordInfoLabScraperTest {
+	String resultDirectory = "standford/";
 	/**
 	 * starts URL test with id url_68
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://ilpubs.stanford.edu:8090/1015/", StanfordInfoLabScraper.class, "StanfordInfoLabScraperUnitURLTest.bib");
+		final String url = "https://ilpubs.stanford.edu:8090/1015/";
+		final String resultFile = resultDirectory + "StanfordInfoLabScraperUnitURLTest.bib";
+		assertScraperResult(url, StanfordInfoLabScraper.class, resultFile);
 	}
 }

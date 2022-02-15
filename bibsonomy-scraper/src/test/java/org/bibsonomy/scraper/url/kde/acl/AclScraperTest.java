@@ -32,7 +32,6 @@ package org.bibsonomy.scraper.url.kde.acl;
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,10 +41,13 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AclScraperTest {
+	String resultDirectory = "acl/";
 
 	@Test
 	public void testWebSiteLink() {
-		assertScraperResult("https://www.aclweb.org/anthology/W04-1806/", AclScraper.class, "AclScraperUnitURLTest1.bib");
+		final String url = "https://www.aclweb.org/anthology/W04-1806/";
+		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
+		assertScraperResult(url, AclScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,7 +55,9 @@ public class AclScraperTest {
 	 */
 	@Test
 	public void testPDFLink() {
-		assertScraperResult("https://www.aclweb.org/anthology/W04-1806.pdf", AclScraper.class, "AclScraperUnitURLTest1.bib");
+		final String url = "https://www.aclweb.org/anthology/W04-1806.pdf";
+		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
+		assertScraperResult(url, AclScraper.class, resultFile);
 	}
 	
 }

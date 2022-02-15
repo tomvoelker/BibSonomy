@@ -34,14 +34,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitMgrScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 
 /**
  * Scraper for onlinelibrary.wiley.com
  * @author rja
  */
-public class WileyIntersienceScraper extends CitMgrScraper {
+public class WileyIntersienceScraper extends LiteratumScraper {
 
 	private static final String SITE_HOST = "onlinelibrary.wiley.com";
 	private static final String SITE_URL  = "https://" + SITE_HOST + "/";

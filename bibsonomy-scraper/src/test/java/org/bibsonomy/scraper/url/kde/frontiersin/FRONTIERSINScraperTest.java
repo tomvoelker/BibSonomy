@@ -40,13 +40,14 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class FRONTIERSINScraperTest {
+	String resultDirectory = "frontiersin/";
 	/**
 	 * JUnit test for url_340
 	 */
 	@Test
 	public void urlTestRun(){
 		final String url = "http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full";
-		final String resultFile = "FRONTIERSINScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "FRONTIERSINScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, FRONTIERSINScraper.class, resultFile);
 	}
 }

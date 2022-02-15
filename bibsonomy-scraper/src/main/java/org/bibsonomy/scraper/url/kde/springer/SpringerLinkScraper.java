@@ -30,44 +30,43 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 /**
  * Scraper für SpringerLink.
- * 
+ *
  * @author rja
  */
 public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	private static final Log log = LogFactory.getLog(SpringerLinkScraper.class);
-	
+
 	private static final String SITE_NAME = "SpringerLink";
 	private static final String SITE_URL = "https://link.springer.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	
-	private static final String DOWNLOAD_URL = "https://citation-needed.services.springer.com/v2/references/";
+
+	private static final String DOWNLOAD_URL = "https://citation-needed.springer.com/v2/references/";
 	private static final String DOWNLOAD_TYPE = "?format=bibtex&flavour=citation";
 	private static final String SPRINGER_CITATION_HOST = "link.springer.com";
-	
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<>(Collections.singletonList(
-					new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN)
-	));
-	
+
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<>();
+	static {
+		patterns.add(new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST ), Pattern.compile("article")));
+		patterns.add(new Pair<>(Pattern.compile(".*" + SPRINGER_CITATION_HOST ), Pattern.compile("chapter")));
+	}
+
 	/**
 	 * @param doi
 	 * @return
@@ -75,7 +74,7 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	private static String downloadLinkForDoi(final String doi) {
 		return DOWNLOAD_URL + doi + DOWNLOAD_TYPE;
 	}
-	
+
 	private static String extractDownloadLink(final String path) {
 		final String doi = DOIUtils.extractDOI(path);
 		if (present(doi)) {
@@ -86,14 +85,14 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 			return downloadLinkForDoi(doi);
 		    }
 		}
-		
+
 		return null;
 	}
-		
+
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final String path = url.getPath();
-		
+
 		final String downloadLink = extractDownloadLink(path);
 		if (present(downloadLink)) {
 			return downloadLink;
@@ -108,10 +107,10 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 		} catch (final URISyntaxException e) {
 			log.error("error decoding path " + path, e);
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -121,12 +120,12 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-	
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;

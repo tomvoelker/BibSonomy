@@ -26,6 +26,16 @@ $(function() {
 				input.val(hash);
 				// alert(infoUI.data('discussion-item-hash'));
 				form.hide();
+			},
+			error: function(jqXHR, data, errorThrown) {
+				//TODO: Can be deleted as soon as no 405 error is returned regularly during HTTP PUT
+				$('#discussion').load(document.URL +  ' #discussion>*', function(){
+					onPageLoad();
+					plotRatingDistribution();
+					initStars();
+					$('.updatereview').hide()
+					$('.updatecomment').hide()
+				});
 			}
 		});
 		return false;

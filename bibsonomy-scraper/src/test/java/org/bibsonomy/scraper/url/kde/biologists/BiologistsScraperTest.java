@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.biologists;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,13 +39,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BiologistsScraperTest {
+	String resultDirectory = "biologists/";
 
 	/**
 	 * starts URL test with id url_234
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://dev.biologists.org/content/138/23/5067.short", BiologistsScraper.class, "BiologistsScraperUnitURLTest1.bib");
+		final String url = "https://journals.biologists.com/dev/article/138/23/5067/44741/The-role-of-Pax6-in-regulating-the-orientation-and";
+		final String resultFile = resultDirectory + "BiologistsScraperUnitURLTest1.bib";
+		assertScraperResult(url, BiologistsScraper.class, resultFile);
 	}
 
 	/**
@@ -54,7 +56,9 @@ public class BiologistsScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://jcs.biologists.org/content/125/13/3015.long", BiologistsScraper.class, "BiologistsScraperUnitURLTest2.bib");
+		final String url = "https://journals.biologists.com/jcs/article/125/13/3015/32438/Deconstructing-the-third-dimension-how-3D-culture";
+		final String resultFile = resultDirectory + "BiologistsScraperUnitURLTest2.bib";
+		assertScraperResult(url, BiologistsScraper.class, resultFile);
 	}
 
 }

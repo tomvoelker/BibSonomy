@@ -40,12 +40,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CopacScraperTest {
+	String resultDirectory = "copac/";
 
 	/**
 	 * starts URL test with id url_290
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&rn=1", CopacScraper.class, "CopacScraperUnitURLTest1.bib");
+		final String url = "http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&rn=1";
+		final String resultFile = resultDirectory + "CopacScraperUnitURLTest1.bib";
+		assertScraperResult(url, CopacScraper.class, resultFile);
 	}
 }

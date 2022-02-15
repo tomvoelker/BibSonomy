@@ -47,13 +47,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ProjectmuseScraperTest {
+	String resultDirectory = "projectmuse/";
 
 	/**
 	 * starts URL test with id url_113
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://muse.jhu.edu/article/190669", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest1.bib");
+		final String url = "http://muse.jhu.edu/article/190669";
+		final String resultFile = resultDirectory + "ProjectmuseScraperUnitURLTest1.bib";
+		assertScraperResult(url, ProjectmuseScraper.class, resultFile);
 	}
 
 	/**
@@ -61,12 +64,16 @@ public class ProjectmuseScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://muse.jhu.edu/article/190166", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest2.bib");
+		final String url = "http://muse.jhu.edu/article/190166";
+		final String resultFile = resultDirectory + "ProjectmuseScraperUnitURLTest2.bib";
+		assertScraperResult(url, ProjectmuseScraper.class, resultFile);
 	}
 	
 	@Test
 	public void url3TestRun(){
-		assertScraperResult("http://muse.jhu.edu/book/104", null, ProjectmuseScraper.class, "ProjectmuseScraperUnitURLTest3.bib");
+		final String url = "http://muse.jhu.edu/book/104";
+		final String resultFile = resultDirectory + "ProjectmuseScraperUnitURLTest3.bib";
+		assertScraperResult(url, ProjectmuseScraper.class, resultFile);
 	}
 	
 	/**
