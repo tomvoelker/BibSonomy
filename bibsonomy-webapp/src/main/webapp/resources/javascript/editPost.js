@@ -18,7 +18,7 @@ var collect;
 
 
 $(function() {
-    startTagAutocompletion($('#inpf_tags'), false, true, true, true, false);
+    startTagAutocompletion($('#inpf_tags'), false, true, true, true, true);
     $("#copiedTags li, .tagbox li a").each(function() {
         $(this)
             .removeAttr("href")

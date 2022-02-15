@@ -1276,10 +1276,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final String userName = post.getUser().getName();
 
 			/*
-			 * remove selected preset tags for group
-			 */
-
-			/*
 			 * the current intra hash of the resource
 			 */
 			final String intraHash = post.getResource().getIntraHash();

@@ -718,7 +718,6 @@ public class URLGenerator {
 	 * @return the group settings url for the specified group
 	 */
 	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
-		// TODO: remove error key here, when proper error handling
 		final UrlBuilder builder = new UrlBuilder(this.projectHome)
 				.addPathElement(SETTINGS_PREFIX)
 				.addPathElement(GROUP_PREFIX)
