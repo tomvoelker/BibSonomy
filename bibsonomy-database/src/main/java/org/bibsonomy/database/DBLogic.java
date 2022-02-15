@@ -1553,8 +1553,8 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
 				break;
-			case ADD_PRESET_TAG:
 			case DELETE_PRESET_TAG:
+			case UPDATE_PRESET_TAG:
 				if(!this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR)) {
 					throw new AccessDeniedException("You are not allowed to edit preset tags.");
 				}

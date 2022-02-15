@@ -155,11 +155,11 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				case UPDATE_GROUPROLE: {
                     return this.updateGroupRole(command, groupToUpdate);
 				}
-				case ADD_PRESET_TAG: {
-					return this.addPresetTag(command, groupToUpdate);
-				}
 				case DELETE_PRESET_TAG: {
 					return this.deletePresetTag(command, groupToUpdate);
+				}
+				case UPDATE_PRESET_TAG: {
+					return this.updatePresetTag(command, groupToUpdate);
 				}
 				case REGENERATE_API_KEY: {
 					return this.regenerateApiKey(command, groupToUpdate);
@@ -401,34 +401,44 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
 	}
 
-	private ExtendedRedirectView addPresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
-		final String tagName = command.getPresetTagName();
-		final String tagDescription = command.getPresetTagDescription();
-
-		if(present(tagName) && GroupUtils.addPresetTag(groupToUpdate, tagName, tagDescription)) {
-			try {
-				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_PRESET_TAG, null);
-			} catch (final Exception ex) {
-				log.error("error while adding the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
-			}
-		} else {
-			this.errors.reject("settings.group.presetTags.error.exists", tagName);
-		}
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
-	}
-
 	private ExtendedRedirectView deletePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
 		final String tagName = command.getPresetTagName();
 
-		if(present(tagName) && GroupUtils.deletePresetTag(groupToUpdate, tagName)) {
-			try {
-				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DELETE_PRESET_TAG, null);
-			} catch (final Exception ex) {
-				log.error("error while deleting the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
-			}
+		if(!present(tagName)) {
+			this.errors.reject("settings.group.presetTags.error.noTag");
 		} else {
-			this.errors.reject("settings.group.presetTags.error.notFound", tagName);
+			if (GroupUtils.deletePresetTag(groupToUpdate, tagName)) {
+				try {
+					this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DELETE_PRESET_TAG, null);
+				} catch (final Exception ex) {
+					log.error("error while deleting the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
+					this.errors.reject("settings.group.presetTags.error.updateFailed", tagName);
+				}
+			} else {
+				this.errors.reject("settings.group.presetTags.error.notFound", tagName);
+			}
 		}
+
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
+	}
+
+	private ExtendedRedirectView updatePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
+		final String tagName = command.getPresetTagName();
+		String cleanedTagName = tagName.replaceAll("\\s+","");
+		final String tagDescription = command.getPresetTagDescription();
+
+		if(!present(cleanedTagName)) {
+			this.errors.reject("settings.group.presetTags.error.noTag");
+		} else {
+			try {
+				GroupUtils.addOrUpdatePresetTag(groupToUpdate, cleanedTagName, tagDescription);
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_PRESET_TAG, null);
+			} catch (final Exception ex) {
+				log.error("error while adding/updating the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
+				this.errors.reject("settings.group.presetTags.error.updateFailed", tagName);
+			}
+		}
+
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
 	}
 

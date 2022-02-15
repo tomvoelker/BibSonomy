@@ -80,11 +80,11 @@ public enum GroupUpdateOperation {
 	/** deletes the pending group - used for the request deletion by the user */
 	DELETE_GROUP_REQUEST,
 
-	/** Add a preset tag */
-	ADD_PRESET_TAG,
-
 	/** Delete a preset tag */
 	DELETE_PRESET_TAG,
+
+	/** Add or update a preset tag */
+	UPDATE_PRESET_TAG,
 	
 	/** updates the API key of the group user **/
 	REGENERATE_API_KEY;

@@ -312,20 +312,32 @@ public class GroupUtils {
 		return list;
 	}
 
-	public static boolean addPresetTag(Group group, String tagName, String tagDescription) {
+	/**
+	 * Add or update a tag to the group's preset tag list.
+	 * @param group
+	 * @param tagName
+	 * @param tagDescription
+	 * @return true, if success
+	 */
+	public static boolean addOrUpdatePresetTag(Group group, String tagName, String tagDescription) {
 		Tag presetTag = new Tag(tagName);
 		presetTag.setDescription(tagDescription);
 
-		// TODO: maybe option to update exisiting tag
 		final List<Tag> groupPresetTags = group.getPresetTags();
-		if (groupPresetTags.contains(presetTag)) {
-			return false;
-		}
 
+		// remove old tag by name
+		groupPresetTags.remove(presetTag);
+		// add new tag
 		groupPresetTags.add(presetTag);
 		return true;
 	}
 
+	/**
+	 * Delete a tag from the group's preset tag list.
+	 * @param group
+	 * @param tagName
+	 * @return
+	 */
 	public static boolean deletePresetTag(Group group, String tagName) {
 		Tag presetTag = new Tag(tagName);
 

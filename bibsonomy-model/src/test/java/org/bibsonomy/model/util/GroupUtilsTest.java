@@ -98,19 +98,28 @@ public class GroupUtilsTest {
 	@Test
 	public void testAddPresetTag() {
 		Group group = new Group();
-		List<Tag> groupPresetTags = new ArrayList<>(Collections.singletonList(new Tag("tagtagtag")));
+		String tagName = "tagtagtag";
+		List<Tag> groupPresetTags = new ArrayList<>(Collections.singletonList(new Tag(tagName)));
 		group.setPresetTags(groupPresetTags);
 
 		// case tag doesn't exist yet
-		assertTrue(GroupUtils.addPresetTag(group, "newTag1", null));
-		assertTrue(GroupUtils.addPresetTag(group, "newTag2", null));
+		assertTrue(GroupUtils.addOrUpdatePresetTag(group, "newTag1", null));
+		assertTrue(GroupUtils.addOrUpdatePresetTag(group, "newTag2", null));
 
 		// case tag exists already
-		assertFalse(GroupUtils.addPresetTag(group, "newTag1", null));
-		assertFalse(GroupUtils.addPresetTag(group, "tagtagtag", null));
+		assertTrue(GroupUtils.addOrUpdatePresetTag(group, "newTag1", null));
+		String updatedDescription = "updated tag description";
+		assertTrue(GroupUtils.addOrUpdatePresetTag(group, "tagtagtag", updatedDescription));
 
 		// check size of group's preset tags
 		assertEquals(3, group.getPresetTags().size());
+
+		Tag testTag = group.getPresetTags()
+				.stream().filter(x -> x.getName().equals(tagName))
+				.findFirst()
+				.orElse(new Tag());
+		assertEquals(testTag.getName(), tagName);
+		assertEquals(testTag.getDescription(), updatedDescription);
 	}
 
 	@Test

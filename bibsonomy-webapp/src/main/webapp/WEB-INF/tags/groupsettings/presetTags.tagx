@@ -25,10 +25,18 @@
 		<c:choose>
 			<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
 
+				<bsform:fieldset legendKey="settings.group.presetTags">
+					<jsp:attribute name="content">
+						<p>
+							<fmt:message key="settings.group.presetTags.hint"/>
+						</p>
+					</jsp:attribute>
+				</bsform:fieldset>
+
 				<c:set var="allowEditTagList" value="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}" />
 				<c:if test="${allowEditTagList}">
-					<!-- Input to add new tags -->
-					<form:form cssClass="form-horizontal" name="presetTagForm" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
+					<!-- Form to add new tags -->
+					<form:form cssClass="form-horizontal" name="presetTagAddForm" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
 						<bsform:fieldset legendKey="settings.group.presetTags.action.add.title">
 							<jsp:attribute name="content">
 								<div class="form-group">
@@ -37,10 +45,10 @@
 									</form:label>
 
 									<div class="col-sm-9">
-										<form:input path="presetTagName" cssClass="form-control" />
+										<form:input cssClass="form-control" id="presetTagNameAdd" path="presetTagName"/>
 									</div>
 								</div>
-								<bsform:textarea id="presetTagDescription" path="presetTagDescription"
+								<bsform:textarea id="presetTagDescriptionAdd" path="presetTagDescription"
 												 labelKey="settings.group.presetTags.description"
 												 labelColSpan="3" inputColSpan="9">
 									<jsp:attribute name="helpText"><!-- keep me --></jsp:attribute>
@@ -49,19 +57,53 @@
 						</bsform:fieldset>
 
 						<div class="col-sm-offset-3 col-sm-9">
-							<p class="help-block">
-								<fmt:message key="settings.group.presetTags.action.add.hint"/>
-							</p>
-
 							<input type="hidden" name="groupname" value="${group.name}"/>
-							<input type="hidden" name="operation" value="ADD_PRESET_TAG" />
+							<input type="hidden" name="operation" value="UPDATE_PRESET_TAG" />
 							<fmt:message var="submitButton" key="settings.group.presetTags.action.add" />
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" onclick="checkAddTag()" />
 						</div>
 						<p class="clearfix"><br /></p>
 					</form:form>
+
+					<!-- Form to update existing tags -->
+					<c:if test="${not empty group.presetTags}">
+						<form:form cssClass="form-horizontal" name="presetTagUpdateForm" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
+							<bsform:fieldset legendKey="settings.group.presetTags.action.update.title">
+								<jsp:attribute name="content">
+									<div class="form-group">
+										<form:label cssClass="col-sm-3 control-label" path="presetTagName">
+										<fmt:message key="settings.group.presetTags.name" />
+										</form:label>
+
+										<div class="col-sm-9">
+											<form:select cssClass="form-control" id="presetTagNameUpdate" path="presetTagName">
+												<form:option value=""><fmt:message key="form.input.select"/></form:option>
+												<c:forEach items="${group.presetTags}" var="tag">
+													<form:option value="${tag.name}" data-description="${tag.description}">${tag.name}</form:option>
+												</c:forEach>
+											</form:select>
+										</div>
+									</div>
+									<bsform:textarea id="presetTagDescriptionUpdate" path="presetTagDescription"
+													 labelKey="settings.group.presetTags.description"
+													 labelColSpan="3" inputColSpan="9">
+										<jsp:attribute name="helpText"><!-- keep me --></jsp:attribute>
+									</bsform:textarea>
+								</jsp:attribute>
+							</bsform:fieldset>
+
+							<div class="col-sm-offset-3 col-sm-9">
+								<input type="hidden" name="groupname" value="${group.name}"/>
+								<input type="hidden" name="operation" value="UPDATE_PRESET_TAG" />
+								<fmt:message var="submitButton" key="settings.group.presetTags.action.update" />
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
+							</div>
+							<p class="clearfix"><br /></p>
+						</form:form>
+					</c:if>
 				</c:if>
 
+				<!-- List all preset tags for the group -->
 				<bsform:fieldset legendKey="settings.group.presetTags">
 					<jsp:attribute name="content">
 						<fmt:message var="locale" key="settings.locales.IETF"/>
