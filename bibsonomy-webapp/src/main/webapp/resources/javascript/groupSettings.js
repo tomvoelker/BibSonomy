@@ -2,6 +2,10 @@ $(function () {
     initPresetTagSelection();
 });
 
+/**
+ * Check, if tag name is given before submit.
+ * @returns {boolean}
+ */
 function checkAddTag() {
     var tagNameInput = $('#presetTagNameAdd');
     if (!tagNameInput.val()) {
@@ -12,6 +16,9 @@ function checkAddTag() {
     }
 }
 
+/**
+ * Updates description with selected tag.
+ */
 function initPresetTagSelection() {
     $('#presetTagNameUpdate').children('option').click(function () {
         $('#presetTagDescriptionUpdate').val($(this).data('description'));

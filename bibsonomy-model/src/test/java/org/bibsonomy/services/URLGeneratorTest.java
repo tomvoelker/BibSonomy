@@ -416,16 +416,10 @@ public class URLGeneratorTest {
 	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
 		String expectedUrl = projectHome + "settings/group/franzosengruppe";
-		assertEquals(expectedUrl, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null, null));
+		assertEquals(expectedUrl, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
 
 		String expectedUrlWithTab = projectHome + "settings/group/franzosengruppe?selTab=1";
-		assertEquals(expectedUrlWithTab, ug.getGroupSettingsUrlByGroupName("franzosengruppe", 1, null));
-
-		String expectedUrlWithError = projectHome + "settings/group/franzosengruppe?errorMessage=some.error.key";
-		assertEquals(expectedUrlWithError, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null, "some.error.key"));
-
-		String expectedUrlWithBoth = projectHome + "settings/group/franzosengruppe?selTab=1&errorMessage=some.error.key";
-		assertEquals(expectedUrlWithBoth, ug.getGroupSettingsUrlByGroupName("franzosengruppe", 1, "some.error.key"));
+		assertEquals(expectedUrlWithTab, ug.getGroupSettingsUrlByGroupName("franzosengruppe", 1));
 	}
 
 	@Test

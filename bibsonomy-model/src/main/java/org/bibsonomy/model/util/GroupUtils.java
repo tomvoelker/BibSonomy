@@ -351,6 +351,11 @@ public class GroupUtils {
 		return false;
 	}
 
+	/**
+	 * Creates map with tag name as key and tag object as value.
+	 * @param presetTags
+	 * @return
+	 */
 	public static Map<String, Tag> buildPresetTagMap(List<Tag> presetTags) {
 		Map<String, Tag> presetTagsMap = new HashMap<>();
 		for (Tag tag : presetTags) {

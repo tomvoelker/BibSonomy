@@ -172,14 +172,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			this.errors.reject("error.invalid_parameter");
 		}
 
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
 	}
 
-	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  Integer selTab, String errorKey) {
+	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  Integer selTab) {
 		// success: go back where you've come from
-		// TODO: inform the user about the success!
-		// FIXME: Error key should be replaced by a propper error handling
-		String redirectUrl = this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), selTab, errorKey);
+		String redirectUrl = this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), selTab);
 
 		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
@@ -225,7 +223,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			// TODO: what exceptions can be thrown?!
 		}
 
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
 	}
 
 	private void updateGroupPicture(final User groupUserToUpdate, GroupSettingsPageCommand command) {
@@ -253,16 +251,14 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		// the group to update
 		groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
 		this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
 	}
 
 	private ExtendedRedirectView addInvited(GroupSettingsPageCommand command, Group groupToUpdate, User loginUser) {
 		// sent an invite
 		final String username = command.getUsername();
 		if (present(username) && !username.equals(groupToUpdate.getName())) {
-			String errorKey = null;
-			// get user details with an admin logic to get the mail
-			// address
+			// get user details with an admin logic to get the mail address
 			final User invitedUser = this.adminLogic.getUserDetails(username);
 			if (UserUtils.isExistingUser(invitedUser)) {
 				final GroupMembership membership = groupToUpdate.getGroupMembershipForUser(invitedUser.getName());
@@ -285,18 +281,16 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 								"The User {0} couldn't be invited to the Group {1}.");
 					}
 				} else {
-					// TODO: handle case of already invited user
-					errorKey = "settings.group.error.alreadyInvited";
+					this.errors.reject("settings.group.error.alreadyInvited");
 				}
 			} else {
-				// TODO: handle case of non existing user!
-				errorKey = "settings.group.error.userDoesNotExist";
+				this.errors.reject("settings.group.error.userDoesNotExist");
 			}
 
 
-			return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, errorKey);
+			return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 		}
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 	}
 
 	private ExtendedRedirectView removeInvited(GroupSettingsPageCommand command, Group groupToUpdate, User loginUser) {
@@ -306,7 +300,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			try {
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
 				if (loginUser.getName().equals(username)) {
-					return new ExtendedRedirectView(this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), null, null));
+					return new ExtendedRedirectView(this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), null));
 				}
 			} catch (final Exception ex) {
 				log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
@@ -314,7 +308,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						"The invite of User {0} couldn't be removed.");
 			}
 		}
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 	}
 
 	private ExtendedRedirectView addMember(GroupSettingsPageCommand command, Group groupToUpdate) {
@@ -336,7 +330,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			}
 		}
 
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 	}
 
 	private ExtendedRedirectView removeMember(GroupSettingsPageCommand command, Group groupToUpdate, User loginUser) {
@@ -352,7 +346,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				// if we removed ourselves from the group, return the
 				// homepage.
 				if (loginUser.getName().equals(username)) {
-					return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+					return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 				}
 			} catch (final Exception ex) {
 				log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);
@@ -363,7 +357,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			}
 		}
 
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 	}
 
 	private ExtendedRedirectView declineJoinRequest(GroupSettingsPageCommand command, Group groupToUpdate) {
@@ -374,7 +368,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			final GroupMembership ms = new GroupMembership(declineUser, null, false);
 			try {
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
-				// TODO: I18N
 				this.mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), null, this.requestLogic.getLocale());
 			} catch (final Exception ex) {
 				log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
@@ -382,7 +375,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						"The request of User {0} couldn't be removed.");
 			}
 		}
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 	}
 
 	private ExtendedRedirectView updateGroupRole(GroupSettingsPageCommand command, Group groupToUpdate) {
@@ -398,7 +391,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				log.error("error while changing the the role of user '" + username + "' from group '" + groupToUpdate + "'", ex);
 			}
 		}
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
 	}
 
 	private ExtendedRedirectView deletePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
@@ -419,7 +412,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			}
 		}
 
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX);
 	}
 
 	private ExtendedRedirectView updatePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
@@ -439,14 +432,14 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			}
 		}
 
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX);
 	}
 
     private ExtendedRedirectView regenerateApiKey(GroupSettingsPageCommand command, Group groupToUpdate) {
         final User groupUser = this.logic.getUserDetails(groupToUpdate.getName());
         this.logic.updateUser(groupUser, UserUpdateOperation.UPDATE_API);
         log.debug("api key of groupuser" + groupUser.getName() + " has been changed successfully");
-		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
     }
 
 	@Override

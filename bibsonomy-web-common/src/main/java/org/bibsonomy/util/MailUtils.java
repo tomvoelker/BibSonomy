@@ -164,7 +164,7 @@ public class MailUtils {
 			UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(), // 5
 			this.projectName.toLowerCase(), // 6
 			this.projectEmail, // 7
-			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, 1, null), // 8
+			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, 1), // 8
 			this.projectBlog // 9
 		};
 		
@@ -244,7 +244,7 @@ public class MailUtils {
 			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
 			this.absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
-			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName(), null, null),
+			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName(), null),
 			this.projectHome,
 			this.projectEmail
 		};
