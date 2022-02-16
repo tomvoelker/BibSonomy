@@ -108,7 +108,7 @@ public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 		BibTexParam param = new BibTexParam();
 		param.setHash(interhash);
 		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
-		// query for the post and their relations
+		// query for the post and their relationsonGoldStandardUpdate
 		Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getGoldStandardByHash", param, session);
 		List<ResourcePersonRelation> relations = this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 		if (present(relations)) {
