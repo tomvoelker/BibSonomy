@@ -154,18 +154,18 @@ coverage:
       cobertura: coverage/target/site/coverage.xml
 
 deploy_results:
-stage: deploy
-image: ubuntu
-before_script: 
-  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
-  - eval $(ssh-agent -s)
-  - echo "$STATIC_DEPLOY_KEY" | tr -d '\r' | ssh-add -
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-  - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
-script:
-  - rsync -a ~/target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
+  stage: deploy
+  image: ubuntu
+  before_script: 
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$STATIC_DEPLOY_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - rsync -a ~/target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
 
 deploy_biblicious:
   stage: deploy
