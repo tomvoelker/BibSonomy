@@ -3,7 +3,7 @@ image: tomvoelker/maven-mariadb
 stages:
   - build
   - test
-  - report
+  - prepVisualize
   - visualize
   - deploy
 
@@ -90,6 +90,20 @@ test-scraper:
     expose_as: scrapertestresults
     paths:
       - target/
+
+deploy_results:
+  stage: prepVisualize
+  image: ubuntu
+  before_script: 
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/"$CI_COMMIT_BRANCH"/history/ target/report/history
 
 report:
   stage: visualize
