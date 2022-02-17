@@ -157,7 +157,7 @@ deploy_results:
   stage: deploy
   image: ubuntu
   before_script: 
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git rsync -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
