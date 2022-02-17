@@ -167,9 +167,9 @@ deploy_results:
   script:
     - echo ${CI_COMMIT_SHA:0:8}
     - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/$CI_COMMIT_BRANCH
-    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/$CI_COMMIT_BRANCH/{CI_COMMIT_SHA:0:8}
+    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/$CI_COMMIT_BRANCH/${CI_COMMIT_SHA:0:8}
     - rsync -a coverage/target/site/jacoco-aggregate bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/coverage/$CI_COMMIT_BRANCH
-    - rsync -a coverage/target/site/jacoco-aggregate bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/coverage/$CI_COMMIT_BRANCH/{CI_COMMIT_SHA:0:8}
+    - rsync -a coverage/target/site/jacoco-aggregate bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/coverage/$CI_COMMIT_BRANCH/${CI_COMMIT_SHA:0:8}
 
 deploy_biblicious:
   stage: deploy
