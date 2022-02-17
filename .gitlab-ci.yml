@@ -165,7 +165,9 @@ deploy_results:
     - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
+    - if [ "$CI_COMMIT_BRANCH" == "master" ]; then DIR=""; else DIR="/branch/$CI_COMMIT_BRANCH"; fi
+    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/allure-results${DIR}
+    - rsync -a coverage/target/site/jacoco-aggregate bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/coverage${DIR}
 
 deploy_biblicious:
   stage: deploy
