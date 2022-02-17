@@ -104,6 +104,7 @@ get_history:
     - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
+    - mkdir allure-results/history
     - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/"$CI_COMMIT_BRANCH"/latest/history/ allure-results/history
 
 report:
