@@ -159,7 +159,7 @@ deploy_results:
   before_script: 
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
-    - echo "$STATIC_DEPLOY_KEY" | tr -d '\r' | ssh-add -
+    - echo "${STATIC_DEPLOY_KEY}" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
