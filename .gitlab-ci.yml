@@ -91,7 +91,7 @@ test-scraper:
     paths:
       - target/
 
-deploy_results:
+get_history:
   stage: prepVisualize
   image: ubuntu
   allow_failure: true
