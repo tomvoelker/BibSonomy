@@ -157,7 +157,7 @@ deploy_results:
   stage: deploy
   image: ubuntu
   before_script: 
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git rsync -y )'
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -165,7 +165,7 @@ deploy_results:
     - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - rsync -a ~/target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
+    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
 
 deploy_biblicious:
   stage: deploy
