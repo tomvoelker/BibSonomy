@@ -111,7 +111,6 @@ report:
   image: tomvoelker/simple-allure-cli
   script:
     - allure generate -c -o target/report allure-results
-  needs: ["test"]
   dependencies:
     - test
   artifacts:
