@@ -1,0 +1,6 @@
+FROM maven:3-openjdk-8
+
+RUN apt-get upgrade -y
+RUN apt-get update && apt-get install mariadb-server -y
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
