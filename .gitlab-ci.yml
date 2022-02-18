@@ -104,7 +104,7 @@ get_history:
     - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/"$CI_COMMIT_BRANCH"/latest/testresults/history allure-results
+    - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/"$CI_COMMIT_BRANCH"/latest/testresults/history allure-results || rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/master/latest/testresults/history allure-results
   artifacts:
     untracked: true
 
