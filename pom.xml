@@ -410,6 +410,11 @@
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
+						<configuration>
+							<append>true</append>
+							<!-- Sets the VM argument line used when unit tests are run. -->
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
 					</execution>
 
 					<!-- create report during maven verify phase -->
@@ -428,9 +433,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin}</version>
 				<configuration>
-					<testFailureIgnore>false</testFailureIgnore>
+					<testFailureIgnore>true</testFailureIgnore>
 					<argLine>
-						-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+						${surefireArgLine} -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
 					</argLine>
 					<properties>
 						<property>
