@@ -115,7 +115,7 @@ report:
     - allure generate -c -o target/report allure-results
   dependencies:
     - test
-    - prepVisualize
+    - get_history
   artifacts:
     untracked: true
     when: always
@@ -171,7 +171,8 @@ deploy_results:
   stage: deploy
   image: ubuntu
   dependencies:
-    - visualize
+    - report
+    - coverage
   before_script: 
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
     - eval $(ssh-agent -s)
