@@ -104,8 +104,7 @@ get_history:
     - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - mkdir allure-results/history
-    - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/"$CI_COMMIT_BRANCH"/latest/history/ allure-results/history
+    - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/"$CI_COMMIT_BRANCH"/latest/testresults/history allure-results
 
 report:
   stage: visualize
@@ -178,10 +177,12 @@ deploy_results:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - echo "${CI_COMMIT_SHA:0:8}"
-    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/"$CI_COMMIT_BRANCH"/latest
-    - rsync -a target/report/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/testresults/"$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"
-    - rsync -a coverage/target/site/jacoco-aggregate/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/coverage/"$CI_COMMIT_BRANCH"/latest
-    - rsync -a coverage/target/site/jacoco-aggregate/ bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/coverage/"$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"
+    - mkdir -p "$CI_COMMIT_BRANCH"/latest/testresults "$CI_COMMIT_BRANCH"/latest/coverage "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/testresults "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage
+    - cp -r target/report/ "$CI_COMMIT_BRANCH"/latest/testresults
+    - cp -r target/report/ "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/testresults
+    - cp -r coverage/target/site/jacoco-aggregate/ "$CI_COMMIT_BRANCH"/latest/coverage
+    - cp -r coverage/target/site/jacoco-aggregate/ "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage
+    - rsync -a "$CI_COMMIT_BRANCH" bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
 
 deploy_biblicious:
   stage: deploy
