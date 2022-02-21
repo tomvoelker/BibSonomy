@@ -54,6 +54,7 @@
 		<property name="path" ref="helpPath" />
 		<property name="projectName" ref="projectName"/>
 		<property name="projectTheme" ref="projectTheme"/>
+		<property name="projectHelpTheme" ref="helpTheme"/>
 		<property name="projectHome" ref="projectHome" />
 		<property name="projectEmail" ref="projectEmail" />
 		<property name="projectNoSpamEmail" ref="projectNoSpamEmail" />
