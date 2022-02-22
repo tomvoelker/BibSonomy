@@ -143,7 +143,7 @@ public class Group implements Linkable, Serializable {
 	 * default constructor
 	 */
 	public Group() {
-		this.presetTags = new ArrayList<>();
+		//noop
 	}
 
 	/**
