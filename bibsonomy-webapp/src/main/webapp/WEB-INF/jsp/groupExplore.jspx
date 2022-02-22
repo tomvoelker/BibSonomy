@@ -96,7 +96,7 @@
 							<!--<h3><fmt:message key="explore.filter.header"/></h3>-->
 							<a id="resetFilterLink" href="#" onclick="resetFilterSelection()"><fmt:message key="explore.filter.reset"/></a>
 						</div>
-						<c:if test="${groupName eq properties['explore.group.id']}">
+						<c:if test="${groupName eq properties['group.explore.nav.id']}">
 							<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" hide="${true}" />
 							<div id="filter-list-custom" class="filter-list hidden" data-field="tags">
 								<sidebar:sidebarHeader textKey="explore.filter.custom.header" iconKey="sitemap"/>

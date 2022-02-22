@@ -20,7 +20,7 @@
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
 
-	<c:set var="exploreGroupId" value="${properties['explore.group.id']}" />
+	<c:set var="exploreGroupId" value="${properties['group.explore.nav.id']}" />
 	<c:set var="actualGroups" value="${mtl:filterGroups(loginUser.groups, false)}" />
 	<c:set var="organizations" value="${mtl:filterGroups(loginUser.groups, true)}" />
 

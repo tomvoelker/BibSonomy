@@ -60,7 +60,9 @@
 
 			<groupsettings:userlists command="${command}" group="${group}" />
 
-			<groupsettings:presetTags command="${command}" group="${group}" />
+			<c:if test="${properties['group.presetTags.enabled']}">
+				<groupsettings:presetTags command="${command}" group="${group}" />
+			</c:if>
 
 			<groupsettings:cv command="${command}" group="${group}" />
 

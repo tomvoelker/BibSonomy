@@ -186,7 +186,6 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.ValidationUtils;
 

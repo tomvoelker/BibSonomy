@@ -37,12 +37,14 @@
 			<p class="help-block"><fmt:message key="post.resource.sentTo.help"/></p>
 		</div>
 
-		<c:forEach items="${groups}" var="group">
-			<c:if test="${not empty group.presetTags}">
-				<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
-					<post:groupPresetTagBox group="${group}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
-				</div>
-			</c:if>
-		</c:forEach>
+		<c:if test="${properties['group.presetTags.enabled']}">
+			<c:forEach items="${groups}" var="group">
+				<c:if test="${not empty group.presetTags}">
+					<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
+						<post:groupPresetTagBox group="${group}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
+					</div>
+				</c:if>
+			</c:forEach>
+		</c:if>
 	</div>
 </jsp:root>
