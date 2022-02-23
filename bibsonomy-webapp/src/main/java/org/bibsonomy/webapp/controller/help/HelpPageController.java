@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Setter;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.help.HelpUtils;
@@ -71,6 +72,7 @@ import org.springframework.validation.Errors;
  *
  * @author Johannes Blum
  */
+@Setter
 public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware, ResponseAware, ErrorAware {
 	/** the help home page */
 	private static final String HELP_HOME = "Main";
@@ -92,6 +94,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/** the project theme */
 	private String projectTheme;
+
+	/** the help theme */
+	private String helpTheme;
 	
 	/** the url of the project */
 	private String projectHome;
@@ -135,12 +140,23 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		if (!present(theme)) {
 			theme = this.projectTheme;
 		}
-		
+
+		// Override help theme if parameter set
+		String helpTheme = command.getHelpTheme();
+		if (!present(helpTheme)) {
+			// Fall back to project theme, if none set
+			if (present(this.helpTheme)) {
+				helpTheme = this.helpTheme;
+			} else {
+				helpTheme = this.projectTheme;
+			}
+		}
+
 		/* Image request */
 		final String image = command.getFilename();
 		if (present(image)) {
 			// Project specific image
-			String filename = this.helpPath + language + "/" + HELP_IMG_DIR + "/" + theme + "/" + image;
+			String filename = this.helpPath + language + "/" + HELP_IMG_DIR + "/" + helpTheme + "/" + image;
 			
 			File imageFile = new File(filename);
 			if (!imageFile.exists()) {
@@ -159,7 +175,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		}
 
 		// TODO: maybe we should use a prototype for creating the parser
-		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail);
+		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, helpTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail);
 		// instantiate a new parser
 		final Parser parser = new Parser(replacements, this.urlGenerator);
 		
@@ -297,85 +313,6 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		// Nothing found
 		return HELP_HOME;
-	}
-
-	/**
-	 * @param projectName the projectName to set
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	/**
-	 * @param projectTheme the projectTheme to set
-	 */
-	public void setProjectTheme(String projectTheme) {
-		this.projectTheme = projectTheme;
-	}
-	
-	/**
-	 * @param requestLogic the requestLogic to set
-	 */
-	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
-	 * @param responseLogic the responseLogic to set
-	 */
-	@Override
-	public void setResponseLogic(ResponseLogic responseLogic) {
-		this.responseLogic = responseLogic;
-	}
-
-	/**
-	 * @param urlGenerator the urlGenerator to set
-	 */
-	public void setUrlGenerator(URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
-
-	/**
-	 * @param helpPath the helpPath to set
-	 */
-	public void setHelpPath(String helpPath) {
-		this.helpPath = helpPath;
-	}
-
-	/**
-	 * @param projectHome the projectHome to set
-	 */
-	public void setProjectHome(String projectHome) {
-		this.projectHome = projectHome;
-	}
-
-	/**
-	 * @param projectEmail the projectEmail to set
-	 */
-	public void setProjectEmail(String projectEmail) {
-		this.projectEmail = projectEmail;
-	}
-	
-	/**
-	 * @param projectNoSpamEmail the projectNoSpamEmail to set
-	 */
-	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
-		this.projectNoSpamEmail = projectNoSpamEmail;
-	}
-
-	/**
-	 * @param projectAPIEmail the projectAPIEmail to set
-	 */
-	public void setProjectAPIEmail(String projectAPIEmail) {
-		this.projectAPIEmail = projectAPIEmail;
-	}
-
-	/**
-	 * @param search the search to set
-	 */
-	public void setSearch(HelpSearch search) {
-		this.search = search;
 	}
 
 	@Override

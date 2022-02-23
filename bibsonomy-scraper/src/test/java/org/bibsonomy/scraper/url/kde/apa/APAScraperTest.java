@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.apa;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,6 +39,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class APAScraperTest {
+	String resultDirectory = "apa/";
 
 	/**
 	 * starts URL test with id url_244
@@ -47,18 +47,16 @@ public class APAScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://psycnet.apa.org/record/1996-02773-003";
-		final String resultFile = "APAScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "APAScraperUnitURLTest1.bib";
 		assertScraperResult(url, APAScraper.class, resultFile);
 	}
 
-	/**
-	 * starts URL test with id url_245
-	 */
+
 	@Test
 	public void url2TestRun(){
-		final String url = "https://psycnet.apa.org/record/1996-02773-003";
-		final String resultFile = "APAScraperUnitURLTest2.bib";
+		final String url = "https://psycnet.apa.org/record/1992-37683-001";
+		final String resultFile = resultDirectory + "APAScraperUnitURLTest2.bib";
 		assertScraperResult(url, APAScraper.class, resultFile);
 	}
-	
+
 }

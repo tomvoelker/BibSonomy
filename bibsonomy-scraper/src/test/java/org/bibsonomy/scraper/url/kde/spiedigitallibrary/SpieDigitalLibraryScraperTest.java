@@ -40,11 +40,32 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class SpieDigitalLibraryScraperTest {
+	String resultDirectory = "spiedigitallibary/";
 	/**
 	 * starts URL test with id url_350
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://remotesensing.spiedigitallibrary.org/article.aspx?articleid=2099648", SpieDigitalLibraryScraper.class, "SpieDigitalLibraryScraperUnitURLTest1.bib");
+		final String url = "https://www.spiedigitallibrary.org/journals/journal-of-applied-remote-sensing/volume-9/issue-01/097099/Economic-impacts-of-climate-change-on-agriculture--the-AgMIP/10.1117/1.JRS.9.097099.full?SSO=1";
+		final String resultFile = resultDirectory + "SpieDigitalLibraryScraperUnitURLTest1.bib";
+		assertScraperResult(url, SpieDigitalLibraryScraper.class, resultFile);
+	}
+	@Test
+	public void url2TestRun(){
+		final String url = "https://www.spiedigitallibrary.org/journals/journal-of-biomedical-optics/volume-26/issue-04/043001/Special-Section-Guest-Editorial--Advances-in-Terahertz-Biomedical-Science/10.1117/1.JBO.26.4.043001.full";
+		final String resultFile = resultDirectory + "SpieDigitalLibraryScraperUnitURLTest2.bib";
+		assertScraperResult(url, SpieDigitalLibraryScraper.class, resultFile);
+	}
+	@Test
+	public void url3Test1Run(){
+		final String url = "https://www.spiedigitallibrary.org/journals/optical-engineering/volume-61/issue-3/031205/Effect-of-humidity-on-the-performance-of-Al-LiF-eMgF2/10.1117/1.OE.61.3.031205.short";
+		final String resultFile = resultDirectory + "SpieDigitalLibraryScraperUnitURLTest3.bib";
+		assertScraperResult(url, SpieDigitalLibraryScraper.class, resultFile);
+	}
+	@Test
+	public void url3Test2Run(){
+		final String url = "https://www.spiedigitallibrary.org/journals/optical-engineering/volume-61/issue-3/031205/Effect-of-humidity-on-the-performance-of-Al-LiF-eMgF2/10.1117/1.OE.61.3.031205.short?tab=ArticleLinkReference";
+		final String resultFile = resultDirectory + "SpieDigitalLibraryScraperUnitURLTest3.bib";
+		assertScraperResult(url, SpieDigitalLibraryScraper.class, resultFile);
 	}
 }

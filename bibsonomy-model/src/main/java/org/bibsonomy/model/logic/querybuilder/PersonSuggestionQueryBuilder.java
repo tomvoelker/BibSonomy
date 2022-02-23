@@ -29,11 +29,14 @@
  */
 package org.bibsonomy.model.logic.querybuilder;
 
+import lombok.Getter;
+
 /**
  * TODO: add documentation to this class
  *
  * @author jensi
  */
+@Getter
 public class PersonSuggestionQueryBuilder extends AbstractSuggestionQueryBuilder<PersonSuggestionQueryBuilder> {
 
 	private boolean preferUnlinked;
@@ -63,10 +66,6 @@ public class PersonSuggestionQueryBuilder extends AbstractSuggestionQueryBuilder
 		return this;
 	}
 
-	public boolean isPreferUnlinked() {
-		return this.preferUnlinked;
-	}
-
 	/**
 	 * @param allowNamesWithoutEntities - whether the query response may contain names of bibtex-authors/editors that are not associated to a person entity.
 	 * @return this
@@ -75,11 +74,5 @@ public class PersonSuggestionQueryBuilder extends AbstractSuggestionQueryBuilder
 		this.allowNamesWithoutEntities = allowNamesWithoutEntities;
 		return this;
 	}
-
-	/**
-	 * @return see {@link #allowNamesWithoutEntities(boolean)}
-	 */
-	public boolean isAllowNamesWithoutEntities() {
-		return this.allowNamesWithoutEntities;
-	}
+	
 }

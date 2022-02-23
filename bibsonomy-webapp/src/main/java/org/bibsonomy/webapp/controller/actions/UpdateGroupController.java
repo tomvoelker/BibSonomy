@@ -234,7 +234,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				 */
 				final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 				final boolean sharedDocs = command.getSharedDocuments() == 1;
-				final boolean allowJoin = command.getAllowJoin();
+				final boolean allowJoin = command.isAllowJoin();
 				final String realname = command.getRealname();
 				final URL homepage = command.getHomepage();
 				final String description = command.getDescription();
@@ -364,9 +364,10 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			try {
 				this.fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
 			} catch (final Exception ex) {
+				this.errors.reject("settings.picture.change.error",  new Object[]{ex.getMessage()}, "error while writing group picture");
 				log.error("error while writing group picture", ex);
 			}
-		} else if (command.getDeletePicture()) {
+		} else if (command.isDeletePicture()) {
 			this.fileLogic.deleteProfilePictureForUser(groupUserToUpdate.getName());
 		}
 	}

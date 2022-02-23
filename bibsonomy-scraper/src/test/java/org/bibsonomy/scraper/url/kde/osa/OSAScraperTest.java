@@ -48,6 +48,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OSAScraperTest {
+	String resultDirectory = "osa/";
 	
 	/**
 	 * starts URL test with id url_93
@@ -55,7 +56,7 @@ public class OSAScraperTest {
 	@Test
 	public void urlTestRun(){
 		final String url = "https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084";
-		final String resultFile = "OSAScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "OSAScraperUnitURLTest.bib";
 		assertScraperResult(url, null, OSAScraper.class, resultFile);
 	}
 	

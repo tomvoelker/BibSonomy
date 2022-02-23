@@ -36,6 +36,7 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="sidebarId" type="java.lang.String" required="false"/>
 	
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
@@ -45,7 +46,8 @@
 		requestedUser="${requestedUser}"
 		requPath="${requPath}"
 		activeTab="${activeTab}"
-		noSidebar="${noSidebar }">
+		noSidebar="${noSidebar }"
+		sidebarId="${sidebarId}">
 	
 		<jsp:attribute name="breadcrumbs">
 			<jsp:invoke fragment="breadcrumbs" />

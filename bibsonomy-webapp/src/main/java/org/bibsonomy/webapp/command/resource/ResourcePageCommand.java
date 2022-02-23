@@ -32,6 +32,8 @@ package org.bibsonomy.webapp.command.resource;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -44,6 +46,8 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  *
  * @param <R> the resource
  */
+@Setter
+@Getter
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
 
@@ -64,121 +68,4 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	
 	private String requestedTitle;
 
-	/**
-	 * @return the intraHash of a post
-	 */
-	@Deprecated
-	public String getIntraHash() {
-		return this.intraHash;
-	}
-
-	/**
-	 * set the intraHash of a post
-	 * 
-	 * @param intraHash
-	 */
-	@Deprecated
-	public void setIntraHash(final String intraHash) {
-		this.intraHash = intraHash;
-	}
-
-	/**
-	 * @return the owner of the post
-	 */
-	public String getPostOwner() {
-		return this.postOwner;
-	}
-
-	/**
-	 * set the owner of a post
-	 * 
-	 * @param postOwner
-	 */
-	public void setPostOwner(final String postOwner) {
-		this.postOwner = postOwner;
-	}
-
-	/**
-	 * @return the requestedHash
-	 */
-	public String getRequestedHash() {
-		return this.requestedHash;
-	}
-
-	/**
-	 * @param requestedHash the requestedHash to set
-	 */
-	public void setRequestedHash(final String requestedHash) {
-		this.requestedHash = requestedHash;
-	}
-
-	/**
-	 * @return the postOfLoggedInUser
-	 */
-	public Post<R> getPostOfLoggedInUser() {
-		return this.postOfLoggedInUser;
-	}
-
-	/**
-	 * @param postOfLoggedInUser the postOfLoggedInUser to set
-	 */
-	public void setPostOfLoggedInUser(Post<R> postOfLoggedInUser) {
-		this.postOfLoggedInUser = postOfLoggedInUser;
-	}
-
-	/**
-	 * @return the discussionItems
-	 */
-	public List<DiscussionItem> getDiscussionItems() {
-		return this.discussionItems;
-	}
-
-	/**
-	 * @param discussionItems the discussionItems to set
-	 */
-	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
-		this.discussionItems = discussionItems;
-	}
-
-	/**
-	 * @return the copyUsersMap
-	 */
-	public Map<String, List<String>> getCopyUsersMap() {
-		return this.copyUsersMap;
-	}
-
-	/**
-	 * @param copyUsersMap the copyUsersMap to set
-	 */
-	public void setCopyUsersMap(final Map<String, List<String>> copyUsersMap) {
-		this.copyUsersMap = copyUsersMap;
-	}
-
-	/**
-	 * @return the resourceClass
-	 */
-	public Class<R> getResourceClass() {
-		return this.resourceClass;
-	}
-
-	/**
-	 * @param resourceClass the resourceClass to set
-	 */
-	public void setResourceClass(final Class<R> resourceClass) {
-		this.resourceClass = resourceClass;
-	}
-
-	/**
-	 * @return the requestedTitle
-	 */
-	public String getRequestedTitle() {
-		return this.requestedTitle;
-	}
-
-	/**
-	 * @param requestedTitle the requestedTitle to set
-	 */
-	public void setRequestedTitle(String requestedTitle) {
-		this.requestedTitle = requestedTitle;
-	}
 }

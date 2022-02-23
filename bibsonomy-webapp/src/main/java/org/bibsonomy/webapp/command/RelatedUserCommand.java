@@ -33,31 +33,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 
 /**
  * @author daill
  */
+@Getter
+@Setter
 public class RelatedUserCommand extends BaseCommand {
 	
 	/**
 	 *  set of user to show
 	 */
 	private Set<User> relatedUsers = new HashSet<User>();
-
-	/**
-	 * @return set of user
-	 */
-	public Set<User> getRelatedUsers() {
-		return this.relatedUsers;
-	}
-
-	/**
-	 * @param relatedUsers the relatedUsers to set
-	 */
-	public void setRelatedUsers(final Set<User> relatedUsers) {
-		this.relatedUsers = relatedUsers;
-	}
 	
 	/**
 	 * TODO: should be a set as parameter

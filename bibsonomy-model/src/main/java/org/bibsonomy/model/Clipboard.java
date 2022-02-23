@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -38,22 +41,11 @@ import java.io.Serializable;
  * 
  * @author Dominik Benz
  */
+@Getter
+@Setter
 public class Clipboard implements Serializable {
 	private static final long serialVersionUID = -3051707370037449963L;
 
 	private int numPosts;
 
-	/**
-	 * @return numPosts
-	 */
-	public int getNumPosts() {
-		return this.numPosts;
-	}
-
-	/**
-	 * @param numPosts
-	 */
-	public void setNumPosts(int numPosts) {
-		this.numPosts = numPosts;
-	}
 }

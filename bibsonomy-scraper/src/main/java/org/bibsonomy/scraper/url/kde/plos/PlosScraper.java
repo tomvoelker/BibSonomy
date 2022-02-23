@@ -29,13 +29,6 @@
  */
 package org.bibsonomy.scraper.url.kde.plos;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -46,34 +39,33 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Scraper for X.plosjournals.org
  * @author tst
  */
 public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesScraper {
 
-	private static final String SITE_NAME = "PLoS";
-	private static final String SITE_URL = "http://www.plos.org/journals/index.php";
+	private static final String SITE_NAME = "PLOS";
+	private static final String SITE_URL = "https://plos.org/";
 	private static final String INFO = "Scraper for journals from " + href(SITE_URL, SITE_NAME)+".";
 
 	/*
 	 * ending of plos journal URLs
 	 */
 	private static final String PLOS_JOURNALS_HOST_ENDING = "journals.plos.org";
-	private static final String PLOS_BIOLOGY_HOST_ENDING = "plosbiology.org";
-	private static final String PLOS_MEDICINE_HOST_ENDING = "plosmedicine.org";
-	private static final String PLOS_COMPUTATIONAL_BIOLOGY_ENDING = "ploscompbiol.org";
-	private static final String PLOS_GENETICS_ENDING = "plosgenetics.org";
-	private static final String PLOS_PATHOGENS_ENDING = "plospathogens.org";
-	private static final String PLOS_ONE_ENDING = "plosone.org";
-	private static final String PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING = "plosntds.org";
 
 	private static final String HTTP = "http://";
 
 	/*
 	 * download url prefix
 	 */
-	private static final String PLOS_DOWNLOAD_URL_PREFIX = "/article/getBibTexCitation.action?articleURI=";
 	private static final String PLOS_DOWNLOAD_URL_PREFIX2 = "/plosone/article/citation/bibtex?";
 	private static final String PLOS_INFO_PATTERN_STRING = "(info:doi/.*/\\w+.\\w+.\\d+)";
 	private static final String PLOS_INFO_PATTERN_STRING2 = "(id=.*/\\w+.\\w+.\\d+)";
@@ -91,13 +83,6 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 	static { 
 		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_JOURNALS_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_BIOLOGY_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_MEDICINE_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_COMPUTATIONAL_BIOLOGY_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_GENETICS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_PATHOGENS_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_ONE_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<>(Pattern.compile(".*" + PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	@Override
@@ -125,34 +110,12 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 			if (!_m.find())
 				return null;
 		}
-				
 		final String info = _m.group(1);
 		
 		if (!ValidationUtils.present(info)) return null;
 
 		if (decodedUrl.contains(PLOS_JOURNALS_HOST_ENDING))
 			return HTTP + PLOS_JOURNALS_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX2 + info;
-		
-		if (decodedUrl.contains(PLOS_BIOLOGY_HOST_ENDING)) 
-			return HTTP + PLOS_BIOLOGY_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-
-		if (decodedUrl.contains(PLOS_MEDICINE_HOST_ENDING)) 
-			return HTTP + PLOS_MEDICINE_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-
-		if (decodedUrl.contains(PLOS_COMPUTATIONAL_BIOLOGY_ENDING)) 
-			return HTTP + PLOS_COMPUTATIONAL_BIOLOGY_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-
-		if (decodedUrl.contains(PLOS_GENETICS_ENDING)) 
-			return HTTP + PLOS_GENETICS_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-
-		if (decodedUrl.contains(PLOS_PATHOGENS_ENDING)) 
-			return HTTP + PLOS_PATHOGENS_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-
-		if (decodedUrl.contains(PLOS_ONE_ENDING)) 
-			return HTTP + PLOS_ONE_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
-
-		if (decodedUrl.contains(PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING))
-			return HTTP + PLOS_NEGLECTED_TROPICAL_DISEASES_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
 
 		return null;
 	}

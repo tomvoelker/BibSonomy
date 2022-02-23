@@ -29,7 +29,14 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -38,52 +45,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig.Builder;
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
-import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.XmlUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 
 /**
  * Scraper for IEEE Explore
  * @author rja
  */
 public class IEEEXploreBookScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(IEEEXploreBookScraper.class);
 
 	private static final String SITE_NAME = "IEEEXplore Books";
-	private static final String SITE_URL = "https://ieeexplore.ieee.org/books/bkbrowse.jsp";
-
-	private static final String info = "This scraper creates a BibTeX entry for the books at " +
-			href(SITE_URL, SITE_NAME);
-
+	private static final String SITE_URL = "https://ieeexplore.ieee.org/";
 	private static final String IEEE_HOST        = "ieeexplore.ieee.org";
 	private static final String IEEE_BOOK_PATH   = "book";
-	private static final String IEEE_BOOK	     = "@book";
 
-	private static final String CONST_ISBN     = "ISBN: ";
-	private static final String CONST_PAGES    = "Page(s): ";
-	private static final String CONST_ON_PAGES = "On page(s): ";
-	private static final String CONST_EDITION  = "Edition: ";
-	private static final String CONST_VOLUME   = "Volume: ";
-	private static final String CONST_DATE	   = "Publication Date: ";
+	private static final String info = "This scraper creates a BibTeX entry for the books at " + href(SITE_URL, SITE_NAME);
 
-	private static final Pattern PAGE_PATTERN_ISBN = Pattern.compile("ISBN[^>]++>\\s++([\\d]++)");
-
+	private static final Pattern META_DATA_PATTERN = Pattern.compile("<script type=\"text/javascript\">\\s*xplGlobal\\.document\\.metadata=(.*?);\\s*</script>");
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<>(Collections.singletonList(
 					new Pair<>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*"))
@@ -92,229 +68,29 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		final String url = sc.getUrl().toExternalForm();
-
-		/*
-		 * For some reason we need to get the page first, otherwise we get a strange result.
-		 * As we might need the page content later on to extract the ISBN, we store it here.
-		 */
-
-		// We have to proof the visit of several locations
-		final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
-		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
-		defaultRequestConfig.setCircularRedirectsAllowed(true);
-		final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
-		// infinite redirect loops already prevented in WebUtils.getHttpClient()
-		// better get the page first
-		final String pageContent;
 		try {
-			pageContent = WebUtils.getContentAsString(client, url, null, null, null);
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
+			String pageContent = WebUtils.getContentAsString(sc.getUrl());
+			Matcher m_metaData = META_DATA_PATTERN.matcher(pageContent);
+
+			if (m_metaData.find()){
+				JSONObject metaDataJson = JSONObject.fromObject(m_metaData.group(1));
+				JSONArray ISBNsJson = metaDataJson.getJSONArray("isbn");
+
+				//tries all isbns until a bibtex is returned
+				for (int i = 0; i < ISBNsJson.size(); i++) {
+					try {
+						String isbn = ISBNsJson.getJSONObject(i).getString("value");
+						String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
+						sc.setBibtexResult(bibtex);
+						return true;
+					}catch (IOException |ScrapingException ignored){}
+				}
+
+			}
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
-
-		String bibtex = null;
-		// let's try to scrape it by isbn
-		try {
-			final Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(pageContent);
-			if (isbnMatcher.find()) {
-				final String isbn = isbnMatcher.group(1);
-				bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, url);
-				if (present(bibtex)) {
-					sc.setBibtexResult(bibtex);
-					return true;
-				}
-			}
-		} catch (IOException ex) {
-			throw new ScrapingException(ex);
-		}
-
-		log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + url);
-		sc.setBibtexResult(ieeeBookScrape(sc));
-		return true;
-	}
-
-	/**
-	 * @param sc
-	 * @return the resulting BibTeX
-	 * @throws ScrapingException
-	 */
-	public String ieeeBookScrape(ScrapingContext sc) throws ScrapingException {
-		try{
-			//-- init all NodeLists and Node
-			NodeList pres 		= null; 
-			Node currNode 		= null;
-			NodeList temp 		= null;
-
-			//-- init String map for bibtex entries
-			String type 		= IEEE_BOOK;
-			String url 			= sc.getUrl().toString();
-			String authors 		= "";
-			String numpages 	= "";
-			String title 		= "";
-			String isbn 		= "";
-			String publisher 	= "";
-			String month 		= "";
-			String year 		= "";
-			String edition 		= "";
-			String abstr 		= "";
-
-			String bibtexkey	= null;
-			String _tempabs		= null;
-			String ident1		= null;
-			String ident2		= null;
-
-			//-- get the html doc and parse the DOM
-			final Document doc = XmlUtils.getDOM(sc.getPageContent());
-
-			/*
-			 * -- Search title and extract --
-			 * The title has always the css-class "headNavBlueXLarge".
-			 *
-			 * FIXME: this part could be deprecated. don't knot it at all...
-			 *
-			pres = null;
-			pres = doc.getElementsByTagName("span"); //get all <span>-Tags
-			for (int i = 0; i < pres.getLength(); i++) {
-				Node curr = pres.item(i);
-				Element g = (Element)curr;
-				Attr own = g.getAttributeNode("class");			
-
-				//-- Extract the title
-				if ("headNavBlueXLarge".equals(own.getValue())){
-					title = curr.getFirstChild().getNodeValue();
-				}
-			} */
-
-			if (!ValidationUtils.present(title)) {
-				ident1 = "<title>";
-				ident2 = "</title>";
-				if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
-					int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
-					int _endIndex   = sc.getPageContent().indexOf(ident2);
-					title = sc.getPageContent().substring(_startIndex, _endIndex);
-					title = title.replaceAll("IEEEXplore#\\s", "");
-				}
-			}
-
-			/* 
-			 * get the abstract block
-			 * 
-			 * FIXME: this part could be deprecated. don't knot it at all...
-			 * 
-			ident1 = "<strong>Abstract</strong>";
-			ident2 = "<strong>Table of Contents </strong>";
-			if (sc.getPageContent().indexOf(ident1) != -1 && sc.getPageContent().indexOf(ident2) != -1 ){
-				_tempabs = sc.getPageContent().substring(sc.getPageContent().indexOf(ident1)+ident1.length(),sc.getPageContent().indexOf(ident2)).replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
-				abstr = _tempabs;			
-			} */
-
-			ident1 = "<span class=\"sectionHeaders\">Abstract</span>";
-			ident2 = "<td class=\"bodyCopyGrey\"><p class=\"bodyCopyGreySpaced\"><strong>";
-			if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
-				int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
-				int _endIndex   = sc.getPageContent().indexOf(ident2);
-				_tempabs = sc.getPageContent().substring(_startIndex, _endIndex);
-				abstr = _tempabs.replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
-			}
-
-			/* 
-			 * get the book formats like hardcover
-			 * 
-			 * FIXME: this part could be deprecated. don't knot it at all...
-			 * 
-			 *
-			ident1 = "<td class=\"bodyCopyBlackLarge\" nowrap>Hardcover</td>";
-			ident2 = "<td class=\"bodyCopyBlackLarge\" nowrap><span class=\"sectionHeaders\">&raquo;</span>";
-			if (sc.getPageContent().indexOf(ident1) != -1){
-				_format = sc.getPageContent().substring(sc.getPageContent().indexOf(ident1),sc.getPageContent().indexOf(ident2)).replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "");
-
-				_format = _format.substring(_format.indexOf(CONST_ISBN) + CONST_ISBN.length());
-				isbn = _format.substring(0,_format.indexOf("&nbsp;"));
-			}*/
-
-			/*-- get all <p>-Tags to extract the standard informations
-			 *  In every standard page the css-class "bodyCopyBlackLargeSpaced"
-			 *  indicates the collection of all informations.
-			 * */
-			pres = doc.getElementsByTagName("p"); //get all <p>-Tags
-			for (int i=0; i<pres.getLength(); i++){
-				currNode = pres.item(i);
-
-				if (currNode.hasAttributes()) {
-					Element g = (Element)currNode;
-					Attr own = g.getAttributeNode("class");
-					if ("bodyCopyBlackLargeSpaced".equals(own.getValue()) && currNode.hasChildNodes()){
-						temp = currNode.getChildNodes();
-
-						for(int j =0; j<temp.getLength(); j++){
-							if (temp.item(j).getNodeValue().indexOf(CONST_DATE) != -1){
-								String date = temp.item(j).getNodeValue().substring(18);
-								year = date.substring(date.length()-5).trim();
-								month = date.substring(0,date.length()-4).trim();
-								// not correct in all cases
-								// publisher = temp.item(j+2).getNodeValue().trim();
-							}
-							if (temp.item(j).getNodeValue().indexOf(CONST_PAGES) != -1){
-								numpages = temp.item(j).getNodeValue().substring(CONST_PAGES.length()).trim();
-							} else if (temp.item(j).getNodeValue().indexOf(CONST_ON_PAGES) != -1) {
-								numpages = temp.item(j).getNodeValue().substring(CONST_ON_PAGES.length()).trim();
-							}
-							if (temp.item(j).getNodeValue().indexOf(CONST_EDITION) != -1){
-								edition = temp.item(j).getNodeValue().substring(CONST_EDITION.length()).trim();
-							} else if (temp.item(j).getNodeValue().indexOf(CONST_VOLUME) != -1) {
-								edition = temp.item(j).getNodeValue().substring(CONST_VOLUME.length()).trim();
-							}
-							if (isbn == "" && temp.item(j).getNodeValue().indexOf(CONST_ISBN) != -1){
-								isbn= temp.item(j).getNodeValue().substring(CONST_ISBN.length()).trim();
-							}
-						}
-						break;
-					}
-				}
-			}
-
-			/*
-			 * get authors
-			 */
-			if (!ValidationUtils.present(authors)) {
-				ident1 = "<font color=990000><b>";
-				ident2 = "<br>";
-				int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
-				if (sc.getPageContent().contains(ident1) && sc.getPageContent().indexOf(ident2, _startIndex) != -1) {
-					int _endIndex = sc.getPageContent().indexOf(ident2, _startIndex);
-					authors = sc.getPageContent().substring(_startIndex, _endIndex);
-					authors = authors.replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
-					authors = authors.replaceAll("&nbsp;&nbsp;", " and ");
-
-					if (authors.endsWith(" and ")) {
-						authors = authors.substring(0, authors.length() - 5);
-					}
-				}
-			}
-
-			//-- kill special chars and add the year to bibtexkey
-			if (ValidationUtils.present(isbn) && ValidationUtils.present(year)) {
-				bibtexkey = isbn.replaceAll("-", "");
-				bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
-			}
-
-			//create the book-bibtex
-			return type + " { " + bibtexkey + ", \n" 
-			+ "author = {" + authors + "}, \n" 
-			+ "title = {" + title + "}, \n" 
-			+ "year = {" + year + "}, \n" 
-			+ "url = {" + url + "}, \n"
-			+ "pages = {" + numpages + "}, \n"
-			+ "edition = {" + edition + "}, \n" 
-			+ "publisher = {" + publisher + "}, \n"
-			+ "isbn = {" + isbn + "}, \n" 
-			+ "abstract = {" + abstr + "}, \n"
-			+ "month = {" + month + "}\n}";
-
-		} catch (Exception e){
-			throw new InternalFailureException(e);
-		}
+		return false;
 	}
 
 	@Override

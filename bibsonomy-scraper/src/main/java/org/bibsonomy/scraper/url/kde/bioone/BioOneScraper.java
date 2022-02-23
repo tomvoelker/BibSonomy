@@ -29,22 +29,23 @@
  */
 package org.bibsonomy.scraper.url.kde.bioone;
 
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.generic.CitationManager3Scraper;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
-
 /**
  * @author Mohammed Abed
  */
-public class BioOneScraper extends LiteratumScraper {
+
+public class BioOneScraper extends CitationManager3Scraper {
 
 	private static final String SITE_NAME = "Bio One Research Evolved";
 	private static final String SITE_HOST = "bioone.org";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
@@ -67,4 +68,5 @@ public class BioOneScraper extends LiteratumScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
 	}
+
 }

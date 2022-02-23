@@ -6,7 +6,10 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
-	
+
+	<!-- TODO: DEPRECATED - can be removed if not wanted back after 4.0 release, mind removing css and js as well -->
+
+
 	<!--+
 		|
 		| The title and complete metadata of the publication, shown in a tab

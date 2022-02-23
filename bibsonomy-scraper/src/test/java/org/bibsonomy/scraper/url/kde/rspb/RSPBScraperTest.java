@@ -42,18 +42,19 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class RSPBScraperTest {
+	String resultDirectory = "rspb/";
 
 	@Test
 	public void url1TestRun(){
-		final String url = "http://rspb.royalsocietypublishing.org/content/283/1844/20161270";
-		final String resultFile = "RSPBScraperUnitURLTest1.bib";
+		final String url = "https://royalsocietypublishing.org/doi/10.1098/rspb.2016.1270";
+		final String resultFile = resultDirectory + "RSPBScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, RSPBScraper.class, resultFile);
 	}
 	
 	@Test
 	public void url2TestRun(){
-		final String url = "http://rspb.royalsocietypublishing.org/content/283/1838/20160847";
-		final String resultFile = "RSPBScraperUnitURLTest2.bib";
+		final String url = "https://royalsocietypublishing.org/doi/10.1098/rspb.2016.0847";
+		final String resultFile = resultDirectory + "RSPBScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, RSPBScraper.class, resultFile);
 	}
 }

@@ -30,21 +30,25 @@
 package org.bibsonomy.scraper.url.kde.apa;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import org.apache.http.Header;
+import org.apache.http.HttpException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author hagen
@@ -56,15 +60,17 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
-	
+
 	static {
 		URL_PATTERNS.add(new Pair<>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN));
 	}
 
-	private static final Pattern BUY_OPTION_LOCATION_PATTERN = Pattern.compile("fa=buy.*?id=([\\d\\-]++)");
 
-	private static final Pattern UIDS_PAGE_PATTERN = Pattern.compile("<input[^>]*?id=\"srhLstUIDs\"[^>]*?value=\"([^\"]++)");
+	private static final Pattern URL_UID_PATTERN = Pattern.compile("https://psycnet\\.apa\\.org/record/(.*)");
+	private static final String VISIT_SECOND_URL = "https://psycnet.apa.org/api/request/record.exportRISFile";
+	private static final String VISIT_THIRD_URL = "https://psycnet.apa.org/ris/download";
 
+	private static final Header USER_AGENT_HEADER = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36");
 
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 
@@ -90,79 +96,50 @@ public class APAScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		
-		//Welcome to the story of scraping APA PsycNET
+	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException{
 		scrapingContext.setScraper(this);
 
-		//We have to proof the visit of several locations
-		final Builder defaultRequestConfig = WebUtils.getDefaultRequestConfig();
-		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
-		defaultRequestConfig.setCircularRedirectsAllowed(true);
-		final HttpClient client = WebUtils.getHttpClient(defaultRequestConfig.build());
-		// infinite redirect loops already prevented in WebUtils.getHttpClient()
-
-		//This id is needed to build RIS download link
-		String lstUIDs = null;
-
-		//While buy action, the id is contained in the URL requested to scrape
-		final String url = scrapingContext.getUrl().toExternalForm();
-		Matcher m = BUY_OPTION_LOCATION_PATTERN.matcher(url);
-		if (m.find()) {
-
-			//Pattern matches requested URL
-			lstUIDs = m.group(1);
-
-		} else {
-
-			//If scraping request is not during buy action, the id is contained in the page requested to scrape
-			String page;
-			try {
-				page = WebUtils.getContentAsString(client, url, null, null, null);
-			} catch (IOException ex) {
-				throw new ScrapingException(ex);
-			}
-			//Is the page present?
-			if (!present(page)) throw new ScrapingException("Could not get the page requested to scrape");
-
-			//Search id in page
-			m = UIDS_PAGE_PATTERN.matcher(page);
-			if (m.find()) {
-				lstUIDs = m.group(1);
-			}
-		}
-		String ris = null;
 		try {
+			HttpClient client = WebUtils.getHttpClient();
+			String url = scrapingContext.getUrl().toExternalForm();
 
-			//Is the id present?
-		if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
-
-			// Build link to RIS download
-			final String risURL = "http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs;
-
-			// download RIS exactly two times, because the first request will finally be redirected to a login page
-			for (int i = 0; i < 2; i++) {
-				ris = WebUtils.getContentAsString(client, risURL, null, null, null);
-				if (ris.contains("Provider: American Psychological Association")) break;
+			String uid;
+			Matcher m_uid = URL_UID_PATTERN.matcher(url);
+			if (m_uid.find()) {
+				uid = m_uid.group(1);
+			}else {
+				throw new ScrapingException("can't get uid from " + url);
 			}
-		} catch (final IOException ex) {
-			throw new ScrapingException(ex);
-		}
 
-		// convert RIS to BibTeX
-		if (!present(ris)) {
-			throw new ScrapingException("Could not download citation");
-		}
-		System.out.println(ris);
-		final String bibtex = RIS2BIB.toBibtex(ris);
-		System.out.println(bibtex);
-		if (!present(bibtex)) {
-			throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
-		}
-		scrapingContext.setBibtexResult(bibtex);
+			HttpGet get1 = new HttpGet(url);
+			get1.addHeader(USER_AGENT_HEADER);
+			String cookie = WebUtils.getHeaders(client, get1, "set-cookie");
+			if (!present(cookie)){
+				throw new ScrapingException("can't get cookies \"set-cookie\" from " + url);
+			}
 
-		//success
-		return true;
+			HttpPost post = new HttpPost(VISIT_SECOND_URL);
+			post.setHeader("Cookie", cookie);
+			post.setHeader("Content-Type", "application/json");
+			StringEntity postBody = new StringEntity("{\"api\":\"record.exportRISFile\",\"params\":{\"UIDList\":[{\"UID\":\"" + uid + "\",\"ProductCode\":\"PA\"}],\"exportType\":\"referenceSoftware\"}}");
+			post.setEntity(postBody);
+			String postResponse = WebUtils.getContentAsString(client, post);
+			if (!present(postResponse)||!postResponse.equals("{\"isRisExportCreated\":true,\"accessLink\":\"\"}\n")){
+				throw new ScrapingException("authorization to get ris was not given from " + VISIT_SECOND_URL + " with body " + postBody);
+			}
+
+			HttpGet get2 = new HttpGet(VISIT_THIRD_URL);
+			get2.addHeader("Cookie", cookie);
+			get2.addHeader(USER_AGENT_HEADER);
+			String ris = WebUtils.getContentAsString(client, get2);
+			if (!present(ris)){
+				throw new ScrapingException("can't get ris from " + VISIT_THIRD_URL);
+			}
+
+			scrapingContext.setBibtexResult(RIS2BIB.toBibtex(ris));
+			return true;
+		} catch (IOException | HttpException e) {
+			throw new ScrapingException("can't get bibtex from " + scrapingContext.getUrl());
+		}
 	}
-
 }

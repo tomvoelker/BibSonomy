@@ -31,12 +31,16 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.UserRelation;
 
 
 /**
  * @author Christian Kramer, Folke Mitzlaff
  */
+@Getter
+@Setter
 public class UserRelationAjaxCommand extends AjaxCommand<String> {
 	/**
 	 * name of the requested user
@@ -50,46 +54,4 @@ public class UserRelationAjaxCommand extends AjaxCommand<String> {
 	 */
 	private List<String> relationTags;
 
-	/**
-	 * 
-	 * @return requested username
-	 */
-	public String getRequestedUserName() {
-		return this.requestedUserName;
-	}
-
-	/**
-	 * @param userName
-	 */
-	public void setRequestedUserName(String userName) {
-		this.requestedUserName = userName;
-	}
-
-	/**
-	 * @param relationTags
-	 */
-	public void setRelationTags(List<String> relationTags) {
-		this.relationTags = relationTags;
-	}
-
-	/**
-	 * @return relation tags
-	 */
-	public List<String> getRelationTags() {
-		return relationTags;
-	}
-
-	/**
-	 * @return the userRelation
-	 */
-	public UserRelation getUserRelation() {
-		return this.userRelation;
-	}
-
-	/**
-	 * @param userRelation the userRelation to set
-	 */
-	public void setUserRelation(UserRelation userRelation) {
-		this.userRelation = userRelation;
-	}
 }

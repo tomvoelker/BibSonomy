@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -64,7 +65,8 @@ public class UBKAScraper extends AbstractUrlScraper {
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final Pattern UBKA_ID_PATTERN = Pattern.compile("doc=KITSRC(.*?)&");
-	private static final String UBKA_BIBTEX_URL = "http://swb.bsz-bw.de/DB=2.1/PPNSET?PPN=";
+	private static final String UBKA_BIBTEX_URL = "https://swb.bsz-bw.de/DB=2.1/SET=3/TTL=1/CMD?ACT=SRCHA&IKT=8138&SRT=RLV&TRM=";
+	private static final Pattern BIBTEX_PAGE_PATTERN = Pattern.compile("^\\s*<TD align=\"left\" valign=\"top\"><div>&#xA0;</div>(.*)", Pattern.MULTILINE);
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -72,13 +74,24 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 		final String id = extractId(sc.getUrl().toString());
 		try {
-			final ScrapingContext scrapingContext = new ScrapingContext(new URL(UBKA_BIBTEX_URL + id + "&PRS=bibtex"));
+			String bibtexUrl = UBKA_BIBTEX_URL + id + "&PRS=bibtex";
+			final ScrapingContext scrapingContext = new ScrapingContext(new URL(bibtexUrl));
 			final BibtexScraper bibtexScraper = new BibtexScraper();
 			bibtexScraper.scrape(scrapingContext);
-			final String bibtex = scrapingContext.getBibtexResult();
+			String bibtex = scrapingContext.getBibtexResult();
 			if (ValidationUtils.present(bibtex)) {
 				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString()));
 				return true;
+			}else {
+				// the BibtexScraper is not working for test3. So we scrape with a regex.
+				Matcher m_bibtex = BIBTEX_PAGE_PATTERN.matcher(scrapingContext.getPageContent());
+				if (m_bibtex.find()){
+					bibtex = StringEscapeUtils.unescapeHtml(m_bibtex.group(1))
+									.replaceAll("<NOBR>", "\n")
+									.replaceAll("</?[A-z]+>", "");
+					sc.setBibtexResult(bibtex);
+					return true;
+				}
 			}
 		} catch (final IOException me) {
 			throw new InternalFailureException(me);

@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Group;
 
 /**
@@ -36,6 +38,8 @@ import org.bibsonomy.model.Group;
  * 
  * @author Folke Eisterlehner
  */
+@Setter
+@Getter
 public class GroupsListCommand extends EntitySearchAndFilterCommand {
 	private final ListCommand<Group> groups = new ListCommand<>(this);
 
@@ -43,40 +47,9 @@ public class GroupsListCommand extends EntitySearchAndFilterCommand {
 	private Group requestedGroup;
 
 	/** filter for only showing organizations */
-	private Boolean organizations;
+	private boolean organizations;
 
-	/**
-	 * @return the groups
-	 */
-	public ListCommand<Group> getGroups() {
-		return this.groups;
-	}
+	/** filter for only retrieving groups/organizations the user is a member of */
+	private boolean memberOfOnly;
 
-	/**
-	 * @return the requestedGroup
-	 */
-	public Group getRequestedGroup() {
-		return this.requestedGroup;
-	}
-
-	/**
-	 * @param requestedGroup the requestedGroup to set
-	 */
-	public void setRequestedGroup(Group requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
-
-	/**
-	 * @return the organizations
-	 */
-	public Boolean getOrganizations() {
-		return organizations;
-	}
-
-	/**
-	 * @param organizations the organizations to set
-	 */
-	public void setOrganizations(Boolean organizations) {
-		this.organizations = organizations;
-	}
 }

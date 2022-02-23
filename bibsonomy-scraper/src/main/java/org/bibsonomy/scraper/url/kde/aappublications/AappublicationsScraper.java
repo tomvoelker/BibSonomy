@@ -36,19 +36,19 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.generic.BibTeXLinkOnPageScraper;
 
 import bibtex.parser.BibtexParser;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
 
 /**
  * scraper for the
  * @author Mohammed Abed
  * @author dzo
  */
-public class AappublicationsScraper extends BibTeXLinkOnPageScraper {
+public class AappublicationsScraper extends CitationManager2Scraper {
 
 	private static final String SITE_NAME = "Journals of the American Academy of Pediatrics (AAP)";
-	private static final String SITE_HOST = "aappublications.org";
+	private static final String SITE_HOST = "publications.aap.org";
 	private static final String SITE_URL  = "https://" + SITE_HOST;
 	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 
@@ -74,26 +74,5 @@ public class AappublicationsScraper extends BibTeXLinkOnPageScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
-	}
-
-	
-	/**
-	 * The BibTeX returned contains an id with space, e.g., "@article {de St Mauricee1186" which
-	 * need to be fixed in order to be accepted by {@link BibtexParser}.
-	 * 
-	 * @param bibtex
-	 * @return
-	 */
-	protected static String fixSpaceInId(final String bibtex) {
-		final int index = bibtex.indexOf("\n");
-		return bibtex.substring(0, index).replaceAll(" ", "") + bibtex.substring(index);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return fixSpaceInId(bibtex);
 	}
 }

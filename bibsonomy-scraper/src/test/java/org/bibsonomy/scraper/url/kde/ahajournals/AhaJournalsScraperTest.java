@@ -40,19 +40,23 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AhaJournalsScraperTest {
-	/**
-	 * starts test
-	 */
+	String resultDirectory = "ahajournals/";
+
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract", AhaJournalsScraper.class, "AhaJournalsScraperUnitURLTest1.bib");
+		final String url = "https://www.ahajournals.org/doi/full/10.1161/CIRCULATIONAHA.115.019768";
+		final String resultFile = resultDirectory + "AhaJournalsScraperUnitURLTest1.bib";
+		assertScraperResult(url, AhaJournalsScraper.class, resultFile);
 	}
-	
-	/**
-	 * starts test
-	 */
+
+
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f", AhaJournalsScraper.class, "AhaJournalsScraperUnitURLTest2.bib");
+		final String url = "https://www.ahajournals.org/doi/abs/10.1161/circ.114.suppl_18.ii_864?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f";
+		final String resultFile = resultDirectory + "AhaJournalsScraperUnitURLTest2.bib";
+		assertScraperResult(url, AhaJournalsScraper.class, resultFile);
 	}
+
+
+
 }

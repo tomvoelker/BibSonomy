@@ -35,6 +35,7 @@ package org.bibsonomy.common.enums;
  * @author dzo
  */
 public enum Prefix {
+	ALL,
 	A,
 	B,
 	C,

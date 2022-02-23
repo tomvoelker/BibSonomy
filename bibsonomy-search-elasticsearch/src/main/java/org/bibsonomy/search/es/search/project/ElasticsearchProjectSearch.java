@@ -121,10 +121,10 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final ProjectQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final ProjectSortKey order = query.getOrder();
-		switch (order) {
+		final ProjectSortKey sortKey = query.getSortKey();
+		switch (sortKey) {
 			case TITLE: return Collections.singletonList(new Pair<>(ESConstants.getRawField(ProjectFields.TITLE), sortOrderQuery));
 			case START_DATE: return Collections.singletonList(new Pair<>(ProjectFields.START_DATE, sortOrderQuery));
 		}
@@ -201,7 +201,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_PREFIX));
 		}
 

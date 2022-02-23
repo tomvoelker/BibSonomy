@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
@@ -38,21 +40,8 @@ import org.bibsonomy.model.Post;
  * 
  * @author janus
  */
+@Setter
+@Getter
 public class HashExampleCommand extends BaseCommand {
-
 	private Post<BibTex> post;
-
-	/**
-	 * @return the post
-	 */
-	public Post<BibTex> getPost() {
-		return this.post;
-	}
-
-	/**
-	 * @param post the post to set
-	 */
-	public void setPost(Post<BibTex> post) {
-		this.post = post;
-	}
 }

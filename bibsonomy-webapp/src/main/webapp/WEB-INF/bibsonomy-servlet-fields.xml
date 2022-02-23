@@ -50,6 +50,7 @@
 		<value>resourcetype</value>
 		<value>tagstype</value>
 		<value>userRelation</value>
+		<value>search</value>
 		<value>sortPage</value>
 		<value>sortPageOrder</value>
 		<value>duplicates</value>

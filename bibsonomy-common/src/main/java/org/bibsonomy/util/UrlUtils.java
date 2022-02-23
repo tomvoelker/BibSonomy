@@ -209,7 +209,7 @@ public class UrlUtils {
 		/*
 		 * check url
 		 */
-		return !(url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL));
+		return !(url == null || url.equals("http://") || url.equals("https://") || url.startsWith(UrlUtils.BROKEN_URL));
 	}
 
 	/**
@@ -528,7 +528,7 @@ public class UrlUtils {
 	/**
 	 * checks if the text is a url
 	 * @param text
-	 * @return <code>true</code> iff the text is a url
+	 * @return <code>true</code> if the text is a url
 	 */
 	public static boolean isUrl(String text) {
 		try {

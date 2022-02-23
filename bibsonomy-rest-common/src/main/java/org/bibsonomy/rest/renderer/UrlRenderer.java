@@ -698,7 +698,7 @@ public class UrlRenderer {
 	 */
 	public UrlBuilder createUrlBuilderForGroups(final GroupQuery query) {
 		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
-		final Boolean organization = query.getOrganization();
+		final Boolean organization = query.isOrganization();
 		if (present(organization)) {
 			urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(organization));
 		}

@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.emerald;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,15 +41,37 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class EmeraldScraperTest {
+	String resultDirectory = "emerald/";
 
 	/**
 	 * starts URL test with id url_230 for the host
 	 * http://www.emeraldinsight.com/
 	 */
 	@Test
+	public void url1TestRun() {
+		final String url = "https://www.emerald.com/insight/content/doi/10.1108/S1876-0562(2004)0000004009/full/html";
+		final String resultFile = resultDirectory + "EmeraldScraperUnitTest1.bib";
+		assertScraperResult(url, null, EmeraldScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun() {
+		final String url = "https://www.emerald.com/insight/content/doi/10.1108/S1479-067X20160000015006/full/html";
+		final String resultFile = resultDirectory + "EmeraldScraperUnitTest2.bib";
+		assertScraperResult(url, null, EmeraldScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun() {
+		final String url = "https://www.emerald.com/insight/content/doi/10.1108/EEMCS-09-2020-0348/full/html";
+		final String resultFile = resultDirectory + "EmeraldScraperUnitTest3.bib";
+		assertScraperResult(url, null, EmeraldScraper.class, resultFile);
+	}
+
+	@Test
 	public void url4TestRun() {
-		final String url = "http://www.emeraldinsight.com/doi/abs/10.1108/S1876-0562%282004%290000004009";
-		final String resultFile = "APHAScraperUnitURLTest4.bib";
+		final String url = "https://www.emerald.com/insight/content/doi/10.1108/CCIJ-02-2020-0047/full/html";
+		final String resultFile = resultDirectory + "EmeraldScraperUnitTest4.bib";
 		assertScraperResult(url, null, EmeraldScraper.class, resultFile);
 	}
 

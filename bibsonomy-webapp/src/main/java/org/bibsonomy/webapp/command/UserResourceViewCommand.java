@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
@@ -41,156 +43,38 @@ import org.bibsonomy.model.User;
  *
  * @author  Dominik Benz
  */
+@Getter
+@Setter
 public class UserResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
-	/**
-     * used to show infos about the user in the sidebar (only for admins, currently)
-     */
+
+	/** used to show infos about the user in the sidebar (only for admins, currently) */
 	private User user;
+
 	@Deprecated // TODO: remove!
+	/** Get boolean if user is following this user or if not */
 	private boolean isFollowerOfUser = false;
 	
-	/**
-	 * Has the requested user added the logged in user to her friend list? 
-	 */
+	/** <code>true</code> if the logged in user is in the friend list of the requested user. */
 	private boolean friendOfUser = false;
 
-	/**
-	 * Has the logged in user added the requested user to his friend list?
-	 */
+	/** <code>true</code> if the requested user is in the friend list of the logged in user. */
 	private boolean ofFriendUser = false;
 
-	/**
-	 * The claimed person of the user
-	 */
+	/** The claimed person of the user */
 	private Person claimedPerson = null;
+
 	/**
-	 * defines the similarity measure by which the related users are computed  
+	 * defines the similarity measure by which the related users are computed
+	 * a string describing the user similarity
 	 * (default is folkrank)
 	 */
 	// TODO: use UserRelation as type
 	private String userSimilarity = UserRelation.FOLKRANK.name();
 	
-	/**
-	 * @return the concepts
-	 */
-	public ConceptsCommand getConcepts() {
-		return this.concepts;
-	}
-	
-	/**
-	 * The groups that are shared by the requested and the loggedIn user
-	 */
+	/** a list of all groups that are shared between the loggedIn and the requested user */
 	private List<Group> sharedGroups = null;
 
-	/**
-	 * @param concepts the concepts to set
-	 */
-	public void setConcepts(ConceptsCommand concepts) {
-		this.concepts = concepts;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	/**
-	 * Set user similarity 
-	 * @param userSimilarity - a string describing the user similarity
-	 */
-	public void setUserSimilarity(String userSimilarity) {
-		this.userSimilarity = userSimilarity;
-	}
-
-	/**
-	 * Get user similarity 
-	 * @return - the user similarity
-	 */
-	public String getUserSimilarity() {
-		return userSimilarity;
-	}
-
-	/**
-	 * Get boolean if user is following this user or if not
-	 * @return true if user already follows this user and false if not
-	 */
-	public boolean getIsFollowerOfUser() {
-		return this.isFollowerOfUser;
-	}
-
-	/**
-	 * Set if user is following this use or if not
-	 * @param isFollowerOfUser
-	 */
-	public void setIsFollowerOfUser(boolean isFollowerOfUser) {
-		this.isFollowerOfUser = isFollowerOfUser;
-	}
-
-	/**
-	 * @return <code>true</code> if the logged in user is in the friend list of the requested user.
-	 */
-	public boolean getFriendOfUser() {
-		return this.friendOfUser;
-	}
-
-	/**
-	 * @return <code>true</code> if the requested user is in the friend list of the logged in user.
-	 */
-	public boolean getOfFriendUser() {
-		return this.ofFriendUser;
-	}
-
-	/**
-	 * @return returning the claimed person
-	 */
-	public Person getClaimedPerson() {
-		return this.claimedPerson;
-	}
-
-	/**
-	 * @param friendOfUser
-	 */
-	public void setFriendOfUser(boolean friendOfUser) {
-		this.friendOfUser = friendOfUser;
-	}
-
-	/**
-	 * @param ofFriendUser
-	 */
-	public void setOfFriendUser(boolean ofFriendUser) {
-		this.ofFriendUser = ofFriendUser;
-	}
-
-	/**
-	 * @return a list of all groups that are shared between the loggedIn and the requested user
-	 */
-	public List<Group> getSharedGroups() {
-		return this.sharedGroups;
-	}
-
-	/**
-	 * @param sharedGroups the list of all groups that are shared between the loggedIn and the requested user
-	 */
-	public void setSharedGroups(List<Group> sharedGroups) {
-		this.sharedGroups = sharedGroups;
-	}
-
-	/**
-	 * @param claimedPerson the person claimed by the user
-	 */
-	public void setClaimedPerson(Person claimedPerson) {
-		this.claimedPerson = claimedPerson;
-	}
 }

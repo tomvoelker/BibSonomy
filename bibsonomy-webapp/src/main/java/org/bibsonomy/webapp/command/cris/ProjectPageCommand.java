@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.cris;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.webapp.command.BaseCommand;
 
@@ -37,6 +39,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  *
  * @author dzo
  */
+@Getter
+@Setter
 public class ProjectPageCommand extends BaseCommand {
 
 	private String requestedProjectId;
@@ -44,46 +48,4 @@ public class ProjectPageCommand extends BaseCommand {
 	private Project project;
 
 	private String members;
-
-	/**
-	 * @return
-	 */
-	public String getMembers() {
-		return members;
-	}
-
-	/**
-	 * @param members
-	 */
-	public void setMembers(String members) {
-		this.members = members;
-	}
-
-	/**
-	 * @return the requestedProjectId
-	 */
-	public String getRequestedProjectId() {
-		return requestedProjectId;
-	}
-
-	/**
-	 * @param requestedProjectId the requestedProjectId to set
-	 */
-	public void setRequestedProjectId(String requestedProjectId) {
-		this.requestedProjectId = requestedProjectId;
-	}
-
-	/**
-	 * @return the project
-	 */
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @param project the project to set
-	 */
-	public void setProject(Project project) {
-		this.project = project;
-	}
 }

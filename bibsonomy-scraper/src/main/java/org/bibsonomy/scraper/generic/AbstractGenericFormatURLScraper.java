@@ -30,19 +30,18 @@
 package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.http.NameValuePair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Note: do not use this class directly when implementing scrapers, use the
@@ -113,7 +112,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 	 * @param cookies
 	 * @return
 	 */
-	protected List<NameValuePair> getDownloadData(final URL url, final String cookies) {
+	protected List<NameValuePair> getDownloadData(final URL url, final String cookies) throws ScrapingException {
 		return null;
 	}
 

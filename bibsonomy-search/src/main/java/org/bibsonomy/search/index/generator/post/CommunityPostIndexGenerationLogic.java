@@ -31,14 +31,11 @@ package org.bibsonomy.search.index.generator.post;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.ResourceAwareAbstractDatabaseManagerWithSessionManagement;
-import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 
-import java.util.Date;
 import java.util.List;
 
 /**

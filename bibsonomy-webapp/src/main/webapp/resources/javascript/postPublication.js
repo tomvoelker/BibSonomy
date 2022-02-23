@@ -95,8 +95,6 @@ $(function() {
 	$('#delimiter').change(function(){
 		$('#whitespace').attr('disabled', $(this).val() == " ");
 	});
-
-
 });
 
 function showManualForm(titleText) {

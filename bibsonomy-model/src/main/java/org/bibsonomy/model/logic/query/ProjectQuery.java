@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
@@ -44,15 +45,16 @@ import java.util.Date;
  *
  * @author dzo
  */
+@Getter
 public class ProjectQuery extends BasicQuery {
 
 	private final Prefix prefix;
 	/**
-	 * the order of the projects
+	 * the sort key of the projects
 	 */
-	private final ProjectSortKey order;
+	private final ProjectSortKey sortKey;
 	/**
-	 * the sort order of the order
+	 * the sort order of the projects
 	 */
 	private final SortOrder sortOrder;
 	/**
@@ -73,7 +75,7 @@ public class ProjectQuery extends BasicQuery {
 	/**
 	 * the constructor
 	 *
-	 * @param order
+	 * @param sortKey
 	 * @param sortOrder
 	 * @param projectStatus
 	 * @param type
@@ -85,10 +87,9 @@ public class ProjectQuery extends BasicQuery {
 	 * @param person
 	 * @param organization
 	 */
-	protected ProjectQuery(final String search, final Prefix prefix, final ProjectSortKey order, SortOrder sortOrder,
-												 ProjectStatus projectStatus, String type, String sponsor,
-												 int start, int end, String externalId, Date startDate, Date endDate,
-												 Person person, Group organization) {
+	protected ProjectQuery(final String search, final Prefix prefix, final ProjectSortKey sortKey, SortOrder sortOrder,
+						   ProjectStatus projectStatus, String type, String sponsor, int start, int end,
+						   String externalId, Date startDate, Date endDate, Person person, Group organization) {
 		this.person = person;
 		this.organization = organization;
 		this.setSearch(search);
@@ -98,7 +99,7 @@ public class ProjectQuery extends BasicQuery {
 		this.prefix = prefix;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.order = order;
+		this.sortKey = sortKey;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
 		this.type = type;
@@ -113,79 +114,14 @@ public class ProjectQuery extends BasicQuery {
 		return new ProjectQueryBuilder();
 	}
 
-	public String getSponsor() {
-		return sponsor;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
 	/**
-	 * @return the order
+	 *
 	 */
-	public ProjectSortKey getOrder() {
-		return order;
-	}
-
-	/**
-	 * @return the sortOrder
-	 */
-	public SortOrder getSortOrder() {
-		return sortOrder;
-	}
-
-	/**
-	 * @return the projectStatus
-	 */
-	public ProjectStatus getProjectStatus() {
-		return projectStatus;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public Prefix getPrefix() {
-		return prefix;
-	}
-
-	/**
-	 * @return the internalId
-	 */
-	public String getInternalId() {
-		return internalId;
-	}
-
-	/**
-	 * @return the organization
-	 */
-	public Group getOrganization() {
-		return organization;
-	}
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return person;
-	}
-
 	public static class ProjectQueryBuilder extends BasicQueryBuilder<ProjectQueryBuilder> {
 		/**
 		 * the order of the projects, default {@link ProjectSortKey#TITLE}
 		 */
-		private ProjectSortKey order = ProjectSortKey.TITLE;
+		private ProjectSortKey sortKey = ProjectSortKey.TITLE;
 
 		/**
 		 * the sort order of the order
@@ -273,13 +209,13 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
-		 * sets the order
+		 * sets the sort key
 		 *
-		 * @param order
+		 * @param sortKey
 		 * @return
 		 */
-		public ProjectQueryBuilder order(final ProjectSortKey order) {
-			this.order = order;
+		public ProjectQueryBuilder sortKey(final ProjectSortKey sortKey) {
+			this.sortKey = sortKey;
 			return this;
 		}
 
@@ -334,7 +270,7 @@ public class ProjectQuery extends BasicQuery {
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.search, this.prefix, this.order, this.sortOrder, this.projectStatus,
+			return new ProjectQuery(this.search, this.prefix, this.sortKey, this.sortOrder, this.projectStatus,
 							this.type, this.sponsor, this.start, this.end, this.internalId, startDate, endDate, person, organization);
 		}
 	}

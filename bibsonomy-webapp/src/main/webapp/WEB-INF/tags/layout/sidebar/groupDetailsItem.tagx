@@ -30,10 +30,11 @@
 		</c:if>
 		
 		<div class="row">
-			<div class="col-sm-5 text-center">
+			<div class="col-sm-6 text-center">
 				<group:groupcv group="${group}" />
+				<group:groupexplore group="${group}" />
 			</div>
-			<div class="col-sm-7">
+			<div class="col-sm-6 text-center">
 				<group:actions group="${group}" showSettingsLabel="${false}" buttonSize="btn-xs" />
 			</div>
 		</div>

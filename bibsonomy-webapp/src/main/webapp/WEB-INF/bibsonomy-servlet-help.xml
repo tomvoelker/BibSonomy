@@ -19,6 +19,7 @@
 								<value>helpPage</value>
 								<value>filename</value>
 								<value>theme</value>
+								<value>helpTheme</value>
 								<value>search</value>
 							</list>
 						</property>
@@ -44,6 +45,7 @@
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="search" ref="helpSearchManager" />
 		<property name="helpPath" ref="helpPath" />
+		<property name="helpTheme" ref="helpTheme" />
 	</bean>
 	
 	<bean id="markdownFactory" class="org.bibsonomy.webapp.util.markdown.MarkdownHelpPageParserFactory" />
@@ -52,6 +54,7 @@
 		<property name="path" ref="helpPath" />
 		<property name="projectName" ref="projectName"/>
 		<property name="projectTheme" ref="projectTheme"/>
+		<property name="projectHelpTheme" ref="helpTheme"/>
 		<property name="projectHome" ref="projectHome" />
 		<property name="projectEmail" ref="projectEmail" />
 		<property name="projectNoSpamEmail" ref="projectNoSpamEmail" />

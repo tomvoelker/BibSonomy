@@ -49,7 +49,7 @@ public class IucrScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://scripts.iucr.org/cgi-bin/paper?S0108768108005119", null, IucrScraper.class, "iucr/IucrScraperUnitURLTest.bib");
+		assertScraperResult("http://scripts.iucr.org/cgi-bin/paper?S0108768108005119", null, IucrScraper.class, "iucr/IucrScraperUnitURLTest1.bib");
 	}
 	
 	/**

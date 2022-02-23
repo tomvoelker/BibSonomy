@@ -29,11 +29,15 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 
 /**
  * @author cvo
  */
+@Getter
+@Setter
 public class ExportFormatImportCommand extends SettingsViewCommand {
 	private static final long serialVersionUID = -2852728956746251923L;
 
@@ -42,17 +46,4 @@ public class ExportFormatImportCommand extends SettingsViewCommand {
 	 */
 	private String hash;
 
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
 }

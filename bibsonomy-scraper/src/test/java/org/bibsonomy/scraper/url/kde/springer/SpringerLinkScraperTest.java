@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class SpringerLinkScraperTest {
+	String resultDirectory = "springer/springerlink/";
 
 	/**
 	 * starts URL test with id url_30
@@ -50,7 +50,7 @@ public class SpringerLinkScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "https://link.springer.com/article/10.1140%2Fepje%2Fi2002-10160-7";
-		final String resultFile = "SpringerLinkScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest1.bib";
 		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
 	}
 
@@ -60,7 +60,7 @@ public class SpringerLinkScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "https://link.springer.com/chapter/10.1007%2F3-540-34416-0_27";
-		final String resultFile = "SpringerLinkScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest2.bib";
 		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
 	}
 
@@ -68,9 +68,9 @@ public class SpringerLinkScraperTest {
 	 * starts URL test with id url_183
 	 */
 	@Test
-	public void url4TestRun() {
+	public void url3TestRun() {
 		final String url = "https://link.springer.com/article/10.1007%2Fs13222-010-0004-8";
-		final String resultFile = "SpringerLinkScraperUnitURLTest4.bib";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest3.bib";
 		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
 	}
 
@@ -78,30 +78,38 @@ public class SpringerLinkScraperTest {
 	 * starts URL test with id url_235
 	 */
 	@Test
-	public void url5TestRun() {
+	public void url4TestRun() {
 		final String url = "https://link.springer.com/chapter/10.1007%2F3-540-44527-7_10?LI=true";
-		final String resultFile = "SpringerLinkScraperUnitURLTest5.bib";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest4.bib";
+		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
+	}
+
+	@Test
+	public void url5TestRun() {
+		final String url = "https://link.springer.com/article/10.1023%2FA%3A1008346807097?LI=true#page-1";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest5.bib";
+		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
+	}
+
+	@Test
+	public void url6Test() {
+		final String url = "https://link.springer.com/article/10.1007/s11192-014-1292-9/fulltext.html";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest6.bib";
 		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
 	}
 
 
 	@Test
 	public void url7Test() {
-		assertScraperResult("https://link.springer.com/chapter/10.1007/978-3-540-46332-0_1", SpringerLinkScraper.class, "SpringerLinkScraperUnitURLTest7.bib");
+		final String url = "https://link.springer.com/chapter/10.1007/978-3-540-46332-0_1";
+		final String resultFile = resultDirectory + "SpringerLinkScraperUnitURLTest7.bib";
+		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
 	}
 
 	/**
 	 * starts URL test with id url_238
 	 */
-	@Test
-	public void url8TestRun() {
-		final String url = "https://link.springer.com/article/10.1023%2FA%3A1008346807097?LI=true#page-1";
-		final String resultFile = "SpringerLinkScraperUnitURLTest8.bib";
-		assertScraperResult(url, SpringerLinkScraper.class, resultFile);
-	}
 
-    	@Test
-	public void url9Test() {
-		assertScraperResult("https://link.springer.com/article/10.1007/s11192-014-1292-9/fulltext.html", SpringerLinkScraper.class, "SpringerLinkScraperUnitURLTest9.bib");
-	}
+
+
 }

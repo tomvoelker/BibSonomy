@@ -50,13 +50,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class DLibScraperTest {
+	String resultDirectory = "dlib/";
 
 	/**
 	 * starts URL test with id url_54
 	 */
 	@Test
 	public void urlTest1Run(){
-		assertScraperResult("http://www.dlib.org/dlib/january08/smith/01smith.html", DLibScraper.class, "DLibScraperUnitURLTest1.bib");
+		final String url = "http://www.dlib.org/dlib/january08/smith/01smith.html";
+		final String resultFile = resultDirectory + "DLibScraperUnitURLTest1.bib";
+		assertScraperResult(url, DLibScraper.class, resultFile);
 	}
 		
 	/**
@@ -64,7 +67,9 @@ public class DLibScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		assertScraperResult("http://www.dlib.org/dlib/january08/smith/01smith.html", DLibScraper.class, "DLibScraperUnitURLTest1.bib");
+		final String url = "http://www.dlib.org/dlib/january08/smith/01smith.html";
+		final String resultFile = resultDirectory + "DLibScraperUnitURLTest1.bib";
+		assertScraperResult(url, DLibScraper.class, resultFile);
 	}
 
 	/**
@@ -72,7 +77,9 @@ public class DLibScraperTest {
 	 */
 	@Test
 	public void urlTest3Run(){
-		assertScraperResult("http://www.dlib.org/dlib/may08/monnich/05monnich.html", DLibScraper.class, "DLibScraperUnitURLTest2.bib");
+		final String url = "http://www.dlib.org/dlib/may08/monnich/05monnich.html";
+		final String resultFile = resultDirectory + "DLibScraperUnitURLTest2.bib";
+		assertScraperResult(url, DLibScraper.class, resultFile);
 	}
 
 	@Test

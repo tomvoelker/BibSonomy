@@ -218,7 +218,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, PersonFields.MAIN_NAME_PREFIX));
 		}
 
