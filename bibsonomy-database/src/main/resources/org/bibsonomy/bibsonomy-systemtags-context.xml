@@ -4,7 +4,7 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd
 	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
@@ -37,6 +37,8 @@
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="logicInterfaceFactory" ref="noAuthInterfaceFactory" />
+		<property name="mergeEnabled" value="${group.sentTo.merge.enabled}" />
+		<property name="userTagsEnabled" value="${group.sentTo.userTags.enabled}" />
 	</bean>
 
 	<bean id="noAuthInterfaceFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">

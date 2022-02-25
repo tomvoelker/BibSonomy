@@ -399,6 +399,16 @@ public class GroupUtils {
 	}
 
 	/**
+	 * Removes tag, if not a preset tag of the group.
+	 *
+	 * @param tags
+	 * @param presetTags list of preset tags
+	 */
+	public static void removeNonPresetTags(final Set<Tag> tags, final List<Tag> presetTags) {
+		tags.removeIf(tag -> !presetTags.contains(tag));
+	}
+
+	/**
 	 * Removes all selected preset tags for any group.
 	 *
 	 * @param tags
