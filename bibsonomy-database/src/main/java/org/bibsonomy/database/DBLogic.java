@@ -1566,7 +1566,10 @@ public class DBLogic implements LogicInterface {
 
 				// add new preset tags
 				for (final Tag newTag : newPresetTags) {
-					if (!oldPresetTagMap.containsKey(newTag.getName())) {
+					String newTagName = newTag.getName();
+					// check if tag is actually new or has a changed description
+					if (!oldPresetTagMap.containsKey(newTagName) ||
+							!oldPresetTagMap.get(newTagName).getDescription().equals(newTag.getDescription())) {
 						this.groupDBManager.createOrUpdatePresetTag(group, newTag, session);
 					}
 				}

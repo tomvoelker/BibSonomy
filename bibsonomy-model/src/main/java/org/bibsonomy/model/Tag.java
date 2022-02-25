@@ -154,6 +154,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 		this.setGlobalcount(tag.getGlobalcount());
 		this.setUsercount(tag.getUsercount());
 		this.setStem(tag.getStem());
+		this.setDescription(tag.getDescription());
 		this.setId(tag.getId());
 		/*
 		 * copy sub tags
