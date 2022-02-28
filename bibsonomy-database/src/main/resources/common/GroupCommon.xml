@@ -115,6 +115,11 @@
 		<result property="tags"         resultMap="Common.tag" />
 	</resultMap>
 
+	<resultMap id="presetTags" class="tag">
+		<result property="name"      	column="tag_name"       javaType="string"  />
+		<result property="description"  column="description"    javaType="string"  />
+	</resultMap>
+
 	<sql id="basicColumns">
 		i.group_name, i.group, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, i.organization, i.internal_id
 	</sql>
@@ -129,5 +134,9 @@
 
 	<sql id="parentColumns">
 		pt.group_name as pt_group_name, pt.group as pt_group, pt.privlevel as pt_privlevel, pt.sharedDocuments as pt_sharedDocuments, pt.allow_join as pt_allow_join, pt.shortDescription as pt_shortDescription, pt.organization as pt_organization, upt.user_realname as upt_user_realname, upt.user_homepage as upt_user_homepage
+	</sql>
+
+	<sql id="commonPresetTagsColumns">
+		tag_name, group_name, `group`, description
 	</sql>
 </sqlMap>

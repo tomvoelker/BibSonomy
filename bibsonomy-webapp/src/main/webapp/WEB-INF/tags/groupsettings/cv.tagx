@@ -13,7 +13,8 @@
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.GroupSettingsPageCommand" required="true" />
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
 
 	<fmt:message key="cv.layout.name.def1en" var="def1en" />
 	<fmt:message key="cv.layout.name.def1ger" var="def1ger" />
@@ -31,7 +32,7 @@
 	<fmt:message key="cv.admin.hide" var="hide" />
 	<fmt:message key="cv.admin.show" var="show" />
 
-	<div id="selTab2" class="tab-pane ${(command.selTab eq 2) ? 'active' : ''}">
+	<div id="selTab3" class="tab-pane ${(command.selTab eq 3) ? 'active' : ''}">
 
 		<fieldset id="fsOuter">
 

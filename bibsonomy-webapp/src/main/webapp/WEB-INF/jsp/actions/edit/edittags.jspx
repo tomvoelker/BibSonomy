@@ -160,7 +160,7 @@
 					// vanishing error boxes
 					$(function() {
 				disableHandler();
-				add_toggle_relations();
+				addToggleRelations();
 				collectTags();
 });
 
