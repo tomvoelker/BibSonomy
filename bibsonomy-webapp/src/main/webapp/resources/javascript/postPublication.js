@@ -102,3 +102,8 @@ function showManualForm(titleText) {
 	manualButton.click();
 	$('#post\\.resource\\.title').focus().val(titleText);
 }
+
+function setOwnOrcidID() {
+	var ownOrcid = $('#ownOrcidID').val();
+	$('#orcidId').val(ownOrcid);
+}
