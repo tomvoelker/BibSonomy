@@ -41,13 +41,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OpenUniversityScraperTest {
+	String resultDirectory = "openuniversity/";
 	
 	/**
 	 * starts URL test with id url_236
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://oro.open.ac.uk/19554/", OpenUniversityScraper.class, "OpenUniversityScraperUnitURLTest1.bib");
+		final String url = "http://oro.open.ac.uk/19554/";
+		final String resultFile = resultDirectory + "OpenUniversityScraperUnitURLTest1.bib";
+		assertScraperResult(url, OpenUniversityScraper.class, resultFile);
 	}
 
 }

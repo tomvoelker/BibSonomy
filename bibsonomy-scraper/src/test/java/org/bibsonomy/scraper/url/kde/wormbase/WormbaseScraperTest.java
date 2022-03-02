@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class WormbaseScraperTest {
+	String resultDirectory = "wormbase/";
 
 	/**
 	 * starts URL test with id url_125
@@ -48,7 +49,7 @@ public class WormbaseScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.wormbase.org/db/misc/paper?name=WBPaper00005873;class=Paper";
-		final String resultFile = "WormbaseScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "WormbaseScraperUnitURLTest.bib";
 		assertScraperResult(url, null, WormbaseScraper.class, resultFile);
 	}
 	

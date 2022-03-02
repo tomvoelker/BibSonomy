@@ -39,7 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
@@ -83,6 +86,8 @@ import org.springframework.validation.Errors;
  *
  * @author Christian Pfeiffer
  */
+@Getter
+@Setter
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 
 	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
@@ -93,26 +98,12 @@ public class PersonPageController extends SingleResourceListController implement
 	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
 	private boolean crisEnabled;
+	private List<String> hideAdditionalKeysList;
 
 	// TMP TEST
 	private AdhocRenderer renderer;
 	private CSLFilesManager cslFilesManager;
 
-	public CSLFilesManager getCslFilesManager() {
-		return cslFilesManager;
-	}
-
-	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
-		this.cslFilesManager = cslFilesManager;
-	}
-
-	public AdhocRenderer getRenderer() {
-		return renderer;
-	}
-
-	public void setRenderer(AdhocRenderer renderer) {
-		this.renderer = renderer;
-	}
 
 	@Override
 	public View workOn(PersonPageCommand command) {
@@ -141,6 +132,12 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		command.setAlternativeNames(alternativeNames);
+
+		// delete additional keys that should not be visible
+		person.setAdditionalKeys(
+				person.getAdditionalKeys().stream()
+					.filter(additionalKey -> !hideAdditionalKeysList.contains(additionalKey.getKeyName()))
+					.collect(Collectors.toList()));
 
 		// set thesis relations
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
@@ -278,11 +275,4 @@ public class PersonPageController extends SingleResourceListController implement
 		this.errors = errors;
 	}
 
-	public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
-		this.mappers = mappers;
-	}
-
-	public void setCrisEnabled(boolean crisEnabled) {
-		this.crisEnabled = crisEnabled;
-	}
 }

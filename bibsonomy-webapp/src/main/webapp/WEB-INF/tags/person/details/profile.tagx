@@ -83,6 +83,12 @@
 				<c:if test="${not empty command.alternativeNames}">
 					<perdetails:property command="${command}" type="personAlternateNames" list="${command.alternativeNames}"/>
 				</c:if>
+
+				<!-- Additional Keys -->
+				<c:if test="${not empty command.person.additionalKeys and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}">
+					<perdetails:additionalKeys additionalKeys="${command.person.additionalKeys}"/>
+				</c:if>
+
 			</div>
 			<div class="row person-buttons">
 				<div class="col-md-12">

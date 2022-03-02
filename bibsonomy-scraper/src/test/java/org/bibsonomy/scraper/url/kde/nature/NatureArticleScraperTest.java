@@ -42,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NatureArticleScraperTest {
+	String resultDirectory = "nature/article/";
 
 	/**
 	 * 
@@ -49,7 +50,7 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest1Run(){
 		final String url = "http://www.nature.com/articles/ncomms14674";
-		final String resultFile = "NatureArticleScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest1.bib";
 		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
@@ -62,7 +63,7 @@ public class NatureArticleScraperTest {
 		// generated: https://citation-needed.springer.com/v2/references/10.1038/nenergy201741?format=bibtex&flavour=citation
 		// real:      https://citation-needed.springer.com/v2/references/10.1038/nenergy.2017.41?format=bibtex&flavour=citation
 		// they are driving us crazy!
-		final String resultFile = "NatureArticleScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest2.bib";
 		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
@@ -72,7 +73,7 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest3Run(){
 		final String url = "https://www.nature.com/articles/nnano.2014.53?cacheBust=1508217952140";
-		final String resultFile = "NatureArticleScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest3.bib";
 		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
@@ -82,7 +83,7 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest4Run(){
 		final String url = "https://www.nature.com/articles/nrn.2016.150";
-		final String resultFile = "NatureArticleScraperUnitURLTest4.bib";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest4.bib";
 		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
@@ -92,7 +93,7 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest5Run(){
 		final String url = "https://www.nature.com/articles/onc2014416";
-		final String resultFile = "NatureArticleScraperUnitURLTest5.bib";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest5.bib";
 		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	

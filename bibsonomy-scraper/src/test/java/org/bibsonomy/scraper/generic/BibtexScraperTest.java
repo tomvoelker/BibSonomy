@@ -42,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BibtexScraperTest {
+	String resultDirectory = "bibtex/";
 	
 	/**
 	 * starts URL test with id url_115
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://en.wikipedia.org/wiki/BibTeX", BibtexScraper.class, "BibtexScraperUnitURLTest1.bib");
+		final String url = "https://en.wikipedia.org/wiki/BibTeX";
+		final String resultFile = resultDirectory + "BibtexScraperUnitURLTest1.bib";
+		assertScraperResult(url, BibtexScraper.class, resultFile);
 	}
 	
 	/**
@@ -56,7 +59,9 @@ public class BibtexScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("https://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter", BibtexScraper.class, "BibtexScraperUnitURLTest2.bib");
+		final String url = "https://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter";
+		final String resultFile = resultDirectory + "BibtexScraperUnitURLTest2.bib";
+		assertScraperResult(url, BibtexScraper.class, resultFile);
 	}
 	
 }
