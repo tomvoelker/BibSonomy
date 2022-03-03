@@ -130,7 +130,9 @@
 										<li><a href="${relativeUrlGenerator.getExploreUrlByGroup(grp.name)}"><fmt:message key="group.explore.abbrev"/></a></li>
 										<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 											<li class="divider"><!-- keep me --></li>
-											<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+											<c:if test="${properties['group.relevantFor.enabled']}">
+												<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+											</c:if>
 											<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable" /></a></li>
 											<li><a href="${urlGeneratorDiscussed.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
 										</c:if>

@@ -60,7 +60,9 @@
 						<!-- sent to -->
 						<post:sentToGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
 						<!-- relevant for -->
-						<post:relevantForGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
+						<c:if test="${properties['group.relevantFor.enabled']}">
+							<post:relevantForGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
+						</c:if>
 						<!-- tag sets -->
 						<post:tagSets groups="${groups}" />
 					</jsp:attribute>

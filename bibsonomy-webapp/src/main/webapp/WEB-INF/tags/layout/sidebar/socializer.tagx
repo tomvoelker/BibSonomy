@@ -57,6 +57,6 @@
 			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fontawesome:icon icon="file-alt" spaceAfter="5" /><fmt:message key="navi.cv.abbrev"/></a>
 			<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
 			<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
-		</c:if>-->
+		</c:if>
 	</div>
 </jsp:root>
