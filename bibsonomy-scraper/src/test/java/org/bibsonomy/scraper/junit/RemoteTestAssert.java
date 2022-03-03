@@ -66,6 +66,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -114,8 +115,10 @@ public class RemoteTestAssert {
 				}
 			} catch (final Exception e) {
 				throw new RuntimeException("Exception with redirected Url", e);
-			} catch (final AssertionError ae) {
-				throw new AssertionError("Exception with redirected Url\n" + ae);
+			} catch (final ComparisonFailure cf){
+				throw new ComparisonFailure("Bibtex of redirected Url is wrong\n" + cf.getMessage(), cf.getExpected(), cf.getActual());
+			}catch (final AssertionError ae){
+				throw new AssertionError("Error with redirected Url\n" + ae.getMessage());
 			}
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
@@ -135,7 +138,7 @@ public class RemoteTestAssert {
 		return bibTeXResult;
 	}
 
-	private static List<BibtexEntry> parseAndExpandScraperResult(String bibtex) throws IOException, ParseException, ExpansionException {
+	private static List<BibtexEntry> parseAndExpandBibTeXs(String bibtex) throws IOException, ParseException, ExpansionException {
 		final BibtexFile bibtexFile = new BibtexFile();
 
 		final BibtexParser parser = new BibtexParser(true);
@@ -191,8 +194,8 @@ public class RemoteTestAssert {
 	}
 
 	protected static void compareBibTeXs(String expected, String actual) throws ExpansionException, IOException, ParseException {
-		List<BibtexEntry> expectedBibTeXs = parseAndExpandScraperResult(expected);
-		List<BibtexEntry> actualBibTeXs = parseAndExpandScraperResult(actual);
+		List<BibtexEntry> expectedBibTeXs = parseAndExpandBibTeXs(expected);
+		List<BibtexEntry> actualBibTeXs = parseAndExpandBibTeXs(actual);
 		try {
 			assertEqualsBibtexEntryList(expectedBibTeXs, actualBibTeXs);
 		} catch (AssertionError ae) {
@@ -249,24 +252,32 @@ public class RemoteTestAssert {
 		*/
 		for (String key : expectedBibTexValues.keySet()) {
 
-			BibtexAbstractValue expectedValue = expectedBibTexValues.get(key);
-			BibtexAbstractValue actualValue = actualBibTexValues.get(key);
+			final BibtexAbstractValue expectedValue = expectedBibTexValues.get(key);
+			final BibtexAbstractValue actualValue = actualBibTexValues.get(key);
 
 			if (expectedValue instanceof BibtexString && actualValue instanceof BibtexString) {
 				String expectedBibtexString = ((BibtexString) expectedValue).getContent().trim();
 				String actualBibtexString = ((BibtexString) actualValue).getContent().trim();
-				//the order of keywords are for some sites randomized, so we can't compare only the string
-				if (key.equals("keywords")) {
-					String[] expectedKeywords = expectedBibtexString.split("\\s*[,;]\\s*");
-					String[] actualKeywords = actualBibtexString.split("\\s*[,;]\\s*");
-					checkAsymmetricDifferenceBothWays(Arrays.asList(expectedKeywords), Arrays.asList(actualKeywords), null);
-				} else {
-					//compares the string-representation of BibtexString
-					if (!expectedBibtexString.equals(actualBibtexString)) {
-						throw new AssertionError("\nDifferent values at tag: \"" + key +
-										"\"\nExpected: \"" + expectedBibtexString +
-										"\"\nActual:   \"" + actualBibtexString + "\"");
-					}
+
+				switch (key.toLowerCase(Locale.ROOT)){
+					case "keywords":
+						//the order of keywords are for some sites randomized, so we can't compare only the string
+						final String[] expectedKeywords = expectedBibtexString.split("\\s*[,;]\\s*");
+						final String[] actualKeywords = actualBibtexString.split("\\s*[,;]\\s*");
+						checkAsymmetricDifferenceBothWays(Arrays.asList(expectedKeywords), Arrays.asList(actualKeywords), null);
+						break;
+					case "url":
+						//ignore the used protocol
+						expectedBibtexString  = expectedBibtexString.replaceAll("http://", "https://");
+						actualBibtexString = actualBibtexString.replaceAll("http://", "https://");
+						//fall through
+					default:
+						//compares the string-representation of BibtexString
+						if (!expectedBibtexString.equals(actualBibtexString)) {
+							throw new AssertionError("\nDifferent values at tag: \"" + key +
+											"\"\nExpected: \"" + expectedBibtexString +
+											"\"\nActual:   \"" + actualBibtexString + "\"");
+						}
 				}
 			} else if (expectedValue instanceof BibtexPersonList && actualValue instanceof BibtexPersonList) {
 				try {
