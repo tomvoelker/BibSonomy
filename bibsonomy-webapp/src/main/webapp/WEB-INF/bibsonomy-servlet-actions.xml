@@ -414,6 +414,8 @@
 								<value>intraHashToUpdate</value>
 								<value>referer</value>
 								<value>relevantGroups</value>
+								<value>sentToGroups</value>
+								<value>presetTagsForGroups</value>
 								<value>acceptComma</value>
 								<value>postID</value>
 								<value>hash</value>
@@ -681,6 +683,8 @@
 								<value>pictureFile</value>
 								<value>deletePicture</value>
 								<value>userSharedDocuments</value>
+								<value>presetTagName</value>
+								<value>presetTagDescription</value>
 								<value>group.name</value>
 								<value>group.realname</value>
 								<value>group.description</value>
@@ -1314,6 +1318,7 @@
 		<property name="projectMail" value="${project.email}" />
 		<!-- to get the mail address for the users -->
 		<property name="adminLogic" ref ="adminLogic" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 	
 	<!-- Group request page -->

@@ -171,6 +171,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
 			<xsd:element name="parent" type="GroupType" minOccurs="0" />
 			<xsd:element name="groupRequest" type="GroupRequestType" minOccurs="0" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="presetTags" type="TagType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -204,6 +205,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="superTags" type="TagsType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="description" type="xsd:string" />
 		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero" />
 		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero" />
 		<!-- link to details page -->

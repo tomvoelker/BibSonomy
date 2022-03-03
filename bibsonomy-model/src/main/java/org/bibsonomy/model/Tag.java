@@ -89,6 +89,11 @@ public class Tag implements Comparable<Tag>, Serializable {
 	private String stem;
 
 	/**
+	 * The optional description of this tag.
+	 */
+	private String description;
+
+	/**
 	 * Indicating how often this tag is used in the complete system.
 	 */
 	private int globalcount;
@@ -149,6 +154,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 		this.setGlobalcount(tag.getGlobalcount());
 		this.setUsercount(tag.getUsercount());
 		this.setStem(tag.getStem());
+		this.setDescription(tag.getDescription());
 		this.setId(tag.getId());
 		/*
 		 * copy sub tags

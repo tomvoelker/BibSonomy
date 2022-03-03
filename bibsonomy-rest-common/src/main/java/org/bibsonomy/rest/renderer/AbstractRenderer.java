@@ -383,6 +383,7 @@ public abstract class AbstractRenderer implements Renderer {
 			for (final Tag t : tags) {
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
+				xmlTag.setDescription(t.getDescription());
 				xmlTag.setHref(this.urlRenderer.createHrefForTag(t.getName()));
 				xmlPost.getTag().add(xmlTag);
 			}
@@ -884,6 +885,7 @@ public abstract class AbstractRenderer implements Renderer {
 	private TagType createXmlTag(final Tag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
 		xmlTag.setName(tag.getName());
+		xmlTag.setDescription(tag.getDescription());
 		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
 		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
@@ -973,6 +975,9 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlGroup::setDescription, group::getDescription);
 		setValue(xmlGroup::setRealname, group::getRealname);
 		setValue(xmlGroup::setHomepage, group::getHomepage, URL::toString);
+		if (present(group.getPresetTags())) {
+			setCollectionValue(xmlGroup.getPresetTags(), group.getPresetTags(), this::createXmlTag);
+		}
 		setValue(xmlGroup::setInternalId, group::getInternalId);
 		setValue(xmlGroup::setParent, group::getParent, this::createXmlGroup);
 		setValue(xmlGroup::setHref, group::getName, urlRenderer::createHrefForGroup);
@@ -1663,6 +1668,10 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(group::setDescription, xmlGroup::getDescription);
 		setValue(group::setRealname, xmlGroup::getRealname);
 		setValue(group::setHomepage, xmlGroup::getHomepage, AbstractRenderer::createURL);
+		if (present(xmlGroup.getPresetTags())) {
+			group.setPresetTags(xmlGroup.getPresetTags().stream().map(this::createTag)
+					.collect(Collectors.toList()));
+		}
 		setCollectionValue(group.getMemberships(), xmlGroup.getUser(), u -> createGroupMembership(createUser(u)));
 		setValue(group::setOrganization, xmlGroup::getOrganization, Boolean::parseBoolean);
 		setValue(group::setInternalId, xmlGroup::getInternalId);
@@ -1708,11 +1717,10 @@ public abstract class AbstractRenderer implements Renderer {
 
 		final Tag tag = new Tag();
 		tag.setName(xmlTag.getName());
-		// TODO tag count  häh?
+		tag.setDescription(xmlTag.getDescription());
 		if (xmlTag.getGlobalcount() != null) {
 			tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
 		}
-		// TODO tag count  häh?
 		if (xmlTag.getUsercount() != null) {
 			tag.setUsercount(xmlTag.getUsercount().intValue());
 		}
@@ -1794,6 +1802,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 			final Tag tag = new Tag();
 			tag.setName(xmlTag.getName());
+			tag.setDescription(xmlTag.getDescription());
 			post.getTags().add(tag);
 		}
 

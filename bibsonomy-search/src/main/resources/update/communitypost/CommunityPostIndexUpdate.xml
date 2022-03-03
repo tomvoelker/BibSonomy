@@ -4,7 +4,7 @@
 <sqlMap namespace="CommunityPostUpdate">
 
 	<!-- community publication -->
-	<select id="getNewGoldStandardPublicationPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+	<select id="getNewGoldStandardPublicationPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPostWithRelations">
 		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
 		FROM
 		(

@@ -186,7 +186,6 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -954,13 +953,21 @@ public class DBLogic implements LogicInterface {
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
+
+			// set group tagsets
 			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+
+			// set preset tags
+			myGroup.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
+
+			// set pending memberships
 			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
 				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 				if (present(pendingMembershipsGroup)) {
 					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
 				}
 			}
+
 			return myGroup;
 		}
 	}
@@ -1376,6 +1383,7 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, hasAdminPrivileges, session);
+			group.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1543,6 +1551,34 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
+				break;
+			case DELETE_PRESET_TAG:
+			case UPDATE_PRESET_TAG:
+				if(!this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR)) {
+					throw new AccessDeniedException("You are not allowed to edit preset tags.");
+				}
+
+				final List<Tag> oldPresetTags = group.getPresetTags();
+				final List<Tag> newPresetTags = paramGroup.getPresetTags();
+				final Map<String, Tag> oldPresetTagMap = GroupUtils.buildPresetTagMap(oldPresetTags);
+				final Map<String, Tag> newPresetTagMap = GroupUtils.buildPresetTagMap(newPresetTags);
+
+				// add new preset tags
+				for (final Tag newTag : newPresetTags) {
+					String newTagName = newTag.getName();
+					// check if tag is actually new or has a changed description
+					if (!oldPresetTagMap.containsKey(newTagName) ||
+							!oldPresetTagMap.get(newTagName).getDescription().equals(newTag.getDescription())) {
+						this.groupDBManager.createOrUpdatePresetTag(group, newTag, session);
+					}
+				}
+
+				// delete preset tags
+				for (final Tag oldTag : oldPresetTags) {
+					if (!newPresetTagMap.containsKey(oldTag.getName())) {
+						this.groupDBManager.removePresetTag(group, oldTag, session);
+					}
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
