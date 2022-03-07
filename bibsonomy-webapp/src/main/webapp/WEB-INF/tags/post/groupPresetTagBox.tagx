@@ -29,7 +29,7 @@
 						<input class="form-control preset-tags-input" id="presetTagsInput-${group.name}" name="presetTagsForGroups['${group.name}']" readonly="readonly"/>
 					</div>
 					<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
-						<ul class="list-inline preset-tags-list">
+						<ul class="list-inline preset-tags-list group-preset-tags-list">
 							<c:forEach var="presetTag" items="${group.presetTags}">
 								<li class="btn btn-default btn-xs" title="${presetTag.description}" data-group="${group.name}" data-tag="${presetTag.name}">${presetTag.name}</li>
 							</c:forEach>
