@@ -1,29 +1,29 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
- *
+ * <p>
  * Copyright (C) 2006 - 2021 Data Science Chair,
- *                               University of Würzburg, Germany
- *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
- *                           Information Processing and Analytics Group,
- *                               Humboldt-Universität zu Berlin, Germany
- *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
- *                           Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               https://www.kde.cs.uni-kassel.de/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               https://www.l3s.de/
- *
+ * University of Würzburg, Germany
+ * https://www.informatik.uni-wuerzburg.de/datascience/home/
+ * Information Processing and Analytics Group,
+ * Humboldt-Universität zu Berlin, Germany
+ * https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ * Knowledge & Data Engineering Group,
+ * University of Kassel, Germany
+ * https://www.kde.cs.uni-kassel.de/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * https://www.l3s.de/
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,7 +39,6 @@ import bibtex.dom.BibtexFile;
 import bibtex.dom.BibtexPerson;
 import bibtex.dom.BibtexPersonList;
 import bibtex.dom.BibtexString;
-import bibtex.expansions.CrossReferenceExpander;
 import bibtex.expansions.ExpansionException;
 import bibtex.expansions.MacroReferenceExpander;
 import bibtex.expansions.PersonListExpander;
@@ -81,6 +80,7 @@ public class RemoteTestAssert {
 	/**
 	 * calls the specified scraper with the provided url and tests the returned result of the scraper
 	 * with the contents of the provided result file
+	 *
 	 * @param url
 	 * @param scraperClass
 	 * @param resultFile
@@ -92,36 +92,74 @@ public class RemoteTestAssert {
 	/**
 	 * calls the specified scraper with the provided url and selection and tests the returned result of the scraper
 	 * with the contents of the provided result file
+	 *
 	 * @param url
 	 * @param selection
 	 * @param scraperClass
 	 * @param resultFile
 	 */
 	public static void assertScraperResult(final String url, final String selection, final Class<? extends Scraper> scraperClass, final String resultFile) {
+		//Creating instance of the scraper-class
+		final Scraper scraper;
 		try {
-			final Scraper scraper = createScraper(scraperClass);
+			scraper = createScraper(scraperClass);
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("Exception while creating instance of Scraper", e);
+		}
 
-			final String expectedReference = normBibTeX(getExpectedBibTeX(resultFile));
-			final String bibTeXResult = normBibTeX(getScraperResult(url, selection, scraper));
+		//Preparing test data
+		final String expectedReference;
+		final List<BibtexEntry> expectedBibtexEntries;
+		try {
+			expectedReference = normBibTeX(getExpectedBibTeX(resultFile));
+			expectedBibtexEntries = parseAndExpandBibTeXs(expectedReference);
+		} catch (IOException | ExpansionException | ParseException | AssertionError e) {
+			throw new RuntimeException("Exception while preparing test data", e);
+		}
 
-			compareBibTeXs(expectedReference, bibTeXResult);
+		final String bibTeXResult;
+		final List<BibtexEntry> actualBibtexEntries;
+		try {
+			bibTeXResult = normBibTeX(getScraperResult(url, selection, scraper));
+			actualBibtexEntries = parseAndExpandBibTeXs(bibTeXResult);
+		} catch (IOException | ScrapingException | ExpansionException | ParseException | AssertionError e) {
+			throw new RuntimeException("Exception while preparing scraped data from " + url, e);
+		}
 
+		try {
+			assertEqualsBibtexEntryList(expectedBibtexEntries, actualBibtexEntries);
+		} catch (AssertionError ae) {
+			ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, bibTeXResult);
+			cf.initCause(ae.getCause());
+			throw cf;
+		}
+
+
+		//the scraper can work for an old URL, but not for the redirected. This is problematic, because the user will use the redirected URL.
+		final URL redirectUrl;
+		try {
+			redirectUrl = WebUtils.getRedirectUrl(new URL(url));
+		} catch (MalformedURLException | IllegalArgumentException e) {
+			throw new RuntimeException("Exception while getting redirected Url", e);
+		}
+
+		if (redirectUrl != null && !redirectUrl.toString().equals(url)) {
+			final String redirectedBibTeXResult;
+			final List<BibtexEntry> redirectedBibtexEntries;
 			try {
-				//the scraper can work for an old URL, but not for the redirected. This is problematic, because the user will use the redirected URL.
-				URL redirectUrl = WebUtils.getRedirectUrl(new URL(url));
-				if (redirectUrl != null && !redirectUrl.toString().equals(url)) {
-					String redirectedBibTeXResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, scraper));
-					compareBibTeXs(expectedReference, redirectedBibTeXResult);
-				}
-			} catch (final Exception e) {
-				throw new RuntimeException("Exception with redirected Url", e);
-			} catch (final ComparisonFailure cf){
-				throw new ComparisonFailure("Bibtex of redirected Url is wrong\n" + cf.getMessage(), cf.getExpected(), cf.getActual());
-			}catch (final AssertionError ae){
-				throw new AssertionError("Error with redirected Url\n" + ae.getMessage());
+				redirectedBibTeXResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, scraper));
+				redirectedBibtexEntries = parseAndExpandBibTeXs(redirectedBibTeXResult);
+			} catch (IOException | ParseException | ExpansionException | ScrapingException | AssertionError e) {
+				throw new RuntimeException("Exception while preparing scraped data from redirected url " + redirectUrl, e);
 			}
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			try {
+				assertEqualsBibtexEntryList(expectedBibtexEntries, redirectedBibtexEntries);
+			} catch (AssertionError ae) {
+				ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, redirectedBibTeXResult);
+				cf.initCause(ae.getCause());
+				throw cf;
+			}
+
 		}
 
 	}
@@ -138,13 +176,12 @@ public class RemoteTestAssert {
 		return bibTeXResult;
 	}
 
-	private static List<BibtexEntry> parseAndExpandBibTeXs(String bibtex) throws IOException, ParseException, ExpansionException {
+	protected static List<BibtexEntry> parseAndExpandBibTeXs(final String bibtex) throws IOException, ParseException, ExpansionException {
 		final BibtexFile bibtexFile = new BibtexFile();
 
 		final BibtexParser parser = new BibtexParser(true);
 		final PersonListExpander personListExpander = new PersonListExpander(true, true);
 		final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, true, true);
-		final CrossReferenceExpander crossReferenceExpander = new CrossReferenceExpander();
 
 		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
 
@@ -152,10 +189,9 @@ public class RemoteTestAssert {
 		assertTrue("scraped BibTeX not valid", bibtexValid);
 
 		macroReferenceExpander.expand(bibtexFile);
-		crossReferenceExpander.expand(bibtexFile);
 		personListExpander.expand(bibtexFile);
 
-		ArrayList<? extends BibtexAbstractEntry> bibtexFileEntries = new ArrayList<>(bibtexFile.getEntries());
+		final ArrayList<? extends BibtexAbstractEntry> bibtexFileEntries = new ArrayList<>(bibtexFile.getEntries());
 		bibtexFileEntries.removeIf(entry -> !(entry instanceof BibtexEntry));
 
 		return (List<BibtexEntry>) bibtexFileEntries;
@@ -169,7 +205,7 @@ public class RemoteTestAssert {
 		return normedLineBreaks.replaceAll("(?m)^[\\s&&[^\\n]]+|[\\s+&&[^\\n]]+$", "");
 	}
 
-	private static String getExpectedBibTeX(String resultFile) throws IOException {
+	private static String getExpectedBibTeX(final String resultFile) throws IOException {
 		try (final InputStream in = RemoteTestAssert.class.getClassLoader().getResourceAsStream("org/bibsonomy/scraper/data/" + resultFile)) {
 			return StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(in, StringUtils.DEFAULT_CHARSET)));
 		}
@@ -193,17 +229,32 @@ public class RemoteTestAssert {
 		return testSC;
 	}
 
-	protected static void compareBibTeXs(String expected, String actual) throws ExpansionException, IOException, ParseException {
-		List<BibtexEntry> expectedBibTeXs = parseAndExpandBibTeXs(expected);
-		List<BibtexEntry> actualBibTeXs = parseAndExpandBibTeXs(actual);
-		try {
-			assertEqualsBibtexEntryList(expectedBibTeXs, actualBibTeXs);
-		} catch (AssertionError ae) {
-			throw new ComparisonFailure(ae.getMessage(), expected, actual);
+	/**
+	 * compares two lists of bibtexEntries. Each BibtexEntry in expected is compared to the BibtexEntry in actual with the same Bibtex-key
+	 *
+	 * @param expected List of different BibTeXEntries
+	 * @param actual   List of different BibTeXEntries
+	 * @throws AssertionError differences between the two lists
+	 */
+	protected static void assertEqualsBibtexEntryList(List<BibtexEntry> expected, List<BibtexEntry> actual) throws AssertionError {
+		assertEquals("Expected and actual don't contain the same amount of BibTeXs", expected.size(), actual.size());
+		//makes sure that for every expected BibTeX an actual BibTeX exists. BibTeXs are identified by their key
+		for (BibtexEntry expectedEntry : expected) {
+			assertTrue("actual String does not contain Bibtex with key \"" + expectedEntry.getEntryKey() + "\"",
+							actual.stream().anyMatch(a -> a.getEntryKey().equals(expectedEntry.getEntryKey())));
 		}
+
+		for (BibtexEntry expectedEntry : expected) {
+			for (BibtexEntry actualEntry : actual) {
+				if (expectedEntry.getEntryKey().equals(actualEntry.getEntryKey())) {
+					assertEqualsBibtexEntry(expectedEntry, actualEntry);
+				}
+			}
+		}
+
 	}
 
-	private static void assertEqualsBibtexEntry(BibtexEntry expected, BibtexEntry actual) {
+	protected static void assertEqualsBibtexEntry(final BibtexEntry expected, final BibtexEntry actual) throws AssertionError {
 		// BibtexPerson doesn't implement a custom equals method and is also final, so we can't create a comparableBibtexPerson
 		// The comparator sorts first after the natural Order of the first name and then after the second name
 		final Comparator<BibtexPerson> bibtexPersonComparator = (o1, o2) -> {
@@ -235,6 +286,11 @@ public class RemoteTestAssert {
 										"\nActual entrytype was:   " + actual.getEntryType(),
 						expected.getEntryType(),
 						actual.getEntryType());
+		assertEquals(
+						"\nExpected entrykey was: " + expected.getEntryType() +
+										"\nActual entrykey was:   " + actual.getEntryType(),
+						expected.getEntryKey(),
+						actual.getEntryKey());
 
 		final Map<String, BibtexAbstractValue> expectedBibTexValues = expected.getFields();
 		final Map<String, BibtexAbstractValue> actualBibTexValues = actual.getFields();
@@ -243,7 +299,7 @@ public class RemoteTestAssert {
 			// asymmetric difference both ways to get extra or missing keys of actual and expected Bibtex
 			checkAsymmetricDifferenceBothWays(expectedBibTexValues.keySet(), actualBibTexValues.keySet(), null);
 		} catch (AssertionError ae) {
-			throw new AssertionError("\nDifferent Bibtex-tags:\n" + ae.getMessage());
+			throw new AssertionError("Different keys of Bibtex-tags", ae);
 		}
 
 		/*
@@ -259,7 +315,7 @@ public class RemoteTestAssert {
 				String expectedBibtexString = ((BibtexString) expectedValue).getContent().trim();
 				String actualBibtexString = ((BibtexString) actualValue).getContent().trim();
 
-				switch (key.toLowerCase(Locale.ROOT)){
+				switch (key.toLowerCase(Locale.ROOT)) {
 					case "keywords":
 						//the order of keywords are for some sites randomized, so we can't compare only the string
 						final String[] expectedKeywords = expectedBibtexString.split("\\s*[,;]\\s*");
@@ -268,13 +324,13 @@ public class RemoteTestAssert {
 						break;
 					case "url":
 						//ignore the used protocol
-						expectedBibtexString  = expectedBibtexString.replaceAll("http://", "https://");
+						expectedBibtexString = expectedBibtexString.replaceAll("http://", "https://");
 						actualBibtexString = actualBibtexString.replaceAll("http://", "https://");
 						//fall through
 					default:
 						//compares the string-representation of BibtexString
 						if (!expectedBibtexString.equals(actualBibtexString)) {
-							throw new AssertionError("\nDifferent values at tag: \"" + key +
+							throw new AssertionError("Different values at tag: \"" + key +
 											"\"\nExpected: \"" + expectedBibtexString +
 											"\"\nActual:   \"" + actualBibtexString + "\"");
 						}
@@ -284,7 +340,7 @@ public class RemoteTestAssert {
 					// asymmetric difference both ways to get extra or missing BibtexPersons
 					checkAsymmetricDifferenceBothWays(((BibtexPersonList) expectedValue).getList(), ((BibtexPersonList) actualValue).getList(), bibtexPersonComparator);
 				} catch (AssertionError ae) {
-					throw new AssertionError("\nDifferent values at tag: \"" + key + "\"\n" + ae.getMessage());
+					throw new AssertionError("Different values at tag: \"" + key + "\"", ae);
 				}
 			} else {
 				// should never be thrown, except if a for me unknown BibtexAbstractValue-Class exists
@@ -297,30 +353,6 @@ public class RemoteTestAssert {
 	}
 
 	/**
-	 * compares two lists of bibtexEntries. Each BibtexEntry in expected is compared to the BibtexEntry in actual with the same Bibtex-key
-	 * @param expected List of different BibTeXEntries
-	 * @param actual   List of different BibTeXEntries
-	 * @throws AssertionError
-	 */
-	private static void assertEqualsBibtexEntryList(List<BibtexEntry> expected, List<BibtexEntry> actual) throws AssertionError {
-		assertEquals("Expected and actual don't contain the same amount of BibTeXs", expected.size(), actual.size());
-		//makes sure that for every expected BibTeX an actual BibTeX exists. BibTeXs are identified by their key
-		for (BibtexEntry expectedEntry : expected) {
-			assertTrue("actual String does not contain Bibtex with key \"" + expectedEntry.getEntryKey() + "\"",
-							actual.stream().anyMatch(a -> a.getEntryKey().equals(expectedEntry.getEntryKey())));
-		}
-
-		for (BibtexEntry expectedEntry : expected) {
-			for (BibtexEntry actualEntry : actual) {
-				if (expectedEntry.getEntryKey().equals(actualEntry.getEntryKey())) {
-					assertEqualsBibtexEntry(expectedEntry, actualEntry);
-				}
-			}
-		}
-
-	}
-
-	/**
 	 * Caution: If a comparator is used the equals and compare methods could have different outputs
 	 * Converts both collections to sets and makes the asymmetric difference both ways.
 	 * Should the collections contain the same elements (duplicates are ignored) then no error is thrown.
@@ -330,7 +362,7 @@ public class RemoteTestAssert {
 	 * @param comp     the comparator, which should be used, if equals and hashcode should not be used
 	 * @throws AssertionError contains the differences of both collections
 	 */
-	private static void checkAsymmetricDifferenceBothWays(Collection expected, Collection actual, Comparator comp) throws AssertionError {
+	protected static void checkAsymmetricDifferenceBothWays(final Collection expected, final Collection actual, final Comparator comp) {
 		Set expectedSet;
 		Set actualSet;
 
@@ -355,7 +387,7 @@ public class RemoteTestAssert {
 		}
 
 		if (actualSet.size() != 0 && expectedSet.size() != 0) {
-			throw new AssertionError("Elements not contained in expected Set: " + actualSet + "\nElements not contained in actual Set:   " + expectedSet);
+			throw new AssertionError("\nElements not contained in expected Set: " + actualSet + "\nElements not contained in actual Set:   " + expectedSet);
 		} else if (actualSet.size() != 0) {
 			throw new AssertionError("Elements not contained in expected Set: " + actualSet);
 		} else if (expectedSet.size() != 0) {
