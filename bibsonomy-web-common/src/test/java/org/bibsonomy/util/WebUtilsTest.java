@@ -144,7 +144,7 @@ public class WebUtilsTest {
 		/*
 		 * Just check, if we get some output from BibSonomy.
 		 */
-		final String s = WebUtils.getContentAsString(new URL("http://www.bibsonomy.org/tag/web?items=1000"), null);
+		final String s = WebUtils.getContentAsString(new URL("https://www.bibsonomy.org/tag/web?items=1000"), null);
 		assertTrue(s.length() > 0);
 		/*
 		 * We have a 1MB limit ... 

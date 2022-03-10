@@ -1,0 +1,42 @@
+<jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true"/>
+
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+
+	<div id="presetTagsPanel-${group.name}" class="panel panel-default preset-tags-panel" data-group="${group.name}">
+		<div class="panel-heading">
+			<h4>${group.name}</h4>
+		</div>
+		<c:if test="${not empty group.presetTags}">
+			<div class="panel-body">
+				<div class="preset-tag-form form-group">
+					<label class="col-sm-${labelColSpan} control-label">
+						<fmt:message key="settings.group.presetTags.tag" />
+					</label>
+					<div class="col-sm-${inputColSpan}">
+						<input class="form-control preset-tags-input" id="presetTagsInput-${group.name}" name="presetTagsForGroups['${group.name}']" readonly="readonly"/>
+					</div>
+					<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
+						<ul class="list-inline preset-tags-list group-preset-tags-list">
+							<c:forEach var="presetTag" items="${group.presetTags}">
+								<li class="btn btn-default btn-xs" title="${presetTag.description}" data-group="${group.name}" data-tag="${presetTag.name}">${presetTag.name}</li>
+							</c:forEach>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</c:if>
+	</div>
+</jsp:root>

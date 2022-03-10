@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -36,6 +37,7 @@ import java.util.SortedSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -100,7 +102,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private List<String> groups;
 
-	private List<String> relevantGroups;
+	private List<String> relevantGroups = new ArrayList<>();
+
+	private List<String> sentToGroups = new ArrayList<>();
+
+	private String presetTagsForGroups;
 
 	private SortedSet<RecommendedTag> recommendedTags;
 
@@ -146,6 +152,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private List<String> differentEntryKeys;
 
 	private User groupUser;
+	private List<Tag> presetTagsOfGroupUser;
 
 	private List<JobResult> jobResults;
 	private String redirectUrl;

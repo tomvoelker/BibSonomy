@@ -106,7 +106,7 @@
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 									<fmt:message key="save" var="save" />
 									<form:hidden path="intraHashToUpdate" />
-									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+									<input type="submit" value="${save}" onclick="clearTagInput();" tabindex="2"/>
 								</div>
                    	</fieldset>
                  </div>

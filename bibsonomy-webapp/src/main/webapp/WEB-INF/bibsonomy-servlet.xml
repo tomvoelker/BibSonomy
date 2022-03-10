@@ -993,6 +993,7 @@
 	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
 		<property name="logic" ref ="logic" />
 		<property name="wikiRenderer" ref="wikiRenderer" />
+		<property name="presetTagsEnabled" value="${group.presetTags.enabled}"/>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">

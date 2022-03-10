@@ -19,7 +19,7 @@
 	 	| - integrate "common groups"
 	 	|
 	 	+-->
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.UserResourceViewCommand" required="true"/>
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 
 	<c:set var="username"><user:username username="${user}" noLink="${true}"/></c:set>
@@ -57,6 +57,6 @@
 			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fontawesome:icon icon="file-alt" spaceAfter="5" /><fmt:message key="navi.cv.abbrev"/></a>
 			<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
 			<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
-		</c:if>-->
+		</c:if>
 	</div>
 </jsp:root>

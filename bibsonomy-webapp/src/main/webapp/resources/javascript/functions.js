@@ -384,16 +384,6 @@ function add_hints() {
 }
 
 /**
- * Clears #inpf_tags if it's value is equal to the tag hint.
- * 
- * @return
- */
-function clear_tags() {
-	var tag = $("#inpf_tags");
-	if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
-}
-
-/**
  * 
  * toggle background color for required publication fields
  * 

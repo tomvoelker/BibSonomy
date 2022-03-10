@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:oldbs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+		  xmlns:groupsettings="urn:jsptagdir:/WEB-INF/tags/groupsettings"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.GroupSettingsPageCommand" required="true" />
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
+
+	<div id="selTab2" class="tab-pane ${(command.selTab eq 2) ? 'active' : ''}">
+		<c:set var="groupRole" value="${command.groupMembership.groupRole}" />
+		<c:set var="privlevel" value="${group.privlevel}" />
+		<c:choose>
+			<c:when test="${groupRole eq 'USER' || groupRole eq 'MODERATOR' || groupRole eq 'ADMINISTRATOR' }">
+
+				<bsform:fieldset legendKey="settings.group.presetTags">
+					<jsp:attribute name="content">
+						<p>
+							<fmt:message key="settings.group.presetTags.hint"/>
+						</p>
+					</jsp:attribute>
+				</bsform:fieldset>
+
+				<c:set var="allowEditTagList" value="${groupRole eq 'ADMINISTRATOR' || groupRole eq 'MODERATOR'}" />
+				<c:if test="${allowEditTagList}">
+					<!-- Form to add new tags -->
+					<form:form cssClass="form-horizontal" name="presetTagAddForm" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
+						<bsform:fieldset legendKey="settings.group.presetTags.action.add.title">
+							<jsp:attribute name="content">
+								<div class="form-group">
+									<form:label cssClass="col-sm-3 control-label" path="presetTagName">
+										<fmt:message key="settings.group.presetTags.name" />
+									</form:label>
+
+									<div class="col-sm-9">
+										<form:input cssClass="form-control" id="presetTagNameAdd" path="presetTagName"/>
+									</div>
+								</div>
+								<bsform:textarea id="presetTagDescriptionAdd" path="presetTagDescription"
+												 labelKey="settings.group.presetTags.description"
+												 labelColSpan="3" inputColSpan="9">
+									<jsp:attribute name="helpText"><!-- keep me --></jsp:attribute>
+								</bsform:textarea>
+							</jsp:attribute>
+						</bsform:fieldset>
+
+						<div class="col-sm-offset-3 col-sm-9">
+							<input type="hidden" name="groupname" value="${group.name}"/>
+							<input type="hidden" name="operation" value="UPDATE_PRESET_TAG" />
+							<fmt:message var="submitButton" key="settings.group.presetTags.action.add" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" onclick="checkAddTag()" />
+						</div>
+						<p class="clearfix"><br /></p>
+					</form:form>
+
+					<!-- Form to update existing tags -->
+					<c:if test="${not empty group.presetTags}">
+						<form:form cssClass="form-horizontal" name="presetTagUpdateForm" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
+							<bsform:fieldset legendKey="settings.group.presetTags.action.update.title">
+								<jsp:attribute name="content">
+									<div class="form-group">
+										<form:label cssClass="col-sm-3 control-label" path="presetTagName">
+										<fmt:message key="settings.group.presetTags.name" />
+										</form:label>
+
+										<div class="col-sm-9">
+											<form:select cssClass="form-control" id="presetTagNameUpdate" path="presetTagName">
+												<form:option value=""><fmt:message key="form.input.select"/></form:option>
+												<c:forEach items="${group.presetTags}" var="tag">
+													<form:option value="${tag.name}" data-description="${tag.description}">${tag.name}</form:option>
+												</c:forEach>
+											</form:select>
+										</div>
+									</div>
+									<bsform:textarea id="presetTagDescriptionUpdate" path="presetTagDescription"
+													 labelKey="settings.group.presetTags.description"
+													 labelColSpan="3" inputColSpan="9">
+										<jsp:attribute name="helpText"><!-- keep me --></jsp:attribute>
+									</bsform:textarea>
+								</jsp:attribute>
+							</bsform:fieldset>
+
+							<div class="col-sm-offset-3 col-sm-9">
+								<input type="hidden" name="groupname" value="${group.name}"/>
+								<input type="hidden" name="operation" value="UPDATE_PRESET_TAG" />
+								<fmt:message var="submitButton" key="settings.group.presetTags.action.update" />
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
+							</div>
+							<p class="clearfix"><br /></p>
+						</form:form>
+					</c:if>
+				</c:if>
+
+				<!-- List all preset tags for the group -->
+				<bsform:fieldset legendKey="settings.group.presetTags">
+					<jsp:attribute name="content">
+						<fmt:message var="locale" key="settings.locales.IETF"/>
+						<fmt:message var="deleteHint" key="settings.group.presetTags.action.delete.hint"/>
+						<table class="table table-striped" data-toggle="table" data-locale="${locale}">
+							<thead>
+								<tr>
+									<th class="col-md-3" data-field="name" data-sortable="true">
+										<fmt:message key="settings.group.presetTags.name"/>
+									</th>
+									<th class="col-md-7">
+										<fmt:message key="settings.group.presetTags.description"/>
+									</th>
+									<th class="col-md-2">
+										<fmt:message key="settings.group.presetTags.action"/>
+									</th>
+								</tr>
+							</thead>
+
+							<c:forEach items="${group.presetTags}" var="tag">
+								<tr>
+									<td class="col-md-3" data-field="name" data-sortable="true">
+										<c:out value="${tag.name}"/>
+									</td>
+									<td class="col-md-7">
+										<c:out value="${tag.description}"/>
+									</td>
+									<td class="col-md-2">
+										<c:if test="${allowEditTagList}">
+											<bs:linkButton title="${deleteHint}" textKey="settings.group.presetTags.action.delete" icon="times" style="danger" size="xsmall"
+														   href="/updateGroup?operation=DELETE_PRESET_TAG&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;presetTagName=${mtl:encodePathSegment(tag.name)}&amp;ckey=${ckey}" />
+										</c:if>
+									</td>
+								</tr>
+							</c:forEach>
+						</table>
+					</jsp:attribute>
+				</bsform:fieldset>
+			</c:when>
+			<c:otherwise>
+				<fmt:message key="settings.group.error.notMember"/>
+			</c:otherwise>
+		</c:choose>
+	</div>
+</jsp:root>

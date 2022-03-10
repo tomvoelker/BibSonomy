@@ -42,7 +42,7 @@
 				<bsform:input path="post.resource.volume" inputColSpan="${inputColSpan}"/>
 				<bsform:input path="post.resource.number" inputColSpan="${inputColSpan}"/>
 				<fmt:message var="save" key="submit" />
-				<input class="btn btn-primary col-sm-offset-${12 - inputColSpan}" id="calc" type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+				<input class="btn btn-primary col-sm-offset-${12 - inputColSpan}" id="calc" type="submit" value="${save}" onclick="clearTagInput();" tabindex="2"/>
 			</form:form>
 			<!-- TODO: error validation in controller? -->
 			<h3><fmt:message key="bibtexhashexample.result"/></h3>
