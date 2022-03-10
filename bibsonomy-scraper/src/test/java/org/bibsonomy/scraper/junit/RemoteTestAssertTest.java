@@ -1,3 +1,32 @@
+/**
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.scraper.junit;
 
 
@@ -80,14 +109,14 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithIdenticalBibText() throws IOException, ExpansionException, ParseException {
-		BibtexEntry testData = getTestData("BaseLineTestData.bib").get(0);
+		BibtexEntry testData = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
 		RemoteTestAssert.assertEqualsBibtexEntry(testData, testData);
 	}
 
 	@Test
 	public void compareBibtexWithActualHasMoreBibtexTags() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataExtraTag.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataExtraTag.bib").get(0);
 		String expectedErrorMessage = "Different keys of Bibtex-tags";
 		String expectedErrorCauseMessage = "Elements not contained in expected Set: [abstract]";
 
@@ -98,8 +127,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithExpectedHasMoreBibtexTags() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("TestDataExtraTag.bib").get(0);
-		BibtexEntry actual = getTestData("BaseLineTestData.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataExtraTag.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
 		String expectedErrorMessage = "Different keys of Bibtex-tags";
 		String expectedErrorCauseMessage = "Elements not contained in actual Set: [abstract]";
 
@@ -111,8 +140,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithActualHavingExtraAndMissingTag() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataExtraAndMissingTag.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataExtraAndMissingTag.bib").get(0);
 		String expectedErrorMessage = "Different keys of Bibtex-tags";
 		String expectedErrorCauseMessage = "\n" +
 						"Elements not contained in expected Set: [abstract]\n" +
@@ -125,8 +154,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithDifferentBibtexStringValues() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataDifferentTitle.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataDifferentTitle.bib").get(0);
 		String expectedErrorMessage = "Different values at tag: \"title\"\n" +
 						"Expected: \"RETRACTED ARTICLE: Conservative management for an esophageal perforation in a patient presented with delayed diagnosis: a case report\"\n" +
 						"Actual:   \"RETRACTED ARTICLE: Conservative management for an esophageal perforation\"";
@@ -137,8 +166,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithActualMissingAnAuthor() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataMissingAuthor.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataMissingAuthor.bib").get(0);
 		String expectedErrorMessage = "Different values at tag: \"author\"";
 		String expectedErrorCauseMessage = "Elements not contained in actual Set: [Kapetanos, Dimitrios]";
 
@@ -149,8 +178,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithActualHavingAnExtraAuthor() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataExtraAuthor.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataExtraAuthor.bib").get(0);
 		String expectedErrorMessage = "Different values at tag: \"author\"";
 		String expectedErrorCauseMessage = "Elements not contained in expected Set: [Extra, Author]";
 
@@ -162,8 +191,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithActualMissingAndHavingAnExtraAuthor() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataExtraAndMissingAuthor.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataExtraAndMissingAuthor.bib").get(0);
 		String expectedErrorMessage = "Different values at tag: \"author\"";
 		String expectedErrorCauseMessage = "\n" +
 						"Elements not contained in expected Set: [Extra, Author]\n" +
@@ -176,8 +205,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithActualMissingFirstNameOfAuthor() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataAuthorMissingFirstName.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataAuthorMissingFirstName.bib").get(0);
 		String expectedErrorMessage = "Different values at tag: \"author\"";
 		String expectedErrorCauseMessage = "\n" +
 						"Elements not contained in expected Set: [Lazaridis]\n" +
@@ -190,8 +219,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithDifferentKey() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataDifferentKey.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataDifferentKey.bib").get(0);
 		String expectedErrorMessage = "\n" +
 						"Expected entrykey was: article\n" +
 						"Actual entrykey was:   article expected:<Tsalis200[9]> but was:<Tsalis200[8]>";
@@ -202,8 +231,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithDifferentEntryType() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataDifferentEntryType.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataDifferentEntryType.bib").get(0);
 		String expectedErrorMessage = "\n" +
 						"Expected entrytype was: article\n" +
 						"Actual entrytype was:   book expected:<[article]> but was:<[book]>";
@@ -214,15 +243,15 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithDifferentUrlProtocols() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataDifferentUrlProtocol.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataDifferentUrlProtocol.bib").get(0);
 		RemoteTestAssert.assertEqualsBibtexEntry(expected, actual);
 	}
 
 	@Test
 	public void compareBibtexWithDifferentUrl() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataDifferentUrl.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataDifferentUrl.bib").get(0);
 		String expectedErrorMessage = "Different values at tag: \"url\"\n" +
 						"Expected: \"https://doi.org/10.1186/1757-1626-2-164\"\n" +
 						"Actual:   \"https://www.google.de/\"";
@@ -233,8 +262,8 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareBibtexWithDifferentKeywordOrder() throws IOException, ExpansionException, ParseException {
-		BibtexEntry expected = getTestData("BaseLineTestData.bib").get(0);
-		BibtexEntry actual = getTestData("TestDataDifferentKeywordOrder.bib").get(0);
+		BibtexEntry expected = getTestData("singlebibtex/TestDataBaseLine.bib").get(0);
+		BibtexEntry actual = getTestData("singlebibtex/TestDataDifferentKeywordOrder.bib").get(0);
 
 		RemoteTestAssert.assertEqualsBibtexEntry(expected, actual);
 	}
@@ -245,9 +274,50 @@ public class RemoteTestAssertTest {
 
 	@Test
 	public void compareMultipleBibtexWithIdenticalBibTexts() throws IOException, ExpansionException, ParseException {
-		List<BibtexEntry> testData = getTestData("BaseLineTestData.bib");
+		List<BibtexEntry> testData = getTestData("multiplebibtex/TestDataBaseLine.bib");
 		RemoteTestAssert.assertEqualsBibtexEntryList(testData, testData);
 	}
+
+	@Test
+	public void compareMultipleBibtexWithExtraActualBibtex() throws IOException, ExpansionException, ParseException {
+		List<BibtexEntry> expected = getTestData("multiplebibtex/TestDataBaseLine.bib");
+		List<BibtexEntry> actual = getTestData("multiplebibtex/TestDataExtraBibtex.bib");
+		String expectedErrorMessage = "Expected and actual don't contain the same amount of BibTeXs expected:<2> but was:<3>";
+
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexEntryList(expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
+	@Test
+	public void compareMultipleBibtexWithMissingActualBibtex() throws IOException, ExpansionException, ParseException {
+		List<BibtexEntry> expected = getTestData("multiplebibtex/TestDataBaseLine.bib");
+		List<BibtexEntry> actual = getTestData("multiplebibtex/TestDataMissingBibtex.bib");
+		String expectedErrorMessage = "Expected and actual don't contain the same amount of BibTeXs expected:<2> but was:<1>";
+
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexEntryList(expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
+	@Test
+	public void compareMultipleBibtexWithDifferentBibtex() throws IOException, ExpansionException, ParseException {
+		List<BibtexEntry> expected = getTestData("multiplebibtex/TestDataBaseLine.bib");
+		List<BibtexEntry> actual = getTestData("multiplebibtex/TestDataDifferentBibtex.bib");
+		String expectedErrorMessage = "actual String does not contain Bibtex with key \"kluger1996effects\"";
+
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexEntryList(expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
+	@Test
+	public void compareMultipleBibtexWithDifferentBibtexWithSameKey() throws IOException, ExpansionException, ParseException {
+		List<BibtexEntry> expected = getTestData("multiplebibtex/TestDataBaseLine.bib");
+		List<BibtexEntry> actual = getTestData("multiplebibtex/TestDataDifferentBibtexSameKey.bib");
+		String expectedErrorMessage = "\nExpected entrytype was: misc\nActual entrytype was:   article expected:<[misc]> but was:<[article]>";
+
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexEntryList(expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
 
 	private List<BibtexEntry> getTestData(String path) throws IOException, ExpansionException, ParseException {
 		final InputStream in = RemoteTestAssertTest.class.getClassLoader().getResourceAsStream("org/bibsonomy/scraper/junit/" + path);

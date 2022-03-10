@@ -1,29 +1,29 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
- * <p>
+ *
  * Copyright (C) 2006 - 2021 Data Science Chair,
- * University of Würzburg, Germany
- * https://www.informatik.uni-wuerzburg.de/datascience/home/
- * Information Processing and Analytics Group,
- * Humboldt-Universität zu Berlin, Germany
- * https://www.ibi.hu-berlin.de/en/research/Information-processing/
- * Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * https://www.kde.cs.uni-kassel.de/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * https://www.l3s.de/
- * <p>
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -116,20 +116,20 @@ public class RemoteTestAssert {
 		} catch (IOException | ExpansionException | ParseException | AssertionError e) {
 			throw new RuntimeException("Exception while preparing test data", e);
 		}
-
-		final String bibTeXResult;
+		//Scraping the bibtex and preparing it to be tested
+		final String scraperResult;
 		final List<BibtexEntry> actualBibtexEntries;
 		try {
-			bibTeXResult = normBibTeX(getScraperResult(url, selection, scraper));
-			actualBibtexEntries = parseAndExpandBibTeXs(bibTeXResult);
+			scraperResult = normBibTeX(getScraperResult(url, selection, scraper));
+			actualBibtexEntries = parseAndExpandBibTeXs(scraperResult);
 		} catch (IOException | ScrapingException | ExpansionException | ParseException | AssertionError e) {
 			throw new RuntimeException("Exception while preparing scraped data from " + url, e);
 		}
-
+		//comparing expected and actual bibtex
 		try {
 			assertEqualsBibtexEntryList(expectedBibtexEntries, actualBibtexEntries);
 		} catch (AssertionError ae) {
-			ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, bibTeXResult);
+			ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, scraperResult);
 			cf.initCause(ae.getCause());
 			throw cf;
 		}
@@ -144,18 +144,18 @@ public class RemoteTestAssert {
 		}
 
 		if (redirectUrl != null && !redirectUrl.toString().equals(url)) {
-			final String redirectedBibTeXResult;
+			final String redirectedScraperResult;
 			final List<BibtexEntry> redirectedBibtexEntries;
 			try {
-				redirectedBibTeXResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, scraper));
-				redirectedBibtexEntries = parseAndExpandBibTeXs(redirectedBibTeXResult);
+				redirectedScraperResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, scraper));
+				redirectedBibtexEntries = parseAndExpandBibTeXs(redirectedScraperResult);
 			} catch (IOException | ParseException | ExpansionException | ScrapingException | AssertionError e) {
 				throw new RuntimeException("Exception while preparing scraped data from redirected url " + redirectUrl, e);
 			}
 			try {
 				assertEqualsBibtexEntryList(expectedBibtexEntries, redirectedBibtexEntries);
 			} catch (AssertionError ae) {
-				ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, redirectedBibTeXResult);
+				ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, redirectedScraperResult);
 				cf.initCause(ae.getCause());
 				throw cf;
 			}
@@ -184,7 +184,7 @@ public class RemoteTestAssert {
 		final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, true, true);
 
 		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
-
+		//if no bibtex is in the bibtexFile then the bibtex was not valid
 		final boolean bibtexValid = bibtexFile.getEntries().stream().anyMatch(BibtexEntry.class::isInstance);
 		assertTrue("scraped BibTeX not valid", bibtexValid);
 
@@ -251,9 +251,18 @@ public class RemoteTestAssert {
 				}
 			}
 		}
-
 	}
 
+	/**
+	 * Compares two BibtexEntries. For most tags the string is compared, but for:
+	 * Url the protocol is ignored.
+	 * Keyword ignores the order
+	 * Author and Editor ignores the format and order
+	 *
+	 * @param expected BibtexEntry
+	 * @param actual   BibtexEntry
+	 * @throws AssertionError
+	 */
 	protected static void assertEqualsBibtexEntry(final BibtexEntry expected, final BibtexEntry actual) throws AssertionError {
 		// BibtexPerson doesn't implement a custom equals method and is also final, so we can't create a comparableBibtexPerson
 		// The comparator sorts first after the natural Order of the first name and then after the second name
@@ -281,14 +290,10 @@ public class RemoteTestAssert {
 			}
 		};
 
-		assertEquals(
-						"\nExpected entrytype was: " + expected.getEntryType() +
-										"\nActual entrytype was:   " + actual.getEntryType(),
+		assertEquals("\nExpected entrytype was: " + expected.getEntryType() + "\nActual entrytype was:   " + actual.getEntryType(),
 						expected.getEntryType(),
 						actual.getEntryType());
-		assertEquals(
-						"\nExpected entrykey was: " + expected.getEntryType() +
-										"\nActual entrykey was:   " + actual.getEntryType(),
+		assertEquals("\nExpected entrykey was: " + expected.getEntryType() + "\nActual entrykey was:   " + actual.getEntryType(),
 						expected.getEntryKey(),
 						actual.getEntryKey());
 
@@ -362,7 +367,7 @@ public class RemoteTestAssert {
 	 * @param comp     the comparator, which should be used, if equals and hashcode should not be used
 	 * @throws AssertionError contains the differences of both collections
 	 */
-	protected static void checkAsymmetricDifferenceBothWays(final Collection expected, final Collection actual, final Comparator comp) {
+	protected static void checkAsymmetricDifferenceBothWays(final Collection expected, final Collection actual, final Comparator comp) throws AssertionError {
 		Set expectedSet;
 		Set actualSet;
 
