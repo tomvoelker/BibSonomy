@@ -147,7 +147,7 @@
 							</div>
 						</div>
 						<div id="personPublicationsContainer"><!-- keep me --></div>
-						<parts:spinner id="publications"/>
+						<parts:spinner id="publicationsLoader"/>
 					</div>
 					<div class="col-md-3 sidebar">
 						<c:if test="${not empty command.entrytypeFilters}">

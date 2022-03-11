@@ -39,10 +39,10 @@ function loadSimilarAuthors(page) {
 			$('#personSimilarAuthors').html(data);
 		},
 		'before': function(){
-			$("#loader-similar").show(0);
+			$("#similarAuthorsLoader").show(0);
 		},
 		'after': function(){
-			$("#loader-similar").hide(0);
+			$("#similarAuthorsLoader").hide(0);
 		}
 	});
 }
@@ -80,10 +80,10 @@ function initPublicationPagination(page) {
 		'loadingNomoreText': 'No more.', // No more of loading prompt.
 		'manuallyText': 'click to loading more.', // Click of loading prompt.
 		'before': function(){
-			$("#loader-publications").show(0);
+			$("#publicationsLoader").show(0);
 		},
 		'after': function(){
-			$("#loader-publications").hide(0);
+			$("#publicationsLoader").hide(0);
 			//$('#personPublications').attr("scrollpagination", "enabled");
 		}
 	});
