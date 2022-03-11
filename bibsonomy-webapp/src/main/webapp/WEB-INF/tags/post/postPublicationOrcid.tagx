@@ -2,9 +2,14 @@
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
+
+	<parts:spinner id="orcidImportLoader" fullscreen="${true}" />
 
 	<h2><fmt:message key="post_bibtex.orcid.heading"/></h2>
 	<p class="smalltext"><fmt:message key="post_bibtex.orcid.description" /></p>
@@ -21,8 +26,9 @@
 
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<fmt:message var="importLabel" key="post_bibtex.orcid.action.import" />
-			<bsform:button type="submit" style="primary" size="defaultSize" value="${importLabel}" />
+			<a href="#" class="btn btn-default" onclick="importOrcidPublications()">
+				<fmt:message key="post_bibtex.orcid.action.import" />
+			</a>
 			<c:if test="${not empty person and not empty person.orcid}">
 				<input id="ownOrcidID" type="hidden" value="${person.orcid}"/>
 				<fmt:message var="setOwnLabel" key="post_bibtex.orcid.action.setOwn" />
@@ -30,5 +36,4 @@
 			</c:if>
 		</div>
 	</div>
-
 </jsp:root>

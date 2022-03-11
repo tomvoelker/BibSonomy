@@ -1,6 +1,7 @@
 package org.bibsonomy.importer.orcid;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.http.HttpException;
 import org.apache.http.client.methods.HttpGet;
@@ -23,6 +24,11 @@ public class RestClient {
 
     public String getWorkDetails(String orcidId, String workId) {
         String url = this.urlRenderer.getWorkDetailsUrl(orcidId, workId);
+        return this.execute(url);
+    }
+
+    public String getWorkDetailsBulk(String orcidId, List<String> workIds) {
+        String url = this.urlRenderer.getWorkDetailsBulkUrl(orcidId, workIds);
         return this.execute(url);
     }
 
