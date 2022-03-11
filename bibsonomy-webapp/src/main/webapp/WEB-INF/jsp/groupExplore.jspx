@@ -115,7 +115,7 @@
 								<div id="filter-entries-custom" class="filter-entries search-filter-selection"><!-- keep me --></div>
 							</div>
 						</c:if>
-						<c:if test="${command.filterMap.containsKey('preset')}">
+						<c:if test="${properties['group.presetTags.enabled'] and command.filterMap.containsKey('preset')}">
 							<sidebar:searchFilterList filterField="tags" filterEntries="${command.filterMap.get('preset')}" hideCounts="${true}"
 													  headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" buttonClass="filter-entry-counter" />
 						</c:if>

@@ -899,17 +899,37 @@ function initGroupOptions() {
     });
 
     // Init preset tag selection, when adding post
-    $('.preset-tags-list').children('li').click(function () {
+    $('.group-preset-tags-list').children('li').click(function () {
         var groupId = $(this).data('group');
         var tag = $(this).data('tag');
         var input = $('#presetTagsInput-' + groupId);
 
         input.val(toggleTagInString(input.val(), tag));
+
+        if (input.val().includes(tag)) {
+            $(this).addClass('active');
+        } else {
+            $(this).removeClass('active');
+        }
     });
 
     // Init preset tag recommendations, when editing post
-    $('#presetTagRecommendations').children('li').click(function () {
-        copyTag("inpf_tags", $(this).text());
+    $('#presetTagRecommendations').children('li').each(function () {
+        var tag = $(this).text();
+        var input = $('#inpf_tags');
+        if (input.val().includes($(this).text())) {
+            $(this).addClass('active');
+        }
+
+        $(this).click(function() {
+            copyTag("inpf_tags", tag);
+
+            if (input.val().includes(tag)) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        });
     });
 }
 

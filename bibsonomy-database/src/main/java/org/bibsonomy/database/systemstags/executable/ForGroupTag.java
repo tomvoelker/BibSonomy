@@ -79,11 +79,16 @@ import org.joda.time.format.DateTimeFormatter;
 @Setter
 public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
-	public static final String NAME = "for";
+	private static final String FROM_PREFIX = "from:";
+	private static final String HIDDEN_FROM_PREFIX = "sys:hidden:from:";
+
 	private static boolean toHide = true;
+	public static final String NAME = "for";
 
 	private DBLogicNoAuthInterfaceFactory logicInterfaceFactory = null;
 	private FileLogic fileLogic;
+
+	private boolean hideFromTag;
 	private boolean mergeEnabled;
 	private boolean userTagsEnabled;
 	
@@ -286,13 +291,6 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			}
 		}
 
-		/*
-		TODO check use
-		if (resource instanceof BibTex) {
-			final BibTex publication = (BibTex) resource;
-			publication.setDocuments(documents);
-		}
-		*/
 		log.debug("copied post was stored successfully");
 		return true;
 	}
@@ -362,7 +360,11 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 * adding this tag also guarantees, that the new post will
 		 * have an empty tag set (which would be illegal)!
 		 */
-		groupTags.add(new Tag("from:" + userName));
+		if (this.hideFromTag) {
+			groupTags.add(new Tag(HIDDEN_FROM_PREFIX + userName));
+		} else {
+			groupTags.add(new Tag(FROM_PREFIX + userName));
+		}
 
 		return groupTags;
 	}

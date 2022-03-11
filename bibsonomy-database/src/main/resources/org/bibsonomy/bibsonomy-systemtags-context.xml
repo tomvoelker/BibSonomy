@@ -37,6 +37,7 @@
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="logicInterfaceFactory" ref="noAuthInterfaceFactory" />
+		<property name="hideFromTag" value="${group.sentTo.fromTag.hidden}" />
 		<property name="mergeEnabled" value="${group.sentTo.merge.enabled}" />
 		<property name="userTagsEnabled" value="${group.sentTo.userTags.enabled}" />
 	</bean>

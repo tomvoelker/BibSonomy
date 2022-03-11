@@ -143,10 +143,24 @@
 			<bsform:input labelColSpan="3" path="post.resource.school"/>
 		</c:if>
 	</c:if>
-	
+
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
+
+		<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames(T(org.bibsonomy.model.util.PersonNameUtils).discoverPersonNamesIgnoreExceptions('${command.context.loginUser.realname}'))" var="userRealname"/>
+		<input type="hidden" id="userRealnameID" value="${userRealname}"/>
+		<c:if test="${not empty command.context.loginUser.claimedPerson}">
+			<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonName('${command.context.loginUser.claimedPerson.mainName}')" var="claimedPersonMainName"/>
+			<input type="hidden" id="claimedPersonMainNameID" value="${claimedPersonMainName}"/>
+			<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames('${command.context.loginUser.claimedPerson.names}', true, ' and ')" var="claimedPersonNames"/>
+			<input type="hidden" id="claimedPersonNamesID" value="${claimedPersonNames}"/>
+		</c:if>
+
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
+				<div class="alert alert-warning alert-dismissible" role="alert" id="imAmAuthorWarning" style="display: none;">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<fmt:message key="post.resource.myown.reminder"/>
+				</div>
 				<div class="checkbox clearfix">
 					<label>
 						<input name="myOwn" type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>

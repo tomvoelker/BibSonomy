@@ -25,7 +25,7 @@ function initFilters() {
     // add tag filters
     initFilterButtons('entrytype');
     initFilterButtons('year');
-    initFilterButtons('preset');
+    initFilterButtons('tags');
     // add custom tag filters
     addCustomFilters();
     // remove invalid year buttons
