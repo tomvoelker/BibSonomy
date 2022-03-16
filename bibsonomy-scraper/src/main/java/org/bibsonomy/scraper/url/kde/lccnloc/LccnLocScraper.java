@@ -64,6 +64,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
 
 		try {
 			/*
