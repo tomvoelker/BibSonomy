@@ -54,4 +54,18 @@ public class HogrefeScraperTest {
 		assertScraperResult(url, HogrefeScraper.class, resultFile);
 	}
 
+	@Test
+	public void url2TestRun(){
+		final String url = "https://econtent.hogrefe.com/doi/full/10.1027/1864-9335/a000179";
+		final String resultFile = resultDirectory + "HogrefeScraperUnitURLTest1.bib";
+		assertScraperResult(url, HogrefeScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://econtent.hogrefe.com/doi/10.1027/1864-9335/a000179";
+		final String resultFile = resultDirectory + "HogrefeScraperUnitURLTest1.bib";
+		assertScraperResult(url, HogrefeScraper.class, resultFile);
+	}
+
 }
