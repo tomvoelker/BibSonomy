@@ -44,18 +44,39 @@ public class AclScraperTest {
 	String resultDirectory = "acl/";
 
 	@Test
-	public void testWebSiteLink() {
+	public void url1TestRun() {
 		final String url = "https://www.aclweb.org/anthology/W04-1806/";
 		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
 		assertScraperResult(url, AclScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_108
 	 */
 	@Test
-	public void testPDFLink() {
+	public void url2TestRun() {
 		final String url = "https://www.aclweb.org/anthology/W04-1806.pdf";
+		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
+		assertScraperResult(url, AclScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun() {
+		final String url = "https://aclanthology.org/W04-1806/";
+		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
+		assertScraperResult(url, AclScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun() {
+		final String url = "https://aclanthology.org/W04-1806.pdf";
+		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
+		assertScraperResult(url, AclScraper.class, resultFile);
+	}
+
+	@Test
+	public void url5TestRun() {
+		final String url = "https://aclanthology.org/W04-1806.bib";
 		final String resultFile = resultDirectory + "AclScraperUnitURLTest1.bib";
 		assertScraperResult(url, AclScraper.class, resultFile);
 	}

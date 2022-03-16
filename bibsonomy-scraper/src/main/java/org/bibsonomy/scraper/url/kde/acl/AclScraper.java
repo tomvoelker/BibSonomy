@@ -30,7 +30,7 @@
 package org.bibsonomy.scraper.url.kde.acl;
 
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -53,11 +53,17 @@ public class AclScraper extends GenericBibTeXURLScraper {
 
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME) + ".";
 
-	private static final Pattern hostPattern = Pattern.compile(".*" + "aclweb.org");
-	private static final Pattern pathPattern = Pattern.compile("^/anthology.*");
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
-					new Pair<>(hostPattern, pathPattern)
-	);
+	private static final Pattern OLD_HOST_PATTERN = Pattern.compile(".*" + "aclweb.org");
+	private static final Pattern OLD_PATH_PATTERN = Pattern.compile("^/anthology.*");
+
+	private static final Pattern HOST_PATTERN = Pattern.compile(".*aclanthology.org");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<>();
+
+	static {
+		PATTERNS.add(new Pair<>(OLD_HOST_PATTERN, OLD_PATH_PATTERN));
+		PATTERNS.add(new Pair<>(HOST_PATTERN, EMPTY_PATTERN));
+	}
+
 
 	@Override
 	public String getInfo() {
@@ -66,7 +72,7 @@ public class AclScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
 	@Override
@@ -85,7 +91,7 @@ public class AclScraper extends GenericBibTeXURLScraper {
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		// replace pdf link
-		String downloadUrl = url.toString().replaceAll(".pdf", "");
+		String downloadUrl = url.toString().replaceAll("\\.(?:pdf|bib)", "");
 		// replace trailing slash
 		if (downloadUrl.endsWith("/")) {
 			downloadUrl = downloadUrl.substring(0, downloadUrl.length() - 1);
