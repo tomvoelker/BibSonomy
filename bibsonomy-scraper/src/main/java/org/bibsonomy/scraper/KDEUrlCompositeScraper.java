@@ -79,7 +79,6 @@ import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
-import org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.hebis.HebisScraper;
@@ -287,7 +286,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new MDPIScraper());
 		addScraper(new TheLancetScraper());
 		addScraper(new NowPublishersScraper());
-		addScraper(new GenomeBiologyScraper());
 		addScraper(new RWTHAachenScraper());
 		addScraper(new OstiScraper());
 		addScraper(new ScientificScraper());
