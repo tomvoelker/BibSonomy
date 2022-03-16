@@ -46,7 +46,6 @@ import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
 import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
 import org.bibsonomy.scraper.url.kde.apa.APAScraper;
 import org.bibsonomy.scraper.url.kde.apha.APHAScraper;
-import org.bibsonomy.scraper.url.kde.aps.ApsScraper;
 import org.bibsonomy.scraper.url.kde.apsphysics.APSPhysicsScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.ashpublications.AshPublicationsScraper;
@@ -215,7 +214,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AipScitationScraper());
 		addScraper(new JAPScraper());
 		addScraper(new RSOCScraper());
-		addScraper(new ApsScraper());
 		addScraper(new CdnSciencePubScraper());
 		addScraper(new AsmScraper());
 		addScraper(new AhaJournalsScraper());
