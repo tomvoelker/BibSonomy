@@ -95,7 +95,6 @@ import org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper;
 import org.bibsonomy.scraper.url.kde.jap.JAPScraper;
 import org.bibsonomy.scraper.url.kde.jbc.JBCScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
-import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
 import org.bibsonomy.scraper.url.kde.jstage.JStageScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
@@ -168,7 +167,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
-		addScraper(new JEBScraper());
 		addScraper(new BioRxivScraper());
 		// changed to hebis Scraper
 		addScraper(new HebisScraper());
