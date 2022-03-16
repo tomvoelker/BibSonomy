@@ -62,5 +62,19 @@ public class RSOCScraperTest {
 		final String resultFile = resultDirectory + "RSOCScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, RSOCScraper.class, resultFile);
 	}
+
+	@Test
+	public void urlTest3Run(){
+		final String url = "https://royalsocietypublishing.org/doi/10.1098/rspb.2016.1270";
+		final String resultFile = resultDirectory + "RSOCScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, RSOCScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest4Run(){
+		final String url = "https://royalsocietypublishing.org/doi/10.1098/rspb.2016.0847";
+		final String resultFile = resultDirectory + "RSOCScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, RSOCScraper.class, resultFile);
+	}
 	
 }
