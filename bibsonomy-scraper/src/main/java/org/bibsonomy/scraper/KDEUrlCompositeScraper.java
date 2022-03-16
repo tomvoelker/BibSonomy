@@ -75,7 +75,6 @@ import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
-import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
@@ -219,7 +218,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AnthroSourceScraper());
 		addScraper(new TaylorAndFrancisScraper());
 		addScraper(new WileyIntersienceScraper());
-		addScraper(new FASEBJournalScraper());
 		addScraper(new ScienceMagScraper());
 
 
