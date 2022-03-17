@@ -72,6 +72,7 @@ public class JStorScraper extends AbstractUrlScraper {
 
 			HttpGet get = new HttpGet(sc.getUrl().toString());
 			get.setHeader("Cookie", cookies);
+			get.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36");
 			String pageContent = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
 
 			final Matcher m_doi = DOI.matcher(pageContent);
