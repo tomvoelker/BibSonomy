@@ -11,6 +11,7 @@ import org.bibsonomy.importer.orcid.RestClient;
 import org.bibsonomy.webapp.command.ajax.OrcidAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 
 @Getter

@@ -5,6 +5,7 @@
 		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:form="http://www.springframework.org/tags/form"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
@@ -14,26 +15,34 @@
 	<h2><fmt:message key="post_bibtex.orcid.heading"/></h2>
 	<p class="smalltext"><fmt:message key="post_bibtex.orcid.description" /></p>
 
-	<div class="orcid-import-form form-group">
-		<label class="col-sm-2 control-label">
-			<fmt:message key="post_bibtex.orcid.label" />
-		</label>
-		<div class="col-sm-10">
-			<fmt:message key="post_bibtex.orcid.placeholder" var="placeholder"/>
-			<input class="form-control orci-id-input" id="orcidId" name="orcidId" placeholder="${placeholder}"/>
-		</div>
-	</div>
+	<form:form id="orcidImportForm" cssClass="form-horizontal" method="post" action="/import/publications?ckey=${ckey}">
 
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<a href="#" class="btn btn-default" onclick="importOrcidPublications()">
-				<fmt:message key="post_bibtex.orcid.action.import" />
-			</a>
-			<c:if test="${not empty person and not empty person.orcid}">
-				<input id="ownOrcidID" type="hidden" value="${person.orcid}"/>
-				<fmt:message var="setOwnLabel" key="post_bibtex.orcid.action.setOwn" />
-				<bsform:button id="setOwnOrcidButton" style="defaultStyle" size="defaultSize" value="${setOwnLabel}" onclick="setOwnOrcidID()"/>
-			</c:if>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">
+				<fmt:message key="post_bibtex.orcid.label" />
+			</label>
+			<div class="col-sm-10">
+				<fmt:message key="post_bibtex.orcid.placeholder" var="placeholder"/>
+				<input class="form-control orci-id-input" id="orcidId" name="orcidId" placeholder="${placeholder}"/>
+			</div>
 		</div>
-	</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<input type="hidden" id="externalId" name="externalId" />
+				<input type="hidden" id="workIds" name="workIds" />
+				<input type="hidden" id="bulkSnippet" name="bulkSnippet" />
+
+
+				<a href="#" class="btn btn-default" onclick="importOrcidPublications()">
+					<fmt:message key="post_bibtex.orcid.action.import" />
+				</a>
+				<c:if test="${not empty person and not empty person.orcid}">
+					<input id="ownOrcidID" type="hidden" value="${person.orcid}"/>
+					<fmt:message var="setOwnLabel" key="post_bibtex.orcid.action.setOwn" />
+					<bsform:button id="setOwnOrcidButton" style="defaultStyle" size="defaultSize" value="${setOwnLabel}" onclick="setOwnOrcidID()"/>
+				</c:if>
+			</div>
+		</div>
+	</form:form>
 </jsp:root>

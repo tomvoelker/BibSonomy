@@ -117,7 +117,8 @@ function importOrcidPublications() {
             'orcidId': orcidId
         },
         success: function (data) {
-            getOrcidDetailsAndRedirect(data);
+            // Set form data, get work details and submit
+            getWorkDetailsAndSubmit(data);
         },
         beforeSend: function () {
             $("#orcidImportLoader").show(0);
@@ -128,7 +129,7 @@ function importOrcidPublications() {
     });
 }
 
-function getOrcidDetailsAndRedirect(data) {
+function getWorkDetailsAndSubmit(data) {
     var orcidId = $('#orcidId').val();
     var workCodes = [];
     var works = data["group"];
@@ -136,9 +137,6 @@ function getOrcidDetailsAndRedirect(data) {
         var summary = work["work-summary"][0];
         workCodes.push(summary["put-code"]);
     })
-
-    console.log(workCodes);
-    console.log(workCodes.length);
 
     var workIds = workCodes.slice(0, 100).join(',');
 
@@ -150,9 +148,14 @@ function getOrcidDetailsAndRedirect(data) {
             'workIds': workIds
         },
         success: function (data) {
-            console.log(data);
+            // Set form data
+            $('#externalId').val(orcidId);
+            $('#workIds').val(workIds);
+            $('#bulkSnippet').val(JSON.stringify(data["bulk"]));
+            // Submit form
+            $('#orcidImportForm').submit();
         },
-        afterSend: function () {
+        complete: function () {
             $("#orcidImportLoader").hide(0);
         },
         error: function() {

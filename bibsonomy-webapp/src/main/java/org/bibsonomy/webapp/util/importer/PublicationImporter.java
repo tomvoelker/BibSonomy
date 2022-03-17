@@ -38,10 +38,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
+import org.bibsonomy.scraper.converter.CslToBibtexConverter;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
@@ -59,11 +61,11 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author rja
  */
+@Setter
 public class PublicationImporter {
 	private static final Log log = LogFactory.getLog(PublicationImporter.class);
 	
-	private static final ListExtensionChecker EXTENSION_CHECKER_BIBTEX_ENDNOTE = new ListExtensionChecker(FileLogic.BIBTEX_ENDNOTE_EXTENSIONS);
-
+	private static final ListExtensionChecker PUBLICATION_IMPORT_EXTENSION_CHECKER = new ListExtensionChecker(FileLogic.ACCEPTED_PUBLICATION_EXTENSIONS);
 	
 	private FileLogic fileLogic;
 	
@@ -76,6 +78,11 @@ public class PublicationImporter {
 	 * converter from Ris to BibTeX
 	 */
 	private RisToBibtexConverter risToBibtexConverter;
+
+	/**
+	 * converter from CSL to BibTeX
+	 */
+	private CslToBibtexConverter cslToBibtexConverter;
 	
 	
 	/**
@@ -113,7 +120,7 @@ public class PublicationImporter {
 				return null;
 			}
 			
-			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), EXTENSION_CHECKER_BIBTEX_ENDNOTE);
+			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), PUBLICATION_IMPORT_EXTENSION_CHECKER);
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileLogic.BIBTEX_EXTENSION))) {
@@ -146,7 +153,7 @@ public class PublicationImporter {
 			/*
 			 * FIXME add also extensions form DOCUMENT_EXTENSION to the message? 
 			 */
-			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileLogic.BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
+			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileLogic.ACCEPTED_PUBLICATION_EXTENSIONS, ", ")}, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
@@ -188,26 +195,5 @@ public class PublicationImporter {
 		} catch (final IOException e) {
 			throw new ConversionException("Could not convert from Ris to BibTeX.");
 		}
-	}
-
-	/**
-	 * @param endnoteToBibtexConverter the endnoteToBibtexConverter to set
-	 */
-	public void setEndnoteToBibtexConverter(final EndnoteToBibtexConverter endnoteToBibtexConverter) {
-		this.endnoteToBibtexConverter = endnoteToBibtexConverter;
-	}
-	
-	/**
-	 * @param risToBibtexConverter the risToBibtexConverter to set
-	 */
-	public void setRisToBibtexConverter(final RisToBibtexConverter risToBibtexConverter) {
-		this.risToBibtexConverter = risToBibtexConverter;
-	}
-
-	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
 	}
 }
