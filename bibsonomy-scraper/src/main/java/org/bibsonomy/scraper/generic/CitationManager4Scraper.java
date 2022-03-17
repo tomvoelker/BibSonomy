@@ -36,7 +36,8 @@ public abstract class CitationManager4Scraper extends AbstractUrlScraper {
 		//we need the cookies from the first url. If we follow the redirects, we don't get the needed cookies.
 		HttpClient client = WebUtils.getHttpClient(RequestConfig.custom().setRedirectsEnabled(false).build());
 		String url = sc.getUrl().toString();
-		String downloadUrl = this.getSupportedSiteURL() + DOWNLOAD_PATH;
+		//the response for http is empty
+		String downloadUrl = this.getSupportedSiteURL().replace("http://", "https://") + DOWNLOAD_PATH;
 
 		try {
 			Matcher m_objectURI = URL_OBJECT_URI_PATTERN.matcher(url);
@@ -55,6 +56,7 @@ public abstract class CitationManager4Scraper extends AbstractUrlScraper {
 				postData.add(new BasicNameValuePair("objectUri", objectUri));
 				postData.add(new BasicNameValuePair("include", "abs"));
 				postData.add(new BasicNameValuePair("direct", "true"));
+				postData.add(new BasicNameValuePair("submit", "Export"));
 				post.setEntity(new UrlEncodedFormEntity(postData));
 
 				String responseRis = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
