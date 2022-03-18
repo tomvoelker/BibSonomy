@@ -40,14 +40,14 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.BibTeXLinkOnPageScraper;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * scraper for pnas.org
  * @author clemens
  */
-public class PNASScraper extends BibTeXLinkOnPageScraper implements ReferencesScraper{
+public class PNASScraper extends LiteratumScraper implements ReferencesScraper{
 	private static final String SITE_NAME = "PNAS";
 
 	private static final String HOST = "pnas.org";
