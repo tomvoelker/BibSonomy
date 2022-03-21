@@ -196,9 +196,9 @@ public class DBLPScraperTest {
 	}
 	@Test
 	public void urlTest8Run(){
-		final String url = "https://dblp2.uni-trier.de/rec/conf/jeri/2019.html";
+		final String url = "https://dblp.uni-trier.de/rec/conf/jeri/2019.html";
 		final String resultFile = resultDirectory + "DBLPScraperUnitTest8.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
+ 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 
 }

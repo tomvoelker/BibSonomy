@@ -116,13 +116,6 @@ public class OpenrepositoryScraperTest {
 	}
 
 	@Test
-	public void url11TestRun(){
-		final String url = "https://fieldresearch.msf.org/handle/10144/95708";
-		final String resultFile = resultDirectory + "OpenrepositoryScraperUnitURLTest11.bib";
-		assertScraperResult(url, null, OpenrepositoryScraper.class, resultFile);
-	}
-
-	@Test
 	public void url12TestRun(){
 		final String url = "https://t-stor.teagasc.ie/handle/11019/1399";
 		final String resultFile = resultDirectory + "OpenrepositoryScraperUnitURLTest12.bib";
