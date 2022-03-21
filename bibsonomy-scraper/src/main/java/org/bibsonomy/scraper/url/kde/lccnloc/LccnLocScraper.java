@@ -76,7 +76,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 				if(m.find()) {
 					final String xml = WebUtils.getContentAsString(new URL(m.group(1) + "/dc"));
 					String bibtexResult = RIS2BIB.toBibtex(xml);
-					bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", m.group(1).toString());
+					bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", m.group(1).toString());
 					scrapingContext.setBibtexResult(bibtexResult);
 					return true;
 				}
@@ -87,7 +87,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			else if (scrapingContext.getUrl().toString().endsWith("/dc")) {
 				final String xml = WebUtils.getContentAsString(scrapingContext.getUrl());
 				String bibtexResult = RIS2BIB.toBibtex(xml);
-				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", scrapingContext.getUrl().toString().replaceFirst("/dc", ""));
+				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", scrapingContext.getUrl().toString().replaceFirst("/dc", ""));
 				scrapingContext.setBibtexResult(bibtexResult);
 				return true;
 			}
@@ -97,7 +97,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			else if (!scrapingContext.getUrl().toString().endsWith("/dc")){
 				final String xml = WebUtils.getContentAsString(new URL(scrapingContext.getUrl().toString() + "/dc"));
 				String bibtexResult = RIS2BIB.toBibtex(xml);
-				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", scrapingContext.getUrl().toString());
+				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", scrapingContext.getUrl().toString());
 				scrapingContext.setBibtexResult(bibtexResult);
 				return true;
 			}
