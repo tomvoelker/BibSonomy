@@ -60,4 +60,11 @@ public class GooglePatentScraperTest {
 		final String resultFile = resultDirectory + "GooglePatentScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, GooglePatentScraper.class, resultFile);
 	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://patents.google.com/patent/DE102009031804A1/en";
+		final String resultFile = resultDirectory + "GooglePatentScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, GooglePatentScraper.class, resultFile);
+	}
 }

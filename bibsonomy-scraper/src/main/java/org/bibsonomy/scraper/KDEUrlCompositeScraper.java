@@ -78,6 +78,7 @@ import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
+import org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.hebis.HebisScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
@@ -249,8 +250,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleScholarScraper());
-		//HtmlMetaData should be scraped
-		//addScraper(new GooglePatentScraper());
+		addScraper(new GooglePatentScraper());
 		addScraper(new SCIELOScraper());
 		addScraper(new DLibScraper());
 		addScraper(new CellScraper());
