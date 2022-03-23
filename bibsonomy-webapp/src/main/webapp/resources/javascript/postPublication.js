@@ -148,10 +148,14 @@ function getWorkDetailsAndSubmit(data) {
             'workIds': workIds
         },
         success: function (data) {
+            var works = [];
+            data['bulk'].forEach(function(obj) {
+                works.push(JSON.stringify(obj['work']));
+            });
             // Set form data
             $('#externalId').val(orcidId);
             $('#workIds').val(workIds);
-            $('#bulkSnippet').val(JSON.stringify(data["bulk"]));
+            $('#bulkSnippet').val('[' + works.join(',') + ']');
             // Submit form
             $('#orcidImportForm').submit();
         },

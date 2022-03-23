@@ -172,6 +172,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final boolean hasUrl = present(url);
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
+		final boolean hasBulkSnippet = present(command.getBulkSnippet());
+
 		/*
 		 * The ckey must be provided when a file is uploaded or a selection is 
 		 * provided, as then data might be automatically stored (and potentially
