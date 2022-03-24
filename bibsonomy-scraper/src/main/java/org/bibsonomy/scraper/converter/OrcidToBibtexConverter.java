@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSON;
 import org.bibsonomy.common.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,33 +35,46 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         // some general field mappings
         this.fieldMap = new HashMap<>();
         this.fieldMap.put("abstract", "abstract");
-        this.fieldMap.put("DOI", "doi");
-        this.fieldMap.put("ISBN", "isbn");
-        this.fieldMap.put("ISSN", "issn");
         this.fieldMap.put("pages", "pages");
         this.fieldMap.put("page", "pages");
         this.fieldMap.put("publisher-place", "address");
         this.fieldMap.put("event-place", "location");
-        this.fieldMap.put("URL", "url");
+        this.fieldMap.put("url", "url");
         this.fieldMap.put("website", "url");
         this.fieldMap.put("keyword", "keywords");
     }
 
     public String toBibtex(JSONObject citation) {
-        List<Pair<String, String>> persons = extractPersons(citation);
+        if (this.checkForBibtexSource(citation)) {
+            return this.extractBibtexSource(citation);
+        }
+
+        final List<Pair<String, String>> persons = extractPersons(citation);
 
         final String authors = filterPersonsByRole(persons, "author");
         final String editors = filterPersonsByRole(persons, "editor");
 
-        final String year = extractYear(citation);
-        final String month = extractMonth(citation);
-        final String day = extractDay(citation);
+        final JSONObject pubDateObj = (JSONObject) citation.get("publication-date");
+        final String year = extractYear(pubDateObj);
+        final String month = extractMonth(pubDateObj);
+        final String day = extractDay(pubDateObj);
 
         final String citationKey = getBibtexKey(authors, editors, year);
         final String entrytype = getEntrytype(citation);
 
         final StringBuilder builder = new StringBuilder("@");
         builder.append(entrytype).append("{").append(citationKey).append(",\n");
+
+        final String title = extractTitle(citation);
+        if (present(title)) {
+            builder.append(getBibTeX("title", title));
+        }
+
+        final String journal = extractJournal(citation);
+        if (present(title)) {
+            builder.append(getBibTeX("journal", journal));
+        }
+
 
         if (present(authors)) {
             builder.append(getBibTeX("author", authors));
@@ -80,12 +94,14 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             }
         }
 
-        final String title = extractTitle(citation);
-        if (present(title)) {
-            builder.append(getBibTeX("title", title));
-        }
-
+        // Apply general fields, such as abstract, URL, etc.
         this.applyMapping(citation, this.fieldMap, builder);
+
+        // Apply external IDs, such as DOI, ISBN, etc.
+        JSONObject externalIds = (JSONObject) citation.get("external-ids");
+        if (present(externalIds)) {
+            this.applyExternalIds((JSONArray) externalIds.get("external-id"), builder);
+        }
 
         builder.append("}");
         return builder.toString();
@@ -100,6 +116,15 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         });
     }
 
+    private void applyExternalIds(final JSONArray externalIds, final StringBuilder builder) {
+        externalIds.forEach(item -> {
+            JSONObject extIdObj = (JSONObject) item;
+            String type = (String) extIdObj.get("external-id-type");
+            String value = (String) extIdObj.get("external-id-value");
+            builder.append(getBibTeX(type, value));
+        });
+    }
+
     private String getBibtexKey(String authors, String editors, String year) {
         final String name;
         if (authors.length() > 0) {
@@ -109,7 +134,8 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         } else {
             name = "";
         }
-        return name + year;
+        String key = name + year;
+        return key.replaceAll("\\s+","");
     }
 
     private String getEntrytype(JSONObject obj) {
@@ -127,6 +153,10 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             return this.getValue((JSONObject) titleGroup.get("title"));
         }
         return "";
+    }
+
+    private String extractJournal(JSONObject obj) {
+        return this.getFieldIfPresent(obj, "journal-title");
     }
 
     private String extractYear(JSONObject pubDateObj) {
@@ -173,7 +203,7 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         String name = this.getValue((JSONObject) personObj.get("credit-name"));
         String role = "author";
         JSONObject attributes = (JSONObject) personObj.get("contributor-attributes");
-        if (attributes.containsKey("contributor-role")) {
+        if (present(attributes) && attributes.containsKey("contributor-role")) {
             role = (String) attributes.get("contributor-role");
         }
 
@@ -196,13 +226,16 @@ public class OrcidToBibtexConverter implements BibtexConverter{
     }
 
     private String getValue(JSONObject obj) {
-        return (String) obj.get("value");
+        if (present(obj)) {
+            return (String) obj.get("value");
+        }
+        return "";
     }
 
     private boolean checkForBibtexSource(JSONObject obj) {
         if (obj.containsKey("citation")) {
             JSONObject citationObj = (JSONObject) obj.get("citation");
-            if ("bibtex".equals(citationObj.get("citation-type"))) {
+            if (present(citationObj) && "bibtex".equals(citationObj.get("citation-type"))) {
                 return true;
             }
         }
