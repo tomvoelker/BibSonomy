@@ -10,7 +10,8 @@
 
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
 
-	<parts:spinner id="orcidImportLoader" fullscreen="${true}" />
+	<fmt:message var="loadingMessage" key="post_bibtex.orcid.action.loading" />
+	<parts:spinner id="orcidImportLoader" fullscreen="${true}" message="${loadingMessage}"/>
 
 	<h2><fmt:message key="post_bibtex.orcid.heading"/></h2>
 	<p class="smalltext"><fmt:message key="post_bibtex.orcid.description" /></p>
@@ -33,10 +34,9 @@
 				<input type="hidden" id="workIds" name="workIds" />
 				<input type="hidden" id="bulkSnippet" name="bulkSnippet" />
 
+				<fmt:message var="importOrcidLabel" key="post_bibtex.orcid.action.import" />
+				<bsform:button style="primary" size="defaultSize" value="${importOrcidLabel}" onclick="importOrcidPublications()"/>
 
-				<a href="#" class="btn btn-default" onclick="importOrcidPublications()">
-					<fmt:message key="post_bibtex.orcid.action.import" />
-				</a>
 				<c:if test="${not empty person and not empty person.orcid}">
 					<input id="ownOrcidID" type="hidden" value="${person.orcid}"/>
 					<fmt:message var="setOwnLabel" key="post_bibtex.orcid.action.setOwn" />

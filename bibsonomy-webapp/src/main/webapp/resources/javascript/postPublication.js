@@ -161,7 +161,7 @@ function getWorkDetailsAndSubmit(data) {
             $('#orcidImportForm').submit();
         },
         complete: function () {
-            $("#orcidImportLoader").hide(0);
+            // $("#orcidImportLoader").hide(0);
         },
         error: function() {
             $("#orcidImportLoader").hide(0);

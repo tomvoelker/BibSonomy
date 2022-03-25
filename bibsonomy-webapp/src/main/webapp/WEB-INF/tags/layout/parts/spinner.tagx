@@ -7,6 +7,7 @@
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="size" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="id" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="message" type="java.lang.String" required="false"/>
 
 	<c:choose>
 		<c:when test="${defaultShow}">
@@ -22,6 +23,9 @@
 		<svg class="spinner" width="45px" height="45px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
 			<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
 		</svg>
+		<c:if test="${not empty message}">
+			<p>${message}</p>
+		</c:if>
 	</div>
 
 </jsp:root>
