@@ -20,6 +20,9 @@ public class OrcidToBibtexConverterTest {
     }
 
     @Test
+    /*
+     * Name format: Lastname, Firstname
+     */
     public void testDetailsToBibtex() throws IOException {
         final String citation = TestUtils.readEntryFromFile(PATH_TO_FILES + "orcidDetails.json");
 
@@ -27,7 +30,22 @@ public class OrcidToBibtexConverterTest {
         final String bibTeX = this.converter.toBibtex(citation);
 
         // test the conversion
-        final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib").trim();
+        final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "orcidDetails.bib").trim();
+        assertEquals(expectedBibTeX, bibTeX);
+    }
+
+    @Test
+    /*
+     * Name format: Firstname Lastname
+     */
+    public void testDetailsToBibtex2() throws IOException {
+        final String citation = TestUtils.readEntryFromFile(PATH_TO_FILES + "orcidDetailsNoComma.json");
+
+        // convert
+        final String bibTeX = this.converter.toBibtex(citation);
+
+        // test the conversion
+        final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "orcidDetailsNoComma.bib").trim();
         assertEquals(expectedBibTeX, bibTeX);
     }
 
@@ -39,7 +57,7 @@ public class OrcidToBibtexConverterTest {
         final String bibTeX = this.converter.toBibtex(citation);
 
         // test the conversion
-        final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib").trim();
+        final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "orcidDetailsWithBibtex.bib").trim();
         assertEquals(expectedBibTeX, bibTeX);
     }
 

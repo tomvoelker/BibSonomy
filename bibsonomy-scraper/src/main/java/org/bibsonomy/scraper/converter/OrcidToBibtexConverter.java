@@ -71,10 +71,9 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         }
 
         final String journal = extractJournal(citation);
-        if (present(title)) {
+        if (present(journal)) {
             builder.append(getBibTeX("journal", journal));
         }
-
 
         if (present(authors)) {
             builder.append(getBibTeX("author", authors));
@@ -179,11 +178,18 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             }
         }
 
-        if (!result.isEmpty()) {
-            return String.join(", ", result);
+        // No persons with given role found
+        if (result.isEmpty()) {
+            return "";
         }
 
-        return "";
+        // Check, if multiple persons
+        if (result.size() > 1) {
+            return String.join(" and ", result);
+        } else {
+            return result.get(0);
+        }
+
     }
 
     private List<Pair<String, String>> extractPersons(JSONObject obj) {
@@ -214,8 +220,14 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         final int indexOfComma = s.indexOf(",");
         if (indexOfComma > 0) {
             return s.substring(0, indexOfComma);
+        } else {
+            String[] splits = s.split(" ");
+            if (present(splits) && splits.length > 1) {
+                return splits[1];
+            } else {
+                return s;
+            }
         }
-        return "";
     }
 
     private String getFieldIfPresent(JSONObject obj, String field) {
