@@ -6,7 +6,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 public class UrlRenderer {
 
-    public static String BASE_URL = "https://pub.orcid.org/v2.1/";
+    public static String BASE_URL = "https://pub.orcid.org/v3.0/";
     public static String WORK_PARAM = "work";
     public static String WORKS_PARAM = "works";
 

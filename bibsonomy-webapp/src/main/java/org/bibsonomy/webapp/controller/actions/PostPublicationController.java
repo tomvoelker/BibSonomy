@@ -93,6 +93,7 @@ import com.itextpdf.text.pdf.PdfReader;
  * @author ema
  * @author rja
  */
+// TODO suggest refactoring into different controllers
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
@@ -233,6 +234,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors
 			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
+		} else if (hasBulkSnippet) {
+			/*
+			 * The user uploads a bulk snippet
+			 */
+			log.debug("user uploads a bulk snippet");
+			snippet = this.publicationImporter.handleBulkSnippet(command, this.errors);
 		} else if (hasUrl) {
 			log.debug("user has provided a url");
 

@@ -43,8 +43,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
-import org.bibsonomy.scraper.converter.CslToBibtexConverter;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.scraper.converter.OrcidToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -53,6 +53,10 @@ import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,9 +84,9 @@ public class PublicationImporter {
 	private RisToBibtexConverter risToBibtexConverter;
 
 	/**
-	 * converter from CSL to BibTeX
+	 * converter from ORCID export to BibTeX
 	 */
-	private CslToBibtexConverter cslToBibtexConverter;
+	private OrcidToBibtexConverter orcidToBibtexConverter;
 	
 	
 	/**
@@ -166,6 +170,32 @@ public class PublicationImporter {
 			}
 		}
 		return null;
+	}
+
+	public String handleBulkSnippet(final PostPublicationCommand command, final Errors errors) {
+		final String bulkSnippet = command.getBulkSnippet();
+		JSONParser jsonParser = new JSONParser();
+		try {
+			JSONObject obj = (JSONObject) jsonParser.parse(bulkSnippet);
+			if (obj.containsKey("orcid")) {
+				return handleOrcidImport((JSONArray) obj.get("orcid"));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public String handleOrcidImport(final JSONArray citations) {
+		StringBuilder builder = new StringBuilder();
+
+		citations.forEach(item -> {
+			JSONObject citationObj = (JSONObject) item;
+			builder.append(orcidToBibtexConverter.toBibtex(citationObj));
+			builder.append("\n");
+		});
+
+		return builder.toString();
 	}
 	
 	/**

@@ -155,7 +155,8 @@ function getWorkDetailsAndSubmit(data) {
             // Set form data
             $('#externalId').val(orcidId);
             $('#workIds').val(workIds);
-            $('#bulkSnippet').val('[' + works.join(',') + ']');
+            // TODO get all works
+            $('#bulkSnippet').val('{"orcid": [' + works.join(',') + ']}');
             // Submit form
             $('#orcidImportForm').submit();
         },
