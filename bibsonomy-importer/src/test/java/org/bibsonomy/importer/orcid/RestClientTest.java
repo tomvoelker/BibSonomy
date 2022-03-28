@@ -31,11 +31,22 @@ package org.bibsonomy.importer.orcid;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class RestClientTest {
 
+    private static String PATH_TO_FILES = "src/test/resources/orcid/";
     private RestClient client;
 
     @Before
@@ -48,7 +59,16 @@ public class RestClientTest {
         String orcidId = "0000-0002-0570-7908";
 
         String result = this.client.getWorks(orcidId);
-        assertEquals("", result);
+
+        File file = new File(PATH_TO_FILES + "works.json");
+        String expected = "";
+        try {
+            expected = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
+                    .lines().collect(Collectors.joining("\n"));
+        } catch (FileNotFoundException e) {
+            // noop
+        }
+        assertEquals(removeWhiteSpaces(expected), removeWhiteSpaces(result));
     }
 
     @Test
@@ -57,6 +77,40 @@ public class RestClientTest {
         String workId = "100126388";
 
         String result = this.client.getWorkDetails(orcidId, workId);
-        assertEquals("", result);
+
+        File file = new File(PATH_TO_FILES + "workDetails.json");
+        String expected = "";
+        try {
+            expected = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
+                    .lines().collect(Collectors.joining("\n"));
+        } catch (FileNotFoundException e) {
+            // noop
+        }
+        assertEquals(removeWhiteSpaces(expected), removeWhiteSpaces(result));
     }
+
+    @Test
+    public void testGetWorkDetailsBulk() {
+        String orcidId = "0000-0002-0570-7908";
+        List<String> worksIds = new ArrayList<>();
+        worksIds.add("100126388");
+        worksIds.add("95856315");
+
+        String result = this.client.getWorkDetailsBulk(orcidId, worksIds);
+
+        File file = new File(PATH_TO_FILES + "workDetailsBulk.json");
+        String expected = "";
+        try {
+            expected = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
+                    .lines().collect(Collectors.joining("\n"));
+        } catch (FileNotFoundException e) {
+            // noop
+        }
+        assertEquals(removeWhiteSpaces(expected), removeWhiteSpaces(result));
+    }
+
+    private String removeWhiteSpaces(String input) {
+        return input.replaceAll("\\s+", "");
+    }
+
 }
