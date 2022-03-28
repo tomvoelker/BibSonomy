@@ -36,13 +36,13 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 
@@ -76,11 +76,11 @@ public class OapenScraper extends AbstractUrlScraper {
 				switch (jsonObject.getString("key")){
 					case "dc.contributor.author":
 						value = value.replaceAll(",$", "");
-						concIfPresent(bibtexTokens, "author", value, " and ");
+						StringUtils.appendIfPresent(bibtexTokens, "author", value, " and ");
 						break;
 					case "dc.contributor.editor":
 						value = value.replaceAll(",$", "");
-						concIfPresent(bibtexTokens, "editor", value, " and ");
+						StringUtils.appendIfPresent(bibtexTokens, "editor", value, " and ");
 						break;
 					case "dc.date.issued":
 						bibtexTokens.put("year", value);
@@ -98,7 +98,7 @@ public class OapenScraper extends AbstractUrlScraper {
 						bibtexTokens.put("type", value);
 						break;
 					case "dc.subject.other":
-						concIfPresent(bibtexTokens, "keywords", value, ", ");
+						StringUtils.appendIfPresent(bibtexTokens, "keywords", value, ", ");
 						break;
 					case "oapen.identifier.doi":
 						bibtexTokens.put("doi", value);
@@ -127,13 +127,6 @@ public class OapenScraper extends AbstractUrlScraper {
 	}
 
 
-	private void concIfPresent(Map<String, String> tokens, String key, String value, String delimiter){
-		if (!tokens.containsKey(key)){
-			tokens.put(key, value);
-		}else {
-			tokens.put(key, tokens.get(key) + delimiter + value);
-		}
-	}
 
 
 	@Override

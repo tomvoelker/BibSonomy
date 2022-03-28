@@ -31,6 +31,7 @@ package org.bibsonomy.util;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,13 +39,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.exceptions.InvalidModelException;
 
 /**
  * Some methods for handling strings.
@@ -2591,5 +2589,22 @@ public class StringUtils {
 		}
 		return cropToLength(str, 19) + "X";
 	}
+
+	/**
+	 * If the map already has a entry with the key the value will be appended, else a new entry will be created
+	 * @param tokens Map with String values
+	 * @param key key of the map-entry
+	 * @param value value of the map-entry
+	 * @param delimiter the delimiter between the already existing value and the new
+	 */
+	public static void appendIfPresent(Map<String, String> tokens, String key, String value, String delimiter){
+		if (tokens.containsKey(key)) {
+			tokens.put(key, tokens.get(key) + delimiter + value);
+		} else {
+			tokens.put(key, value);
+		}
+	}
+
+
 }
 

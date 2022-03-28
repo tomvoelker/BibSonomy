@@ -107,6 +107,7 @@ import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
+import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
 import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
@@ -270,8 +271,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new PharmacognosyResearchScraper());
 		addScraper(new EconstorScraper());
 		addScraper(new RupressScraper());
-		//HtmlMetaData should be scraped
-		//addScraper(new MendeleyScraper());
+
+		addScraper(new MendeleyScraper());
 		addScraper(new HindawiScraper());
 		addScraper(new FirstMondayScraper());
 		addScraper(new IGIGlobalScraper());
