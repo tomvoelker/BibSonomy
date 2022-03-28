@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSON;
 import org.bibsonomy.common.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,14 +21,14 @@ public class OrcidToBibtexConverter implements BibtexConverter{
 
     public OrcidToBibtexConverter() {
         this.entrytypeMap = new HashMap<>();
-        this.entrytypeMap.put("conference-paper", "inproceedings");
         this.entrytypeMap.put("journal-article", "article");
         this.entrytypeMap.put("book", "book");
         this.entrytypeMap.put("book-chapter", "incollection");
-        this.entrytypeMap.put("dissertation", "phdthesis");
-        this.entrytypeMap.put("supervised-student-publication", "mastersthesis");
-        this.entrytypeMap.put("report", "techreport");
+        this.entrytypeMap.put("conference-paper", "inproceedings");
         this.entrytypeMap.put("manual", "manual");
+        this.entrytypeMap.put("supervised-student-publication", "mastersthesis");
+        this.entrytypeMap.put("dissertation-thesis", "phdthesis");
+        this.entrytypeMap.put("report", "techreport");
         this.entrytypeMap.put("other", "misc");
 
         // some general field mappings
