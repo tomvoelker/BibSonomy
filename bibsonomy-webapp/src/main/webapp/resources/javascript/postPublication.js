@@ -131,40 +131,53 @@ function importOrcidPublications() {
 
 function getWorkDetailsAndSubmit(data) {
     var orcidId = $('#orcidId').val();
-    var workCodes = [];
+    var workIds = [];
     var works = data["group"];
     works.forEach(function (work) {
         var summary = work["work-summary"][0];
-        workCodes.push(summary["put-code"]);
+        workIds.push(summary["put-code"]);
     })
+    var size = workIds.length;
 
-    var workIds = workCodes.slice(0, 100).join(',');
+    // Making 1 request for every 100 works
+    var done = Math.ceil(size / 100); // number of total requests
+    var result = [];
 
-    $.ajax({
-        url: '/ajax/orcid', // The url you are fetching the results.
-        data: {
-            // These are the variables you can pass to the request
-            'orcidId': orcidId,
-            'workIds': workIds
-        },
-        success: function (data) {
-            var works = [];
-            data['bulk'].forEach(function(obj) {
-                works.push(JSON.stringify(obj['work']));
-            });
-            // Set form data
-            $('#externalId').val(orcidId);
-            $('#workIds').val(workIds);
-            // TODO get all works
-            $('#bulkSnippet').val('{"orcid": [' + works.join(',') + ']}');
-            // Submit form
-            $('#orcidImportForm').submit();
-        },
-        complete: function () {
-            // $("#orcidImportLoader").hide(0);
-        },
-        error: function() {
-            $("#orcidImportLoader").hide(0);
-        }
+    /* Normal loops don't create a new scope */
+    var numOfRequest = Array.from(Array(done).keys()); // if we have to send 3 requests the result would be [0, 1, 2]
+    $(numOfRequest).each(function() {
+        var number = this;
+        var workIdsForBulk = workIds.slice(number * 100, (number + 1) * 100).join(',');
+        $.ajax({
+            url: '/ajax/orcid', // The url you are fetching the results.
+            data: {
+                // These are the variables you can pass to the request
+                'orcidId': orcidId,
+                'workIds': workIdsForBulk
+            },
+            success: function (data) {
+                data['bulk'].forEach(function(obj) {
+                    result.push(JSON.stringify(obj['work']));
+                });
+            },
+            complete: function () {
+                done--;
+                if (done === 0) {
+                    submitOrcidImport(orcidId, workIds, result);
+                }
+            },
+            error: function() {
+                $("#orcidImportLoader").hide(0);
+            }
+        });
     });
+}
+
+function submitOrcidImport(orcidId, workIds, works) {
+    // Set form data
+    $('#externalId').val(orcidId);
+    $('#workIds').val(workIds);
+    $('#bulkSnippet').val('{"orcid": [' + works.join(',') + ']}');
+    // Submit form
+    $('#orcidImportForm').submit();
 }
