@@ -34,6 +34,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Calendar;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -41,6 +43,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.PublicationsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -53,6 +56,8 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author dzo
  */
+@Getter
+@Setter
 public class PublicationsPageController implements MinimalisticController<PublicationsPageCommand> {
 
 	private final int PUB_ENTRIES = 10;
@@ -69,10 +74,20 @@ public class PublicationsPageController implements MinimalisticController<Public
 	public View workOn(final PublicationsPageCommand command) {
 		ListCommand<Post<GoldStandardPublication>> goldStandardPublications = command.getPublications();
 		goldStandardPublications.setEntriesPerPage(PUB_ENTRIES);
+
+		// Set sort criteria
+		List<SortCriteria> sortCriteria = SortUtils.singletonSortCriteria(SortKey.YEAR, SortOrder.DESC);
+		List<SortKey> sortKeys = SortUtils.parseSortKeys(command.getSortPage());
+		List<SortOrder> sortOrders = SortUtils.parseSortOrders(command.getSortPageOrder());
+		if (present(sortKeys) && present(sortOrders)) {
+			sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);
+		}
+
 		final PostQueryBuilder queryBuilder = new PostQueryBuilder()
 				.college(this.college)
 				.entriesStartingAt(goldStandardPublications.getEntriesPerPage(), goldStandardPublications.getStart())
-				.searchAndSortCriteria(command.getSearch(), new SortCriteria(SortKey.YEAR, SortOrder.DESC));
+				.setSortCriteria(sortCriteria)
+				.search(command.getSearch());
 
 		if (!present(command.getSearch())) {
 			/*

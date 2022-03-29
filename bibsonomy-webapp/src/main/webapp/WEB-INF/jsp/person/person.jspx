@@ -136,7 +136,7 @@
 										</c:if>
 										<div class="pull-right btn-group dropdown-align-right all-resources-menu">
 											<div class="btn-group">
-												<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
+												<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
 												<ul id="sorting-dropdown-menu" class="dropdown-menu">
 													<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
 												</ul>
