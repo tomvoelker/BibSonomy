@@ -30,6 +30,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
+			<script type='text/javascript' src='${resdir}/jquery/plugins/jquery.maskedinput.js'><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">

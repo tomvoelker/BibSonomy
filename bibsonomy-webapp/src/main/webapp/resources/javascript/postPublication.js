@@ -95,6 +95,9 @@ $(function () {
     $('#delimiter').change(function () {
         $('#whitespace').attr('disabled', $(this).val() == " ");
     });
+
+    // Edit mask for ORCID import
+    $("#orcidId").mask("9999-9999-9999-999*");
 });
 
 function showManualForm(titleText) {
