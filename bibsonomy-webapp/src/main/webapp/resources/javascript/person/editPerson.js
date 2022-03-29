@@ -7,7 +7,7 @@ $(function () {
     initUserLinking();
 
     // ORCID formatter
-    $("#editOrcid").mask("9999-9999-9999-9999");
+    $("#editOrcid").mask("9999-9999-9999-999*");
 
     // Researcher ID formatter - disabled due to different formats
     //$("#editResearcherId").mask("\a-9999-9999");

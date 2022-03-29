@@ -118,6 +118,7 @@ public class URLGenerator {
 	private static final String EXPLORE_PREFIX = "explore";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
+	private static final String FRIENDS_OVERVIEW_PREFIX = "friendsoverview";
 	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
 	private static final String GOLDSTANDARD_PUBLICATION_PREFIX = "goldstandardpublication";
 	private static final String GROUPS = "groups";
@@ -127,6 +128,7 @@ public class URLGenerator {
 	private static final String PROJECTS = "projects";
 	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
+	private static final String LOGOUT_PREFIX = "logout";
 	private static final String LAYOUT_PREFIX = "layout";
 	private static final String ENDNOTE_PREFIX = "endnote";
 	private static final String MSWORD_PREFIX = "msofficexml";
@@ -258,6 +260,16 @@ public class URLGenerator {
 	 */
 	public String getAuthorUrlByName(final String authorLastName) {
 		final String url = this.projectHome + AUTHOR_PREFIX + "/" + UrlUtils.encodePathSegment(BibTexUtils.cleanBibTex(authorLastName));
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs a URL for the inbox page, i.e. /inbox
+	 *
+	 * @return URL pointing to the inbox page.
+	 */
+	public String getInboxUrl() {
+		final String url = this.projectHome + Page.INBOX.getPath();
 		return this.getUrl(url);
 	}
 
@@ -567,6 +579,16 @@ public class URLGenerator {
 	}
 
 	/**
+	 * Constructs a friends overview page, i.e. /friendsoverview
+	 *
+	 * @return URL pointing to the friends overview
+	 */
+	public String getFriendsOverviewUrl() {
+		String url = this.projectHome + FRIENDS_OVERVIEW_PREFIX;
+		return this.getUrl(url);
+	}
+
+	/**
 	 * Constructs a friend URL for the given username, i.e. /friend/USERNAME
 	 * 
 	 * @param userName
@@ -869,6 +891,16 @@ public class URLGenerator {
 	 */
 	public String getLoginUrl() {
 		String url = this.projectHome + LOGIN_PREFIX;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the logout page
+	 *
+	 * @return URL pointing to the logout page
+	 */
+	public String getLogoutUrl() {
+		String url = this.projectHome + LOGOUT_PREFIX;
 		return this.getUrl(url);
 	}
 
@@ -1411,6 +1443,17 @@ public class URLGenerator {
 			url += "/" + UrlUtils.encodePathSegment(tagName);
 		}
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the edit tags page of the logged in user.
+	 *
+	 * @return The URL for the edit tags page.
+	 */
+	public String getTagsEditUrl() {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("editTags");
+		return this.getUrl(urlBuilder.asString());
 	}
 
 	/**
