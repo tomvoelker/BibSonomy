@@ -146,7 +146,7 @@
 						</c:forEach>
 						<c:if test="${!loginUser.spammer}">
 							<li class="divider"><!-- keep me --></li>
-							<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+							<li><a href="${relativeUrlGenerator.getUrlWithPath('grouprequest')}"><fmt:message key="navi.group.groupRequest" /></a></li>
 						</c:if>
 					</ul>
 				</li>
@@ -160,7 +160,7 @@
 								<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
 								<c:if test="${!loginUser.spammer}">
 									<li class="divider"><!-- keep me --></li>
-									<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+									<li><a href="${relativeUrlGenerator.getUrlWithPath('grouprequest')}"><fmt:message key="navi.group.groupRequest" /></a></li>
 								</c:if>
 							</ul>
 						</li>
@@ -296,11 +296,11 @@
 			<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
 				<ul class="dropdown-menu">
-					<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
-					<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
-					<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
-					<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
-					<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('popular')}"><fmt:message key="navi.posts"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('tags')}"><fmt:message key="navi.tags"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('authors')}"><fmt:message key="navi.authors"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('concepts')}"><fmt:message key="navi.relations"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('discussed')}"><fmt:message key="navi.discussions"/></a></li>
 				</ul>
 			</li>
 		</c:if>
@@ -429,8 +429,7 @@
 					 | Help
 					 -->
 					<li class="${activeTab eq 'help' ? 'active' : ''}">
-						<fmt:message key="navi.helpUrl" var="helpUrl" />
-						<a href="${helpUrl}"><fontawesome:icon icon="question-circle" /></a>
+						<a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}"><fontawesome:icon icon="question-circle" /></a>
 					</li>
 				</ul>
 			</div>

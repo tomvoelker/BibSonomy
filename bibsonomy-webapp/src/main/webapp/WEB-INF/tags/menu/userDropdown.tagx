@@ -25,7 +25,7 @@
 	</c:if>
 	<li>
 		<fmt:message var="titleInbox" key="navi.inbox" />
-		<a href="${relativeUrlGenerator.getInboxUrl()}" title="${titleInbox}">
+		<a href="${relativeUrlGenerator.getUrlWithPath('inbox')}" title="${titleInbox}">
 			<fontawesome:icon icon="inbox" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.inbox" />
 			<c:if test="${loginUser.inbox.numPosts == 0}">
@@ -47,14 +47,14 @@
 	</li>
 	<li>
 		<fmt:message var="friends" key="navi.friends" />
-		<a href="${relativeUrlGenerator.getFriendsOverviewUrl()}" title="friends">
+		<a href="${relativeUrlGenerator.getUrlWithPath('friendsoverview')}" title="friends">
 			<fontawesome:icon icon="users" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.friends"/>
 		</a>
 	</li>
 	<li> 
 		<fmt:message var="editTags" key="navi.editTags" />
-		<a href="${relativeUrlGenerator.getTagsEditUrl()}" title="${editTags}">
+		<a href="${relativeUrlGenerator.getUrlWithPath('editTags')}" title="${editTags}">
 			<fontawesome:icon icon="tag" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.editTags" />
 		</a>
@@ -80,8 +80,7 @@
 	</li>
 	<li>
 		<fmt:message var="titleHelp" key="navi.help"/>
-		<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-		<a href="${helpLangUrl}" title="${titleHelp}">
+		<a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}" title="${titleHelp}">
 			<fontawesome:icon icon="question-circle" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.help" />
 		</a>

@@ -118,7 +118,6 @@ public class URLGenerator {
 	private static final String EXPLORE_PREFIX = "explore";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
-	private static final String FRIENDS_OVERVIEW_PREFIX = "friendsoverview";
 	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
 	private static final String GOLDSTANDARD_PUBLICATION_PREFIX = "goldstandardpublication";
 	private static final String GROUPS = "groups";
@@ -260,16 +259,6 @@ public class URLGenerator {
 	 */
 	public String getAuthorUrlByName(final String authorLastName) {
 		final String url = this.projectHome + AUTHOR_PREFIX + "/" + UrlUtils.encodePathSegment(BibTexUtils.cleanBibTex(authorLastName));
-		return this.getUrl(url);
-	}
-
-	/**
-	 * Constructs a URL for the inbox page, i.e. /inbox
-	 *
-	 * @return URL pointing to the inbox page.
-	 */
-	public String getInboxUrl() {
-		final String url = this.projectHome + Page.INBOX.getPath();
 		return this.getUrl(url);
 	}
 
@@ -575,16 +564,6 @@ public class URLGenerator {
 	 */
 	public String getFollowersUrl() {
 		final String url = this.projectHome + FOLLOWERS_PREFIX;
-		return this.getUrl(url);
-	}
-
-	/**
-	 * Constructs a friends overview page, i.e. /friendsoverview
-	 *
-	 * @return URL pointing to the friends overview
-	 */
-	public String getFriendsOverviewUrl() {
-		String url = this.projectHome + FRIENDS_OVERVIEW_PREFIX;
 		return this.getUrl(url);
 	}
 
@@ -1097,12 +1076,7 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
-	/**
-	 * @return the projectHome
-	 */
-	public String getProjectHome() {
-		return this.projectHome;
-	}
+
 
 	/**
 	 * @return URL to all publications of the main page in bibtex formats.
@@ -1446,13 +1420,13 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs the URL for the edit tags page of the logged in user.
-	 *
-	 * @return The URL for the edit tags page.
+	 * Constructs the URL with the given path element from the base URL.
+	 * @param path the path element
+	 * @return URL with the path
 	 */
-	public String getTagsEditUrl() {
+	public String getUrlWithPath(String path) {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
-		urlBuilder.addPathElement("editTags");
+		urlBuilder.addPathElement(path);
 		return this.getUrl(urlBuilder.asString());
 	}
 
@@ -1803,6 +1777,13 @@ public class URLGenerator {
 		}
 
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * @return the projectHome
+	 */
+	public String getProjectHome() {
+		return this.projectHome;
 	}
 
 	/**
