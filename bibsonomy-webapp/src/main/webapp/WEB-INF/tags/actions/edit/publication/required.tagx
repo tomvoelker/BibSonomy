@@ -73,9 +73,9 @@
 						</c:forEach>
 					</select>
 					<p class="help-block">
-						<c:out value="${entrytypeHelpDescription} "/>
+						<c:out value="${entrytypeHelpDescription} " escapeXml="${false}"/>
 						<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
-							<fmt:message key="general.learnmore" />
+							<fmt:message key="post.resource.entrytype.help.learnMore" />
 						</a>
 					</p>
 				</div>
