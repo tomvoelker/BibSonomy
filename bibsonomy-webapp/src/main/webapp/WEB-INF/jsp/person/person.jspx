@@ -134,7 +134,7 @@
 											<strong><fmt:message key="person.show.publications"/></strong><c:out value=" "/>
 											<span class="badge badge-primary"><c:out value="${command.totalCount}"/></span>
 										</c:if>
-										<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+										<div class="btn-group dropdown-align-right all-resources-menu all-resources-menu-lg">
 											<div class="btn-group">
 												<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
 												<ul id="sorting-dropdown-menu" class="dropdown-menu">

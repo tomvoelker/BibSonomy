@@ -381,6 +381,7 @@ dl.dl-horizontal.dt-thumbnail-items dd {
  */
  
 h3.list-headline {
+  	position: relative;
 	border-bottom: 1px @light-border-color solid;
 	padding-top: 0;
 	margin-top: 10px;
@@ -629,8 +630,8 @@ a.description-link {
 }
 
 // special pub lists
-#organization-publications li.post {
-  height: inherit;
+.list-inherit-height li.post {
+  height: inherit !important;
 }
 
 /**
@@ -1677,6 +1678,10 @@ p.separator {
 }
 
 .all-resources-menu {
+  	position: absolute;
+    bottom: 0;
+    right: 0;
+
 	a, button {
 		color: #a0a0a0;
 	}
@@ -1685,6 +1690,10 @@ p.separator {
 		margin-left: -8px;
 		text-transform: uppercase;
 	}
+}
+
+.all-resources-menu-lg {
+  	bottom: -10px;
 }
 
 /** export */

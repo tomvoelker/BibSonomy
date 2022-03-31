@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostRating" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -172,9 +173,11 @@
 				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
-			<div class="post-rating pull-left">
-				<discussion:rating post="${post}" />
-			</div>
+			<c:if test="${not hidePostRating}">
+				<div class="post-rating pull-left">
+					<discussion:rating post="${post}" />
+				</div>
+			</c:if>
 			<c:if test="${not hidePostMenu}">
 				<div class="post-buttons pull-right">
 					<jsp:invoke fragment="actions"/>

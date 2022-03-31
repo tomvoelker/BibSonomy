@@ -8,6 +8,7 @@
 		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -43,9 +44,10 @@
 				<div class="col-md-12">
 					<div style="clear: both;">
 						<h3 class="list-headline">
-							<strong><fmt:message key="person.show.publications"/></strong><c:out value=" "/>
+							<fmt:message key="person.show.publications" var="listHeader"/>
+							<strong><c:out value="${listHeader} "/></strong>
 							<span class="badge badge-primary"><c:out value="${command.publications.totalCount}"/></span>
-							<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+							<div class="btn-group dropdown-align-right all-resources-menu all-resources-menu-lg">
 								<div class="btn-group">
 									<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
 									<ul id="sorting-dropdown-menu" class="dropdown-menu">
@@ -58,7 +60,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 publication-list" id="organization-publications">
+				<div class="col-md-12 publication-list list-inherit-height">
 					<resources:bibtexs listView="${command.publications}"
 									   loginUserName="${command.context.loginUser.name}"
 									   requPath="${requPath}"
@@ -70,6 +72,7 @@
 									   hideCounts="${true}"
 									   hideMetaData="${true}"
 									   hidePostMenu="${true}"
+									   hidePostRating="${true}"
 									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
 									   disableResourcetypeSelection="${true}">
 						<jsp:attribute name="additionalSorting">
