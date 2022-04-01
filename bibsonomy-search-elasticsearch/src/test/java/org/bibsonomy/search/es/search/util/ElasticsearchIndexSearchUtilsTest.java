@@ -32,7 +32,13 @@ package org.bibsonomy.search.es.search.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Set;
+
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.search.es.index.generator.post.PostEntityInformationProvider;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Test;
 
 /**
@@ -44,5 +50,18 @@ public class ElasticsearchIndexSearchUtilsTest {
 	public void testGetPrefixForString() {
 		assertThat(ElasticsearchIndexSearchUtils.getPrefixForString("50 cent"), is(Prefix.NUMBER));
 		assertThat(ElasticsearchIndexSearchUtils.getPrefixForString("REGIO"), is(Prefix.R));
+	}
+
+	@Test
+	public void testMultiMatch() {
+		final String searchTerms = "elastic wave";
+		Set<String> fields = PostEntityInformationProvider.PUBLIC_FIELDS;
+		final MultiMatchQueryBuilder builder = QueryBuilders.multiMatchQuery(searchTerms)
+				.operator(Operator.AND)
+				.fuzziness("auto")
+				.tieBreaker(1.0f);
+
+		fields.forEach(builder::field);
+		builder.toString();
 	}
 }
