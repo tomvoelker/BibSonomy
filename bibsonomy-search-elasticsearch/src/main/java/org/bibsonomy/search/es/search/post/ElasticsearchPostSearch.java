@@ -422,7 +422,8 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
 
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
-		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
+		mainQueryBuilder.filter(mainFilterBuilder);
+		return mainQueryBuilder;
 	}
 
 	protected void buildResourceSpecificQuery(BoolQueryBuilder mainQueryBuilder, String loggedinUser, PostSearchQuery<?> postQuery) {
