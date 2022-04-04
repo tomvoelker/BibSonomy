@@ -12,7 +12,14 @@
 
 	<script type="text/javascript">
 		$( document ).ready(function() {
-			var $comboBox =  $("#selectAllStyles").select2();
+			var $comboBox =  $("#selectAllStyles").select2({
+                // sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+                sorter: function (data) {
+                    return data.sort(function (a, b) {
+                        return a.text.localeCompare(b.text);
+                    });
+                }
+            });
 		});
 	</script>
 	<select id="selectAllStyles" data-placeholder="${placeholderText}" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
