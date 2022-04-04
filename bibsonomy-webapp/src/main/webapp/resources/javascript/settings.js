@@ -1,7 +1,12 @@
 $(function() {
 
     $('#selectCustomLayout').select2({
-        sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+        // sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+        sorter: function (data) {
+            return data.sort(function (a, b) {
+                return a.text.localeCompare(b.text);
+            });
+        },
         width: '100%'
     });
 
