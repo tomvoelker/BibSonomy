@@ -104,17 +104,4 @@ public class PublicationsPageController implements MinimalisticController<Public
 		return Views.PUBLICATIONS_OVERVIEW;
 	}
 
-	/**
-	 * @param college the college to set
-	 */
-	public void setCollege(String college) {
-		this.college = college;
-	}
-
-	/**
-	 * @param logic the logic to set
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
 }

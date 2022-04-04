@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 publication-list list-inherit-height">
+				<div class="col-md-12 publication-list list-inherit-height goldstandard-publication-list">
 					<resources:bibtexs listView="${command.publications}"
 									   loginUserName="${command.context.loginUser.name}"
 									   requPath="${requPath}"
