@@ -12,7 +12,8 @@
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
   xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+  xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
   
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
@@ -198,27 +199,19 @@
 									</li>
 								</c:forEach>
 							</ul>
+
 							<!-- add new styles with typeahead -->
 							<div class="row">
 								<div class="col-sm-3 text-right">
 									<fmt:message key="settings.favouriteExports.add" />
 								</div>
 								<div class="col-sm-9">
-									<input class="form-control typeahead" id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
+									<settings:favouriteLayoutSelect />
 								</div>
-								<ul id="customLayouts" style="display:none">
-									<c:forEach var="style" items="${command.cslFiles}" varStatus="counter">
-										<c:set var="name" value="${style.name}"/>
-										<c:set var="displayName" value="${style.displayName}"/>	
-										<li data-source="CUSTOM" data-type="CSL" data-name="${name}" data-displayName="${displayName}" data-hash="${style.fileHash}">
-											<!-- keep this -->
-										</li>
-									</c:forEach>
-								</ul>
 							</div>
 						</div>
 					</div>
-					
+
 					<!-- displayed resources -->
 					<!-- new -->
 					<div class="form-group">

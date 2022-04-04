@@ -31,6 +31,7 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,7 +108,13 @@ public class Group implements Linkable, Serializable {
 	 * to his post. A tagset has the following form: Map<SetName,Tags>.
 	 */
 	private List<TagSet> tagSets;
-	
+
+	/**
+	 * List of preset tags to regulate posts,
+	 * that have been added to the group via the ForGroup function when posting or editing a post.
+	 */
+	private List<Tag> presetTags;
+
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
 
@@ -136,7 +143,7 @@ public class Group implements Linkable, Serializable {
 	 * default constructor
 	 */
 	public Group() {
-		// noop
+		//noop
 	}
 
 	/**

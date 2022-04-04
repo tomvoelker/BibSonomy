@@ -70,6 +70,7 @@ public class CommunityPostIndexGenerationLogic<R extends Resource> extends Resou
 			final SearchParam param = new SearchParam();
 			param.setLimit(limit);
 			param.setLastContentId(lastContenId);
+			// TODO rename/adapt queries to match other entities
 			return (List<Post<R>>) this.queryForList("get" + this.getResourceName() + "ForCommunityIndex", param, session);
 		}
 	}

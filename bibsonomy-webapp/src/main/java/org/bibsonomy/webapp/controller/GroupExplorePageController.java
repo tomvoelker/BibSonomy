@@ -14,6 +14,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -36,6 +37,8 @@ import org.springframework.validation.Errors;
  */
 public class GroupExplorePageController extends SingleResourceListController implements MinimalisticController<GroupExploreViewCommand>, ErrorAware {
 
+    private static final String PRESET_FIELD_NAME = "preset";
+
     private LogicInterface logic;
     private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
@@ -57,12 +60,25 @@ public class GroupExplorePageController extends SingleResourceListController imp
         // create filter list
         command.addFilters(ENTRYTYPE_FIELD_NAME, generateEntrytypeFilters());
         command.addFilters(YEAR_FIELD_NAME, generateFilters(YEAR_FIELD_NAME, 200, true));
+        command.addFilters(PRESET_FIELD_NAME, generatePresetTagFilters(group.getPresetTags()));
 
         return Views.GROUPEXPLOREPAGE;
     }
 
     private FieldDescriptor<BibTex, ?> createFieldDescriptor(String field) {
         return (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(field);
+    }
+
+    private List<SearchFilterElement> generatePresetTagFilters(List<Tag> presetTags) {
+        List<SearchFilterElement> filters = new ArrayList<>();
+        for (Tag tag : presetTags) {
+            SearchFilterElement filterElement = new SearchFilterElement(tag.getName());
+            filterElement.setField(PRESET_FIELD_NAME);
+            filterElement.setTooltip(tag.getDescription());
+            filters.add(filterElement);
+        }
+
+        return filters;
     }
 
     private List<SearchFilterElement> generateEntrytypeFilters() {

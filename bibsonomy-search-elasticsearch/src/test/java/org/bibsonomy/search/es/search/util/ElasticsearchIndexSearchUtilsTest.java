@@ -45,4 +45,5 @@ public class ElasticsearchIndexSearchUtilsTest {
 		assertThat(ElasticsearchIndexSearchUtils.getPrefixForString("50 cent"), is(Prefix.NUMBER));
 		assertThat(ElasticsearchIndexSearchUtils.getPrefixForString("REGIO"), is(Prefix.R));
 	}
+
 }

@@ -387,22 +387,18 @@ function applyKeyDownHandler(element) {
 		.bind("keydown",function(e) {keyHandler(e);});
 }
 
-// adds the send:<username> tag when clicking the save and send to button
-function sendToBibliography(username) {
+// adds the send:<username> tag
+function addForFriendTag(username) {
 	$("#inpf_tags").val(function(index, val) {
 		return val + "send:" + username;
 	});
-	// this is called onclick of every submit button, so we call it here as well
-	clear_tags();
 }
 
-//adds the send:<groupname> tag when clicking the save and send to button
-function sendGroupToBibliography(groupname) {
+// adds the for:<groupname> tag
+function addForGroupTag(groupname) {
 	$("#inpf_tags").val(function(index, val) {
 		return val + "for:" + groupname;
 	});
-	// this is called onclick of every submit button, so we call it here as well
-	clear_tags();
 }
 
 /*

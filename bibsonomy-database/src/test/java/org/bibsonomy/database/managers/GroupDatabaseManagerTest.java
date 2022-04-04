@@ -29,7 +29,11 @@
  */
 package org.bibsonomy.database.managers;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,6 +41,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
@@ -46,6 +56,7 @@ import org.bibsonomy.database.managers.fixtures.ExtendedGroupFixture;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
@@ -53,12 +64,6 @@ import org.bibsonomy.testutil.TestDatabaseManager;
 import org.bibsonomy.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Tests related to groups.
@@ -870,6 +875,77 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		int numberOfLoggedUsers = testDb.getCountOfLoggedGroupMemberships();
 
 		assertThat(numberOfLoggedUsers, equalTo(4));
+	}
+
+	@Test
+	public void testGetPresetTagsForGroup() {
+		final List<Tag> presetTags1 = groupDb.getPresetTagsForGroup("testgroup1", dbSession);
+		final List<Tag> presetTags2 = groupDb.getPresetTagsForGroup("testgroup2", dbSession);
+		final List<Tag> presetTags3 = groupDb.getPresetTagsForGroup("testgroup3", dbSession);
+
+		assertEquals(3, presetTags1.size());
+		assertEquals(1, presetTags2.size());
+		assertTrue(presetTags3.isEmpty());
+	}
+
+	@Test
+	public void testCreatePresetTagsForGroup() {
+		final String groupName = "testgroup1";
+		final Group group = groupDb.getGroupByName(groupName, dbSession);
+
+		// Before insert
+		final List<Tag> beforePresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(3, beforePresetTags.size());
+
+		// Create new preset tag
+		Tag newTag = new Tag("newPresetTag");
+		newTag.setDescription("A new tag description.");
+
+		groupDb.createOrUpdatePresetTag(group, newTag, dbSession);
+
+		// After insert
+		final List<Tag> afterPresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(4, afterPresetTags.size());
+	}
+
+	@Test
+	public void testUpdatePresetTagsForGroup() {
+		final String groupName = "testgroup1";
+		final Group group = groupDb.getGroupByName(groupName, dbSession);
+
+		// Before update
+		final List<Tag> beforePresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		Tag toUpdateTag = beforePresetTags.get(0);
+		final String oldDescription = toUpdateTag.getDescription();
+		final String newDescription = toUpdateTag.getDescription() + toUpdateTag.getDescription();
+		toUpdateTag.setDescription(newDescription);
+
+		// After update
+		groupDb.createOrUpdatePresetTag(group, toUpdateTag, dbSession);
+
+		final List<Tag> afterPresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		Tag updatedTag = afterPresetTags.get(0);
+
+		assertEquals(newDescription, updatedTag.getDescription());
+	}
+
+	@Test
+	public void testRemovePresetTagsForGroup() {
+		final String groupName = "testgroup1";
+		final Group group = groupDb.getGroupByName(groupName, dbSession);
+
+		// Before remove
+		final List<Tag> beforePresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(3, beforePresetTags.size());
+
+		// Create new preset tag
+		Tag toRemoveTag = beforePresetTags.get(0);
+
+		groupDb.removePresetTag(group, toRemoveTag, dbSession);
+
+		// After remove
+		final List<Tag> afterPresetTags = groupDb.getPresetTagsForGroup(groupName, dbSession);
+		assertEquals(2, afterPresetTags.size());
 	}
 
 }

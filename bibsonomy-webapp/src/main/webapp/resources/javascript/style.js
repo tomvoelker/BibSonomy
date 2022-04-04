@@ -367,13 +367,12 @@ $(function() {
 	});
 
 	/*
-	 * initialize popover and allow HTML for CSS class: popover-hint
+	 * Initialize popover with manual click trigger
 	 */
-	$('.popover-hint[data-toggle="popover"]').popover({
-		html:true,
-		delay: { "hide": 3000 }
+	$('.popover-click').on('click', function() {
+		$(this).popover('toggle');
 	});
-	
+
 	$('a.doc-magnify').click(function() {
 		var previewModal = $('#preview-modal');
 		var image = $(this).parent().find('img');

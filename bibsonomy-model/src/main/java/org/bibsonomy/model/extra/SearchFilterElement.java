@@ -45,7 +45,7 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      * unique name
      */
     private final String name;
-    private final long count;
+    private long count = 0;
 
     /**
      * the elasticsearch index field
@@ -62,6 +62,14 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
      */
     private String tooltipKey;
 
+    /**
+     * message for tooltip
+     */
+    private String tooltip;
+
+    public SearchFilterElement(final String name) {
+        this.name = name;
+    }
 
     public SearchFilterElement(final String name, final long count) {
         this.name = name;
@@ -76,6 +84,5 @@ public class SearchFilterElement implements Comparable<SearchFilterElement> {
         }
         return nameCompare;
     }
-
 
 }

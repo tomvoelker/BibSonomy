@@ -718,11 +718,14 @@ public class URLGenerator {
 	 * @return the group settings url for the specified group
 	 */
 	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
-		String url = this.projectHome + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.encodePathSegment(groupName);
+		final UrlBuilder builder = new UrlBuilder(this.projectHome)
+				.addPathElement(SETTINGS_PREFIX)
+				.addPathElement(GROUP_PREFIX)
+				.addPathElement(UrlUtils.encodePathSegment(groupName));
 		if (present(selectedTab)) {
-			url += "?selTab=" + selectedTab.intValue();
+			builder.addParameter("selTab", selectedTab.toString());
 		}
-		return this.getUrl(url);
+		return this.getUrl(builder.toString());
 	}
 
 	/**

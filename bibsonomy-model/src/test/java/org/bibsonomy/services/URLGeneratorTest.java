@@ -415,8 +415,11 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
-		String expected = projectHome + "settings/group/franzosengruppe";
-		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
+		String expectedUrl = projectHome + "settings/group/franzosengruppe";
+		assertEquals(expectedUrl, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
+
+		String expectedUrlWithTab = projectHome + "settings/group/franzosengruppe?selTab=1";
+		assertEquals(expectedUrlWithTab, ug.getGroupSettingsUrlByGroupName("franzosengruppe", 1));
 	}
 
 	@Test

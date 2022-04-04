@@ -20,7 +20,7 @@
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
 	<c:set var="userIsAdmin" value="${loginUser.role eq 'ADMIN' }" />
 
-	<c:set var="exploreGroupId" value="${properties['explore.group.id']}" />
+	<c:set var="exploreGroupId" value="${properties['group.explore.nav.id']}" />
 	<c:set var="actualGroups" value="${mtl:filterGroups(loginUser.groups, false)}" />
 	<c:set var="organizations" value="${mtl:filterGroups(loginUser.groups, true)}" />
 
@@ -130,7 +130,9 @@
 										<li><a href="${relativeUrlGenerator.getExploreUrlByGroup(grp.name)}"><fmt:message key="group.explore.abbrev"/></a></li>
 										<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 											<li class="divider"><!-- keep me --></li>
-											<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+											<c:if test="${properties['group.relevantFor.enabled']}">
+												<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+											</c:if>
 											<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable" /></a></li>
 											<li><a href="${urlGeneratorDiscussed.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
 										</c:if>

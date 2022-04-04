@@ -64,4 +64,11 @@ public class CellScraperTest {
 		assertScraperResult(url, null, CellScraper.class, resultFile);
 	}
 
+	@Test
+	public void url3TestRun(){
+		final String url = "https://www.cell.com/biophysj/pdf/S0006-3495(96)79549-8.pdf";
+		final String resultFile = resultDirectory + "CellScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CellScraper.class, resultFile);
+	}
+
 }

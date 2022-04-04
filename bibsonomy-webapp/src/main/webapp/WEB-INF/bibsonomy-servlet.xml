@@ -988,11 +988,14 @@
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 		<property name="cslFilesManager" ref="CSLFilesManager" />
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="layouts" ref="standardLayouts" />
 	</bean>
 	
 	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
 		<property name="logic" ref ="logic" />
 		<property name="wikiRenderer" ref="wikiRenderer" />
+		<property name="presetTagsEnabled" value="${group.presetTags.enabled}"/>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">

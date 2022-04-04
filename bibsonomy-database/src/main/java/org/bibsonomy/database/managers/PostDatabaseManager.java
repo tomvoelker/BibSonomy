@@ -1274,6 +1274,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				systemTag.performBeforeCreate(post, session);
 			}
 			final String userName = post.getUser().getName();
+
 			/*
 			 * the current intra hash of the resource
 			 */

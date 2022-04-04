@@ -286,14 +286,24 @@ INSERT INTO `group_memberships` VALUES
 ('testuser4', 3, 9, '2007-01-01 01:01:01', 3, 0),
 ('testuser4', 10, 9, '2007-01-01 01:01:01', 3, 0);
 
-
-
+--
+-- Data for table `group_hierarchy`
+--
 
 INSERT INTO `group_hierarchy` VALUES
 (10,  9),
 (11,  9),
 (12, 10),
 (12,  9);
+
+--
+-- Data for table `group_preset_tags`
+--
+INSERT INTO `group_preset_tags` VALUES
+('testtag1', 'testgroup1', 3, 'Description for Tag 1'),
+('testtag1', 'testgroup2', 4, null),
+('testtag2', 'testgroup1', 3, null),
+('testtag3', 'testgroup1', 3, 'Tag 3');
 
 -- 
 -- Data for table `ids`

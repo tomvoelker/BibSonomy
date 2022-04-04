@@ -29,15 +29,20 @@
  */
 package org.bibsonomy.model.util;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
 /**
@@ -305,5 +310,121 @@ public class GroupUtils {
 		}
 		
 		return list;
+	}
+
+	/**
+	 * Add or update a tag to the group's preset tag list.
+	 * @param group
+	 * @param tagName
+	 * @param tagDescription
+	 * @return true, if success
+	 */
+	public static boolean addOrUpdatePresetTag(Group group, String tagName, String tagDescription) {
+		Tag presetTag = new Tag(tagName);
+		presetTag.setDescription(tagDescription);
+
+		final List<Tag> groupPresetTags = group.getPresetTags();
+
+		// remove old tag by name
+		groupPresetTags.remove(presetTag);
+		// add new tag
+		groupPresetTags.add(presetTag);
+		return true;
+	}
+
+	/**
+	 * Delete a tag from the group's preset tag list.
+	 * @param group
+	 * @param tagName
+	 * @return
+	 */
+	public static boolean deletePresetTag(Group group, String tagName) {
+		Tag presetTag = new Tag(tagName);
+
+		final List<Tag> groupPresetTags = group.getPresetTags();
+
+		if (groupPresetTags.contains(presetTag)) {
+			groupPresetTags.remove(presetTag);
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Creates map with tag name as key and tag object as value.
+	 * @param presetTags
+	 * @return
+	 */
+	public static Map<String, Tag> buildPresetTagMap(List<Tag> presetTags) {
+		Map<String, Tag> presetTagsMap = new HashMap<>();
+		for (Tag tag : presetTags) {
+			presetTagsMap.put(tag.getName(), tag);
+		}
+
+		return presetTagsMap;
+	}
+
+	/**
+	 * Extract the selected preset tags for the given group.
+	 *
+	 * @param group the group
+	 * @param tags the tag list
+	 * @return filtered preset tags for group
+	 */
+	public static Set<Tag> extractPresetTagsForGroup(final Group group, final Set<Tag> tags) {
+		final String groupname = group.getName();
+		final List<Tag> allowedTags = group.getPresetTags();
+
+		Set<Tag> foundTags = tags.stream().filter(p -> p.getName().startsWith("sys:group:" + groupname)).collect(Collectors.toSet());
+		Set<Tag> acceptedTags = new HashSet<>();
+		for (Tag tag : foundTags) {
+			String cleanName = GroupUtils.cleanInputPresetTag(tag.getName());
+			Tag presetTag = new Tag(cleanName);
+			if (allowedTags.contains(presetTag)) {
+				acceptedTags.add(presetTag);
+			}
+		}
+
+		return acceptedTags;
+	}
+
+	/**
+	 * Removes all selected preset tags for any group.
+	 *
+	 * @param tags
+	 */
+	public static void removePresetTags(final Set<Tag> tags) {
+		tags.removeIf(tag -> tag.getName().startsWith("sys:group:"));
+	}
+
+	/**
+	 * Removes tag, if not a preset tag of the group.
+	 *
+	 * @param tags
+	 * @param presetTags list of preset tags
+	 */
+	public static void removeNonPresetTags(final Set<Tag> tags, final List<Tag> presetTags) {
+		tags.removeIf(tag -> !presetTags.contains(tag));
+	}
+
+	/**
+	 * Removes all selected preset tags for any group.
+	 *
+	 * @param tags
+	 */
+	public static void removePresetTagsForGroup(final Group group, final Set<Tag> tags) {
+		final String groupname = group.getName();
+		tags.removeIf(tag -> tag.getName().startsWith("sys:group:" + groupname));
+	}
+
+	/**
+	 * Cleans a preset tag name, that were used as input in create/edit.
+	 *
+	 * @param tagName the tag name
+	 * @return cleaned version of the tag
+	 */
+	private static String cleanInputPresetTag(final String tagName) {
+		return tagName.substring(tagName.lastIndexOf(':') + 1);
 	}
 }
