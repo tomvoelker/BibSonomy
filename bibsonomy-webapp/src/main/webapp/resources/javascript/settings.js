@@ -1,5 +1,48 @@
-var LAYOUT_TEMPLATE = Handlebars.compile("<p>{{displayName}} ({{source}})</p>");
 $(function() {
+
+    $('#selectCustomLayout').select2({
+        sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+        width: '100%'
+    });
+
+    // handle select change
+    $('#selectCustomLayout').change(function() {
+        var selected = $(this).find('option:selected');
+
+        // get data values
+        var dataSource = selected.data('source');
+        var dataName = selected.data('name');
+        var dataDisplayName = selected.data('displayname');
+
+        // create new favorite layout html
+        var source = dataSource.toUpperCase();
+        var style = dataName.toUpperCase();
+        var id = source + '/' + style;
+        var favList = $('#favouriteLayoutsList');
+        var items = favList.find('li[data-source="' + source + '"][data-style="' + style + '"]');
+        var toHighlight;
+        var deleteMsg = getString('delete');
+        if (items.length == 0) {
+            var toBeAppended = $('<li class="list-group-item favouriteLayoutsListItem clearfix" data-source="' + source + '" data-style="' + style + '"></li>');
+
+            var input = $('<input type="hidden" name="user.settings.favouriteLayouts"  id="' + id + '" value="' + id + '"/>');
+            var deleteButton = $('<span class="btn btn-danger btn-xs pull-right delete-Style">' + deleteMsg + '</span>');
+            deleteButton.click(deleteStyle);
+
+            toBeAppended.append(input);
+            toBeAppended.append(deleteButton);
+            toBeAppended.append(dataDisplayName);
+            favList.append(toBeAppended);
+            toHighlight = toBeAppended;
+        } else {
+            toHighlight = items;
+        }
+
+        // highlight new or already added export format
+        toHighlight.effect("highlight", {}, 2500);
+    });
+
+
 	/* TODO: merge with friendsoverview logic */
 	$('.groupUnshare').hover(function() {
 		$(this).removeClass('btn-success').addClass('btn-danger');
@@ -9,151 +52,6 @@ $(function() {
 		$(this).removeClass('btn-danger').addClass('btn-success');
 		$(this).children('.fa').removeClass('fa-times').addClass('fa-check');
 		$(this).children('.button-text').text(getString('groups.documentsharing.shared'));
-	});
-	
-	// typeahead configuration
-	// firstly two "simple" styles
-	var bibTex = {"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"};
-	var endnote = {"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"};
-	var simpleFormatsData = [bibTex, endnote];
-	var customFormatsData = [];
-	
-	$("#customLayouts").children().each(function( index ) {
-		var tmp={"source":$(this).data("source"), "displayName": $(this).data("displayname"), "name": $(this).data("name"), "type": $(this).data("type"), "hash": $(this).data("hash")}
-		customFormatsData.push(tmp);
-	});
-	
-	var simpleFormats = new Bloodhound({
-		datumTokenizer: function (datum) {
-			return layoutTokenizer(datum);
-		},
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		local: simpleFormatsData
-	});
-	
-	//custom formats
-	var customFormats = new Bloodhound({
-		datumTokenizer: function (datum) {
-			return layoutTokenizer(datum);
-		},
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		local: customFormatsData
-	});
-	
-	// csl formats
-	var cslFormats = new Bloodhound({
-		datumTokenizer: function (datum) {
-			return layoutTokenizer(datum);
-		},
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		prefetch:{
-			url: '/csl-style',
-			cache: false, // TODO: discuss
-			transform: function(response) {
-				var returnedData = $.grep(response.layouts, function (layout, index) {
-					return layout.aliasedTo == undefined;
-				});
-				
-				return returnedData;
-			}
-		}
-	});
-	
-	// jabref formats
-	var jabRefFormats = new Bloodhound({
-		datumTokenizer: function (datum) {
-			return layoutTokenizer(datum);
-		},
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		prefetch:{
-			url: '/layoutinfo/',
-			cache: false, // TODO: discuss
-			transform : function(response) {
-				return $.map(response.layouts, function(item) {
-					return {
-						displayName: item.displayName,
-						source: "JABREF",
-						name: item.name
-					};
-				});
-			}
-		}
-	})
-	var citationAutocomplete = $('#searchCitationAutocomplete');
-	citationAutocomplete.typeahead({
-		minLength: 1,
-		highlight: true
-	}, {
-		name: 'simple-formats',
-		displayKey: 'displayName',
-		source: simpleFormats,
-		templates: {
-			suggestion: LAYOUT_TEMPLATE
-		}
-	}, {
-		name: 'custom-formats',
-		displayKey: 'displayName',
-		source: customFormats,
-		templates: {
-			suggestion: LAYOUT_TEMPLATE
-		}
-	}, {
-		name: 'csl-formats',
-		displayKey: 'displayName',
-		source: cslFormats,
-		templates: {
-			suggestion: LAYOUT_TEMPLATE
-		}
-	}, {
-		name: 'jabref-formats',
-		displayKey: 'displayName',
-		source: jabRefFormats,
-		templates: {
-			suggestion: LAYOUT_TEMPLATE
-		}
-	});
-	
-	/* 
-	 * triggers when something is selected in the typeahead
-	 * adds a new list item to the list including a remove button and an input field with correct ID, source and displayName
-	 * value has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
-	 */
-	citationAutocomplete.on('typeahead:select', function (e, datum) {
-		var source = datum.source.toUpperCase();
-		var style = datum.name.toUpperCase();
-		var id = source + '/' + style;
-		var favList = $('#favouriteLayoutsList');
-		var items = favList.find('li[data-source="' + source + '"][data-style="' + style + '"]');
-		var toHighlight;
-		var deleteMsg = getString('delete');
-		if (items.length == 0) {
-			var toBeAppended = $('<li class="list-group-item favouriteLayoutsListItem clearfix" data-source="' + source + '" data-style="' + style + '"></li>');
-			
-			var input = $('<input type="hidden" name="user.settings.favouriteLayouts"  id="' + id + '" value="' + id + '"/>');
-			var deleteButton = $('<span class="btn btn-danger btn-xs pull-right delete-Style">' + deleteMsg + '</span>');
-			deleteButton.click(deleteStyle);
-			
-			toBeAppended.append(input);
-			toBeAppended.append(deleteButton);
-			toBeAppended.append(datum.displayName);
-			favList.append(toBeAppended);
-			toHighlight = toBeAppended;
-		} else {
-			toHighlight = items;
-		}
-		
-		// highlight new or already added export format
-		toHighlight.effect("highlight", {}, 2500);
-		
-		// reset input field
-		citationAutocomplete.typeahead('val','');
-	});
-	
-	// catching presses of "enter", else the form would be submitted by each "accidental" press
-	citationAutocomplete.on('keydown', function(event) {
-		if (event.which == 13) {// if pressing enter
-			event.preventDefault();
-		}
 	});
 	
 	// getting the "Delete" batch to work
@@ -178,8 +76,4 @@ function deleteStyle() {
 	$(this).parent().slideUp(200, function() {
 		$(this).remove();
 	});
-}
-
-function layoutTokenizer(datum) {
-	return Bloodhound.tokenizers.whitespace(datum.displayName);
 }
