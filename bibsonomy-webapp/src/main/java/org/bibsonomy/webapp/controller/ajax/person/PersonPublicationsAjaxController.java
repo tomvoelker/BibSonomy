@@ -33,12 +33,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.webapp.controller.person.PersonPageController.NO_THESIS_SEARCH;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.SortCriteria;
@@ -71,6 +71,7 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author kchoong
  */
+@Setter
 public class PersonPublicationsAjaxController extends AjaxController implements MinimalisticController<AjaxPersonPageCommand> {
 
     private static final Log log = LogFactory.getLog(PersonPublicationsAjaxController.class);
@@ -222,10 +223,7 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
                     resourcePersonRelation.setRenderedPost(renderedPost);
                 }
             }
-
         }
-
-
     }
 
     @Override
@@ -233,19 +231,4 @@ public class PersonPublicationsAjaxController extends AjaxController implements 
         return new AjaxPersonPageCommand();
     }
 
-    public void setRenderer(AdhocRenderer renderer) {
-        this.renderer = renderer;
-    }
-
-    public void setCslFilesManager(CSLFilesManager cslFilesManager) {
-        this.cslFilesManager = cslFilesManager;
-    }
-
-    public void setUrlGenerator(URLGenerator urlGenerator) {
-        this.urlGenerator = urlGenerator;
-    }
-
-    public void setCrisEnabled(boolean crisEnabled) {
-        this.crisEnabled = crisEnabled;
-    }
 }

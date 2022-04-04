@@ -55,7 +55,15 @@ function initPublicationPagination(page) {
 	var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
 
 	var container = $('#personPublicationsContainer');
+
+	// disable previous pagination, when available
+	var oldPagination = $('#personPublications');
+	if (oldPagination.length > 0) {
+		oldPagination.attr('scrollPagination', 'disabled');
+	}
+
 	container.empty();
+
 	$('<div>', {
 		id: 'personPublications',
 	}).appendTo(container);

@@ -99,8 +99,6 @@ ul.dropdown-menu > li.sort-unselected > a {
 	margin: 0 20px !important;
 }
 
-
-
 /**
  *	CONTAINER
  */
@@ -383,6 +381,7 @@ dl.dl-horizontal.dt-thumbnail-items dd {
  */
  
 h3.list-headline {
+  	position: relative;
 	border-bottom: 1px @light-border-color solid;
 	padding-top: 0;
 	margin-top: 10px;
@@ -631,8 +630,30 @@ a.description-link {
 }
 
 // special pub lists
-#organization-publications li.post {
-  height: inherit;
+.list-inherit-height li.post {
+  height: inherit !important;
+}
+
+.goldstandard-publication-list {
+  li.post {
+
+	margin: 0;
+	padding: 5px 15px;
+	border-bottom: none !important;
+
+	.ptitle {
+	  font-weight: bold;
+	}
+
+	.clearfix {
+	  height: 0;
+	}
+
+  }
+
+  li.post:nth-child(even) {
+	background: #EEEEEE;
+  }
 }
 
 /**
@@ -1679,6 +1700,10 @@ p.separator {
 }
 
 .all-resources-menu {
+  	position: absolute;
+    bottom: 0;
+    right: 0;
+
 	a, button {
 		color: #a0a0a0;
 	}
@@ -1687,6 +1712,10 @@ p.separator {
 		margin-left: -8px;
 		text-transform: uppercase;
 	}
+}
+
+.all-resources-menu-lg {
+  	bottom: -10px;
 }
 
 /** export */

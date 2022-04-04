@@ -69,6 +69,9 @@
 			<!-- Quick cite -->
 			<sidebar:sidebarItem textKey="publications.citations.headline" faIcon="quote-right">
 				<jsp:attribute name="content">
+					<p>
+						<fmt:message key="publications.citations.hint" />
+					</p>
 					<sidebar:quickcite post="${post}" />
 				</jsp:attribute>
 			</sidebar:sidebarItem>

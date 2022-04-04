@@ -527,7 +527,10 @@
 						<property name="allowedFields">
 							<list>
 								<value>publications.start</value>
+								<value>publications.entriesPerPage</value>
 								<value>search</value>
+								<value>sortPage</value>
+								<value>sortPageOrder</value>
 							</list>
 						</property>
 					</bean>
