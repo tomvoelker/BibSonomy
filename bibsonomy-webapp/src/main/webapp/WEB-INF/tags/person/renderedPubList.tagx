@@ -29,7 +29,7 @@
 
                 <fmt:message key="person.show.publications" />
 
-                <div class="pull-right btn-group dropdown-align-right all-resources-menu">
+                <div class="btn-group dropdown-align-right all-resources-menu">
                     <div class="btn-group">
                         <bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
                         <ul class="dropdown-menu">

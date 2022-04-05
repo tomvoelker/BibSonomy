@@ -92,6 +92,7 @@ import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
@@ -201,6 +202,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * classes can now execute their workOn code
 		 */
 		this.workOnCommand(command, loginUser);
+
+		/*
+		 * If the subclass tried to scrape a URL and failed, redirect to the post Publication Site
+		 * (see Issue #2914)
+		 */
+		if(this instanceof AbstractEditPublicationController && this.errors.hasErrors()){
+			final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes("/postPublication#bibtexPost");
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "error.scrape.redirect");
+			return redirectView;
+		}
 
 		/*
 		 * If the user is a spammer, we check the captcha

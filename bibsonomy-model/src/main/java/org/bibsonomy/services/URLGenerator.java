@@ -127,6 +127,7 @@ public class URLGenerator {
 	private static final String PROJECTS = "projects";
 	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
+	private static final String LOGOUT_PREFIX = "logout";
 	private static final String LAYOUT_PREFIX = "layout";
 	private static final String ENDNOTE_PREFIX = "endnote";
 	private static final String MSWORD_PREFIX = "msofficexml";
@@ -873,6 +874,16 @@ public class URLGenerator {
 	}
 
 	/**
+	 * Constructs the URL for the logout page
+	 *
+	 * @return URL pointing to the logout page
+	 */
+	public String getLogoutUrl() {
+		String url = this.projectHome + LOGOUT_PREFIX;
+		return this.getUrl(url);
+	}
+
+	/**
 	 * Constructs the URL for the register page
 	 * 
 	 * @return URL pointing to the register page
@@ -1065,12 +1076,7 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
-	/**
-	 * @return the projectHome
-	 */
-	public String getProjectHome() {
-		return this.projectHome;
-	}
+
 
 	/**
 	 * @return URL to all publications of the main page in bibtex formats.
@@ -1411,6 +1417,17 @@ public class URLGenerator {
 			url += "/" + UrlUtils.encodePathSegment(tagName);
 		}
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL with the given path element from the base URL.
+	 * @param path the path element
+	 * @return URL with the path
+	 */
+	public String getUrlWithPath(String path) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement(path);
+		return this.getUrl(urlBuilder.asString());
 	}
 
 	/**
@@ -1760,6 +1777,13 @@ public class URLGenerator {
 		}
 
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * @return the projectHome
+	 */
+	public String getProjectHome() {
+		return this.projectHome;
 	}
 
 	/**

@@ -163,6 +163,15 @@
 				 		<a name="generalInformation"><!--  --></a>
 				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
+							<jsp:attribute name="legendExt">
+								<fmt:message key="post.resource.fields.general.ext" var="generalInformationExt" />
+								<c:if test="${not empty generalInformationExt}">
+									<p class="help-block small">
+										<c:out value="${generalInformationExt}" escapeXml="${false}" />
+									</p>
+								</c:if>
+							</jsp:attribute>
+
 							<jsp:attribute name="content">
 								<jsp:invoke fragment="generalInformation"/>
 							</jsp:attribute>

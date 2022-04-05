@@ -96,6 +96,11 @@ $(function () {
         $('#whitespace').attr('disabled', $(this).val() == " ");
     });
 
+	if(window.location.href.substring(window.location.href.lastIndexOf('#') + 1) === 'bibtexPost') {
+		$('#bibtextButton').addClass('active');
+		document.getElementById('publication-snippet').style.display = "block";
+	}
+
     // Edit mask for ORCID import
     $("#orcidId").mask("9999-9999-9999-999*");
 });

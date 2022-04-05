@@ -8,8 +8,6 @@
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:spring="http://www.springframework.org/tags">
 
-	<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-
 	<div id="footer-more">
 		<nav class="row">
 			<dl class="col-md-3 col-sm-6">
@@ -32,9 +30,10 @@
 					</dt>
 				</div>
 				
-				<dd><a href="/gettingStarted"><fmt:message key="footer.gettingStarted"/></a></dd>
-				<dd><a href="/buttons"><fmt:message key="footer.buttons"/></a></dd>
-				<dd><a href="${helpLangUrl}/Main"><fmt:message key="help"/></a></dd>
+				<dd><a href="${relativeUrlGenerator.getUrlWithPath('gettingStarted')}"><fmt:message key="footer.gettingStarted"/></a></dd>
+				<dd><a href="${relativeUrlGenerator.getUrlWithPath('buttons')}"><fmt:message key="footer.buttons"/></a></dd>
+				<dd><a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}"><fmt:message key="help"/></a></dd>
+				<dd><a href="${relativeUrlGenerator.getHelpPage('FAQ', pageContext.response.locale)}"><fmt:message key="footer.faqs"/></a></dd>
 
 				<div id="footer-section-developer">
 					<fmt:message key="footer.developer" var="developerFooter"/>
@@ -51,12 +50,14 @@
 				<div id="footer-section-privacy">
 					<dt><fmt:message key="footer.privacyContact"/></dt>
 
-					<dd><fmt:message key="navi.about"/></dd>
+					<dd>
+						<fmt:message key="navi.about"/>
+					</dd>
 					<dd>
 						<fmt:message key="system.termsOfUse"/>
 					</dd>
 					<dd>
-						<fmt:message key="footer.cookies"/>
+						<a href="${relativeUrlGenerator.getHelpPage('Cookies', pageContext.response.locale)}"><fmt:message key="footer.cookies"/></a>
 					</dd>
 					<dd>
 						<fmt:message key="issues"/>
@@ -80,8 +81,8 @@
 					<dd><a href="https://typo3.org/extensions/repository/view/ext_bibsonomy_csl"><fmt:message key="typoThree.plugin"/></a></dd>
 					<dd><a href="https://wordpress.org/plugins/bibsonomy-csl/"><fmt:message key="wordpress.plugin"/></a></dd>
 					<dd><a href="https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/"><fmt:message key="restClient.java"/></a></dd>
-					<dd><a href="/scraperinfo"><fmt:message key="footer.scraperInfo" /></a></dd>
-					<dd><a href="${helpLangUrl}/Integration"><fmt:message key="more"/></a></dd>
+					<dd><a href="${relativeUrlGenerator.getUrlWithPath('scraperinfo')}"><fmt:message key="footer.scraperInfo" /></a></dd>
+					<dd><a href="${relativeUrlGenerator.getHelpPage('Integration', pageContext.response.locale)}"><fmt:message key="more"/></a></dd>
 				</div>
 			</dl>
 			
@@ -89,7 +90,9 @@
 				<div id="footer-section-about">
 					<dt><fmt:message key="footer.about"/>&amp;nbsp;<c:out value="${properties['project.name']}" /></dt>
 
-					<dd><fmt:message key="footer.team"/></dd>
+					<dd>
+						<a href="${relativeUrlGenerator.getHelpPage('Team', pageContext.response.locale)}"><fmt:message key="footer.team"/></a>
+					</dd>
 
 					<c:set var="blogUrl" value="${properties['project.blog']}" />
 					<c:if test="${not empty blogUrl}">
