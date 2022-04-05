@@ -30,10 +30,12 @@
 package org.bibsonomy.search.es.management.util;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 
+import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil;
 import org.bibsonomy.model.Bookmark;
 import org.junit.Test;
 
@@ -48,5 +50,12 @@ public class ElasticsearchUtilsTest {
 	@Test
 	public void testGetIndexName() throws Exception {
 		assertThat(ElasticsearchUtils.getIndexName(new URI("http://www.bibsonomy.org/"), Bookmark.class), is("wwwbibsonomyorg_bookmark"));
+	}
+
+	@Test
+	public void testEscapeQueryString() {
+		String actual = ElasticsearchUtils.escapeQueryString("doi:10.18419/opus-11809");
+		String expected = "doi\\:10.18419\\/opus\\-11809";
+		assertEquals(expected, actual);
 	}
 }

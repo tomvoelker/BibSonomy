@@ -1985,14 +1985,15 @@ hr.option-result-divider {
 	max-height: 2.2em;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	word-wrap: anywhere;
   }
 
   .media-description {
 	line-height: 1.5em;
 	height: 3em;
 	overflow: hidden;
-	white-space: nowrap;
 	text-overflow: ellipsis;
+	word-wrap: anywhere;
   }
 
   .media-link-group {
@@ -2296,3 +2297,13 @@ ul.custom-all-tags-list li {
 	}
 }
 
+.import-post-table {
+
+  .ptitle {
+	white-space: break-spaces;
+  }
+
+  .import-tag-edit-td {
+	min-width: 100px;
+  }
+}

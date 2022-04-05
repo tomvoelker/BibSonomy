@@ -360,7 +360,7 @@
 										</div>
 									</td>
 									<!-- the input field for the tags -->
-									<td>
+									<td class="import-tag-edit-td">
 										<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags">
 											<c:choose>
 												<c:when test="${status.error}">

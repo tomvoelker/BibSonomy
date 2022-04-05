@@ -171,7 +171,7 @@
 			<c:forEach var="errorInfo" items="${groupedErrorList}">
 				<c:choose>
 					<c:when test="${errorInfo.errorType eq 'NO_ERROR'}">
-						<table class="table table-striped">
+						<table class="table table-striped import-post-table">
 							<thead>
 							<tr>
 								<th style="text-align: center;">
@@ -180,7 +180,7 @@
 								<th>
 									<fmt:message key="batchedit.yourPosts" />
 								</th>
-								<td id="yourTags">
+								<td class="import-tag-edit-td" id="yourTags">
 									<fmt:message key="batchedit.yourTags" />
 								</td>
 							</tr>

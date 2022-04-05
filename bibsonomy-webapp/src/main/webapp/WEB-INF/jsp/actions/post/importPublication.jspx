@@ -30,7 +30,7 @@
 		
 		<jsp:attribute name="content">
 			<div id="post-publication" class="row">
-				<div class="col-sm-10 col-sm-offset-1">
+				<div class="col-sm-12">
 					<div class="content-header">
 						<h1><fmt:message key="publication.import.title"/></h1>
 					</div>

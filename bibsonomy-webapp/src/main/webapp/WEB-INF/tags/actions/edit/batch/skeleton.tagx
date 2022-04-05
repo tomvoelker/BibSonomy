@@ -27,33 +27,36 @@
 	<!-- page title -->
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
-	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}">
-		<jsp:attribute name="infobox">
-			<parts:infobox>
-				<jsp:attribute name="infoTextBody">
-					<!-- short info about batchEdit -->
-					<fmt:message key="batchedit.info1"/>
-					<ul style="list-style: square outside none;padding: 10px 10px 10px 25px;">
-						<c:if test="${resourceType eq 'bibtex'}">
-							<li><fmt:message key="batchedit.option1"/></li>
-						</c:if>
-						<li><fmt:message key="batchedit.option2"/></li>
-						<li><fmt:message key="batchedit.option3"/></li>
-						<li><fmt:message key="batchedit.option4"/></li>
-						<li><fmt:message key="batchedit.option5"/></li>
-					</ul>
-					<ul><fmt:message key="batchedit.info2"/></ul>
-				</jsp:attribute>
-			</parts:infobox>
-		</jsp:attribute>
+	<layout:paneLayout
+			requPath="${requPath}"
+			command="${command}"
+			pageTitle="${pageTitle}"
+			activeTab="my"
+			headerMessageKey="batchedit.info"
+			showPageOptions="${true}"
+			noSidebar="${true}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="post.meta.edit" />
 		</jsp:attribute>
 
-
 		<jsp:attribute name="content">
 			<h1 class="content-heading"><fmt:message key="post.meta.batch_edit" /></h1>
+
+			<p>
+				<fmt:message key="batchedit.info1"/>
+				<ul style="list-style: square outside none;padding: 10px 10px 10px 25px;">
+					<c:if test="${resourceType eq 'bibtex'}">
+						<li><fmt:message key="batchedit.option1"/></li>
+					</c:if>
+					<li><fmt:message key="batchedit.option2"/></li>
+					<li><fmt:message key="batchedit.option3"/></li>
+					<li><fmt:message key="batchedit.option4"/></li>
+					<li><fmt:message key="batchedit.option5"/></li>
+				</ul>
+				<fmt:message key="batchedit.info2"/>
+			</p>
+
 			<batch:content resourceType="${resourceType}" listView="${listView}" 
 				otherPostsUrlPrefix="${otherPostsUrlPrefix}" directEdit="${true}" 
 				listViewStartParamName="${listViewStartParamName}" 
