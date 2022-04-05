@@ -29,32 +29,45 @@
  */
 package org.bibsonomy.importer.orcid;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.bibsonomy.util.UrlBuilder;
 
-public class UrlRendererTest {
+/**
+ * This class is a URLGenerator for the ORCID API
+ * and generates URLs for the requests.
+ *
+ * @author kchoong
+ */
+public class OrcidUrlGenerator {
 
-    private UrlRenderer urlRenderer;
+    public static String BASE_URL = "https://pub.orcid.org/v3.0/";
+    public static String WORK_PARAM = "work";
+    public static String WORKS_PARAM = "works";
 
-    @Before
-    public void setUp() throws Exception {
-        this.urlRenderer = new UrlRenderer();
+    public String getWorksUrl(String orcidId) {
+        UrlBuilder urlBuilder = new UrlBuilder(BASE_URL);
+        urlBuilder.addPathElement(orcidId);
+        urlBuilder.addPathElement(WORKS_PARAM);
+
+        return urlBuilder.toString();
     }
 
-    @Test
-    public void testGetWorksUrl() {
-        String orcidId = "0000-0002-0570-7908";
-        String url = this.urlRenderer.getWorksUrl(orcidId);
-        assertEquals(UrlRenderer.BASE_URL + orcidId + "/" + UrlRenderer.WORKS_PARAM , url);
+    public String getWorkDetailsUrl(String orcidId, String workId) {
+        UrlBuilder urlBuilder = new UrlBuilder(BASE_URL);
+        urlBuilder.addPathElement(orcidId);
+        urlBuilder.addPathElement(WORK_PARAM);
+        urlBuilder.addPathElement(workId);
+
+        return urlBuilder.toString();
     }
 
-    @Test
-    public void testGetWorkDetailsUrl() {
-        String orcidId = "0000-0002-0570-7908";
-        String workId = "100126388";
-        String url = this.urlRenderer.getWorkDetailsUrl(orcidId, workId);
-        assertEquals(UrlRenderer.BASE_URL + orcidId + "/" + UrlRenderer.WORK_PARAM + "/" + workId , url);
+    public String getWorkDetailsBulkUrl(String orcidId, List<String> workIds) {
+        UrlBuilder urlBuilder = new UrlBuilder(BASE_URL);
+        urlBuilder.addPathElement(orcidId);
+        urlBuilder.addPathElement(WORKS_PARAM);
+        urlBuilder.addPathElement(String.join(",", workIds));
+
+        return urlBuilder.toString();
     }
 }

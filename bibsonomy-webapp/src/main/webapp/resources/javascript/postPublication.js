@@ -101,7 +101,11 @@ $(function () {
 		document.getElementById('publication-snippet').style.display = "block";
 	}
 
-    // Edit mask for ORCID import
+    /*
+    Edit mask for ORCID import
+    The last digit of the ORCID iD is the checksum and allows an X, hence the asterisk in the mask.
+    For more information: https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
+     */
     $("#orcidId").mask("9999-9999-9999-999*");
 });
 

@@ -35,7 +35,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bibsonomy.importer.orcid.RestClient;
+import org.bibsonomy.importer.orcid.OrcidRestClient;
 import org.bibsonomy.webapp.command.ajax.OrcidAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -45,10 +45,10 @@ import org.bibsonomy.webapp.view.Views;
 @Setter
 public class OrcidAjaxController extends AjaxController implements MinimalisticController<OrcidAjaxCommand> {
 
-    private RestClient client;
+    private OrcidRestClient client;
 
     public OrcidAjaxController() {
-        this.client = new RestClient();
+        this.client = new OrcidRestClient();
     }
 
     @Override

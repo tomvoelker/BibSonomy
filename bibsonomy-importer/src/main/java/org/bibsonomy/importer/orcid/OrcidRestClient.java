@@ -29,39 +29,56 @@
  */
 package org.bibsonomy.importer.orcid;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.bibsonomy.util.UrlBuilder;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpGet;
+import org.bibsonomy.util.WebUtils;
 
-public class UrlRenderer {
+/**
+ * This class is a RESTClient for ORCID
+ * and used to send API Request to ORCID and receive responses as JSON.
+ *
+ * @author kchoong
+ */
+public class OrcidRestClient {
 
-    public static String BASE_URL = "https://pub.orcid.org/v3.0/";
-    public static String WORK_PARAM = "work";
-    public static String WORKS_PARAM = "works";
+    public static String CONTENT_HEADER = "application/orcid+json";
 
-    public String getWorksUrl(String orcidId) {
-        UrlBuilder urlBuilder = new UrlBuilder(BASE_URL);
-        urlBuilder.addPathElement(orcidId);
-        urlBuilder.addPathElement(WORKS_PARAM);
+    private final OrcidUrlGenerator orcidUrlGenerator;
 
-        return urlBuilder.toString();
+    public OrcidRestClient() {
+        this.orcidUrlGenerator = new OrcidUrlGenerator();
     }
 
-    public String getWorkDetailsUrl(String orcidId, String workId) {
-        UrlBuilder urlBuilder = new UrlBuilder(BASE_URL);
-        urlBuilder.addPathElement(orcidId);
-        urlBuilder.addPathElement(WORK_PARAM);
-        urlBuilder.addPathElement(workId);
-
-        return urlBuilder.toString();
+    public String getWorks(String orcidId) {
+        String url = this.orcidUrlGenerator.getWorksUrl(orcidId);
+        return this.execute(url);
     }
 
-    public String getWorkDetailsBulkUrl(String orcidId, List<String> workIds) {
-        UrlBuilder urlBuilder = new UrlBuilder(BASE_URL);
-        urlBuilder.addPathElement(orcidId);
-        urlBuilder.addPathElement(WORKS_PARAM);
-        urlBuilder.addPathElement(String.join(",", workIds));
+    public String getWorkDetails(String orcidId, String workId) {
+        String url = this.orcidUrlGenerator.getWorkDetailsUrl(orcidId, workId);
+        return this.execute(url);
+    }
 
-        return urlBuilder.toString();
+    public String getWorkDetailsBulk(String orcidId, List<String> workIds) {
+        String url = this.orcidUrlGenerator.getWorkDetailsBulkUrl(orcidId, workIds);
+        return this.execute(url);
+    }
+
+    private String execute(String url) {
+        HttpGet get = new HttpGet(url);
+        get.setHeader("Accept", CONTENT_HEADER);
+
+        String response = "";
+        try {
+            response = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+        } catch (HttpException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 }
+

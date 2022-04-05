@@ -77,9 +77,9 @@ public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFil
 	public static final String JSON_EXTENSION = "json";
 
 	/**
-	 * Accepted file extension for publications import: BibTeX, EndNote, RIS, JSON/CSL
+	 * Accepted file extension for publications import: BibTeX, EndNote, RIS
 	 */
 	public static final Collection<String> ACCEPTED_PUBLICATION_EXTENSIONS = Arrays.asList(
-			BIBTEX_EXTENSION, ENDNOTE_EXTENSION, RIS_EXTENSION, JSON_EXTENSION
+			BIBTEX_EXTENSION, ENDNOTE_EXTENSION, RIS_EXTENSION
     );
 }

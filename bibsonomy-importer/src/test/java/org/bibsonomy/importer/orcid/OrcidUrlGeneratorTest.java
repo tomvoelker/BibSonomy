@@ -29,50 +29,32 @@
  */
 package org.bibsonomy.importer.orcid;
 
-import java.io.IOException;
-import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.apache.http.HttpException;
-import org.apache.http.client.methods.HttpGet;
-import org.bibsonomy.util.WebUtils;
+import static org.junit.Assert.assertEquals;
 
-public class RestClient {
+public class OrcidUrlGeneratorTest {
 
-    public static String CONTENT_HEADER = "application/orcid+json";
+    private OrcidUrlGenerator orcidUrlGenerator;
 
-    private final UrlRenderer urlRenderer;
-
-    public RestClient() {
-        this.urlRenderer = new UrlRenderer();
+    @Before
+    public void setUp() throws Exception {
+        this.orcidUrlGenerator = new OrcidUrlGenerator();
     }
 
-    public String getWorks(String orcidId) {
-        String url = this.urlRenderer.getWorksUrl(orcidId);
-        return this.execute(url);
+    @Test
+    public void testGetWorksUrl() {
+        String orcidId = "0000-0002-0570-7908";
+        String url = this.orcidUrlGenerator.getWorksUrl(orcidId);
+        assertEquals(OrcidUrlGenerator.BASE_URL + orcidId + "/" + OrcidUrlGenerator.WORKS_PARAM , url);
     }
 
-    public String getWorkDetails(String orcidId, String workId) {
-        String url = this.urlRenderer.getWorkDetailsUrl(orcidId, workId);
-        return this.execute(url);
-    }
-
-    public String getWorkDetailsBulk(String orcidId, List<String> workIds) {
-        String url = this.urlRenderer.getWorkDetailsBulkUrl(orcidId, workIds);
-        return this.execute(url);
-    }
-
-    private String execute(String url) {
-        HttpGet get = new HttpGet(url);
-        get.setHeader("Accept", CONTENT_HEADER);
-
-        String response = "";
-        try {
-            response = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
-        } catch (HttpException | IOException e) {
-            e.printStackTrace();
-        }
-
-        return response;
+    @Test
+    public void testGetWorkDetailsUrl() {
+        String orcidId = "0000-0002-0570-7908";
+        String workId = "100126388";
+        String url = this.orcidUrlGenerator.getWorkDetailsUrl(orcidId, workId);
+        assertEquals(OrcidUrlGenerator.BASE_URL + orcidId + "/" + OrcidUrlGenerator.WORK_PARAM + "/" + workId , url);
     }
 }
-
