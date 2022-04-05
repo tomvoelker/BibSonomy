@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -47,4 +48,8 @@ import org.bibsonomy.model.Post;
 public class HomepageCommand extends SimpleResourceViewCommand {
 	/** fills the news box in the sidebar */
 	private List<Post<Bookmark>> news;
+
+	public HomepageCommand() {
+		this.news = new ArrayList<>();
+	}
 }
