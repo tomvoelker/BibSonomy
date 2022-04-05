@@ -40,6 +40,7 @@ import org.bibsonomy.webapp.command.ajax.OrcidAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.json.simple.JSONObject;
 
 @Getter
 @Setter
@@ -63,21 +64,61 @@ public class OrcidAjaxController extends AjaxController implements MinimalisticC
         final List<String> workIds = command.getWorkIds();
 
         if (!present(orcidId)) {
-            return Views.ERROR;
+            return this.error(command, "post_bibtex.orcid.action.error.invalidId");
         }
 
-        String response = "";
-
+        // Get details for a single work
         if (present(workId)) {
-            response = this.client.getWorkDetails(orcidId, workId);
-        } else if (present(workIds)) {
-            response = this.client.getWorkDetailsBulk(orcidId, workIds);
-        } else {
-            response = this.client.getWorks(orcidId);
+            return this.handleWorkDetails(command, orcidId, workId);
         }
 
-        command.setResponseString(response);
+        // Get details for multiple works
+        if (present(workIds)) {
+            return this.handleWorkDetailsBulk(command, orcidId, workIds);
+        }
 
+        // Default: Get list of work summary
+        return this.handleWorks(command, orcidId);
+    }
+
+    private View handleWorks(final OrcidAjaxCommand command, final String orcidId) {
+        String response = this.client.getWorks(orcidId);
+        return this.checkAndRespond(command, response);
+    }
+
+    private View handleWorkDetails(final OrcidAjaxCommand command, final String orcidId, final String workId) {
+        String response = this.client.getWorkDetails(orcidId, workId);
+        return this.checkAndRespond(command, response);
+    }
+
+    private View handleWorkDetailsBulk(final OrcidAjaxCommand command, final String orcidId, final List<String> workIds) {
+        String response = this.client.getWorkDetailsBulk(orcidId, workIds);
+        return this.checkAndRespond(command, response);
+    }
+
+    private View checkAndRespond(final OrcidAjaxCommand command, final String response) {
+        if (present(response)) {
+            return this.success(command, response);
+        }
+
+        return this.error(command, "post_bibtex.orcid.action.error.connection");
+    }
+
+    private View success(final OrcidAjaxCommand command, final String successMsg) {
+        final JSONObject response = new JSONObject();
+        response.put("success", true);
+        response.put("message", successMsg);
+
+        command.setResponseString(response.toString());
+        return Views.AJAX_JSON;
+    }
+
+    private View error(final OrcidAjaxCommand command, final String errorMsg) {
+        final JSONObject response = new JSONObject();
+        response.put("success", false);
+        response.put("error", errorMsg);
+
+        command.setResponseString(response.toString());
         return Views.AJAX_JSON;
     }
 

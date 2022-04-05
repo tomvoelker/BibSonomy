@@ -16,6 +16,8 @@
 	<h2><fmt:message key="post_bibtex.orcid.heading"/></h2>
 	<p class="smalltext"><fmt:message key="post_bibtex.orcid.description" /></p>
 
+	<div id="orcidImportFormError"><!-- keep me for error reponses --></div>
+
 	<form:form id="orcidImportForm" cssClass="form-horizontal" method="post" action="/import/publications?ckey=${ckey}">
 
 		<div class="form-group">

@@ -107,6 +107,11 @@ $(function () {
     For more information: https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
      */
     $("#orcidId").mask("9999-9999-9999-999*");
+
+    // FIXME by update our JS message plugin
+    var connectionMsg = getString('post_bibtex.orcid.action.error.connection');
+    var invalidIdMsg = getString('post_bibtex.orcid.action.error.invalidId');
+    var noWorksMsg = getString('post_bibtex.orcid.action.error.noWorks');
 });
 
 function showManualForm(titleText) {
@@ -122,6 +127,7 @@ function setOwnOrcidID() {
 
 function importOrcidPublications() {
     var orcidId = $('#orcidId').val();
+
     $.ajax({
         url: '/ajax/orcid', // The url you are fetching the results.
         data: {
@@ -129,8 +135,20 @@ function importOrcidPublications() {
             'orcidId': orcidId
         },
         success: function (data) {
-            // Set form data, get work details and submit
-            getWorkDetailsAndSubmit(data);
+            if (data.success) {
+                // Check, if works are available
+                var responseData = JSON.parse(data.message);
+                if (responseData['group'].length < 1) {
+                    showOrcidError('post_bibtex.orcid.action.error.noWorks');
+                    $("#orcidImportLoader").hide(0);
+                } else {
+                    // Set form data, get work details and submit
+                    getWorkDetailsAndSubmit(responseData);
+                }
+            } else {
+                showOrcidError(data.error);
+                $("#orcidImportLoader").hide(0);
+            }
         },
         beforeSend: function () {
             $("#orcidImportLoader").show(0);
@@ -145,10 +163,12 @@ function getWorkDetailsAndSubmit(data) {
     var orcidId = $('#orcidId').val();
     var workIds = [];
     var works = data["group"];
+
     works.forEach(function (work) {
         var summary = work["work-summary"][0];
         workIds.push(summary["put-code"]);
-    })
+    });
+
     var size = workIds.length;
 
     // Making 1 request for every 100 works
@@ -168,9 +188,14 @@ function getWorkDetailsAndSubmit(data) {
                 'workIds': workIdsForBulk
             },
             success: function (data) {
-                data['bulk'].forEach(function(obj) {
-                    result.push(JSON.stringify(obj['work']));
-                });
+                if (data.success) {
+                    var responseData = JSON.parse(data.message);
+                    responseData['bulk'].forEach(function(obj) {
+                        result.push(JSON.stringify(obj['work']));
+                    });
+                } else {
+                    showOrcidError(data.error);
+                }
             },
             complete: function () {
                 done--;
@@ -192,4 +217,14 @@ function submitOrcidImport(orcidId, workIds, works) {
     $('#bulkSnippet').val('{"orcid": [' + works.join(',') + ']}');
     // Submit form
     $('#orcidImportForm').submit();
+}
+
+function showOrcidError(errorMsg) {
+    var alert = $('<div class="alert alert-danger alert-dismissable"></div>');
+    var button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+    alert.append(button);
+    alert.append($('<strong>Error: </strong>'));
+    alert.append(getString(errorMsg));
+
+    $('#orcidImportFormError').append(alert);
 }
