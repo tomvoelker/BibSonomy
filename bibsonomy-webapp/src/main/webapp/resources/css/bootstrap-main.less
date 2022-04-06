@@ -1894,9 +1894,12 @@ ul.prefix-list {
 		}
 	}
 
-	.even:nth-of-type(4n),
-	.odd:nth-of-type(4n+1){
+	.post:nth-child(4n + 1), li:nth-child(4n + 2) {
 	  background-color: #eee;
+	  border-radius: 3px;
+	}
+	li:nth-child(4n + 3), li:nth-child(4n + 4) {
+	  background-color: #FFFFFF;
 	}
 
 	.pmeta {

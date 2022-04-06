@@ -137,7 +137,7 @@
 			</div>
 
 			<div class="row">
-				<div class="col-md-12 publication-list list-inherit-height goldstandard-publication-list">
+				<div class="col-md-12 publication-list" id="home-publications">
 					<resources:bibtexs listView="${command.goldStandardPublications}"
 									   loginUserName="${command.context.loginUser.name}"
 									   requPath="${requPath}"
@@ -147,11 +147,12 @@
 									   showPublication="${true}"
 									   hideHeadline="${true}"
 									   hideCounts="${true}"
-									   hideMetaData="${true}"
+									   hideMetaData="${false}"
 									   hidePostMenu="${true}"
 									   hidePostRating="${true}"
 									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
-									   disableResourcetypeSelection="${true}">
+									   disableResourcetypeSelection="${true}"
+									   headlineInBody="${true}">
 
 						<jsp:attribute name="addAsLastItem">
 							<div id="publicationsfooter">
