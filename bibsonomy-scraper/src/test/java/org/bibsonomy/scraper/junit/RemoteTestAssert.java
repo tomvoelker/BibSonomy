@@ -30,7 +30,6 @@
 package org.bibsonomy.scraper.junit;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import bibtex.dom.BibtexAbstractEntry;
 import bibtex.dom.BibtexAbstractValue;
@@ -45,10 +44,13 @@ import bibtex.expansions.PersonListExpander;
 import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
 import org.apache.commons.lang.ObjectUtils;
+import org.bibsonomy.scraper.KDEUrlCompositeScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.junit.ComparisonFailure;
 
@@ -65,7 +67,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -78,35 +79,29 @@ import java.util.TreeSet;
 public class RemoteTestAssert {
 
 	/**
-	 * calls the specified scraper with the provided url and tests the returned result of the scraper
-	 * with the contents of the provided result file
+	 * Scrapes the specified url with the expectedScraperClass. Should the expectedScraperClass implement the UrlScraper-Interface then
+	 * the KDEUrlCompositeScraper will be used for scraping.
+	 * The returned result of the scraper will be tested against the contents of the provided result file
 	 *
 	 * @param url
-	 * @param scraperClass
+	 * @param expectedScraperClass the scraper, which should be set in the Scrapingcontext
 	 * @param resultFile
 	 */
-	public static void assertScraperResult(final String url, final Class<? extends Scraper> scraperClass, final String resultFile) {
-		assertScraperResult(url, null, scraperClass, resultFile);
+	public static void assertScraperResult(final String url, final Class<? extends Scraper> expectedScraperClass, final String resultFile) {
+		assertScraperResult(url, null, expectedScraperClass, resultFile);
 	}
 
 	/**
-	 * calls the specified scraper with the provided url and selection and tests the returned result of the scraper
-	 * with the contents of the provided result file
+	 * Scrapes the specified url and the selection with the expectedScraperClass. Should the expectedScraperClass implement the UrlScraper-Interface then
+	 * the KDEUrlCompositeScraper will be used for scraping.
+	 * The returned result of the scraper will be tested against the contents of the provided result file
 	 *
 	 * @param url
 	 * @param selection
-	 * @param scraperClass
+	 * @param expectedScraperClass  the scraper, which should be set in the Scrapingcontext
 	 * @param resultFile
 	 */
-	public static void assertScraperResult(final String url, final String selection, final Class<? extends Scraper> scraperClass, final String resultFile) {
-		//Creating instance of the scraper-class
-		final Scraper scraper;
-		try {
-			scraper = createScraper(scraperClass);
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Exception while creating instance of Scraper", e);
-		}
-
+	public static void assertScraperResult(final String url, final String selection, final Class<? extends Scraper> expectedScraperClass, final String resultFile) {
 		//Preparing test data
 		final String expectedReference;
 		final List<BibtexEntry> expectedBibtexEntries;
@@ -114,65 +109,87 @@ public class RemoteTestAssert {
 			expectedReference = normBibTeX(getExpectedBibTeX(resultFile));
 			expectedBibtexEntries = parseAndExpandBibTeXs(expectedReference);
 		} catch (IOException | ExpansionException | ParseException | AssertionError e) {
-			throw new RuntimeException("Exception while preparing test data", e);
+			throw new RuntimeException("Exception while getting and preparing test data", e);
 		}
-		//Scraping the bibtex and preparing it to be tested
+		//Getting the scraping-result and preparing it to be tested
 		final String scraperResult;
 		final List<BibtexEntry> actualBibtexEntries;
 		try {
-			scraperResult = normBibTeX(getScraperResult(url, selection, scraper));
+			scraperResult = normBibTeX(getScraperResult(url, selection, expectedScraperClass));
 			actualBibtexEntries = parseAndExpandBibTeXs(scraperResult);
-		} catch (IOException | ScrapingException | ExpansionException | ParseException | AssertionError e) {
-			throw new RuntimeException("Exception while preparing scraped data from " + url, e);
+		} catch (IOException | ScrapingException | ExpansionException | ParseException | AssertionError | InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("Exception while scraping and preparing data to test", e);
 		}
 		//comparing expected and actual bibtex
 		try {
 			assertEqualsBibtexEntryList(expectedBibtexEntries, actualBibtexEntries);
 		} catch (AssertionError ae) {
-			ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, scraperResult);
-			cf.initCause(ae.getCause());
+			ComparisonFailure cf = new ComparisonFailure("Actual Bibtex is not equal to expected Bibtex",
+							expectedReference,
+							scraperResult);
+			cf.initCause(ae);
 			throw cf;
 		}
 
-
-		//the scraper can work for an old URL, but not for the redirected. This is problematic, because the user will use the redirected URL.
-		final URL redirectUrl;
-		try {
-			redirectUrl = WebUtils.getRedirectUrl(new URL(url));
-		} catch (MalformedURLException | IllegalArgumentException e) {
-			throw new RuntimeException("Exception while getting redirected Url", e);
-		}
-
-		if (redirectUrl != null && !redirectUrl.toString().equals(url)) {
-			final String redirectedScraperResult;
-			final List<BibtexEntry> redirectedBibtexEntries;
+		if (url != null && UrlScraper.class.isAssignableFrom(expectedScraperClass)) {
+			//the scraper can work for an old URL, but not for the redirected. This is problematic, because the user will use the redirected URL.
+			final URL redirectUrl;
 			try {
-				redirectedScraperResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, scraper));
-				redirectedBibtexEntries = parseAndExpandBibTeXs(redirectedScraperResult);
-			} catch (IOException | ParseException | ExpansionException | ScrapingException | AssertionError e) {
-				throw new RuntimeException("Exception while preparing scraped data from redirected url " + redirectUrl, e);
-			}
-			try {
-				assertEqualsBibtexEntryList(expectedBibtexEntries, redirectedBibtexEntries);
-			} catch (AssertionError ae) {
-				ComparisonFailure cf = new ComparisonFailure(ae.getMessage(), expectedReference, redirectedScraperResult);
-				cf.initCause(ae.getCause());
-				throw cf;
+				redirectUrl = WebUtils.getRedirectUrl(new URL(url));
+			} catch (MalformedURLException | IllegalArgumentException e) {
+				throw new RuntimeException("Exception while getting redirected Url", e);
 			}
 
+			if (redirectUrl != null && !redirectUrl.toString().equals(url)) {
+				final String redirectedScraperResult;
+				final List<BibtexEntry> redirectedBibtexEntries;
+				try {
+					redirectedScraperResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, expectedScraperClass));
+					redirectedBibtexEntries = parseAndExpandBibTeXs(redirectedScraperResult);
+				} catch (IOException | ParseException | ExpansionException | ScrapingException | AssertionError | InstantiationException | IllegalAccessException e) {
+					throw new RuntimeException("Exception while scraping and preparing data to test from redirected url " + redirectUrl, e);
+				}
+				try {
+					assertEqualsBibtexEntryList(expectedBibtexEntries, redirectedBibtexEntries);
+				} catch (AssertionError ae) {
+					ComparisonFailure cf = new ComparisonFailure(
+									"Bibtex from redirected Url " + redirectUrl + " is not equal to expected Bibtex",
+									expectedReference,
+									redirectedScraperResult);
+					cf.initCause(ae);
+					throw cf;
+				}
+			}
 		}
 
 	}
 
-	private static String getScraperResult(final String url, final String selection, final Scraper scraper) throws MalformedURLException, ScrapingException {
+	private static String getScraperResult(final String url, final String selection, final Class<? extends Scraper> expectedScraperClass) throws MalformedURLException, ScrapingException, InstantiationException, IllegalAccessException {
+		Scraper scraper;
+		//if the scraper is a URL-Scraper, we check if the correct Scraper in the KDEUrlCompositeScraper is used
+		if (UrlScraper.class.isAssignableFrom(expectedScraperClass)) {
+			scraper = new KDEUrlCompositeScraper();
+		} else {
+			scraper = createScraper(expectedScraperClass);
+		}
 		final ScrapingContext scrapingContext = createScraperContext(url, selection);
 		scraper.scrape(scrapingContext);
 		final String bibTeXResult = scrapingContext.getBibtexResult();
 
 		if (!present(bibTeXResult)) {
-			throw new AssertionError("nothing scraped from " + url);
+			throw new AssertionError("Nothing scraped from " + url);
 		}
 
+		Scraper actualScraper = scrapingContext.getScraper();
+		if (actualScraper == null) {
+			throw new AssertionError("No Scraper was set");
+		}
+
+		if (!actualScraper.getClass().equals(expectedScraperClass)) {
+			throw new AssertionError("Not the expected Scraper was used\n" +
+							"Expected: " + expectedScraperClass +
+							"\nActual  : " + actualScraper.getClass());
+		}
 		return bibTeXResult;
 	}
 
@@ -180,14 +197,16 @@ public class RemoteTestAssert {
 		final BibtexFile bibtexFile = new BibtexFile();
 
 		final BibtexParser parser = new BibtexParser(true);
-		final PersonListExpander personListExpander = new PersonListExpander(true, true);
-		final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, true, true);
-
+		/*
+		No BibtexMultipleFieldValuesPolicy is set, so the default is used and only the first occurrence of the field is used
+		 */
 		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
 		//if no bibtex is in the bibtexFile then the bibtex was not valid
 		final boolean bibtexValid = bibtexFile.getEntries().stream().anyMatch(BibtexEntry.class::isInstance);
 		assertTrue("scraped BibTeX not valid", bibtexValid);
 
+		final PersonListExpander personListExpander = new PersonListExpander(true, true);
+		final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, true, true);
 		macroReferenceExpander.expand(bibtexFile);
 		personListExpander.expand(bibtexFile);
 
@@ -237,10 +256,15 @@ public class RemoteTestAssert {
 	 * @throws AssertionError differences between the two lists
 	 */
 	protected static void assertEqualsBibtexEntryList(List<BibtexEntry> expected, List<BibtexEntry> actual) throws AssertionError {
-		assertEquals("Expected and actual don't contain the same amount of BibTeXs", expected.size(), actual.size());
+		if (expected.size() != actual.size()) {
+			throw new AssertionError("Expected and actual don't contain the same amount of BibTeXs" +
+							"\nExpected: " + expected.size() +
+							"\nActual  : " + actual.size());
+		}
+
 		//makes sure that for every expected BibTeX an actual BibTeX exists. BibTeXs are identified by their key
 		for (BibtexEntry expectedEntry : expected) {
-			assertTrue("actual String does not contain Bibtex with key \"" + expectedEntry.getEntryKey() + "\"",
+			assertTrue("actual String does not contain Bibtex with key " + expectedEntry.getEntryKey(),
 							actual.stream().anyMatch(a -> a.getEntryKey().equals(expectedEntry.getEntryKey())));
 		}
 
@@ -254,18 +278,14 @@ public class RemoteTestAssert {
 	}
 
 	/**
-	 * Compares two BibtexEntries. For most tags the string is compared, but for:
-	 * Url the protocol is ignored.
-	 * Keyword ignores the order
-	 * Author and Editor ignores the format and order
-	 *
+	 * Compares two BibtexEntries.
 	 * @param expected BibtexEntry
 	 * @param actual   BibtexEntry
 	 * @throws AssertionError
 	 */
 	protected static void assertEqualsBibtexEntry(final BibtexEntry expected, final BibtexEntry actual) throws AssertionError {
 		// BibtexPerson doesn't implement a custom equals method and is also final, so we can't create a comparableBibtexPerson
-		// The comparator sorts first after the natural Order of the first name and then after the second name
+		// The comparator sorts first after the natural Order of the first name and then after the second name.
 		final Comparator<BibtexPerson> bibtexPersonComparator = (o1, o2) -> {
 			if (ObjectUtils.equals(o1.getFirst(), o2.getFirst()) && ObjectUtils.equals(o1.getLast(), o2.getLast())) {
 				return 0;
@@ -289,13 +309,16 @@ public class RemoteTestAssert {
 				}
 			}
 		};
-
-		assertEquals("\nExpected entrytype was: " + expected.getEntryType() + "\nActual entrytype was:   " + actual.getEntryType(),
-						expected.getEntryType(),
-						actual.getEntryType());
-		assertEquals("\nExpected entrykey was: " + expected.getEntryType() + "\nActual entrykey was:   " + actual.getEntryType(),
-						expected.getEntryKey(),
-						actual.getEntryKey());
+		if (!org.apache.commons.lang.StringUtils.equals(expected.getEntryType(), actual.getEntryType())) {
+			throw new AssertionError("Bibtex-Entrytypes are not equal" +
+							"\nExpected: " + expected.getEntryType() +
+							"\nActual  : " + actual.getEntryType());
+		}
+		if (!org.apache.commons.lang.StringUtils.equals(expected.getEntryKey(), actual.getEntryKey())) {
+			throw new AssertionError("Bibtex-Keys are not equal" +
+							"\nExpected: " + expected.getEntryKey() +
+							"\nActual  : " + actual.getEntryKey());
+		}
 
 		final Map<String, BibtexAbstractValue> expectedBibTexValues = expected.getFields();
 		final Map<String, BibtexAbstractValue> actualBibTexValues = actual.getFields();
@@ -317,45 +340,82 @@ public class RemoteTestAssert {
 			final BibtexAbstractValue actualValue = actualBibTexValues.get(key);
 
 			if (expectedValue instanceof BibtexString && actualValue instanceof BibtexString) {
-				String expectedBibtexString = ((BibtexString) expectedValue).getContent().trim();
-				String actualBibtexString = ((BibtexString) actualValue).getContent().trim();
-
-				switch (key.toLowerCase(Locale.ROOT)) {
-					case "keywords":
-						//the order of keywords are for some sites randomized, so we can't compare only the string
-						final String[] expectedKeywords = expectedBibtexString.split("\\s*[,;]\\s*");
-						final String[] actualKeywords = actualBibtexString.split("\\s*[,;]\\s*");
-						checkAsymmetricDifferenceBothWays(Arrays.asList(expectedKeywords), Arrays.asList(actualKeywords), null);
-						break;
-					case "url":
-						//ignore the used protocol
-						expectedBibtexString = expectedBibtexString.replaceAll("http://", "https://");
-						actualBibtexString = actualBibtexString.replaceAll("http://", "https://");
-						//fall through
-					default:
-						//compares the string-representation of BibtexString
-						if (!expectedBibtexString.equals(actualBibtexString)) {
-							throw new AssertionError("Different values at tag: \"" + key +
-											"\"\nExpected: \"" + expectedBibtexString +
-											"\"\nActual:   \"" + actualBibtexString + "\"");
-						}
+				try {
+					assertEqualsBibtexString(key, (BibtexString) expectedValue, (BibtexString) actualValue);
+				} catch (MalformedURLException e) {
+					throw new RuntimeException(e);
 				}
 			} else if (expectedValue instanceof BibtexPersonList && actualValue instanceof BibtexPersonList) {
 				try {
 					// asymmetric difference both ways to get extra or missing BibtexPersons
-					checkAsymmetricDifferenceBothWays(((BibtexPersonList) expectedValue).getList(), ((BibtexPersonList) actualValue).getList(), bibtexPersonComparator);
+					checkAsymmetricDifferenceBothWays(
+									((BibtexPersonList) expectedValue).getList(),
+									((BibtexPersonList) actualValue).getList(),
+									bibtexPersonComparator);
 				} catch (AssertionError ae) {
-					throw new AssertionError("Different values at tag: \"" + key + "\"", ae);
+					throw new AssertionError("Different values at tag: " + key, ae);
 				}
 			} else {
-				// should never be thrown, except if a for me unknown BibtexAbstractValue-Class exists
+				// should never be thrown
 				throw new IllegalStateException(
 								"Expected classes were neither BibtexPersonList nor BibtexString\n" +
-												"The class of expected was: \"" + expectedValue.getClass() + "\"\n " +
-												"The class of actual was:   \"" + actualValue.getClass() + "\"");
+												"The class of expected was: " + expectedValue.getClass() + "\n " +
+												"The class of actual was  : " + actualValue.getClass());
 			}
 		}
 	}
+
+	/**
+	 * Compares two BibtexStrings. If the value is a URL the protocol and anchors are ignored. Additionally, the redirected URL is also accepted.
+	 * For the following keys applies
+	 * Keywords: ignores the order
+	 * Author, Editor: ignores the format and order
+	 * @param key
+	 * @param expected
+	 * @param actual
+	 * @throws AssertionError
+	 * @throws MalformedURLException
+	 */
+	protected static void assertEqualsBibtexString(final String key, final BibtexString expected, final BibtexString actual) throws AssertionError, MalformedURLException {
+		final String expectedString = expected.getContent().trim();
+		final String actualString = actual.getContent().trim();
+		if (expectedString.equals(actualString)) {
+			return;
+		}
+		if (UrlUtils.isUrl(expectedString) && UrlUtils.isUrl(actualString)) {
+			//ignore the used protocol and anchor
+			String expectedUrl = expectedString
+							.replaceAll("http://", "https://")
+							.replaceAll("#\\S*$", "");
+			String actualUrl = actualString
+							.replaceAll("http://", "https://")
+							.replaceAll("#\\S*$", "");
+			if (expectedUrl.equals(actualUrl)) {
+				return;
+			}
+
+			String redirectedUrl = WebUtils.getRedirectUrl(new URL(expectedUrl)).toString();
+			if (redirectedUrl == null) {
+				return;
+			}
+			redirectedUrl = redirectedUrl
+							.replaceAll("http://", "https://")
+							.replaceAll("#\\S*$", "");
+			if (redirectedUrl.equals(actualUrl)) {
+				return;
+			}
+		} else if (org.apache.commons.lang.StringUtils.containsIgnoreCase(key, "keyword")) {
+			//the order of keywords are for some sites randomized.
+			final String[] expectedKeywords = expectedString.split("\\s*[,;]\\s*");
+			final String[] actualKeywords = actualString.split("\\s*[,;]\\s*");
+			checkAsymmetricDifferenceBothWays(Arrays.asList(expectedKeywords), Arrays.asList(actualKeywords), null);
+			return;
+		}
+		throw new AssertionError("Different values at tag: " + key +
+						"\nExpected: " + expectedString +
+						"\nActual  : " + actualString);
+	}
+
 
 	/**
 	 * Caution: If a comparator is used the equals and compare methods could have different outputs
