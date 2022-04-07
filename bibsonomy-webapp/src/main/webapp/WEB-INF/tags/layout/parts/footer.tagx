@@ -33,7 +33,9 @@
 				<dd><a href="${relativeUrlGenerator.getUrlWithPath('gettingStarted')}"><fmt:message key="footer.gettingStarted"/></a></dd>
 				<dd><a href="${relativeUrlGenerator.getUrlWithPath('buttons')}"><fmt:message key="footer.buttons"/></a></dd>
 				<dd><a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}"><fmt:message key="help"/></a></dd>
-				<dd><a href="${relativeUrlGenerator.getHelpPage('FAQ', pageContext.response.locale)}"><fmt:message key="footer.faqs"/></a></dd>
+				<c:if test="${properties['footer.faq.enabled']}">
+					<dd><a href="${relativeUrlGenerator.getHelpPage('FAQ', pageContext.response.locale)}"><fmt:message key="footer.faqs"/></a></dd>
+				</c:if>
 
 				<div id="footer-section-developer">
 					<fmt:message key="footer.developer" var="developerFooter"/>
