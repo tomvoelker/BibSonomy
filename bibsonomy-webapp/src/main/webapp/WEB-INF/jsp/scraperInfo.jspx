@@ -50,7 +50,12 @@
             		 generic ones) please change and remove the siteURL methods
             		 from all generic scrapers -->
 	            <c:forEach var="scraper" items="${command.scraperList}">
-				<c:if test="${(scraper.supportedSiteURL) ne null and (scraper.supportedSiteName ne null)}">
+
+					<c:if test="${mtl.hasProperty(scraper, 'supportedSiteURL')}">
+						<li>!!</li>
+					</c:if>
+
+				<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
 	            	<li><a href="${scraper.supportedSiteURL}">${scraper.supportedSiteName}</a></li>
 	            </c:if>
             	</c:forEach>
@@ -67,7 +72,7 @@
             <dl class="scraper-list">
               <c:forEach var="scraper" items="${command.scraperList}">
               	<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
-              		<dt><a name="${scraper['class'].simpleName}">${scraper['class'].simpleName}</a>:</dt> 
+              		<dt><a name="${scraper['class'].simpleName}">${scraper['class'].simpleName}</a>:</dt>
     				<dd style="margin: 0.1em 0 0.5em 0">${scraper.info}</dd>
               	</c:if>
               </c:forEach>

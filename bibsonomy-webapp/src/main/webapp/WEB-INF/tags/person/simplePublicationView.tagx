@@ -39,7 +39,7 @@
 											referer="${referer}" enforceCommunityPost="${enforceCommunityPost}" />
 				</c:if>
 
-				<c:if test="${loginUser.role eq 'ADMIN' or post.user.name eq loggedinUserName}">
+				<c:if test="${loginUser.role eq 'ADMIN'}">
 					<buttons:deletePostButton
 							userLoggedIn="${true}"
 							post="${post}"
