@@ -49,7 +49,7 @@
 	<select id="getDeletedGoldStandardPublicationPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_gold_standard b
-		WHERE log_date >= #lastLogDate#
+		WHERE log_date > #lastLogDate#
 		AND content_type = 2
 	</select>
 
@@ -120,7 +120,7 @@
 	<select id="getDeletedGoldStandardBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
 		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_gold_standard b
-		WHERE log_date >= #lastLogDate#
+		WHERE log_date > #lastLogDate#
 		AND content_type = 1
 	</select>
 
@@ -161,7 +161,7 @@
 	<select id="getGoldStandardPublicationAllDeletedPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bibtex b
-		WHERE b.log_date >= #lastLogDate#
+		WHERE b.log_date > #lastLogDate#
 		LIMIT #limit#
 		OFFSET #offset#
 	</select>
@@ -171,7 +171,7 @@
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bibtex b
 		LEFT JOIN gold_standard gb USING(simhash1)
-		WHERE b.log_date >= #lastLogDate#
+		WHERE b.log_date > #lastLogDate#
 		AND b.new_content_id = 0
 		AND gb.title IS NULL <!-- only select publications without a community post -->
 	</select>
@@ -204,7 +204,7 @@
 		SELECT <include refid ="allGoldStandardNormalBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />, u.book_url
 		FROM log_bookmark b
 		LEFT JOIN urls u USING (book_url_hash)
-		WHERE b.log_date >= #lastLogDate#
+		WHERE b.log_date > #lastLogDate#
 		AND b.new_content_id = 0
 		LIMIT #limit#
 		OFFSET #offset#
@@ -216,7 +216,7 @@
 		FROM log_bookmark b
 		LEFT JOIN gold_standard gb ON (b.book_url_hash = gb.simhash1)
 		LEFT JOIN urls u USING (book_url_hash)
-		WHERE b.log_date >= #lastLogDate#
+		WHERE b.log_date > #lastLogDate#
 		AND b.new_content_id = 0
 		AND gb.title IS NULL <!-- only select bookmarks without a community post -->
 	</select>

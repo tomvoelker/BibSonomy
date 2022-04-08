@@ -19,7 +19,7 @@
 	<select id="getDeletedProjects" resultMap="SearchProjectCommon.simpleProject">
 		SELECT <include refid="projectColumns" />
 		FROM log_projects p
-		WHERE p.log_date >= #lastLogDate#
+		WHERE p.log_date > #lastLogDate#
 		AND p.new_id = -1
 	</select>
 
