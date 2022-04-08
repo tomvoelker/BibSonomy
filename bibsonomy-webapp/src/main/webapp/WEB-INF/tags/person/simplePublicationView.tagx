@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="buttons" fragment="true" />
 
 	<c:set var="loggedinUserName" value="${command.context.loginUser.name}" />
+	<c:set var="loginUser" value="${command.context.loginUser}" />
 
 	<c:choose>
 		<c:when test="${showButtons}">
@@ -37,7 +38,17 @@
 					<buttons:editPostButton post="${post}" resourceType="publication" buttonClasses="btn btn-default btn-xs"
 											referer="${referer}" enforceCommunityPost="${enforceCommunityPost}" />
 				</c:if>
-				<jsp:invoke fragment="buttons" />
+
+				<c:if test="${loginUser.role eq 'ADMIN' or post.user.name eq loggedinUserName}">
+					<buttons:deletePostButton
+							userLoggedIn="${true}"
+							post="${post}"
+							resourceType="publication"
+							loginUser="${loginUser}"
+							buttonClasses="btn btn-default btn-xs"
+					/>
+				</c:if>
+				<!--<jsp:invoke fragment="buttons" />-->
 			</div>
 		</c:if>
 
