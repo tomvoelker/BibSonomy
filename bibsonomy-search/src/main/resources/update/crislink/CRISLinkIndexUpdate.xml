@@ -24,7 +24,7 @@
 		FROM log_cris_links cl
 		LEFT JOIN projects p ON (cl.source_id = p.id)
 		LEFT JOIN log_projects lp ON (cl.source_id = lp.id)
-		WHERE cl.log_date >= #lastLogDate#
+		WHERE cl.log_date > #lastLogDate#
 		AND cl.source_type = #sourceType.id#
 		AND cl.target_type = #targetType.id#
 	</select>
