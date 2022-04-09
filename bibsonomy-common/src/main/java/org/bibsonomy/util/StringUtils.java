@@ -39,6 +39,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -2603,6 +2604,81 @@ public class StringUtils {
 		} else {
 			tokens.put(key, value);
 		}
+	}
+
+	public static String cyrillicToLatin(String message){
+		HashMap<String, String> translationTable = new HashMap<>();
+		translationTable.put("а", "a");
+		translationTable.put("б", "b");
+		translationTable.put("в", "v");
+		translationTable.put("г", "g");
+		translationTable.put("д", "d");
+		translationTable.put("е", "e");
+		translationTable.put("ё", "e");
+		translationTable.put("ж", "zh");
+		translationTable.put("з", "z");
+		translationTable.put("и", "i");
+		translationTable.put("й", "y");
+		translationTable.put("к", "k");
+		translationTable.put("л", "l");
+		translationTable.put("м", "m");
+		translationTable.put("н", "n");
+		translationTable.put("о", "o");
+		translationTable.put("п", "p");
+		translationTable.put("р", "r");
+		translationTable.put("с", "s");
+		translationTable.put("т", "t");
+		translationTable.put("y", "u");
+		translationTable.put("ф", "f");
+		translationTable.put("х", "h");
+		translationTable.put("ц", "ts");
+		translationTable.put("ч", "ch");
+		translationTable.put("ш", "sh");
+		translationTable.put("щ", "sch");
+		translationTable.put("ъ", "");
+		translationTable.put("ы", "i");
+		translationTable.put("ь", "");
+		translationTable.put("э", "e");
+		translationTable.put("ю", "ju");
+		translationTable.put("я", "ja");
+		translationTable.put("А", "A");
+		translationTable.put("Б", "B");
+		translationTable.put("Г", "G");
+		translationTable.put("Д", "D");
+		translationTable.put("Ё", "E");
+		translationTable.put("Ж", "Zh");
+		translationTable.put("З", "Z");
+		translationTable.put("И", "I");
+		translationTable.put("Й", "Y");
+		translationTable.put("Л", "L");
+		translationTable.put("Н", "N");
+		translationTable.put("О", "O");
+		translationTable.put("П", "P");
+		translationTable.put("Р", "R");
+		translationTable.put("С", "S");
+		translationTable.put("Т", "T");
+		translationTable.put("У", "U");
+		translationTable.put("Ф", "F");
+		translationTable.put("Х", "H");
+		translationTable.put("Ц", "Ts");
+		translationTable.put("Ч", "Ch");
+		translationTable.put("Ш", "Sh");
+		translationTable.put("Щ", "Sch");
+		translationTable.put("Ъ", "");
+		translationTable.put("Ы", "I");
+		translationTable.put("Ь", "");
+		translationTable.put("Ю", "Ju");
+		translationTable.put("Я", "Ja");
+		translationTable.put("М", "M");
+		translationTable.put("К", "K");
+
+		StringBuilder translatedMessage = new StringBuilder();
+		for (int i = 0; i < message.length(); i++) {
+			String charAt = translationTable.getOrDefault(String.valueOf(message.charAt(i)), String.valueOf(message.charAt(i)));
+			translatedMessage.append(charAt);
+
+		}
+		return translatedMessage.toString();
 	}
 
 

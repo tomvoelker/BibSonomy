@@ -66,6 +66,7 @@ import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerScraper;
 import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
 import org.bibsonomy.scraper.url.kde.copernicus.CopernicusScraper;
+import org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
 import org.bibsonomy.scraper.url.kde.digitalhumanities.UmanisticaDigitaleScraper;
@@ -297,7 +298,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new LccnLocScraper());
 		addScraper(new ElsevierScraper());
 		//HtmlMetaData should be scraped
-		//addScraper(new CyberleninkaScraper());
+		addScraper(new CyberleninkaScraper());
 		addScraper(new OxfordUniversityPressScraper());
 		addScraper(new ZenodoScraper());
 		addScraper(new BaseScraper());
