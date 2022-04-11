@@ -38,17 +38,7 @@
 					<buttons:editPostButton post="${post}" resourceType="publication" buttonClasses="btn btn-default btn-xs"
 											referer="${referer}" enforceCommunityPost="${enforceCommunityPost}" />
 				</c:if>
-
-				<c:if test="${loginUser.role eq 'ADMIN'}">
-					<buttons:deletePostButton
-							userLoggedIn="${true}"
-							post="${post}"
-							resourceType="publication"
-							loginUser="${loginUser}"
-							buttonClasses="btn btn-default btn-xs"
-					/>
-				</c:if>
-				<!--<jsp:invoke fragment="buttons" />-->
+				<jsp:invoke fragment="buttons" />
 			</div>
 		</c:if>
 

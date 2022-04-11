@@ -2,26 +2,21 @@
  * on load
  */
 $(function () {
-    initDeleteRelationButtons();
+    // TODO rework and activate again
     initAddRelationButtons();
 });
 
 
-function initDeleteRelationButtons() {
-    $('.delete-button').click(function () {
-        var e = $(this);
-        if (e.is('span')) {
-            e = e.parent();
-        }
-        var interhash = e.data('interhash');
-        var index = e.data('personindex');
-        var type = e.data('relationtype');
+function initDeleteRelationButtons(button) {
+        var interhash = $(button).data('interhash');
+        var index = $(button).data('personindex');
+        var type = $(button).data('relationtype');
+
         var form = $('#deletePersonResourceRelationForm');
         form.find('#interhash').val(interhash);
         form.find('#index').val(index);
         form.find('#type').val(type);
         $("#unlinkPublication").modal("toggle");
-    });
 }
 
 function initAddRelationButtons() {
