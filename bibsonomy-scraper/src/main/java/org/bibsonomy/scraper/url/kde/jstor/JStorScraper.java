@@ -81,7 +81,7 @@ public class JStorScraper extends AbstractUrlScraper {
 			}
 
 			String downloadUrl = DOWNLOAD_URL + m_doi.group(1);
-			String bibtex = WebUtils.getContentAsString(downloadUrl);
+			String bibtex = WebUtils.getContentAsString(downloadUrl).replaceAll("urldate = \\{.*?},\\n", "");
 
 			sc.setBibtexResult(bibtex);
 			return true;
