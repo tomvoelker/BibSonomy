@@ -76,6 +76,7 @@ import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
+import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
@@ -237,8 +238,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new OSAScraper());
 		addScraper(new PNASScraper());
 		addScraper(new JStorScraper());
-		//HtmlMetaData should be scraped
-		//addScraper(new EricScraper());
+
+		addScraper(new EricScraper());
 		addScraper(new IWAPonlineScraper());
 		addScraper(new JMLRScraper());
 		addScraper(new AclScraper());
