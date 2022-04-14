@@ -82,7 +82,6 @@ public class RemoteTestAssert {
 	 * Scrapes the specified url with the expectedScraperClass. Should the expectedScraperClass implement the UrlScraper-Interface then
 	 * the KDEUrlCompositeScraper will be used for scraping.
 	 * The returned result of the scraper will be tested against the contents of the provided result file
-	 *
 	 * @param url
 	 * @param expectedScraperClass the scraper, which should be set in the Scrapingcontext
 	 * @param resultFile
@@ -95,7 +94,6 @@ public class RemoteTestAssert {
 	 * Scrapes the specified url and the selection with the expectedScraperClass. Should the expectedScraperClass implement the UrlScraper-Interface then
 	 * the KDEUrlCompositeScraper will be used for scraping.
 	 * The returned result of the scraper will be tested against the contents of the provided result file
-	 *
 	 * @param url
 	 * @param selection
 	 * @param expectedScraperClass  the scraper, which should be set in the Scrapingcontext
@@ -106,7 +104,7 @@ public class RemoteTestAssert {
 		final String expectedReference;
 		final List<BibtexEntry> expectedBibtexEntries;
 		try {
-			expectedReference = normBibTeX(getExpectedBibTeX(resultFile));
+			expectedReference = getExpectedBibTeX(resultFile);
 			expectedBibtexEntries = parseAndExpandBibTeXs(expectedReference);
 		} catch (IOException | ExpansionException | ParseException | AssertionError e) {
 			throw new RuntimeException("Exception while getting and preparing test data", e);
@@ -115,10 +113,10 @@ public class RemoteTestAssert {
 		final String scraperResult;
 		final List<BibtexEntry> actualBibtexEntries;
 		try {
-			scraperResult = normBibTeX(getScraperResult(url, selection, expectedScraperClass));
+			scraperResult = getScraperResult(url, selection, expectedScraperClass);
 			actualBibtexEntries = parseAndExpandBibTeXs(scraperResult);
 		} catch (IOException | ScrapingException | ExpansionException | ParseException | AssertionError | InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Exception while scraping and preparing data to test", e);
+			throw new RuntimeException("Exception while scraping and preparing the scraping-result", e);
 		}
 		//comparing expected and actual bibtex
 		try {
@@ -144,7 +142,7 @@ public class RemoteTestAssert {
 				final String redirectedScraperResult;
 				final List<BibtexEntry> redirectedBibtexEntries;
 				try {
-					redirectedScraperResult = normBibTeX(getScraperResult(redirectUrl.toString(), selection, expectedScraperClass));
+					redirectedScraperResult = getScraperResult(redirectUrl.toString(), selection, expectedScraperClass);
 					redirectedBibtexEntries = parseAndExpandBibTeXs(redirectedScraperResult);
 				} catch (IOException | ParseException | ExpansionException | ScrapingException | AssertionError | InstantiationException | IllegalAccessException e) {
 					throw new RuntimeException("Exception while scraping and preparing data to test from redirected url " + redirectUrl, e);
@@ -165,32 +163,27 @@ public class RemoteTestAssert {
 	}
 
 	private static String getScraperResult(final String url, final String selection, final Class<? extends Scraper> expectedScraperClass) throws MalformedURLException, ScrapingException, InstantiationException, IllegalAccessException {
-		Scraper scraper;
-		//if the scraper is a URL-Scraper, we check if the correct Scraper in the KDEUrlCompositeScraper is used
-		if (UrlScraper.class.isAssignableFrom(expectedScraperClass)) {
-			scraper = new KDEUrlCompositeScraper();
-		} else {
-			scraper = createScraper(expectedScraperClass);
-		}
+		final Scraper scraper = createScraper(expectedScraperClass);
 		final ScrapingContext scrapingContext = createScraperContext(url, selection);
 		scraper.scrape(scrapingContext);
+
 		final String bibTeXResult = scrapingContext.getBibtexResult();
 
 		if (!present(bibTeXResult)) {
 			throw new AssertionError("Nothing scraped from " + url);
 		}
 
-		Scraper actualScraper = scrapingContext.getScraper();
-		if (actualScraper == null) {
+		Scraper usedScraper = scrapingContext.getScraper();
+		if (usedScraper == null) {
 			throw new AssertionError("No Scraper was set");
 		}
 
-		if (!actualScraper.getClass().equals(expectedScraperClass)) {
+		if (!usedScraper.getClass().equals(expectedScraperClass)) {
 			throw new AssertionError("Not the expected Scraper was used\n" +
 							"Expected: " + expectedScraperClass +
-							"\nActual  : " + actualScraper.getClass());
+							"\nActual  : " + usedScraper.getClass());
 		}
-		return bibTeXResult;
+		return normBibTeX(bibTeXResult);
 	}
 
 	protected static List<BibtexEntry> parseAndExpandBibTeXs(final String bibtex) throws IOException, ParseException, ExpansionException {
@@ -203,7 +196,7 @@ public class RemoteTestAssert {
 		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
 		//if no bibtex is in the bibtexFile then the bibtex was not valid
 		final boolean bibtexValid = bibtexFile.getEntries().stream().anyMatch(BibtexEntry.class::isInstance);
-		assertTrue("scraped BibTeX not valid", bibtexValid);
+		assertTrue("Scraped BibTeX not valid", bibtexValid);
 
 		final PersonListExpander personListExpander = new PersonListExpander(true, true);
 		final MacroReferenceExpander macroReferenceExpander = new MacroReferenceExpander(true, true, true);
@@ -224,14 +217,39 @@ public class RemoteTestAssert {
 		return normedLineBreaks.replaceAll("(?m)^[\\s&&[^\\n]]+|[\\s+&&[^\\n]]+$", "");
 	}
 
+	private static String normUrl(final String url){
+		return url.replaceAll("http://", "https://")
+						.replaceAll("#\\S*$", "")
+						.replaceAll("/$", "");
+	}
+
 	private static String getExpectedBibTeX(final String resultFile) throws IOException {
 		try (final InputStream in = RemoteTestAssert.class.getClassLoader().getResourceAsStream("org/bibsonomy/scraper/data/" + resultFile)) {
-			return StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(in, StringUtils.DEFAULT_CHARSET)));
+			return normBibTeX(StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(in, StringUtils.DEFAULT_CHARSET))));
 		}
 	}
 
-	private static Scraper createScraper(final Class<? extends Scraper> scraperClass) throws InstantiationException, IllegalAccessException {
-		return scraperClass.newInstance();
+	protected static Scraper createScraper(final Class<? extends Scraper> scraperClass) throws InstantiationException, IllegalAccessException {
+		final Scraper scraper;
+		//if the scraper is a URL-Scraper, we use the KDEUrlCompositeScraper and then check if the correct scraper was used in the composite
+		if (UrlScraper.class.isAssignableFrom(scraperClass)) {
+			scraper = new KDEUrlCompositeScraper();
+			//check if KDEUrlCompositeScraper contains the expected-scraper
+			Collection<Scraper> urlScrapers = scraper.getScraper();
+			boolean foundExpectedScraper = false;
+			for (Scraper urlScraper : urlScrapers) {
+				if (urlScraper.getClass().equals(scraperClass)){
+					foundExpectedScraper = true;
+					break;
+				}
+			}
+			if (!foundExpectedScraper){
+				throw new RuntimeException("KDEUrlCompositeScraper does not contain " + scraperClass.getSimpleName());
+			}
+		} else {
+			scraper = scraperClass.newInstance();
+		}
+		return scraper;
 	}
 
 	private static ScrapingContext createScraperContext(final String url, final String selection) throws MalformedURLException {
@@ -250,7 +268,6 @@ public class RemoteTestAssert {
 
 	/**
 	 * compares two lists of bibtexEntries. Each BibtexEntry in expected is compared to the BibtexEntry in actual with the same Bibtex-key
-	 *
 	 * @param expected List of different BibTeXEntries
 	 * @param actual   List of different BibTeXEntries
 	 * @throws AssertionError differences between the two lists
@@ -264,7 +281,7 @@ public class RemoteTestAssert {
 
 		//makes sure that for every expected BibTeX an actual BibTeX exists. BibTeXs are identified by their key
 		for (BibtexEntry expectedEntry : expected) {
-			assertTrue("actual String does not contain Bibtex with key " + expectedEntry.getEntryKey(),
+			assertTrue("Actual String does not contain Bibtex with key " + expectedEntry.getEntryKey(),
 							actual.stream().anyMatch(a -> a.getEntryKey().equals(expectedEntry.getEntryKey())));
 		}
 
@@ -384,25 +401,19 @@ public class RemoteTestAssert {
 		}
 		if (UrlUtils.isUrl(expectedString) && UrlUtils.isUrl(actualString)) {
 			//ignore the used protocol and anchor
-			String expectedUrl = expectedString
-							.replaceAll("http://", "https://")
-							.replaceAll("#\\S*$", "");
-			String actualUrl = actualString
-							.replaceAll("http://", "https://")
-							.replaceAll("#\\S*$", "");
+			String expectedUrl = normUrl(expectedString);
+			String actualUrl = normUrl(actualString);
+
 			if (expectedUrl.equals(actualUrl)) {
 				return;
 			}
 
-			String redirectedUrl = WebUtils.getRedirectUrl(new URL(expectedUrl)).toString();
-			if (redirectedUrl == null) {
-				return;
-			}
-			redirectedUrl = redirectedUrl
-							.replaceAll("http://", "https://")
-							.replaceAll("#\\S*$", "");
-			if (redirectedUrl.equals(actualUrl)) {
-				return;
+			URL redirectedUrl = WebUtils.getRedirectUrl(new URL(expectedUrl));
+			if (redirectedUrl != null) {
+				String redirectedUrlStr = normUrl(redirectedUrl.toString());
+				if (redirectedUrlStr.equals(actualUrl)) {
+					return;
+				}
 			}
 		} else if (org.apache.commons.lang.StringUtils.containsIgnoreCase(key, "keyword")) {
 			//the order of keywords are for some sites randomized.
@@ -416,12 +427,10 @@ public class RemoteTestAssert {
 						"\nActual  : " + actualString);
 	}
 
-
 	/**
 	 * Caution: If a comparator is used the equals and compare methods could have different outputs
 	 * Converts both collections to sets and makes the asymmetric difference both ways.
 	 * Should the collections contain the same elements (duplicates are ignored) then no error is thrown.
-	 *
 	 * @param expected the expected collection
 	 * @param actual   the actual collection
 	 * @param comp     the comparator, which should be used, if equals and hashcode should not be used

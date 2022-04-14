@@ -33,8 +33,18 @@ package org.bibsonomy.scraper.junit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import bibtex.dom.BibtexEntry;
+import bibtex.dom.BibtexFile;
+import bibtex.dom.BibtexString;
 import bibtex.expansions.ExpansionException;
 import bibtex.parser.ParseException;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.KDEUrlCompositeScraper;
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.BibtexScraper;
+import org.bibsonomy.scraper.url.kde.aaai.AAAIScraper;
 import org.bibsonomy.util.StringUtils;
 import org.junit.Test;
 
@@ -42,8 +52,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class RemoteTestAssertTest {
 	/*
@@ -306,7 +320,7 @@ public class RemoteTestAssertTest {
 	public void compareMultipleBibtexWithDifferentBibtex() throws IOException, ExpansionException, ParseException {
 		List<BibtexEntry> expected = getTestData("multiplebibtex/TestDataBaseLine.bib");
 		List<BibtexEntry> actual = getTestData("multiplebibtex/TestDataDifferentBibtex.bib");
-		String expectedErrorMessage = "actual String does not contain Bibtex with key kluger1996effects";
+		String expectedErrorMessage = "Actual String does not contain Bibtex with key kluger1996effects";
 
 		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexEntryList(expected, actual));
 		assertEquals(expectedErrorMessage, ae.getMessage());
@@ -323,7 +337,152 @@ public class RemoteTestAssertTest {
 		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexEntryList(expected, actual));
 		assertEquals(expectedErrorMessage, ae.getMessage());
 	}
+	/*
+	Tests for assertEqualsBibtexString()
+	 */
+	@Test
+	public void compareEqualBibtexStrings() throws MalformedURLException {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("6757gkhjlsbafkasgh%/%/(&)\t\n");
+		BibtexString actual = bibtexFile.makeString("6757gkhjlsbafkasgh%/%/(&)\t\n");
+		RemoteTestAssert.assertEqualsBibtexString("title", expected, actual);
+	}
 
+	@Test
+	public void compareDifferentBibtexStrings() {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("675gkhjlsbafkasgh%/%/(&)\t\n");
+		BibtexString actual = bibtexFile.makeString("6757gkhjlsbafkasgh%/%/(&)\t\n");
+		String expectedErrorMessage = "Different values at tag: title\n" +
+						"Expected: 675gkhjlsbafkasgh%/%/(&)\n" +
+						"Actual  : 6757gkhjlsbafkasgh%/%/(&)";
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexString("title", expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
+	@Test
+	public void compareEqualBibtexStringUrls() throws MalformedURLException {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("https://www.bibsonomy.org/popular");
+		BibtexString actual = bibtexFile.makeString("https://www.bibsonomy.org/popular");
+		RemoteTestAssert.assertEqualsBibtexString("title", expected, actual);
+	}
+
+	@Test
+	public void compareEqualBibtexStringUrlsButDifferentProtocolAndAnchor() throws MalformedURLException {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("https://www.bibsonomy.org");
+		BibtexString actual = bibtexFile.makeString("http://www.bibsonomy.org/#bookmarks");
+		RemoteTestAssert.assertEqualsBibtexString("title", expected, actual);
+	}
+
+	@Test
+	public void compareDifferentBibtexStringUrlsButEqualRedirectedUrl() throws MalformedURLException {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("https://rb.gy/ra9zii");
+		BibtexString actual = bibtexFile.makeString("https://www.bibsonomy.org/");
+		RemoteTestAssert.assertEqualsBibtexString("title", expected, actual);
+	}
+
+	@Test
+	public void compareDifferentBibtexStringUrls() {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("https://www.bibsonomy.org/popular");
+		BibtexString actual = bibtexFile.makeString("https://www.bibsonomy.org/");
+		String expectedErrorMessage = "Different values at tag: title\n" +
+						"Expected: https://www.bibsonomy.org/popular\n" +
+						"Actual  : https://www.bibsonomy.org/";
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexString("title", expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
+	@Test
+	public void compareEqualBibtexStringKeywords() throws MalformedURLException {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("bib, sono, my");
+		BibtexString actual = bibtexFile.makeString("bib, my, sono");
+		String expectedErrorMessage = "Different values at tag: title\n" +
+						"Expected: https://www.bibsonomy.org/popular\n" +
+						"Actual  : https://www.bibsonomy.org/";
+		RemoteTestAssert.assertEqualsBibtexString("keywords", expected, actual);
+	}
+
+	@Test
+	public void compareDifferentBibtexStringKeywords() {
+		BibtexFile bibtexFile = new BibtexFile();
+		BibtexString expected = bibtexFile.makeString("bib, sono, my");
+		BibtexString actual = bibtexFile.makeString("bib, sono, me");
+		String expectedErrorMessage = "\n" +
+						"Elements not contained in expected Set: [me]\n" +
+						"Elements not contained in actual Set:   [my]";
+		AssertionError ae = assertThrows(AssertionError.class, () -> RemoteTestAssert.assertEqualsBibtexString("keywords", expected, actual));
+		assertEquals(expectedErrorMessage, ae.getMessage());
+	}
+
+	/*
+	Tests for createScraper()
+	 */
+	@Test
+	public void checkUrlScraperNotInKDEUrlCompositeScraper() throws InstantiationException, IllegalAccessException {
+		String expectedErrorMessage = "KDEUrlCompositeScraper does not contain TestScraper";
+		class TestScraper implements UrlScraper {
+
+			@Override
+			public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
+				return false;
+			}
+
+			@Override
+			public String getInfo() {
+				return null;
+			}
+
+			@Override
+			public Collection<Scraper> getScraper() {
+				return null;
+			}
+
+			@Override
+			public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+				return false;
+			}
+
+			@Override
+			public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+				return null;
+			}
+
+			@Override
+			public boolean supportsUrl(URL url) {
+				return false;
+			}
+
+			@Override
+			public String getSupportedSiteName() {
+				return null;
+			}
+
+			@Override
+			public String getSupportedSiteURL() {
+				return null;
+			}
+		}
+
+		RuntimeException re = assertThrows(RuntimeException.class, () -> RemoteTestAssert.createScraper(TestScraper.class));
+		assertEquals(expectedErrorMessage, re.getMessage());
+	}
+
+	@Test
+	public void checkCorrectScraperCreatedForUrlScraper() throws InstantiationException, IllegalAccessException {
+		Scraper scraper = RemoteTestAssert.createScraper(AAAIScraper.class);
+		assertEquals(KDEUrlCompositeScraper.class, scraper.getClass());
+	}
+
+	@Test
+	public void checkCorrectScraperCreatedForNotUrlScraper() throws InstantiationException, IllegalAccessException {
+		Scraper scraper = RemoteTestAssert.createScraper(BibtexScraper.class);
+		assertEquals(BibtexScraper.class, scraper.getClass());
+	}
 
 	private List<BibtexEntry> getTestData(String path) throws IOException, ExpansionException, ParseException {
 		try (final InputStream in = RemoteTestAssertTest.class.getClassLoader().getResourceAsStream("org/bibsonomy/scraper/junit/" + path)) {
