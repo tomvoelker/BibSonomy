@@ -31,12 +31,16 @@ package org.bibsonomy.scraper.converter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -61,19 +65,19 @@ public class OrcidToBibtexConverter implements BibtexConverter{
 
         // some general field mappings
         this.fieldMap = new HashMap<>();
-        this.fieldMap.put("abstract", "abstract");
+        this.fieldMap.put("url", "url");
+
         this.fieldMap.put("pages", "pages");
         this.fieldMap.put("page", "pages");
         this.fieldMap.put("publisher-place", "address");
         this.fieldMap.put("event-place", "location");
-        this.fieldMap.put("url", "url");
-        this.fieldMap.put("website", "url");
         this.fieldMap.put("keyword", "keywords");
     }
 
     public String toBibtex(JSONObject citation) {
-        if (this.checkForBibtexSource(citation)) {
-            return this.extractBibtexSource(citation);
+        String bibtexSource = this.extractBibtexSource(citation);
+        if (present(bibtexSource)) {
+            return bibtexSource;
         }
 
         final List<Pair<String, String>> persons = extractPersons(citation);
@@ -82,9 +86,7 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         final String editors = filterPersonsByRole(persons, "editor");
 
         final JSONObject pubDateObj = (JSONObject) citation.get("publication-date");
-        final String year = extractYear(pubDateObj);
-        final String month = extractMonth(pubDateObj);
-        final String day = extractDay(pubDateObj);
+        String year = extractYear(pubDateObj);
 
         final String citationKey = getBibtexKey(authors, editors, year);
         final String entrytype = getEntrytype(citation);
@@ -97,7 +99,12 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             builder.append(getBibTeX("title", title));
         }
 
-        final String journal = extractJournal(citation);
+        final String workAbstract = extractAbstract(citation);
+        if (present(workAbstract)) {
+            builder.append(getBibTeX("abstract", workAbstract));
+        }
+
+        final String journal = this.getFieldIfPresent(citation, "journal-title");
         if (present(journal)) {
             builder.append(getBibTeX("journal", journal));
         }
@@ -110,10 +117,12 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             builder.append(getBibTeX("editor", editors));
         }
 
-        if (present(year)) {
-            builder.append(getBibTeX("year", year));
+        builder.append(getBibTeX("year", year));
+        if (present(pubDateObj)) {
+            String month = this.getFieldIfPresent(pubDateObj, "month");
             if (present(month)) {
                 builder.append(getBibTeX("month", month));
+                String day = this.getFieldIfPresent(pubDateObj, "day");
                 if (present(day)) {
                     builder.append(getBibTeX("day", day));
                 }
@@ -133,6 +142,12 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         return builder.toString();
     }
 
+    /**
+     * Extracts further BibTeX attributes and applies it to the BibTeX builder
+     * @param citation
+     * @param mapping
+     * @param builder
+     */
     private void applyMapping(final JSONObject citation, final Map<String, String> mapping, final StringBuilder builder) {
         mapping.forEach((key, field) -> {
             if (citation.containsKey(key)) {
@@ -142,6 +157,11 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         });
     }
 
+    /**
+     * Extract external IDs of the ORCID works object. For example: ISBN, ISSN, etc.
+     * @param externalIds
+     * @param builder
+     */
     private void applyExternalIds(final JSONArray externalIds, final StringBuilder builder) {
         externalIds.forEach(item -> {
             JSONObject extIdObj = (JSONObject) item;
@@ -151,6 +171,13 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         });
     }
 
+    /**
+     * Generate a bibtex key with the authors, editors and year of the work.
+     * @param authors
+     * @param editors
+     * @param year
+     * @return
+     */
     private String getBibtexKey(String authors, String editors, String year) {
         final String name;
         if (authors.length() > 0) {
@@ -164,6 +191,11 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         return key.replaceAll("\\s+","");
     }
 
+    /**
+     * Extracts the entrytype of the ORCID Works object.
+     * @param obj
+     * @return the entrytype
+     */
     private String getEntrytype(JSONObject obj) {
         String type = "";
         if (obj.containsKey("type")) {
@@ -173,6 +205,11 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         return this.entrytypeMap.getOrDefault(type, "misc");
     }
 
+    /**
+     * Extracts the title from the ORCID Works object.
+     * @param obj
+     * @return the title
+     */
     private String extractTitle(JSONObject obj) {
         if (obj.containsKey("title")) {
             JSONObject titleGroup = (JSONObject) obj.get("title");
@@ -181,22 +218,42 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         return "";
     }
 
-    private String extractJournal(JSONObject obj) {
-        return this.getFieldIfPresent(obj, "journal-title");
+    /**
+     * Extracts the abstract from the ORCID Works object.
+     * @param obj
+     * @return the abstract
+     */
+    private String extractAbstract(JSONObject obj) {
+        if (containsAndPresent(obj, "short-description")) {
+            return (String) obj.get("short-description");
+        }
+        return "";
     }
 
+    /**
+     * Extracts the year of ORCID Works object.
+     * ORCID has works without year as well, if it's not present we simply set the year to unknown.
+     * @param pubDateObj
+     * @return the year
+     */
     private String extractYear(JSONObject pubDateObj) {
-        return this.getFieldIfPresent(pubDateObj, "year");
+        if (present(pubDateObj)) {
+            String year = this.getFieldIfPresent(pubDateObj, "year");
+            if (present(year)) {
+                return year;
+            }
+        }
+
+        return "unknown";
     }
 
-    private String extractMonth(JSONObject pubDateObj) {
-        return this.getFieldIfPresent(pubDateObj, "month");
-    }
 
-    private String extractDay(JSONObject pubDateObj) {
-        return this.getFieldIfPresent(pubDateObj, "day");
-    }
-
+    /**
+     * Filters the list of pair of name and role by the given role.
+     * @param persons
+     * @param role
+     * @return the filtered list for the role
+     */
     private String filterPersonsByRole(List<Pair<String, String>> persons, String role) {
         List<String> result = new ArrayList<>();
         for (Pair<String, String> person : persons) {
@@ -219,6 +276,11 @@ public class OrcidToBibtexConverter implements BibtexConverter{
 
     }
 
+    /**
+     * Extracts all the persons and contributers of the ORCID Works object.
+     * @param obj
+     * @return the person list
+     */
     private List<Pair<String, String>> extractPersons(JSONObject obj) {
         List<Pair<String, String>> persons = new ArrayList<>();
 
@@ -232,6 +294,11 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         return persons;
     }
 
+    /**
+     * Extracts the person name and role of the ORCID person object.
+     * @param personObj
+     * @return the person with role
+     */
     private Pair<String, String> getPersonWithRole(JSONObject personObj) {
         String name = this.getValue((JSONObject) personObj.get("credit-name"));
         String role = "author";
@@ -257,8 +324,14 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         }
     }
 
+    /**
+     * Get the value of the field, if present. The method is necessary due to ORCID object having a nested value field.
+     * @param obj
+     * @param field
+     * @return the field value
+     */
     private String getFieldIfPresent(JSONObject obj, String field) {
-        if (obj.containsKey(field)) {
+        if (containsAndPresent(obj, field)) {
             return this.getValue((JSONObject) obj.get(field));
         }
         return "";
@@ -271,24 +344,45 @@ public class OrcidToBibtexConverter implements BibtexConverter{
         return "";
     }
 
-    private boolean checkForBibtexSource(JSONObject obj) {
-        if (obj.containsKey("citation")) {
+    /**
+     * Extract the valid BibTeX source of the ORCID Works object, if available.
+     * @param obj
+     * @return the BibTeX source
+     */
+    private String extractBibtexSource(JSONObject obj) {
+        String bibtexSource = "";
+        if (containsAndPresent(obj, "citation")) {
             JSONObject citationObj = (JSONObject) obj.get("citation");
-            if (present(citationObj) && "bibtex".equals(citationObj.get("citation-type"))) {
-                return true;
+            if (containsAndPresent(citationObj, "citation-type") && "bibtex".equals(citationObj.get("citation-type"))) {
+                bibtexSource = (String) citationObj.get("citation-value");
+
+                // Currently we have no option to validate bibtex strings outside of attempting to parse it
+                final PostBibTeXParser parser = new PostBibTeXParser();
+                parser.setDelimiter(null);
+                parser.setWhitespace("_");
+                parser.setTryParseAll(true);
+                try {
+                    parser.parseBibTeXPost(bibtexSource);
+                } catch (bibtex.parser.ParseException | IOException e) {
+                    return "";
+                }
+                if (present(parser.getCaughtExceptions()) || present(parser.getWarnings())) {
+                    return "";
+                }
             }
         }
-        return false;
+
+        return bibtexSource;
     }
 
-    private String extractBibtexSource(JSONObject obj) {
-        if (obj.containsKey("citation")) {
-            JSONObject citationObj = (JSONObject) obj.get("citation");
-            if ("bibtex".equals(citationObj.get("citation-type"))) {
-                return (String) citationObj.get("citation-value");
-            }
-        }
-        return "";
+    /**
+     * Check, if the JSON object has the key and the assigned value is not null.
+     * @param obj
+     * @param key
+     * @return true, if key and value present
+     */
+    private boolean containsAndPresent(JSONObject obj, String key) {
+        return obj.containsKey(key) && present(obj.get(key));
     }
 
     private String getBibTeX(final String key, final CharSequence value) {
