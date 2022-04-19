@@ -91,9 +91,7 @@
 
 			</div>
 			<div class="row person-buttons">
-				<div class="col-md-12">
-					<jsp:invoke fragment="buttons" />
-				</div>
+				<jsp:invoke fragment="buttons" />
 			</div>
 		</div>
 	</div>

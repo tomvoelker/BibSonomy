@@ -693,6 +693,10 @@ div#sidebar {
 }
 
 .sidebar {
+
+  	margin: 0 -15px 0 15px;
+  	padding: 20px 15px;
+
 	.groupDescription {
 		margin-top: 5px;
 	}
@@ -1881,8 +1885,8 @@ ul.prefix-list {
 			}
 
 			.ptitle {
-				height: auto;
-				max-height: 38px;
+				line-height: 1.2em;
+				height: 2.4em;
 				white-space: normal;
 			}
 
@@ -1894,12 +1898,21 @@ ul.prefix-list {
 		}
 	}
 
-	.post:nth-child(4n + 1), li:nth-child(4n + 2) {
+	.post:nth-child(4n + 1), .post:nth-child(4n + 2) {
 	  background-color: #eee;
-	  border-radius: 3px;
 	}
-	li:nth-child(4n + 3), li:nth-child(4n + 4) {
+	.post:nth-child(4n + 3), .post:nth-child(4n + 4) {
 	  background-color: #FFFFFF;
+	}
+
+	.post:nth-child(4n + 1) {
+	  border-bottom-left-radius: 3px;
+	  border-top-left-radius: 3px;
+	}
+
+	.post:nth-child(4n + 2) {
+	  border-bottom-right-radius: 3px;
+	  border-top-right-radius: 3px;
 	}
 
 	.pmeta {
