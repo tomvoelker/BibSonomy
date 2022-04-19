@@ -42,7 +42,7 @@
 					</button>
 				</c:when>
 				<c:otherwise>
-					<c:if test="${command.context.loginUser.claimedPerson.personId eq personId}">
+					<c:if test="${command.context.loginUser.claimedPerson.personId eq personId or loginUser.role ne 'ADMIN'}">
 						<button type="button" onclick="initDeleteRelationButtons(this)" class="btn btn-default btn-xs delete-button"
 								data-interhash="${post.resource.interHash}"
 								data-personindex="${relation.personIndex}"
