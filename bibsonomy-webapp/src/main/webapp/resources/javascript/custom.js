@@ -294,9 +294,9 @@ $(function() {
 		var modalId = $(this).data('target');
 		var oldTags = $(modalId).find('input.edit-tagsinput').tagsinput('items').slice();
 		$(modalId).on('hidden.bs.modal', function () {
-			var tagField = $(this).find('input.edit-tagsinput');
-			var allTags = $(tagField).tagsinput('items');
 			if (!savedTags) {
+				var tagField = $(this).find('input.edit-tagsinput');
+				var allTags = $(tagField).tagsinput('items');
 				// remove tags
 				$(allTags).each(function (i, tag) {
 					if ($.inArray(tag, oldTags) == -1) {
