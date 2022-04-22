@@ -47,6 +47,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author Mohammed Abed
  */
+//catalog.loc.gov is protected by cloudflare
 public class LccnLocScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Library of Congress";

@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 /**
  * @author wla
  */
+//Site is protected by cloudflare
 public class SageJournalScraper extends LiteratumScraper {
 
 	private static final String SITE_NAME = "Sage Journal";
