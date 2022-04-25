@@ -26,6 +26,7 @@
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostRating" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
@@ -65,9 +66,12 @@
 		<c:set var="headlineInBody" value="${false}" />
 	</c:if>
 
-
 	<c:if test="${empty hidePostMenu}">
 		<c:set var="hidePostMenu" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty hidePostRating}">
+		<c:set var="hidePostRating" value="${false}" />
 	</c:if>
 
 	<c:if test="${empty onlyLinkAuthorsWithPersons}">
@@ -89,6 +93,7 @@
 		headlineInBody="${headlineInBody}"
 		hideCounts="${hideCounts}"
 		hidePostMenu="${hidePostMenu}"
+		hidePostRating="${hidePostRating}"
 		hideHeadline="${hideHeadline}"
 		addAsFirstItem="${addAsFirstItem}"
 		addAsLastItem="${addAsLastItem}">
@@ -114,7 +119,7 @@
 							<jsp:invoke fragment="customPageOptions"/>
 						</c:when>
 						<c:otherwise>
-							<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+							<div class="btn-group dropdown-align-right all-resources-menu">
 								<rc:actions resourceType="bibtex"
 									sortPage="${command.sortPage}"
 									sortPageOrder="${command.sortPageOrder}"

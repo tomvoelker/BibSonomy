@@ -10,14 +10,23 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="showUser" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
-	
+
+	<c:if test="${showUser}">
+		<li>
+			<a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}" title="user">
+				<fontawesome:icon icon="user" fixedWidth="${true}" spaceAfter="5" />
+				<c:out value="${loginUserName}" />
+			</a>
+		</li>
+	</c:if>
 	<li>
 		<fmt:message var="titleInbox" key="navi.inbox" />
-		<a href="/inbox" title="${titleInbox}">
-			<span class="fa fa-inbox"><!-- KEEP ME --></span>
+		<a href="${relativeUrlGenerator.getUrlWithPath('inbox')}" title="${titleInbox}">
+			<fontawesome:icon icon="inbox" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.inbox" />
 			<c:if test="${loginUser.inbox.numPosts == 0}">
 				<c:set var="inboxCounterStyle" value="display: none;" />
@@ -27,8 +36,8 @@
 	</li>
 	<li>
 		<fmt:message var="titleClipboard" key="navi.clipboard"/>
-		<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
-			<span class="fa fa-folder-open"><!--  --></span>
+		<a href="${relativeUrlGenerator.getClipboardUrl()}" title="${titleClipboard}"><!-- empty -->
+			<fontawesome:icon icon="folder-open" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.clipboard" />
 			<c:if test="${loginUser.clipboard.numPosts == 0}">
 				<c:set var="clipboardCounterStyle" value="display: none;" />
@@ -38,23 +47,23 @@
 	</li>
 	<li>
 		<fmt:message var="friends" key="navi.friends" />
-		<a href="/friendsoverview" title="friends">
-			<span class="fa fa-user"><!--  --></span>
+		<a href="${relativeUrlGenerator.getUrlWithPath('friendsoverview')}" title="friends">
+			<fontawesome:icon icon="users" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.friends"/>
 		</a>
 	</li>
 	<li> 
 		<fmt:message var="editTags" key="navi.editTags" />
-		<a href="/editTags" title="${editTags}">
-			<span class="fa fa-tag"><!-- KEEP ME --></span>
+		<a href="${relativeUrlGenerator.getUrlWithPath('editTags')}" title="${editTags}">
+			<fontawesome:icon icon="tag" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.editTags" />
 		</a>
 	</li>
 	
 	<!-- settings -->
 	<li>
-		<a href="/settings">
-			<span class="fa fa-wrench"><!-- KEEP ME --></span>
+		<a href="${relativeUrlGenerator.getSettingsUrl()}">
+			<fontawesome:icon icon="wrench" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.settings"/>
 		</a>
 	</li>
@@ -65,15 +74,14 @@
 	<li>
 		<fmt:message var="titleBlog" key="navi.blog" />
 		<a href="${properties['project.blog']}" title="${titleBlog}">
-			<span class="fa fa-book"><!-- KEEP ME --></span>
+			<fontawesome:icon icon="book" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.blog" />
 		</a>
 	</li>
 	<li>
 		<fmt:message var="titleHelp" key="navi.help"/>
-		<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-		<a href="${helpLangUrl}" title="${titleHelp}">
-			<span class="fa fa-question-circle"><!-- KEEP ME --></span>
+		<a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}" title="${titleHelp}">
+			<fontawesome:icon icon="question-circle" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.help" />
 		</a>
 	</li>
@@ -81,8 +89,8 @@
 	<!-- divider -->
 	<li class="divider"><!--  --></li>
 	<li>
-		<a href="/logout">
-			<span class="fa fa-power-off"><!-- KEEP ME --></span>
+		<a href="${relativeUrlGenerator.getLogoutUrl()}">
+			<fontawesome:icon icon="power-off" fixedWidth="${true}" spaceAfter="5" />
 			<fmt:message key="navi.logout"/>
 		</a>
 	</li>

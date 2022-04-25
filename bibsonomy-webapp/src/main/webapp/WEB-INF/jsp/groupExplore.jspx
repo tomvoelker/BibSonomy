@@ -75,19 +75,21 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12">
-								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
-									<rc:actions resourceType="bibtex"
-												sortPage="pubdate"
-												sortPageOrder="desc"
-												entriesPerPage="20"
-												showBookmark="${false}"
-												showPublication="${true}"
-												showInboxActions="${false}"
-												isClipboard="${false}"
-												disableFiltering="${true}"
-												ignoreSortLinks="${true}"
-												overridePath="/group/${groupName}" />
-								</div>
+								<h3 class="list-headline">
+									<div class="btn-group dropdown-align-right all-resources-menu">
+										<rc:actions resourceType="bibtex"
+													sortPage="pubdate"
+													sortPageOrder="desc"
+													entriesPerPage="20"
+													showBookmark="${false}"
+													showPublication="${true}"
+													showInboxActions="${false}"
+													isClipboard="${false}"
+													disableFiltering="${true}"
+													ignoreSortLinks="${true}"
+													overridePath="/group/${groupName}" />
+									</div>
+								</h3>
 							</div>
 						</div>
 						<div class="row">

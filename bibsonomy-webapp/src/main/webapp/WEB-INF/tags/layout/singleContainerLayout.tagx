@@ -91,8 +91,7 @@
 						<c:out value=" "/>
 						<fmt:message key="system.termsOfUse"/>
 						<c:out value=" - "/>
-						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-						<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
+						<fmt:message key="navi.about"/>
 						<p>&amp;nbsp;</p>
 					</div>
 				</div> <!--  /.container -->

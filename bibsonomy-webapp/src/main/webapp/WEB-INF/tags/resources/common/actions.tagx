@@ -92,8 +92,7 @@
 				<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" sortPageOrder="${sortPageOrder}" isBibtex="${isPublication}" ignoreLinks="${ignoreSortLinks}" />
 				<li class="divider"><!-- keep me --></li>
 				<c:if test="${isPublication}">
-					<fmt:message var="helpLink" key="post.meta.helplink"/>
-					<li><a href="${helpLink}"><fmt:message key="post.meta.advanced"/>...</a></li>
+					<li><a href="${relativeUrlGenerator.getHelpPage('SortingPublications', pageContext.response.locale)}"><fmt:message key="post.meta.advanced"/>...</a></li>
 				</c:if>
 			</ul>
 		</div>

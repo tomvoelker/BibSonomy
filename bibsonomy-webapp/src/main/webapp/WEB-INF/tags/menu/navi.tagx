@@ -15,6 +15,7 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
+	<c:set var="userPerson" value="${loginUser.claimedPerson}" />
 
 	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
 	<c:set var="showCRISNavBar" value="${crisSystem and not userLoggedIn}"/>
@@ -46,7 +47,7 @@
 		| Home
 		+-->
 	<c:set target="${navElements}" property="home">
-		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
+		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fontawesome:icon icon="home" fixedWidth="${true}"/></a></li>
 	</c:set>
 
 	<!--+
@@ -145,7 +146,7 @@
 						</c:forEach>
 						<c:if test="${!loginUser.spammer}">
 							<li class="divider"><!-- keep me --></li>
-							<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+							<li><a href="${relativeUrlGenerator.getUrlWithPath('grouprequest')}"><fmt:message key="navi.group.groupRequest" /></a></li>
 						</c:if>
 					</ul>
 				</li>
@@ -159,7 +160,7 @@
 								<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
 								<c:if test="${!loginUser.spammer}">
 									<li class="divider"><!-- keep me --></li>
-									<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+									<li><a href="${relativeUrlGenerator.getUrlWithPath('grouprequest')}"><fmt:message key="navi.group.groupRequest" /></a></li>
 								</c:if>
 							</ul>
 						</li>
@@ -295,11 +296,11 @@
 			<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
 				<ul class="dropdown-menu">
-					<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
-					<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
-					<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
-					<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
-					<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('popular')}"><fmt:message key="navi.posts"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('tags')}"><fmt:message key="navi.tags"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('authors')}"><fmt:message key="navi.authors"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('concepts')}"><fmt:message key="navi.relations"/></a></li>
+					<li><a href="${relativeUrlGenerator.getUrlWithPath('discussed')}"><fmt:message key="navi.discussions"/></a></li>
 				</ul>
 			</li>
 		</c:if>
@@ -352,7 +353,7 @@
 				<!-- placeholder for user menu -->
 				<button id="menu-user-icon-toggle-button" style="border:none" type="button" class="navbar-toggle btn btn-default navbar-btn" data-toggle="collapse" data-target="#bs-navbar-user-collapse">
 					<span class="sr-only"><fmt:message key="navi.navigation.toggle"/></span>
-					<span class="fa fa-user"><!-- KEEP ME --></span>
+					<fontawesome:icon icon="user"/>
 					<b id="caret-with-margin" class="caret">&amp;nbsp;</b>
 				</button>
 				<c:if test="${not empty loginUserName}">
@@ -390,10 +391,23 @@
 				<ul class="nav navbar-nav navbar-right hidden-xs">
 					<c:choose>
 						<c:when test="${not empty loginUserName}" >
-							<li class="visible-md visible-lg"><user:username user="${loginUser}" /></li>
+							<c:choose>
+								<c:when test="${not empty userPerson}">
+									<li class="visible-md visible-lg">
+										<a href="${relativeUrlGenerator.getPersonUrl(userPerson.personId)}">
+											<fontawesome:icon icon="link" spaceAfter="5"/>
+											<c:out value="${userPerson.mainName}" />
+										</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="visible-md visible-lg"><user:username user="${loginUser}" /></li>
+								</c:otherwise>
+							</c:choose>
+
 							<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<span class="fa fa-user"><!-- KEEP ME --></span>
+									<fontawesome:icon icon="user"/>
 									<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) == 0}">
 										<c:set var="counterStyle" value="display: none;" />
 									</c:if>
@@ -402,7 +416,7 @@
 									</b>
 									<b class="caret">&amp;nbsp;</b></a>
 								<ul class="dropdown-menu items-with-icons">
-									<menu:userDropdown loginUser="${loginUser}" />
+									<menu:userDropdown loginUser="${loginUser}" showUser="${not empty userPerson}"/>
 								</ul>
 							</li>
 						</c:when>
@@ -410,6 +424,13 @@
 							<menu:registerSignUpButtons />
 						</c:otherwise>
 					</c:choose>
+
+					<!--
+					 | Help
+					 -->
+					<li class="${activeTab eq 'help' ? 'active' : ''}">
+						<a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}"><fontawesome:icon icon="question-circle" /></a>
+					</li>
 				</ul>
 			</div>
 
