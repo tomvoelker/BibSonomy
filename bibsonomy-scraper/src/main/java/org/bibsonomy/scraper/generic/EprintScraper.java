@@ -29,33 +29,30 @@
  */
 package org.bibsonomy.scraper.generic;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.converter.HTMLMetaDataEprintToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Pattern;
 
 /**
- * Scraper for repositories which use eprint
- * 
+ * Scraper to extract bibtex information from a site, which holds Eprint Metadata
+ * in its HTML
  * @author tst
  */
 public class EprintScraper implements Scraper {
-	/** pattern identifying eprints pages */
-	private static final Pattern PATTERN = Pattern.compile("<\\s*link(?=.*rel=\"alternate\")(?=.*href=\"(http://.*eprint.*bib)\")(?=.*type=\"text/plain\")(?=.*title=\"BibTeX\").*>");
 
 	private static final String INFO = "Scraper for repositories which use " + AbstractUrlScraper.href("http://www.eprints.org/", "eprints");
 	private static final String SITE_NAME = "EprintsScraper";
-	private static final String SITE_URL = "http://www.eprints.org/";
+	private static final String SITE_URL = "https://www.eprints.org/";
+	private static final HTMLMetaDataEprintToBibtexConverter converter = new HTMLMetaDataEprintToBibtexConverter();
+
+	private static final Pattern EPRINT_PATTERN_TITLE = Pattern.compile("<\\s*meta(?=[^>]*name=\"eprints.title\")[^>]*content=\"([^\"]*)\"[^>]*>", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
+	private static final Pattern EPRINT_PATTERN_AUTHOR = Pattern.compile("<\\s*meta(?=[^>]*name=\"eprints.creators_name\")[^>]*content=\"([^\"]*)\"[^>]*>", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
 
 	@Override
 	public String getInfo() {
@@ -68,50 +65,18 @@ public class EprintScraper implements Scraper {
 	}
 
 	@Override
-	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
-		if (!present(scrapingContext.getUrl())) {
-			return false;
-		}
-		// get the page content to find the bibtex url
-		final String page = scrapingContext.getPageContent(); 
-		final Matcher matcher = PATTERN.matcher(page);
-		if (matcher.find()) {
-			try {
-				//get the URL to the bibtex
-				final String bibtexLink = matcher.group(1);
-				
-				if (present(bibtexLink)) {
-					// download the bibtex file
-					final String bibtexResult = WebUtils.getContentAsString(bibtexLink);
-					
-					if (present(bibtexResult)) {
-						// set scraper found
-						scrapingContext.setScraper(this);
-						scrapingContext.setBibtexResult(bibtexResult);
-						return true;
-					}
-					return false;
-				}
-				return false;
-			} catch (final IOException ex) {
-				throw new InternalFailureException(ex);
-			}
-		}
-
-		return false;
+	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+		sc.setBibtexResult(converter.toBibtex(sc.getPageContent()));
+		return true;
 	}
 
 	@Override
-	public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
-		// the eprint scraper needs a url
-		if (!present(scrapingContext.getUrl())) {
-			return false;
-		}
+	public boolean supportsScrapingContext(final ScrapingContext sc) {
 		try {
-			final String page = scrapingContext.getPageContent(); 
-			// check whether page has got an eprint bibtex link or not
-			return PATTERN.matcher(page).find();
-		} catch (final ScrapingException ex) {
+			final String pageContent = sc.getPageContent();
+			return EPRINT_PATTERN_TITLE.matcher(pageContent).find() && EPRINT_PATTERN_AUTHOR.matcher(pageContent).find();
+		}catch (Exception e) {
 			return false;
 		}
 	}
