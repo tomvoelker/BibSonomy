@@ -37,9 +37,9 @@
 		
 		<bsform:fieldset legendKey="post_bibtex.upload.options" collapsible="${true}">
 			<jsp:attribute name="content">
-				<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
+				<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" checked="checked" />
 				<bsform:checkbox inputColSpan="10" path="overwrite" labelKey="import.overwrite2" helpKey="import.overwritten"/>
-				
+
 				<!--+
 					|
 					| Dirty hack because spring form's option tag cannot find their parent select field, when invokes in jsp fragment.

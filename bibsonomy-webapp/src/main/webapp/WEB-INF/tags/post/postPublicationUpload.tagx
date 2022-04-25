@@ -49,7 +49,7 @@
 		<bsform:fieldset legendKey="post_bibtex.upload.options">
 			<jsp:attribute name="content">
 			
-				<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
+				<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" checked="checked" />
 				<bsform:checkbox inputColSpan="10" path="overwrite"  labelKey="import.overwrite2" helpKey="import.overwritten"/>
 			
 				<!--+
