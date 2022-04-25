@@ -106,7 +106,10 @@ $(function () {
     The last digit of the ORCID iD is the checksum and allows an X, hence the asterisk in the mask.
     For more information: https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
      */
-    $("#orcidId").mask("9999-9999-9999-999*");
+    var orcidInput = $("#orcidId");
+    if ($(orcidInput).length > 0) {
+        $(orcidInput).mask("9999-9999-9999-999*");
+    }
 
     // FIXME by update our JS message plugin
     var connectionMsg = getString('post_bibtex.orcid.action.error.connection');
