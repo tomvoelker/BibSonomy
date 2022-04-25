@@ -180,8 +180,8 @@ public class RemoteTestAssert {
 
 		if (!usedScraper.getClass().equals(expectedScraperClass)) {
 			throw new AssertionError("Not the expected Scraper was used\n" +
-							"Expected: " + expectedScraperClass +
-							"\nActual  : " + usedScraper.getClass());
+							"Expected: " + expectedScraperClass.getSimpleName() +
+							"\nActual  : " + usedScraper.getClass().getSimpleName());
 		}
 		return normBibTeX(bibTeXResult);
 	}
@@ -376,8 +376,8 @@ public class RemoteTestAssert {
 				// should never be thrown
 				throw new IllegalStateException(
 								"Expected classes were neither BibtexPersonList nor BibtexString\n" +
-												"The class of expected was: " + expectedValue.getClass() + "\n " +
-												"The class of actual was  : " + actualValue.getClass());
+												"The class of expected was: " + expectedValue.getClass().getSimpleName() + "\n " +
+												"The class of actual was  : " + actualValue.getClass().getSimpleName());
 			}
 		}
 	}
