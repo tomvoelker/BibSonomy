@@ -78,7 +78,7 @@
                 let html = "";
                 //alert(JSON.stringify(data));
                 let dataCount;
-                if (data !== "") {
+                if (data.length > 0) {
                     $(opts.loading).text(opts.loadingText);
                     html = data;
                     dataCount = opts.data.pageSize * opts.data.page;
@@ -97,7 +97,7 @@
                     opts.after(objectsRendered);
                 }
 
-			requestInProgress = false;
+			    requestInProgress = false;
             }
         });
     };

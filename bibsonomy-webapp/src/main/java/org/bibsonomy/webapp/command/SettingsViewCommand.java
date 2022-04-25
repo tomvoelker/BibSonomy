@@ -41,6 +41,7 @@ import lombok.Setter;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
@@ -208,6 +209,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	/** All CSL styles the system offers */
 	private List<CSLStyle> personPageCslFiles = null;
+
+
+	private Map<String, Layout> layoutMap;
+	private Map<String, CSLStyle> cslLayoutMap;
+	private Map<String, CSLStyle> customCslLayoutMap;
 	
 
 	/**

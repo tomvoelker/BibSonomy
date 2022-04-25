@@ -95,6 +95,12 @@ $(function() {
 	$('#delimiter').change(function(){
 		$('#whitespace').attr('disabled', $(this).val() == " ");
 	});
+
+	if(window.location.href.substring(window.location.href.lastIndexOf('#') + 1) === 'bibtexPost') {
+		$('#bibtextButton').addClass('active');
+		document.getElementById('publication-snippet').style.display = "block";
+	}
+
 });
 
 function showManualForm(titleText) {

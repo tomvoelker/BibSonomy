@@ -72,12 +72,6 @@
 							</option>
 						</c:forEach>
 					</select>
-					<p class="help-block">
-						<c:out value="${entrytypeHelpDescription} "/>
-						<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
-							<fmt:message key="general.learnmore" />
-						</a>
-					</p>
 				</div>
 				<c:if test="${empty hideBibTeXKey or not hideBibTeXKey}">
 					<div class="col-md-5">
@@ -93,6 +87,16 @@
 						</div><!-- /input-group -->
 					</div>
 				</c:if>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<p class="help-block">
+						<c:out value="${entrytypeHelpDescription} " escapeXml="${false}"/>
+						<a href="#" class="" data-toggle="modal" data-target="#entrytypeHelp" title="${fn:escapeXml(entrytypeHelpTitle)}">
+							<fmt:message key="post.resource.entrytype.help.learnMore" />
+						</a>
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>

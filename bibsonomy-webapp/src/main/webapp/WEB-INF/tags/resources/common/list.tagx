@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostRating" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -46,6 +47,10 @@
 
 	<c:if test="${empty hidePostMenu}">
 		<c:set var="hidePostMenu" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty hidePostRating}">
+		<c:set var="hidePostRating" value="${false}" />
 	</c:if>
 
 	<c:if test="${empty hideHeadline or not hideHeadline}">
@@ -78,6 +83,7 @@
 								 additionalItemClasses="${additionalItemClasses}"
 								 hideMetaData="${hideMetaData}"
 								 hidePostMenu="${hidePostMenu}"
+								 hidePostRating="${hidePostRating}"
 								 hideCounts="${hideCounts}"
 								 headlineInBody="${headlineInBody}"
 								 >

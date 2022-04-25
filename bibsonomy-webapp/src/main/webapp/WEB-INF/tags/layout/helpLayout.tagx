@@ -12,7 +12,8 @@
 	
 	<fmt:message key="help" var="helpTitle" />
 	
-	<layout:oneColumnLayout loginUser="${command.context.loginUser}" pageTitle="${command.helpPageTitle} | ${helpTitle}" requPath="${requPath}">
+	<layout:oneColumnLayout loginUser="${command.context.loginUser}" pageTitle="${command.helpPageTitle} | ${helpTitle}"
+							requPath="${requPath}" activeTab="help">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="search"/>
 		</jsp:attribute>

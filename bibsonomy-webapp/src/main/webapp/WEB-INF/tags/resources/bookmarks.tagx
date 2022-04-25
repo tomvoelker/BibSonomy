@@ -71,7 +71,7 @@
 								<jsp:invoke fragment="customPageOptions"/>
 							</c:when>
 							<c:otherwise>
-								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+								<div class="btn-group dropdown-align-right all-resources-menu">
 									<rc:actions 
 											resourceType="bookmark" 
 											sortPage="${command.sortPage}" 

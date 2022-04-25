@@ -99,8 +99,6 @@ ul.dropdown-menu > li.sort-unselected > a {
 	margin: 0 20px !important;
 }
 
-
-
 /**
  *	CONTAINER
  */
@@ -383,6 +381,7 @@ dl.dl-horizontal.dt-thumbnail-items dd {
  */
  
 h3.list-headline {
+  	position: relative;
 	border-bottom: 1px @light-border-color solid;
 	padding-top: 0;
 	margin-top: 10px;
@@ -631,8 +630,30 @@ a.description-link {
 }
 
 // special pub lists
-#organization-publications li.post {
-  height: inherit;
+.list-inherit-height li.post {
+  height: inherit !important;
+}
+
+.goldstandard-publication-list {
+  li.post {
+
+	margin: 0;
+	padding: 5px 15px;
+	border-bottom: none !important;
+
+	.ptitle {
+	  font-weight: bold;
+	}
+
+	.clearfix {
+	  height: 0;
+	}
+
+  }
+
+  li.post:nth-child(even) {
+	background: #EEEEEE;
+  }
 }
 
 /**
@@ -884,7 +905,7 @@ span.collection				{background-position:-8px -257px;				height:60px;					margin-
 span.booklet				{background-position:-2px -101px; 				height:65px;					margin-top: 6px; }
 span.conference				{background-position:-2px -167px; 				height:44px;}
 span.electronic				{background-position: 0 -212px; 				height:45px; 					margin-top: 17px;}
-span.inbook					{background-position:-2px -258px; 	width: 55px;height:60px; 					margin-top: 10px;}
+span.inbook					{background-position:-2px -258px; 	width: 55px;height:60px; margin-left: 0;	margin-top: 10px;}
 span.incollection			{background-position:-5px -319px; 	width: 56px;height:60px;  					margin-top: 8px; }
 span.inproceedings			{background-position:-2px -380px; 				height:49px; margin-left: 9px; 	margin-top: 14px;}
 span.manual					{background-position:-2px -430px; 				height:46px;}
@@ -1679,6 +1700,10 @@ p.separator {
 }
 
 .all-resources-menu {
+  	position: absolute;
+    bottom: 0;
+    right: 0;
+
 	a, button {
 		color: #a0a0a0;
 	}
@@ -1687,6 +1712,10 @@ p.separator {
 		margin-left: -8px;
 		text-transform: uppercase;
 	}
+}
+
+.all-resources-menu-lg {
+  	bottom: -10px;
 }
 
 /** export */

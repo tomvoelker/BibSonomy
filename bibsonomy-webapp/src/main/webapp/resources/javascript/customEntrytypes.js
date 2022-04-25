@@ -90,8 +90,7 @@ function adjustEntrytypesExtra() {
         var title = getString('post.resource.entrytype.' + element + '.title');
         var description = getString('post.resource.entrytype.' + element + '.description');
         // Create new entry for selection
-        var newOption = $('<option></option>')
-            .data('description', description)
+        var newOption = $('<option></option>', { 'data-description': description })
             .val(element)
             .html(title);
         entrytypeSelect.append(newOption);
