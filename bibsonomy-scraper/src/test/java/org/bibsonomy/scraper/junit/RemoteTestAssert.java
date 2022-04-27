@@ -87,8 +87,22 @@ public class RemoteTestAssert {
 	 * @param resultFile
 	 */
 	public static void assertScraperResult(final String url, final Class<? extends Scraper> expectedScraperClass, final String resultFile) {
-		assertScraperResult(url, null, expectedScraperClass, resultFile);
+		assertScraperResult(url, null, expectedScraperClass, resultFile, true);
 	}
+
+	/**
+	 * Scrapes the specified url with the expectedScraperClass. Should the expectedScraperClass implement the UrlScraper-Interface then
+	 * the KDEUrlCompositeScraper will be used for scraping.
+	 * The returned result of the scraper will be tested against the contents of the provided result file
+	 * @param url
+	 * @param selection
+	 * @param expectedScraperClass the scraper, which should be set in the Scrapingcontext
+	 * @param resultFile
+	 */
+	public static void assertScraperResult(final String url, final String selection, final Class<? extends Scraper> expectedScraperClass, final String resultFile) {
+		assertScraperResult(url, selection, expectedScraperClass, resultFile, true);
+	}
+
 
 	/**
 	 * Scrapes the specified url and the selection with the expectedScraperClass. Should the expectedScraperClass implement the UrlScraper-Interface then
@@ -98,8 +112,9 @@ public class RemoteTestAssert {
 	 * @param selection
 	 * @param expectedScraperClass  the scraper, which should be set in the Scrapingcontext
 	 * @param resultFile
+	 * @param testRedirectedUrl should the bibtex, which the scraper gets from redirected url, be tested
 	 */
-	public static void assertScraperResult(final String url, final String selection, final Class<? extends Scraper> expectedScraperClass, final String resultFile) {
+	public static void assertScraperResult(final String url, final String selection, final Class<? extends Scraper> expectedScraperClass, final String resultFile, final boolean testRedirectedUrl) {
 		//Preparing test data
 		final String expectedReference;
 		final List<BibtexEntry> expectedBibtexEntries;
@@ -129,7 +144,7 @@ public class RemoteTestAssert {
 			throw cf;
 		}
 
-		if (url != null && UrlScraper.class.isAssignableFrom(expectedScraperClass)) {
+		if (testRedirectedUrl&&url != null && UrlScraper.class.isAssignableFrom(expectedScraperClass)) {
 			//the scraper can work for an old URL, but not for the redirected. This is problematic, because the user will use the redirected URL.
 			final URL redirectUrl;
 			try {
