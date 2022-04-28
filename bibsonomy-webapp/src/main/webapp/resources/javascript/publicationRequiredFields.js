@@ -3,17 +3,16 @@ $(function () {
 
     function authorWarning() {
         if(isAuthor() && !$("#myownChkBox").is(':checked')){
-            $('#imAmAuthorWarning').attr("style", "display:block");
+            $('#iAmAuthorWarning').attr("style", "display:block");
         } else {
-            $('#imAmAuthorWarning').attr("style", "display:none");
+            $('#iAmAuthorWarning').attr("style", "display:none");
         }
     }
+    authorWarning();
 
     $("#post\\.resource\\.editor").on('change',authorWarning);
     $("#post\\.resource\\.author").on('change',authorWarning);
-    $('#myownChkBox').click( function() {
-        $('#imAmAuthorWarning').attr("style", "display:none");
-    })
+    $('#myownChkBox').on('change', authorWarning);
 });
 
 function highlightMatches(text, input) {
