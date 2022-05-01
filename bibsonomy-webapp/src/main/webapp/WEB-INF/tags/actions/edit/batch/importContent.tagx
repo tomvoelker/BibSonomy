@@ -22,6 +22,8 @@
 	<jsp:directive.attribute name="groupedErrorList" type="java.util.List" required="true" />
 	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false" 
 		description="In indirect mode, each intrahash(post) is associated with a list of errors"/>
+	<jsp:directive.attribute name="hasErrors" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hasValidData" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
 	
@@ -41,6 +43,14 @@
 	
 	<c:if test="${empty directEdit}">
 		<input type="hidden" name="directEdit" value="true" />
+	</c:if>
+
+	<c:if test="${empty hasErrors}">
+		<input type="hidden" name="hasErrors" value="false" />
+	</c:if>
+
+	<c:if test="${empty hasValidData}">
+		<input type="hidden" name="hasValidData" value="true" />
 	</c:if>
 	<!-- SUBMITBUTTON -->
 
@@ -89,78 +99,88 @@
 			</c:when>
 			<c:otherwise>
 				<c:choose>
-				<c:when test="${updateExistingPost}">
-					<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
-						<fmt:message key="batchedit.hint.savedEdit"/>
-					</div>
-				</c:when>
-				<c:otherwise>
-					<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
-						<fmt:message key="batchedit.hint.notSavedEdit"/>
-					</div>
-				</c:otherwise>
+					<c:when test="${hasValidData}">
+						<c:choose>
+							<c:when test="${updateExistingPost}">
+								<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+									<fmt:message key="batchedit.hint.savedEdit"/>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+									<fmt:message key="batchedit.hint.notSavedEdit"/>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<br/>
+						<table class="table table-striped" style="margin-bottom:0px;">
+							<thead>
+							<th colspan="4">
+								<fmt:message key="batchedit.selection.initial"/>
+							</th>
+							</thead>
+							<tbody>
+							<tr style="border-bottom:2px solid #eee">
+								<td>
+									<input type="checkbox" id="checkboxAllTag" style="margin-right:2px"/><fmt:message key="batchedit.EditAllTag"/>
+								</td>
+								<td>
+									<input type="checkbox" id="checkboxEachTag" style="margin-right:2px"/><fmt:message key="batchedit.EditEachTag"/>
+								</td>
+								<td>
+									<input type="checkbox" id="checkboxNormalize" style="margin-right:2px"/><fmt:message key="batchedit.normalizeSelected"/>
+								</td>
+								<td>
+									<input type="checkbox" id="checkboxPrivacy" style="margin-right:2px"/><fmt:message key="batchedit.updatePrivacy"/>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</c:when>
+					<c:otherwise>
+						<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+							<fmt:message key="batchedit.hint.noData"/>
+						</div>
+					</c:otherwise>
 				</c:choose>
-				<br/>
-				<table class="table table-striped" style="margin-bottom:0px;">
-				<thead>
-					<th colspan="4">
-						<fmt:message key="batchedit.selection.initial"/>
-					</th>
-				</thead>
-				<tbody>
-				<tr style="border-bottom:2px solid #eee">
-					<td>
-						<input type="checkbox" id="checkboxAllTag" style="margin-right:2px"/><fmt:message key="batchedit.EditAllTag"/>
-					</td>
-					<td>
-						<input type="checkbox" id="checkboxEachTag" style="margin-right:2px"/><fmt:message key="batchedit.EditEachTag"/>
-					</td>
-					<td>
-						<input type="checkbox" id="checkboxNormalize" style="margin-right:2px"/><fmt:message key="batchedit.normalizeSelected"/>
-					</td>
-					<td>
-						<input type="checkbox" id="checkboxPrivacy" style="margin-right:2px"/><fmt:message key="batchedit.updatePrivacy"/>
-					</td>
-				</tr>
-				</tbody>
-				</table>
 			</c:otherwise>
 			</c:choose>
 			<!-- the following tabel contains two edit options: 
 				1. add a tag to all posts
 				2. update privacy  -->
-			<table class="table table-striped" style="margin-bottom:0px;">
-				<thead>
-					<tr>
-						<td id="allTags">
-							<fmt:message key="batchedit.selectedTags" />
-						</td>
-						<td id="viewable">
-							<fmt:message key="batchedit.viewable" />
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td style="width:50%; border-right:1px solid #eee">
-							<input type="text" class="form-control" disabled="disabled" name="tags" size="40"/>
-						</td>
-						<td>
-							<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<div class="alert col-sm-10 invisible invisible emptyBlock" style="margin-bottom:0px;" role="alert">I am an empty block to avoid other sections moving</div>
-							<div class="alert alert-warning col-sm-10 invisible hidden deleteAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.deleteAlert" /></div>
-							<div class="alert alert-info col-sm-10 invisible hidden normalizeAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.normalizeAlert" /></div>
-							<div class="alert alert-info col-sm-10 invisible hidden selectPostAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.editHint" /></div>
-							<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary" className="batchUpdateButton pull-right" disabled="disabled" type="submit" />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			
+			<c:if test="${not directEdit and hasValidData}">
+				<table class="table table-striped" style="margin-bottom:0px;">
+					<thead>
+						<tr>
+							<td id="allTags">
+								<fmt:message key="batchedit.selectedTags" />
+							</td>
+							<td id="viewable">
+								<fmt:message key="batchedit.viewable" />
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style="width:50%; border-right:1px solid #eee">
+								<input type="text" class="form-control" disabled="disabled" name="tags" size="40"/>
+							</td>
+							<td>
+								<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div class="alert col-sm-10 invisible invisible emptyBlock" style="margin-bottom:0px;" role="alert">I am an empty block to avoid other sections moving</div>
+								<div class="alert alert-warning col-sm-10 invisible hidden deleteAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.deleteAlert" /></div>
+								<div class="alert alert-info col-sm-10 invisible hidden normalizeAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.normalizeAlert" /></div>
+								<div class="alert alert-info col-sm-10 invisible hidden selectPostAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.editHint" /></div>
+								<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary" className="batchUpdateButton pull-right" disabled="disabled" type="submit" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</c:if>
 
 		<!-- If there is no post to edit -->
 		<c:if test="${empty listView.list}">
@@ -254,6 +274,7 @@
 						<c:forEach var="position" items="${errorInfo.positions}">
 							<c:set var="post" value="${listView.list[position]}" />
 							<div>
+								<!--TODO: Should the links in the description be disabled since they most likely will lead to a 404 page? -->
 								<jsp:invoke fragment="shortPostDescription" />
 							</div>
 						</c:forEach>
@@ -271,6 +292,7 @@
 						<c:forEach var="position" items="${errorInfo.positions}">
 							<c:set var="post" value="${listView.list[position]}" />
 							<div>
+								<!--TODO: Also disable links?				-->
 								<jsp:invoke fragment="shortPostDescription" />
 							</div>
 						</c:forEach>

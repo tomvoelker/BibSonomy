@@ -39,11 +39,30 @@
 					
 					<c:choose>
 						<c:when test="${not empty command.bibtex and not empty command.bibtex.list}">
+							<c:set var="hasErrors" value="false" />
+							<c:set var="hasValidData" value="false" />
+							<c:forEach var="errorInfo" items="${command.groupedErrorList}">
+								<c:if test="${errorInfo.errorType eq 'NO_ERROR'}">
+									<c:set var="hasValidData" value="true" />
+								</c:if>
+								<c:if test="${errorInfo.errorType eq 'FIELD_ERROR' or errorInfo.errorType eq 'POST_ERROR'}">
+									<c:set var="hasErrors" value="true" />
+								</c:if>
+							</c:forEach>
 							<div id="parsedPostView">
 								<p class="smalltext" style="margin-top:1em; margin-bottom:1em">
-									<fmt:message key="import.error.parse_or_incomplete_bibtex.description">
-										<fmt:param value="${properties['project.name']}" />
-									</fmt:message>
+									<c:choose>
+										<c:when test="${hasErrors and hasValidData}">
+											<fmt:message key="import.error.validData_and_parse_or_incomplete_bibtex.description">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</c:when>
+										<c:when test="${hasErrors}">
+											<fmt:message key="import.error.parse_or_incomplete_bibtex.description">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</c:when>
+									</c:choose>
 								</p>
 								<fieldset>
 									<batch:importContent	resourceType="bibtex"
@@ -54,7 +73,9 @@
 															directEdit="${false}"
 															overwrite="${command.overwrite}"
 															groupedErrorList="${command.groupedErrorList}"
-															updateExistingPost="${command.updateExistingPost}" >
+															updateExistingPost="${command.updateExistingPost}"
+															hasErrors="${hasErrors}"
+															hasValidData="${hasValidData}">
 										<jsp:attribute name="shortPostDescription">
 											<bib:shortDescription post="${post}"/>
 										</jsp:attribute>
