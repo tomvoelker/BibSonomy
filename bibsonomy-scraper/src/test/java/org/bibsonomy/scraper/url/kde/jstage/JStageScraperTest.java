@@ -38,6 +38,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -65,6 +66,7 @@ public class JStageScraperTest {
 		final String resultFile = resultDirectory + "JStageScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, JStageScraper.class, resultFile);
 	}
+	@Ignore
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article"));

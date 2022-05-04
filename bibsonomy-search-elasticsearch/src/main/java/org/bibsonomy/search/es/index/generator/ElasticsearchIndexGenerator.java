@@ -80,7 +80,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 
 	@FunctionalInterface
 	protected interface Generator<E> {
-		List<E> getEntites(int lastContenId, int limit);
+		List<E> getEntities(int lastContenId, int limit);
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		int entityListSize;
 		final Map<String, IndexData> docsToWrite = new HashMap<>();
 		do {
-			entityList = generator.getEntites(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
+			entityList = generator.getEntities(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
 			entityListSize = entityList.size();
 			skip += entityListSize;
 			LOG.info("Read " + skip + " entries.");

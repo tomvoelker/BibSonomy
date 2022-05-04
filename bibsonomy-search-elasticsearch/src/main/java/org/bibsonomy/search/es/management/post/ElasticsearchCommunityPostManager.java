@@ -285,6 +285,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 
 			postSize = newerEntities.size();
 			offset += ElasticsearchPostManager.SQL_BLOCKSIZE;
+			// repeat until new entities < SQL_BLOCKSIZE
 		} while (postSize == ElasticsearchPostManager.SQL_BLOCKSIZE);
 
 		this.clearQueue(indexName, postUpdateMap);

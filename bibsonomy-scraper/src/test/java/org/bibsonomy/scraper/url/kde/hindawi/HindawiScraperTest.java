@@ -37,6 +37,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 /**
@@ -71,6 +72,7 @@ public class HindawiScraperTest {
 	/**
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.hindawi.com/journals/tswj/2014/625754/ref/"));

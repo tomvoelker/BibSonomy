@@ -55,7 +55,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 
 	@Deprecated // TODO: remove!
 	/** Get boolean if user is following this user or if not */
-	private boolean isFollowerOfUser = false;
+	private boolean followerOfUser = false;
 	
 	/** <code>true</code> if the logged in user is in the friend list of the requested user. */
 	private boolean friendOfUser = false;

@@ -138,6 +138,8 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 			switch (sortKey) {
 				// ignore these Order type since result of no sort parameters
 				case RANK:
+				case FOLKRANK:
+				case POPULAR:
 				case NONE:
 					break;
 				// Order type with cleaned up index attribute

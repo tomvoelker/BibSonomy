@@ -79,7 +79,7 @@
 		JOIN bookmark p ON (bb.interHash = p.book_url_hash) <!-- self join to get all users of the post-->
 	</select>
 
-	<!-- get list of all commuity publication posts -->
+	<!-- get list of all community publication posts -->
 	<select id="getGoldStandardPublicationForCommunityIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPostWithRelations">
 		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
 		FROM

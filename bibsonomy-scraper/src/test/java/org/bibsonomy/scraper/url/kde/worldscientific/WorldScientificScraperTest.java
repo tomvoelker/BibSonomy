@@ -37,6 +37,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -46,16 +47,17 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class WorldScientificScraperTest {
+	String resultDirectory = "worldscientific/";
 	/**
 	 * starts URL test with id url_279
 	 */
 	@Test
 	public void urlTestRun1(){
 		final String url = "https://www.worldscientific.com/doi/abs/10.1142/S0219622006002271";
-		final String resultFile = "WorldScientificScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "WorldScientificScraperUnitURLTest.bib";
 		assertScraperResult(url, null, WorldScientificScraper.class, resultFile);
 	}
-	
+	@Ignore
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));
@@ -68,7 +70,7 @@ public class WorldScientificScraperTest {
 		assertTrue(cby.length() > 100);
 		assertTrue(cby.contains("Application of Power Big Data in Targeted Poverty Alleviation"));
 	}
-	
+	@Ignore
 	@Test
 	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://www.worldscientific.com/doi/pdf/10.1142/S0219622006002271"));

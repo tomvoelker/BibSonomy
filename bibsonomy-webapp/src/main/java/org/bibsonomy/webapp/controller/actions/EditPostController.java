@@ -53,10 +53,11 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.executable.ForGroupTag;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
@@ -91,12 +92,12 @@ import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
 import recommender.core.RecommendationService;
 import recommender.core.database.RecommenderStatisticsManager;
 
@@ -190,7 +191,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final User loginUser = context.getLoginUser();
 		if (present(command.getGroupUser())) {
-			command.setGroupUser(this.logic.getUserDetails(command.getGroupUser().getName()));
+			final String groupName = command.getGroupUser().getName();
+			command.setGroupUser(this.logic.getUserDetails(groupName));
+			final Group groupUserAsGroup = this.logic.getGroupDetails(groupName, false);
+			command.setPresetTagsOfGroupUser(groupUserAsGroup.getPresetTags());
 		}
 
 		/*
@@ -198,6 +202,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * classes can now execute their workOn code
 		 */
 		this.workOnCommand(command, loginUser);
+
+		/*
+		 * If the subclass tried to scrape a URL and failed, redirect to the post Publication Site
+		 * (see Issue #2914)
+		 */
+		if(this instanceof AbstractEditPublicationController && this.errors.hasErrors()){
+			final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes("/postPublication#bibtexPost");
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "error.scrape.redirect");
+			return redirectView;
+		}
 
 		/*
 		 * If the user is a spammer, we check the captcha
@@ -242,8 +257,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
-		 * set user, init post groups, relevant for tags (FIXME: candidate for
-		 * system tags) and recommender
+		 * set user, init post groups, group system tags and recommender
 		 */
 		this.initPost(command, post, postOwner);
 
@@ -443,10 +457,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		final String postOwnerName = postOwner.getName();
 
-		// editing of a group post - check if the user is in the group and has an appropriate role
+		// editing of a group post
 		if (present(command.getGroupUser())) {
 			final Group group = this.logic.getGroupDetails(command.getGroupUser().getName(), false);
 			if (present(group)) {
+				// check if the user is in the group and has an appropriate role
 				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUserName);
 				if (!(present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR)))) {
 					throw new AccessDeniedException("You have no rights to update this post");
@@ -699,6 +714,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 * the post which should not be overwritten
 			 */
 			post.getTags().addAll(TagUtils.parse(command.getTags()));
+			/*
+			 * add all group preset tags
+			 */
+			post.getTags().addAll(TagUtils.parse(command.getPresetTagsForGroups()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
 			this.errors.rejectValue(TAGS_KEY, "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
@@ -971,7 +990,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * after initializing the relevantFor groups, because there the
 		 * relevantFor tags are removed from the post)
 		 */
-		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		final Set<Tag> tags = post.getTags();
+		GroupUtils.removePresetTags(tags);
+		command.setTags(TagUtils.toTagString(tags, " "));
 
 		if (post.isApproved()) {
 			command.setApproved(true);
@@ -1008,12 +1029,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
-	 * Adds the relevant groups from the command as system tags to the post.
+	 * Adds system tags for groups to the post.
+	 * Currently, supports: Relevant for and sent to group tags.
 	 *
 	 * @param command
 	 * @param post
 	 */
-	private void initRelevantForTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	private void initForGroupTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		final User postOwner;
 		if (present(command.getGroupUser())) {
 			postOwner = command.getGroupUser();
@@ -1023,21 +1045,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final Set<Tag> tags = post.getTags();
 		final List<Group> groups = postOwner.getGroups();
-		final List<String> relevantGroups = command.getRelevantGroups();
-		/*
-		 * null check neccessary, because Spring sets the list to null, when no
-		 * group has been selected. :-(
-		 */
-		if (relevantGroups != null) {
-			for (final String relevantGroup : relevantGroups) {
-				/*
-				 * ignore groups the user is not a member of
-				 */
-				if (groups.contains(new Group(relevantGroup))) {
-					tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
-				} else {
-					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
-				}
+
+		for (final String relevantGroup : command.getRelevantGroups()) {
+			/*
+			 * ignore groups the user is not a member of
+			 */
+			if (groups.contains(new Group(relevantGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
+			} else {
+				log.info("ignored relevantfor: group '" + relevantGroup + "' because user is not member of it");
+			}
+		}
+
+		for (final String sentToGroup : command.getSentToGroups()) {
+			/*
+			 * ignore groups the user is not a member of
+			 */
+			if (groups.contains(new Group(sentToGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(ForGroupTag.NAME, sentToGroup)));
+			} else {
+				log.info("ignored for: group '" + sentToGroup + "' because user is not member of it");
 			}
 		}
 	}
@@ -1060,9 +1087,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		GroupingCommandUtils.initGroups(command, post.getGroups());
 		/*
-		 * initialize relevantFor-tags FIXME: candidate for system tags
+		 * initialize system tags for groups:
+		 * relevantfor:-tags and for:-tags
 		 */
-		this.initRelevantForTags(command, post);
+		this.initForGroupTags(command, post);
 		/*
 		 * For each post process an unique identifier is generated. This is used
 		 * for mapping posts to recommendations.

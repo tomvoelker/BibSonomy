@@ -10,6 +10,14 @@
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
     <jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
 
+    <fmt:message key="publications.citations.hint" var="citationHint"/>
+
+    <c:if test="${not empty citationHint}">
+        <p>
+            <c:out value="${citationHint}" escapeXml="${false}" />
+        </p>
+    </c:if>
+
     <div class="sidebar-quick-cite-box">
 
         <bsform:button

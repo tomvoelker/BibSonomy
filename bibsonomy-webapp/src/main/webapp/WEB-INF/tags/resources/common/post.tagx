@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostRating" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -152,13 +153,12 @@
 			<c:if test="${not empty post.tags}">
 				<div class="ptags">
 					<!-- Edit tags link -->
-					<!-- TODO: Enable tag edits for group admins/mods -->
 					<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser and not isRemotePost }">
 						<fmt:message key="navi.editTags" var="editTags" />
 						<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
 						&amp;nbsp;
 					</c:if>
-	<span class="all-tags-button label label-tag pull-right hidden">
+					<span class="all-tags-button label label-tag pull-right hidden">
 					<a href="#" class="tag-popover">
 						<fmt:message key="post.actions.showAllTags" />
 					</a>
@@ -173,9 +173,11 @@
 				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
-			<div class="post-rating pull-left">
-				<discussion:rating post="${post}" />
-			</div>
+			<c:if test="${not hidePostRating}">
+				<div class="post-rating pull-left">
+					<discussion:rating post="${post}" />
+				</div>
+			</c:if>
 			<c:if test="${not hidePostMenu}">
 				<div class="post-buttons pull-right">
 					<jsp:invoke fragment="actions"/>
@@ -184,7 +186,6 @@
 			<div class="clearfix">&#160;</div>
 			
 			<!-- EDIT TAGS MODAL POPUP-->
-			<!-- TODO: Enable tag edits for group admins/mods -->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser}">
 				
 				<fmt:message key="tag.addTag" var="addTag" />

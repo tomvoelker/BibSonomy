@@ -9,6 +9,7 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
           xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 >
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -39,6 +40,15 @@
 			<!-- nothing to display -->
 		</jsp:attribute>
 
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:groupcrumb requestedGroup="${groupName}"/>
+					<nav:crumb name="Explore" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
         <jsp:attribute name="content">
 			<div id="groupExploreContent">
 				<div class="row">
@@ -65,19 +75,21 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12">
-								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
-									<rc:actions resourceType="bibtex"
-												sortPage="pubdate"
-												sortPageOrder="desc"
-												entriesPerPage="20"
-												showBookmark="${false}"
-												showPublication="${true}"
-												showInboxActions="${false}"
-												isClipboard="${false}"
-												disableFiltering="${true}"
-												ignoreSortLinks="${true}"
-												overridePath="/group/${groupName}" />
-								</div>
+								<h3 class="list-headline">
+									<div class="btn-group dropdown-align-right all-resources-menu">
+										<rc:actions resourceType="bibtex"
+													sortPage="pubdate"
+													sortPageOrder="desc"
+													entriesPerPage="20"
+													showBookmark="${false}"
+													showPublication="${true}"
+													showInboxActions="${false}"
+													isClipboard="${false}"
+													disableFiltering="${true}"
+													ignoreSortLinks="${true}"
+													overridePath="/group/${groupName}" />
+									</div>
+								</h3>
 							</div>
 						</div>
 						<div class="row">
@@ -96,7 +108,7 @@
 							<!--<h3><fmt:message key="explore.filter.header"/></h3>-->
 							<a id="resetFilterLink" href="#" onclick="resetFilterSelection()"><fmt:message key="explore.filter.reset"/></a>
 						</div>
-						<c:if test="${groupName eq properties['explore.group.id']}">
+						<c:if test="${groupName eq properties['group.explore.nav.id']}">
 							<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" hide="${true}" />
 							<div id="filter-list-custom" class="filter-list hidden" data-field="tags">
 								<sidebar:sidebarHeader textKey="explore.filter.custom.header" iconKey="sitemap"/>
@@ -104,6 +116,10 @@
 								<input id="searchCustomFilters" class="form-control" type="text" placeholder="${customFilterPlaceholder}" aria-label="${customFilterPlaceholder}" onkeyup="searchCustomFilters()" />
 								<div id="filter-entries-custom" class="filter-entries search-filter-selection"><!-- keep me --></div>
 							</div>
+						</c:if>
+						<c:if test="${properties['group.presetTags.enabled'] and command.filterMap.containsKey('preset')}">
+							<sidebar:searchFilterList filterField="tags" filterEntries="${command.filterMap.get('preset')}" hideCounts="${true}"
+													  headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" buttonClass="filter-entry-counter" />
 						</c:if>
 						<c:if test="${command.filterMap.containsKey('entrytype')}">
 							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.filterMap.get('entrytype')}"

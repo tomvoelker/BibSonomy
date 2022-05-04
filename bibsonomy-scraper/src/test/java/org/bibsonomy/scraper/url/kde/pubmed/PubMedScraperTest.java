@@ -42,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class PubMedScraperTest {
+	String resultDirectory = "pubmed/";
 
 	/**
 	 * starts URL test
@@ -49,7 +50,7 @@ public class PubMedScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://pubmed.ncbi.nlm.nih.gov/17623893/";
-		final String resultFile = "PubMedScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest1.bib";
 		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 
@@ -59,7 +60,7 @@ public class PubMedScraperTest {
 	@Test
 	public void url3TestRun(){
 		final String url = "https://pubmed.ncbi.nlm.nih.gov/18506939/";
-		final String resultFile = "PubMedScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest3.bib";
 		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 
@@ -69,7 +70,7 @@ public class PubMedScraperTest {
 	@Test
 	public void url4TestRun(){
 		final String url = "https://europepmc.org/article/MED/19426458";
-		final String resultFile = "PubMedScraperUnitURLTest4.bib";
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest4.bib";
 		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 
@@ -79,7 +80,7 @@ public class PubMedScraperTest {
 	@Test
 	public void url5TestRun(){
 		final String url = "https://www.ncbi.nlm.nih.gov/pubmed/29552975";
-		final String resultFile = "PubMedScraperUnitURLTest5.bib";
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest5.bib";
 		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 }

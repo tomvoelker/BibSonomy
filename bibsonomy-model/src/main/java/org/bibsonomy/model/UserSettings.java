@@ -149,4 +149,32 @@ public class UserSettings implements Serializable {
 	 */
 	private boolean isMaxCount = true;
 
+	/**
+	 * @return isMaxCount
+	 */
+	public boolean getIsMaxCount() {
+		return isMaxCount;
+	}
+
+	/**
+	 * @return isMaxCount
+	 */
+	public boolean isMaxCount() {
+		return isMaxCount;
+	}
+
+	/**
+	 * @param isMaxCount
+	 */
+	public void setIsMaxCount(final boolean isMaxCount) {
+		this.isMaxCount = isMaxCount;
+	}
+
+	/**
+	 * @param isMaxCount
+	 */
+	public void setMaxCount(final boolean isMaxCount) {
+		this.isMaxCount = isMaxCount;
+	}
+
 }

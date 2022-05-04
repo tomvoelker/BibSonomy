@@ -19,12 +19,15 @@
 	 	| - integrate "common groups"
 	 	|
 	 	+-->
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.UserResourceViewCommand" required="true"/>
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 
 	<c:set var="username"><user:username username="${user}" noLink="${true}"/></c:set>
 	<c:set var="outLink" value=""/>
 	<c:set var="outTitleKey" value=""/>
+	<fmt:message key="cv.title" var="cvtitle">
+		<fmt:param value="${user.name}"/>
+	</fmt:message>
 	<c:if test="${not empty user.homepage}">
 		<c:set var="outLink" value="${fn:escapeXml(user.homepage)}"/>
 		<c:set var="outTitleKey" value="${outTitleKey}"/>
@@ -47,6 +50,13 @@
 			
 			<p class="text-muted"><user:username noLink="${true}" user="${user}" /></p>
 		</div>
-		<user:userSocializerButtons user="${user}" command="${command}" />
+		<c:if test="${command.context.userLoggedIn}">
+			<user:userSocializerButtons user="${user}" command="${command}" />
+		</c:if>
+		<c:if test="${not command.context.userLoggedIn}">
+			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fontawesome:icon icon="file-alt" spaceAfter="5" /><fmt:message key="navi.cv.abbrev"/></a>
+			<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
+			<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
+		</c:if>
 	</div>
 </jsp:root>

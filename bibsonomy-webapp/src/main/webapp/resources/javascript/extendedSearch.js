@@ -52,6 +52,15 @@ function switchSelection(type, value, selection) {
     const id = '#filterSelection' + type;
     var filterSelection = $(id);
     filterSelection.html('<span style="display:none;">' + value + '</span>' + selection.innerText);
+
+    // Switch placeholder text
+    var placeholder = getString('search.extended.field.placeholder');
+    var typePlaceholder = getString('search.extended.' + type.toLowerCase() + '.' + value + '.hint');
+    // Check, if available, otherwise stay at default
+    if (!typePlaceholder.startsWith("???")) {
+        placeholder = typePlaceholder;
+    }
+    $('#filterValue' + type).attr('placeholder', placeholder);
 }
 
 function addFilter() {

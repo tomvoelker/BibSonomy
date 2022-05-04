@@ -113,7 +113,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		return Views.EXPORT;
 	}
 
-	private static Map<String, CSLStyle> convertCSLStylesToMap(final List<CSLStyle> layouts) {
+	public static Map<String, CSLStyle> convertCSLStylesToMap(final List<CSLStyle> layouts) {
 		return layouts.stream().collect(Collectors.toMap(CSLStyle::getDisplayName, item -> item));
 	}
 

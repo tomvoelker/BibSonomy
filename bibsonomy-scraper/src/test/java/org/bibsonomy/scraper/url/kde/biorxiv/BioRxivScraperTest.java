@@ -40,6 +40,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BioRxivScraperTest {
+	String resultDirectory = "biorxiv/";
 
 	/**
 	 * starts URL test 1
@@ -47,7 +48,7 @@ public class BioRxivScraperTest {
 	@Test
 	public void url1Test1Run() {
 		final String url = "https://biorxiv.org/content/early/2016/11/30/090654";
-		final String resultFile = "BioRxivScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "BioRxivScraperUnitURLTest1.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 
@@ -57,7 +58,7 @@ public class BioRxivScraperTest {
 	@Test
 	public void url2Test1Run() {
 		final String url = "https://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
-		final String resultFile = "BioRxivScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "BioRxivScraperUnitURLTest2.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 
@@ -67,28 +68,28 @@ public class BioRxivScraperTest {
 	@Test
 	public void url3Test1Run() {
 		final String url = "https://www.biorxiv.org/content/10.1101/622803v1";
-		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "BioRxivScraperUnitURLTest3.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 
 	@Test
 	public void url3Test2Run() {
 		final String url = "https://www.biorxiv.org/content/10.1101/622803v1.full";
-		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "BioRxivScraperUnitURLTest3.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 
 	@Test
 	public void url3Test3Run() {
 		final String url = "https://www.biorxiv.org/content/10.1101/622803v1.article-info";
-		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "BioRxivScraperUnitURLTest3.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 
 	@Test
 	public void url3Test4Run() {
 		final String url = "https://www.biorxiv.org/content/10.1101/622803v1.article-metrics";
-		final String resultFile = "BioRxivScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "BioRxivScraperUnitURLTest3.bib";
 		assertScraperResult(url, BioRxivScraper.class, resultFile);
 	}
 }

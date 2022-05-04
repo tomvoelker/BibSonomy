@@ -1,0 +1,79 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
+
+	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
+	<fmt:message key="form.input.select" var="placeholderText"/>
+
+
+	<select id="selectCustomLayout" class="" data-live-search="true">
+		<option><!-- keep me! --></option>
+
+		<!--
+		| BibTeX and EndNote are added manually
+		 -->
+		<option
+				data-source="SIMPLE"
+				data-name="BIBTEX"
+				data-displayname="BibTeX"
+				value='bibtex'>
+			BibTeX
+		</option>
+
+		<option
+				data-source="SIMPLE"
+				data-name="ENDNOTE"
+				data-displayname="EndNote"
+				value='endnote'>
+			EndNote
+		</option>
+
+		<!--
+		| Custom CSL Layouts
+		 -->
+		<c:forEach var="customLayout" items="${command.customCslLayoutMap}">
+			<option data-source="CSL"
+					data-name="${mapEntry.key}"
+					data-displayname="${mapEntry.value.displayName}"
+					value='/csl-layout/${fn:substringBefore(customLayout.value.id,".csl")}/${pathAndQueryString}'>
+				<c:out value="${customLayout.value.displayName}"/>
+			</option>
+		</c:forEach>
+
+		<!-- 
+		| CSL layouts
+		 -->
+		<c:forEach var="mapEntry" items="${command.cslLayoutMap}">
+			<option
+					data-source="CSL"
+					data-name="${mapEntry.key}"
+					data-displayname="${mapEntry.value.displayName}"
+					value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'>
+				<c:out value="${mapEntry.value.displayName}"/>
+			</option>
+		</c:forEach>
+
+		<c:forEach var="mapEntry" items="${command.layoutMap}">
+			<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
+				<!--
+				| JabRef layouts
+				 -->
+				<c:if test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+					<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+					<option data-source="JABREF"
+							data-name="${mapEntry.key}"
+							data-displayname="${mapEntry.value.displayName}"
+							value="${fn:escapeXml(url)}">
+						<c:out value="${mapEntry.value.displayName}"/>
+					</option>
+				</c:if>
+			</c:if>
+		</c:forEach>
+	</select>
+
+</jsp:root>

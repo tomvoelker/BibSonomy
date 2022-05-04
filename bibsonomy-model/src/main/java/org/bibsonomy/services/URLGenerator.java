@@ -127,6 +127,7 @@ public class URLGenerator {
 	private static final String PROJECTS = "projects";
 	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
+	private static final String LOGOUT_PREFIX = "logout";
 	private static final String LAYOUT_PREFIX = "layout";
 	private static final String ENDNOTE_PREFIX = "endnote";
 	private static final String MSWORD_PREFIX = "msofficexml";
@@ -718,11 +719,14 @@ public class URLGenerator {
 	 * @return the group settings url for the specified group
 	 */
 	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
-		String url = this.projectHome + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.encodePathSegment(groupName);
+		final UrlBuilder builder = new UrlBuilder(this.projectHome)
+				.addPathElement(SETTINGS_PREFIX)
+				.addPathElement(GROUP_PREFIX)
+				.addPathElement(UrlUtils.encodePathSegment(groupName));
 		if (present(selectedTab)) {
-			url += "?selTab=" + selectedTab.intValue();
+			builder.addParameter("selTab", selectedTab.toString());
 		}
-		return this.getUrl(url);
+		return this.getUrl(builder.toString());
 	}
 
 	/**
@@ -866,6 +870,16 @@ public class URLGenerator {
 	 */
 	public String getLoginUrl() {
 		String url = this.projectHome + LOGIN_PREFIX;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the logout page
+	 *
+	 * @return URL pointing to the logout page
+	 */
+	public String getLogoutUrl() {
+		String url = this.projectHome + LOGOUT_PREFIX;
 		return this.getUrl(url);
 	}
 
@@ -1062,12 +1076,7 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
-	/**
-	 * @return the projectHome
-	 */
-	public String getProjectHome() {
-		return this.projectHome;
-	}
+
 
 	/**
 	 * @return URL to all publications of the main page in bibtex formats.
@@ -1408,6 +1417,17 @@ public class URLGenerator {
 			url += "/" + UrlUtils.encodePathSegment(tagName);
 		}
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL with the given path element from the base URL.
+	 * @param path the path element
+	 * @return URL with the path
+	 */
+	public String getUrlWithPath(String path) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement(path);
+		return this.getUrl(urlBuilder.asString());
 	}
 
 	/**
@@ -1757,6 +1777,13 @@ public class URLGenerator {
 		}
 
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * @return the projectHome
+	 */
+	public String getProjectHome() {
+		return this.projectHome;
 	}
 
 	/**

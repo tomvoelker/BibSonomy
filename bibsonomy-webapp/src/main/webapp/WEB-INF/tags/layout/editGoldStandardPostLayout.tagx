@@ -64,6 +64,10 @@
 				<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 			</c:if>
 
+			<!-- plugin for multi select form -->
+			<script type='text/javascript' src='/resources/bootstrap/plugins/bootstrap-select/js/bootstrap-select.min.js'><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='/resources/bootstrap/plugins/bootstrap-select/css/bootstrap-select.min.css'/>
+
             <!--+
 				| JAVASCRIPT FOR TAG RECOMMENDATION
 				+-->
@@ -124,7 +128,8 @@
 						+ -->
 					<errors:global />
 
-					<c:if test="${not empty postOwner and postOwner ne command.context.loginUser}">
+					<c:set var="isGroupPost" value="${not empty postOwner and postOwner ne command.context.loginUser}" />
+					<c:if test="${isGroupPost}">
 						<div class="row">
 							<div class="alert alert-warning alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
@@ -158,6 +163,15 @@
 				 		<a name="generalInformation"><!--  --></a>
 				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
+							<jsp:attribute name="legendExt">
+								<fmt:message key="post.resource.fields.general.ext" var="generalInformationExt" />
+								<c:if test="${not empty generalInformationExt}">
+									<p class="help-block small">
+										<c:out value="${generalInformationExt}" escapeXml="${false}" />
+									</p>
+								</c:if>
+							</jsp:attribute>
+
 							<jsp:attribute name="content">
 								<jsp:invoke fragment="generalInformation"/>
 							</jsp:attribute>
@@ -174,9 +188,7 @@
 						<c:if test="${not empty detailedInformation}">
 							<jsp:invoke fragment="detailedInformation"/>
 						</c:if>
-						
-						
-							
+
 						<!--+
 							| a Captcha for our spammers ...
 							+-->
@@ -235,19 +247,20 @@
 									
 									<div class="btn-toolbar cust-btn-toolbar">
 										<div class="btn-group">
-											<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="clear_tags();" tabindex="2"/>
+											<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="beforeSubmitForm();" tabindex="2"/>
 										</div>
 										<div class="btn-group">
-											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="clear_tags();" tabindex="2"/>
+											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="beforeSubmitForm();" tabindex="2"/>
 										</div>
-	
-										<c:if test="${not empty properties['bibliography.bibliographyUser']}">
+
+										<c:set var="bibliographyUser" value="${properties['bibliography.bibliographyUser']}" />
+										<c:if test="${not empty bibliographyUser}">
 											<fmt:message key="save.and.send_to" var="saveAndSendTo">
-												<fmt:param value="${properties['bibliography.bibliographyUser']}"/>
+												<fmt:param value="${bibliographyUser}"/>
 											</fmt:message>
 									
 											<div class="btn-group">
-												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendToBibliography('${properties['bibliography.bibliographyUser']}');" tabindex="2"/>
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="addForFriendTag('${bibliographyUser}');" tabindex="2"/>
 											</div>
 										</c:if>
 										<c:if test="${not empty groups}">
@@ -256,7 +269,7 @@
 											</fmt:message>
 									
 											<div class="btn-group">
-												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendGroupToBibliography('${groups}');" tabindex="2"/>
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="addForGroupTag('${groups}');" tabindex="2"/>
 											</div>
 										</c:if>			
 									</div>
