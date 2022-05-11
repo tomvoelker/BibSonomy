@@ -945,6 +945,7 @@
 		<value>skipDummyValues</value>
 		
 		<value>approved</value>
+		<value>approvePostUpdate</value>
 		<value>saveAndRate</value>
 		
 		<value>compareVersion</value>

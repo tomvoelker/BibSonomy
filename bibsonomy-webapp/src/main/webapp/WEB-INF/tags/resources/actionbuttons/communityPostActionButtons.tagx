@@ -10,9 +10,13 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="ckey" type="java.lang.String" required="false"/>
 
 	<c:set var="buttonClasses" value="btn btn-default"/>
 	<c:set var="loginUser" value="${command.context.loginUser}" />
+
+	<c:set var="showApprovalOptions" value="${command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN'}" />
+
 
 	<c:if test="${command.context.userLoggedIn}">
 		<c:if test="${not loginUser.spammer}">
@@ -43,6 +47,18 @@
 		</c:choose>
 		</c:if>
 
+		<c:if test="${showApprovalOptions}">
+			<fmt:message var="additionalText" key="post.actions.edit.approve"/>
+			<buttons:approvePostButton
+					post="${post}"
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"
+					enforceCommunityPost="${true}"
+					additionalText="${additionalText}"
+					ckey="${ckey}"
+			/>
+		</c:if>
+
 		<c:if test="${communityPostExists}">
 			<fmt:message var="additionalText" key="post.actions.history"/>
 			<buttons:historyButton
@@ -65,19 +81,19 @@
 					additionalText="${additionalText}"
 			/>
 		</c:if>
-	</c:if>
 
-	<c:if test="${command.context.userLoggedIn and empty postOfLoggedInUser}">
-		<fmt:message var="additionalText" key="${resourceType}.actions.copy.title"/>
+		<c:if test="${empty postOfLoggedInUser}">
+			<fmt:message var="additionalText" key="${resourceType}.actions.copy.title"/>
 
-		<bs:linkButton
-				href="${relativeUrlGenerator.getCopyUrlOfPost(post) }"
-				size="${org.bibsonomy.webapp.view.constants.BootstrapButtonSize.defaultSize}"
-				style="primary"
-				icon="copy"
-				textKey="post.actions.copy"
-				titleKey="${resourceType}.actions.copy.title"
-		/>
+			<bs:linkButton
+					href="${relativeUrlGenerator.getCopyUrlOfPost(post) }"
+					size="${org.bibsonomy.webapp.view.constants.BootstrapButtonSize.defaultSize}"
+					style="primary"
+					icon="copy"
+					textKey="post.actions.copy"
+					titleKey="${resourceType}.actions.copy.title"
+			/>
+		</c:if>
 	</c:if>
 
 </jsp:root>

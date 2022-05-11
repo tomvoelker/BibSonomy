@@ -1,0 +1,60 @@
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:spring="http://www.springframework.org/tags"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+>
+
+    <!-- user must be logged in -->
+
+    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+    <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="additionalText" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="referer" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="ckey" type="java.lang.String" required="true"/>
+
+
+    <!-- TODO: use the urlGenerator for this -->
+    <c:set var="url" value="Publication"/>
+    <c:if test="${resourceType eq 'bookmark'}">
+        <c:set var="url" value="Bookmark"/>
+    </c:if>
+
+    <fmt:message var="btnTitle" key="post.actions.edit.approve" />
+
+    <c:choose>
+        <c:when test="${enforceCommunityPost or empty post.user.name}">
+            <c:set var="url" value="/editGoldStandard${url}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="url" value="/edit${url}"/>
+        </c:otherwise>
+    </c:choose>
+
+    <c:set var="url" value="${url}?intraHashToUpdate=${post.resource.interHash}&amp;approvePostUpdate=${true}&amp;ckey=${ckey}"/>
+
+    <!-- add referer attribute to edit request -->
+    <c:if test="${not empty referer}">
+        <spring:eval var="escapedReferer" expression="T(org.bibsonomy.util.UrlUtils).safeURIEncode(referer)" />
+        <c:set var="url" value="${url}&amp;referer=${escapedReferer}" />
+    </c:if>
+
+    <c:if test="${systemReadOnly}">
+        <fmt:message var="editTitle" key="system.readOnly.info" />
+        <c:set var="buttonClasses" value="${buttonClasses} disabled" />
+    </c:if>
+
+    <a class="${buttonClasses}" href="${url}" title="${btnTitle}">
+        <fontawesome:icon icon="star" />
+        <c:if test="${not empty additionalText}">
+            <c:out value=" " />
+            <span>${additionalText}</span>
+        </c:if>
+        <span class="sr-only"><fmt:message key="post.actions.edit.approve"/></span>
+    </a>
+
+</jsp:root>

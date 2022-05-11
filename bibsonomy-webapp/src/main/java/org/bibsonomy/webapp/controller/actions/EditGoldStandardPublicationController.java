@@ -126,6 +126,11 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		return gold;
 	}
 
+	@Override
+	protected void approvePost(Post<BibTex> post) {
+		post.setApproved(true);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
