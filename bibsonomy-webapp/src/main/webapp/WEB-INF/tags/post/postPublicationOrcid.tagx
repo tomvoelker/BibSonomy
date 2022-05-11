@@ -18,7 +18,7 @@
 
 	<div id="orcidImportFormError"><!-- keep me for error reponses --></div>
 
-	<form:form id="orcidImportForm" cssClass="form-horizontal" method="post" action="/import/publications?ckey=${ckey}">
+	<form:form id="orcidImportForm" cssClass="form-horizontal" method="post" action="/import/publications?ckey=${ckey}&amp;referer=${relativeUrlGenerator.getUserUrlByUserName(command.context.loginUser)}">
 
 		<div class="form-group">
 			<label class="col-sm-2 control-label">

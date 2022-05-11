@@ -23,7 +23,8 @@
 	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false" 
 		description="In indirect mode, each intrahash(post) is associated with a list of errors"/>
 
-	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
+	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
+	<jsp:directive.attribute name="shortErrorPostDescription" fragment="true" required="true" description="A one line description of an erroneous post"/>
 	
 	<script type="text/javascript" src="${resdir}/javascript/batchEdit.js"><!-- keep me --></script>
 
@@ -209,46 +210,54 @@
 						</table>
 					</c:when>
 					<c:when test="${errorInfo.errorType eq 'FIELD_ERROR'}">
-						<h2><fmt:message key="batchedit.fielderror" /></h2>
-						<!-- get the first error message (must be the same for the group -->
-						<c:set var="message" value="" />
-						<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource.*">
-							<c:set var="errorMessages" value="${status.errorMessages}" />
+						<div id="fieldErrorPostList">
+							<h2><fmt:message key="batchedit.fielderror" /></h2>
+							<!-- get the first error message (must be the same for the group -->
+							<c:set var="message" value="" />
+							<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource.*">
+								<c:set var="errorMessages" value="${status.errorMessages}" />
 
-							<c:forEach var="errorMessage" items="${errorMessages}" varStatus="stat">
-								<c:set var="message" value="${stat.first ? '' : message} " />
-								<c:if test="${fn:length(errorMessages) > 1}">
-									<c:set var="message" value="${message}${stat.count}. " />
-								</c:if>
-								<c:set var="message" value="${message}${errorMessage}" />
-							</c:forEach>
-						</spring:bind>
-						<div class="alert alert-danger">
-							<c:out value="${message.substring(0, fn:length(message) - 1)}" />
-						</div>
-						<c:forEach var="position" items="${errorInfo.positions}">
-							<c:set var="post" value="${listView.list[position]}" />
-							<div>
-								<jsp:invoke fragment="shortPostDescription" />
+								<c:forEach var="errorMessage" items="${errorMessages}" varStatus="stat">
+									<c:set var="message" value="${stat.first ? '' : message} " />
+									<c:if test="${fn:length(errorMessages) > 1}">
+										<c:set var="message" value="${message}${stat.count}. " />
+									</c:if>
+									<c:set var="message" value="${message}${errorMessage}" />
+								</c:forEach>
+							</spring:bind>
+							<div class="alert alert-danger">
+								<c:out value="${message.substring(0, fn:length(message) - 1)}" />
 							</div>
-						</c:forEach>
+							<div class="batch-error-post-list">
+							<c:forEach var="position" items="${errorInfo.positions}">
+								<c:set var="post" value="${listView.list[position]}" />
+								<div class="batch-error-post">
+									<jsp:invoke fragment="shortErrorPostDescription" />
+								</div>
+							</c:forEach>
+							</div>
+						</div>
 					</c:when>
 					<c:when test="${errorInfo.errorType eq 'POST_ERROR'}">
-						<h2>
-							<fmt:message key="batchedit.error.${fn:toLowerCase(errorInfo.errorField)}" />
-						</h2>
-						<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource">
-							<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
-								<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
-							</c:forEach>
-						</spring:bind>
+						<div id="postErrorPostList">
+							<h2>
+								<fmt:message key="batchedit.error.${fn:toLowerCase(errorInfo.errorField)}" />
+							</h2>
+							<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource">
+								<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
+									<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
+								</c:forEach>
+							</spring:bind>
 
-						<c:forEach var="position" items="${errorInfo.positions}">
-							<c:set var="post" value="${listView.list[position]}" />
-							<div>
-								<jsp:invoke fragment="shortPostDescription" />
+							<div class="batch-error-post-list">
+								<c:forEach var="position" items="${errorInfo.positions}">
+									<c:set var="post" value="${listView.list[position]}" />
+									<div class="batch-error-post">
+										<jsp:invoke fragment="shortPostDescription" />
+									</div>
+								</c:forEach>
 							</div>
-						</c:forEach>
+						</div>
 					</c:when>
 				</c:choose>
 			</c:forEach>

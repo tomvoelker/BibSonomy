@@ -334,6 +334,7 @@
 								<value>ckey</value>
 								<value>tags</value>
 								<value>postsErrorList</value>
+								<value>referer</value>
 								<!-- get snippet from external url -->
 								<value>url</value>
 								<!-- external import -->
