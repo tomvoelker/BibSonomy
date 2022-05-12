@@ -158,6 +158,8 @@
 					</div>
 				</div>
 			</div>
+			
+			<modals:unlinkPublication />
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>
