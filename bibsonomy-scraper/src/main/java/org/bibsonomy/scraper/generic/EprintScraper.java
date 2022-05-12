@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.scraper.generic;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -67,8 +68,12 @@ public class EprintScraper implements Scraper {
 	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		sc.setBibtexResult(converter.toBibtex(sc.getPageContent()));
-		return true;
+		String bibtex = converter.toBibtex(sc.getPageContent());
+		if (present(bibtex)){
+			sc.setBibtexResult(bibtex);
+			return true;
+		}
+		return  false;
 	}
 
 	@Override
