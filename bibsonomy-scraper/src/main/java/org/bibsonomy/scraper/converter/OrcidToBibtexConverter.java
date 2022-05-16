@@ -134,7 +134,7 @@ public class OrcidToBibtexConverter implements BibtexConverter{
 
         // Apply external IDs, such as DOI, ISBN, etc.
         JSONObject externalIds = (JSONObject) citation.get("external-ids");
-        if (present(externalIds)) {
+        if (present(externalIds) && containsAndPresent(externalIds, "external-id")) {
             this.applyExternalIds((JSONArray) externalIds.get("external-id"), builder);
         }
 
