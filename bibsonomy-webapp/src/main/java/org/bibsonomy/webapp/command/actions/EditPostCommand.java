@@ -146,7 +146,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	private String saveAndRate;
 	private boolean approved;
-	private boolean approvePostUpdate;
 
 	private int compareVersion;
 	private List<String> differentEntryKeys;
