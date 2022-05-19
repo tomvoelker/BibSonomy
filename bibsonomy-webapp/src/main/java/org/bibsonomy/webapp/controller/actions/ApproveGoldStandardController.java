@@ -56,7 +56,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.springframework.validation.Errors;
 
 @Getter
@@ -67,6 +67,7 @@ public class ApproveGoldStandardController implements MinimalisticController<App
     private URLGenerator urlGenerator;
 
     private Errors errors;
+    private String success;
     private String redirectUrl;
 
     @Override
@@ -106,7 +107,12 @@ public class ApproveGoldStandardController implements MinimalisticController<App
             this.errors.reject("error.field.valid.ckey");
         }
 
-        return new ExtendedRedirectView(redirectUrl);
+        final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes(this.redirectUrl);
+        redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+        if (present(this.success)) {
+            redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, this.success);
+        }
+        return redirectView;
     }
 
     private void handleEditAndApprove(final String interhash) {
@@ -135,7 +141,7 @@ public class ApproveGoldStandardController implements MinimalisticController<App
                  */
                 this.errors.reject("error.post.update", "Could not update post.");
             }
-
+            this.success = "actions.communityPost.update.success";
         } catch (final DatabaseException ex) {
             this.errors.reject("error.post.update", "Could not update post.");
         }
@@ -155,7 +161,7 @@ public class ApproveGoldStandardController implements MinimalisticController<App
             }
 
             final List<JobResult> results = this.logic.createPosts(Collections.singletonList(postToCreate));
-
+            this.success = "actions.communityPost.update.success";
         } catch (final DatabaseException de) {
             this.errors.reject("error.post.update", "Could not update post.");
         }
