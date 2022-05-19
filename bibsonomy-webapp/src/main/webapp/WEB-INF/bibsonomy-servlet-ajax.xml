@@ -182,6 +182,19 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/goldstandards/approve">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="approveGoldStandardAjaxController"/>
+						<property name="allowedFields">
+							<list>
+								<value>copyFrom</value>
+								<value>intrahash</value>
+								<value>interhash</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/ajax/orcid">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="orcidAjaxController"/>
@@ -353,6 +366,9 @@
 	
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
 	<bean id="editGoldstandardRelationController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardRelationController" parent="ajaxController" scope="request" />
+	<bean id="approveGoldStandardAjaxController" class="org.bibsonomy.webapp.controller.ajax.ApproveGoldStandardAjaxController" parent="ajaxController" scope="request">
+		<property name="urlGenerator" ref="relativeUrlGenerator"/>
+	</bean>
 	
 	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />
 	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="discussionItemAjaxController" scope="request" />

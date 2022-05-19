@@ -14,7 +14,6 @@
 
 	<c:set var="buttonClasses" value="btn btn-default"/>
 	<c:set var="loginUser" value="${command.context.loginUser}" />
-
 	<c:set var="showApprovalOptions" value="${command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN'}" />
 
 
@@ -47,13 +46,13 @@
 		</c:choose>
 		</c:if>
 
-		<c:if test="${showApprovalOptions}">
+		<c:if test="${showApprovalOptions and not post.approved}">
 			<fmt:message var="additionalText" key="post.actions.edit.approve"/>
 			<buttons:approvePostButton
 					post="${post}"
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"
-					enforceCommunityPost="${true}"
+					communityPostExists="${communityPostExists}"
 					additionalText="${additionalText}"
 					ckey="${ckey}"
 			/>

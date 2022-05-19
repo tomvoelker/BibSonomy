@@ -730,13 +730,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * clean post
 		 */
 		this.cleanPost(post);
-
-		/*
-		 * set post approve, if flag is set
-		 */
-		if (command.isApprovePostUpdate()) {
-			this.approvePost(post);
-		}
 	}
 
 	/**
@@ -1159,10 +1152,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (resource instanceof GoldStandard<?>) {
 			resource.setIntraHash(SimHash.getSimHash(resource, HashID.INTRA_HASH));
 		}
-	}
-
-	protected void approvePost(Post<RESOURCE> post) {
-		// noop
 	}
 
 	/**
