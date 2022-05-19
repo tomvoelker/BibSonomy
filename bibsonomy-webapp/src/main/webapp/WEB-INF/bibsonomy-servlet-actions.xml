@@ -830,6 +830,20 @@
 						</property>
 					</bean>
 				</entry>
+
+				<entry key="/actions/approveGoldstandard">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="approveGoldStandardController"/>
+						<property name="allowedFields">
+							<list>
+								<value>copyFrom</value>
+								<value>intrahash</value>
+								<value>interhash</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -1034,6 +1048,11 @@
 		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
 		<property name="view" value="POST_PUBLICATION" />
+	</bean>
+
+	<bean id="approveGoldStandardController" class="org.bibsonomy.webapp.controller.actions.ApproveGoldStandardController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator"/>
 	</bean>
 	
 	<bean id="importPublicationController" parent="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">

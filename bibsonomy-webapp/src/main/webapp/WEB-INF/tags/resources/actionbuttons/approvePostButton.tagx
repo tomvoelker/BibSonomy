@@ -19,7 +19,7 @@
 
 	<fmt:message var="btnTitle" key="post.actions.edit.approve"/>
 
-	<c:set var="url" value="/ajax/goldstandards/approve?interhash=${post.resource.interHash}"/>
+	<c:set var="url" value="/actions/approveGoldstandard?interhash=${post.resource.interHash}"/>
 
 	<c:if test="${not communityPostExists}">
 		<c:set var="url" value="${url}&amp;intrahash=${post.resource.intraHash}&amp;copyFrom=${post.user.name}"/>
