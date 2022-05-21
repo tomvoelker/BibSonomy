@@ -1,190 +1,176 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 
 
-	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
-	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)." />
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
+							 description="The type of resource that are edited (bookmark or bibtex)."/>
 	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="groupedErrorList" type="java.util.List" required="true" />
-	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false" 
-		description="In indirect mode, each intrahash(post) is associated with a list of errors"/>
+	<jsp:directive.attribute name="groupedErrorList" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false"
+							 description="In indirect mode, each intrahash(post) is associated with a list of errors"/>
 	<jsp:directive.attribute name="hasErrors" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hasValidData" type="java.lang.Boolean" required="false"/>
 
-	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
-	
-	<script type="text/javascript" src="${resdir}/javascript/batchEdit.js"><!-- keep me --></script>
+
+	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true"
+							 description="A one line description of a post"/>
+
+	<script type="text/javascript" src="${resdir}/javascript/batchImport.js"><!-- keep me --></script>
 
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
-	
+
 	<c:if test="${empty updateExistingPost}">
-		<c:set var="updateExistingPost" value="true" />
+		<c:set var="updateExistingPost" value="true"/>
 	</c:if>
 	<!-- OVERWRITE DUPLICATES -->
 	<c:if test="${empty overwrite}">
-		<c:set var="overwrite" value="false" />
-	</c:if>
-	
-	<c:if test="${empty directEdit}">
-		<input type="hidden" name="directEdit" value="true" />
+		<c:set var="overwrite" value="false"/>
 	</c:if>
 
 	<c:if test="${empty hasErrors}">
-		<input type="hidden" name="hasErrors" value="false" />
+		<input type="hidden" name="hasErrors" value="false"/>
 	</c:if>
 
 	<c:if test="${empty hasValidData}">
-		<input type="hidden" name="hasValidData" value="true" />
+		<input type="hidden" name="hasValidData" value="true"/>
 	</c:if>
-	<!-- SUBMITBUTTON -->
 
-	<fmt:message key="batchedit.button.update" var="buttonUpdate" />
-	<fmt:message key="batchedit.button.update" var="buttonUpdateViewable" />
-	<fmt:message key="batchedit.disregardedPosts.info" var="disregardedPosts" />
+	<!-- SUBMITBUTTON -->
+	<fmt:message key="batchedit.button.import" var="buttonUpdate"/>
+
+	<!-- HELP-TEXTS -->
+	<fmt:message key="batchedit.editTags.help" var="editTagsHelp"/>
+	<fmt:message key="batchedit.updateVisibility.help" var="updateVisibilityHelp"/>
+	<fmt:message key="batchedit.normalize.help" var="normalizePostsHelp"/>
+
+	<fmt:message key="batchedit.editTags.placeholder" var="editTagsPlaceholder"/>
+
+	<fmt:message key="batchedit.editTags.warning" var="editTagsWarning"/>
+	<input type="hidden" name="editTagsWarning" value="${editTagsWarning}"/>
+
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
 
-	<jsp:directive.variable name-given="post" scope="NESTED" />
-		<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
-			<input type="hidden" name="updateExistingPost" value="${updateExistingPost}" />  
-			<input type="hidden" name="overwrite" value="${overwrite}" /> 
-			<input type="hidden" name="resourcetype" value="${resourceType}" />
-						
-			<!-- the following variable is defined to communicate with .js file -->
-			<input type="hidden" name="action"/>
-			
-			<c:choose>
-			<!-- In direct edit mode, we show a selector, otherwise we show four checkboxes. -->
-			<c:when test="${directEdit}">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">
-					<fmt:message key="batchedit.selection.initial"/>
-				</label>
-				<div class="col-sm-9">
-					<select id="selector" class="form-control help-popover">
-						<option value="0"><fmt:message key="batchedit.selection.initial"/></option>
-						<option value="1"><fmt:message key="batchedit.EditAllTag"/></option>
-						<option value="2"><fmt:message key="batchedit.EditEachTag"/></option>
-						
-						<c:if test="${resourceType eq 'bibtex'}">
-							<option value="3"><fmt:message key="batchedit.normalizeSelected"/></option>
-						</c:if>
-						<!-- We do not have delete option in indirect mode -->
-						<c:if test="${directEdit}">
-							<option value="4"><fmt:message key="batchedit.deleteSelected"/></option>
-						</c:if>
-						<option value="5"><fmt:message key="batchedit.updatePrivacy"/></option>
-					</select>
-					<div class="help help-header hide"><!--  --></div>
-					<div class="help help-content hide"><fmt:message key="batchedit.selection.help" /></div>
-				</div>
-			</div>
-			</c:when>
-			<c:otherwise>
+	<jsp:directive.variable name-given="post" scope="NESTED"/>
+	<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
+		<input type="hidden" name="updateExistingPost" value="${updateExistingPost}"/>
+		<input type="hidden" name="overwrite" value="${overwrite}"/>
+		<input type="hidden" name="resourcetype" value="${resourceType}"/>
+
+		<!-- the following variable is defined to communicate with .js file -->
+		<input type="hidden" name="action"/>
+
+		<!--			TODO: Add delete Option for direct mode -->
+		<c:choose>
+			<c:when test="${hasValidData}">
 				<c:choose>
-					<c:when test="${hasValidData}">
-						<c:choose>
-							<c:when test="${updateExistingPost}">
-								<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
-									<fmt:message key="batchedit.hint.savedEdit"/>
-								</div>
-							</c:when>
-							<c:otherwise>
-								<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
-									<fmt:message key="batchedit.hint.notSavedEdit"/>
-								</div>
-							</c:otherwise>
-						</c:choose>
-						<br/>
-						<table class="table table-striped" style="margin-bottom:0px;">
-							<thead>
-							<th colspan="4">
-								<fmt:message key="batchedit.selection.initial"/>
-							</th>
-							</thead>
-							<tbody>
-							<tr style="border-bottom:2px solid #eee">
-								<td>
-									<input type="checkbox" id="checkboxAllTag" style="margin-right:2px"/><fmt:message key="batchedit.EditAllTag"/>
-								</td>
-								<td>
-									<input type="checkbox" id="checkboxEachTag" style="margin-right:2px"/><fmt:message key="batchedit.EditEachTag"/>
-								</td>
-								<td>
-									<input type="checkbox" id="checkboxNormalize" style="margin-right:2px"/><fmt:message key="batchedit.normalizeSelected"/>
-								</td>
-								<td>
-									<input type="checkbox" id="checkboxPrivacy" style="margin-right:2px"/><fmt:message key="batchedit.updatePrivacy"/>
-								</td>
-							</tr>
-							</tbody>
-						</table>
+					<c:when test="${updateExistingPost}">
+						<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+							<fmt:message key="batchedit.hint.savedEdit"/>
+						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
-							<fmt:message key="batchedit.hint.noData"/>
+							<fmt:message key="batchedit.hint.notSavedEdit"/>
 						</div>
 					</c:otherwise>
 				</c:choose>
+				<div class="panel-group" style="margin-top: 10px">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<fmt:message key="batchedit.editTags.heading"/>
+								<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
+								<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
+									  data-placement="top" title="${editTagsHelp}"><!-- KEEP ME! --></span>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div class="input-group">
+								<input type="text" class="form-control" size="40" name="tags"
+									   id="tagsInput" placeholder="${editTagsPlaceholder}"/>
+								<span class="input-group-btn">
+											<button type="button" class="addTagsButton btn btn-success" id="addAllTags"
+											><fmt:message key="batchedit.editTags.AddTags"/></button>
+											<button type="button" class="removeTagsButton btn btn-danger" id="removeAllTags"
+											><fmt:message key="batchedit.editTags.RemoveTags"/></button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<fmt:message key="batchedit.updateVisibility.heading"/>
+								<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
+									  data-placement="top" title="${updateVisibilityHelp}"><!-- KEEP ME! --></span>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${mtl:selectedGroups(command.abstractGrouping, command.groups)}"/>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<input type="checkbox" id="checkboxNormalize"
+									   style="margin-right:2px"/>
+								<fmt:message key="batchedit.normalize.heading"/>
+								<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="normalizeCountBadge"><!-- KEEP ME! --></span>
+								<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
+									  data-placement="top" title="${normalizePostsHelp}"><!-- KEEP ME! --></span>
+							</h3>
+						</div>
+					</div>
+				</div>
+				<tr>
+					<td colspan="0">
+						<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary"
+									   className="batchUpdateButton pull-right" type="submit"/>
+						<div class="alert col-sm-12 invisible invisible emptyBlock" style="margin-bottom:0px;"
+							 role="alert">I am an empty block to avoid other sections moving
+						</div>
+						<div class="alert alert-warning col-sm-12 invisible hidden deleteAlert"
+							 style="margin-bottom:0px; margin-top: 10px" role="alert"><fmt:message key="batchedit.deleteAlert"/></div>
+						<div class="alert alert-info col-sm-12 invisible hidden normalizeAlert"
+							 style="margin-bottom:0px; margin-top: 10px;" role="alert"><fmt:message key="batchedit.normalizeAlert"/></div>
+						<div class="alert alert-info col-sm-12 invisible hidden selectPostAlert"
+							 style="margin-bottom:0px; margin-top: 10px" role="alert"><fmt:message key="batchedit.editHint"/></div>
+					</td>
+				</tr>
+
+
+				<br/>
+			</c:when>
+			<c:otherwise>
+				<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+					<fmt:message key="batchedit.hint.noData"/>
+				</div>
 			</c:otherwise>
-			</c:choose>
-			<!-- the following tabel contains two edit options: 
-				1. add a tag to all posts
-				2. update privacy  -->
-			<c:if test="${not directEdit and hasValidData}">
-				<table class="table table-striped" style="margin-bottom:0px;">
-					<thead>
-						<tr>
-							<td id="allTags">
-								<fmt:message key="batchedit.selectedTags" />
-							</td>
-							<td id="viewable">
-								<fmt:message key="batchedit.viewable" />
-							</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td style="width:50%; border-right:1px solid #eee">
-								<input type="text" class="form-control" disabled="disabled" name="tags" size="40"/>
-							</td>
-							<td>
-								<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<div class="alert col-sm-10 invisible invisible emptyBlock" style="margin-bottom:0px;" role="alert">I am an empty block to avoid other sections moving</div>
-								<div class="alert alert-warning col-sm-10 invisible hidden deleteAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.deleteAlert" /></div>
-								<div class="alert alert-info col-sm-10 invisible hidden normalizeAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.normalizeAlert" /></div>
-								<div class="alert alert-info col-sm-10 invisible hidden selectPostAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.editHint" /></div>
-								<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary" className="batchUpdateButton pull-right" disabled="disabled" type="submit" />
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</c:if>
+		</c:choose>
+
 
 		<!-- If there is no post to edit -->
 		<c:if test="${empty listView.list}">
-			<div class="alert alert-info col-sm-10" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.noPost.message" /></div>
+			<div class="alert alert-info col-sm-10" style="margin-bottom:0px;" role="alert"><fmt:message
+					key="batchedit.noPost.message"/></div>
 		</c:if>
 		<!--  else.. -->
 		<c:if test="${not empty listView.list}">
@@ -194,59 +180,69 @@
 						<table class="table table-striped">
 							<thead>
 							<tr>
-								<th style="text-align: center;">
-									<input type="checkbox" id="selectAll" value="true" checked="checked" title="select all"/>
+								<th>
+									<fmt:message key="batchedit.yourPosts"/>
+								</th>
+								<th id="yourTags">
+									<span style="padding-left: 12px; padding-right: 14px">
+										<input type="checkbox" id="selectAll" value="true" checked="checked"
+											   title="select all"/>
+									</span>
+									<fmt:message key="batchedit.yourTags"/>
 								</th>
 								<th>
-									<fmt:message key="batchedit.yourPosts" />
+									<fmt:message key="batchedit.normalize"/>
 								</th>
-								<td id="yourTags">
-									<fmt:message key="batchedit.yourTags" />
-								</td>
 							</tr>
 							</thead>
 							<tbody>
 							<c:forEach var="position" items="${errorInfo.positions}">
-								<c:set var="post" value="${listView.list[position]}" />
+								<c:set var="post" value="${listView.list[position]}"/>
 								<tr>
-									<td style="text-align: center;">
-										<input type="checkbox" name="posts['${post.resource.intraHash}_${post.user.name}'].checked" value="true" checked="checked" />
-									</td>
 									<!--  a short description of the post -->
-									<td class="chunkybib">
-										<jsp:invoke	fragment="shortPostDescription" />
+									<td class="chunkybib" style="pointer-events: none;">
+										<jsp:invoke fragment="shortPostDescription"/>
 									</td>
-									<!-- the input field for the tags -->
 									<td>
-										<spring:bind path="command.${resourceType}.list[${position}].tags">
-											<c:choose>
-												<c:when test="${status.error}">
-													<!--  the post has some errors on the tags - show the tags -->
-													<batch:tagErrors errors="${status}" />
-													<input type="text"
-														   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags" size="37"
-														   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-														   class="form-control"
-														   disabled="disabled"
-														   autocomplete="off" />
-													<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-													<!--  we don't send the old tags, since we must try to update this post in any case  -->
-												</c:when>
-												<c:otherwise>
-													<!--  the post has no errors on the tags - show the tags -->
-													<input type="text"
-														   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags" size="40"
-														   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-														   class="form-control"
-														   disabled="disabled"
-														   autocomplete="off" />
-													<!-- to check if the tags have been changed, we also send the original tags -->
-													<input type="hidden"
-														   name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags"
-														   value="${fn:escapeXml(mtl:toTagString(post.tags))}" />
-												</c:otherwise>
-											</c:choose>
-										</spring:bind>
+										<div class="input-group">
+											  <span class="input-group-addon">
+												<input type="checkbox" name="posts['${post.resource.intraHash}_${post.user.name}'].checked" value="true" checked="checked" />
+											  </span>
+											<spring:bind path="command.${resourceType}.list[${position}].tags">
+												<c:choose>
+													<c:when test="${status.error}">
+														<!--  the post has some errors on the tags - show the tags -->
+														<batch:tagErrors errors="${status}"/>
+														<input type="text"
+															   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
+															   size="37"
+															   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+															   class="form-control"
+															   autocomplete="off"/>
+														<meta itemprop="keywords"
+															  content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+														<!--  we don't send the old tags, since we must try to update this post in any case  -->
+													</c:when>
+													<c:otherwise>
+														<!--  the post has no errors on the tags - show the tags -->
+														<input type="text"
+															   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
+															   size="40"
+															   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+															   class="form-control"
+															   autocomplete="off"/>
+														<!-- to check if the tags have been changed, we also send the original tags -->
+														<input type="hidden"
+															   name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags"
+															   value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+													</c:otherwise>
+												</c:choose>
+											</spring:bind>
+										</div><!-- /input-group -->
+									</td>
+									<!-- the normalization selection -->
+									<td style="text-align: center;">
+										<input type="checkbox" name="posts['${post.resource.intraHash}_${post.user.name}'].normalize" value="true"/>
 									</td>
 								</tr>
 							</c:forEach>
@@ -254,65 +250,65 @@
 						</table>
 					</c:when>
 					<c:when test="${errorInfo.errorType eq 'FIELD_ERROR'}">
-						<h2><fmt:message key="batchedit.fielderror" /></h2>
+						<h2><fmt:message key="batchedit.fielderror"/></h2>
 						<!-- get the first error message (must be the same for the group -->
-						<c:set var="message" value="" />
+						<c:set var="message" value=""/>
 						<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource.*">
-							<c:set var="errorMessages" value="${status.errorMessages}" />
+							<c:set var="errorMessages" value="${status.errorMessages}"/>
 
 							<c:forEach var="errorMessage" items="${errorMessages}" varStatus="stat">
-								<c:set var="message" value="${stat.first ? '' : message} " />
+								<c:set var="message" value="${stat.first ? '' : message} "/>
 								<c:if test="${fn:length(errorMessages) > 1}">
-									<c:set var="message" value="${message}${stat.count}. " />
+									<c:set var="message" value="${message}${stat.count}. "/>
 								</c:if>
-								<c:set var="message" value="${message}${errorMessage}" />
+								<c:set var="message" value="${message}${errorMessage}"/>
 							</c:forEach>
 						</spring:bind>
 						<div class="alert alert-danger">
-							<c:out value="${message.substring(0, fn:length(message) - 1)}" />
+							<c:out value="${message.substring(0, fn:length(message) - 1)}"/>
 						</div>
 						<c:forEach var="position" items="${errorInfo.positions}">
-							<c:set var="post" value="${listView.list[position]}" />
-							<div>
-								<!--TODO: Should the links in the description be disabled since they most likely will lead to a 404 page? -->
-								<jsp:invoke fragment="shortPostDescription" />
+							<c:set var="post" value="${listView.list[position]}"/>
+							<div style="pointer-events: none;">
+								<jsp:invoke fragment="shortPostDescription"/>
 							</div>
 						</c:forEach>
 					</c:when>
 					<c:when test="${errorInfo.errorType eq 'POST_ERROR'}">
 						<h2>
-							<fmt:message key="batchedit.error.${fn:toLowerCase(errorInfo.errorField)}" />
+							<fmt:message key="batchedit.error.${fn:toLowerCase(errorInfo.errorField)}"/>
 						</h2>
 						<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource">
 							<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
-								<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
+								<c:set var="tooltip_msg"
+									   value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}"/>
 							</c:forEach>
 						</spring:bind>
 
 						<c:forEach var="position" items="${errorInfo.positions}">
-							<c:set var="post" value="${listView.list[position]}" />
-							<div>
-								<!--TODO: Also disable links?				-->
-								<jsp:invoke fragment="shortPostDescription" />
+							<c:set var="post" value="${listView.list[position]}"/>
+							<!-- We want all links, except those from existing publications, to be unclickable (as they only lead to 404 error pages)-->
+							<c:choose>
+								<c:when test="${fn:toLowerCase(errorInfo.errorField) == 'duplicateposterrormessage'}">
+									<c:set var="pointerEvent" value=""/>
+								</c:when>
+								<c:otherwise>
+									<c:set var="pointerEvent" value="pointer-events: none;"/>
+								</c:otherwise>
+							</c:choose>
+							<div style="${pointerEvent}">
+								<jsp:invoke fragment="shortPostDescription"/>
 							</div>
 						</c:forEach>
 					</c:when>
 				</c:choose>
 			</c:forEach>
 
-			</c:if>
-			<input type="hidden" name="ckey" value="${ckey}" /> 
-			<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
+		</c:if>
+		<input type="hidden" name="ckey" value="${ckey}"/>
+		<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
+		<input type="hidden" name="directEdit" value="${directEdit}"/>
 
-			<!-- we don't have pagination in indirect mode. -->
-			<c:if test="${directEdit}">
-				<div style="padding-left: 5px;">
-					<rc:nextprev listView="${listView}"	listViewStartParamName="${listViewStartParamName}" />
-					${mtl:ch('nbsp')}
-				</div>
-			</c:if>
-			<input type="hidden" name="directEdit" value="${directEdit}" />
-			
-			<p class="clearfix"><!--  --></p>
-		</form>
+		<p class="clearfix"><!--  --></p>
+	</form>
 </jsp:root>

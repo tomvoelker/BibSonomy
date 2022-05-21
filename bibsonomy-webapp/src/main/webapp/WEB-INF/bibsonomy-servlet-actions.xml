@@ -536,6 +536,7 @@
 								<value>posts[*].checked</value>
 								<value>posts[*].newTags</value>
 								<value>posts[*].oldTags</value>
+								<value>posts[*].normalize</value>
 								<value>action</value>
 								<value>referer</value>
 								<!-- retaining postPublication options -->

@@ -29,7 +29,7 @@
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="selectedGroups" type="java.util.Set" required="false"/>
-	
+
 	<c:set var="isPublic" value="${mtl:contains(selectedGroups, publicGroup)}" />
 	<c:set var="isPrivate" value="${mtl:contains(selectedGroups, privateGroup)}" />
 	<c:set var="isFriend" value="${mtl:contains(selectedGroups, friendsGroup)}" />

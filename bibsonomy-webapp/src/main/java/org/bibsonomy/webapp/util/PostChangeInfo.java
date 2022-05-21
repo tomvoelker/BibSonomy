@@ -42,6 +42,8 @@ public class PostChangeInfo {
 	// FIXME: should be of type Set<Tag>
 	private String newTags;
 
+	private boolean normalize;
+
 	/**
 	 * @return the marked
 	 */
@@ -87,4 +89,19 @@ public class PostChangeInfo {
 		this.newTags = newTags;
 	}
 
+	/**
+	 *
+	 * @return if the post should be normalized
+	 */
+	public boolean isNormalize() {
+		return normalize;
+	}
+
+	/**
+	 *
+	 * @param normalize the info if the post should be normalized
+	 */
+	public void setNormalize(boolean normalize) {
+		this.normalize = normalize;
+	}
 }

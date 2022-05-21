@@ -313,7 +313,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * loop through all hashes and check for each post, what to do
 		 */
 		for (final Entry<String, PostChangeInfo> markedPost : markedPostsMap.entrySet()) {
-			if (!markedPost.getValue().isChecked()) {
+			if (!markedPost.getValue().isChecked() && !markedPost.getValue().isNormalize()) {
 				continue;
 			}
 			
@@ -361,7 +361,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 */
 			post.setDate(now);
 
-			if (action.contains(NORMALIZE_ACTION)) {
+			if (action.contains(NORMALIZE_ACTION) && (directEdit || markedPost.getValue().isNormalize())) {
 				if (!BibTex.class.isAssignableFrom(resourceClass)) {
 					throw new IllegalArgumentException("BibTex Key can only be normalized for publications");
 				}
@@ -529,6 +529,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * return to either the user page or current page(batchedit)
 		 */
+		if(!directEdit)
+			command.setReferer(null);
 		return this.getFinalRedirect(command.getReferer(), loginUserName);
 
 	}
