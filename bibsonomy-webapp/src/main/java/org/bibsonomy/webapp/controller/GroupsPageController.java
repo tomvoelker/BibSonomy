@@ -86,10 +86,13 @@ public class GroupsPageController extends SingleResourceListController implement
 
 		// default realname search case for organizations
 		final boolean useDefaultRealnameSearch = isOrganizationPage && !searchPresent && !prefixPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0;
-		if (useDefaultRealnameSearch) {
+		if (useDefaultRealnameSearch && present(defaultRealnameSearch)) {
 			ResultList<Group> groups = new ResultList<>();
 			for (String groupName : defaultRealnameSearch.split(",")) {
-				groups.add(this.logic.getGroupDetails(groupName, false));
+				Group groupDetails = this.logic.getGroupDetails(groupName, false);
+				if (present(groupDetails)) {
+					groups.add(groupDetails);
+				}
 			}
 			groups.setTotalCount(groups.size());
 			groupListCommand.setList(groups);
