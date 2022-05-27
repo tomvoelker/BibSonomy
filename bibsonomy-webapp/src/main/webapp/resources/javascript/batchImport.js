@@ -132,7 +132,6 @@ $(document).ready(function () {
 
 function normalizeBibTexKey(){
 	$('.emptyBlock').toggleClass('hidden', true);
-	$('.batchUpdateButton').prop('disabled', false);
 	$('.normalizeAlert').toggleClass('invisible', false);
 	$('.normalizeAlert').toggleClass('hidden', false);
 }
@@ -147,9 +146,6 @@ function normalizeBibTexKey_Uncheck(){
 		all_NotChecked_undirect = false;
 		return;
 	});
-	if(all_NotChecked_undirect){
-		$('.batchUpdateButton').prop('disabled', true);
-	}
 }
 
 function addTags(selector, tags){

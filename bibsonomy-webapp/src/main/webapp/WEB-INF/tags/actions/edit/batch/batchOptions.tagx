@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+
+	<!-- SUBMITBUTTON -->
+	<fmt:message key="batchedit.button.import" var="buttonUpdate"/>
+
+	<!-- HELP-TEXTS -->
+	<fmt:message key="batchedit.editTags.help" var="editTagsHelp"/>
+	<fmt:message key="batchedit.updateVisibility.help" var="updateVisibilityHelp"/>
+	<fmt:message key="batchedit.normalize.help" var="normalizePostsHelp"/>
+
+	<fmt:message key="batchedit.editTags.placeholder" var="editTagsPlaceholder"/>
+
+	<fmt:message key="batchedit.editTags.warning" var="editTagsWarning"/>
+	<input type="hidden" name="editTagsWarning" value="${editTagsWarning}"/>
+
+
+	<div class="panel-group" style="margin-top: 10px">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<fmt:message key="batchedit.editTags.heading"/>
+					<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
+					<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
+						  data-placement="top" title="${editTagsHelp}"><!-- KEEP ME! --></span>
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<input type="text" class="form-control" size="40" name="tags"
+						   id="tagsInput" placeholder="${editTagsPlaceholder}"/>
+					<span class="input-group-btn">
+												<button type="button" class="addTagsButton btn btn-success" id="addAllTags"
+												><fmt:message key="batchedit.editTags.AddTags"/></button>
+												<button type="button" class="removeTagsButton btn btn-danger" id="removeAllTags"
+												><fmt:message key="batchedit.editTags.RemoveTags"/></button>
+									</span>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<fmt:message key="batchedit.updateVisibility.heading"/>
+					<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
+						  data-placement="top" title="${updateVisibilityHelp}"><!-- KEEP ME! --></span>
+				</h3>
+			</div>
+			<div class="panel-body">
+				<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${mtl:selectedGroups(command.abstractGrouping, command.groups)}"/>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<input type="checkbox" id="checkboxNormalize"
+						   style="margin-right:2px"/>
+					<fmt:message key="batchedit.normalize.heading"/>
+					<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="normalizeCountBadge"><!-- KEEP ME! --></span>
+					<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
+						  data-placement="top" title="${normalizePostsHelp}"><!-- KEEP ME! --></span>
+				</h3>
+			</div>
+		</div>
+	</div>
+	<tr>
+		<td colspan="0">
+			<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary"
+						   className="batchUpdateButton pull-right" type="submit"/>
+			<div class="alert col-sm-12 invisible invisible emptyBlock" style="margin-bottom:0px;"
+				 role="alert">I am an empty block to avoid other sections moving
+			</div>
+			<div class="alert alert-warning col-sm-12 invisible hidden deleteAlert"
+				 style="margin-bottom:0px; margin-top: 10px" role="alert"><fmt:message key="batchedit.deleteAlert"/></div>
+			<div class="alert alert-info col-sm-12 invisible hidden normalizeAlert"
+				 style="margin-bottom:0px; margin-top: 10px;" role="alert"><fmt:message key="batchedit.normalizeAlert"/></div>
+			<div class="alert alert-info col-sm-12 invisible hidden selectPostAlert"
+				 style="margin-bottom:0px; margin-top: 10px" role="alert"><fmt:message key="batchedit.editHint"/></div>
+		</td>
+	</tr>
+</jsp:root>
