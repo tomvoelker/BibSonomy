@@ -1,0 +1,200 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+>
+
+	<jsp:directive.attribute name="showDeleteOption" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="postListIndex" type="java.lang.Integer" required="true"/>
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
+							 description="The type of resource that are edited (bookmark or bibtex)."/>
+	<jsp:directive.attribute name="isDisabled" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hasErrors" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableLinks" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="tooltip_msg" type="java.lang.String" required="false"
+							 description="The message that is displayed when hovering over the post in case there is something incorrect about the entry"/>
+
+	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true"
+							 description="A one line description of a post"/>
+
+	<!--=======================-->
+	<!-- VARIABLEN DEKLARATION -->
+	<!--=======================-->
+
+	<c:if test="${empty isDisabled}">
+		<c:set var="disabled" value="false"/>
+	</c:if>
+	<c:if test="${empty hasErrors}">
+		<c:set var="hasErrors" value="false"/>
+	</c:if>
+	<c:if test="${empty disableLinks}">
+		<c:set var="disableLinks" value="false"/>
+	</c:if>
+
+
+	<c:set var="rowStyling" value=""/>
+	<c:if test="${isDisabled or hasErrors}">
+		<c:set var="rowStyling" value="opacity: 0.5; filter: grayscale(100%);"/>
+		<c:set var="isDisabled" value="${true}"/>
+	</c:if>
+	<c:set var="descriptionStyling" value=""/>
+	<c:if test="${disableLinks}">
+		<c:set var="descriptionStyling" value="pointer-events: none; filter: grayscale(100%);"/>
+	</c:if>
+
+
+	<tr style="${rowStyling}">
+		<!--  a short description of the post -->
+		<td class="chunkybib" style="${descriptionStyling}">
+			<c:choose>
+				<c:when test="${empty tooltip_msg}">
+					<jsp:invoke fragment="shortPostDescription"/>
+				</c:when>
+				<c:otherwise>
+					<div data-toggle="tooltip" data-placement="right" title="${tooltip_msg}">
+						<jsp:invoke fragment="shortPostDescription"/>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</td>
+		<c:choose>
+			<c:when test="${hasErrors}">
+				<!-- When the post has errors no edit options are provided-->
+				<td colspan="3" style="text-align:center">
+					<!--TODO: Better Error message!-->
+					<b class="smalltext"><fmt:message key="error"/></b>
+				</td>
+			</c:when>
+			<c:otherwise>
+				<!-- the input field for the tags -->
+				<td>
+					<div class="input-group">
+						<span class="input-group-addon">
+							<c:choose>
+						<c:when test="${isDisabled}">
+							<input type="checkbox"
+								   name="posts['${post.resource.intraHash}_${post.user.name}'].checked"
+								   value="true" disabled="disabled"/>
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox"
+								   name="posts['${post.resource.intraHash}_${post.user.name}'].checked"
+								   value="true"/>
+						</c:otherwise>
+					</c:choose>
+
+						</span>
+						<spring:bind path="command.${resourceType}.list[${postListIndex}].tags">
+							<c:choose>
+								<c:when test="${status.error}">
+									<!--  the post has some errors on the tags - show the tags -->
+									<batch:tagErrors errors="${status}"/>
+									<c:choose>
+										<c:when test="${isDisabled}">
+											<input type="text"
+												   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
+												   size="37"
+												   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+												   class="form-control"
+												   autocomplete="off"
+													disabled="disabled"/>
+										</c:when>
+										<c:otherwise>
+											<input type="text"
+												   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
+												   size="37"
+												   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+												   class="form-control"
+												   autocomplete="off"/>
+										</c:otherwise>
+									</c:choose>
+
+									<meta itemprop="keywords"
+										  content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+									<!--  we don't send the old tags, since we must try to update this post in any case  -->
+								</c:when>
+								<c:otherwise>
+									<!--  the post has no errors on the tags - show the tags -->
+									<c:choose>
+										<c:when test="${isDisabled}">
+											<input type="text"
+												   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
+												   size="40"
+												   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+												   class="form-control"
+												   autocomplete="off"
+													disabled="disabled"/>
+										</c:when>
+										<c:otherwise>
+											<input type="text"
+												   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
+												   size="40"
+												   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+												   class="form-control"
+												   autocomplete="off"/>
+										</c:otherwise>
+									</c:choose>
+
+									<!-- to check if the tags have been changed, we also send the original tags -->
+									<input type="hidden"
+										   name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags"
+										   value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+								</c:otherwise>
+							</c:choose>
+						</spring:bind>
+					</div><!-- /input-group -->
+				</td>
+				<!-- the normalization selection -->
+				<td style="text-align: center;">
+					<c:choose>
+						<c:when test="${isDisabled}">
+							<input type="checkbox"
+								   name="posts['${post.resource.intraHash}_${post.user.name}'].normalize"
+								   value="false" disabled="disabled"/>
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox"
+								   name="posts['${post.resource.intraHash}_${post.user.name}'].normalize"
+								   value="false"/>
+						</c:otherwise>
+					</c:choose>
+				</td>
+				<!-- the visibility selection -->
+				<c:if test="${showDeleteOption}">
+					<td style="text-align: center;">
+						<c:choose>
+							<c:when test="${isDisabled}">
+								<input type="checkbox"
+									   name="posts['${post.resource.intraHash}_${post.user.name}'].visibility"
+									   value="true" disabled="disabled"/>
+							</c:when>
+							<c:otherwise>
+								<input type="checkbox"
+										name="posts['${post.resource.intraHash}_${post.user.name}'].visibility"
+										value="true"/>
+							</c:otherwise>
+						</c:choose>
+					</td>
+				</c:if>
+				<!-- the delete selection -->
+				<c:if test="${showDeleteOption}">
+					<td style="text-align: center;">
+						<c:choose>
+							<c:when test="${isDisabled}">
+								<button class="btn alert-danger" disabled="disabled"><i class="fa fa-trash"/></button>
+							</c:when>
+							<c:otherwise>
+								<button class="btn alert-danger" ><i class="fa fa-trash"/></button>
+							</c:otherwise>
+						</c:choose>
+					</td>
+				</c:if>
+			</c:otherwise>
+		</c:choose>
+	</tr>
+</jsp:root>

@@ -10,8 +10,19 @@
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 
+	<jsp:directive.attribute name="isImport" type="java.lang.Boolean" required="true"
+							 description="We have to distinguish whether the snippet is used for the batchImport or for the batchEdit, since no preselection for the privacy settings can be made for the edit"/>
+
 	<!-- SUBMITBUTTON -->
-	<fmt:message key="batchedit.button.import" var="buttonUpdate"/>
+	<c:choose>
+		<c:when test="${isImport}">
+			<fmt:message key="batchedit.button.import" var="buttonUpdate"/>
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="batchedit.button.update" var="buttonUpdate"/>
+		</c:otherwise>
+	</c:choose>
+
 
 	<!-- HELP-TEXTS -->
 	<fmt:message key="batchedit.editTags.help" var="editTagsHelp"/>
@@ -56,7 +67,14 @@
 				</h3>
 			</div>
 			<div class="panel-body">
-				<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${mtl:selectedGroups(command.abstractGrouping, command.groups)}"/>
+				<c:choose>
+					<c:when test="${isImport}">
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${mtl:selectedGroups(command.abstractGrouping, command.groups)}"/>
+					</c:when>
+					<c:otherwise>
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}"/>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 		<div class="panel panel-default">

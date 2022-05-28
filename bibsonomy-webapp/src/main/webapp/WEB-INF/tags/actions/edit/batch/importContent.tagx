@@ -6,9 +6,8 @@
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-		  xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+>
 
 
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -64,7 +63,6 @@
 		<!-- the following variable is defined to communicate with .js file -->
 		<input type="hidden" name="action"/>
 
-		<!--			TODO: Add delete Option for direct mode -->
 		<c:choose>
 			<c:when test="${hasValidData}">
 				<c:choose>
@@ -79,7 +77,7 @@
 						</div>
 					</c:otherwise>
 				</c:choose>
-				<batch:batchOptions><!-- KEEP ME! --></batch:batchOptions>
+				<batch:batchOptions isImport="${true}"/>
 				<br/>
 			</c:when>
 			<c:otherwise>
@@ -88,7 +86,6 @@
 				</div>
 			</c:otherwise>
 		</c:choose>
-
 
 		<!-- If there is no post to edit -->
 		<c:if test="${empty listView.list}">
@@ -107,10 +104,10 @@
 									<fmt:message key="batchedit.yourPosts"/>
 								</th>
 								<th id="yourTags">
-									<span style="padding-left: 12px; padding-right: 14px">
-										<input type="checkbox" id="selectAll" value="true" checked="checked"
-											   title="select all"/>
-									</span>
+										<span style="padding-left: 12px; padding-right: 14px">
+											<input type="checkbox" id="selectAll" value="true" checked="checked"
+												   title="select all"/>
+										</span>
 									<fmt:message key="batchedit.yourTags"/>
 								</th>
 								<th>
@@ -121,53 +118,15 @@
 							<tbody>
 							<c:forEach var="position" items="${errorInfo.positions}">
 								<c:set var="post" value="${listView.list[position]}"/>
-								<tr>
-									<!--  a short description of the post -->
-									<td class="chunkybib" style="pointer-events: none;">
-										<jsp:invoke fragment="shortPostDescription"/>
-									</td>
-									<td>
-										<div class="input-group">
-											  <span class="input-group-addon">
-												<input type="checkbox" name="posts['${post.resource.intraHash}_${post.user.name}'].checked" value="true" checked="checked" />
-											  </span>
-											<spring:bind path="command.${resourceType}.list[${position}].tags">
-												<c:choose>
-													<c:when test="${status.error}">
-														<!--  the post has some errors on the tags - show the tags -->
-														<batch:tagErrors errors="${status}"/>
-														<input type="text"
-															   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
-															   size="37"
-															   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-															   class="form-control"
-															   autocomplete="off"/>
-														<meta itemprop="keywords"
-															  content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-														<!--  we don't send the old tags, since we must try to update this post in any case  -->
-													</c:when>
-													<c:otherwise>
-														<!--  the post has no errors on the tags - show the tags -->
-														<input type="text"
-															   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags"
-															   size="40"
-															   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-															   class="form-control"
-															   autocomplete="off"/>
-														<!-- to check if the tags have been changed, we also send the original tags -->
-														<input type="hidden"
-															   name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags"
-															   value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-													</c:otherwise>
-												</c:choose>
-											</spring:bind>
-										</div><!-- /input-group -->
-									</td>
-									<!-- the normalization selection -->
-									<td style="text-align: center;">
-										<input type="checkbox" name="posts['${post.resource.intraHash}_${post.user.name}'].normalize" value="true"/>
-									</td>
-								</tr>
+								<batch:batchEditTableEntry
+										showDeleteOption="${false}"
+										postListIndex="${position}"
+										resourceType="${resourceType}"
+										disableLinks="${true}">
+										<jsp:attribute name="shortPostDescription">
+											<jsp:invoke fragment="shortPostDescription" />
+										</jsp:attribute>
+								</batch:batchEditTableEntry>
 							</c:forEach>
 							</tbody>
 						</table>

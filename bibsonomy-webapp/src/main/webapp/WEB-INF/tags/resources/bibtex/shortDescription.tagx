@@ -11,10 +11,9 @@
     <!-- shows a short description of a post - only title, author, year - the complete data in a hover-box -->
   
    	<span class="truncatedDesc batchInfo">
-
    		<div>
-        <div class="ptitle"><bib:title post="${post}"/></div>
-        <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
+			<div class="ptitle"><bib:title post="${post}"/></div>
+			<div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
         </div>
    	</span>	
 	
