@@ -133,11 +133,51 @@ var orcidRequest = null;
 var orcidRequestRunning = false;
 var orcidCancelAllowed = true;
 
-function importOrcidPublications() {
-    enableCancelOrcidImport();
+function initOrcidImport() {
+    // init flags for canceling
+    orcidCancelAllowed = true;
+    orcidRequestRunning = true;
+    $("#orcidImportCancelBtn").show(0);
 
     var orcidId = $('#orcidId').val();
+    getOrcidWorkList(orcidId);
+}
 
+function submitOrcidImport(orcidId, workIds, works) {
+    // disable canceling
+    orcidCancelAllowed = false;
+    orcidRequestRunning = false;
+    $("#orcidImportCancelBtn").hide(0);
+
+    // Set form data
+    $('#externalId').val(orcidId);
+    $('#workIds').val(workIds);
+    $('#bulkSnippet').val('{"orcid": [' + works.join(',') + ']}');
+
+    // Submit form
+    $('#orcidImportForm').submit();
+}
+
+function cancelOrcidImport() {
+    // check, if canceling is allowed
+    if (orcidCancelAllowed) {
+        orcidRequestRunning = false;
+
+        if (orcidRequest != null) {
+            orcidRequest.abort();
+        }
+
+        $("#orcidImportLoader").hide(0);
+    }
+}
+
+/**
+ * Get the work list of a person.
+ * This list only contains minor details for each work.
+ * Hence, we make details request for each work afterwards.
+ * @param orcidId
+ */
+function getOrcidWorkList(orcidId) {
     orcidRequest = $.ajax({
         url: '/ajax/orcid', // The url you are fetching the results.
         data: {
@@ -152,8 +192,8 @@ function importOrcidPublications() {
                     showOrcidError('post_bibtex.orcid.action.error.noWorks');
                     $("#orcidImportLoader").hide(0);
                 } else {
-                    // Set form data, get work details and submit
-                    getWorkDetailsAndSubmit(responseData);
+                    // Get work details
+                    getOrcidWorkDetails(orcidId, responseData["group"]);
                 }
             } else {
                 showOrcidError(data.error);
@@ -169,10 +209,16 @@ function importOrcidPublications() {
     });
 }
 
-function getWorkDetailsAndSubmit(data) {
-    var orcidId = $('#orcidId').val();
+/**
+ * Get all details of each ORCID work.
+ * The bulk request for work IDs doesn't use a request body.
+ * We have to make multiple requests for a long work list to not exceed the URL length limit.
+ *
+ * @param orcidId
+ * @param works
+ */
+function getOrcidWorkDetails(orcidId, works) {
     var workIds = [];
-    var works = data["group"];
 
     works.forEach(function (work) {
         var summary = work["work-summary"][0];
@@ -211,7 +257,6 @@ function getWorkDetailsAndSubmit(data) {
                 complete: function () {
                     done--;
                     if (done === 0) {
-                        disableCancelOrcidImport();
                         submitOrcidImport(orcidId, workIds, result);
                     }
                 },
@@ -223,15 +268,6 @@ function getWorkDetailsAndSubmit(data) {
     });
 }
 
-function submitOrcidImport(orcidId, workIds, works) {
-    // Set form data
-    $('#externalId').val(orcidId);
-    $('#workIds').val(workIds);
-    $('#bulkSnippet').val('{"orcid": [' + works.join(',') + ']}');
-    // Submit form
-    $('#orcidImportForm').submit();
-}
-
 function showOrcidError(errorMsg) {
     var alert = $('<div class="alert alert-danger alert-dismissable"></div>');
     var button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
@@ -240,28 +276,4 @@ function showOrcidError(errorMsg) {
     alert.append(getString(errorMsg));
 
     $('#orcidImportFormError').append(alert);
-}
-
-function cancelOrcidImport() {
-    if (orcidCancelAllowed) {
-        orcidRequestRunning = false;
-
-        if (orcidRequest != null) {
-            orcidRequest.abort();
-        }
-
-        $("#orcidImportLoader").hide(0);
-    }
-}
-
-function enableCancelOrcidImport() {
-    orcidCancelAllowed = true;
-    orcidRequestRunning = true;
-    $("#orcidImportCancelBtn").show(0);
-}
-
-function disableCancelOrcidImport() {
-    orcidCancelAllowed = false;
-    orcidRequestRunning = false;
-    $("#orcidImportCancelBtn").hide(0);
 }

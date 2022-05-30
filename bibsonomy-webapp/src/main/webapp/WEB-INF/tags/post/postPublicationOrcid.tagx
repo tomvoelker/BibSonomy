@@ -49,7 +49,7 @@
 				<input type="hidden" id="bulkSnippet" name="bulkSnippet" />
 
 				<fmt:message var="importOrcidLabel" key="post_bibtex.orcid.action.import" />
-				<bsform:button style="primary" size="defaultSize" value="${importOrcidLabel}" onclick="importOrcidPublications()"/>
+				<bsform:button style="primary" size="defaultSize" value="${importOrcidLabel}" onclick="initOrcidImport()"/>
 
 				<c:if test="${not empty person and not empty person.orcid}">
 					<input id="ownOrcidID" type="hidden" value="${person.orcid}"/>
