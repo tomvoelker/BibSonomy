@@ -125,13 +125,20 @@ function showManualForm(titleText) {
 
 function setOwnOrcidID() {
     var ownOrcid = $('#ownOrcidID').val();
-    $('#orcidId').val(ownOrcid);
+    var parts = ownOrcid.match(/.{1,4}/g);
+    $('#orcidId').val(parts.join('-'));
 }
 
+var orcidRequest = null;
+var orcidRequestRunning = false;
+var orcidCancelAllowed = true;
+
 function importOrcidPublications() {
+    enableCancelOrcidImport();
+
     var orcidId = $('#orcidId').val();
 
-    $.ajax({
+    orcidRequest = $.ajax({
         url: '/ajax/orcid', // The url you are fetching the results.
         data: {
             // These are the variables you can pass to the request
@@ -181,35 +188,38 @@ function getWorkDetailsAndSubmit(data) {
     /* Normal loops don't create a new scope */
     var numOfRequest = Array.from(Array(done).keys()); // if we have to send 3 requests the result would be [0, 1, 2]
     $(numOfRequest).each(function() {
-        var number = this;
-        var workIdsForBulk = workIds.slice(number * 100, (number + 1) * 100).join(',');
-        $.ajax({
-            url: '/ajax/orcid', // The url you are fetching the results.
-            data: {
-                // These are the variables you can pass to the request
-                'orcidId': orcidId,
-                'workIds': workIdsForBulk
-            },
-            success: function (data) {
-                if (data.success) {
-                    var responseData = JSON.parse(data.message);
-                    responseData['bulk'].forEach(function(obj) {
-                        result.push(JSON.stringify(obj['work']));
-                    });
-                } else {
-                    showOrcidError(data.error);
+        if (orcidRequestRunning) {
+            var number = this;
+            var workIdsForBulk = workIds.slice(number * 100, (number + 1) * 100).join(',');
+            orcidRequest = $.ajax({
+                url: '/ajax/orcid', // The url you are fetching the results.
+                data: {
+                    // These are the variables you can pass to the request
+                    'orcidId': orcidId,
+                    'workIds': workIdsForBulk
+                },
+                success: function (data) {
+                    if (data.success) {
+                        var responseData = JSON.parse(data.message);
+                        responseData['bulk'].forEach(function (obj) {
+                            result.push(JSON.stringify(obj['work']));
+                        });
+                    } else {
+                        showOrcidError(data.error);
+                    }
+                },
+                complete: function () {
+                    done--;
+                    if (done === 0) {
+                        disableCancelOrcidImport();
+                        submitOrcidImport(orcidId, workIds, result);
+                    }
+                },
+                error: function () {
+                    $("#orcidImportLoader").hide(0);
                 }
-            },
-            complete: function () {
-                done--;
-                if (done === 0) {
-                    submitOrcidImport(orcidId, workIds, result);
-                }
-            },
-            error: function() {
-                $("#orcidImportLoader").hide(0);
-            }
-        });
+            });
+        }
     });
 }
 
@@ -230,4 +240,28 @@ function showOrcidError(errorMsg) {
     alert.append(getString(errorMsg));
 
     $('#orcidImportFormError').append(alert);
+}
+
+function cancelOrcidImport() {
+    if (orcidCancelAllowed) {
+        orcidRequestRunning = false;
+
+        if (orcidRequest != null) {
+            orcidRequest.abort();
+        }
+
+        $("#orcidImportLoader").hide(0);
+    }
+}
+
+function enableCancelOrcidImport() {
+    orcidCancelAllowed = true;
+    orcidRequestRunning = true;
+    $("#orcidImportCancelBtn").show(0);
+}
+
+function disableCancelOrcidImport() {
+    orcidCancelAllowed = false;
+    orcidRequestRunning = false;
+    $("#orcidImportCancelBtn").hide(0);
 }

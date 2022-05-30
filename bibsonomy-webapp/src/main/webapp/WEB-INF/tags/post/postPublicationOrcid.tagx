@@ -11,14 +11,26 @@
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
 
 	<fmt:message var="loadingMessage" key="post_bibtex.orcid.action.loading" />
-	<parts:spinner id="orcidImportLoader" fullscreen="${true}" message="${loadingMessage}"/>
+	<fmt:message var="cancelMessage" key="post_bibtex.orcid.action.cancel" />
+	<parts:spinner id="orcidImportLoader" fullscreen="${true}">
+		<jsp:attribute name="message">
+			<p>
+				<fmt:message key="post_bibtex.orcid.action.loading" />
+			</p>
+			<p id="orcidImportCancelBtn">
+				<a href="#" onclick="cancelOrcidImport()">
+					<fmt:message key="post_bibtex.orcid.action.cancel" />
+				</a>
+			</p>
+		</jsp:attribute>
+	</parts:spinner>
 
 	<h2><fmt:message key="post_bibtex.orcid.heading"/></h2>
 	<p class="smalltext"><fmt:message key="post_bibtex.orcid.description" /></p>
 
 	<div id="orcidImportFormError"><!-- keep me for error reponses --></div>
 
-	<form:form id="orcidImportForm" cssClass="form-horizontal" method="post" action="/import/publications?ckey=${ckey}&amp;referer=${relativeUrlGenerator.getUserUrlByUserName(command.context.loginUser)}">
+	<form:form id="orcidImportForm" cssClass="form-horizontal" method="post" action="/import/publications?editBeforeImport=${true}&amp;ckey=${ckey}&amp;referer=${relativeUrlGenerator.getUserUrlByUserName(command.context.loginUser)}">
 
 		<div class="form-group">
 			<label class="col-sm-2 control-label">
