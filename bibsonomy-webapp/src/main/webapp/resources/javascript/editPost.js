@@ -888,12 +888,12 @@ function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
 
 function initGroupOptions() {
     // Relevant for group selection
-    $('#relevantGroupsSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    $('#relevantForGroupsSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
         showTagSets($(this));
     });
 
-    // Sent to group selection
-    $('#sentToGroupSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    // Send to group selection
+    $('#sendToGroupSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
         var groupId = $(this).find('option').eq(clickedIndex).val();
         togglePresetTagsPanel(groupId, isSelected);
     });
