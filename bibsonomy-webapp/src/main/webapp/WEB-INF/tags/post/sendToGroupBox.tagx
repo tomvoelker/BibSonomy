@@ -19,12 +19,12 @@
 
 	<div class="form-group">
 		<label class="col-sm-${labelColSpan} control-label">
-			<fmt:message key="post.resource.sentTo" />
+			<fmt:message key="post.resource.sendTo" />
 		</label>
 
 		<div class="col-sm-${inputColSpan}">
 			<fmt:message var="selectPlaceholder" key="form.input.select"/>
-			<select id="sentToGroupSelect" name="sentToGroups" class="selectpicker show-tick form-control"
+			<select id="sendToGroupSelect" name="sendToGroups" class="selectpicker show-tick form-control"
 					title="${selectPlaceholder}" data-icon-base="fas" data-tick-icon="fa-check" multiple="multiple">
 				<c:forEach items="${groups}" var="group">
 					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
@@ -34,7 +34,7 @@
 				</c:forEach>
 			</select>
 			<input type="hidden" id="presetTagsForGroups" name="presetTagsForGroups"/>
-			<p class="help-block"><fmt:message key="post.resource.sentTo.help"/></p>
+			<p class="help-block"><fmt:message key="post.resource.sendTo.help"/></p>
 		</div>
 
 		<c:if test="${properties['group.presetTags.enabled']}">
