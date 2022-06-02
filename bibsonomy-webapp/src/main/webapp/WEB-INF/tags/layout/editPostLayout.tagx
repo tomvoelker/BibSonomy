@@ -58,7 +58,7 @@
 				<bsform:fieldset legendKey="post.resource.groups.options">
 					<jsp:attribute name="content">
 						<!-- sent to -->
-						<post:sentToGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
+						<post:sendToGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
 						<!-- relevant for -->
 						<c:if test="${properties['group.relevantFor.enabled']}">
 							<post:relevantForGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
