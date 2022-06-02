@@ -138,7 +138,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * initialize lists
 		 */
 		GroupingCommandUtils.initGroupingCommand(command);
-		command.setRelevantGroups(new ArrayList<>());
+		command.setRelevantForGroups(new ArrayList<>());
 		command.setRelevantTagSets(new HashMap<>());
 		command.setRecommendedTags(new TreeSet<>());
 		command.setCopytags(new ArrayList<>());
@@ -1009,16 +1009,16 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param tags
 	 */
 	private void initCommandRelevantForGroups(final EditPostCommand<RESOURCE> command, final Set<Tag> tags) {
-		if (!present(command.getRelevantGroups())) {
-			command.setRelevantGroups(new ArrayList<>());
+		if (!present(command.getRelevantForGroups())) {
+			command.setRelevantForGroups(new ArrayList<>());
 		}
-		final List<String> relevantGroups = command.getRelevantGroups();
+		final List<String> relevantForGroups = command.getRelevantForGroups();
 
 		final Iterator<Tag> iterator = tags.iterator();
 		while (iterator.hasNext()) {
 			final String name = iterator.next().getName();
 			if (SystemTagsUtil.isSystemTag(name, RelevantForSystemTag.NAME)) {
-				relevantGroups.add(SystemTagsUtil.extractArgument(name));
+				relevantForGroups.add(SystemTagsUtil.extractArgument(name));
 				/*
 				 * removing the tag from the post such that it is not shown in
 				 * the tag input form
@@ -1046,25 +1046,25 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final Set<Tag> tags = post.getTags();
 		final List<Group> groups = postOwner.getGroups();
 
-		for (final String relevantGroup : command.getRelevantGroups()) {
+		for (final String relevantForGroup : command.getRelevantForGroups()) {
 			/*
 			 * ignore groups the user is not a member of
 			 */
-			if (groups.contains(new Group(relevantGroup))) {
-				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
+			if (groups.contains(new Group(relevantForGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantForGroup)));
 			} else {
-				log.info("ignored relevantfor: group '" + relevantGroup + "' because user is not member of it");
+				log.info("ignored relevantfor: group '" + relevantForGroup + "' because user is not member of it");
 			}
 		}
 
-		for (final String sentToGroup : command.getSentToGroups()) {
+		for (final String sendToGroup : command.getSendToGroups()) {
 			/*
 			 * ignore groups the user is not a member of
 			 */
-			if (groups.contains(new Group(sentToGroup))) {
-				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(ForGroupTag.NAME, sentToGroup)));
+			if (groups.contains(new Group(sendToGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(ForGroupTag.NAME, sendToGroup)));
 			} else {
-				log.info("ignored for: group '" + sentToGroup + "' because user is not member of it");
+				log.info("ignored for: group '" + sendToGroup + "' because user is not member of it");
 			}
 		}
 	}
