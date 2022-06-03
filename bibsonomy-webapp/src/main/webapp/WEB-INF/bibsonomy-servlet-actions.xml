@@ -1045,6 +1045,7 @@
 		<property name="endnoteToBibtexConverter" ref="endnoteToBibtexConverter"/>
 		<property name="risToBibtexConverter" ref="risToBibtexConverter"/>
 		<property name="orcidToBibtexConverter" ref="orcidToBibtexConverter"/>
+		<property name="orcidImportEnabled" value="${import.orcid.enabled}"/>
 	</bean>
 	
 	<bean id="endnoteToBibtexConverter" class="org.bibsonomy.scraper.converter.EndnoteToBibtexConverter"/>

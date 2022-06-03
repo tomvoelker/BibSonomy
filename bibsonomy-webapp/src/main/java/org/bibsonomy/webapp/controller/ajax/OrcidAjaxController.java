@@ -47,6 +47,7 @@ import org.json.simple.JSONObject;
 public class OrcidAjaxController extends AjaxController implements MinimalisticController<OrcidAjaxCommand> {
 
     private OrcidRestClient client;
+    private boolean orcidImportEnabled;
 
     public OrcidAjaxController() {
         this.client = new OrcidRestClient();
@@ -59,6 +60,10 @@ public class OrcidAjaxController extends AjaxController implements MinimalisticC
 
     @Override
     public View workOn(OrcidAjaxCommand command) {
+        if (!orcidImportEnabled) {
+            return this.error(command, "error.503");
+        }
+
         final String orcidId = command.getOrcidId();
         final String workId = command.getWorkId();
         final List<String> workIds = command.getWorkIds();

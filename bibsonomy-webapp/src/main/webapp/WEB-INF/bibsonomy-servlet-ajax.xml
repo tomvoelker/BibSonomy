@@ -439,6 +439,8 @@
 		</property>
 	</bean>
 
-	<bean id="orcidAjaxController" class="org.bibsonomy.webapp.controller.ajax.OrcidAjaxController" parent="ajaxController" scope="request" />
+	<bean id="orcidAjaxController" class="org.bibsonomy.webapp.controller.ajax.OrcidAjaxController" parent="ajaxController" scope="request">
+		<property name="orcidImportEnabled" value="${import.orcid.enabled}"/>
+	</bean>
 
 </beans>

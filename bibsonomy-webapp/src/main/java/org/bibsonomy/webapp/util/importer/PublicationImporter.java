@@ -86,8 +86,9 @@ public class PublicationImporter {
 	/**
 	 * converter from ORCID export to BibTeX
 	 */
+	private boolean orcidImportEnabled;
 	private OrcidToBibtexConverter orcidToBibtexConverter;
-	
+
 	
 	/**
 	 * Handles an uploaded file and returns its contents - if necessary 
@@ -177,7 +178,7 @@ public class PublicationImporter {
 		JSONParser jsonParser = new JSONParser();
 		try {
 			JSONObject obj = (JSONObject) jsonParser.parse(bulkSnippet);
-			if (obj.containsKey("orcid")) {
+			if (orcidImportEnabled && obj.containsKey("orcid")) {
 				return handleOrcidImport((JSONArray) obj.get("orcid"));
 			}
 		} catch (ParseException e) {
