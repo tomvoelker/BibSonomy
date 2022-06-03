@@ -81,15 +81,18 @@ public class GroupsPageController extends SingleResourceListController implement
 		final String search = command.getSearch();
 		final boolean searchPresent = present(search);
 		final boolean prefixPresent = present(command.getPrefix());
-		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_REALNAME;
+		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_SORTNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
 
 		// default realname search case for organizations
 		final boolean useDefaultRealnameSearch = isOrganizationPage && !searchPresent && !prefixPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0;
-		if (useDefaultRealnameSearch) {
+		if (useDefaultRealnameSearch && present(defaultRealnameSearch)) {
 			ResultList<Group> groups = new ResultList<>();
 			for (String groupName : defaultRealnameSearch.split(",")) {
-				groups.add(this.logic.getGroupDetails(groupName, false));
+				Group groupDetails = this.logic.getGroupDetails(groupName, false);
+				if (present(groupDetails)) {
+					groups.add(groupDetails);
+				}
 			}
 			groups.setTotalCount(groups.size());
 			groupListCommand.setList(groups);

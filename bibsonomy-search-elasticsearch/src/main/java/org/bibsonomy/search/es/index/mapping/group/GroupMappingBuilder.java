@@ -79,6 +79,11 @@ public class GroupMappingBuilder implements MappingBuilder<XContentBuilder> {
 							.startObject(GroupFields.REALNAME_PREFIX)
 								.field(TYPE_FIELD, KEYWORD_TYPE)
 							.endObject()
+							// group name for list sorting
+							.startObject(GroupFields.SORTNAME)
+								.field(TYPE_FIELD, KEYWORD_TYPE)
+								.field(ESConstants.NORMALIZER, ESConstants.LOWERCASE_NORMALIZER)
+							.endObject()
 							// external id
 							.startObject(GroupFields.INTERNAL_ID)
 								.field(TYPE_FIELD, KEYWORD_TYPE)

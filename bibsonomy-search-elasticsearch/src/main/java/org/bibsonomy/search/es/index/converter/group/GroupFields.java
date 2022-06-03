@@ -45,6 +45,9 @@ public interface GroupFields {
 	/** the real name (lower case for prefix matching) */
 	String REALNAME_PREFIX = "realname_prefix";
 
+	/** the sort name, if realname is not available */
+	String SORTNAME = "sortname";
+
 	/** the external id of the group */
 	String INTERNAL_ID = "internal_id";
 

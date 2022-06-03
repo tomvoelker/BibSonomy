@@ -92,9 +92,11 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 				case GROUP_REALNAME:
 					// here we add the name as a second search order to handle groups without real names
 					return Arrays.asList(
-							new Pair<>(GroupFields.NAME, sortOrder),
-							new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder)
-							);
+						new Pair<>(GroupFields.NAME, sortOrder),
+						new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder)
+					);
+				case GROUP_SORTNAME:
+					return Collections.singletonList(new Pair<>(GroupFields.SORTNAME, sortOrder));
 				case RANK:
 					return null; // default sort key is rank
 			}
