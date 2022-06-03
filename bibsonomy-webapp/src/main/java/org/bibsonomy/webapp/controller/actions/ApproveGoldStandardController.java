@@ -84,10 +84,10 @@ public class ApproveGoldStandardController implements MinimalisticController<App
         final String intrahash = command.getIntrahash();
         final String interhash = command.getInterhash();
 
-        // set redirect url
+        // set redirect url to the gold standard details page, if interhash is given
         if (present(interhash)) {
             this.redirectUrl = this.urlGenerator.getPublicationUrlByInterHash(interhash);
-        } else if (present(interhash)) {
+        } else {
             this.redirectUrl = this.urlGenerator.getMyHomeUrl();
         }
 
