@@ -208,7 +208,4 @@ public final class ElasticsearchUtils {
 		return parseDate(dateAsString);
 	}
 
-	public static String escapeQueryString(final String queryString) {
-		return QueryParserUtil.escape(queryString);
-	}
 }
