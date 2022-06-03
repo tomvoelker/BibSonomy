@@ -40,12 +40,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@Ignore
-// TODO make remote test, issues with import
+@Category(RemoteTest.class)
 public class OrcidRestClientTest {
 
     private static String PATH_TO_FILES = "src/test/resources/orcid/";

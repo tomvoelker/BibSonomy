@@ -30,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.jmlr;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

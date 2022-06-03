@@ -42,7 +42,7 @@ import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Ignore;

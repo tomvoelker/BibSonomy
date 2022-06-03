@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.openresearch;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.bibsonomy.scraper.url.openreview.OpenReviewScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
