@@ -39,8 +39,6 @@ import java.util.Map;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
