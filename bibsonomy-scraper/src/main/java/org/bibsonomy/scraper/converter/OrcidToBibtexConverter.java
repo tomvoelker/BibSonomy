@@ -39,6 +39,7 @@ import java.util.Map;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -78,21 +79,24 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             return bibtexSource;
         }
 
-        final List<Pair<String, String>> persons = extractPersons(citation);
+        final StringBuilder builder = new StringBuilder("@");
 
+        // get author and editors
+        final List<Pair<String, String>> persons = extractPersons(citation);
         final String authors = filterPersonsByRole(persons, "author");
         final String editors = filterPersonsByRole(persons, "editor");
 
+        // get publication date
         final JSONObject pubDateObj = (JSONObject) citation.get("publication-date");
         String year = extractYear(pubDateObj);
 
-        final String citationKey = getBibtexKey(authors, editors, year);
-        final String entrytype = getEntrytype(citation);
-
-        final StringBuilder builder = new StringBuilder("@");
-        builder.append(entrytype).append("{").append(citationKey).append(",\n");
-
+        // get title, entrytype, bibtexkey
         final String title = extractTitle(citation);
+        final String entrytype = getEntrytype(citation);
+        final String citationKey = BibTexUtils.generateBibtexKey(authors, editors, year, title);
+
+        // begin building bibtex with entrytype, bibtexkey and title
+        builder.append(entrytype).append("{").append(citationKey).append(",\n");
         if (present(title)) {
             builder.append(getBibTeX("title", title));
         }
@@ -167,26 +171,6 @@ public class OrcidToBibtexConverter implements BibtexConverter{
             String value = (String) extIdObj.get("external-id-value");
             builder.append(getBibTeX(type, value));
         });
-    }
-
-    /**
-     * Generate a bibtex key with the authors, editors and year of the work.
-     * @param authors
-     * @param editors
-     * @param year
-     * @return
-     */
-    private String getBibtexKey(String authors, String editors, String year) {
-        final String name;
-        if (authors.length() > 0) {
-            name = getFirstSurname(authors);
-        } else if (editors.length() > 0) {
-            name = getFirstSurname(editors);
-        } else {
-            name = "";
-        }
-        String key = name + year;
-        return key.replaceAll("\\s+","");
     }
 
     /**
