@@ -129,3 +129,18 @@ function initFilterButtons(field) {
 		initPublicationPagination(0);
 	});
 }
+
+function reportDuplicatePublication(publication) {
+	$.ajax({
+		url: "/ajax/report/person/duplicatePublications",
+		data: {
+			personId: $(publication).data('person'),
+			title: $(publication).data('title'),
+			interhash: $(publication).data('interhash'),
+			referer: window.location.href,
+		},
+		success: function(data) {
+
+		}
+	});
+}

@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller.actions.report;
+package org.bibsonomy.webapp.controller.ajax.report;
 
 import org.bibsonomy.webapp.command.actions.ReportCommand;
 import org.bibsonomy.webapp.util.View;

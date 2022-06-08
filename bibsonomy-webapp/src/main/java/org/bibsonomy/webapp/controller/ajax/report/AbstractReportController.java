@@ -1,24 +1,22 @@
-package org.bibsonomy.webapp.controller.actions.report;
+package org.bibsonomy.webapp.controller.ajax.report;
 
 import java.util.Locale;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.ReportCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
-import org.springframework.validation.Errors;
 
 @Getter
 @Setter
-public abstract class AbstractReportController implements MinimalisticController<ReportCommand>, ErrorAware {
+public abstract class AbstractReportController extends AjaxController implements MinimalisticController<ReportCommand> {
 
-    protected RequestLogic requestLogic;
-    protected Errors errors;
     protected MailUtils mailUtils;
+    protected URLGenerator urlGenerator;
 
     @Override
     public abstract View workOn(ReportCommand command);
@@ -35,13 +33,4 @@ public abstract class AbstractReportController implements MinimalisticController
         return new ReportCommand();
     }
 
-    @Override
-    public Errors getErrors() {
-        return this.errors;
-    }
-
-    @Override
-    public void setErrors(Errors errors) {
-        this.errors = errors;
-    }
 }
