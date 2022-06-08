@@ -78,7 +78,7 @@ public abstract class CitationManager2Scraper extends AbstractUrlScraper {
 		HttpGet get = new HttpGet(downloadUrl);
 
 		try {
-			String cookies = getCookies();
+			String cookies = getCookies(url);
 			if (cookies!=null){
 				get.setHeader("Cookie", cookies);
 			}
@@ -90,7 +90,7 @@ public abstract class CitationManager2Scraper extends AbstractUrlScraper {
 		}
 
 	}
-	protected String getCookies() throws IOException {
+	protected String getCookies(URL url) throws IOException {
 		return null;
 	}
 

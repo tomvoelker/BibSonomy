@@ -57,7 +57,7 @@ public class OxfordUniversityPressScraper extends CitationManager2Scraper {
 
 
 	@Override
-	protected String getCookies() throws IOException {
+	protected String getCookies(URL url) throws IOException {
 		return WebUtils.getCookies(new URL("https://academic.oup.com/rev"));
 	}
 
