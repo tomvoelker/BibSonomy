@@ -61,7 +61,7 @@ public class OpenrepositoryScraperTest {
 
 	@Test
 	public void url3TestRun(){
-		final String url = "https://chesterrep.openrepository.com/handle/10034/624904";
+		final String url = "https://chesterrep.openrepository.com/handle/10034/621411";
 		final String resultFile = resultDirectory + "OpenrepositoryScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, OpenrepositoryScraper.class, resultFile);
 	}
