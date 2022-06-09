@@ -165,7 +165,9 @@ coverage:
   artifacts:
     expire_in: 1 hour
     reports:
-      cobertura: coverage/target/site/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/target/site/coverage.xml
 
 deploy_results:
   stage: deploy
