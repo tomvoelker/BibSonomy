@@ -3,8 +3,6 @@ image: tomvoelker/maven-mariadb
 stages:
   - build
   - test
-  - prepVisualize
-  - visualize
   - deploy
 
 variables:
@@ -75,8 +73,8 @@ test:
 test-scraper:
   stage: test
   rules:
-    - if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i
-      when: manual
+    - when: manual
+    #if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i 
   script:
     - mvn test $MAVEN_OPTS --fail-at-end -Dmaven.test.failure.ignore=true -pl bibsonomy-scraper -P allTests
   artifacts:
@@ -92,9 +90,7 @@ test-scraper:
       - target/
 
 get_history:
-  stage: prepVisualize
-  dependencies:
-    - build
+  stage: deploy
   allow_failure: true
   image: ubuntu
   before_script: 
@@ -111,9 +107,8 @@ get_history:
     untracked: true
 
 report:
-  stage: visualize
+  stage: deploy
   dependencies:
-    - test
     - get_history
   allow_failure: true
   image: tomvoelker/simple-allure-cli
@@ -130,9 +125,9 @@ report:
 
 # https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
 coverage:
-  stage: visualize
+  stage: deploy
   dependencies:
-    - test
+    - get_history
   allow_failure: true
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
@@ -202,7 +197,7 @@ deploy_biblicious:
   dependencies:
     - test
   rules:
-    - if: $CI_COMMIT_TAG == "biblicious"
-      when: manual
+    - when: manual
+      # if: $CI_COMMIT_TAG == "biblicious"
   script:
-    - mvn -f bibsonomy-webapp/pom.xml tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious -Dtomcat.username=tcadmin -Dtomcat.password=$(echo $thewhitetomcatdeploy | base64 -di -)
+    - mvn -f bibsonomy-webapp/pom.xml tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious -Dtomcat.username=tcadmin -Dtomcat.password=$(echo $thewhitetomcatdeploy | base64 -di -) -DskipTests
