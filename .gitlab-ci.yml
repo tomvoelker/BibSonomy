@@ -95,8 +95,8 @@ get_history:
   stage: prepVisualize
   dependencies:
     - build
-  image: ubuntu
   allow_failure: true
+  image: ubuntu
   before_script: 
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
     - eval $(ssh-agent -s)
@@ -115,6 +115,7 @@ report:
   dependencies:
     - test
     - get_history
+  allow_failure: true
   image: tomvoelker/simple-allure-cli
   script:
     - allure generate -c -o target/report allure-results
@@ -132,6 +133,7 @@ coverage:
   stage: visualize
   dependencies:
     - test
+  allow_failure: true
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura, using relative project path
@@ -177,6 +179,7 @@ deploy_results:
   dependencies:
     - report
     - coverage
+  allow_failure: true
   before_script: 
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
     - eval $(ssh-agent -s)
@@ -202,4 +205,4 @@ deploy_biblicious:
     - if: $CI_COMMIT_TAG == "biblicious"
       when: manual
   script:
-    - mvn -f bibsonomy-webapp/pom.xml tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious
+    - mvn -f bibsonomy-webapp/pom.xml tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious -Dtomcat.username=tcadmin -Dtomcat.password=$(echo $thewhitetomcatdeploy | base64 -di -)
