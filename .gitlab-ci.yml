@@ -110,6 +110,8 @@ report:
   stage: deploy
   dependencies:
     - get_history
+  needs:
+    - get_history
   allow_failure: true
   image: tomvoelker/simple-allure-cli
   script:
@@ -127,6 +129,8 @@ report:
 coverage:
   stage: deploy
   dependencies:
+    - get_history
+  needs:
     - get_history
   allow_failure: true
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
@@ -172,6 +176,9 @@ deploy_results:
   stage: deploy
   image: ubuntu
   dependencies:
+    - report
+    - coverage
+  needs:
     - report
     - coverage
   allow_failure: true
