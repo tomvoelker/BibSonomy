@@ -59,11 +59,8 @@ public class PubMedCentralScraper extends GenericRISURLScraper {
 	
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEWER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEWER_HOST), Pattern.compile("pmc")));
 	}
-	
-
-	
 
 	@Override
 	public String getInfo() {

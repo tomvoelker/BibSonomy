@@ -88,6 +88,7 @@ public class OpenReviewScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
 		final URL urlToScrape = scrapingContext.getUrl();
 
 		// maybe we were called using the pdf url so we use only the query with the id to build the forum path

@@ -63,6 +63,7 @@ public class ArxivScraper extends AbstractUrlScraper {
 
 	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
 		final URL url = sc.getUrl();
 		final String selection = sc.getSelectedText();
 		final String identifier;

@@ -82,9 +82,8 @@ public class IOPScraper extends AbstractUrlScraper {
 			}
 			// doi contains /meta if the url itself contains /meta
 			doi = doi.replaceAll("/meta", "");
-			final String articleId = doi.substring(doi.indexOf("/")+1);
 
-			final String downloadUrlParams = "doi=" + doi + "&articleId=" +articleId + "&exportFormat=iopexport_bib&exportType=abs&navsubmit=Export+abstract";
+			final String downloadUrlParams = "doi=" + doi + "&type=article&exportFormat=iopexport_bib&exportType=abs&navsubmit=Export+abstract";
 			final String downloadUrl = DOWNLOAD_URL_PATH + downloadUrlParams;
 
 			HttpGet get = new HttpGet(downloadUrl);
@@ -96,6 +95,9 @@ public class IOPScraper extends AbstractUrlScraper {
 				try {
 					get.setHeader("User-Agent", userAgent);
 					bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+					if (present(bibtex)){
+						break;
+					}
 				}catch (ClientProtocolException ignored){}
 			}
 			if (!present(bibtex)){
@@ -103,7 +105,7 @@ public class IOPScraper extends AbstractUrlScraper {
 				bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
 			}
 			if (!present(bibtex)){
-				throw new ScrapingException("can't get bibtex from " + url);
+				throw new ScrapingException("can't get bibtex from " + downloadUrl);
 			}
 
 			scrapingContext.setBibtexResult(bibtex);

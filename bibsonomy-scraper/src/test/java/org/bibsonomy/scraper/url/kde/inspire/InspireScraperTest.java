@@ -27,51 +27,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.rspb;
+package org.bibsonomy.scraper.url.kde.inspire;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
+@Category(RemoteTest.class)
+public class InspireScraperTest {
+	String resultDirectory = "inspire/";
 
-/**
- * Scraper for publications from http://rspb.royalsocietypublishing.org/
- *
- * @author Johannes
- */
-public class RSPBScraper extends LiteratumScraper {
-
-	private static final String SITE_NAME = "Proceedings of the Royal Society Biology";
-	private static final String SITE_HOST = "royalsocietypublishing.org";
-	private static final String SITE_URL = "https://royalsocietypublishing.org/";
-	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + SITE_HOST), 
-			EMPTY_PATTERN
-			));
-	
-
-	@Override
-	public String getSupportedSiteName() {
-		return SITE_NAME;
+	@Test
+	public void url1TestRun(){
+		final String url = "https://inspirehep.net/literature/2081917";
+		final String resultFile = resultDirectory + "InspireScraperUnitURLTest1.bib";
+		assertScraperResult(url, InspireScraper.class, resultFile);
 	}
-
-	@Override
-	public String getSupportedSiteURL() {
-		return SITE_URL;
-	}
-
-	@Override
-	public String getInfo() {
-		return INFO;
-	}
-
-	@Override
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return URL_PATTERNS;
-	}
-
-	
 }

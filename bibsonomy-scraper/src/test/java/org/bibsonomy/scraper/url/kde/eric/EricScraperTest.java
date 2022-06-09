@@ -49,7 +49,7 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&ERICExtSearch_SearchValue_0=star&searchtype=keyword&ERICExtSearch_SearchType_0=kw&_pageLabel=RecordDetails&objectId=0900019b802f2e44&accno=EJ786532&_nfls=false";
+		final String url = "https://eric.ed.gov/?q=EJ786532&id=EJ786532";
 		final String resultFile = resultDirectory + "EricScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, EricScraper.class, resultFile);
 	}
@@ -59,7 +59,7 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		final String url = "http://eric.ed.gov/ERICWebPortal/custom/portlets/recordDetails/detailmini.jsp?_nfpb=true&_&ERICExtSearch_SearchValue_0=EJ523959&ERICExtSearch_SearchType_0=no&accno=EJ523959";
+		final String url = "https://eric.ed.gov/?id=EJ523959";
 		final String resultFile = resultDirectory + "EricScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, EricScraper.class, resultFile);
 	}
