@@ -63,7 +63,8 @@ public class PubMedScraper extends GenericRISURLScraper {
 	private static final Pattern PMID_FROM_URL = Pattern.compile("\\d+");
 
 	static {
-		PATTERNS.add(new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*pubmed." + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*" + HOST), Pattern.compile("pubmed")));
 		PATTERNS.add(new Pair<>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		PATTERNS.add(new Pair<>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		PATTERNS.add(new Pair<>(Pattern.compile(".*" + EUROPE_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));

@@ -53,8 +53,9 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  *
  */
+//Can't access anything without a login
 public class MathSciNetScraper extends AbstractUrlScraper {
-	
+
 	private static final String SITE_NAME = "MathSciNet";
 	private static final String SITE_URL = "http://www.ams.org/mathscinet/";
 	private static final String INFO = "Extracts publications from " + href(SITE_URL , SITE_NAME) + 

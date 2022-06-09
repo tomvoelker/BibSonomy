@@ -64,7 +64,7 @@ public class ProjectmuseScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		final String url = "http://muse.jhu.edu/article/190166";
+		final String url = "https://muse.jhu.edu/article/190166";
 		final String resultFile = resultDirectory + "ProjectmuseScraperUnitURLTest2.bib";
 		assertScraperResult(url, ProjectmuseScraper.class, resultFile);
 	}

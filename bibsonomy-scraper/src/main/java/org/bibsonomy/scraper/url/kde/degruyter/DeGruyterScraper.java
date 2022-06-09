@@ -32,6 +32,7 @@ package org.bibsonomy.scraper.url.kde.degruyter;
 import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
@@ -82,5 +83,10 @@ public class DeGruyterScraper extends GenericBibTeXURLScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
+	}
+
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replaceAll(",\\nlastchecked = \\{[^}]*}", "");
 	}
 }

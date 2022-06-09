@@ -56,7 +56,7 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		final String url = "https://www.pnas.org/content/106/52/22480.abstract";
+		final String url = "https://www.pnas.org/doi/abs/10.1073/pnas.0911503106";
 		final String resultFile = resultDirectory + "PNASScraperUnitURLTest1.bib";
 		assertScraperResult(url, PNASScraper.class, resultFile);
 	}
@@ -66,7 +66,7 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		final String url = "https://www.pnas.org/content/101/22/8281.abstract";
+		final String url = "https://www.pnas.org/doi/abs/10.1073/pnas.0402292101";
 		final String resultFile = resultDirectory + "PNASScraperUnitURLTest2.bib";
 		assertScraperResult(url, PNASScraper.class, resultFile);
 	}

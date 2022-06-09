@@ -86,6 +86,8 @@ public class AIFBScraper extends GenericBibTeXURLScraper {
 		patterns.add(new Pair<>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
 	}
 
+	private static final Pattern EDITOR_PATTERN = Pattern.compile("editor = \"(.*)\",", Pattern.MULTILINE);
+
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		String pageContent = WebUtils.getContentAsString(url);
@@ -99,8 +101,17 @@ public class AIFBScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return BibTexUtils.addFieldIfNotContained(bibtex, "url", scrapingContext.getUrl().toString());
+		String cleanedBibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", scrapingContext.getUrl().toString());
 
+		//the editors are sometimes seperated by commas instead of "and"
+		Matcher m_editor = EDITOR_PATTERN.matcher(bibtex);
+		if (!m_editor.find()){
+			return cleanedBibtex;
+		}
+		String editors = m_editor.group(1);
+		cleanedBibtex = cleanedBibtex.replace(editors, editors.replaceAll(", ", " and "));
+
+		return cleanedBibtex;
 	}
 
 	@Override

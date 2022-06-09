@@ -29,16 +29,19 @@
  */
 package org.bibsonomy.scraper.url.kde.aappublications;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-
-import bibtex.parser.BibtexParser;
-import org.bibsonomy.scraper.generic.CitationManager2Scraper;
 
 /**
  * scraper for the
@@ -55,6 +58,12 @@ public class AappublicationsScraper extends CitationManager2Scraper {
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
 					new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN)
 	);
+
+	@Override
+	protected String getCookies(URL url) throws IOException {
+		HttpClient httpClient = WebUtils.getHttpClient(RequestConfig.custom().setRedirectsEnabled(false).build());
+		return WebUtils.getHeaders(httpClient, new HttpGet(url.toString()), "Set-Cookie");
+	}
 
 	@Override
 	public String getSupportedSiteName() {

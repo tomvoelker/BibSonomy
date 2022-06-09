@@ -107,4 +107,34 @@ public class WileyIntersienceScraperTest {
 
 	}
 
+	/**
+	 * starts URL test with id url_224
+	 */
+	@Test
+	public void url8TestRun() {
+		final String url = "https://faseb.onlinelibrary.wiley.com/doi/10.1096/fj.12-211441";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest8.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_225
+	 */
+	@Test
+	public void url9TestRun() {
+		final String url = "https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.12-0802ufm";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest9.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_227
+	 */
+	@Test
+	public void url10TestRun() {
+		final String url = "https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.01-0431rev";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest10.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
+
 }

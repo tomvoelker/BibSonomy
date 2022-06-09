@@ -62,4 +62,11 @@ public class EditLibScraperTest {
 		final String resultFile = resultDirectory + "EditLibScraperUnitURLTest.bib";
 		assertScraperResult(url, null, EditLibScraper.class, resultFile);
 	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://www.learntechlib.org/index.cfm?fuseaction=Reader.ChooseCitationFormat&paper_id=12795";
+		final String resultFile = resultDirectory + "EditLibScraperUnitURLTest.bib";
+		assertScraperResult(url, null, EditLibScraper.class, resultFile);
+	}
 }
