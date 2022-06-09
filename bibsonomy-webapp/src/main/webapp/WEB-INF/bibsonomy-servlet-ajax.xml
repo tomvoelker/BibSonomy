@@ -455,7 +455,7 @@
 
 	<bean id="reportAjaxController" class="org.bibsonomy.webapp.controller.ajax.report.AbstractReportController" abstract="true" parent="ajaxController">
 		<property name="mailUtils" ref="mailUtils" />
-		<property name="urlGenerator" ref="relativeUrlGenerator"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 	</bean>
 
 	<bean id="brokenCitationReportController" class="org.bibsonomy.webapp.controller.ajax.report.BrokenCitationReportController"

@@ -1,8 +1,10 @@
 package org.bibsonomy.webapp.controller.ajax.report;
 
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.webapp.command.ajax.ReportCommand;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.Views;
 
 public class DuplicatePublicationReportController extends AbstractReportController {
 
@@ -11,23 +13,31 @@ public class DuplicatePublicationReportController extends AbstractReportControll
 
     @Override
     public View workOn(ReportCommand command) {
+        final User loggedInUser = this.requestLogic.getLoginUser();
+
+        // Check, if spammer
+        if (loggedInUser.isSpammer()) {
+            return this.error(command, ERROR_KEY);
+        }
+
+        // Set parameters for the messages
         String personId = command.getPersonId();
         String title = command.getTitle();
-        String interhash = command.getInterhash();
+
+        Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
+        String personName = person.getMainName().toString();
         String personUrl = this.urlGenerator.getPersonUrl(personId);
 
-        String referer = command.getReferer();
-        String reporter = this.requestLogic.getLoginUser().getName();
+        Object[] subjectParameters = {personName};
+        Object[] bodyParameters = {title, personName, personUrl, loggedInUser.getName()};
 
-        Object[] subjectParameters = {personId};
-        Object[] bodyParameters = {title, personId, personUrl, referer, reporter};
-
+        // Send e-mail
         boolean result = report(SUBJECT_KEY, BODY_KEY, subjectParameters, bodyParameters);
 
         if (result) {
             return this.success(command, SUCCESS_KEY);
         } else {
-            return this.error(command, ERROR_Key);
+            return this.error(command, ERROR_KEY);
         }
     }
 

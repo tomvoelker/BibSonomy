@@ -99,8 +99,8 @@ function reportBrokenCitation() {
 	$.ajax({
 		url: "/ajax/report/brokenCitation",
 		data: {
-			styleName: styleName,
-			referer: window.location.href,
+			'styleName': styleName,
+			'referer': window.location.href,
 		},
 		success: function(data) {
 

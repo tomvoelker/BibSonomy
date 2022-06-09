@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 public abstract class AbstractReportController extends AjaxController implements MinimalisticController<ReportCommand> {
 
     protected final static String SUCCESS_KEY = "report.error.feedback.success";
-    protected final static String ERROR_Key = "report.error.feedback.error";
+    protected final static String ERROR_KEY = "report.error.feedback.error";
 
     protected MailUtils mailUtils;
     protected URLGenerator urlGenerator;
