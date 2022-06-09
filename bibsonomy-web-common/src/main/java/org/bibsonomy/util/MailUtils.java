@@ -419,7 +419,7 @@ public class MailUtils {
 		}
 	}
 
-	public void sendReportMail(final String subjectKey, final String bodyKey, final Object[] subjectParameters, final Object[] bodyParameters, final Locale locale) {
+	public boolean sendReportMail(final String subjectKey, final String bodyKey, final Object[] subjectParameters, final Object[] bodyParameters, final Locale locale) {
 		try {
 			final String messageSubject = messageSource.getMessage(subjectKey, subjectParameters, locale);
 			final String messageBody = messageSource.getMessage(bodyKey, bodyParameters, locale);
@@ -427,7 +427,10 @@ public class MailUtils {
 			this.sendHTMLMail(new String[] { this.projectReportEmail }, messageSubject, messageBody, this.projectReportEmail);
 		} catch (final MessagingException e) {
 			log.fatal("Could not send report mail: " + e.getMessage());
+			return false;
 		}
+
+		return true;
 	}
 
 	/**
