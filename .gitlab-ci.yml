@@ -55,9 +55,7 @@ test:
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON tag_recommender_db.* TO '$MARIADB_USER'@'%';"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
   script:
-    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS -s misc/scripts/settings.xml -P bibsonomy-test-settings
-  after_script:
-    - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS -s misc/scripts/settings.xml --fail-at-end -P bibsonomy-test-settings
   artifacts:
     untracked: true
     when: always
@@ -73,11 +71,12 @@ test:
 
 test-scraper:
   stage: test
+  allow_failure: true
   rules:
     - when: manual
-    #if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i 
+      if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i 
   script:
-    - mvn test $MAVEN_OPTS --fail-at-end -Dmaven.test.failure.ignore=true -pl bibsonomy-scraper -P allTests
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-at-end -pl bibsonomy-scraper -P allTests
   artifacts:
     untracked: true
     when: always
