@@ -157,11 +157,10 @@
 						</c:if>
 						<c:if test="${properties['report.person.duplicate.publications']}">
 							<div>
-								test
 								<sidebar:sidebarItem>
 									<jsp:attribute name="content">
-										test2
-										<fmt:message key="person.show.publications" />
+										<fmt:message var="reportingText" key="person.sidebar.reporting" />
+										<c:out value="${reportingText}" escapeXml="${false}"/>
 									</jsp:attribute>
 								</sidebar:sidebarItem>
 							</div>
