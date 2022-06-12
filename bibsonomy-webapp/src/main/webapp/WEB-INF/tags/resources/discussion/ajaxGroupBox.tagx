@@ -43,7 +43,7 @@
 				<label>
 					<c:choose>
 						<c:when test="${fn:length(selectedGroups) == 0 or isPublic}">
-							<input name="abstractGrouping" value="public" tabindex="2" type="radio"  checked="checked" />
+							<input name="abstractGrouping" value="public" tabindex="2" type="radio" checked="checked" />
 						</c:when>
 						<c:otherwise>
 							<input name="abstractGrouping" value="public" tabindex="2" type="radio" />

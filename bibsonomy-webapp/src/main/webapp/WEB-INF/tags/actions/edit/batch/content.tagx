@@ -11,29 +11,17 @@
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 
-	<!--TODO: Rewirte Documentation-->
 	<!--
-		This page is called in two cases:
-		1. When user clicks the gear button and selects 'edit own entries'
-		2. When user imports several bibTexes through: Add post-> post publication->BibTeX/EndNote snippet
-
-		In order to distinguish two cases, I have called the first case 'direct edit' and the second case 'indirect edit'.
-
-		differences:
-		In direct edit: there exist five edit options which are buttons,
-		in indirect edit: there exist three edit options which are check boxes.
-
-		In direct edit, user each time can apply one edit option to the posts.
-		In indirect edit, choosing several edit options at the same time is also possible.
-
+		This page is called when the batch edit option is used for publications or bookmarks.
+		It is strongly related to the importContent.tagx page, with the main difference being the list provided, so compatibility with that page must be ensured.
 		 -->
-
 
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
 							 description="The type of resource that are edited (bookmark or bibtex)."/>
 
@@ -66,13 +54,16 @@
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 	<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
+		<!-- the following variables are defined to communicate with .js file -->
+		<input type="hidden" name="action"/>
 		<input type="hidden" name="updateExistingPost" value="${updateExistingPost}"/>
 		<input type="hidden" name="overwrite" value="${overwrite}"/>
-		<input type="hidden" name="resourcetype" value="${resourceType}"/>
+		<input type="hidden" name="directEdit" value="${directEdit}"/>
+		<input type="hidden" name="isImport" value="${false}"/>
+		<input type="hidden" name="resourceType" value="${resourceType}"/>
 
-		<!-- the following variable is defined to communicate with .js file -->
-		<input type="hidden" name="action"/>
-			<batch:batchOptions isImport="${false}"/>
+		<!-- Showing the edit Options -->
+		<batch:batchOptions isImport="${false}" resourceType="${resourceType}"/>
 
 		<!-- If there is no post to edit -->
 		<c:if test="${empty listView.list}">
@@ -87,22 +78,24 @@
 						<th style="width: 40%;">
 							<fmt:message key="batchedit.yourPosts"/>
 						</th>
-						<th id="yourTags" style="width: 35%;">
+						<th id="yourTags" style="width: 30%;">
 							<span style="padding-left: 12px; padding-right: 14px">
-								<input type="checkbox" id="selectAll" value="true"
+								<input type="checkbox" id="selectAllTags" value="true"
 									   checked="checked"
 									   title="select all"/>
 							</span>
 							<fmt:message key="batchedit.yourTags"/>
 						</th>
-						<th  style="text-align: center; width: 10%;">
-							<fmt:message key="batchedit.normalize"/>
+						<c:if test="${resourceType eq 'bibtex'}">
+							<th  style="text-align: center; width: 10%; word-wrap: break-word;">
+								<fmt:message key="batchedit.normalize"/>
+							</th>
+						</c:if>
+						<th  style="text-align: center; width: 10%; word-wrap: break-word;">
+							<fmt:message key="batchedit.updateVisibility"/>
 						</th>
-						<th  style="text-align: center; width: 10%;">
-							Visibility
-						</th>
-						<th  style="text-align: center; width: 5%;">
-							Delete
+						<th  style="text-align: center; width: 10%; word-wrap: break-word;">
+							<fmt:message key="batchedit.delete"/>
 						</th>
 					</tr>
 				</thead>
@@ -161,7 +154,8 @@
 										</c:if>
 
 										<batch:batchEditTableEntry
-												showDeleteOption="${true}"
+												post = "${post}"
+												isImport="${false}"
 												postListIndex="${postCount.count - 1}"
 												resourceType="${resourceType}"
 												hasErrors="${true}"
@@ -173,7 +167,7 @@
 
 									</c:when>
 									<c:otherwise>
-										<!-- remember, that we have found posts not owned by the user to show them at end of page -->
+										<!-- remember, that we have found posts not owned by the user to show the corresponing info text -->
 										<c:set var="otherPosts" value="true"/>
 									</c:otherwise>
 								</c:choose>
@@ -182,7 +176,7 @@
 							<c:otherwise>
 								<c:set var="canEdit" value="${post.user.name eq command.context.loginUser.name }"/>
 								<c:forEach items="${command.context.loginUser.groups}" var="group">
-									<c:if test="${group.name eq post.user.name }">
+									<c:if test="${group.name eq post.user.name}">
 										<c:set var="membership"
 											   value="${group.getGroupMembershipForUser(command.context.loginUser.name) }"/>
 										<c:if test="${not empty membership and (membership.groupRole eq 'MODERATOR' or membership.groupRole eq 'ADMINISTRATOR') }">
@@ -194,7 +188,8 @@
 									<!--  a post owned by the logged in user - show a tag edit form -->
 									<c:when test="${canEdit}">
 										<batch:batchEditTableEntry
-												showDeleteOption="${true}"
+												post="${post}"
+												isImport="${false}"
 												postListIndex="${postCount.count - 1}"
 												resourceType="${resourceType}">
 												<jsp:attribute name="shortPostDescription">
@@ -204,7 +199,8 @@
 									</c:when>
 									<c:otherwise>
 										<batch:batchEditTableEntry
-												showDeleteOption="${true}"
+												post="${post}"
+												isImport="${false}"
 												postListIndex="${postCount.count - 1}"
 												resourceType="${resourceType}"
 												isDisabled="${true}"
@@ -213,7 +209,7 @@
 													<jsp:invoke fragment="shortPostDescription" />
 												</jsp:attribute>
 										</batch:batchEditTableEntry>
-										<!-- remember, that we have found posts not owned by the user to show them at end of page -->
+										<!-- remember, that we have found posts not owned by the user to show the corresponing info text -->
 										<c:set var="otherPosts" value="true"/>
 									</c:otherwise>
 								</c:choose>
@@ -234,19 +230,8 @@
 				</tbody>
 			</table>
 		</c:if>
-		<input type="hidden" name="ckey" value="${ckey}"/>
-		<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 
-		<!-- we don't have pagination in indirect mode. -->
-		<c:if test="${directEdit}">
-			<div style="padding-left: 5px;">
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
-				${mtl:ch('nbsp')}
-			</div>
-		</c:if>
-		<input type="hidden" name="directEdit" value="${directEdit}"/>
-
-		<p class="clearfix"><!--  --></p>
+		<!-- Due to poor usability, pagination has been removed, requiring the user to select the page they wish to edit in advance.-->
 
 	</form>
 </jsp:root>

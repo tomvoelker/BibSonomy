@@ -9,7 +9,8 @@
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 >
 
-	<jsp:directive.attribute name="showDeleteOption" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="isImport" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="postListIndex" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
 							 description="The type of resource that are edited (bookmark or bibtex)."/>
@@ -66,8 +67,7 @@
 			<c:when test="${hasErrors}">
 				<!-- When the post has errors no edit options are provided-->
 				<td colspan="3" style="text-align:center">
-					<!--TODO: Better Error message!-->
-					<b class="smalltext"><fmt:message key="error"/></b>
+					<b class="smalltext"><fmt:message key="batchedit.error"/></b>
 				</td>
 			</c:when>
 			<c:otherwise>
@@ -84,7 +84,7 @@
 						<c:otherwise>
 							<input type="checkbox"
 								   name="posts['${post.resource.intraHash}_${post.user.name}'].checked"
-								   value="true"/>
+								   checked="checked" value="true"/>
 						</c:otherwise>
 					</c:choose>
 
@@ -150,7 +150,8 @@
 					</div><!-- /input-group -->
 				</td>
 				<!-- the normalization selection -->
-				<td style="text-align: center;">
+				<c:if test="${resourceType eq 'bibtex'}">
+					<td style="text-align: center;">
 					<c:choose>
 						<c:when test="${isDisabled}">
 							<input type="checkbox"
@@ -164,9 +165,10 @@
 						</c:otherwise>
 					</c:choose>
 				</td>
+				</c:if>
 				<!-- the visibility selection -->
-				<c:if test="${showDeleteOption}">
-					<td style="text-align: center;">
+				<c:if test="${not isImport}">
+					<td style="text-align: center">
 						<c:choose>
 							<c:when test="${isDisabled}">
 								<input type="checkbox"
@@ -182,14 +184,18 @@
 					</td>
 				</c:if>
 				<!-- the delete selection -->
-				<c:if test="${showDeleteOption}">
-					<td style="text-align: center;">
+				<c:if test="${not isImport}">
+					<td style="text-align: center">
 						<c:choose>
 							<c:when test="${isDisabled}">
-								<button class="btn alert-danger" disabled="disabled"><i class="fa fa-trash"/></button>
+								<input type="checkbox"
+									   name="posts['${post.resource.intraHash}_${post.user.name}'].delete"
+									   value="true" disabled="disabled"/>
 							</c:when>
 							<c:otherwise>
-								<button class="btn alert-danger" ><i class="fa fa-trash"/></button>
+								<input type="checkbox"
+									   name="posts['${post.resource.intraHash}_${post.user.name}'].delete"
+									   value="true"/>
 							</c:otherwise>
 						</c:choose>
 					</td>
