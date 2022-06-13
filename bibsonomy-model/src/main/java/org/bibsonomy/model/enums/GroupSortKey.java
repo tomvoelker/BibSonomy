@@ -40,6 +40,9 @@ public enum GroupSortKey {
 	/** sort by the group realname */
 	GROUP_REALNAME,
 
+	/** sort by group realname, if not available it uses the name */
+	GROUP_SORTNAME,
+
 	/** sort by the rank of the fulltext search */
 	RANK
 }

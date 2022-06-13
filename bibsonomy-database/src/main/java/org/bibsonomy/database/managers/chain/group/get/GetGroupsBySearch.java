@@ -63,6 +63,9 @@ public class GetGroupsBySearch extends GroupChainElement {
 	@Override
 	protected boolean canHandle(final QueryAdapter<GroupQuery> param) {
 		final GroupQuery query = param.getQuery();
-		return GroupSortKey.GROUP_REALNAME.equals(query.getGroupSortKey()) || present(query.getSearch()) || present(query.getPrefix());
+		return GroupSortKey.GROUP_REALNAME.equals(query.getGroupSortKey()) ||
+				GroupSortKey.GROUP_SORTNAME.equals(query.getGroupSortKey()) ||
+				present(query.getSearch()) ||
+				present(query.getPrefix());
 	}
 }
