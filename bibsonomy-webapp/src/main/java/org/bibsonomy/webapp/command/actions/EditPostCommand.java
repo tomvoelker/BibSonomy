@@ -37,7 +37,6 @@ import java.util.SortedSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;

@@ -175,6 +175,7 @@
 								resourceType="bibtex"
 								communityPostExists="${isRealGoldstandard}"
 								postOfLoggedInUser="${postOfLoggedInUser}"
+								ckey="${fn:escapeXml(command.context.ckey)}"
 						/>
 						<c:if test="${not empty postOfLoggedInUser}">
 							<span class="community-info warning">

@@ -36,6 +36,8 @@
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
 
+	<c:set var="showApprovalOptions" value="${not empty postApproval and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}" />
+
 	<layout:layout
 		loginUser="${command.context.loginUser}"
 		pageTitle="${editPageTitle}" 
@@ -210,7 +212,7 @@
 						<!--+
 							| goldStandard post's approval  
 							+-->
-						<c:if test="${not empty postApproval and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}">
+						<c:if test="${showApprovalOptions}">
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>
 						
@@ -271,7 +273,7 @@
 											<div class="btn-group">
 												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="addForGroupTag('${groups}');" tabindex="2"/>
 											</div>
-										</c:if>			
+										</c:if>
 									</div>
 								</div>
 							</div>
@@ -323,7 +325,6 @@
 									<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-send-post-button').trigger('click');">${saveAndSendTo}</a>
 								</div>
 							</c:if>
-							
 						</div>
 					</div>
 				</div>

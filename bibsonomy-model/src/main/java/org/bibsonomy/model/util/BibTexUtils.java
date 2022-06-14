@@ -58,11 +58,13 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.tex.TexDecode;
@@ -1203,5 +1205,19 @@ public class BibTexUtils {
 		}
 		
 		return "";
+	}
+
+	public static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
+		if (!present(post)) {
+			return null;
+		}
+
+		final Post<BibTex> gold = new Post<>();
+
+		final GoldStandardPublication goldP = new GoldStandardPublication();
+		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
+		gold.setResource(goldP);
+
+		return gold;
 	}
 }

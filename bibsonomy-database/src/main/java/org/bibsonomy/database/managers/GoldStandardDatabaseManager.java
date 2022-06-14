@@ -208,7 +208,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 
 			if (present(newPostInDB)) {
-				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
+				log.debug("gold standard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(PostUtils.getKeyForCommunityPost(post), errorMessage);
 				session.commitTransaction();
@@ -298,7 +298,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 
 			if (present(newPostInDB) && !oldHash.equals(resourceHash)) {
-				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
+				log.debug("gold standard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(resourceHash, errorMessage);
 
