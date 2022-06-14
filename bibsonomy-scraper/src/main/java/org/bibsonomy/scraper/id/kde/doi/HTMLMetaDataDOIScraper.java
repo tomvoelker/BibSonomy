@@ -62,7 +62,7 @@ public class HTMLMetaDataDOIScraper extends HTMLMetaDataDublinCoreToBibtexConver
 	 */
 	@Override
 	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
-		if (present(scrapingContext.getUrl())) {
+		if (!present(scrapingContext.getDoiURL()) && present(scrapingContext.getUrl())) {
 			String doi = getDoiFromMetaData(scrapingContext.getUrl());
 			if (doi == null) {
 				doi = getDoiFromURL(scrapingContext.getUrl());
