@@ -48,7 +48,7 @@ public class LccnLocScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "https://lccn.loc.gov/2005929872";
-		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest1.bib";
 		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
@@ -58,7 +58,7 @@ public class LccnLocScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "https://lccn.loc.gov/2005929872/dc";
-		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest1.bib";
 		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
@@ -81,10 +81,11 @@ public class LccnLocScraperTest {
 		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest3.bib";
 		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_364
 	 */
+	//Protected by Cloudflare
 	@Test
 	public void url5TestRun() {
 		final String url = "https://catalog.loc.gov/vwebv/holdingsInfo?searchId=6242&recCount=25&recPointer=1&bibId=1781294";

@@ -54,11 +54,22 @@ public class OSAScraperTest {
 	 * starts URL test with id url_93
 	 */
 	@Test
-	public void urlTestRun(){
+	public void urlTest1Run(){
 		final String url = "https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084";
-		final String resultFile = resultDirectory + "OSAScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "OSAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, OSAScraper.class, resultFile);
 	}
+
+	@Test
+	public void urlTest2Run(){
+		final String url = "https://opg.optica.org/aop/fulltext.cfm?uri=aop-3-2-128&id=211561";
+		final String resultFile = resultDirectory + "OSAScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, OSAScraper.class, resultFile);
+	}
+
+
+
+
 	
 	@Ignore // because we need to login in the journal to be able to scrape the references
 	@Test

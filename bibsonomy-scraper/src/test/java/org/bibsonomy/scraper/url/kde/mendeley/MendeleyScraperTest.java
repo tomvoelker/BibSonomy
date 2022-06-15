@@ -41,23 +41,47 @@ import org.junit.experimental.categories.Category;
 @Category(RemoteTest.class)
 public class MendeleyScraperTest {
 	String resultDirectory = "mendeley/";
-	/**
-	 * 
-	 */
+
 	@Test
-	public void urlTestRun() {
+	public void url1TestRun() {
 		final String url = "http://www.mendeley.com/catalog/social-bookmarking-beispiel-bibsonomy/";
-		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest.bib";
-		assertScraperResult(url, MendeleyScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_218
-	 */
-	@Test
-	public void url2TestRun(){
-		final String url = "http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/";
 		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest1.bib";
 		assertScraperResult(url, MendeleyScraper.class, resultFile);
 	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest2.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://www.mendeley.com/catalogue/e7efd8e9-ab1d-3366-af73-84063250f88f/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest3.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://www.mendeley.com/catalogue/4ca03e49-d30d-3c3c-9e35-3d96f75f258a/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest4.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
+	}
+
+	@Test
+	public void url5TestRun(){
+		final String url = "https://www.mendeley.com/catalogue/a9e4e02c-13f5-3bdb-8749-11e4a6740e7d/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest5.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
+	}
+
+	@Test
+	public void url6TestRun(){
+		final String url = "https://www.mendeley.com/catalogue/84756568-e574-3055-8e32-68a5bc91b47d/";
+		final String resultFile = resultDirectory + "MendeleyScraperUnitURLTest6.bib";
+		assertScraperResult(url, MendeleyScraper.class, resultFile);
+	}
+
 }

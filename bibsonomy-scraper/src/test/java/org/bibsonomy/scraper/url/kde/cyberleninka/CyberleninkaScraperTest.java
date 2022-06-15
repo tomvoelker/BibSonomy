@@ -51,4 +51,18 @@ public class CyberleninkaScraperTest {
 		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
 	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://cyberleninka.ru/article/n/osnovnye-elementy-otsenki-veb-saytov-gostinits-sravnitelnyy-analiz-na-primere-gostinits-g-moskvy";
+		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://cyberleninka.ru/article/n/uchrezhdenie-politseyskih-dolzhnostey-na-obschestvennye-i-chastnye-sredstva-v-organah-politsii-zapadnoy-sibiri-v-1905-1917-godah";
+		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
+	}
 }

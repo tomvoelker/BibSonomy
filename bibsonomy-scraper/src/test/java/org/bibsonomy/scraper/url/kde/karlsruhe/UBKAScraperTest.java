@@ -49,7 +49,7 @@ public class UBKAScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC087550059&amp;indx=3&amp;recIds=KITSRC087550059&amp;recIdxs=2&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full";
+		final String url = "https://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&ct=display&fn=search&doc=KITSRC087550059&indx=1&recIds=KITSRC087550059&recIdxs=0&elementId=0&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&&dscnt=0&scp.scps=scope%3A%28HSKA%29%2Cscope%3A%28KIT%29%2Cscope%3A%28%22PRIMO%22%29%2Cscope%3A%28KIT_CS%29%2Cscope%3A%28KIT_CN%29%2Cscope%3A%28TRAINING3%29%2Cscope%3A%28INF%29%2Cscope%3A%28Trainining4%29%2Cscope%3A%28TRAINING3A%29&mode=Basic&vid=default&srt=rank&tab=default_tab&vl(freeText0)=Data%20Mining%20%3A%20praktische%20Werkzeuge%20und%20Techniken%20f%C3%BCr%20das%20maschinelle%20Lernen&dum=true&dstmp=1647599331850";
 		final String resultFile = resultDirectory + "UBKAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, UBKAScraper.class, resultFile);
 	}
@@ -59,7 +59,7 @@ public class UBKAScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		final String url = "http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC349648727&amp;indx=5&amp;recIds=KITSRC349648727&amp;recIdxs=4&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full";
+		final String url = "http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&ct=display&fn=search&doc=KITSRC349648727&indx=4&recIds=KITSRC349648727&recIdxs=3&elementId=3&renderMode=poppedOut&displayMode=full&frbrVersion=&frbg=&&dscnt=0&scp.scps=scope%3A%28HSKA%29%2Cscope%3A%28KIT%29%2Cscope%3A%28%22PRIMO%22%29%2Cscope%3A%28KIT_CS%29%2Cscope%3A%28KIT_CN%29%2Cscope%3A%28TRAINING3%29%2Cscope%3A%28INF%29%2Cscope%3A%28Trainining4%29%2Cscope%3A%28TRAINING3A%29&mode=Basic&vid=default&srt=rank&tab=default_tab&vl(freeText0)=Data%20mining%20%3A%20concepts%20and%20techniques&dum=true&dstmp=1647512189317";
 		final String resultFile = resultDirectory + "UBKAScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, UBKAScraper.class, resultFile);
 	}

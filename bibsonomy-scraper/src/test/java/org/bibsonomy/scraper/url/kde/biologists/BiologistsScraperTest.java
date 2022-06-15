@@ -61,4 +61,18 @@ public class BiologistsScraperTest {
 		assertScraperResult(url, BiologistsScraper.class, resultFile);
 	}
 
+	@Test
+	public void url3TestRun(){
+		final String url = "https://journals.biologists.com/jeb/article/219/19/3137/15588/Ontogeny-of-learning-walks-and-the-acquisition-of";
+		final String resultFile = resultDirectory + "BiologistsScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, BiologistsScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://journals.biologists.com/jeb/article/220/12/2236/34091/Interactive-effects-of-oxygen-carbon-dioxide-and";
+		final String resultFile = resultDirectory + "BiologistsScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, BiologistsScraper.class, resultFile);
+	}
+
 }

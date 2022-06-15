@@ -53,7 +53,7 @@ public class CiteseerScraperTest {
 
 	@Test
 	public void url1TestRun(){
-		final String url = "https://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.1064.4804&rank=1&q=The%20anatomy%20of%20a%20large-scale%20hypertextual%20{Web}%20search%20engine&osm=&ossid=";
+		final String url = "https://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.1064.4804&rank=1&q=The%20anatomy%20of%20a%20large-scale%20hypertextual%20web%20search%20engine.%20(1998)&osm=&ossid=";
 		final String resultFile = resultDirectory + "CiteseerScraperUnitURLTest1.bib";
 		assertScraperResult(url, CiteseerScraper.class, resultFile);
 	}

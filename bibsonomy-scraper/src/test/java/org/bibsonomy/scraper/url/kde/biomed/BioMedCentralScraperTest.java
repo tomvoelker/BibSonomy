@@ -74,4 +74,18 @@ public class BioMedCentralScraperTest {
 		final String resultFile = resultDirectory + "BioMedCentralScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
 	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0424-0#Bib1";
+		final String resultFile = resultDirectory + "BioMedCentralScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
+	}
+
+	@Test
+	public void url5TestRun(){
+		final String url = "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0424-0";
+		final String resultFile = resultDirectory + "BioMedCentralScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, BioMedCentralScraper.class, resultFile);
+	}
 }

@@ -30,8 +30,12 @@
 package org.bibsonomy.scraper.url.kde.openrepository;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +46,7 @@ import java.util.regex.Pattern;
  * Scraper for openrepository pages
  * @author tst
  */
-public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
+public class OpenrepositoryScraper extends AbstractUrlScraper {
 
 	private static final String SITE_URL = "http://openrepository.com/";
 	private static final String SITE_NAME = "Open Repository";
@@ -55,7 +59,6 @@ public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_OPENREPOSITORY), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "repository\\..*\\.[A-z]+"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "stor.scot.nhs.uk"), Pattern.compile("handle")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "fieldresearch.msf.org"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "t-stor.teagasc.ie"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "soar.usi.edu"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "oar.marine.ie"), Pattern.compile("handle")));
@@ -65,6 +68,8 @@ public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "repositorioacademico.upc.edu.pe"), Pattern.compile("handle")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hirsla.lsh.is"), Pattern.compile("handle")));
 	}
+
+	private static final Pattern SINGLE_ITEM_ID_PATTERN = Pattern.compile("singleItemid=(\\d+)");
 	
 	@Override
 	public String getInfo() {
@@ -84,12 +89,31 @@ public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
 		}
 		return null;
 	}
-	
+
+	@Override
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+		URL url = sc.getUrl();
+		try {
+			String pageContent = sc.getPageContent();
+			Matcher m_singleItemId = SINGLE_ITEM_ID_PATTERN.matcher(pageContent);
+			String downloadUrl = "https://" + url.getHost() + "/discover/export?format=bibtex&handle=" + getHandle(url.toString());
+			if (m_singleItemId.find()){
+				downloadUrl += "&singleItemid=" + m_singleItemId.group(1);
+			}
+			String bibtex = WebUtils.getContentAsString(downloadUrl);
+			sc.setBibtexResult(bibtex);
+			return true;
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		}
+	}
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -100,8 +124,5 @@ public class OpenrepositoryScraper extends GenericBibTeXURLScraper {
 		return SITE_URL;
 	}
 	
-	@Override
-	public String getDownloadURL(URL url, String cookies) {
-		return "https://" + url.getHost() + "/discover/export?format=bibtex&handle=" + getHandle(url.toString());
-	}
+
 }

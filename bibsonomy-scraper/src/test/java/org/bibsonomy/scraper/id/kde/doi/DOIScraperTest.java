@@ -64,7 +64,7 @@ public class DOIScraperTest {
 		sc.setSelectedText("10.1145/160688.160713");
 		
 		assertFalse(SCRAPER.scrape(sc));
-		assertEquals("https://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
+		assertEquals("https://dl.acm.org/doi/10.1145/160688.160713", sc.getUrl().toString());
 	}
 	
 }

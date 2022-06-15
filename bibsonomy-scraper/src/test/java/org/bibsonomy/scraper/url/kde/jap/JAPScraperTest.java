@@ -35,6 +35,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,10 +54,32 @@ public class JAPScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://journals.physiology.org/doi/full/10.1152/japplphysiol.00991.2010";
-		final String resultFile = resultDirectory + "JAPScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "JAPScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, JAPScraper.class, resultFile);
 	}
-	
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00032.2010";
+		final String resultFile = resultDirectory + "JAPScraperUnitURLTest2.bib";
+		assertScraperResult(url, JAPScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00033.2021";
+		final String resultFile = resultDirectory + "JAPScraperUnitURLTest3.bib";
+		assertScraperResult(url, JAPScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://journals.physiology.org/doi/full/10.1152/physrev.00011.2010";
+		final String resultFile = resultDirectory + "JAPScraperUnitURLTest4.bib";
+		assertScraperResult(url, JAPScraper.class, resultFile);
+	}
+
+	@Ignore
 	@Test
 	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.physiology.org/doi/full/10.1152/japplphysiol.00991.2010"));

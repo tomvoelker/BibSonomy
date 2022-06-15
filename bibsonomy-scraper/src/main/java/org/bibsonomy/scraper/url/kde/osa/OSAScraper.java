@@ -30,9 +30,9 @@
 package org.bibsonomy.scraper.url.kde.osa;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,95 +45,64 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
+public class OSAScraper extends GenericBibTeXURLScraper implements ReferencesScraper{
 	private static final Log log = LogFactory.getLog(OSAScraper.class);
-	
+
 	private static final String SITE_NAME = "Optical Society of America";
 	private static final String SITE_URL  = "https://www.osapublishing.org/";
 	private static final String info = "This Scraper parses a publication from the " + href(SITE_URL, SITE_NAME)+".";
-	private static final String OSA_HOST  = "osapublishing.org";
-	private static final String HTTP = "https://www.";
-	private static final String OSA_BIBTEX_DOWNLOAD_PATH = "/custom_tags/IB_Download_Citations.cfm";
-	
-	private static final Pattern inputPattern = Pattern.compile("<input\\b[^>]*>");
-	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
+	private static final String OLD_HOST  = "osapublishing.org";
+	private static final String NEW_HOST  = "opg.optica.org";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<>();
+	static{
+		PATTERNS.add(new Pair<>(Pattern.compile(".*" + OLD_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*" + NEW_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	}
+
+	private static final Pattern ID_PATTERN = Pattern.compile("<form.*?>\\s*<input.*?value=\"(\\d*)\">\\s+<input .*?value=\"(?:export_bibtex)?\"></form>");
+
 	final static Pattern references_pattern = Pattern.compile("(?s)<h3>References</h3>\\s+<div .*>\\s+<ol>(.*)</ol>");
-	
+
+
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return "https://opg.optica.org/custom_tags/IB_Download_Citations.cfm";
+	}
+
+	@Override
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
+		try {
+			String pageContent = WebUtils.getContentAsString(url);
+			Matcher m_id = ID_PATTERN.matcher(pageContent);
+			if (!m_id.find()){
+				throw new ScrapingException("Couldn't find ID");
+			}
+			ArrayList<NameValuePair> postData = new ArrayList<>();
+			postData.add(new BasicNameValuePair("ArticleAction", "export_bibtex"));
+			postData.add(new BasicNameValuePair("articles", m_id.group(1)));
+
+			return postData;
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		}
+	}
+
 	@Override
 	public String getInfo() {
 		return info;
 	}
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		final String id = getId(sc.getPageContent());
-		
-		final String bibResult;
-		try {
-			final String cookie;
-			try {
-				cookie = WebUtils.getCookies(sc.getUrl());
-			} catch (final IOException ex) {
-				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
-			}
-			final List<NameValuePair> postData = new ArrayList<NameValuePair>(2);
-			postData.add(new BasicNameValuePair("articles", id));
-			postData.add(new BasicNameValuePair("ArticleAction", "export_bibtex"));
-			
-			bibResult = WebUtils.getContentAsString(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH, cookie, postData, null);
-		} catch (MalformedURLException ex) {
-			throw new InternalFailureException(ex);
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		if (ValidationUtils.present(bibResult)) {
-			sc.setBibtexResult(bibResult);
-			return true;
-		}
-		throw new ScrapingFailureException("getting bibtex failed");
-	}
-
-	/**
-	 * Extract id from page content.
-	 * 
-	 * @param pageContent
-	 * @return
-	 */
-	private static String getId(final String pageContent) {
-		final Matcher inputMatcher = inputPattern.matcher(pageContent);
-
-		while (inputMatcher.find()) {
-			final String input = inputMatcher.group();
-			if (input.contains("name=\"articles\"")) {
-				final Matcher valueMatcher = valuePattern.matcher(input);
-
-				if(valueMatcher.find()) {
-					final String value = valueMatcher.group();
-					return value.substring(7,value.length()-1);
-				}
-			}
-		}
-		return null;
-	}
-
-	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
 	}
 
 	@Override

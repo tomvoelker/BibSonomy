@@ -56,7 +56,7 @@ public class OapenScraperTest {
 
 	@Test
 	public void url3TestRun() {
-		final String url = "https://library.oapen.org/handle/20.500.12657/46536";
+		final String url = "https://library.oapen.org/handle/20.500.12657/53391";
 		final String resultFile = resultDirectory + "OapenScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, OapenScraper.class, resultFile);
 

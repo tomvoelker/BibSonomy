@@ -46,7 +46,6 @@ import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
 import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
 import org.bibsonomy.scraper.url.kde.apa.APAScraper;
 import org.bibsonomy.scraper.url.kde.apha.APHAScraper;
-import org.bibsonomy.scraper.url.kde.aps.ApsScraper;
 import org.bibsonomy.scraper.url.kde.apsphysics.APSPhysicsScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.ashpublications.AshPublicationsScraper;
@@ -67,6 +66,7 @@ import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerScraper;
 import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
 import org.bibsonomy.scraper.url.kde.copernicus.CopernicusScraper;
+import org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
 import org.bibsonomy.scraper.url.kde.digitalhumanities.UmanisticaDigitaleScraper;
@@ -76,11 +76,11 @@ import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.emerald.EmeraldScraper;
-import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
+import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
-import org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
+import org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.hebis.HebisScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
@@ -97,7 +97,6 @@ import org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper;
 import org.bibsonomy.scraper.url.kde.jap.JAPScraper;
 import org.bibsonomy.scraper.url.kde.jbc.JBCScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
-import org.bibsonomy.scraper.url.kde.jeb.JEBScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
 import org.bibsonomy.scraper.url.kde.jstage.JStageScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
@@ -110,6 +109,7 @@ import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper;
+import org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper;
 import org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper;
 import org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper;
 import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
@@ -119,6 +119,7 @@ import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.neurips.NeurIPSScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
+import org.bibsonomy.scraper.url.kde.oapen.OapenScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
@@ -133,7 +134,6 @@ import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
-import org.bibsonomy.scraper.url.kde.rspb.RSPBScraper;
 import org.bibsonomy.scraper.url.kde.rupress.RupressScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper;
@@ -171,7 +171,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
-		addScraper(new JEBScraper());
 		addScraper(new BioRxivScraper());
 		// changed to hebis Scraper
 		addScraper(new HebisScraper());
@@ -217,16 +216,13 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AipScitationScraper());
 		addScraper(new JAPScraper());
 		addScraper(new RSOCScraper());
-		addScraper(new ApsScraper());
 		addScraper(new CdnSciencePubScraper());
-		addScraper(new RSPBScraper());
 		addScraper(new AsmScraper());
 		addScraper(new AhaJournalsScraper());
 		addScraper(new SageJournalScraper());
 		addScraper(new AnthroSourceScraper());
 		addScraper(new TaylorAndFrancisScraper());
 		addScraper(new WileyIntersienceScraper());
-		addScraper(new FASEBJournalScraper());
 		addScraper(new ScienceMagScraper());
 
 
@@ -242,8 +238,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new OSAScraper());
 		addScraper(new PNASScraper());
 		addScraper(new JStorScraper());
-		//HtmlMetaData should be scraped
-		//addScraper(new EricScraper());
+
+		addScraper(new EricScraper());
 		addScraper(new IWAPonlineScraper());
 		addScraper(new JMLRScraper());
 		addScraper(new AclScraper());
@@ -258,8 +254,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleScholarScraper());
-		//HtmlMetaData should be scraped
-		//addScraper(new GooglePatentScraper());
+		addScraper(new GooglePatentScraper());
 		addScraper(new SCIELOScraper());
 		addScraper(new DLibScraper());
 		addScraper(new CellScraper());
@@ -278,8 +273,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new PharmacognosyResearchScraper());
 		addScraper(new EconstorScraper());
 		addScraper(new RupressScraper());
-		//HtmlMetaData should be scraped
-		//addScraper(new MendeleyScraper());
+
+		addScraper(new MendeleyScraper());
 		addScraper(new HindawiScraper());
 		addScraper(new FirstMondayScraper());
 		addScraper(new IGIGlobalScraper());
@@ -287,7 +282,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new MDPIScraper());
 		addScraper(new TheLancetScraper());
 		addScraper(new NowPublishersScraper());
-		addScraper(new GenomeBiologyScraper());
 		addScraper(new RWTHAachenScraper());
 		addScraper(new OstiScraper());
 		addScraper(new ScientificScraper());
@@ -305,7 +299,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new LccnLocScraper());
 		addScraper(new ElsevierScraper());
 		//HtmlMetaData should be scraped
-		//addScraper(new CyberleninkaScraper());
+		addScraper(new CyberleninkaScraper());
 		addScraper(new OxfordUniversityPressScraper());
 		addScraper(new ZenodoScraper());
 		addScraper(new BaseScraper());
@@ -315,6 +309,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AKJournalsScraper());
 		addScraper(new LibrarythingScraper());
 		addScraper(new CopernicusScraper());
+		addScraper(new OapenScraper());
 
 		// site specific scrapers
 		addScraper(new OpenReviewScraper());

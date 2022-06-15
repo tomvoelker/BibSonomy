@@ -51,7 +51,7 @@ public class DublinCoreScraperTest {
 	
 	@Test
 	public void testDCScraper2() {
-		final String url = "http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6";
+		final String url = "https://www.phcogres.com/article/2009/1/4/nil-1";
 		final String resultFile = resultDirectory + "DCScraperTest2.bib";
 		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);
 	}
@@ -90,7 +90,7 @@ public class DublinCoreScraperTest {
 
 	@Test
 	public void testDCScraper8() {
-		final String url = "\"https://journal.iwmpi.org/index.php/iwmpi/article/view/33\"";
+		final String url = "https://journal.iwmpi.org/index.php/iwmpi/article/view/33";
 		final String resultFile = resultDirectory + "DCScraperTest8.bib";
 		assertScraperResult(url, null, DublinCoreScraper.class, resultFile);
 	}

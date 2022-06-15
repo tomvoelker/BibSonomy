@@ -44,6 +44,7 @@ import org.junit.experimental.categories.Category;
 public class UsenixScraperTest {
 	String resultDirectory = "usenix/";
 
+	//legacy pages
 	/**
 	 * starts URL test with id url_74
 	 */
@@ -144,5 +145,19 @@ public class UsenixScraperTest {
 		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest10.bib";
 		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
-	
+	//non legacy pages
+	@Test
+	public void url11TestRun(){
+		final String url = "https://www.usenix.org/conference/usenixsecurity19/presentation/lee";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest11.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
+	}
+
+	@Test
+	public void url12TestRun(){
+		final String url = "https://www.usenix.org/jesa/0101/hembroff";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest12.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
+	}
+
 }

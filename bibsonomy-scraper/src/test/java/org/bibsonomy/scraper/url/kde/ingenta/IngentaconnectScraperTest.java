@@ -73,13 +73,6 @@ public class IngentaconnectScraperTest {
 	}
 
 	@Test
-	public void url4TestRun(){
-		final String url = "https://www.ingentaconnect.com/content/bpl/test/2015/00000037/00000003/art00001";
-		final String resultFile = resultDirectory + "IngentaconnectScraperUnitURLTest4.bib";
-		assertScraperResult(url, IngentaconnectScraper.class, resultFile);
-	}
-
-	@Test
 	public void testFixSpaceInKey() {
 		final String b = "number = \"4\",\n" + 
 				"publication date =\"2007-04-17T00:00:00\",\n" + 
