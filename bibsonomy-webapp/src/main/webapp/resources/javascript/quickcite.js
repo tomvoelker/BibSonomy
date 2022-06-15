@@ -103,9 +103,30 @@ function reportBrokenCitation() {
 			'referer': window.location.href,
 		},
 		success: function(data) {
-
+			if (data.success === true) {
+				var successMsg = getString("report.error.feedback.success");
+				$(container).find('.modal-body').prepend(createAlert('success', successMsg));
+			} else {
+				var errorMsg = getString("report.error.feedback.error");
+				$(container).find('.modal-body').prepend(createAlert('danger', errorMsg));
+			}
 		}
 	});
+}
+
+function createAlert(type, message) {
+	var alert = $('<div></div>')
+		.attr('class', 'alert alert-dismissible alert-' + type)
+		.attr('role', 'alert');
+
+	var closeBtn = $('<button></button>')
+		.attr('class', 'close')
+		.attr('data-dismiss', 'alert')
+		.html('<span aria-hidden="true">&times;</span>');
+
+	alert.append(closeBtn);
+	alert.append($('<span></span>').html(message));
+	return alert;
 }
 
 $(document).ready(function() {

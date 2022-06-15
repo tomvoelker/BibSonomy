@@ -90,7 +90,7 @@
 		<jsp:attribute name="content">
 			<!-- Error alerts -->
 			<errors:global/>
-			<div id="ajaxErrorAlerts"><!-- keep me for AJAX error --></div>
+			<div id="ajaxAlerts"><!-- keep me for AJAX alerts --></div>
 
 			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
 				<div class="col-md-12">
