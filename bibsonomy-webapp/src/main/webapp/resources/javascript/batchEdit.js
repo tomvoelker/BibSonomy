@@ -3,13 +3,13 @@ var showNormalize;
 var isImport;
 
 var tagCheckBoxSelector = 'input[name^=posts][name$=checked]:checkbox';
-var visibilityCheckBoxSelector = 'input[name^=posts][name$=visibility]:checkbox';
+var visibilityCheckBoxSelector = 'input[name^=posts][name$=updateVisibility]:checkbox';
 var normalizeCheckBoxSelector = 'input[name^=posts][name$=normalize]:checkbox';
 var deleteCheckBoxSelector = 'input[name^=posts][name$=delete]:checkbox';
 
 $(document).ready(function () {
 	$('[data-toggle="tooltip"]').tooltip();
- 	showNormalize=$('input[name=resourceType]').val()==='bibtex';
+ 	showNormalize=$('input[name=resourcetype]').val()==='bibtex';
  	isImport=$('input[name=isImport]').val()==='true';
 
 	updateBadges();
@@ -70,7 +70,7 @@ $(document).ready(function () {
 		$('#checkboxVisibility').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(visibilityCheckBoxSelector).each(function () {
-				if (!$('input[name=' + $(this).prop('name').replace('visibility', 'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox:checked').length)
+				if (!$('input[name=' + $(this).prop('name').replace('updateVisibility', 'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox:checked').length)
 					$(this).prop('checked', markAllChecked).change();
 			});
 		});
@@ -93,17 +93,23 @@ $(document).ready(function () {
 				$(this).parent().parent().prop('style', "background-color: #f2dede; ");
 				$('input[name=' + $(this).prop('name').replace('delete', 'checked').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
 				$('input[name=' + $(this).prop('name').replace('delete', 'normalize').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
-				$('input[name=' + $(this).prop('name').replace('delete', 'visibility').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
+				$('input[name=' + $(this).prop('name').replace('delete', 'updateVisibility').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
 				$('input[name=' + $(this).prop('name').replace('delete', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', true);
 			} else {
 				$(this).parent().parent().prop('style', "");
 				$('input[name=' + $(this).prop('name').replace('delete', 'checked').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
 				$('input[name=' + $(this).prop('name').replace('delete', 'normalize').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
-				$('input[name=' + $(this).prop('name').replace('delete', 'visibility').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
+				$('input[name=' + $(this).prop('name').replace('delete', 'updateVisibility').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
 				$('input[name=' + $(this).prop('name').replace('delete', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
 			}
 			toggleDelete(countCheckedBoxes(deleteCheckBoxSelector) === 0);
 			updateBadges();
+		});
+	}
+	else {
+		$('#visibilitySelection').change(function () {
+			if($.inArray(5, action) === -1)
+				action.push(5);
 		});
 	}
 
@@ -130,9 +136,14 @@ $(document).ready(function () {
 		if($('#tagsInput').val() !== '' && !window.confirm($('input[name=editTagsWarning]').val())){
 			return false
 		}
+	});
+
+	$('#batchedit').submit(function(){
 		//We check all posts, since the controller currently only processes checked posts due to the legacy version of this page still used by the batch edit page
 		$(tagCheckBoxSelector).each(function() {
 			$(this).prop('checked', true);
+			$(this).prop('disabled', false);
+			$('input[name=' + $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
 		});
 
 		$('input[name=action]').val(action);
@@ -164,7 +175,7 @@ function toggleNormalize(disabled){
 	$('#checkboxNormalize').prop('checked', !disabled);
 	if(disabled && $.inArray(3, action) !== -1){
 		action.splice( $.inArray(3,action) ,1 );
-	} else if ($.inArray(3, action) === -1) {
+	} else if (!disabled && $.inArray(3, action) === -1) {
 		action.push(3);
 	}
 }
@@ -175,7 +186,7 @@ function toggleDelete(disabled){
 	$('#checkboxDelete').prop('checked', !disabled);
 	if(disabled && $.inArray(4, action) !== -1){
 		action.splice( $.inArray(4,action) ,1 );
-	} else if ($.inArray(4, action) === -1) {
+	} else if (!disabled && $.inArray(4, action) === -1) {
 		action.push(4);
 	}
 }

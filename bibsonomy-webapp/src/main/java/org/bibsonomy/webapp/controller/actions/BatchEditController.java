@@ -154,6 +154,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		return command;
 	}
 
+	//TODO: Fix documentation
 	/**
 	 * This controller is called in two cases:
 	 * 1. DirectEdit: When user clicks the gear button and selects 'edit own
@@ -313,7 +314,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * loop through all hashes and check for each post, what to do
 		 */
 		for (final Entry<String, PostChangeInfo> markedPost : markedPostsMap.entrySet()) {
-			if (!markedPost.getValue().isChecked() && !markedPost.getValue().isNormalize()) {
+			if (!markedPost.getValue().isChecked()) {
 				continue;
 			}
 			
@@ -332,7 +333,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * STEP 1: Check if post should be deleted or ignored.
 			 */
-			if (action.contains(DELETE_ACTION)) {
+			if (action.contains(DELETE_ACTION) && (directEdit || markedPost.getValue().isDelete())) {
 				postsToDelete.add(PostUtils.getKeyForPost(intraHash, postOwner));
 				continue;
 			}
@@ -415,7 +416,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 				}
 			}
-			if (action.contains(UPDATE_VIEWABLE_ACTION)) {
+			if (action.contains(UPDATE_VIEWABLE_ACTION) && (directEdit || markedPost.getValue().isUpdateVisibility())) {
 				/*
 				 * set visibility of this post for the groups,
 				 * the user specified

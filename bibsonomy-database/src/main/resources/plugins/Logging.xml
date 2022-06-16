@@ -14,9 +14,10 @@
 		SELECT content_id, url, text, `group`, date
 		FROM bibtexurls WHERE content_id = #requestedContentId#
 	</insert>
-	
+
+	<!--FIXME: Dublicate Entry exceptions occure during batch editing without apparent reason. Since only the logging is erroneous the IGNORE insertion is the current hotfix -->
 	<insert id="logBibTex" parameterClass="bibtexParam">
-		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		INSERT IGNORE INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,

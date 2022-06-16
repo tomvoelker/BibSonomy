@@ -12,7 +12,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="isImport" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="postListIndex" type="java.lang.Integer" required="true"/>
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
+	<jsp:directive.attribute name="resourcetype" type="java.lang.String" required="true"
 							 description="The type of resource that are edited (bookmark or bibtex)."/>
 	<jsp:directive.attribute name="isDisabled" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hasErrors" type="java.lang.Boolean" required="false"/>
@@ -89,7 +89,7 @@
 					</c:choose>
 
 						</span>
-						<spring:bind path="command.${resourceType}.list[${postListIndex}].tags">
+						<spring:bind path="command.${resourcetype}.list[${postListIndex}].tags">
 							<c:choose>
 								<c:when test="${status.error}">
 									<!--  the post has some errors on the tags - show the tags -->
@@ -150,39 +150,48 @@
 					</div><!-- /input-group -->
 				</td>
 				<!-- the normalization selection -->
-				<c:if test="${resourceType eq 'bibtex'}">
+				<c:if test="${resourcetype eq 'bibtex'}">
 					<td style="text-align: center;">
 					<c:choose>
 						<c:when test="${isDisabled}">
 							<input type="checkbox"
 								   name="posts['${post.resource.intraHash}_${post.user.name}'].normalize"
-								   value="false" disabled="disabled"/>
+								   value="true" disabled="disabled"/>
 						</c:when>
 						<c:otherwise>
 							<input type="checkbox"
 								   name="posts['${post.resource.intraHash}_${post.user.name}'].normalize"
-								   value="false"/>
+								   value="true"/>
 						</c:otherwise>
 					</c:choose>
 				</td>
 				</c:if>
 				<!-- the visibility selection -->
-				<c:if test="${not isImport}">
-					<td style="text-align: center">
-						<c:choose>
-							<c:when test="${isDisabled}">
-								<input type="checkbox"
-									   name="posts['${post.resource.intraHash}_${post.user.name}'].visibility"
-									   value="true" disabled="disabled"/>
-							</c:when>
-							<c:otherwise>
-								<input type="checkbox"
-										name="posts['${post.resource.intraHash}_${post.user.name}'].visibility"
-										value="true"/>
-							</c:otherwise>
-						</c:choose>
-					</td>
-				</c:if>
+				<c:choose>
+					<c:when test="${not isImport}">
+						<td style="text-align: center">
+							<c:choose>
+								<c:when test="${isDisabled}">
+									<input type="checkbox"
+										   name="posts['${post.resource.intraHash}_${post.user.name}'].updateVisibility"
+										   value="true" disabled="disabled"/>
+								</c:when>
+								<c:otherwise>
+									<input type="checkbox"
+										   name="posts['${post.resource.intraHash}_${post.user.name}'].updateVisibility"
+										   value="true"/>
+								</c:otherwise>
+							</c:choose>
+						</td>
+					</c:when>
+					<!-- In the import case, the visibility is updated for all posts. Since this distinction is currently not supported by the controller, the information is already provided here.-->
+					<c:otherwise>
+						<input type="checkbox"
+							   name="posts['${post.resource.intraHash}_${post.user.name}'].updateVisibility"
+							   value="true" hidden="hidden" checked="checked"/>
+					</c:otherwise>
+				</c:choose>
+
 				<!-- the delete selection -->
 				<c:if test="${not isImport}">
 					<td style="text-align: center">

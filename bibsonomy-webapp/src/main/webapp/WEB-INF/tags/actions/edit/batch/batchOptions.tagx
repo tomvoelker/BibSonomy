@@ -12,7 +12,7 @@
 
 	<jsp:directive.attribute name="isImport" type="java.lang.Boolean" required="true"
 							 description="We have to distinguish whether the snippet is used for the batchImport or for the batchEdit, since no preselection for the privacy settings can be made for the edit"/>
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
+	<jsp:directive.attribute name="resourcetype" type="java.lang.String" required="true"
 							 description="The type of resource that are edited (bookmark or bibtex)."/>
 
 	<!-- SUBMITBUTTON -->
@@ -100,7 +100,7 @@
 			</div>
 		</div>
 		<!-- Normalize Bibtex option -->
-		<c:if test="${resourceType eq 'bibtex'}">
+		<c:if test="${resourcetype eq 'bibtex'}">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">

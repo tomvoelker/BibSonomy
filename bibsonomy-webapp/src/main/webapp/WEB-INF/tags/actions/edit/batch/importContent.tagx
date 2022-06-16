@@ -19,7 +19,7 @@
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
+	<jsp:directive.attribute name="resourcetype" type="java.lang.String" required="true"
 							 description="The type of resource that are edited (bookmark or bibtex)."/>
 	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="groupedErrorList" type="java.util.List" required="true"/>
@@ -64,9 +64,11 @@
 		<input type="hidden" name="action"/>
 		<input type="hidden" name="updateExistingPost" value="${updateExistingPost}"/>
 		<input type="hidden" name="overwrite" value="${overwrite}"/>
-		<input type="hidden" name="directE‚dit" value="${directEdit}"/>
+		<input type="hidden" name="directEdit" value="${directEdit}"/>
 		<input type="hidden" name="isImport" value="${true}"/>
-		<input type="hidden" name="resourceType" value="${resourceType}"/>
+		<input type="hidden" name="resourcetype" value="${resourcetype}"/>
+		<input type="hidden" name="ckey" value="${ckey}" />
+		<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
 
 		<c:choose>
 			<c:when test="${hasValidData}">
@@ -82,7 +84,7 @@
 						</div>
 					</c:otherwise>
 				</c:choose>
-				<batch:batchOptions isImport="${true}" resourceType="${resourceType}"/>
+				<batch:batchOptions isImport="${true}" resourcetype="${resourcetype}"/>
 				<br/>
 			</c:when>
 			<c:otherwise>
@@ -127,7 +129,7 @@
 										post="${post}"
 										isImport="${true}"
 										postListIndex="${position}"
-										resourceType="${resourceType}"
+										resourcetype="${resourcetype}"
 										disableLinks="${true}">
 										<jsp:attribute name="shortPostDescription">
 											<jsp:invoke fragment="shortPostDescription" />
@@ -141,7 +143,7 @@
 						<h2><fmt:message key="batchedit.fielderror"/></h2>
 						<!-- get the first error message (must be the same for the group -->
 						<c:set var="message" value=""/>
-						<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource.*">
+						<spring:bind path="command.${resourcetype}.list[${errorInfo.positions[0]}].resource.*">
 							<c:set var="errorMessages" value="${status.errorMessages}"/>
 
 							<c:forEach var="errorMessage" items="${errorMessages}" varStatus="stat">
@@ -166,7 +168,7 @@
 						<h2>
 							<fmt:message key="batchedit.error.${fn:toLowerCase(errorInfo.errorField)}"/>
 						</h2>
-						<spring:bind path="command.${resourceType}.list[${errorInfo.positions[0]}].resource">
+						<spring:bind path="command.${resourcetype}.list[${errorInfo.positions[0]}].resource">
 							<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
 								<c:set var="tooltip_msg"
 									   value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}"/>

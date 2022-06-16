@@ -44,6 +44,10 @@ public class PostChangeInfo {
 
 	private boolean normalize;
 
+	private boolean updateVisibility;
+
+	private boolean delete;
+
 	/**
 	 * @return the marked
 	 */
@@ -103,5 +107,37 @@ public class PostChangeInfo {
 	 */
 	public void setNormalize(boolean normalize) {
 		this.normalize = normalize;
+	}
+
+	/**
+	 *
+	 * @return if the visibility of the post should be updated
+	 */
+	public boolean isUpdateVisibility() {
+		return updateVisibility;
+	}
+
+	/**
+	 *
+	 * @param updateVisibility the info if the visibility of the post should be updated
+	 */
+	public void setUpdateVisibility(boolean updateVisibility) {
+		this.updateVisibility = updateVisibility;
+	}
+
+	/**
+	 *
+	 * @return if the post should be deleted
+	 */
+	public boolean isDelete() {
+		return delete;
+	}
+
+	/**
+	 *
+	 * @param delete the info if the post should be deleted
+	 */
+	public void setDelete(boolean delete) {
+		this.delete = delete;
 	}
 }

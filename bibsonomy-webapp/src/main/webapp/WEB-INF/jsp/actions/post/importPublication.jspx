@@ -65,7 +65,7 @@
 									</c:choose>
 								</p>
 								<fieldset>
-									<batch:importContent	resourceType="bibtex"
+									<batch:importContent	resourcetype="bibtex"
 															listView="${command.bibtex}"
 															otherPostsUrlPrefix="bla" 
 															listViewStartParamName="bibtex.start"

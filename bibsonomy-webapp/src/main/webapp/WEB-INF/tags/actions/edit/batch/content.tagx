@@ -22,7 +22,7 @@
 	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"
+	<jsp:directive.attribute name="resourcetype" type="java.lang.String" required="true"
 							 description="The type of resource that are edited (bookmark or bibtex)."/>
 
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true"
@@ -60,10 +60,12 @@
 		<input type="hidden" name="overwrite" value="${overwrite}"/>
 		<input type="hidden" name="directEdit" value="${directEdit}"/>
 		<input type="hidden" name="isImport" value="${false}"/>
-		<input type="hidden" name="resourceType" value="${resourceType}"/>
+		<input type="hidden" name="resourcetype" value="${resourcetype}"/>
+		<input type="hidden" name="ckey" value="${ckey}" />
+		<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
 
 		<!-- Showing the edit Options -->
-		<batch:batchOptions isImport="${false}" resourceType="${resourceType}"/>
+		<batch:batchOptions isImport="${false}" resourcetype="${resourcetype}"/>
 
 		<!-- If there is no post to edit -->
 		<c:if test="${empty listView.list}">
@@ -86,7 +88,7 @@
 							</span>
 							<fmt:message key="batchedit.yourTags"/>
 						</th>
-						<c:if test="${resourceType eq 'bibtex'}">
+						<c:if test="${resourcetype eq 'bibtex'}">
 							<th  style="text-align: center; width: 10%; word-wrap: break-word;">
 								<fmt:message key="batchedit.normalize"/>
 							</th>
@@ -110,11 +112,11 @@
 							   value="${post.user.name}"/>
 
 						<!-- Check if the post has any kind of error connected to it -->
-						<spring:bind path="command.${resourceType}.list[${postCount.index}].resource.*">
+						<spring:bind path="command.${resourcetype}.list[${postCount.index}].resource.*">
 							<c:set var="postHasError" value="${status.error}"/>
 						</spring:bind>
 						<c:if test="${not postHasError}">
-							<spring:bind path="command.${resourceType}.list[${postCount.index}].resource">
+							<spring:bind path="command.${resourcetype}.list[${postCount.index}].resource">
 								<c:set var="postHasError" value="${status.error}"/>
 							</spring:bind>
 						</c:if>
@@ -129,7 +131,7 @@
 									<c:when test="${post.user.name eq command.context.loginUser.name}">
 										<!-- Determine the tooltip-message based on the given error -->
 										<spring:bind
-												path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
+												path="command.${resourcetype}.list[${postCount.count - 1}].resource.*">
 											<c:forEach var="errorMessage" items="${status.errorMessages}"
 													   varStatus="stat">
 												<c:set var="tooltip_msg"
@@ -137,7 +139,7 @@
 											</c:forEach>
 										</spring:bind>
 										<spring:bind
-												path="command.${resourceType}.list[${postCount.count - 1}].resource">
+												path="command.${resourcetype}.list[${postCount.count - 1}].resource">
 											<c:forEach var="errorMessage" items="${status.errorMessages}"
 													   varStatus="stat">
 												<c:set var="tooltip_msg"
@@ -157,7 +159,7 @@
 												post = "${post}"
 												isImport="${false}"
 												postListIndex="${postCount.count - 1}"
-												resourceType="${resourceType}"
+												resourcetype="${resourcetype}"
 												hasErrors="${true}"
 												tooltip_msg="${tooltip_msg}">
 												<jsp:attribute name="shortPostDescription">
@@ -191,7 +193,7 @@
 												post="${post}"
 												isImport="${false}"
 												postListIndex="${postCount.count - 1}"
-												resourceType="${resourceType}">
+												resourcetype="${resourcetype}">
 												<jsp:attribute name="shortPostDescription">
 													<jsp:invoke fragment="shortPostDescription" />
 												</jsp:attribute>
@@ -202,7 +204,7 @@
 												post="${post}"
 												isImport="${false}"
 												postListIndex="${postCount.count - 1}"
-												resourceType="${resourceType}"
+												resourcetype="${resourcetype}"
 												isDisabled="${true}"
 												tooltip_msg="${disregardedPosts}">
 												<jsp:attribute name="shortPostDescription">
