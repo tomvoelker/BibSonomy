@@ -44,7 +44,7 @@ function initDetailsEditing() {
                     location.reload();
                 } else {
                     // error during update
-                    showErrorAlert('danger', getString(data.message));
+                    showAlert('danger', getString(data.message));
                     $('#editPersonDetails').modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -157,7 +157,7 @@ function initNameEditing() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert('danger', getString(data.error));
+                    showAlert('danger', getString(data.error));
                     $('#editPersonNames').modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -187,7 +187,7 @@ function initNameEditing() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert('danger', getString(data.error));
+                    showAlert('danger', getString(data.error));
                     $('#editPersonNames').modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -217,7 +217,7 @@ function initNameEditing() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert('danger', getString(data.error));
+                    showAlert('danger', getString(data.error));
                     $("#editPersonNames").modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -247,7 +247,7 @@ function initUserLinking() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert('danger', getString(data.error));
+                    showAlert('danger', getString(data.error));
                     $("#linkPerson").modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -275,7 +275,7 @@ function initUserLinking() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert('danger', getString(data.error));
+                    showAlert('danger', getString(data.error));
                     $("#unlinkPerson").modal('hide');
                     unsetButtonLoading(btn);
                 }

@@ -142,16 +142,16 @@ function reportDuplicatePublication(publication) {
 		success: function(data) {
 			if (data.success === true) {
 				var successMsg = getString("report.error.feedback.success");
-				showErrorAlert('success', successMsg);
+				showAlert('success', successMsg);
 			} else {
 				var errorMsg = getString("report.error.feedback.error");
-				showErrorAlert('danger', errorMsg);
+				showAlert('danger', errorMsg);
 			}
 		}
 	});
 }
 
-function showErrorAlert(type, message) {
+function showAlert(type, message) {
 	var alert = $('<div></div>')
 		.attr('class', 'alert alert-dismissible alert-' + type)
 		.attr('role', 'alert');
