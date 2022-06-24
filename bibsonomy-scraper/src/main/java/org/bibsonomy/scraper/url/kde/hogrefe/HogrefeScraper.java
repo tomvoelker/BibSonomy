@@ -47,17 +47,15 @@ public class HogrefeScraper extends LiteratumScraper {
 	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses publications from " + href(SITE_URL, SITE_NAME) + ".";
 
-	private static final String PATH_DOI_ABS = "/doi/abs/";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(
-					Pattern.compile(".*" + SITE_HOST),
-					Pattern.compile(PATH_DOI_ABS + ".*")
+					Pattern.compile(".*" + SITE_HOST), EMPTY_PATTERN
 	));
 
 	@Override
 	public String getInfo() {
 		return SITE_INFO;
 	}
-	
+
 	@Override
 	protected boolean requiresCookie() {
 		return true;

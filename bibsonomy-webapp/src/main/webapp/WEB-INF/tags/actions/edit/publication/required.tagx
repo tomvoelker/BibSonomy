@@ -1,4 +1,4 @@
-<jsp:root version="2.0" 
+<jsp:root version="2.0"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -11,23 +11,23 @@
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bibtex="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
-    <!-- 
-    
-        Shows the required form fields entrytype, bibtexkey, title, author, 
-          editor, year for publications      
-    
+    <!--
+
+        Shows the required form fields entrytype, bibtexkey, title, author,
+          editor, year for publications
+
      -->
-	
+
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="hideBibTeXKey" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideAuthorClaim" type="java.lang.Boolean" required="false"/>
-	
+
 	<jsp:directive.attribute name="personIndex" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
-	
+
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
-	
+
 	<script type="text/javascript" src="${resdir}/javascript/publicationRequiredFields.js"> <!--  --></script>
 	<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
 	<script type="text/javascript">
@@ -37,7 +37,7 @@
 			});
 		});
 	</script>
-	
+
 	<spring:eval expression="T(org.bibsonomy.model.util.BibTexUtils).ENTRYTYPES" var="entryTypes" />
 
 	<!-- entrytype help modal -->
@@ -102,13 +102,13 @@
 	</div>
 
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
-	
+
 	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
-	
+
 	<c:if test="${person != null }">
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-			<!-- 
+			<!--
 					<label style="margin-left: 0px; padding-left: 0px;">
 					 -->
 						<c:choose>
@@ -124,7 +124,7 @@
 								<fmt:message key="post.resource.person.new.personIndex" />
 							</c:otherwise>
 						</c:choose>
-					
+
 					<select name="personIndex" id="personIndex" style="display: inline-block; width: auto; margin-left: 1em;" class="form-control">
 						<c:forEach begin="0" end="8" var="curPersonIndex">
 							<c:choose>
@@ -137,18 +137,26 @@
 							</c:choose>
 						</c:forEach>
 					</select>
-					
+
 			</div>
 			<fmt:message var="genealogyDefaultTag" key="person.newthesis.default.tag" />
 			<input type="hidden" name="tags" value="${genealogyDefaultTag}" />
 		</div>
-		
+
 		<c:if test="${((post.resource.entrytype eq 'phdthesis') or (post.resource.entrytype eq 'masterthesis'))}">
 			<bsform:input labelColSpan="3" path="post.resource.school"/>
 		</c:if>
 	</c:if>
-	
+
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
+		<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames(T(org.bibsonomy.model.util.PersonNameUtils).discoverPersonNamesIgnoreExceptions('${command.context.loginUser.realname}'))" var="userRealname"/>
+		<input type="hidden" id="userRealnameID" value="${userRealname}"/>
+		<c:if test="${not empty command.context.loginUser.claimedPerson}">
+			<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonName('${command.context.loginUser.claimedPerson.mainName}')" var="claimedPersonMainName"/>
+			<input type="hidden" id="claimedPersonMainNameID" value="${claimedPersonMainName}"/>
+			<spring:eval expression="T(org.bibsonomy.model.util.PersonNameUtils).serializePersonNames('${command.context.loginUser.claimedPerson.names}', true, ' and ')" var="claimedPersonNames"/>
+			<input type="hidden" id="claimedPersonNamesID" value="${claimedPersonNames}"/>
+		</c:if>
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
 				<div class="checkbox clearfix">
@@ -157,6 +165,10 @@
 						<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
 						<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
 					</label>
+				</div>
+				<div class="alert alert-warning alert-dismissible" role="alert" id="iAmAuthorWarning" style="display: none;">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<fmt:message key="post.resource.myown.reminder"/>
 				</div>
 			</div>
 		</div>
