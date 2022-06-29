@@ -27,7 +27,7 @@ $(document).ready(function () {
 	$('#selectAllTags').change(function() {
 		var markAllChecked = $(this).is(':checked');
 		$(tagCheckBoxSelector).each(function() {
-			if(!$('input[name=' + $(this).prop('name').replace('checked','delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']:checkbox:checked').length)
+			if(!isDeleteOrDisabled(this, 'checked'))
 				$(this).prop('checked', markAllChecked).change();
 		});
 	});
@@ -53,7 +53,7 @@ $(document).ready(function () {
 		$('#checkboxNormalize').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(normalizeCheckBoxSelector).each(function () {
-				if (!$('input[name=' + $(this).prop('name').replace('normalize', 'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox:checked').length)
+				if(!isDeleteOrDisabled(this, 'normalize'))
 					$(this).prop('checked', markAllChecked).change();
 			});
 		});
@@ -70,7 +70,7 @@ $(document).ready(function () {
 		$('#checkboxVisibility').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(visibilityCheckBoxSelector).each(function () {
-				if (!$('input[name=' + $(this).prop('name').replace('updateVisibility', 'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox:checked').length)
+				if(!isDeleteOrDisabled(this, 'updateVisibility'))
 					$(this).prop('checked', markAllChecked).change();
 			});
 		});
@@ -85,10 +85,14 @@ $(document).ready(function () {
 		$('#checkboxDelete').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(deleteCheckBoxSelector).each(function () {
-				$(this).prop('checked', markAllChecked).change();
+				if($('input[name=' + $(this).prop('name').replace('delete','disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']').val()!=='true')
+					$(this).prop('checked', markAllChecked).change();
 			});
 		});
 		$(deleteCheckBoxSelector).change(function () {
+			//disabled entries can not be marked for deletion
+			if($('input[name=' + $(this).prop('name').replace('delete','disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']').val()==='true')
+				return;
 			if ($(this).is(':checked')) {
 				$(this).parent().parent().prop('style', "background-color: #f2dede; ");
 				$('input[name=' + $(this).prop('name').replace('delete', 'checked').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
@@ -159,11 +163,13 @@ function toggleTagEdit(disabled){
 function toggleEditVisibility(disabled){
 	$('#checkboxVisibility').prop('checked', !disabled);
 	if(disabled) {
-		$('#visibilitySelection').prop('style', "pointer-events: none; filter: grayscale(100%);");
+		$('#visibilitySelection').prop('style', "filter: grayscale(100%);");
+		$('input[name=abstractGrouping]').prop('disabled', true);
 		if($.inArray(5, action) !== -1)
 			action.splice( $.inArray(5,action) ,1 );
 	} else {
 		$('#visibilitySelection').prop('style', "");
+		$('input[name=abstractGrouping]').prop('disabled', false);
 		if($.inArray(5, action) === -1)
 			action.push(5);
 	}
@@ -233,4 +239,12 @@ function countCheckedBoxes(querySelector){
 		count++;
 	});
 	return count;
+}
+
+/**
+ * Help function to check if an entry is disabled (not editable) or marked for deletion (also not editable)
+ */
+function isDeleteOrDisabled(entry, type){
+	return ($('input[name=' + $(entry).prop('name').replace(type,'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']:checkbox:checked').length
+			|| $('input[name=' + $(entry).prop('name').replace(type,'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']').val()==='true');
 }

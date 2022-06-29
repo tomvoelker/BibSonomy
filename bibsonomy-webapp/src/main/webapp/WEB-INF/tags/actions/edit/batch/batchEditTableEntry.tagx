@@ -48,6 +48,8 @@
 		<c:set var="descriptionStyling" value="pointer-events: none; filter: grayscale(100%);"/>
 	</c:if>
 
+	<!-- Necessary for communication with js-->
+	<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].disabled" value="${isDisabled}"/>
 
 	<tr style="${rowStyling}">
 		<!--  a short description of the post -->
