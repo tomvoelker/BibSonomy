@@ -9,51 +9,51 @@ var deleteCheckBoxSelector = 'input[name^=posts][name$=delete]:checkbox';
 
 $(document).ready(function () {
 	$('[data-toggle="tooltip"]').tooltip();
- 	showNormalize=$('input[name=resourcetype]').val()==='bibtex';
- 	isImport=$('input[name=isImport]').val()==='true';
+	showNormalize = $('input[name=resourcetype]').val() === 'bibtex';
+	isImport = $('input[name=isImport]').val() === 'true';
 
 	updateBadges();
-	toggleTagEdit(countCheckedBoxes(tagCheckBoxSelector)===0);
-	if(!isImport)
-		toggleEditVisibility(countCheckedBoxes(visibilityCheckBoxSelector)===0);
-	if(showNormalize)
-		toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector)===0);
-	if(!isImport)
-		toggleDelete(countCheckedBoxes(deleteCheckBoxSelector)===0);
+	toggleTagEdit(countCheckedBoxes(tagCheckBoxSelector) === 0);
+	if (!isImport)
+		toggleEditVisibility(countCheckedBoxes(visibilityCheckBoxSelector) === 0);
+	if (showNormalize)
+		toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector) === 0);
+	if (!isImport)
+		toggleDelete(countCheckedBoxes(deleteCheckBoxSelector) === 0);
 
 	/**
 	 * handler to change all tag checkboxes with the select all option
 	 */
-	$('#selectAllTags').change(function() {
+	$('#selectAllTags').change(function () {
 		var markAllChecked = $(this).is(':checked');
-		$(tagCheckBoxSelector).each(function() {
-			if(!isDeleteOrDisabled(this, 'checked'))
+		$(tagCheckBoxSelector).each(function () {
+			if (!isDeleteOrDisabled(this, 'checked'))
 				$(this).prop('checked', markAllChecked).change();
 		});
 	});
-	$(tagCheckBoxSelector).change(function() {
+	$(tagCheckBoxSelector).change(function () {
 		//If oneNotChecked is false, 'select all' checkbox should be selected
 		var oneNotChecked = false;
 
 		//jquery selector to select tag input checkboxes that are not checked.
-		$(tagCheckBoxSelector+':not(:checked)').each(function() {
+		$(tagCheckBoxSelector + ':not(:checked)').each(function () {
 			oneNotChecked = true;
 		});
 		$('#selectAllTags').prop('checked', !oneNotChecked);
 
-		var allNotChecked = countCheckedBoxes(tagCheckBoxSelector)===0;
+		var allNotChecked = countCheckedBoxes(tagCheckBoxSelector) === 0;
 		toggleTagEdit(allNotChecked);
 		updateBadges();
 	});
 
-	if(showNormalize) {
+	if (showNormalize) {
 		/**
 		 * handler to change all sub checkboxes with the normalize keys option
 		 */
 		$('#checkboxNormalize').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(normalizeCheckBoxSelector).each(function () {
-				if(!isDeleteOrDisabled(this, 'normalize'))
+				if (!isDeleteOrDisabled(this, 'normalize'))
 					$(this).prop('checked', markAllChecked).change();
 			});
 		});
@@ -63,14 +63,14 @@ $(document).ready(function () {
 		});
 	}
 
-	if(!isImport) {
+	if (!isImport) {
 		/**
 		 * handler to change all sub checkboxes with the update visibility option
 		 */
 		$('#checkboxVisibility').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(visibilityCheckBoxSelector).each(function () {
-				if(!isDeleteOrDisabled(this, 'updateVisibility'))
+				if (!isDeleteOrDisabled(this, 'updateVisibility'))
 					$(this).prop('checked', markAllChecked).change();
 			});
 		});
@@ -85,13 +85,13 @@ $(document).ready(function () {
 		$('#checkboxDelete').change(function () {
 			var markAllChecked = $(this).is(':checked');
 			$(deleteCheckBoxSelector).each(function () {
-				if($('input[name=' + $(this).prop('name').replace('delete','disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']').val()!=='true')
+				if ($('input[name=' + $(this).prop('name').replace('delete', 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() !== 'true')
 					$(this).prop('checked', markAllChecked).change();
 			});
 		});
 		$(deleteCheckBoxSelector).change(function () {
 			//disabled entries can not be marked for deletion
-			if($('input[name=' + $(this).prop('name').replace('delete','disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']').val()==='true')
+			if ($('input[name=' + $(this).prop('name').replace('delete', 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() === 'true')
 				return;
 			if ($(this).is(':checked')) {
 				$(this).parent().parent().prop('style', "background-color: #f2dede; ");
@@ -109,10 +109,9 @@ $(document).ready(function () {
 			toggleDelete(countCheckedBoxes(deleteCheckBoxSelector) === 0);
 			updateBadges();
 		});
-	}
-	else {
+	} else {
 		$('#visibilitySelection').change(function () {
-			if($.inArray(5, action) === -1)
+			if ($.inArray(5, action) === -1)
 				action.push(5);
 		});
 	}
@@ -120,11 +119,32 @@ $(document).ready(function () {
 	/**
 	 * Listeners to check if any of the tag edit options were used
 	 */
-	var addUpdateTagsAction = function (){
-		if($.inArray(2, action) === -1)
+	var addUpdateTagsAction = function () {
+		if ($.inArray(2, action) === -1)
 			action.push(2);
 	}
+
+	if (isImport) {
+		$('#addMyOwnTagButton').click(function () {
+			if ($('#addMyOwnTagButton').hasClass("btn-danger")) {
+				$('#addMyOwnTagButton').removeClass("btn-danger").addClass("btn-success");
+				$('#addMyOwnTagButton').text($('input[name=addMyOwnText]').val());
+				removeTags("myOwn");
+			} else {
+				$('#addMyOwnTagButton').removeClass("btn-success").addClass("btn-danger");
+				$('#addMyOwnTagButton').text($('input[name=removeMyOwnText]').val());
+				addTags("myOwn");
+				addUpdateTagsAction();
+			}
+		});
+	}
+
 	$('input[name^=posts][name$=newTags]').change(addUpdateTagsAction)
+	$('.addTagsButton').click(function(){
+		addTags($('#tagsInput').val());
+		$('#tagsInput').val("");
+		addUpdateTagsAction();
+	});
 	$('.addTagsButton').click(function(){
 		addTags($('#tagsInput').val());
 		$('#tagsInput').val("");

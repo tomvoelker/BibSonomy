@@ -44,6 +44,10 @@
 	<fmt:message key="batchedit.editTags.warning" var="editTagsWarning"/>
 	<input type="hidden" name="editTagsWarning" value="${editTagsWarning}"/>
 
+	<fmt:message key="batchedit.editTags.addMyOwn" var="addMyOwnText"/>
+	<input type="hidden" name="addMyOwnText" value="${addMyOwnText}"/>
+	<fmt:message key="batchedit.editTags.removeMyOwn" var="removeMyOwnText"/>
+	<input type="hidden" name="removeMyOwnText" value="${removeMyOwnText}"/>
 
 	<div class="panel-group" style="margin-top: 10px">
 		<!-- Edit Tags option -->
@@ -52,8 +56,13 @@
 				<h3 class="panel-title">
 					<fmt:message key="batchedit.editTags.heading"/>
 					<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
-					<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
-						  data-placement="top" title="${editTagsHelp}"><!-- KEEP ME! --></span>
+					<span class="pull-right">
+						<c:if test="${isImport}">
+							<button type="button" style="vertical-align: middle; margin-top: -0.5em; margin-right: 1em" class="btn btn-success btn-sm" id="addMyOwnTagButton"><fmt:message key="batchedit.editTags.addMyOwn"/></button>
+						</c:if>
+						<span class="fa fa-question-circle help-popover" data-toggle="tooltip"
+							  data-placement="top" title="${editTagsHelp}"><!-- KEEP ME! --></span>
+					</span>
 				</h3>
 			</div>
 			<div class="panel-body">
