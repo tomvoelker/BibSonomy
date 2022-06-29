@@ -67,7 +67,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	
 	private static final Pattern ENDNOTE_PATTERN = Pattern.compile("<h2>Endnote</h2>.*?<p>(.*?)</p>", Pattern.DOTALL);
 	private static final Pattern ID_PATTERN = Pattern.compile("([^/]+$)");
-	private static final Pattern TYPE_PATTERN = Pattern.compile(SITE_URL + "(.*)/.*");
+	private static final Pattern TYPE_PATTERN = Pattern.compile( HOST + "/(.*)/.*");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstract\">.*?<p>.*?<p>(.*?)</p>", Pattern.DOTALL);
 	
 	

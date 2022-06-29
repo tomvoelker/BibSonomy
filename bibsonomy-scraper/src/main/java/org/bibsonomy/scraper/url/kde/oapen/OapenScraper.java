@@ -29,20 +29,24 @@
  */
 package org.bibsonomy.scraper.url.kde.oapen;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 
 import java.io.IOException;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class OapenScraper extends GenericRISURLScraper {
+public class OapenScraper extends AbstractUrlScraper {
 
 
 	private static final String SITE_URL = "https://oapen.org/";
@@ -55,19 +59,74 @@ public class OapenScraper extends GenericRISURLScraper {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*library.oapen.org"), Pattern.compile("handle.*")));
 	}
 
-	private static final Pattern EXPORT_CITATION = Pattern.compile("<a class=\"btn btn-default\" href=\"(.*?)\">Export citation</a>");
-
 
 	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		String html = WebUtils.getContentAsString(url);
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+		try {
+			String metadataUrl = "https://library.oapen.org/rest" + sc.getUrl().getPath() + "?expand=metadata";
+			HashMap<String, String> bibtexTokens = new HashMap<>();
+			JSONObject json = JSONObject.fromObject(WebUtils.getContentAsString(metadataUrl));
+			String bibtexKey = json.getString("handle");
 
-		final Matcher m_exportCitation = EXPORT_CITATION.matcher(html);
-		if (m_exportCitation.find()) {
-			return m_exportCitation.group(1);
+			JSONArray metadata = json.getJSONArray("metadata");
+			for (Object obj : metadata) {
+				JSONObject jsonObject = JSONObject.fromObject(obj);
+				String value = jsonObject.getString("value");
+				switch (jsonObject.getString("key")){
+					case "dc.contributor.author":
+						value = value.replaceAll(",$", "");
+						StringUtils.appendIfPresent(bibtexTokens, "author", value, " and ");
+						break;
+					case "dc.contributor.editor":
+						value = value.replaceAll(",$", "");
+						StringUtils.appendIfPresent(bibtexTokens, "editor", value, " and ");
+						break;
+					case "dc.date.issued":
+						bibtexTokens.put("year", value);
+						break;
+					case "dc.identifier.uri":
+						bibtexTokens.put("url", value);
+						break;
+					case "dc.description.abstract":
+						bibtexTokens.put("abstract", value);
+						break;
+					case "dc.title":
+						bibtexTokens.put("title", value);
+						break;
+					case "dc.type":
+						bibtexTokens.put("type", value);
+						break;
+					case "dc.subject.other":
+						StringUtils.appendIfPresent(bibtexTokens, "keywords", value, ", ");
+						break;
+					case "oapen.identifier.doi":
+						bibtexTokens.put("doi", value);
+						break;
+					case "publisher.name":
+						bibtexTokens.put("publisher", value);
+						break;
+					case "dc.relation.ispartofseries":
+						bibtexTokens.put("series", value);
+						break;
+				}
+			}
+			String bibtexEntryType = "misc";
+			for (String entrytype : BibTexUtils.ENTRYTYPES) {
+				if (entrytype.equalsIgnoreCase(bibtexTokens.get("type"))){
+					bibtexEntryType = entrytype;
+				}
+			}
+			String bibtex = "@" + bibtexEntryType + "{"+ bibtexKey +",\n" + BibTexUtils.serializeMapToBibTeX(bibtexTokens) + "\n}";
+
+			sc.setBibtexResult(bibtex);
+			return true;
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
-		return null;
 	}
+
+
 
 
 	@Override
@@ -89,6 +148,5 @@ public class OapenScraper extends GenericRISURLScraper {
 	public String getInfo() {
 		return info;
 	}
-
 
 }

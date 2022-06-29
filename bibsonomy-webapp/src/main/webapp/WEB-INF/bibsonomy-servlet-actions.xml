@@ -413,8 +413,8 @@
 								<value>groups</value>
 								<value>intraHashToUpdate</value>
 								<value>referer</value>
-								<value>relevantGroups</value>
-								<value>sentToGroups</value>
+								<value>relevantForGroups</value>
+								<value>sendToGroups</value>
 								<value>presetTagsForGroups</value>
 								<value>acceptComma</value>
 								<value>postID</value>
@@ -852,7 +852,7 @@
 		<value>groups</value>
 		<value>intraHashToUpdate</value>
 		<value>referer</value>
-		<value>relevantGroups</value>
+		<value>relevantForGroups</value>
 		<value>acceptComma</value>
 		<value>postID</value>
 		<value>hash</value>
@@ -918,7 +918,7 @@
 		<value>groups</value>
 		<value>intraHashToUpdate</value>
 		<value>referer</value>
-		<value>relevantGroups</value>
+		<value>relevantForGroups</value>
 		<value>acceptComma</value>
 		<value>postID</value>
 		<value>hash</value>

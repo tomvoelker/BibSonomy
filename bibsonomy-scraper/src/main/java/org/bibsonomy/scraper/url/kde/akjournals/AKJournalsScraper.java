@@ -7,6 +7,7 @@ import org.apache.http.entity.StringEntity;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
@@ -33,6 +34,8 @@ public class AKJournalsScraper extends AbstractUrlScraper{
 	private static final String DOWNLOAD_URL = "https://akjournals.com/rest/citation/export";
 	private static final Pattern JSON_DOCUMENT_URI_PATTERN = Pattern.compile("(/journals.*)");
 
+	private static final RisToBibtexConverter risToBibtex = new RisToBibtexConverter();
+
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
@@ -47,16 +50,17 @@ public class AKJournalsScraper extends AbstractUrlScraper{
 			}else {
 				throw new ScrapingException("can't find documentUri in " + url.getPath());
 			}
-			// creating a post-request with the json as body. post returns the bibtex
+			// creating a post-request with the json as body. post returns the ris
 			HttpPost post = new HttpPost(DOWNLOAD_URL);
 			post.setHeader("Content-Type", "application/json");
-			String jsonForPost = "{\"format\":\"bibtex\",\"citationExports\":[{\"documentUri\":\""+ documentUri + "\",\"citationId\":null}]}";
+			String jsonForPost = "{\"format\":\"ris\",\"citationExports\":[{\"documentUri\":\""+ documentUri + "\",\"citationId\":null}]}";
 			post.setEntity(new StringEntity(jsonForPost));
-			String bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			String ris = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
 
-			if (!present(bibtex)){
-				throw new ScrapingException("can't get bibtex from " + DOWNLOAD_URL);
+			if (!present(ris)){
+				throw new ScrapingException("can't get ris from " + DOWNLOAD_URL);
 			}
+			String bibtex = risToBibtex.toBibtex(ris);
 			scrapingContext.setBibtexResult(bibtex);
 			return true;
 		} catch (final IOException | HttpException e) {

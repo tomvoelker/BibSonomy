@@ -31,7 +31,10 @@ package org.bibsonomy.scraper.url.kde.oup;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+import org.bibsonomy.util.WebUtils;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -52,6 +55,11 @@ public class OxfordUniversityPressScraper extends CitationManager2Scraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), EMPTY_PATTERN));
 
+
+	@Override
+	protected String getCookies(URL url) throws IOException {
+		return WebUtils.getCookies(new URL("https://academic.oup.com/rev"));
+	}
 
 	@Override
 	public String getInfo() {

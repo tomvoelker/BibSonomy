@@ -24,7 +24,7 @@
 		<div class="col-sm-${inputColSpan}">
 			<!-- select box for "other" groups -->
 			<fmt:message var="selectPlaceholder" key="form.input.select"/>
-			<select id="relevantGroupsSelect" name="relevantGroups" class="selectpicker show-tick form-control"
+			<select id="relevantForGroupsSelect" name="relevantForGroups" class="selectpicker show-tick form-control"
 					title="${selectPlaceholder}" iconBase="fa" data-tickIcon="fa-check" multiple="multiple">
 				<c:forEach items="${groups}" var="group">
 					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />

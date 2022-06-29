@@ -66,7 +66,7 @@ public abstract class LiteratumScraper extends AbstractUrlScraper {
 	private static final Pattern PATH_ABSTRACT_PATTERN = Pattern.compile("/doi(/?(abs|full|pdf|pdfplus|book))?/(10\\.\\d+/[^\\s\"'}]+)?$");
 	private static final int PATH_ABSTRACT_PATTERN_DOI_GROUP = 3;
 	// to extract the DOI from the query
-	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=(.+?)(&.+)?$");
+	private static final Pattern QUERY_DOI_PATTERN = Pattern.compile("doi=([^&]+)");
 	private static final int QUERY_DOI_PATTERN_DOI_GROUP = 1;
 	// to extract the abstract from the HTML
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstractSection.*?\">\\s*<p.*?>(.+?)</p>");

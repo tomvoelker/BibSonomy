@@ -46,6 +46,7 @@ import org.bibsonomy.util.WebUtils;
  * 
  * @author tst
  */
+//site is protected by a recaptcha
 public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_URL  = "http://scholar.google.com/";
 	private static final String SITE_NAME = "Google Scholar";

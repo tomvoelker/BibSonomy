@@ -389,16 +389,14 @@ function applyKeyDownHandler(element) {
 
 // adds the send:<username> tag
 function addForFriendTag(username) {
-	$("#inpf_tags").val(function(index, val) {
-		return val + "send:" + username;
-	});
+	var forFriendTag = "send:" + username;
+	copyTag("inpf_tags", forFriendTag);
 }
 
 // adds the for:<groupname> tag
 function addForGroupTag(groupname) {
-	$("#inpf_tags").val(function(index, val) {
-		return val + "for:" + groupname;
-	});
+	var forGroupTag = "for:" + groupname;
+	copyTag("inpf_tags", forGroupTag);
 }
 
 /*

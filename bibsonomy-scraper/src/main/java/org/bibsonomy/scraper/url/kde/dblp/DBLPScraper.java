@@ -102,7 +102,8 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String bibtexPath = url.getPath()
 						.replaceAll("(?=.)([A-z]+?)$", "bib")
-						.replaceAll("(?<=rec/)(ris|rdf)", "bib");
+						.replaceAll("(?<=rec/)(ris|rdf)", "bib")
+						.replaceAll("bib2", "bib");
 		return "https://" + url.getHost() + bibtexPath;
 	}
 	

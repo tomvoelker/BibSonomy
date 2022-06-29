@@ -77,7 +77,6 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 
     @Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
 		
 		BibTex bibtex = null;
 		Pattern _p	  = null;
@@ -100,6 +99,7 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 		ISBNScraper scraper = new ISBNScraper();
 		sc.setSelectedText(isbn);
 		scraper.scrape(sc);
+		sc.setScraper(this);
 		
 		if (sc.getBibtexResult() != null) {
 			return true;
