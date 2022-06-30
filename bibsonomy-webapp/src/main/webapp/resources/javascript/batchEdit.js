@@ -7,6 +7,8 @@ var visibilityCheckBoxSelector = 'input[name^=posts][name$=updateVisibility]:che
 var normalizeCheckBoxSelector = 'input[name^=posts][name$=normalize]:checkbox';
 var deleteCheckBoxSelector = 'input[name^=posts][name$=delete]:checkbox';
 
+var myOwnTag = "myOwn"
+
 $(document).ready(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 	showNormalize = $('input[name=resourcetype]').val() === 'bibtex';
@@ -44,6 +46,8 @@ $(document).ready(function () {
 		var allNotChecked = countCheckedBoxes(tagCheckBoxSelector) === 0;
 		toggleTagEdit(allNotChecked);
 		updateBadges();
+		if(isImport)
+			updateAddMyOwnTagButton();
 	});
 
 	if (showNormalize) {
@@ -122,20 +126,18 @@ $(document).ready(function () {
 	var addUpdateTagsAction = function () {
 		if ($.inArray(2, action) === -1)
 			action.push(2);
+		if(isImport)
+			updateAddMyOwnTagButton();
 	}
 
 	if (isImport) {
 		$('#addMyOwnTagButton').click(function () {
 			if ($('#addMyOwnTagButton').hasClass("btn-danger")) {
-				$('#addMyOwnTagButton').removeClass("btn-danger").addClass("btn-success");
-				$('#addMyOwnTagButton').text($('input[name=addMyOwnText]').val());
-				removeTags("myOwn");
+				removeTags(myOwnTag);
 			} else {
-				$('#addMyOwnTagButton').removeClass("btn-success").addClass("btn-danger");
-				$('#addMyOwnTagButton').text($('input[name=removeMyOwnText]').val());
-				addTags("myOwn");
-				addUpdateTagsAction();
+				addTags(myOwnTag);
 			}
+			addUpdateTagsAction();
 		});
 	}
 
@@ -147,11 +149,6 @@ $(document).ready(function () {
 	});
 	$('.addTagsButton').click(function(){
 		addTags($('#tagsInput').val());
-		$('#tagsInput').val("");
-		addUpdateTagsAction();
-	});
-	$('.removeTagsButton').click(function(){
-		removeTags($('#tagsInput').val());
 		$('#tagsInput').val("");
 		addUpdateTagsAction();
 	});
@@ -268,3 +265,30 @@ function isDeleteOrDisabled(entry, type){
 	return ($('input[name=' + $(entry).prop('name').replace(type,'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']:checkbox:checked').length
 			|| $('input[name=' + $(entry).prop('name').replace(type,'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')+ ']').val()==='true');
 }
+
+/**
+ * Help function to determine if any or all of the selected entries have 'myOwn' as a Tag
+ * @returns {number} of selected entries with 'myOwn' as a Tag
+ */
+function countMyOwnTags(){
+	var count = 0;
+	$(tagCheckBoxSelector+':checked').each(function() {
+		var attr = $(this).prop('name').replace('checked','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+		var textInput = $('input[name=' + attr + ']:text');
+		var currentTags = textInput.val().split(" ");
+		if($.inArray(myOwnTag, currentTags) !== -1)
+			count++;
+	});
+	return count;
+}
+
+function updateAddMyOwnTagButton(){
+	if (countMyOwnTags()===countCheckedBoxes(tagCheckBoxSelector)) {
+		$('#addMyOwnTagButton').removeClass("btn-success").addClass("btn-danger");
+		$('#addMyOwnTagButton').text($('input[name=removeMyOwnText]').val());
+	} else if (countMyOwnTags() === 0) {
+		$('#addMyOwnTagButton').removeClass("btn-danger").addClass("btn-success");
+		$('#addMyOwnTagButton').text($('input[name=addMyOwnText]').val());
+	}
+}
+
