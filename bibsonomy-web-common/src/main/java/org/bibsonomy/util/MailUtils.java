@@ -65,12 +65,26 @@ public class MailUtils {
 	/*
 	 * The following constants are configured
 	 */
+
+	/** The name of the project. */
 	private String projectName;
+
+	/** The base URL of the project. */
 	private String projectHome;
+
+	/** A URL to the blog of the project. */
 	private String projectBlog;
+
+	/** The email address users can use to contact the project admins. */
 	private String projectEmail;
+
+	/**  The From: address of registration mails. */
 	private String projectRegistrationFromAddress;
+
+	/** The From: address of join group request mails. */
 	private String projectJoinGroupRequestFromAddress;
+
+	/** The configured mail address for error reporting */
 	private String projectReportEmail;
 	
 	private MessageSource messageSource;
