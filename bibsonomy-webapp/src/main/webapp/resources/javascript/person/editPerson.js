@@ -48,7 +48,7 @@ function initDetailsEditing() {
                     location.reload();
                 } else {
                     // error during update
-                    showErrorAlert(data.message);
+                    showAlert('danger', getString(data.message));
                     $('#editPersonDetails').modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -161,7 +161,7 @@ function initNameEditing() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert(data.error);
+                    showAlert('danger', getString(data.error));
                     $('#editPersonNames').modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -191,7 +191,7 @@ function initNameEditing() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert(data.error);
+                    showAlert('danger', getString(data.error));
                     $('#editPersonNames').modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -221,7 +221,7 @@ function initNameEditing() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert(data.error);
+                    showAlert('danger', getString(data.error));
                     $("#editPersonNames").modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -251,7 +251,7 @@ function initUserLinking() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert(data.error);
+                    showAlert('danger', getString(data.error));
                     $("#linkPerson").modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -279,7 +279,7 @@ function initUserLinking() {
                     location.reload();
                 } else {
                     // error
-                    showErrorAlert(data.error);
+                    showAlert('danger', getString(data.error));
                     $("#unlinkPerson").modal('hide');
                     unsetButtonLoading(btn);
                 }
@@ -307,14 +307,4 @@ function unsetButtonLoading(button) {
     text.replace("<i class='fa fa-spinner fa-spin'></i>", "");
     $(button).html(text);
     $(button).removeClass('disabled');
-}
-
-function showErrorAlert(messageKey) {
-    var alert = $('<div class="alert alert-danger alert-dismissable"></div>');
-    var button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-    alert.append(button);
-    alert.append($('<strong>Error: </strong>'));
-    alert.append(getString(messageKey));
-
-    $('#ajaxErrorAlerts').append(alert);
 }

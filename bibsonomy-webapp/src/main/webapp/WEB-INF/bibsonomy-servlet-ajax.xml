@@ -332,6 +332,32 @@
 						</property>
 					</bean>
 				</entry>
+
+				<entry key="/ajax/report/brokenCitation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="brokenCitationReportController" />
+						<property name="allowedFields">
+							<list>
+								<value>styleName</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/report/person/duplicatePublications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="duplicatePublicationReportController" />
+						<property name="allowedFields">
+							<list>
+								<value>personId</value>
+								<value>title</value>
+								<value>interhash</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -442,5 +468,16 @@
 	<bean id="orcidAjaxController" class="org.bibsonomy.webapp.controller.ajax.OrcidAjaxController" parent="ajaxController" scope="request">
 		<property name="orcidImportEnabled" value="${import.orcid.enabled}"/>
 	</bean>
+
+	<bean id="reportAjaxController" class="org.bibsonomy.webapp.controller.ajax.report.AbstractReportController" abstract="true" parent="ajaxController">
+		<property name="mailUtils" ref="mailUtils" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
+	</bean>
+
+	<bean id="brokenCitationReportController" class="org.bibsonomy.webapp.controller.ajax.report.BrokenCitationReportController"
+		  scope="request" parent="reportAjaxController" />
+
+	<bean id="duplicatePublicationReportController" class="org.bibsonomy.webapp.controller.ajax.report.DuplicatePublicationReportController"
+		  scope="request" parent="reportAjaxController" />
 
 </beans>

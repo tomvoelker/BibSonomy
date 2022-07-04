@@ -31,9 +31,6 @@ package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Locale;
-import java.util.Properties;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -41,7 +38,10 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Locale;
+import java.util.Properties;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
@@ -55,6 +55,7 @@ import org.springframework.context.MessageSource;
 /**
  * @author rja
  */
+@Setter
 public class MailUtils {
 	private static final Log log = LogFactory.getLog(MailUtils.class);
 	
@@ -64,12 +65,27 @@ public class MailUtils {
 	/*
 	 * The following constants are configured
 	 */
+
+	/** The name of the project. */
 	private String projectName;
+
+	/** The base URL of the project. */
 	private String projectHome;
+
+	/** A URL to the blog of the project. */
 	private String projectBlog;
+
+	/** The email address users can use to contact the project admins. */
 	private String projectEmail;
+
+	/**  The From: address of registration mails. */
 	private String projectRegistrationFromAddress;
+
+	/** The From: address of join group request mails. */
 	private String projectJoinGroupRequestFromAddress;
+
+	/** The configured mail address for error reporting */
+	private String projectReportEmail;
 	
 	private MessageSource messageSource;
 	
@@ -417,6 +433,20 @@ public class MailUtils {
 		}
 	}
 
+	public boolean sendReportMail(final String subjectKey, final String bodyKey, final Object[] subjectParameters, final Object[] bodyParameters, final Locale locale) {
+		try {
+			final String messageSubject = messageSource.getMessage(subjectKey, subjectParameters, locale);
+			final String messageBody = messageSource.getMessage(bodyKey, bodyParameters, locale);
+
+			this.sendHTMLMail(new String[] { this.projectReportEmail }, messageSubject, messageBody, this.projectReportEmail);
+		} catch (final MessagingException e) {
+			log.fatal("Could not send report mail: " + e.getMessage());
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Sends a plain mail to the given recipients
 	 * 
@@ -476,82 +506,12 @@ public class MailUtils {
 	}
 
 	/**
-	 * The name of the project.
-	 * 
-	 * @param projectName
-	 */
-	public void setProjectName(final String projectName) {
-		this.projectName = projectName;
-	}
-
-	/**
-	 * The base URL of the project.
-	 * 
-	 * @param projectHome
-	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
-	}
-
-	/** 
-	 * A URL to the blog of the project.
-	 * 
-	 * @param projectBlog
-	 */
-	public void setProjectBlog(final String projectBlog) {
-		this.projectBlog = projectBlog;
-	}
-
-	/**
-	 * The email address users can use to contact the project admins. 
-	 * 
-	 * @param projectEmail
-	 */
-	public void setProjectEmail(final String projectEmail) {
-		this.projectEmail = projectEmail;
-	}
-
-	/**
-	 * The From: address of registration mails. 
-	 * 
-	 * @param projectRegistrationFromAddress
-	 */
-	public void setProjectRegistrationFromAddress(final String projectRegistrationFromAddress) {
-		this.projectRegistrationFromAddress = projectRegistrationFromAddress;
-	}
-
-	/**
-	 * The From: address of join group request mails. 
-	 * 
-	 * @param projectJoinGroupRequestFromAddress
-	 */
-	public void setProjectJoinGroupRequestFromAddress(final String projectJoinGroupRequestFromAddress) {
-		this.projectJoinGroupRequestFromAddress = projectJoinGroupRequestFromAddress;
-	}
-
-	/**
 	 * A host which accepts SMTP requests and should be used for sending mails.
 	 * 
 	 * @param mailHost
 	 */
 	public void setMailHost(final String mailHost) {
 		props.put("mail.smtp.host", mailHost);
-	}
-
-	/** A message source to format mail messages.
-	 * @param messageSource
-	 */
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	/**
-	 * must be a absolute not relative url generator
-	 * 
-	 * @param absoluteURLGenerator the absoluteURLGenerator to set
-	 */
-	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {
-		this.absoluteURLGenerator = absoluteURLGenerator;
 	}
 
 }

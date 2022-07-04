@@ -90,7 +90,7 @@
 		<jsp:attribute name="content">
 			<!-- Error alerts -->
 			<errors:global/>
-			<div id="ajaxErrorAlerts"><!-- keep me for AJAX error --></div>
+			<div id="ajaxAlerts"><!-- keep me for AJAX alerts --></div>
 
 			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
 				<div class="col-md-12">
@@ -154,6 +154,16 @@
 							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
 													  headerMessageKey="explore.filter.entrytype.header"
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
+						</c:if>
+						<c:if test="${properties['report.person.duplicate.publications']}">
+							<div>
+								<sidebar:sidebarItem>
+									<jsp:attribute name="content">
+										<fmt:message var="reportingText" key="person.sidebar.reporting" />
+										<c:out value="${reportingText}" escapeXml="${false}"/>
+									</jsp:attribute>
+								</sidebar:sidebarItem>
+							</div>
 						</c:if>
 					</div>
 				</div>

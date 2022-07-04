@@ -104,6 +104,16 @@
             </jsp:attribute>
 
             <jsp:attribute name="modalFooter">
+                <c:if test="${properties['report.citation.broken']}">
+                    <bsform:button
+                            id="sidebar-quick-cite-box-modal-report-button"
+                            size="defaultSize"
+                            style="defaultStyle"
+                            titleKey="report.error.brokenCitation.hint"
+                            icon="flag"
+                            onclick="reportBrokenCitation();"/>
+                </c:if>
+
                 <bsform:button
                         id="sidebar-quick-cite-box-modal-clipboard-button"
                         size="defaultSize"
