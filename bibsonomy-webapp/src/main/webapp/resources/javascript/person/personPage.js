@@ -39,10 +39,10 @@ function loadSimilarAuthors(page) {
 			$('#personSimilarAuthors').html(data);
 		},
 		'before': function(){
-			$("#loader-similar").show(0);
+			$("#similarAuthorsLoader").show(0);
 		},
 		'after': function(){
-			$("#loader-similar").hide(0);
+			$("#similarAuthorsLoader").hide(0);
 		}
 	});
 }
@@ -88,10 +88,10 @@ function initPublicationPagination(page) {
 		'loadingNomoreText': 'No more.', // No more of loading prompt.
 		'manuallyText': 'click to loading more.', // Click of loading prompt.
 		'before': function(){
-			$("#loader-publications").show(0);
+			$("#publicationsLoader").show(0);
 		},
 		'after': function(){
-			$("#loader-publications").hide(0);
+			$("#publicationsLoader").hide(0);
 			//$('#personPublications').attr("scrollpagination", "enabled");
 		}
 	});
@@ -128,4 +128,44 @@ function initFilterButtons(field) {
 		$(this).toggleClass('active');
 		initPublicationPagination(0);
 	});
+}
+
+function reportDuplicatePublication(publication) {
+	$.ajax({
+		url: "/ajax/report/person/duplicatePublications",
+		data: {
+			'personId': $(publication).data('person'),
+			'title': $(publication).data('title'),
+			'interhash': $(publication).data('interhash'),
+			'referer': window.location.href,
+		},
+		success: function(data) {
+			if (data.success === true) {
+				var successMsg = getString("report.error.feedback.success");
+				showAlert('success', successMsg);
+			} else {
+				var errorMsg = getString("report.error.feedback.error");
+				showAlert('danger', errorMsg);
+			}
+		}
+	});
+}
+
+function showAlert(type, message) {
+	var alert = $('<div></div>')
+		.attr('class', 'alert alert-dismissible alert-' + type)
+		.attr('role', 'alert');
+
+	var closeBtn = $('<button></button>')
+		.attr('class', 'close')
+		.attr('data-dismiss', 'alert')
+		.html('<span aria-hidden="true">&times;</span>');
+
+	alert.append(closeBtn);
+	if (type === 'danger') {
+		alert.append($('<strong></strong>').html('Error: '));
+	}
+	alert.append(message);
+
+	$('#ajaxAlerts').append(alert);
 }

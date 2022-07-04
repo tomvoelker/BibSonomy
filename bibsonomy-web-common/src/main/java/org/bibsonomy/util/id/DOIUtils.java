@@ -88,7 +88,7 @@ public class DOIUtils {
 	 *
 	 */
 	//	private static final String DOI = "(10\\.\\d+\\/\\d+?)";
-	private static final String DOI = "(doi:\\s*)?(10\\.[0-9a-zA-Z]+/(?:(?![\"&'])\\S)+)\\b";
+	private static final String DOI = "(doi:\\s*)?(10\\.[0-9a-zA-Z]+(/|%2f)(?:(?![\"&'])\\S)+)\\b";
 	private static final String DOI_END = "[\\s\"'}]*";
 
 	/**

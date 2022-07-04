@@ -41,6 +41,9 @@
 							<fmt:message var="collegePlaceholder" key="person.show.college.placeholder"/>
 							<input type="text" class="form-control" id="editCollege" name="person.college" data-reset="${person.college}"
 								   placeholder="${collegePlaceholder}" value="${person.college}"/>
+							<small id="editCollegeHelpBlock" class="form-text text-muted">
+							  	<fmt:message key="person.show.college.help"/>
+							</small>
 						</div>
 						<div class="col-md-1">
 							<fmt:message var="resetHint" key="resetbutton"/>

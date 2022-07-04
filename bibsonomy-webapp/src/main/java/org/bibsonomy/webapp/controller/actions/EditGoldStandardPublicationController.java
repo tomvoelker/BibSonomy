@@ -38,6 +38,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
@@ -87,7 +88,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			return null;
 		}
 
-		return convertToGoldStandard(post);
+		return BibTexUtils.convertToGoldStandard(post);
 	}
 
 	private String getRedirectUrl(final Post<BibTex> post, final Post<BibTex> oldPost, final String referer) {
@@ -110,20 +111,6 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");
 		return view;
-	}
-
-	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
-		if (!present(post)) {
-			return null;
-		}
-
-		final Post<BibTex> gold = new Post<>();
-
-		final GoldStandardPublication goldP = new GoldStandardPublication();
-		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
-		gold.setResource(goldP);
-
-		return gold;
 	}
 
 	/*

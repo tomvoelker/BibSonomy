@@ -54,6 +54,8 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -72,5 +74,16 @@
 			<artifactId>joda-time</artifactId>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludedGroups>org.bibsonomy.junit.RemoteTest</excludedGroups>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
 

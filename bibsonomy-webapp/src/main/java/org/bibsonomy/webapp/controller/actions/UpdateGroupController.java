@@ -175,14 +175,17 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
 	}
 
-	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  Integer selTab) {
-		// success: go back where you've come from
-		String redirectUrl = this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), selTab);
-
+	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  String redirectUrl) {
 		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
 		extendedRedirectViewWithAttributes.addAttribute("lastOperation", operation);
 		return extendedRedirectViewWithAttributes;
+	}
+
+	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  Integer selTab) {
+		// success: go back where you've come from
+		String redirectUrl = this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), selTab);
+		return this.redirectView(groupToUpdate, operation, redirectUrl);
 	}
 
 	private ExtendedRedirectView updateSettings(GroupSettingsPageCommand command, Group groupToUpdate) {
@@ -343,10 +346,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			try {
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_MEMBER, ms);
 
-				// if we removed ourselves from the group, return the
-				// homepage.
+				// if we removed ourselves from the group, return the homepage.
 				if (loginUser.getName().equals(username)) {
-					return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+					return this.redirectView(groupToUpdate, command.getOperation(), this.urlGenerator.getProjectHome());
 				}
 			} catch (final Exception ex) {
 				log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);

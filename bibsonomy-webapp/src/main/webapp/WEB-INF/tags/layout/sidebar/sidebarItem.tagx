@@ -33,7 +33,7 @@
 		</c:choose>
 	</c:set>
 
-	<h4 class="sidebar">
+	<h4>
 		<c:choose>
 			<c:when test="${not empty headingLink}">
 				<c:set var="title" value=""/>

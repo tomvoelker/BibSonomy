@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
@@ -206,4 +207,5 @@ public final class ElasticsearchUtils {
 		final String dateAsString = (String) source.get(key);
 		return parseDate(dateAsString);
 	}
+
 }

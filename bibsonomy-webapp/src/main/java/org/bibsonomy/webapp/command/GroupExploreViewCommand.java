@@ -58,7 +58,9 @@ public class GroupExploreViewCommand extends SimpleResourceViewCommand {
     private Map<String, List<SearchFilterElement>> filterMap = new HashMap<>();
 
     public void addFilters(String field, List<SearchFilterElement> filters) {
-        filterMap.put(field, filters);
+        if (!filters.isEmpty()) {
+            filterMap.put(field, filters);
+        }
     }
 
 }

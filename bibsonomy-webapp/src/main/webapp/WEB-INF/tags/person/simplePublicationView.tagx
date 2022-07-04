@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="buttons" fragment="true" />
 
 	<c:set var="loggedinUserName" value="${command.context.loginUser.name}" />
+	<c:set var="loginUser" value="${command.context.loginUser}" />
 
 	<c:choose>
 		<c:when test="${showButtons}">

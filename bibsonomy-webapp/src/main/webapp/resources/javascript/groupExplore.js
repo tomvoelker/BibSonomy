@@ -201,8 +201,8 @@ function addCustomFilters() {
         url: '/resources/explore/customTags.json', // The url you are fetching the results.
         dataType: 'json',
         success: function (data) {
-            data.results.bindings.forEach(function (entity) {
-                entries.append(createFilterButton(entity.label.value, 'tags:' + entity.label.value, entity.facility.value));
+            data.forEach(function (entity) {
+                entries.append(createFilterButton(entity.label, entity.facility));
             });
             initFilterButtons('custom');
 

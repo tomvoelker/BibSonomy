@@ -29,9 +29,12 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Calendar;
 import java.util.Collections;
 
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SortKey;
@@ -55,15 +58,14 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author Dominik Benz
  */
+@Setter
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
 	
 	private static final int POSTS_PER_RESOURCETYPE_LOGGED_IN = 20;
 	private static final int POSTS_PER_RESOURCETYPE = 5;
 	
-	
-	private String newsGroup = "kde";
-	private String newsTag = "bibsonomynews";
-
+	private String newsGroup;
+	private String newsTag;
 	private boolean crisEnabled;
 	private String college;
 
@@ -98,7 +100,9 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * Add news posts (= latest blog posts) for carousel news
 			 */
-			this.setNews(command, 5);
+			if (present(this.newsGroup)) {
+				this.setNews(command, 5);
+			}
 
 			this.endTiming();
 			return Views.CRIS_HOMEPAGE;
@@ -140,7 +144,9 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts) for sidebar
 			 */
-			this.setNews(command, 3);
+			if (present(this.newsGroup)) {
+				this.setNews(command, 3);
+			}
 
 			this.endTiming();
 			return Views.HOMEPAGE;
@@ -182,31 +188,4 @@ public class HomepageController extends SingleResourceListController implements 
 		return new HomepageCommand();
 	}
 
-	/**
-	 * @param newsGroup the newsGroup to set
-	 */
-	public void setNewsGroup(String newsGroup) {
-		this.newsGroup = newsGroup;
-	}
-
-	/**
-	 * @param newsTag the newsTag to set
-	 */
-	public void setNewsTag(String newsTag) {
-		this.newsTag = newsTag;
-	}
-
-	/**
-	 * @param crisEnabled the crisEnabled to set
-	 */
-	public void setCrisEnabled(boolean crisEnabled) {
-		this.crisEnabled = crisEnabled;
-	}
-
-	/**
-	 * @param college the college to set
-	 */
-	public void setCollege(String college) {
-		this.college = college;
-	}
 }

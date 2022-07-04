@@ -59,6 +59,7 @@
 			ORDER BY b.content_id ASC
 			LIMIT #limit#
 		) AS bb
+		<!-- TODO check why we need this join -->
 		JOIN bibtex p ON (bb.interHash = p.simhash1) <!-- self join to get all users of the post-->
 	</select>
 
@@ -86,9 +87,9 @@
 		(
 			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
 			FROM gold_standard b
-			WHERE content_id &gt; #lastContentId#
-			AND content_type = 2
-			ORDER BY content_id ASC
+			WHERE b.content_id &gt; #lastContentId#
+			AND b.content_type = 2
+			ORDER BY b.content_id ASC
 			LIMIT #limit#
 		) AS bb
 		LEFT JOIN bibtex p ON (bb.interHash = p.simhash1)

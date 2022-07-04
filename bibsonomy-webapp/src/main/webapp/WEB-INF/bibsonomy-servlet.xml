@@ -209,6 +209,7 @@
 		<property name="projectEmail" value="${project.email}" />
 		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
 		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
+		<property name="projectReportEmail" value="${project.reportMail}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="messageSource" ref="messageSource"/>
 		<property name="absoluteURLGenerator" ref="absoluteUrlGenerator" />
