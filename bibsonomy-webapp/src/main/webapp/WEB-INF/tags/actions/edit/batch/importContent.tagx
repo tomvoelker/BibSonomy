@@ -104,13 +104,13 @@
 			<c:forEach var="errorInfo" items="${groupedErrorList}">
 				<c:choose>
 					<c:when test="${errorInfo.errorType eq 'NO_ERROR'}">
-						<table class="table table-striped">
+						<table class="table table-striped" style="width: 100%; table-layout: fixed;">
 							<thead>
 							<tr>
-								<th>
+								<th style="width: 40%;">
 									<fmt:message key="batchedit.yourPosts"/>
 								</th>
-								<th id="yourTags">
+								<th id="yourTags" style="width: 30%;">
 										<span style="padding-left: 12px; padding-right: 14px">
 											<input type="checkbox" id="selectAllTags" value="true" checked="checked"
 												   title="select all"/>

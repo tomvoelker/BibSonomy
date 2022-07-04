@@ -13,8 +13,8 @@
   
    	<span class="truncatedDesc batchInfo">
    		<div>
-			<div class="ptitle"><bib:title post="${post}"  disableLink="${disableLink}/></div>
-			<div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
+			<div class="ptitle"><bib:title post="${post}" disableLink="${disableLink}"/></div>
+			<div class="pdesc"><bib:desc publication="${post.resource}"/></div>
         </div>
    	</span>	
 	
