@@ -71,17 +71,30 @@
 	<!--=======================-->
 
 	<jsp:directive.variable name-given="post" scope="NESTED" />
-		<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
+		<form id="batchedit" action="/batchEdit" class="form-horizontal" method="post">
 			<input type="hidden" name="updateExistingPost" value="${updateExistingPost}" />  
 			<input type="hidden" name="overwrite" value="${overwrite}" /> 
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
 						
 			<!-- the following variable is defined to communicate with .js file -->
 			<input type="hidden" name="action"/>
-			
-			<c:choose>
-			<!-- In direct edit mode, we show a selector, otherwise we show four checkboxes. -->
-			<c:when test="${directEdit}">
+
+			<c:if test="${not directEdit}">
+				<c:choose>
+					<c:when test="${updateExistingPost}">
+						<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+							<fmt:message key="batchedit.hint.savedEdit"/>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+							<fmt:message key="batchedit.hint.notSavedEdit"/>
+						</div>
+					</c:otherwise>
+				</c:choose>
+				<br/>
+			</c:if>
+
 			<div class="form-group">
 				<label class="col-sm-3 control-label">
 					<fmt:message key="batchedit.selection.initial"/>
@@ -91,7 +104,7 @@
 						<option value="0"><fmt:message key="batchedit.selection.initial"/></option>
 						<option value="1"><fmt:message key="batchedit.EditAllTag"/></option>
 						<option value="2"><fmt:message key="batchedit.EditEachTag"/></option>
-						
+
 						<c:if test="${resourceType eq 'bibtex'}">
 							<option value="3"><fmt:message key="batchedit.normalizeSelected"/></option>
 						</c:if>
@@ -105,46 +118,7 @@
 					<div class="help help-content hide"><fmt:message key="batchedit.selection.help" /></div>
 				</div>
 			</div>
-			</c:when>
-			<c:otherwise>
-				<c:choose>
-				<c:when test="${updateExistingPost}">
-					<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
-						<fmt:message key="batchedit.hint.savedEdit"/>
-					</div>
-				</c:when>
-				<c:otherwise>
-					<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
-						<fmt:message key="batchedit.hint.notSavedEdit"/>
-					</div>
-				</c:otherwise>
-				</c:choose>
-				<br/>
-				<table class="table table-striped" style="margin-bottom:0px;">
-				<thead>
-					<th colspan="4">
-						<fmt:message key="batchedit.selection.initial"/>
-					</th>
-				</thead>
-				<tbody>
-				<tr style="border-bottom:2px solid #eee">
-					<td>
-						<input type="checkbox" id="checkboxAllTag" style="margin-right:2px"/><fmt:message key="batchedit.EditAllTag"/>
-					</td>
-					<td>
-						<input type="checkbox" id="checkboxEachTag" style="margin-right:2px"/><fmt:message key="batchedit.EditEachTag"/>
-					</td>
-					<td>
-						<input type="checkbox" id="checkboxNormalize" style="margin-right:2px"/><fmt:message key="batchedit.normalizeSelected"/>
-					</td>
-					<td>
-						<input type="checkbox" id="checkboxPrivacy" style="margin-right:2px"/><fmt:message key="batchedit.updatePrivacy"/>
-					</td>
-				</tr>
-				</tbody>
-				</table>
-			</c:otherwise>
-			</c:choose>
+
 			<!-- the following tabel contains two edit options: 
 				1. add a tag to all posts
 				2. update privacy  -->
@@ -187,7 +161,7 @@
 			</c:if>
 			<!--  else.. -->
 			<c:if test="${not empty listView.list}">
-			<table class="table table-striped">
+			<table class="table table-striped batch-edit-post-table">
 				<thead>
 					<tr>
 						<th style="text-align: center;">
@@ -196,7 +170,7 @@
 						<th>
 							<fmt:message key="batchedit.yourPosts" />
 						</th>
-						<td id="yourTags">
+						<td class="batch-edit-post-tag" id="yourTags">
 							<fmt:message key="batchedit.yourTags" />
 						</td>
 					</tr>
@@ -360,7 +334,7 @@
 										</div>
 									</td>
 									<!-- the input field for the tags -->
-									<td>
+									<td class="import-tag-edit-td">
 										<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags">
 											<c:choose>
 												<c:when test="${status.error}">

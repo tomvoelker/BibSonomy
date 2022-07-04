@@ -44,7 +44,9 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.model.BibTex;
@@ -108,6 +110,7 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
+		final User loginUser = context.getLoginUser();
 		final String personId = command.getRequestedPersonId();
 		if (!present(personId)) {
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
@@ -133,11 +136,12 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 		command.setAlternativeNames(alternativeNames);
 
-		// delete additional keys that should not be visible
-		person.setAdditionalKeys(
-				person.getAdditionalKeys().stream()
+		// delete additional keys that should not be visible, except for admins
+		if (loginUser.getRole() != Role.ADMIN) {
+			person.setAdditionalKeys(person.getAdditionalKeys().stream()
 					.filter(additionalKey -> !hideAdditionalKeysList.contains(additionalKey.getKeyName()))
 					.collect(Collectors.toList()));
+		}
 
 		// set thesis relations
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()

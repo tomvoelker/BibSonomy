@@ -79,11 +79,9 @@
 							<!-- no options -->
 						</jsp:attribute>
 						<jsp:attribute name="addAsLastItem">
-							<c:if test="${not disableListNavigation}">
-								<div id="publicationsfooter" class="${publicationsWidthClass}">
-									<rc:nextprev listView="${command.publications}" listViewStartParamName="publications.start"/>
-								</div>
-							</c:if>
+							<div id="publicationsfooter">
+								<rc:nextprev listView="${command.publications}" listViewStartParamName="publications.start"/>
+							</div>
 						</jsp:attribute>
 					</resources:bibtexs>
 				</div>

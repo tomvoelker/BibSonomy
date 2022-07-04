@@ -6,7 +6,11 @@ $(function () {
     initNameEditing();
     initUserLinking();
 
-    // ORCID formatter
+    /*
+    ORCID formatter
+    The last digit of the ORCID iD is the checksum and allows an X, hence the asterisk in the mask.
+    For more information: https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
+    */
     $("#editOrcid").mask("9999-9999-9999-999*");
 
     // Researcher ID formatter - disabled due to different formats

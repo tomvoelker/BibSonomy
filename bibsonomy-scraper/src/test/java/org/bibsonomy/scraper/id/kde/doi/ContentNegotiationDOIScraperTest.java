@@ -34,7 +34,7 @@ import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import java.io.IOException;
 
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

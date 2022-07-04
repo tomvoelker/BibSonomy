@@ -117,7 +117,16 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	 * The posts, that were updated during import.
 	 */
 	private Map<String,String> updatedPosts;
-	
+
+	/****************************
+	 * FOR EXTERNAL IMPORT
+	 ****************************/
+	private String externalId;
+
+	private List<String> workIds;
+
+	private String bulkSnippet;
+
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles

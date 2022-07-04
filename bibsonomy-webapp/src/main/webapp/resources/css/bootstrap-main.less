@@ -640,6 +640,7 @@ a.description-link {
 	margin: 0;
 	padding: 5px 15px;
 	border-bottom: none !important;
+	border-radius: 3px;
 
 	.ptitle {
 	  font-weight: bold;
@@ -692,6 +693,10 @@ div#sidebar {
 }
 
 .sidebar {
+
+  	margin: 0 -15px 0 15px;
+  	padding: 20px 15px;
+
 	.groupDescription {
 		margin-top: 5px;
 	}
@@ -1679,6 +1684,14 @@ ul#urlList {
 	.publication-function {
 		display: none;
 	}
+
+  	#publication-orcid {
+		#orcidImportForm {
+			button {
+				margin-right: 5px;
+			}
+		}
+	}
 }
 
 p.separator {
@@ -1872,8 +1885,8 @@ ul.prefix-list {
 			}
 
 			.ptitle {
-				height: auto;
-				max-height: 38px;
+				line-height: 1.2em;
+				height: 2.4em;
 				white-space: normal;
 			}
 
@@ -1885,15 +1898,34 @@ ul.prefix-list {
 		}
 	}
 
-	.even:nth-of-type(4n),
-	.odd:nth-of-type(4n+1){
+	.post:nth-child(4n + 1), .post:nth-child(4n + 2) {
 	  background-color: #eee;
+	}
+	.post:nth-child(4n + 3), .post:nth-child(4n + 4) {
+	  background-color: #FFFFFF;
+	}
+
+	.post:nth-child(4n + 1) {
+	  border-bottom-left-radius: 3px;
+	  border-top-left-radius: 3px;
+	}
+
+	.post:nth-child(4n + 2) {
+	  border-bottom-right-radius: 3px;
+	  border-top-right-radius: 3px;
 	}
 
 	.pmeta {
 	  display: none;
 	}
   }
+}
+
+.home-extsearch {
+	.jumbotron {
+	  padding-top: 10px;
+	  margin: 30px 0 10px;
+	}
 }
 
 div.no-items-found {
@@ -1969,14 +2001,15 @@ hr.option-result-divider {
 	max-height: 2.2em;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	word-wrap: anywhere;
   }
 
   .media-description {
 	line-height: 1.5em;
 	height: 3em;
 	overflow: hidden;
-	white-space: nowrap;
 	text-overflow: ellipsis;
+	word-wrap: anywhere;
   }
 
   .media-link-group {
@@ -2100,8 +2133,8 @@ ul.custom-all-tags-list li {
 		stroke-dashoffset: 0;
 		transform-origin: center;
 		animation:
-						dash 1.4s ease-in-out infinite,
-						colors (1.4s*4) ease-in-out infinite;
+			dash 1.4s ease-in-out infinite,
+			colors (1.4s*4) ease-in-out infinite;
 	}
 
 	@keyframes colors {
@@ -2123,6 +2156,24 @@ ul.custom-all-tags-list li {
 			transform:rotate(450deg);
 		}
 	}
+
+  	p {
+		color: @light-grey;
+	  	font-size: 20px;
+	}
+
+    a {
+	  text-decoration: underline;
+	}
+}
+
+.fullscreen-loader-wrapper {
+	position: fixed;
+	top: 0; left: 0; z-index: 9999;
+	width: 100vw; height: 100vh;
+	background: rgba(0, 0, 0, 0.7);
+	transition: opacity 0.2s;
+	padding: 50vh 0;
 }
 
 /* quick cite box */
@@ -2274,3 +2325,23 @@ ul.custom-all-tags-list li {
 	}
 }
 
+.batch-edit-post-table {
+  .ptitle {
+	white-space: break-spaces;
+  }
+
+  td.batch-edit-post-tag {
+	min-width: 100px;
+  }
+}
+
+.batch-error-post-list{
+  .batch-error-post {
+	padding: 10px 10px 1px;
+  }
+
+  .batch-error-post:nth-child(even) {
+	background: #EEEEEE;
+	border-radius: 3px;
+  }
+}

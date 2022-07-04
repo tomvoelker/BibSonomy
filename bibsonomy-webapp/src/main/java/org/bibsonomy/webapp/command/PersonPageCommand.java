@@ -105,4 +105,10 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
 
+
+	/** Properties if deleting or adding relations */
+	private String type;
+	private String interhash;
+	private String index;
+
 }

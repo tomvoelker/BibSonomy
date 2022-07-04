@@ -65,16 +65,15 @@ function validateYearFilters() {
 /**
  * Create a button HTML-Element for a filter.
  *
- * @param name
- * @param filter
- * @param description
+ * @param tag
+ * @param label
  * @returns {string}
  */
-function createFilterButton(name, filter, description) {
+function createFilterButton(tag, label) {
     var element = '<button class="btn btn-default btn-block filter-entry" ' +
-        'title="' + description + '" ' +
-        'data-value="' + name + '">' +
-        description + '</button>';
+        'title="' + label + '" ' +
+        'data-value="' + tag + '">' +
+        label + '</button>';
 
     return element;
 }

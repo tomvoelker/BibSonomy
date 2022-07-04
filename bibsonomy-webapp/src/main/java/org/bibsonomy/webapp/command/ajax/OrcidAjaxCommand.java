@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
@@ -15,28 +15,39 @@
  *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.junit;
+package org.bibsonomy.webapp.command.ajax;
 
-/**
- * Marker interface for JUnit. Tests of this category test the scrapers against
- * the remote system and should therefore not be run on each build. Activate the
- * tests by appending "-P allTests" to the Maven command line or add the 
- * profile "allTests" in the Eclipse Run Config.
- * 
- * @author rja
- */
-public interface RemoteTest {
-	// noop
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.bibsonomy.webapp.command.BaseCommand;
+
+@Getter
+@Setter
+public class OrcidAjaxCommand extends BaseCommand {
+
+    /**
+     * ORCID IDs
+     */
+    private String orcidId;
+    private String workId;
+    private List<String> workIds;
+
+    /**
+     * JSON response string
+     */
+    private String responseString;
 }

@@ -58,7 +58,7 @@
 				</div>
 			</div>
 			<div id="personSimilarAuthors"><!-- keep me --></div>
-			<parts:spinner id="similiar-authors"/>
+			<parts:spinner id="similarAuthorsLoader"/>
 		</div>
 	</div>
 

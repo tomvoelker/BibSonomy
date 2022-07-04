@@ -8,8 +8,14 @@
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="overwritePath" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="buttonUpdate" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="onClickOverride" type="java.lang.String" required="false"/>
+
+	<c:set var="path" value="${requPathAndQuery}"/>
+	<c:if test="${not empty overwritePath}">
+		<c:set var="path" value="${overwritePath}"/>
+	</c:if>
 	
 	<ul class="pagination pagination-sm">
 		<c:set var="isFirstPage" value="${listView.curPage.start == 0}" />
@@ -34,7 +40,7 @@
 				<fmt:message var="gotoFirst" key="goto.first"/>
 				<c:choose>
 					<c:when test="${empty onClickOverride}" >
-						<c:url var="firstUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,0)}"/>
+						<c:url var="firstUrl" value="/${mtl:setParam(path,listViewStartParamName,0)}"/>
 						<li><a class="listnav" href="${fn:escapeXml(firstUrl)}" title="${gotoFirst}" rel="First"><fmt:message key="first"/></a></li>
 					</c:when>
 					<c:otherwise>
@@ -57,7 +63,7 @@
 				<fmt:message var="gotoPrevious" key="goto.previous"/>
 				<c:choose>
 					<c:when test="${empty onClickOverride}" >
-						<c:url var="previousUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.previousPage.start)}"/>
+						<c:url var="previousUrl" value="/${mtl:setParam(path,listViewStartParamName,listView.previousPage.start)}"/>
 						<li><a class="listnav" href="${fn:escapeXml(previousUrl)}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a></li>
 					</c:when>
 					<c:otherwise>
@@ -79,7 +85,7 @@
 			<c:forEach var="page" items="${listView.previousPages}">
 				<c:choose>
 					<c:when test="${empty onClickOverride}" >
-						<c:url var="previousPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}"/>
+						<c:url var="previousPagesUrl" value="/${mtl:setParam(path,listViewStartParamName,page.start)}"/>
 						<li><a class="listnav" href="${fn:escapeXml(previousPagesUrl)}">${page.number}</a></li>
 					</c:when>
 					<c:otherwise>
@@ -104,7 +110,7 @@
 				<c:if test="${not exceedsPaginationLimit}">
 					<c:choose>
 						<c:when test="${empty onClickOverride}" >
-							<c:url var="nextPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}"/>
+							<c:url var="nextPagesUrl" value="/${mtl:setParam(path,listViewStartParamName,page.start)}"/>
 							<li><a class="listnav" href="${fn:escapeXml(nextPagesUrl)}">${page.number}</a></li>
 						</c:when>
 						<c:otherwise>
@@ -124,7 +130,7 @@
 				<fmt:message var="gotoNext" key="goto.next"/>
 				<c:choose>
 					<c:when test="${empty onClickOverride}" >
-						<c:url var="nextUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.nextPage.start)}" />
+						<c:url var="nextUrl" value="/${mtl:setParam(path,listViewStartParamName,listView.nextPage.start)}" />
 						<li><a class="listnav" href="${fn:escapeXml(nextUrl)}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a></li>
 					</c:when>
 					<c:otherwise>
@@ -147,7 +153,7 @@
 				<fmt:message var="gotoLast" key="goto.last"/>
 				<c:choose>
 					<c:when test="${empty onClickOverride}" >
-						<c:url var="lastUrl" value="/${mtl:setParam(requPathAndQuery, listViewStartParamName, listView.last)}" />
+						<c:url var="lastUrl" value="/${mtl:setParam(path, listViewStartParamName, listView.last)}" />
 						<li><a class="listnav" href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a></li>
 					</c:when>
 					<c:otherwise>

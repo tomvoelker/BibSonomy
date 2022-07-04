@@ -49,4 +49,5 @@ public class ElasticsearchUtilsTest {
 	public void testGetIndexName() throws Exception {
 		assertThat(ElasticsearchUtils.getIndexName(new URI("http://www.bibsonomy.org/"), Bookmark.class), is("wwwbibsonomyorg_bookmark"));
 	}
+
 }

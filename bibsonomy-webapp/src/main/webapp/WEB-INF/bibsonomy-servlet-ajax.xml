@@ -182,6 +182,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/orcid">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="orcidAjaxController"/>
+						<property name="allowedFields">
+							<list>
+								<value>orcidId</value>
+								<value>workId</value>
+								<value>workIds</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/ajax/usersearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userSearchController"/>
@@ -451,6 +463,10 @@
 				</entry>
 			</map>
 		</property>
+	</bean>
+
+	<bean id="orcidAjaxController" class="org.bibsonomy.webapp.controller.ajax.OrcidAjaxController" parent="ajaxController" scope="request">
+		<property name="orcidImportEnabled" value="${import.orcid.enabled}"/>
 	</bean>
 
 	<bean id="reportAjaxController" class="org.bibsonomy.webapp.controller.ajax.report.AbstractReportController" abstract="true" parent="ajaxController">

@@ -423,12 +423,14 @@ public class ElasticsearchRESTClient implements ESClient {
 			return true;
 		}
 
-		LOG.debug("deleting the following documents " + documentsToDelete.stream().map(DeleteData::getId).collect(Collectors.joining(", ")) + " from index " + indexName);
+		LOG.debug("deleting the following documents " + documentsToDelete.stream()
+				.map(DeleteData::getId).collect(Collectors.joining(", ")) + " from index " + indexName);
 
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
-			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream().map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
+			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream()
+					.map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
 			deleteRequestsStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());

@@ -93,6 +93,7 @@ import com.itextpdf.text.pdf.PdfReader;
  * @author ema
  * @author rja
  */
+// TODO suggest refactoring into different controllers
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
@@ -172,6 +173,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final boolean hasUrl = present(url);
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
+		final boolean hasBulkSnippet = present(command.getBulkSnippet());
+
 		/*
 		 * The ckey must be provided when a file is uploaded or a selection is 
 		 * provided, as then data might be automatically stored (and potentially
@@ -231,6 +234,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors
 			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
+		} else if (hasBulkSnippet) {
+			/*
+			 * The user uploads a bulk snippet
+			 */
+			log.debug("user uploads a bulk snippet");
+			snippet = this.publicationImporter.handleBulkSnippet(command, this.errors);
 		} else if (hasUrl) {
 			log.debug("user has provided a url");
 

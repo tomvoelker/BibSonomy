@@ -8,6 +8,7 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -21,6 +22,10 @@
 					   activeTab="home"
 					   showPageOptions="${true}"
 					   noSidebar="${true}">
+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+		</jsp:attribute>
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
@@ -108,9 +113,26 @@
 				</div>
 			</div>
 
+			<c:if test="${properties['homepage.extsearch.enabled']}">
+				<div class="row home-extsearch">
+					<div class="col-md-12">
+						<parts:extendedSearch formAction="/publications" searchPlaceholderKey="publications.search"
+											  enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
+					</div>
+				</div>
+			</c:if>
+
 			<div class="row">
 				<div class="col-md-12">
-					<h3><fmt:message key="cris.home.latest"/>:</h3>
+					<div style="clear: both;">
+						<h3 class="list-headline">
+							<fmt:message key="cris.home.latest" var="listHeader"/>
+							<strong><c:out value="${listHeader} "/></strong>
+							<div class="btn-group dropdown-align-right all-resources-menu all-resources-menu-lg">
+								<!-- keep me -->
+							</div>
+						</h3>
+					</div>
 				</div>
 			</div>
 
@@ -127,9 +149,16 @@
 									   hideCounts="${true}"
 									   hideMetaData="${false}"
 									   hidePostMenu="${true}"
+									   hidePostRating="${true}"
 									   onlyLinkAuthorsWithPersons="${empty command.context.loginUser.name}"
 									   disableResourcetypeSelection="${true}"
 									   headlineInBody="${true}">
+
+						<jsp:attribute name="addAsLastItem">
+							<div id="publicationsfooter">
+								<rc:nextprev overwritePath="publications" listView="${command.goldStandardPublications}" listViewStartParamName="publications.start"/>
+							</div>
+						</jsp:attribute>
 					</resources:bibtexs>
 				</div>
 			</div>

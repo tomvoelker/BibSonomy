@@ -29,14 +29,15 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import java.util.Collection;
-
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.webapp.command.ScraperInfoCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * controller for the scraper info page
@@ -49,10 +50,13 @@ public class ScraperInfoController implements MinimalisticController<ScraperInfo
 	/*
 	 * TODO: inject the scraper list using Spring
 	 */
-	private static final Collection<Scraper> scraperList = new KDEScraperFactory().getScraper().getScraper();
+	private static final Collection<Scraper> scraperList = new KDEScraperFactory().getScraper().getScraper().stream()
+			.filter(scraper -> scraperHasRequiredDisplayInfos(scraper))
+			.collect(Collectors.toList());
 	
 	@Override
 	public View workOn(final ScraperInfoCommand command) {
+
 		command.setScraperList(scraperList);
 		return Views.SCRAPER_INFO;			
 	}
@@ -60,6 +64,17 @@ public class ScraperInfoController implements MinimalisticController<ScraperInfo
 	@Override
 	public ScraperInfoCommand instantiateCommand() {
 		return new ScraperInfoCommand();
+	}
+
+	// temporary quick fix for the /scraperinfo page - rework scraper package/interface in the future
+	private static boolean scraperHasRequiredDisplayInfos(Scraper scraper) {
+		try {
+			scraper.getClass().getDeclaredMethod("getSupportedSiteName");
+			scraper.getClass().getDeclaredMethod("getSupportedSiteURL");
+		} catch (NoSuchMethodException e) {
+			return false;
+		}
+		return true;
 	}
 
 }

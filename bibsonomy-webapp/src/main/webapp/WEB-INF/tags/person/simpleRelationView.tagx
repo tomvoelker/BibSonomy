@@ -35,8 +35,7 @@
 		<jsp:attribute name="buttons">
 			<c:choose>
 				<c:when test="${addPub}">
-					<button type="button"
-							class="btn btn-default btn-xs add-button"
+					<button type="button" class="btn btn-default btn-xs add-button"
 							data-interhash="${post.resource.interHash}"
 							data-index="${relation.personIndex}"
 							data-type="${relation.relationType}">
@@ -44,13 +43,16 @@
 					</button>
 				</c:when>
 				<c:otherwise>
-					<button type="button"
-							class="btn btn-default btn-xs delete-button"
-							data-interhash="${post.resource.interHash}"
-							data-personindex="${relation.personIndex}"
-							data-relationtype="${relation.relationType}">
-						<fontawesome:icon icon="trash"/>
-					</button>
+					<c:if test="${command.context.loginUser.claimedPerson.personId eq personId or command.context.loginUser.role ne 'ADMIN'}">
+						<button type="button"
+								onclick="initDeleteRelationButtons(this)"
+								class="btn btn-default btn-xs delete-button"
+								data-interhash="${post.resource.interHash}"
+								data-personindex="${relation.personIndex}"
+								data-relationtype="${relation.relationType}">
+							<fontawesome:icon icon="trash"/>
+						</button>
+					</c:if>
 				</c:otherwise>
 			</c:choose>
 
