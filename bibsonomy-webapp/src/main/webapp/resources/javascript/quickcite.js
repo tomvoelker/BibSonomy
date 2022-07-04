@@ -33,18 +33,25 @@ function openSelect2(element) {
 }
 
 function openModalWithBibTex() {
-    $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea").html($("#sidebar-quick-cite-box-bibtex").html());
-    $("#sidebar-quick-cite-box-modal").modal("show");
+    $("#sidebar-quick-cite-box-modal-textarea").html($("#sidebar-quick-cite-box-bibtex").html());
+
+	var modal = $("#sidebar-quick-cite-box-modal");
+	$(modal).attr("data-citation-style", "bib");
+    $(modal).modal("show");
 }
 
 function openModalWithEndnote() {
-    $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea").html($("#sidebar-quick-cite-box-endnote").html());
-    $("#sidebar-quick-cite-box-modal").modal("show");
+    $("#sidebar-quick-cite-box-modal-textarea").html($("#sidebar-quick-cite-box-endnote").html());
+
+	var modal = $("#sidebar-quick-cite-box-modal");
+	$(modal).attr("data-citation-style", "endnote");
+	$(modal).modal("show");
 }
 
 function ajaxLoadLayout(url) {
-	url_parts = url.split("/");
-    container = $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
+	var url_parts = url.split("/");
+	var modal = $("#sidebar-quick-cite-box-modal");
+    var container = $("#sidebar-quick-cite-box-modal-textarea");
     container.empty();
 
 	switch (url_parts[1]) {
@@ -53,33 +60,30 @@ function ajaxLoadLayout(url) {
 			break;
 		case "csl":
 		case "layout":
-			if (url_parts[2] == "endnote") {
+			if (url_parts[2] === "endnote") {
 				openModalWithEndnote();
 			} else {
-				container = $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
-                container.empty();
-
+				$(modal).attr("data-citation-style", url_parts[2]);
                 $.ajax({
                     url: url,
                     success: function(data) {
-                        $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea").html(data);
-                        $("#sidebar-quick-cite-box-modal").modal("show");
+                        $(container).html(data);
+                        $(modal).modal("show");
                     }
                 });
 			}
 			break;
 		case "csl-layout":
 			// load CSL via AJAX
-			csl_style = url_parts[2];
-			csl_url = "/csl/bibtex/" + url_parts[4];
-			container = $("#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
-			container.empty();
+			var csl_style = url_parts[2];
+			var csl_url = "/csl/bibtex/" + url_parts[4];
+			$(modal).attr("data-citation-style", csl_style);
 
 			$.ajax({
 				url: csl_url,
 				success: function(data) {
 					renderCSL(data, csl_style, container, false);
-					$("#sidebar-quick-cite-box-modal").modal("show");
+					$(modal).modal("show");
 				}
 			});
 			break;
@@ -88,9 +92,44 @@ function ajaxLoadLayout(url) {
 	}
 }
 
+function reportBrokenCitation() {
+	var container = $("#sidebar-quick-cite-box-modal");
+	var styleName = $(container).attr("data-citation-style");
+
+	$.ajax({
+		url: "/ajax/report/brokenCitation",
+		data: {
+			'styleName': styleName,
+			'referer': window.location.href,
+		},
+		success: function(data) {
+			if (data.success === true) {
+				var successMsg = getString("report.error.feedback.success");
+				$(container).find('.modal-body').prepend(createAlert('success', successMsg));
+			} else {
+				var errorMsg = getString("report.error.feedback.error");
+				$(container).find('.modal-body').prepend(createAlert('danger', errorMsg));
+			}
+		}
+	});
+}
+
+function createAlert(type, message) {
+	var alert = $('<div></div>')
+		.attr('class', 'alert alert-dismissible alert-' + type)
+		.attr('role', 'alert');
+
+	var closeBtn = $('<button></button>')
+		.attr('class', 'close')
+		.attr('data-dismiss', 'alert')
+		.html('<span aria-hidden="true">&times;</span>');
+
+	alert.append(closeBtn);
+	alert.append($('<span></span>').html(message));
+	return alert;
+}
+
 $(document).ready(function() {
-
-
     // init clipboard for modal
     initNewClipboard("#sidebar-quick-cite-box-modal-clipboard-button", "#sidebar-quick-cite-box-modal #sidebar-quick-cite-box-modal-textarea");
 

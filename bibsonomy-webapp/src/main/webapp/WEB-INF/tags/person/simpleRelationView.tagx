@@ -15,6 +15,7 @@
 	<jsp:directive.attribute name="showButtons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
     <jsp:directive.attribute name="addPub" type="java.lang.Boolean" required="false" description="If true, user can add the publication. If false, user can delete it. Dependand from buttons."/>
 	<jsp:directive.attribute name="personId" type="java.lang.String" required="false" description="ID of the person"/>
+	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
 
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" description="ID of the person"/>
 
@@ -34,7 +35,8 @@
 		<jsp:attribute name="buttons">
 			<c:choose>
 				<c:when test="${addPub}">
-					<button type="button" class="btn btn-default btn-xs add-button"
+					<button type="button"
+							class="btn btn-default btn-xs add-button"
 							data-interhash="${post.resource.interHash}"
 							data-index="${relation.personIndex}"
 							data-type="${relation.relationType}">
@@ -42,7 +44,8 @@
 					</button>
 				</c:when>
 				<c:otherwise>
-					<button type="button" class="btn btn-default btn-xs delete-button"
+					<button type="button"
+							class="btn btn-default btn-xs delete-button"
 							data-interhash="${post.resource.interHash}"
 							data-personindex="${relation.personIndex}"
 							data-relationtype="${relation.relationType}">
@@ -50,6 +53,17 @@
 					</button>
 				</c:otherwise>
 			</c:choose>
+
+			<c:if test="${not empty reportFunction}">
+				<button type="button"
+						class="btn btn-default btn-xs report-button"
+						onclick="${reportFunction}"
+						data-person="${personId}"
+						data-title="${post.resource.title}"
+						data-interhash="${post.resource.interHash}" >
+					<fontawesome:icon icon="flag"/>
+				</button>
+			</c:if>
 		</jsp:attribute>
 	</per:simplePublicationView>
 </jsp:root>

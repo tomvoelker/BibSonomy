@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="relations" type="java.util.List" required="false"/>
 	<jsp:directive.attribute name="isSimilarAuthors" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
 
 	<c:if test="${empty onlyLinkAuthorsWithPersons}">
 		<c:set var="onlyLinkAuthorsWithPersons" value="${false}"/>
@@ -40,7 +41,8 @@
 												showButtons="${true}"
 												personId="${personId}"
 												addPub="${isSimilarAuthors}"
-												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
+												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
+												reportFunction="${reportFunction}"/>
 					</c:forEach>
 				</ul>
 			</c:when>
