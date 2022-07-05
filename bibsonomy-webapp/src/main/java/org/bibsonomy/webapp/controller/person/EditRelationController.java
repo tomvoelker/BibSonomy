@@ -33,10 +33,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
@@ -66,6 +68,8 @@ import org.json.simple.JSONObject;
  *
  * @author kchoong
  */
+@Getter
+@Setter
 public class EditRelationController extends AbstractEditPersonController {
     private static final Log log = LogFactory.getLog(EditPersonController.class);
 
@@ -87,7 +91,7 @@ public class EditRelationController extends AbstractEditPersonController {
         person.setUser(command.getContext().getLoginUser().getName());
 
         try {
-            this.logic.updatePerson(person, PersonUpdateOperation.LINK_USER);
+            this.logic.updatePerson(person, PersonOperation.LINK_USER);
             return success(command, "The person has been successfully linked!");
         } catch (final Exception e) {
             log.error("error while updating person " + person.getPersonId(), e);
@@ -105,7 +109,7 @@ public class EditRelationController extends AbstractEditPersonController {
         Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 
         try {
-            this.logic.updatePerson(person, PersonUpdateOperation.UNLINK_USER);
+            this.logic.updatePerson(person, PersonOperation.UNLINK_USER);
             return success(command, "The person has been successfully unlinked!");
         } catch (final Exception e) {
             log.error("error while updating person " + person.getPersonId(), e);
@@ -197,46 +201,7 @@ public class EditRelationController extends AbstractEditPersonController {
     }
 
     /**
-     * Action called when user searches for a publication...
-     * @param command
-     *
-     * @return the ajax json response
-     */
-    protected View searchPubAction(EditPersonCommand command) {
-        final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getSelectedName());
-        final JSONArray array = this.buildupPubResponseArray(suggestions);
-        command.setResponseString(array.toJSONString());
-
-        return Views.AJAX_JSON;
-    }
-
-    protected List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
-        final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder().search(search).
-                createPostQuery(GoldStandardPublication.class);
-        // TODO limit searches to thesis
-        return this.logic.getPosts(postQuery);
-    }
-
-    /**
-     * Combined publication and author search action. This search is in particular necessary
-     * when someone want's to find unrelated (no role associated to authors) documents.
-     * @param command
-     *
-     * @return the ajax json response
-     */
-    protected View searchPubAuthorAction(final EditPersonCommand command) {
-        final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getSelectedName());
-
-        final JSONArray array = new JSONArray();
-
-        array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications (not associated to Persons) oriented search return
-        command.setResponseString(array.toJSONString());
-
-        return Views.AJAX_JSON;
-    }
-
-    /**
-     * Action called when searching...
+     * Action called when searching for persons...
      * @param command
      *
      * @return the ajax json response
@@ -270,6 +235,47 @@ public class EditRelationController extends AbstractEditPersonController {
     }
 
     /**
+     * Action called when user searches for a publication...
+     * @param command
+     *
+     * @return the ajax json response
+     */
+    protected View searchPubAction(EditPersonCommand command) {
+        final List<Post<GoldStandardPublication>> suggestions = this.getSuggestionPub(command.getSelectedName());
+        final JSONArray array = this.buildupPubResponseArray(suggestions);
+        command.setResponseString(array.toJSONString());
+
+        return Views.AJAX_JSON;
+    }
+
+    protected List<Post<GoldStandardPublication>> getSuggestionPub(final String search) {
+        // TODO limit searches to thesis
+        final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder()
+                .search(search).
+                createPostQuery(GoldStandardPublication.class);
+
+        return this.logic.getPosts(postQuery);
+    }
+
+    /**
+     * Combined publication and author search action. This search is in particular necessary
+     * when someone want's to find unrelated (no role associated to authors) documents.
+     * @param command
+     *
+     * @return the ajax json response
+     */
+    protected View searchPubAuthorAction(final EditPersonCommand command) {
+        final List<Post<GoldStandardPublication>> suggestionsPub = this.getSuggestionPub(command.getSelectedName());
+
+        final JSONArray array = new JSONArray();
+
+        array.addAll(buildupPubResponseArray(suggestionsPub));  // Publications (not associated to Persons) oriented search return
+        command.setResponseString(array.toJSONString());
+
+        return Views.AJAX_JSON;
+    }
+
+    /**
      * This is a helper function adds to an JSONArray Publications form a suggestions list.
      * @param posts
      *
@@ -287,23 +293,4 @@ public class EditRelationController extends AbstractEditPersonController {
         return array;
     }
 
-    public void setLogic(LogicInterface logic) {
-        this.logic = logic;
-    }
-
-    public void setRequestLogic(RequestLogic requestLogic) {
-        this.requestLogic = requestLogic;
-    }
-
-    public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
-        this.personRoleRenderer = personRoleRenderer;
-    }
-
-    public void setCrisCollege(String crisCollege) {
-        this.crisCollege = crisCollege;
-    }
-
-    public void setUrlGenerator(URLGenerator urlGenerator) {
-        this.urlGenerator = urlGenerator;
-    }
 }

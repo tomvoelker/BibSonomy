@@ -63,7 +63,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
@@ -3326,7 +3326,7 @@ public class DBLogic implements LogicInterface {
 	 * @param operation		the desired update operation
 	 */
 	@Override
-	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
+	public void updatePerson(final Person person, final PersonOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
 
 		// at least the person id must be set (to know which person should be updated)

@@ -37,7 +37,7 @@ import java.util.List;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagRelation;
@@ -487,7 +487,7 @@ public class UrlRenderer {
 	 * @param operation the update operation to apply
 	 * @return the url builder
 	 */
-	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
+	public UrlBuilder createUrlBuilderForPersons(String personId, PersonOperation operation) {
 		return createUrlBuilderForPerson(personId).addParameter("operation", operation.name().toLowerCase());
 	}
 

@@ -33,7 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.webapp.command.actions.EditPersonCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -58,20 +58,22 @@ public class EditPersonController extends AbstractEditPersonController implement
     @Override
     public View workOn(EditPersonCommand command) {
         final RequestWrapperContext context = command.getContext();
-        final PersonUpdateOperation operation = command.getUpdateOperation();
+        final PersonOperation operation = command.getOperation();
+
         // Check, if edit operation is given
         if (!present(operation)) {
             return error(command, "person.edit.noOperation");
         }
 
+        final boolean isEditOperation = !operation.toString().startsWith("SEARCH");
+
         // Check, if person id of the person to edit is given
-        if (!present(command.getPersonId())) {
+        if (isEditOperation && !present(command.getPersonId())) {
             return error(command, "person.edit.noPersonId");
         }
 
         // Check, if ckey is given
-        // TODO check necessary?
-        if (!context.isValidCkey()) {
+        if (isEditOperation && !context.isValidCkey()) {
             // return error(command, "error.field.valid.ckey");
         }
 
@@ -101,6 +103,12 @@ public class EditPersonController extends AbstractEditPersonController implement
                 return this.mergeController.conflictMerge(command);
             case MERGE_GET_CONFLICTS:
                 return this.mergeController.getConflicts(command);
+            case SEARCH:
+                return this.relationController.searchAction(command);
+            case SEARCH_PUB:
+                return this.relationController.searchPubAction(command);
+            case SEARCH_PUB_AUTHOR:
+                return this.relationController.searchPubAuthorAction(command);
         }
 
         // No supported edit operation given

@@ -618,7 +618,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public void updatePerson(Person person, PersonUpdateOperation operation) {
+	public void updatePerson(Person person, PersonOperation operation) {
 		execute(new UpdatePersonQuery(person, operation));
 	}
 
