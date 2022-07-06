@@ -434,17 +434,22 @@ public class MailUtils {
 	}
 
 	public boolean sendReportMail(final String subjectKey, final String bodyKey, final Object[] subjectParameters, final Object[] bodyParameters, final Locale locale) {
-		try {
-			final String messageSubject = messageSource.getMessage(subjectKey, subjectParameters, locale);
-			final String messageBody = messageSource.getMessage(bodyKey, bodyParameters, locale);
+		if (present(this.projectReportEmail)) {
+			try {
+				final String messageSubject = messageSource.getMessage(subjectKey, subjectParameters, locale);
+				final String messageBody = messageSource.getMessage(bodyKey, bodyParameters, locale);
 
-			this.sendHTMLMail(new String[] { this.projectReportEmail }, messageSubject, messageBody, this.projectReportEmail);
-		} catch (final MessagingException e) {
-			log.fatal("Could not send report mail: " + e.getMessage());
+				this.sendHTMLMail(new String[]{this.projectReportEmail}, messageSubject, messageBody, this.projectReportEmail);
+			} catch (final MessagingException e) {
+				log.fatal("Could not send report mail: " + e.getMessage());
+				return false;
+			}
+
+			return true;
+		} else {
+			log.warn("Could not send report mail due to the project's report e-mail address has not been set.");
 			return false;
 		}
-
-		return true;
 	}
 
 	/**
