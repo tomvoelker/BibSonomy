@@ -57,7 +57,7 @@
 					<fmt:message key="batchedit.editTags.heading"/>
 					<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
 					<span class="pull-right">
-						<c:if test="${isImport}">
+						<c:if test="${isImport and resourcetype eq 'bibtex'}">
 							<button type="button" style="vertical-align: middle; margin-top: -0.5em; margin-right: 1em" class="btn btn-success btn-sm" id="addMyOwnTagButton"><fmt:message key="batchedit.editTags.addMyOwn"/></button>
 						</c:if>
 						<span class="fa fa-question-circle help-popover" data-toggle="tooltip"

@@ -107,17 +107,17 @@
 						<table class="table table-striped" style="width: 100%; table-layout: fixed;">
 							<thead>
 							<tr>
-								<th style="width: 40%;">
+								<th style="width: auto; min-width: 40%">
 									<fmt:message key="batchedit.yourPosts"/>
 								</th>
-								<th id="yourTags" style="width: 30%;">
+								<th id="yourTags" style="width: auto; min-width: 30%">
 										<span style="padding-left: 12px; padding-right: 14px">
 											<input type="checkbox" id="selectAllTags" value="true" checked="checked"
 												   title="select all"/>
 										</span>
 									<fmt:message key="batchedit.yourTags"/>
 								</th>
-								<th>
+								<th style="text-align: center; width: 10%; word-wrap: break-word;">
 									<fmt:message key="batchedit.normalize"/>
 								</th>
 							</tr>
