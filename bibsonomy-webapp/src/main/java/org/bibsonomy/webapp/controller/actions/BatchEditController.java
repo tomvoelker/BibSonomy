@@ -154,13 +154,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		return command;
 	}
 
-	//TODO: Fix documentation
 	/**
-	 * This controller is called in two cases:
-	 * 1. DirectEdit: When user clicks the gear button and selects 'edit own
-	 * entries'
-	 * 2. Import: When user imports several bibTexes through: Add post-> post
-	 * publication->BibTeX/EndNote snippet
+	 * This controller was originally written for two cases: DirectEdit and IndirectEdit-Mode.
 	 *
 	 * Differences:
 	 * In direct edit, user each time can apply one edit option to the posts. So
@@ -169,6 +164,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * In indirect edit, choosing several edit options at the same time is also
 	 * possible. So we have only one list (postsToCombiUpdate) of posts and a
 	 * complete update will be performed on the post.
+	 *
+	 * Since the batchEdit page has been rewritten to support multiple Changes at once, currently only IndirectEdit-Mode is in use.
+	 *
+	 * The controller is called in two cases:
+	 * 1. When user clicks the gear button and selects 'edit own entries'
+	 * 2. When user imports several bibTexes through: Add post-> post publication->BibTeX/EndNote snippet
 	 */
 	@Override
 	public View workOn(final BatchEditCommand command) {
