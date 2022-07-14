@@ -160,7 +160,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 		/*
 		 * remove resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(communitySearchIndexState.getLastPersonLogDate()));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntitiesByEntityId(communitySearchIndexState.getLastPersonChangeId()));
 		
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}

@@ -109,8 +109,8 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	@Override
 	public DefaultSearchIndexSyncState getDbState() {
 		final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState();
-		newState.setLast_tas_id(this.getLastTasId());
-		newState.setLast_log_date(this.getLastLogDate());
+		newState.setLastTasId(this.getLastTasId());
+		newState.setLastLogDate(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());
 		newState.setLastDocumentDate(this.getLastDocumentDate());
 		newState.setLastPredictionChangeDate(this.getLastPreditionDate());

@@ -101,7 +101,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	@Override
 	protected void updateIndex(final String indexName, final DefaultSearchIndexSyncState oldState) {
 		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
-		final int oldLastTasId = oldState.getLast_tas_id().intValue();
+		final int oldLastTasId = oldState.getLastTasId().intValue();
 		
 		/*
 		 * 1) flag/unflag spammer
@@ -111,8 +111,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		/*
 		 * 2) remove old deleted or updated posts
 		 */
-		if (oldState.getLast_log_date() != null) {
-			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
+		if (oldState.getLastLogDate() != null) {
+			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLastLogDate().getTime() - QUERY_TIME_OFFSET_MS));
 			
 			
 			final List<DeleteData> idsToDelete = new LinkedList<>();
@@ -162,8 +162,8 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		// 4) update the index state
 		try {
 			final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState(oldState);
-			newState.setLast_log_date(targetState.getLast_log_date());
-			newState.setLast_tas_id(targetState.getLast_tas_id());
+			newState.setLastLogDate(targetState.getLastLogDate());
+			newState.setLastTasId(targetState.getLastTasId());
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
 			newState.setLastDocumentDate(targetState.getLastDocumentDate());
 			this.updateIndexState(indexName, oldState, newState);

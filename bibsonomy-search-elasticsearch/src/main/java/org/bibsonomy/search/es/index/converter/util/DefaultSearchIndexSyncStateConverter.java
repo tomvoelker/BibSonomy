@@ -68,8 +68,8 @@ public class DefaultSearchIndexSyncStateConverter implements Converter<DefaultSe
 	@Override
 	public Map<String, Object> convert(DefaultSearchIndexSyncState state) {
 		final Map<String, Object> values = new HashMap<>();
-		values.put(LAST_TAS_KEY, state.getLast_tas_id());
-		final Date lastLogDate = getDateForIndex(state.getLast_log_date());
+		values.put(LAST_TAS_KEY, state.getLastTasId());
+		final Date lastLogDate = getDateForIndex(state.getLastLogDate());
 		values.put(LAST_LOG_DATE_KEY, Long.valueOf(lastLogDate.getTime()));
 		values.put(LAST_PERSON_CHANGE_ID_KEY, Long.valueOf(state.getLastPersonChangeId()));
 		final Date lastDocumentDate = getDateForIndex(state.getLastDocumentDate());
@@ -92,10 +92,10 @@ public class DefaultSearchIndexSyncStateConverter implements Converter<DefaultSe
 	@Override
 	public DefaultSearchIndexSyncState convert(Map<String, Object> source, Object options) {
 		final DefaultSearchIndexSyncState searchIndexState = new DefaultSearchIndexSyncState();
-		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
+		searchIndexState.setLastTasId((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
 		final Date lastLogDate = new Date(dateAsTime.longValue());
-		searchIndexState.setLast_log_date(lastLogDate);
+		searchIndexState.setLastLogDate(lastLogDate);
 
 		final Long documentDateAsTime = (Long) source.get(LAST_DOCUMENT_DATE_KEY);
 		final Date lastDocumentDate;

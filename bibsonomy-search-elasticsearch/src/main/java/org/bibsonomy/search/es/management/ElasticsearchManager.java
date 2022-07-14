@@ -287,7 +287,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 	protected <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
 		final long lastContentId = oldState.getLastPostContentId();
-		final Date lastLogDate = oldState.getLast_log_date();
+		final Date lastLogDate = oldState.getLastLogDate();
 		final String entityType = entityInformationProvider.getType();
 
 		/*

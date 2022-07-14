@@ -26,10 +26,10 @@
 		JOIN person_name pn USING (person_id)
 	</select>
 
-	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost" parameterClass="date">
+	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost">
 		SELECT <include refid="personResourceRelationColumns" />, ppr.simhash1 AS interHash, -1 AS content_id, NULL AS college
 		FROM log_pub_person ppr
-		WHERE log_date > #lastLogDate#
+		WHERE person_change_id > #lastContentId#
 	</select>
 
 	<select id="getUpdatedOrNewPersonRelations" resultMap="SearchPersonCommon.personResourceRelation">
@@ -38,13 +38,13 @@
 			(
 				SELECT *
 				FROM pub_person
-				WHERE person_change_id >= #lastContentId#
+				WHERE person_change_id > #lastContentId#
 				<isEqual property="includeRelatedEntityUpdates" compareValue="true">
 					UNION
 					SELECT ppr_pu.*
 					FROM pub_person ppr_pu
 					JOIN person pu USING (person_id)
-					WHERE pu.person_change_id >= #lastContentId#
+					WHERE pu.person_change_id > #lastContentId#
 				</isEqual>
 				LIMIT #limit#
 				OFFSET #offset#

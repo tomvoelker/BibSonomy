@@ -57,7 +57,7 @@ public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithS
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setLast_log_date(logDate);
+			searchIndexSyncState.setLastLogDate(logDate);
 
 			// both persons and person resource relations are using the same database id
 			final SearchIndexDualSyncState state = new SearchIndexDualSyncState();

@@ -31,6 +31,8 @@ package org.bibsonomy.search.update;
 
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.ObjectUtils;
 
 /**
@@ -38,18 +40,34 @@ import org.apache.commons.lang.ObjectUtils;
  *
  * @author lutful
  */
+@Getter
+@Setter
 public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
-	
-	// TODO: rename attribute to lastTASId
-	private Integer last_tas_id;
-	// TODO: rename attribute to lastLogDate
-	private Date last_log_date;
-	private long lastPersonChangeId;
+
+
+	/** last logged TAS ID change date in index */
+	private Integer lastTasId;
+
+	/** last logged change date of index */
+	private Date lastLogDate;
+
+	/** last logged person change date in index */
 	private Date lastPersonLogDate;
+
+	/** last logged person-resource-relation change date in index */
+	private Date lastRelationLogDate;
+
+	/** last logged document change date in index */
 	private Date lastDocumentDate;
+
+	/** last logged prediction change date in index */
 	private Date lastPredictionChangeDate;
+
 	/** the last content id of normal posts */
 	private long lastPostContentId;
+
+	/** the last content id of a person */
+	private long lastPersonChangeId;
 
 	/**
 	 * default constructor
@@ -62,117 +80,21 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 	 * @param state
 	 */
 	public DefaultSearchIndexSyncState(DefaultSearchIndexSyncState state) {
-		this.last_log_date = state.last_log_date;
-		this.last_tas_id = state.last_tas_id;
+		this.lastLogDate = state.lastLogDate;
+		this.lastTasId = state.lastTasId;
 		this.lastPersonChangeId = state.lastPersonChangeId;
 		this.lastPredictionChangeDate = state.lastPredictionChangeDate;
 		this.setMappingVersion(state.getMappingVersion());
 	}
 	
-	/**
-	 * @return the last_log_date
-	 */
-	public Date getLast_log_date() {
-		return this.last_log_date;
-	}
 
-	/**
-	 * @param last_log_date the last_log_date to set
-	 */
-	public void setLast_log_date(Date last_log_date) {
-		this.last_log_date = last_log_date;
-	}
-
-	/**
-	 * @return the last_tas_id
-	 */
-	public Integer getLast_tas_id() {
-		return this.last_tas_id;
-	}
-
-	/**
-	 * @param last_tas_id the last_tas_id to set
-	 */
-	public void setLast_tas_id(Integer last_tas_id) {
-		this.last_tas_id = last_tas_id;
-	}
-	
-	/**
-	 * @return the lastPersonChangeId
-	 */
-	public long getLastPersonChangeId() {
-		return this.lastPersonChangeId;
-	}
-
-	/**
-	 * @param lastPersonChangeId the lastPersonChangeId to set
-	 */
-	public void setLastPersonChangeId(long lastPersonChangeId) {
-		this.lastPersonChangeId = lastPersonChangeId;
-	}
-
-	/**
-	 * @return the lastDocumentDate
-	 */
-	public Date getLastDocumentDate() {
-		return this.lastDocumentDate;
-	}
-
-	/**
-	 * @param lastDocumentDate the lastDocumentDate to set
-	 */
-	public void setLastDocumentDate(Date lastDocumentDate) {
-		this.lastDocumentDate = lastDocumentDate;
-	}
-
-	/**
-	 * @return the lastPredictionChangeDate
-	 */
-	public Date getLastPredictionChangeDate() {
-		return this.lastPredictionChangeDate;
-	}
-
-	/**
-	 * @param lastPredictionChangeDate the lastPredictionChangeDate to set
-	 */
-	public void setLastPredictionChangeDate(Date lastPredictionChangeDate) {
-		this.lastPredictionChangeDate = lastPredictionChangeDate;
-	}
-
-	/**
-	 * @return the lastPostContentId
-	 */
-	public long getLastPostContentId() {
-		return lastPostContentId;
-	}
-
-	/**
-	 * @param lastPostContentId the lastPostContentId to set
-	 */
-	public void setLastPostContentId(long lastPostContentId) {
-		this.lastPostContentId = lastPostContentId;
-	}
-
-	/**
-	 * @return the lastPersonLogDate
-	 */
-	public Date getLastPersonLogDate() {
-		return lastPersonLogDate;
-	}
-
-	/**
-	 * @param lastPersonLogDate the lastPersonLogDate to set
-	 */
-	public void setLastPersonLogDate(Date lastPersonLogDate) {
-		this.lastPersonLogDate = lastPersonLogDate;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(last_tas_id) + ObjectUtils.hashCode(last_log_date) + ObjectUtils.hashCode(this.lastDocumentDate) + ((int) lastPersonChangeId);
+		return ObjectUtils.hashCode(this.lastTasId) + ObjectUtils.hashCode(this.lastLogDate) + ObjectUtils.hashCode(this.lastDocumentDate) + ((int) lastPersonChangeId);
 	}
 
 	/* (non-Javadoc)
@@ -185,28 +107,39 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 		}
 		
 		final DefaultSearchIndexSyncState otherState = (DefaultSearchIndexSyncState)obj;
-		if (!ObjectUtils.equals(last_log_date, otherState.last_log_date)) {
+
+		if (!ObjectUtils.equals(this.lastLogDate, otherState.lastLogDate)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(last_tas_id, otherState.last_tas_id)) {
+		if (!ObjectUtils.equals(this.lastTasId, otherState.lastTasId)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(lastPersonChangeId, otherState.lastPersonChangeId)) {
-			return false;
-		}
-		
+
 		if (!ObjectUtils.equals(this.lastDocumentDate, otherState.lastDocumentDate)) {
 			return false;
 		}
+
+		/*
+		if (!ObjectUtils.equals(this.lastPersonLogDate, otherState.lastPersonLogDate)) {
+			return false;
+		}
+		if (!ObjectUtils.equals(this.lastRelationLogDate, otherState.lastRelationLogDate)) {
+			return false;
+		}
+		 */
 		
-		if (!ObjectUtils.equals(lastPredictionChangeDate, otherState.lastPredictionChangeDate)) {
+		if (!ObjectUtils.equals(this.lastPredictionChangeDate, otherState.lastPredictionChangeDate)) {
 			return false;
 		}
 
 		if (!ObjectUtils.equals(this.lastPostContentId, otherState.lastPostContentId)) {
 			return false;
 		}
-		
+
+		if (!ObjectUtils.equals(this.lastPersonChangeId, otherState.lastPersonChangeId)) {
+			return false;
+		}
+
 		return true;
 	}
 	
@@ -215,6 +148,6 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 	 */
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + last_tas_id + ", " + last_log_date + ", " + lastPersonChangeId + "]";
+		return getClass().getSimpleName() + "[" + this.lastTasId + ", " + this.lastLogDate + ", " + this.lastPersonChangeId + "]";
 	}
 }

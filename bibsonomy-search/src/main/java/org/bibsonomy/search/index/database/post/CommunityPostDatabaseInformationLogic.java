@@ -76,10 +76,10 @@ public class CommunityPostDatabaseInformationLogic<R extends Resource> extends R
 			final int contentTypeId = contentType.getId();
 
 			final Date lastLogDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);
-			searchIndexSyncState.setLast_log_date(lastLogDate);
+			searchIndexSyncState.setLastLogDate(lastLogDate);
 
 			final Integer lastContentId = this.queryForObject("getLastContentIdCommunity", contentTypeId, Integer.class, session);
-			searchIndexSyncState.setLast_tas_id(lastContentId);
+			searchIndexSyncState.setLastTasId(lastContentId);
 
 			final Integer lastPersonChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
 			searchIndexSyncState.setLastPersonChangeId(lastPersonChangeId);
