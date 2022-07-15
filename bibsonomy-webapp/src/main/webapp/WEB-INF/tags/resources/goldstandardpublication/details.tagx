@@ -97,7 +97,6 @@
 				</div>
 
 				<div class="col-md-2 content-header-metric-buttons hidden-xs">
-
 					<c:if test="${showFolkSonomyLinks}">
 						<div class="metric-info">
 							<fmt:message key="goldStandard.users" var="inCollectionOf"/>
@@ -191,7 +190,9 @@
 					</c:if>
 				</div>
 			</div>
+
 			<hr />
+
 			<!--+
                 | CONTENT
                 +-->
