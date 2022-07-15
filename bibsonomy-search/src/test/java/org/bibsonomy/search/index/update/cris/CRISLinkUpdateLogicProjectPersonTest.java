@@ -85,7 +85,6 @@ public class CRISLinkUpdateLogicProjectPersonTest extends AbstractDatabaseManage
 	}
 
 	@Test
-	@Ignore
 	public void testGetDeletedEntities() {
 		final Date lastLogDate = new Date();
 		final List<CRISLink> deletedEntities = UPDATE_LOGIC.getDeletedEntities(lastLogDate);

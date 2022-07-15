@@ -26,7 +26,7 @@
 		JOIN person_name pn USING (person_id)
 	</select>
 
-	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost">
+	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost" parameterClass="date">
 		SELECT <include refid="personResourceRelationColumns" />, ppr.simhash1 AS interHash, -1 AS content_id, NULL AS college
 		FROM log_pub_person ppr
 		WHERE log_date > #lastLogDate#
