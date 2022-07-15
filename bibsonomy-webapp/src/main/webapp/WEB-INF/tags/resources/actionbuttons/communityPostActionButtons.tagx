@@ -46,16 +46,18 @@
 		</c:choose>
 		</c:if>
 
-		<c:if test="${showApprovalOptions and not post.approved}">
-			<fmt:message var="additionalText" key="post.actions.edit.approve"/>
-			<buttons:approvePostButton
-					post="${post}"
-					resourceType="${resourceType}"
-					buttonClasses="${buttonClasses}"
-					communityPostExists="${communityPostExists}"
-					additionalText="${additionalText}"
-					ckey="${ckey}"
-			/>
+		<c:if test="${resourceType eq 'bibtex'}">
+			<c:if test="${showApprovalOptions and not post.approved}">
+				<fmt:message var="additionalText" key="post.actions.edit.approve"/>
+				<buttons:approvePostButton
+						post="${post}"
+						resourceType="${resourceType}"
+						buttonClasses="${buttonClasses}"
+						communityPostExists="${communityPostExists}"
+						additionalText="${additionalText}"
+						ckey="${ckey}"
+				/>
+			</c:if>
 		</c:if>
 
 		<c:if test="${communityPostExists}">
