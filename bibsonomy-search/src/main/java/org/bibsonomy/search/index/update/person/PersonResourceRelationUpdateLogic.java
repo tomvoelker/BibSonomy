@@ -68,20 +68,8 @@ public class PersonResourceRelationUpdateLogic extends AbstractDatabaseManagerWi
 
 	@Override
 	public List<ResourcePersonRelation> getDeletedEntities(Date lastLogDate) {
-		// Implementation does not work with the given log dates, due to the dates not being updated when just updating the resource relations
-
-		/*
 		try (final DBSession session = this.openSession()) {
 			return this.queryForList("getDeletedPersonResourceRelations", lastLogDate, ResourcePersonRelation.class, session);
-		}
-		 */
-
-		return new ArrayList<>();
-	}
-
-	public List<ResourcePersonRelation> getDeletedEntitiesByEntityId(long lastEntityId) {
-		try (final DBSession session = this.openSession()) {
-			return this.queryForList("getDeletedPersonResourceRelations", lastEntityId, ResourcePersonRelation.class, session);
 		}
 	}
 }

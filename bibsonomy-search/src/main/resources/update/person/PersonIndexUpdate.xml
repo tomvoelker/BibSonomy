@@ -29,7 +29,7 @@
 	<select id="getDeletedPersonResourceRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithSimplePost">
 		SELECT <include refid="personResourceRelationColumns" />, ppr.simhash1 AS interHash, -1 AS content_id, NULL AS college
 		FROM log_pub_person ppr
-		WHERE person_change_id > #lastContentId#
+		WHERE log_date > #lastLogDate#
 	</select>
 
 	<select id="getUpdatedOrNewPersonRelations" resultMap="SearchPersonCommon.personResourceRelation">
