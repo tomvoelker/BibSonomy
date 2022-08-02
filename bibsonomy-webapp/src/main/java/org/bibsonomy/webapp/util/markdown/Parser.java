@@ -34,6 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.search.es.help.HelpUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpParser;
@@ -48,13 +50,15 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
  * 
  * @author Johannes Blum
  */
+@Getter
+@Setter
 public class Parser implements HelpParser {
 	/** the configuration for a processor */
 	protected static final int PROCESSOR_CONFIG = Extensions.TABLES | Extensions.EXTANCHORLINKS;
 	
 	/** A map which maps a variable to the value it should be replaced with */
-	private final Map<String, String> replacements;
-	private final URLGenerator urlGenerator;
+	private Map<String, String> replacements;
+	private URLGenerator urlGenerator;
 
 	/**
 	 * @param replacements the map for the replacement of the variables
