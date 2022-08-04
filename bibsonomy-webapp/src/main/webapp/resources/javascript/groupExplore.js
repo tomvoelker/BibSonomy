@@ -45,7 +45,7 @@ function initResourceMenu() {
         // append search query as a parameter to URL
         var href = $(this).attr('href');
         var query = buildSearchQuery();
-        var hrefWithParams = href + '?search=' + query;
+        var hrefWithParams = href + '?search=' + encodeURI(query);
 
         // open URL with query in new tab
         window.open(hrefWithParams, '_blank').focus();
