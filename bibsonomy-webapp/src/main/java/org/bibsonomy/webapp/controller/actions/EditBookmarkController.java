@@ -86,7 +86,6 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 		 */
 		if (!present(command.getPost().getResource().getUrl()) && !present(command.getIntraHashToUpdate()) && !present(command.getHash())) {
 			this.initializeDidYouKnowMessageCommand(command);
-			command.getPost().getResource().setUrl("http://");
 			return Views.POST_BOOKMARK;
 		}
 

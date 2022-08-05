@@ -25,7 +25,7 @@
 		<c:set var="personId" value="${relation.person.personId}" />
 	</c:if>
 
-	<c:set var="loggedinUserName" value="${command.context.loginUser.name}" />
+	<c:set var="loggedInUser" value="${command.context.loginUser}" />
 
 	<per:simplePublicationView post="${post}"
 							   showButtons="${showButtons}"
@@ -43,7 +43,7 @@
 					</button>
 				</c:when>
 				<c:otherwise>
-					<c:if test="${command.context.loginUser.claimedPerson.personId eq personId or command.context.loginUser.role ne 'ADMIN'}">
+					<c:if test="${loggedInUser.claimedPerson.personId eq personId or loggedInUser.role eq 'ADMIN'}">
 						<button type="button"
 								onclick="initDeleteRelationButtons(this)"
 								class="btn btn-default btn-xs delete-button"
