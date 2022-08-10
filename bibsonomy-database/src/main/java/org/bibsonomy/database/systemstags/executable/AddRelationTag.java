@@ -68,7 +68,6 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
     public <T extends Resource> void performAfterCreate(Post<T> post, DBSession session) {
         final User loggedInUser = post.getUser();
 
-
         // Check, if user has permission to
         if (!this.hasPermissions()) {
             log.debug("no permission to add relation to person");
@@ -83,11 +82,13 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
             final Person person = personDb.getPersonById(personId, session);
 
             if (present(person)) {
+                // Create person resource relation as AUTHOR
                 ResourcePersonRelation relation = new ResourcePersonRelation();
                 relation.setPost((Post<? extends BibTex>) post);
                 relation.setPerson(person);
                 relation.setRelationType(PersonResourceRelationType.AUTHOR);
 
+                // Find author index in the post and add relation when found
                 final BibTex resource = (BibTex) post.getResource();
                 List<PersonName> authorList = resource.getAuthor();
                 for (int i = 0; i < authorList.size(); i++) {
