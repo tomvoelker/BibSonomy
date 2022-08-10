@@ -31,7 +31,6 @@
 package org.bibsonomy.database.systemstags.executable;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
@@ -46,13 +45,17 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.util.MailUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableSystemTag{
 
     private static final boolean toHide = true;
     public static final String NAME = "rel";
+
+    private MailUtils mailUtils;
 
     @Override
     public <T extends Resource> void performBeforeCreate(Post<T> post, DBSession session) {
@@ -90,13 +93,24 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
 
                 // Find author index in the post and add relation when found
                 final BibTex resource = (BibTex) post.getResource();
-                List<PersonName> authorList = resource.getAuthor();
+                final List<PersonName> authorList = resource.getAuthor();
+                List<Integer> matchingAuthorPos = new ArrayList<>();
                 for (int i = 0; i < authorList.size(); i++) {
                     if (PersonNameUtils.containsPerson(authorList.get(i), person.getNames(), true)) {
-                        relation.setPersonIndex(i);
-                        personDb.addResourceRelation(relation, loggedInUser, session);
-                        break;
+                        matchingAuthorPos.add(i);
                     }
+                }
+
+                if (present(matchingAuthorPos)) {
+                    if (matchingAuthorPos.size() > 1) {
+                        log.debug("unable to automatically match person id to an author, notify by e-mail");
+                        // mailUtils.sendUnableToMatchRelationMail(resource.getTitle(), resource.getInterHash(), personId);
+                    } else {
+                        relation.setPersonIndex(matchingAuthorPos.get(0));
+                        personDb.addResourceRelation(relation, loggedInUser, session);
+                    }
+                } else {
+                    log.debug("unable to match person id to an author");
                 }
             }
         }
@@ -142,4 +156,7 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
         }
     }
 
+    public void setMailUtils(MailUtils mailUtils) {
+        this.mailUtils = mailUtils;
+    }
 }

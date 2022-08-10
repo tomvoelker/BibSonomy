@@ -62,7 +62,9 @@
 		</property>
 	</bean>
 
-	<bean id="addRelationTag" class="org.bibsonomy.database.systemstags.executable.AddRelationTag" />
+	<bean id="addRelationTag" class="org.bibsonomy.database.systemstags.executable.AddRelationTag">
+		<property name="mailUtils" ref="mailUtils" />
+	</bean>
 	
 	<!--+
 	    |SEARCH SYSTEMTAGS
