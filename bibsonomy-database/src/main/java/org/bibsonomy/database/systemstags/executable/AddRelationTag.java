@@ -93,11 +93,10 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
                 for (int i = 0; i < authorList.size(); i++) {
                     if (PersonNameUtils.containsPerson(authorList.get(i), person.getNames(), true)) {
                         relation.setPersonIndex(i);
+                        personDb.addResourceRelation(relation, loggedInUser, session);
                         break;
                     }
                 }
-
-                personDb.addResourceRelation(relation, loggedInUser, session);
             }
         }
     }
