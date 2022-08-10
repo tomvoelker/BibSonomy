@@ -29,11 +29,18 @@
 		<ref bean="forGroupTag"/>
 		<ref bean="forFriendTag"/>
 		<ref bean="reportTag" />
+		<ref bean="addRelationTag" />
 	</util:set>
 	
 	<!--+
 	    | beans for the executable systemTags
 	    +-->
+
+	<bean id="noAuthInterfaceFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
+		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+	</bean>
+
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="logicInterfaceFactory" ref="noAuthInterfaceFactory" />
@@ -42,9 +49,8 @@
 		<property name="userTagsEnabled" value="${group.sendTo.userTags.enabled}" />
 	</bean>
 
-	<bean id="noAuthInterfaceFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
-		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
-		<property name="dbSessionFactory" ref="dbSessionFactory" />
+	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag">
+		<property name="bibliographyUser" value="${bibliography.bibliographyUser}" />
 	</bean>
 	
 	<bean id="reportTag" class="org.bibsonomy.database.systemstags.executable.ReportTag" parent="forGroupTag">
@@ -55,10 +61,8 @@
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag">
-		<property name="bibliographyUser" value="${bibliography.bibliographyUser}" />
-	</bean>
+
+	<bean id="addRelationTag" class="org.bibsonomy.database.systemstags.executable.AddRelationTag" />
 	
 	<!--+
 	    |SEARCH SYSTEMTAGS
