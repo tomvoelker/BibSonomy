@@ -1,9 +1,9 @@
 //methods for editPublication page
 //setup jQuery to update recommender with form data
 
-var MISC_EXPERT_SELECTOR = '#expert-mode-btn';
-var MISC_ADD_CONTAINER_ID = 'add-field-container';
-var MISC_ADD_CONTAINER_SELECTOR = '#' + MISC_ADD_CONTAINER_ID;
+var MISC_EXPERT_BTN = '#miscExpertMode';
+var MISC_ADD_BTN = '#addMiscFieldButton';
+var MISC_EXTRA_FIELD = '#extraFieldsWrap';
 
 var tagRecoOptions = {
 	type: "POST",
@@ -82,9 +82,9 @@ function changeView(showAll) {
 	}
 
 	if (showAll || in_array(requiredFields, "misc")) {
-		$(MISC_EXPERT_SELECTOR).show();
-		$(MISC_ADD_CONTAINER_SELECTOR).show();
-		$("#extraFieldsWrap").show();
+		$(MISC_EXPERT_BTN).show();
+		$(MISC_ADD_BTN).show();
+		$(MISC_EXTRA_FIELD).show();
 	} else {
 		var hasMiscField = false;
 		$.each(requiredFields, function(index, item){
@@ -114,9 +114,9 @@ function changeView(showAll) {
 
 		if (!miscFieldHasError()) {
 			// don't show misc field gui, only show the required misc fields
-			$(MISC_EXPERT_SELECTOR).hide();
-			$(MISC_ADD_CONTAINER_SELECTOR).hide();
-			$('#extraFieldsWrap').hide();
+			$(MISC_EXPERT_BTN).hide();
+			$(MISC_ADD_BTN).hide();
+			$(MISC_EXTRA_FIELD).hide();
 		}
 	}
 }
@@ -399,58 +399,52 @@ function addForGroupTag(groupname) {
 	copyTag("inpf_tags", forGroupTag);
 }
 
+function addStandardInput(field, value) {
+	var labelKey = "post.resource.misc." + field;
+	var name = getString(labelKey);
+	if (name.startsWith("???")) {
+		name = field;
+	}
+
+	$("#standardFieldsWrap").append('<div class="standardInputs form-group"><label for="post.resource.' + field + '" class="col-sm-3 control-label">' + name + '</label><div class="col-sm-9"><input id="post.resource.' + field + '"name="' + name + '" value="' + value + '" class="form-control" type="text"/></div></div>');
+}
+
+function addMiscInput() {
+	// check if there are any extra misc inputs, if not, adds "misc" as labeltext
+	var miscError = miscFieldHasError();
+	var title = getString('post.resource.misc.tooltipRemove');
+	if ($('.extraInputs').length > 0) {
+		$(MISC_EXTRA_FIELD).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove-field" type="button">-</form:button></div></div>');
+	} else {
+		$(MISC_EXTRA_FIELD).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove-field" type="button">-</form:button></div></div>');
+	}
+}
+
 /*
  * change appearance of misc and transfer data
  */
 $(document).ready(function() {
-	/*
-	 * add misc fields in the beginning, so they don't show up if js is disabled
-	 */
-	$("#miscDiv").append('<div id="allFieldsWrap" class=""><div id="standardFieldsWrap" ></div><div id="extraFieldsWrap" ></div><div id="' + MISC_ADD_CONTAINER_ID + '" class="col-sm-9 col-sm-offset-3 wrapper"><button title="' + getString('post.resource.misc.tooltipAdd') + '"class="btn btn-default btn-sm btn-block" type="button" id="add_field_button">'+ getString('post.resource.misc.addbutton') +'</button></div></div>');
-	$("#miscCheckboxDiv").append('<label id="expert-mode-btn"><input type="checkbox" id="expertView" /> ' + getString('post.resource.misc.checkbox') + '</label>');
-	$(MISC_EXPERT_SELECTOR).hide();
-	$(MISC_ADD_CONTAINER_SELECTOR).hide();
-	/*
-	 * variables
-	 */
-	var wrapper = $("#extraFieldsWrap"); // fields wrapper
-	var add_button = $("#add_field_button"); // add button ID
-	var misc = $("#post\\.resource\\.misc");
+	var miscRaw = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
-	var miscError = miscFieldHasError();
-
-	/*
-	 * functions
-	 */
-	function addInputs() {
-		// check if there are any extraInputs, if not, adds "misc" as labeltext
-		var title = getString('post.resource.misc.tooltipRemove');
-		if ($('.extraInputs').length > 0) {
-			$(wrapper).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
-		} else {
-			$(wrapper).append('<div class="extraInputs form-group' + (miscError ? ' has-error' : '') + '"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
-		}
-	}
 
 	// FIXME: show error message if misc field has errors
-
-	function transferMiscFieldValuesToOldField(){
+	function transferMiscValuesToFields(){
 		var fieldString = [];
 		for (var i = 0; i < miscFieldValues.length; i+=2){
 			if (miscFieldValues[i] != "undefined" || miscFieldValues[i+1] != "undefined"){
 				fieldString.push("  " + miscFieldValues[i] + " = {" + miscFieldValues[i+1] + "}");
 			}
 		}
-		$(misc).val(fieldString.join(", \n"));
+		$(miscRaw).val(fieldString.join(", \n"));
 	}
 
-	function transferDataFromOldToNew() {
+	function parseRawMiscData() {
 		// gets the data from misc
-		var miscVal = $(misc).val();
+		var miscVal = $(miscRaw).val();
 		var pairs = miscVal.split(/,\s*\n/);
-		var values = [];
+		var miscPairsAlternateList = [];
 
-		//split the pairs and delete the characters not needed then save data
+		// split the pairs and delete the characters not needed then save data
 		$.each(pairs, function(index, item){
 			item = item.trim();
 			var itemValues = item.split(/\s*=\s*{/);
@@ -469,33 +463,37 @@ $(document).ready(function() {
 					}
 				}
 			}
-			values = values.concat(itemValues);
+			miscPairsAlternateList = miscPairsAlternateList.concat(itemValues);
 		});
 
 		// set length to 0, so no new line is added
-		if (values.length === 1){
-			values = [];
+		if (miscPairsAlternateList.length === 1){
+			miscPairsAlternateList = [];
 		}
 
-		for(var i = 0; i < values.length; i+=2){
-			var isStandardField = false;
-			$("#standardFieldsWrap :input[type=text]").each(function(){
-				if ($(this).attr("name").toLowerCase() === values[i].toLowerCase()){
-					$(this).val(values[i + 1]);
-					isStandardField = true;
-				}
-			});
+		return miscPairsAlternateList;
+	}
 
-			if (!isStandardField) {
-				addInputs();
-				$("#extraFieldsWrap > div:last > div:eq(0) > input").val(values[i]);
-				$("#extraFieldsWrap > div:last > div:eq(1) > input").val(values[i+1]);
+	function transferDataFromRaw() {
+		var miscPairsAlternateList = parseRawMiscData();
+
+		for (var i = 0; i < miscPairsAlternateList.length; i+=2) {
+			var fieldName = miscPairsAlternateList[i].toLowerCase();
+			var fieldValue = miscPairsAlternateList[i + 1];
+			var fieldInput = $("#standardFieldsWrap :input[type=text][name='" + fieldName + "']");
+
+			if (fieldInput.length > 0) {
+				$(fieldInput).val(fieldValue);
+			} else {
+				addMiscInput();
+				$("#extraFieldsWrap > div:last > div:eq(0) > input").val(fieldName);
+				$("#extraFieldsWrap > div:last > div:eq(1) > input").val(fieldValue);
 			}
 		}
 	}
 
 	// adds fields, that have a special input
-	function addStandardFields(){
+	function addStandardFields() {
 		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 		var existingInputs = [];
 
@@ -504,7 +502,6 @@ $(document).ready(function() {
 		$.each(standardInputs, function(){
 			var input = $(this).find("input");
 			var inputName = "misc." + $(input).attr("name").toLowerCase();
-
 
 			if (!$(input).val() && !in_array_lower(requiredFields, inputName)) {
 				$(this).remove();
@@ -518,21 +515,15 @@ $(document).ready(function() {
 			for (var i = 0; i < requiredFields.length; i++) {
 				var requiredField = requiredFields[i].toLowerCase();
 				if (requiredField.startsWith("misc.") && !in_array_lower(existingInputs, requiredField)) {
-					var labelKey = "post.resource." + requiredField;
-					var name = getString(labelKey);
-					if (name.startsWith("???")) {
-						name = requiredField.slice(5);
-					}
-
-					$("#standardFieldsWrap").append('<div class="standardInputs form-group"><label for="post.resource.' + requiredField + '" class="col-sm-3 control-label">' + name + '</label><div class="col-sm-9"><input id="post.resource.' + requiredField + '"name="' + name + '"class="form-control" type="text"/></div></div>');
+					addStandardInput(requiredField.slice(5), "");
 				}
 			}
 		} else if (!$(".extraInputs").length){
-			addInputs();
+			addMiscInput();
 		}
 	}
 
-	function refreshOldView() {
+	function refreshDefaultView() {
 		miscFieldValues = [];
 
 		//standard fields
@@ -559,34 +550,43 @@ $(document).ready(function() {
 			}
 		});
 
-		transferMiscFieldValuesToOldField();
+		transferMiscValuesToFields();
 	}
 
-	function showNewMiscView() {
+	function showDefaultMiscView() {
 		if ($(".standardInputs").length == 0) {
-			addInputs();
+			addMiscInput();
 		}
-		$(misc).closest(".form-group").addClass("hidden");
+		$(miscRaw).closest(".form-group").addClass("hidden");
 		$("#allFieldsWrap").removeClass("hidden");
+	}
+
+	function initMiscData() {
+		var miscPairsAlternateList = parseRawMiscData();
+		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
+
+		for (var i = 0; i < miscPairsAlternateList.length; i+=2) {
+			var fieldName = miscPairsAlternateList[i].toLowerCase();
+			var fieldValue = miscPairsAlternateList[i + 1];
+
+			if (in_array_lower(requiredFields, "misc." + fieldName)) {
+				addStandardInput(fieldName, fieldValue);
+			}
+		}
 	}
 
 	/*
 	 * after loading
 	 */
+	// initMiscData();
 	addStandardFields();
-	// transfer Data after loading, so the values of the potentially filled old view are shown
-	transferDataFromOldToNew();
+	// transfer data after loading, so the values of the potentially filled old view are shown
+	transferDataFromRaw();
 	// hides old view
-	$(misc).parent("div").parent("div").addClass("hidden");
-
-	//on add input button click
-	$(add_button).click(function(e) {
-		addInputs();
-		return false;
-	});
+	$(miscRaw).parent("div").parent("div").addClass("hidden");
 
 	// user click on remove button
-	$(wrapper).on("click",".remove_field", function(e) {
+	$(MISC_EXTRA_FIELD).on("click",".remove-field", function(e) {
 		e.preventDefault();
 		var parentDiv = $(this).parent('div').parent('div');
 		var labelText = parentDiv.find("label").first().text();
@@ -594,8 +594,8 @@ $(document).ready(function() {
 		parentDiv.remove();
 		$(".extraInputs").first().find("label").first().text(getString('post.resource.misc'));
 
-		//this refreshes the values in the array/old misc-field
-		refreshOldView();
+		//this refreshes the values in the misc-fields
+		refreshDefaultView();
 	});
 
 	// reloads standard fields for new entry type
@@ -604,25 +604,28 @@ $(document).ready(function() {
 	});
 
 	// transfer field values of new design to array
-	$("#allFieldsWrap").focusout(refreshOldView);
+	$("#allFieldsWrap").focusout(function(e) {
+		refreshDefaultView();
+	});
 
 	// change view to old or new
-	$("#expertView").change(function() {
+	$("#expertViewToggle").change(function() {
 		if (this.checked){
-			// old/expert view
-			refreshOldView();
+			$(MISC_ADD_BTN).hide();
+			// refresh data from default view
+			refreshDefaultView();
 			$("#allFieldsWrap").addClass("hidden");
-			$(misc).closest(".form-group").removeClass("hidden");
+			$(miscRaw).closest(".form-group").removeClass("hidden");
 			$(".extraInputs").remove();
 			$("#standardFieldsWrap :input[type=text]").each(function(){
 				$(this).val("");
 			});
 		} else {
-			// new/normal view
-			transferDataFromOldToNew();
-
-			//actually changes the view
-			showNewMiscView();
+			$(MISC_ADD_BTN).show();
+			// transfer data to default view
+			transferDataFromRaw();
+			// actually change to default misc view
+			showDefaultMiscView();
 		}
 	});
 
@@ -640,8 +643,8 @@ $(document).ready(function() {
 	toggleView();
 
 	var hash = $("#post\\.resource\\.interHash").val();
-	if(hash == -1 || hash == undefined)
-		return;
+	if (hash == -1 || hash == undefined) return;
+
 	$.ajax({
 		url: '/json/bibtex/1' + hash + "?items=100",
 		dataType: "jsonp",

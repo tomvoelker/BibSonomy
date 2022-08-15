@@ -40,8 +40,21 @@
 			
 			<!-- Misc -->
 			<div id="miscDiv">
-				<div id="miscCheckboxDiv" class="col-sm-12">
-					<!-- needed for js -->	
+				<div id="miscExpertMode" class="col-sm-12">
+					<label>
+						<input type="checkbox" id="expertViewToggle" />
+						<fmt:message key="post.resource.misc.checkbox" />
+					</label>
+				</div>
+				<div id="allFieldsWrap">
+					<div id="standardFieldsWrap"><!-- keep me --></div>
+					<div id="extraFieldsWrap"><!-- keep me --></div>
+				</div>
+				<div id="addMiscFieldButton" class="col-sm-9 col-sm-offset-3 wrapper">
+					<fmt:message key="post.resource.misc.tooltipAdd" var="addButtonTitle"/>
+					<button class="btn btn-default btn-sm btn-block" type="button" title="${addButtonTitle}" onclick="addMiscInput()">
+						<fmt:message key="post.resource.misc.addbutton" />
+					</button>
 				</div>
 				<bsform:textarea labelColSpan="3" path="post.resource.misc"/>
 			</div>
