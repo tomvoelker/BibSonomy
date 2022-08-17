@@ -52,7 +52,7 @@
 				</div>
 				<div id="addMiscFieldButton" class="col-sm-9 col-sm-offset-3 wrapper">
 					<fmt:message key="post.resource.misc.tooltipAdd" var="addButtonTitle"/>
-					<button class="btn btn-default btn-sm btn-block" type="button" title="${addButtonTitle}" onclick="addMiscInput()">
+					<button class="btn btn-default btn-sm btn-block" type="button" title="${addButtonTitle}" onclick="addExtraMiscInput()">
 						<fmt:message key="post.resource.misc.addbutton" />
 					</button>
 				</div>

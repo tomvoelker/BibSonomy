@@ -4,6 +4,7 @@
 var MISC_EXPERT_BTN = '#miscExpertMode';
 var MISC_ADD_BTN = '#addMiscFieldButton';
 var MISC_EXTRA_FIELD = '#extraFieldsWrap';
+var MISC_RAW_EXPERT = '#post\\.resource\\.misc';
 
 var tagRecoOptions = {
 	type: "POST",
@@ -47,9 +48,16 @@ var requiredForType = {
 	"electronic":["misc.identifier", "misc.subjectarea", "misc.repository", "misc.language","misc.DOI","note"]
 }
 
+function toggleView() {
+	var collapse = $("#collapse");
+	var showAll = collapse.data("showAll");
+	collapse.data("showAll", !showAll);
+	changeView(collapse.data("showAll"));
+}
+
 /* update view when user selects another type of publication in list */
 function changeView(showAll) {
-	var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
+	var requiredFields = requiredForType[$("#post\\.resource\\.entrytype").val()];
 	var message = getString('post.resource.fields.detailed.show.all');
 	var noRequiredFields = (requiredFields === undefined);
 	var collapse = $('#collapse');
@@ -122,8 +130,7 @@ function changeView(showAll) {
 }
 
 function miscFieldHasError() {
-	var miscField = $("#post\\.resource\\.misc");
-	return miscField.closest('.form-group').hasClass('has-error');
+	return $(MISC_RAW_EXPERT).closest('.form-group').hasClass('has-error');
 }
 
 /* checks if element is member of given array */
@@ -152,24 +159,24 @@ function generateBibTexKey(obj) {
 	var buffer  = "";
 
 	/* get author */
-	buffer += getFirstPersonsLastName(document.getElementById("post.resource.author").value);
+	buffer += getFirstPersonsLastName($("#post\\.resource\\.author").val());
 
 	/* the year */
-	var year = document.getElementById("post.resource.year").value;
+	var year = $("#post\\.resource\\.year").val();
 	if (year != null) {
 		buffer += year.trim();
 	}
 
 	/* first relevant word of the title */
-	var title = document.getElementById("post.resource.title").value;
+	var title = $("#post\\.resource\\.title").val();
 	if (title != null) {
 		buffer += getFirstRelevantWord(title).toLowerCase();
 	}
 
-	if (buffer.length == 0) {
+	if (buffer.length === 0) {
 		window.alert(getString("error.field.valid.bibtexKey.generation"));
 	} else {
-		document.getElementById("post.resource.bibtexKey").value = buffer.toLowerCase();
+		$("#post\\.resource\\.bibtexKey").val(buffer.toLowerCase());
 	}
 }
 
@@ -207,7 +214,7 @@ function getFirstPersonsLastName(person) {
 }
 
 function getFirstRelevantWord(title) {
-	split = title.split(" ");
+	var split = title.split(" ");
 	for (i in split) {
 		var regex = new RegExp("[^a-zA-Z0-9]", "g");
 		ss = split[i].replace(regex, "");
@@ -216,13 +223,6 @@ function getFirstRelevantWord(title) {
 		}
 	}
 	return "";
-}
-
-function toggleView() {
-	var collapse = $("#collapse");
-	var showAll = collapse.data("showAll");
-	collapse.data("showAll", !showAll);
-	changeView(collapse.data("showAll"));
 }
 
 function activateAffixEntry (el) {
@@ -399,17 +399,27 @@ function addForGroupTag(groupname) {
 	copyTag("inpf_tags", forGroupTag);
 }
 
-function addStandardInput(field, value) {
-	var labelKey = "post.resource.misc." + field;
+function addOrUpdateStandardMiscInput(fieldName, fieldValue) {
+	var labelKey = "post.resource.misc." + fieldName;
 	var name = getString(labelKey);
 	if (name.startsWith("???")) {
-		name = field;
+		name = fieldName;
 	}
 
-	$("#standardFieldsWrap").append('<div class="standardInputs form-group"><label for="post.resource.' + field + '" class="col-sm-3 control-label">' + name + '</label><div class="col-sm-9"><input id="post.resource.' + field + '"name="' + name + '" value="' + value + '" class="form-control" type="text"/></div></div>');
+	// Check, if field input already exists and update it if it does
+	var fieldInput = $("#standardFieldsWrap :input[type=text][name='" + name + "']");
+
+	if (fieldInput.length > 0) {
+		$(fieldInput).val(fieldValue);
+	} else {
+		$("#standardFieldsWrap").append('<div class="standardInputs form-group">' +
+			'<label for="post.resource.' + fieldName + '" class="col-sm-3 control-label">' + name + '</label>' +
+			'<div class="col-sm-9"><input id="post.resource.' + fieldName + '" name="' + name + '" value="' + fieldValue + '" class="form-control" type="text"/>' +
+			'</div></div>');
+	}
 }
 
-function addMiscInput() {
+function addExtraMiscInput() {
 	// check if there are any extra misc inputs, if not, adds "misc" as labeltext
 	var miscError = miscFieldHasError();
 	var title = getString('post.resource.misc.tooltipRemove');
@@ -420,11 +430,49 @@ function addMiscInput() {
 	}
 }
 
+function addExtraMiscInputWithValues(fieldName, fieldValue) {
+	addExtraMiscInput();
+	$("#extraFieldsWrap > div:last > div:eq(0) > input").val(fieldName);
+	$("#extraFieldsWrap > div:last > div:eq(1) > input").val(fieldValue);
+}
+
+/**
+ * updated required fields
+ */
+function updateRequiredFields() {
+	var requiredFields = requiredForType[$("#post\\.resource\\.entrytype").val()];
+	var existingInputs = [];
+
+	// remove not required inputs for this entry type
+	var standardInputs  = $('.standardInputs');
+	$.each(standardInputs, function(){
+		var input = $(this).find("input");
+		var inputName = "misc." + $(input).attr("name").toLowerCase();
+
+		if (!$(input).val() && !in_array_lower(requiredFields, inputName)) {
+			$(this).remove();
+		} else {
+			existingInputs.push(inputName);
+		}
+	});
+
+	// add the required ones for this entry type
+	if (typeof requiredFields != 'undefined'){
+		for (var i = 0; i < requiredFields.length; i++) {
+			var requiredField = requiredFields[i].toLowerCase();
+			if (requiredField.startsWith("misc.") && !in_array_lower(existingInputs, requiredField)) {
+				addOrUpdateStandardMiscInput(requiredField.slice(5), "");
+			}
+		}
+	} else if (!$(".extraInputs").length){
+		addExtraMiscInput();
+	}
+}
+
 /*
  * change appearance of misc and transfer data
  */
 $(document).ready(function() {
-	var miscRaw = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
 
 	// FIXME: show error message if misc field has errors
@@ -435,12 +483,12 @@ $(document).ready(function() {
 				fieldString.push("  " + miscFieldValues[i] + " = {" + miscFieldValues[i+1] + "}");
 			}
 		}
-		$(miscRaw).val(fieldString.join(", \n"));
+		$(MISC_RAW_EXPERT).val(fieldString.join(", \n"));
 	}
 
 	function parseRawMiscData() {
 		// gets the data from misc
-		var miscVal = $(miscRaw).val();
+		var miscVal = $(MISC_RAW_EXPERT).val();
 		var pairs = miscVal.split(/,\s*\n/);
 		var miscPairsAlternateList = [];
 
@@ -485,41 +533,8 @@ $(document).ready(function() {
 			if (fieldInput.length > 0) {
 				$(fieldInput).val(fieldValue);
 			} else {
-				addMiscInput();
-				$("#extraFieldsWrap > div:last > div:eq(0) > input").val(fieldName);
-				$("#extraFieldsWrap > div:last > div:eq(1) > input").val(fieldValue);
+				addExtraMiscInputWithValues(fieldName, fieldValue);
 			}
-		}
-	}
-
-	// adds fields, that have a special input
-	function addStandardFields() {
-		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
-		var existingInputs = [];
-
-		// remove not required inputs for this entry type
-		var standardInputs  = $('.standardInputs');
-		$.each(standardInputs, function(){
-			var input = $(this).find("input");
-			var inputName = "misc." + $(input).attr("name").toLowerCase();
-
-			if (!$(input).val() && !in_array_lower(requiredFields, inputName)) {
-				$(this).remove();
-			} else {
-				existingInputs.push(inputName);
-			}
-		});
-
-		// add the required ones for this entry type
-		if (typeof requiredFields != 'undefined'){
-			for (var i = 0; i < requiredFields.length; i++) {
-				var requiredField = requiredFields[i].toLowerCase();
-				if (requiredField.startsWith("misc.") && !in_array_lower(existingInputs, requiredField)) {
-					addStandardInput(requiredField.slice(5), "");
-				}
-			}
-		} else if (!$(".extraInputs").length){
-			addMiscInput();
 		}
 	}
 
@@ -554,23 +569,26 @@ $(document).ready(function() {
 	}
 
 	function showDefaultMiscView() {
-		if ($(".standardInputs").length == 0) {
-			addMiscInput();
+		if ($(".standardInputs").length === 0) {
+			addExtraMiscInput();
 		}
-		$(miscRaw).closest(".form-group").addClass("hidden");
+		$(MISC_RAW_EXPERT).closest(".form-group").addClass("hidden");
 		$("#allFieldsWrap").removeClass("hidden");
 	}
 
-	function initMiscData() {
+	function initMiscDataView() {
 		var miscPairsAlternateList = parseRawMiscData();
-		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
+		var initEntrytype = $("#post\\.resource\\.entrytype").data('selected-entrytype');
+		var requiredFields = requiredForType[initEntrytype];
 
-		for (var i = 0; i < miscPairsAlternateList.length; i+=2) {
+		for (var i = 0; i < miscPairsAlternateList.length; i += 2) {
 			var fieldName = miscPairsAlternateList[i].toLowerCase();
 			var fieldValue = miscPairsAlternateList[i + 1];
 
-			if (in_array_lower(requiredFields, "misc." + fieldName)) {
-				addStandardInput(fieldName, fieldValue);
+			if (typeof requiredFields != 'undefined' && in_array_lower(requiredFields, "misc." + fieldName)) {
+				addOrUpdateStandardMiscInput(fieldName, fieldValue);
+			} else {
+				addExtraMiscInputWithValues(fieldName, fieldValue);
 			}
 		}
 	}
@@ -578,12 +596,10 @@ $(document).ready(function() {
 	/*
 	 * after loading
 	 */
-	// initMiscData();
-	addStandardFields();
-	// transfer data after loading, so the values of the potentially filled old view are shown
-	transferDataFromRaw();
+	initMiscDataView();
+
 	// hides old view
-	$(miscRaw).parent("div").parent("div").addClass("hidden");
+	$(MISC_RAW_EXPERT).parent("div").parent("div").addClass("hidden");
 
 	// user click on remove button
 	$(MISC_EXTRA_FIELD).on("click",".remove-field", function(e) {
@@ -598,9 +614,10 @@ $(document).ready(function() {
 		refreshDefaultView();
 	});
 
-	// reloads standard fields for new entry type
+	// reloads standard fields for new entry type and toggle between all fields and required fields
 	$("#post\\.resource\\.entrytype").change(function(e) {
-		addStandardFields();
+		updateRequiredFields();
+		changeView($("#collapse").data("showAll"));
 	});
 
 	// transfer field values of new design to array
@@ -615,7 +632,7 @@ $(document).ready(function() {
 			// refresh data from default view
 			refreshDefaultView();
 			$("#allFieldsWrap").addClass("hidden");
-			$(miscRaw).closest(".form-group").removeClass("hidden");
+			$(MISC_RAW_EXPERT).closest(".form-group").removeClass("hidden");
 			$(".extraInputs").remove();
 			$("#standardFieldsWrap :input[type=text]").each(function(){
 				$(this).val("");
@@ -627,13 +644,6 @@ $(document).ready(function() {
 			// actually change to default misc view
 			showDefaultMiscView();
 		}
-	});
-
-	/*
-	 * toggle between all fields and required fields
-	 */
-	$("#post\\.resource\\.entrytype").change(function(e) {
-		changeView($("#collapse").data("showAll"));
 	});
 
 	$("#collapse").click(function(e){
