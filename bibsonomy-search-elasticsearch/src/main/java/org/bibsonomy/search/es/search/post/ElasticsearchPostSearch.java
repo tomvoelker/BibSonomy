@@ -385,10 +385,15 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
          * the resulting main query
          */
         if (present(searchTerms)) {
+            final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
             final QueryStringQueryBuilder queryStringQueryBuilder = buildStringQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
-            final MultiMatchQueryBuilder multiMatchQueryBuilder = buildMultiMatchQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
+            mainQuery.should(queryStringQueryBuilder);
 
-            final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryStringQueryBuilder).should(multiMatchQueryBuilder);
+            // No fuzzy multimatch when search query uses quotes for exact match
+            if (!(searchTerms.chars().filter(ch -> ch == '"').count() > 0)) {
+                final MultiMatchQueryBuilder multiMatchQueryBuilder = buildMultiMatchQueryForSearchTerms(searchTerms, this.manager.getPublicFields());
+                mainQuery.should(multiMatchQueryBuilder);
+            }
 
             if (present(loggedInUserName)) {
                 // private field
@@ -396,17 +401,17 @@ public class ElasticsearchPostSearch<R extends Resource> implements ResourceSear
                 final QueryStringQueryBuilder privateFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, this.manager.getPrivateFields());
                 final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 
-                query.should(privateFieldQueryFiltered);
+                mainQuery.should(privateFieldQueryFiltered);
 
                 if (present(usersToQueryForDocuments)) {
                     // document field
                     final QueryStringQueryBuilder docFieldSearchQuery = buildStringQueryForSearchTerms(searchTerms, Sets.asSet(Fields.Publication.ALL_DOCS));
                     // restrict to users that share documents and to the visible posts (group)
                     final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
-                    query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
+                    mainQuery.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
                 }
             }
-            mainQueryBuilder.must(query);
+            mainQueryBuilder.must(mainQuery);
         }
 
         final String titleSearchTerms = postQuery.getTitleSearchTerms();
