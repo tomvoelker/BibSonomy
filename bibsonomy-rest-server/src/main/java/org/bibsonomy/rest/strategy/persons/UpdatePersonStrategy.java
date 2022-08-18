@@ -33,7 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -45,12 +45,12 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class UpdatePersonStrategy extends AbstractUpdateStrategy {
 	private final String personId;
-	private final PersonUpdateOperation operation;
+	private final PersonOperation operation;
 
 	/**
 	 * @param context
 	 */
-	public UpdatePersonStrategy(final Context context, final String personId, final PersonUpdateOperation operation) {
+	public UpdatePersonStrategy(final Context context, final String personId, final PersonOperation operation) {
 		super(context);
 		if (!present(personId)) {
 			throw new IllegalArgumentException("No personId present.");

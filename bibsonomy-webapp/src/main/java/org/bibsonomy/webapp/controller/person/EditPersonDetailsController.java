@@ -33,7 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -71,7 +71,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         }
 
         try {
-            this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_DETAILS);
+            this.logic.updatePerson(person, PersonOperation.UPDATE_DETAILS);
             return success(command, "The person has been successfully updated!");
         } catch (final Exception e) {
             log.error("error while updating person " + updatedPerson.getPersonId(), e);
@@ -101,7 +101,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         // Adding name to person
         try {
             if (person.addName(command.getPersonName())) {
-                this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+                this.logic.updatePerson(person, PersonOperation.UPDATE_NAMES);
                 return success(command, "New name has been added!");
             } else {
                 return error(command, "person.error.nameExists");
@@ -132,7 +132,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
 
         try {
             if (person.removeName(command.getPersonName())) {
-                this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+                this.logic.updatePerson(person, PersonOperation.UPDATE_NAMES);
                 return success(command, "The name has been successfully deleted!");
             } else {
                 return error(command, "person.error.nameNotFound");
@@ -165,7 +165,7 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
         person.setMainName(command.getPersonName());
 
         try {
-            this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+            this.logic.updatePerson(person, PersonOperation.UPDATE_NAMES);
             return success(command, "Main name has been successfully updated!");
         } catch (final Exception e) {
             return error(command, "person.error.fail.mainName");

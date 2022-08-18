@@ -1260,7 +1260,7 @@
 	</bean>
 
 	<bean id="personsPageController" class="org.bibsonomy.webapp.controller.cris.PersonsPageController" scope="request">
-		<property name="logicInterface" ref="logic" />
+		<property name="logic" ref="logic" />
 		<property name="crisCollege" value="${system.cris.college}" />
 	</bean>
 	

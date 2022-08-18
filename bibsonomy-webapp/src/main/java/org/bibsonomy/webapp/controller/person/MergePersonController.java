@@ -39,7 +39,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonMergeFieldConflict;
@@ -72,9 +72,9 @@ public class MergePersonController extends AbstractEditPersonController {
 
         PersonMatch match = this.logic.getPersonMergeRequest(id);
         boolean result = true;
-        if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_ACCEPT) {
+        if (command.getOperation() == PersonOperation.MERGE_ACCEPT) {
             result = this.logic.acceptMerge(match);
-        } else if (command.getUpdateOperation() == PersonUpdateOperation.MERGE_DENIED) {
+        } else if (command.getOperation() == PersonOperation.MERGE_DENIED) {
             this.logic.denyPersonMerge(match);
         }
         jsonResponse.put("success", result);

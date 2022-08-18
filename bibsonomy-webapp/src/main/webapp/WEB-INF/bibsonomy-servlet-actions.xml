@@ -798,9 +798,7 @@
 							<list>
 								<value>personId</value>
 								<value>claimedPerson</value>
-
-								<value>editAction</value>
-								<value>updateOperation</value>
+								<value>operation</value>
 								<value>responseString</value>
 
 								<!-- name fields -->

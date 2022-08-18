@@ -1,5 +1,11 @@
 var resultLimit = 100;
 
+$(document).ready(function() {
+	setupPersonAutocomplete('.typeahead', "search", 'extendedPersonName', function(data) {
+		window.location.pathname = "/person/" + data.personId;
+	});
+});
+
 function setupPersonSearch(inputFieldSelector, buttonSelector) {
 	setupPersonAutocomplete(inputFieldSelector, "search", 'extendedPersonName', function(data) {
 		$(buttonSelector).attr("data-person-name", data.personName);
@@ -25,12 +31,12 @@ function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
 	});
 }
 
-function setupPersonAutocomplete(inputFieldSelector, updateOperation, displayKey, selectionHandler) {
+function setupPersonAutocomplete(inputFieldSelector, operation, displayKey, selectionHandler) {
 	// constructs the suggestion engine
 	var personNames = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: '/editPerson?updateOperation=' + updateOperation + '&selectedName=%QUERY',
+		remote: '/editPerson?operation=' + operation + '&selectedName=%QUERY',
 		wildcard: '%QUERY',
 		rateLimitWait: 800
 	});

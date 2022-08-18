@@ -30,10 +30,10 @@
 package org.bibsonomy.common.enums;
 
 /**
- * Enum that contains all possible update operations for person updates
+ * Enum that contains all possible query/update operations for persons
  * @author mho
  */
-public enum PersonUpdateOperation {
+public enum PersonOperation {
 
 	/** Updates all attributes of a person */
 	UPDATE_ALL,
@@ -83,9 +83,16 @@ public enum PersonUpdateOperation {
 	/** merge conflicts */
 	MERGE_CONFLICTS,
 
-	// TODO: not an actual update
 	/** get merge conflicts */
 	MERGE_GET_CONFLICTS,
 
+	/** search for authors */
+	SEARCH,
+
+	/** search for publications, that are linked to persons */
+	SEARCH_PUB,
+
+	/** search for authors or linked publications */
+	SEARCH_PUB_AUTHOR,
 
 }
