@@ -168,7 +168,7 @@
 		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
-	
+
 	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
 	</bean>
@@ -1260,7 +1260,7 @@
 	</bean>
 
 	<bean id="personsPageController" class="org.bibsonomy.webapp.controller.cris.PersonsPageController" scope="request">
-		<property name="logic" ref="logic" />
+		<property name="logicInterface" ref="logic" />
 		<property name="crisCollege" value="${system.cris.college}" />
 	</bean>
 	
