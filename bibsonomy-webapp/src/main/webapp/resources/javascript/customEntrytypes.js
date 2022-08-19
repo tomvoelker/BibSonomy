@@ -31,7 +31,12 @@ $(function () {
 
     // set selected entrytype
     var selected = entrytypeSelect.data('selected-entrytype');
-    $(entrytypeSelect).val(selected).change();
+    if (!selected) {
+        // If no entrytype given, select first option
+        $(entrytypeSelect).val($(entrytypeSelect).children("option:first").val()).change();
+    } else {
+        $(entrytypeSelect).val(selected).change();
+    }
 
     // on change of select, show description popover
     $(entrytypeSelect).popover({
