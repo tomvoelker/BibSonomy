@@ -57,7 +57,7 @@ public class CRISLinkDatabaseInformationLogic extends AbstractDatabaseManagerWit
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setLast_log_date(logDate);
+			searchIndexSyncState.setLastLogDate(logDate);
 			return searchIndexSyncState;
 		}
 	}

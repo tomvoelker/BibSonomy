@@ -45,6 +45,11 @@
 		WHERE l.content_type = #content_type#
 	</select>
 
+	<select id="getLastRelationLogDateCommunity" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_pub_person lpp
+	</select>
+
 	<!-- get list of all public publication posts -->
 	<select id="getBibTexForCommunityIndex" parameterClass="searchParam" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
 		SELECT bb.*, <include refid="goldStandardOtherFields" />

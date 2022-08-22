@@ -85,13 +85,13 @@
 													<c:set var="firstState" value="${searchIndexInfo.syncState.firstState}" />
 													<c:set var="secondState" value="${searchIndexInfo.syncState.secondState}" />
 													<td><c:out value="${firstState.lastPostContentId}" /></td>
-													<td><c:out value="${firstState.last_log_date}" /></td>
+													<td><c:out value="${firstState.lastLogDate}" /></td>
 													<td><c:out value="${secondState.lastPostContentId}" /></td>
-													<td><c:out value="${secondState.last_log_date}" /></td>
+													<td><c:out value="${secondState.lastLogDate}" /></td>
 												</c:when>
 												<c:otherwise>
-													<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
-													<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
+													<td><c:out value="${searchIndexInfo.syncState.lastTasId}" /></td>
+													<td><c:out value="${searchIndexInfo.syncState.lastLogDate}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
 													<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
 												</c:otherwise>
