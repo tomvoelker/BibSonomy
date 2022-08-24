@@ -452,17 +452,16 @@ public class MailUtils {
 		}
 	}
 
-	public boolean sendUnableToMatchRelationMail(final String title, final String interhash, final String personId) {
+	public boolean sendUnableToMatchRelationMail(final String title, final String interhash, final String personId, final String receivermail) {
 		try {
 			final String postUrl = absoluteURLGenerator.getPublicationUrlByInterHash(interhash);
 			final Object[] messagesParameters = { postUrl, title, personId };
 
-			// TODO check if getting locale in system tag is possible
 			final Locale locale = Locale.ENGLISH;
 			final String messageSubject = messageSource.getMessage("database.exception.systemTag.addRelation.subject", null, locale);
 			final String messageBody = messageSource.getMessage("database.exception.systemTag.addRelation.body", messagesParameters, locale);
 
-			this.sendHTMLMail(new String[]{this.projectEmail}, messageSubject, messageBody, this.projectEmail);
+			this.sendHTMLMail(new String[]{receivermail}, messageSubject, messageBody, receivermail);
 		} catch (final MessagingException e) {
 			log.fatal("Could not send mail to report matching failed: " + e.getMessage());
 			return false;

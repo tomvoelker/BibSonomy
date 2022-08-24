@@ -31,6 +31,7 @@
 package org.bibsonomy.database.systemstags.executable;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import lombok.Setter;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
@@ -50,12 +51,15 @@ import org.bibsonomy.util.MailUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableSystemTag{
 
     private static final boolean toHide = true;
     public static final String NAME = "rel";
 
     private MailUtils mailUtils;
+    private boolean mailingEnabled;
+    private String receiverMail;
 
     @Override
     public <T extends Resource> void performBeforeCreate(Post<T> post, DBSession session) {
@@ -104,7 +108,9 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
                 if (present(matchingAuthorPos)) {
                     if (matchingAuthorPos.size() > 1) {
                         log.debug("unable to automatically match person id to an author, notify by e-mail");
-                        // mailUtils.sendUnableToMatchRelationMail(resource.getTitle(), resource.getInterHash(), personId);
+                        if (this.mailingEnabled && present(this.receiverMail)) {
+                            mailUtils.sendUnableToMatchRelationMail(resource.getTitle(), resource.getInterHash(), personId, this.receiverMail);
+                        }
                     } else {
                         relation.setPersonIndex(matchingAuthorPos.get(0));
                         personDb.addResourceRelation(relation, loggedInUser, session);
@@ -156,7 +162,4 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
         }
     }
 
-    public void setMailUtils(MailUtils mailUtils) {
-        this.mailUtils = mailUtils;
-    }
 }

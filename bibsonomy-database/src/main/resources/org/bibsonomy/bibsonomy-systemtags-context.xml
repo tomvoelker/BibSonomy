@@ -64,6 +64,8 @@
 
 	<bean id="addRelationTag" class="org.bibsonomy.database.systemstags.executable.AddRelationTag">
 		<property name="mailUtils" ref="mailUtils" />
+		<property name="mailingEnabled" value="${systag.addRelation.mailing.enabled}" />
+		<property name="receiverMail" value="${systag.addRelation.mailing.mail}" />
 	</bean>
 	
 	<!--+
