@@ -63,9 +63,6 @@ public class PersonPageCommand extends BaseCommand {
 	/** personId of the person requested */
 	private String requestedPersonId;
 
-	/** if true only persons of the configured cris system are displayed */
-	private boolean limitResultsToCRISCollege;
-
 	private List<Project> projects;
 	private boolean showProjects;
 	

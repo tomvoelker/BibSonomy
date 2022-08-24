@@ -210,9 +210,6 @@ public class EditRelationController extends AbstractEditPersonController {
     protected View searchAction(EditPersonCommand command) {
         final PersonQuery query = new PersonQuery(command.getSelectedName());
         query.setUsePrefixMatch(true);
-        if (command.isLimitResultsToCRISCollege() && present(this.crisCollege)) {
-            query.setCollege(this.crisCollege);
-        }
 
         /*
          * query the persons and get the publication that should be displayed alongside the person
