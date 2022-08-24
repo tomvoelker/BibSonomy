@@ -107,10 +107,10 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		final DefaultSearchIndexSyncState oldNormalSearchIndexState = oldState.getSecondState();
 		final DefaultSearchIndexSyncState oldCommunitySearchIndexState = oldState.getFirstState();
 
-		final Integer communityPostLastContentId = oldCommunitySearchIndexState.getLast_tas_id();
-		final Integer postLastContentId = oldNormalSearchIndexState.getLast_tas_id();
-		final Date communityPostLastLogDate = oldCommunitySearchIndexState.getLast_log_date();
-		final Date postLastLogDate = oldNormalSearchIndexState.getLast_log_date();
+		final Integer communityPostLastContentId = oldCommunitySearchIndexState.getLastTasId();
+		final Integer postLastContentId = oldNormalSearchIndexState.getLastTasId();
+		final Date communityPostLastLogDate = oldCommunitySearchIndexState.getLastLogDate();
+		final Date postLastLogDate = oldNormalSearchIndexState.getLastLogDate();
 
 		final SearchIndexDualSyncState targetState = this.databaseInformationLogic.getDbState();
 
@@ -219,12 +219,12 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		/*
 		 * remove deleted posts
 		 */
-		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLast_log_date(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLastLogDate(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
 
 		/*
 		 * now add new posts
 		 */
-		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllNewPosts(oldNormalSearchIndexState.getLast_tas_id(), limit, offset), () -> UPDATE_ALL_USERS_ADD_SCRIPT);
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllNewPosts(oldNormalSearchIndexState.getLastTasId(), limit, offset), () -> UPDATE_ALL_USERS_ADD_SCRIPT);
 	}
 
 	@FunctionalInterface

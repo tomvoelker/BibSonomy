@@ -155,12 +155,12 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 		/*
 		 * add new resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(communitySearchIndexState.getLastPersonChangeId(), communitySearchIndexState.getLastPersonLogDate(), limit, offset));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(communitySearchIndexState.getLastPersonChangeId(), communitySearchIndexState.getLastRelationLogDate(), limit, offset));
 
 		/*
 		 * remove resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(communitySearchIndexState.getLastPersonLogDate()));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(communitySearchIndexState.getLastRelationLogDate()));
 		
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}

@@ -211,6 +211,10 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		final String markdownFile = this.getMarkdownLocation(language, helpPage);
 		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), StringUtils.CHARSET_UTF_8))) {
 			final String text = StringUtils.getStringFromReader(inputReader);
+
+			if (text.contains("${project.theme == \"" + this.helpTheme + "\"}")) {
+				parser.setReplacements(HelpUtils.buildReplacementMap(this.projectName, this.helpTheme, this.helpTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail));
+			}
 			
 			final Matcher matcher = HelpSearch.REDIRECT_PATTERN.matcher(text);
 			if (matcher.find()) {

@@ -52,11 +52,11 @@ public class SearchIndexDualSyncStateConverter implements Converter<SearchIndexD
 	public Map<String, Object> convert(SearchIndexDualSyncState source) {
 		final Map<String, Object> converted = new HashMap<>();
 
-		final Map<String, Object> normalState = this.converter.convert(source.getSecondState());
-		converted.put(FIRST_STATE, normalState);
-
 		final Map<String, Object> communityState = this.converter.convert(source.getFirstState());
-		converted.put(SECOND_STATE, communityState);
+		converted.put(FIRST_STATE, communityState);
+
+		final Map<String, Object> normalState = this.converter.convert(source.getSecondState());
+		converted.put(SECOND_STATE, normalState);
 
 		converted.put(DefaultSearchIndexSyncStateConverter.MAPPING_VERSION, source.getMappingVersion());
 
@@ -67,13 +67,13 @@ public class SearchIndexDualSyncStateConverter implements Converter<SearchIndexD
 	public SearchIndexDualSyncState convert(Map<String, Object> source, Object options) {
 		final SearchIndexDualSyncState state = new SearchIndexDualSyncState();
 
-		final Map<String, Object> normalSource = (Map<String, Object>) source.get(FIRST_STATE);
+		final Map<String, Object> communitySource = (Map<String, Object>) source.get(FIRST_STATE);
+		final DefaultSearchIndexSyncState commnunityState = this.converter.convert(communitySource, null);
+		state.setFirstState(commnunityState);
+
+		final Map<String, Object> normalSource = (Map<String, Object>) source.get(SECOND_STATE);
 		final DefaultSearchIndexSyncState normalState = this.converter.convert(normalSource, null);
 		state.setSecondState(normalState);
-
-		final Map<String, Object> communitySource = (Map<String, Object>) source.get(SECOND_STATE);
-		final DefaultSearchIndexSyncState commnuityState = this.converter.convert(communitySource, null);
-		state.setFirstState(commnuityState);
 
 		state.setMappingVersion((String) source.get(DefaultSearchIndexSyncStateConverter.MAPPING_VERSION));
 
