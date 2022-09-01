@@ -64,8 +64,8 @@ public class CommunityPostDatabaseInformationLogic<R extends Resource> extends R
 	@Override
 	public SearchIndexDualSyncState getDbState() {
 		final SearchIndexDualSyncState searchIndexDualSyncState = new SearchIndexDualSyncState();
-		searchIndexDualSyncState.setSecondState(this.normalPostDatabaseInformationLogic.getDbState());
 		searchIndexDualSyncState.setFirstState(this.queryForCommunitySearchIndexState());
+		searchIndexDualSyncState.setSecondState(this.normalPostDatabaseInformationLogic.getDbState());
 		return searchIndexDualSyncState;
 	}
 
@@ -75,20 +75,26 @@ public class CommunityPostDatabaseInformationLogic<R extends Resource> extends R
 			final ConstantID contentType = this.getConstantID();
 			final int contentTypeId = contentType.getId();
 
-			final Date lastLogDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);
-			searchIndexSyncState.setLast_log_date(lastLogDate);
-
 			final Integer lastContentId = this.queryForObject("getLastContentIdCommunity", contentTypeId, Integer.class, session);
-			searchIndexSyncState.setLast_tas_id(lastContentId);
+			searchIndexSyncState.setLastTasId(lastContentId);
 
 			final Integer lastPersonChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
 			searchIndexSyncState.setLastPersonChangeId(lastPersonChangeId);
+
+			final Date lastLogDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);
+			searchIndexSyncState.setLastLogDate(lastLogDate);
 
 			Date lastPersonLogDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
 			if (!present(lastPersonLogDate)) {
 				lastPersonLogDate = new Date();
 			}
 			searchIndexSyncState.setLastPersonLogDate(lastPersonLogDate);
+
+			Date lastRelationLogDate = this.queryForObject("getLastRelationLogDateCommunity", Date.class, session);
+			if (!present(lastRelationLogDate)) {
+				lastRelationLogDate = new Date();
+			}
+			searchIndexSyncState.setLastRelationLogDate(lastRelationLogDate);
 			return searchIndexSyncState;
 		}
 	}

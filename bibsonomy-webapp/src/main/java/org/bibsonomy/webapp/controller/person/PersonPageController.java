@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
@@ -92,191 +91,187 @@ import org.springframework.validation.Errors;
 @Setter
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 
-	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
-	public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
-	private static final int DEFAULT_NO_OF_ENTRYTYPES = 25;
+    public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
+    public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
+    private static final int DEFAULT_NO_OF_ENTRYTYPES = 25;
 
-	private Errors errors;
-	private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
+    private Errors errors;
+    private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
-	private boolean crisEnabled;
-	private List<String> hideAdditionalKeysList;
+    private boolean crisEnabled;
+    private List<String> hideAdditionalKeysList;
 
-	// TMP TEST
-	private AdhocRenderer renderer;
-	private CSLFilesManager cslFilesManager;
-
-
-	@Override
-	public View workOn(PersonPageCommand command) {
-		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
-		final String personId = command.getRequestedPersonId();
-		if (!present(personId)) {
-			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
-		}
-
-		/*
-		 * get the person; if person with the requested id was merged with another person, this method
-		 * throws a ObjectMovedException and the wrapper will render the redirect
-		 */
-		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
-		if (!present(person)) {
-			return Views.ERROR404;
-		}
-
-		command.setPerson(person);
-
-		// set alternative names
-		List<PersonName> alternativeNames = new ArrayList<>();
-		for (PersonName name : person.getNames()) {
-			if(!name.isMain()) {
-				alternativeNames.add(name);
-			}
-		}
-		command.setAlternativeNames(alternativeNames);
-
-		// delete additional keys that should not be visible, except for admins
-		if (loginUser.getRole() != Role.ADMIN) {
-			person.setAdditionalKeys(person.getAdditionalKeys().stream()
-					.filter(additionalKey -> !hideAdditionalKeysList.contains(additionalKey.getKeyName()))
-					.collect(Collectors.toList()));
-		}
-
-		// set thesis relations
-		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(personId)
-				.withPosts(true)
-				.withPersonsOfPosts(true)
-				.onlyTheses(true)
-				.groupByInterhash(true)
-				.orderBy(PersonResourceRelationOrder.PublicationYear)
-				.fromTo(0, Integer.MAX_VALUE);
-
-		final List<ResourcePersonRelation> thesesRelations = logic.getResourceRelations(queryBuilder.build());
-		final List<ResourcePersonRelation> authorEditorRelations = new ArrayList<>();
-		final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
-
-		for (ResourcePersonRelation thesis : thesesRelations) {
-			final boolean isAuthorEditor = PUBLICATION_RELATED_RELATION_TYPES.contains(thesis.getRelationType());
-			if (isAuthorEditor) {
-				authorEditorRelations.add(thesis);
-			} else {
-				advisorRelations.add(thesis);
-			}
-		}
-
-		command.setThesis(authorEditorRelations);
-		command.setAdvisedThesis(advisorRelations);
-
-		// extract user settings
-		// Get the linked user's person posts style settings
-		final User user = this.logic.getUserDetails(person.getUser());
-		if (present(user)) {
-			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
-			final String personPostsLayout = user.getSettings().getPersonPostsLayout();
-			command.setPersonPostsStyle(personPostsStyle);
-			command.setPersonPostsLayout(personPostsLayout);
-		}
-
-		switch(command.getPersonPostsStyle()) {
-			case MYOWN:
-				this.setMyOwnPosts(command);
-				break;
-			case GOLDSTANDARD:
-			default:
-				this.setGoldStandards(command);
-				break;
-		}
-
-		return Views.PERSON_SHOW;
-	}
-
-	private void setGoldStandards(PersonPageCommand command) {
-		// build query for person ID to aggregate for counts
-		final PostQueryBuilder queryBuilder = new PostQueryBuilder()
-				.setGrouping(GroupingEntity.PERSON)
-				.setGroupingName(command.getPerson().getPersonId());
-
-		if (!crisEnabled) {
-			// exclude theses, when CRIS disabled
-			queryBuilder.search(NO_THESIS_SEARCH);
-		}
-
-		final PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(queryBuilder.createPostQuery(GoldStandardPublication.class));
-		final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) this.logic.getPosts(postsQuery);
-		command.setTotalCount(posts.getTotalCount());
-
-		DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
-				(FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply(ENTRYTYPE_FIELD_NAME));
-		distinctFieldQuery.setPostQuery(postsQuery);
-		distinctFieldQuery.setSize(DEFAULT_NO_OF_ENTRYTYPES);
-
-		command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
-	}
-
-	private void setMyOwnPosts(PersonPageCommand command) {
-		// build query for 'myown' posts to aggregate for counts
-		final PostQueryBuilder queryBuilder = new PostQueryBuilder()
-				.setGrouping(GroupingEntity.USER)
-				.setGroupingName(command.getPerson().getUser());
-
-		if (!crisEnabled) {
-			queryBuilder.setTags(Collections.singletonList("myown"));
-			// exclude theses, when CRIS disabled
-			queryBuilder.search(NO_THESIS_SEARCH);
-		} else {
-			// has to be set as search and not tag here to avoid the tag chain element
-			queryBuilder.search("tags:myown");
-		}
+    // TMP TEST
+    private AdhocRenderer renderer;
+    private CSLFilesManager cslFilesManager;
 
 
-		final PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>(queryBuilder.createPostQuery(BibTex.class));
-		final ResultList<Post<BibTex>> posts = (ResultList<Post<BibTex>>) this.logic.getPosts(postsQuery);
-		command.setTotalCount(posts.getTotalCount());
+    @Override
+    public View workOn(PersonPageCommand command) {
+        final String personId = command.getRequestedPersonId();
+        if (!present(personId)) {
+            throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
+        }
 
-		DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
-				(FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(ENTRYTYPE_FIELD_NAME));
-		distinctFieldQuery.setPostQuery(postsQuery);
-		distinctFieldQuery.setSize(DEFAULT_NO_OF_ENTRYTYPES);
+        /*
+         * get the person; if person with the requested id was merged with another person, this method
+         * throws a ObjectMovedException and the wrapper will render the redirect
+         */
+        final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
+        if (!present(person)) {
+            return Views.ERROR404;
+        }
 
-		command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
-	}
+        command.setPerson(person);
 
-	/**
-	 * Generate a list of entrytype filter elements of distinct field query.
-	 *
-	 * @param command the person page command
-	 * @return
-	 */
-	private List<SearchFilterElement> generateEntrytypeFilters(PersonPageCommand command, DistinctFieldQuery<? extends BibTex, ?> distinctFieldQuery) {
-		final Set<?> distinctFieldCounts = this.logic.getMetaData(command.getContext().getLoginUser(), distinctFieldQuery);
+        // set alternative names
+        List<PersonName> alternativeNames = new ArrayList<>();
+        for (PersonName name : person.getNames()) {
+            if (!name.isMain()) {
+                alternativeNames.add(name);
+            }
+        }
+        command.setAlternativeNames(alternativeNames);
 
-		List<SearchFilterElement> filters = new ArrayList<>();
-		for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {
-			SearchFilterElement filterElement = new SearchFilterElement(filter.getFirst(), filter.getSecond());
-			filterElement.setField(ENTRYTYPE_FIELD_NAME);
-			filterElement.setMessageKey(String.format("post.resource.entrytype.%s.title", filterElement.getName()));
-			filters.add(filterElement);
-		}
-		Collections.sort(filters);
+        // delete additional keys that should not be visible for EVERYONE including admins
+        person.setAdditionalKeys(person.getAdditionalKeys().stream()
+                .filter(additionalKey -> !hideAdditionalKeysList.contains(additionalKey.getKeyName()))
+                .collect(Collectors.toList()));
 
-		return filters;
-	}
+        // set thesis relations
+        final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+                .byPersonId(personId)
+                .withPosts(true)
+                .withPersonsOfPosts(true)
+                .onlyTheses(true)
+                .groupByInterhash(true)
+                .orderBy(PersonResourceRelationOrder.PublicationYear)
+                .fromTo(0, Integer.MAX_VALUE);
 
-	@Override
-	public PersonPageCommand instantiateCommand() {
-		return new PersonPageCommand();
-	}
+        final List<ResourcePersonRelation> thesesRelations = logic.getResourceRelations(queryBuilder.build());
+        final List<ResourcePersonRelation> authorEditorRelations = new ArrayList<>();
+        final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 
-	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
+        for (ResourcePersonRelation thesis : thesesRelations) {
+            final boolean isAuthorEditor = PUBLICATION_RELATED_RELATION_TYPES.contains(thesis.getRelationType());
+            if (isAuthorEditor) {
+                authorEditorRelations.add(thesis);
+            } else {
+                advisorRelations.add(thesis);
+            }
+        }
 
-	@Override
-	public void setErrors(Errors errors) {
-		this.errors = errors;
-	}
+        command.setThesis(authorEditorRelations);
+        command.setAdvisedThesis(advisorRelations);
+
+        // extract user settings
+        // Get the linked user's person posts style settings
+        final User user = this.logic.getUserDetails(person.getUser());
+        if (present(user)) {
+            final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+            final String personPostsLayout = user.getSettings().getPersonPostsLayout();
+            command.setPersonPostsStyle(personPostsStyle);
+            command.setPersonPostsLayout(personPostsLayout);
+        }
+
+        switch (command.getPersonPostsStyle()) {
+            case MYOWN:
+                this.setMyOwnPosts(command);
+                break;
+            case GOLDSTANDARD:
+            default:
+                this.setGoldStandards(command);
+                break;
+        }
+
+        return Views.PERSON_SHOW;
+    }
+
+    private void setGoldStandards(PersonPageCommand command) {
+        // build query for person ID to aggregate for counts
+        final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+                .setGrouping(GroupingEntity.PERSON)
+                .setGroupingName(command.getPerson().getPersonId());
+
+        if (!crisEnabled) {
+            // exclude theses, when CRIS disabled
+            queryBuilder.search(NO_THESIS_SEARCH);
+        }
+
+        final PostSearchQuery<GoldStandardPublication> postsQuery = new PostSearchQuery<>(queryBuilder.createPostQuery(GoldStandardPublication.class));
+        final ResultList<Post<GoldStandardPublication>> posts = (ResultList<Post<GoldStandardPublication>>) this.logic.getPosts(postsQuery);
+        command.setTotalCount(posts.getTotalCount());
+
+        DistinctFieldQuery<GoldStandardPublication, ?> distinctFieldQuery = new DistinctFieldQuery<>(GoldStandardPublication.class,
+                (FieldDescriptor<GoldStandardPublication, ?>) mappers.get(GoldStandardPublication.class).apply(ENTRYTYPE_FIELD_NAME));
+        distinctFieldQuery.setPostQuery(postsQuery);
+        distinctFieldQuery.setSize(DEFAULT_NO_OF_ENTRYTYPES);
+
+        command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
+    }
+
+    private void setMyOwnPosts(PersonPageCommand command) {
+        // build query for 'myown' posts to aggregate for counts
+        final PostQueryBuilder queryBuilder = new PostQueryBuilder()
+                .setGrouping(GroupingEntity.USER)
+                .setGroupingName(command.getPerson().getUser());
+
+        if (!crisEnabled) {
+            queryBuilder.setTags(Collections.singletonList("myown"));
+            // exclude theses, when CRIS disabled
+            queryBuilder.search(NO_THESIS_SEARCH);
+        } else {
+            // has to be set as search and not tag here to avoid the tag chain element
+            queryBuilder.search("tags:myown");
+        }
+
+
+        final PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>(queryBuilder.createPostQuery(BibTex.class));
+        final ResultList<Post<BibTex>> posts = (ResultList<Post<BibTex>>) this.logic.getPosts(postsQuery);
+        command.setTotalCount(posts.getTotalCount());
+
+        DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class,
+                (FieldDescriptor<BibTex, ?>) mappers.get(BibTex.class).apply(ENTRYTYPE_FIELD_NAME));
+        distinctFieldQuery.setPostQuery(postsQuery);
+        distinctFieldQuery.setSize(DEFAULT_NO_OF_ENTRYTYPES);
+
+        command.setEntrytypeFilters(generateEntrytypeFilters(command, distinctFieldQuery));
+    }
+
+    /**
+     * Generate a list of entrytype filter elements of distinct field query.
+     *
+     * @param command the person page command
+     * @return
+     */
+    private List<SearchFilterElement> generateEntrytypeFilters(PersonPageCommand command, DistinctFieldQuery<? extends BibTex, ?> distinctFieldQuery) {
+        final Set<?> distinctFieldCounts = this.logic.getMetaData(command.getContext().getLoginUser(), distinctFieldQuery);
+
+        List<SearchFilterElement> filters = new ArrayList<>();
+        for (Pair<String, Long> filter : (Set<Pair<String, Long>>) distinctFieldCounts) {
+            SearchFilterElement filterElement = new SearchFilterElement(filter.getFirst(), filter.getSecond());
+            filterElement.setField(ENTRYTYPE_FIELD_NAME);
+            filterElement.setMessageKey(String.format("post.resource.entrytype.%s.title", filterElement.getName()));
+            filters.add(filterElement);
+        }
+        Collections.sort(filters);
+
+        return filters;
+    }
+
+    @Override
+    public PersonPageCommand instantiateCommand() {
+        return new PersonPageCommand();
+    }
+
+    @Override
+    public Errors getErrors() {
+        return this.errors;
+    }
+
+    @Override
+    public void setErrors(Errors errors) {
+        this.errors = errors;
+    }
 
 }

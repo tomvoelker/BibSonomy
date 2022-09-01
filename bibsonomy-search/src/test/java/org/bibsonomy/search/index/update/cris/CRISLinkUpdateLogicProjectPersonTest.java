@@ -43,6 +43,7 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;

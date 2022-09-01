@@ -33,7 +33,7 @@
 					<p class="lead"><c:out value="${desc}" /></p>
 					
 					<form:form cssClass="form-horizontal" role="form" method="POST" action="/editBookmark">
-						<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading" />
+						<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="https://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading" />
 						<div class="form-group">
 							<div class="col-md-offset-2 col-md-10">
 								<fmt:message key="post.resource.post" var="post_bookmark" scope="request"/>
