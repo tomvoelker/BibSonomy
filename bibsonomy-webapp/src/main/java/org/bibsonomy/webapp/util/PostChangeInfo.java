@@ -29,115 +29,35 @@
  */
 package org.bibsonomy.webapp.util;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Contains information about changed posts.
  *
  * @author niebler
  */
+@Getter
+@Setter
 public class PostChangeInfo {
-	private boolean checked;
 	
 	// FIXME: should be of type Set<Tag>
+	/** the old tags before the post changes */
 	private String oldTags;
 	// FIXME: should be of type Set<Tag>
+	/** the new tags after the post changes */
 	private String newTags;
 
+	/** flag, if posted has been checked/selected */
+	private boolean checked;
+
+	/** flag, if the post should be normalized */
 	private boolean normalize;
 
+	/** flag, if the visibility of the post should be updated */
 	private boolean updateVisibility;
 
+	/** flag, if the post should be deleted*/
 	private boolean delete;
 
-	/**
-	 * @return the marked
-	 */
-	public boolean isChecked() {
-		return this.checked;
-	}
-
-	/**
-	 * @param marked
-	 *            the marked to set
-	 */
-	public void setChecked(final boolean checked) {
-		this.checked = checked;
-	}
-
-	/**
-	 * @return the oldTags
-	 */
-	public String getOldTags() {
-		return this.oldTags;
-	}
-
-	/**
-	 * @param oldTags
-	 *            the oldTags to set
-	 */
-	public void setOldTags(final String oldTags) {
-		this.oldTags = oldTags;
-	}
-
-	/**
-	 * @return the newTags
-	 */
-	public String getNewTags() {
-		return this.newTags;
-	}
-
-	/**
-	 * @param newTags
-	 *            the newTags to set
-	 */
-	public void setNewTags(final String newTags) {
-		this.newTags = newTags;
-	}
-
-	/**
-	 *
-	 * @return if the post should be normalized
-	 */
-	public boolean isNormalize() {
-		return normalize;
-	}
-
-	/**
-	 *
-	 * @param normalize the info if the post should be normalized
-	 */
-	public void setNormalize(boolean normalize) {
-		this.normalize = normalize;
-	}
-
-	/**
-	 *
-	 * @return if the visibility of the post should be updated
-	 */
-	public boolean isUpdateVisibility() {
-		return updateVisibility;
-	}
-
-	/**
-	 *
-	 * @param updateVisibility the info if the visibility of the post should be updated
-	 */
-	public void setUpdateVisibility(boolean updateVisibility) {
-		this.updateVisibility = updateVisibility;
-	}
-
-	/**
-	 *
-	 * @return if the post should be deleted
-	 */
-	public boolean isDelete() {
-		return delete;
-	}
-
-	/**
-	 *
-	 * @param delete the info if the post should be deleted
-	 */
-	public void setDelete(boolean delete) {
-		this.delete = delete;
-	}
 }
