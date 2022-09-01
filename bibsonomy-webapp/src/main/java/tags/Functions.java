@@ -1056,4 +1056,15 @@ public class Functions {
         }
         return result;
     }
+
+    /**
+     * Check if a sent tag to a certain user is in a set of tags
+     * @param tags
+     * @param user
+     * @return true if sent tag for user is in the set of tags, otherwise false
+     */
+    public static boolean containsSentTag(Set<Tag> tags, String user) {
+        String sentTag = "sent:" + user;
+        return TagUtils.containsTag(tags, sentTag);
+    }
 }

@@ -468,6 +468,12 @@
 	<function>
 		<name>filterGroups</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>java.util.List filterGroups(java.util.List,boolean)</function-signature>
+		<function-signature>java.util.List filterGroups(java.util.List, boolean)</function-signature>
+	</function>
+
+	<function>
+		<name>containsSentTag</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>boolean containsSentTag(java.util.Set, java.lang.String)</function-signature>
 	</function>
 </taglib>
