@@ -31,9 +31,7 @@
 		<jsp:attribute name="content">
 			<div id="post-publication" class="row">
 				<div class="col-sm-12">
-					<div class="content-header">
-						<h1><fmt:message key="publication.import.title"/></h1>
-					</div>
+					<h1 class="content-heading"><fmt:message key="publication.import.title"/></h1>
 					
 					<errors:global />
 					
@@ -67,7 +65,7 @@
 								<fieldset>
 									<batch:importContent	resourcetype="bibtex"
 															listView="${command.bibtex}"
-															otherPostsUrlPrefix="bla" 
+															otherPostsUrlPrefix=""
 															listViewStartParamName="bibtex.start"
 															postsErrorMessages="${command.postsErrorList}"
 															directEdit="${false}"

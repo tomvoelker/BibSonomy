@@ -55,10 +55,10 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					<fmt:message key="batchedit.editTags.heading"/>
-					<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
+					<span class="badge" style="vertical-align: middle; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
 					<span class="pull-right">
 						<c:if test="${isImport and resourcetype eq 'bibtex'}">
-							<button type="button" style="vertical-align: middle; margin-top: -0.5em; margin-right: 1em" class="btn btn-success btn-sm" id="addMyOwnTagButton"><fmt:message key="batchedit.editTags.addMyOwn"/></button>
+							<button type="button" style="vertical-align: middle; margin-right: 1em" class="btn btn-success btn-sm" id="addMyOwnTagButton"><fmt:message key="batchedit.editTags.addMyOwn"/></button>
 						</c:if>
 						<span class="fa fa-question-circle help-popover" data-toggle="tooltip"
 							  data-placement="top" title="${editTagsHelp}"><!-- KEEP ME! --></span>
@@ -90,11 +90,12 @@
 							<input type="checkbox" id="checkboxVisibility"
 								   style="margin-right:2px"/>
 							<fmt:message key="batchedit.updateVisibility.heading.edit"/>
-							<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="visibilityCountBadge"><!-- KEEP ME! --></span>
+							<span class="badge" style="vertical-align: middle; margin-left: 1em" id="visibilityCountBadge"><!-- KEEP ME! --></span>
 						</c:otherwise>
 					</c:choose>
-					<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
-						  data-placement="top" title="${updateVisibilityHelp}"><!-- KEEP ME! --></span>
+					<span class="pull-right">
+						<span class="fa fa-question-circle help-popover" data-toggle="tooltip" data-placement="top" title="${updateVisibilityHelp}"><!-- KEEP ME! --></span>
+					</span>
 				</h3>
 			</div>
 			<div class="panel-body" id="visibilitySelection">
@@ -116,9 +117,10 @@
 						<input type="checkbox" id="checkboxNormalize"
 							   style="margin-right:2px"/>
 						<fmt:message key="batchedit.normalize.heading"/>
-						<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="normalizeCountBadge"><!-- KEEP ME! --></span>
-						<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
-							  data-placement="top" title="${normalizePostsHelp}"><!-- KEEP ME! --></span>
+						<span class="badge" style="vertical-align: middle; margin-left: 1em" id="normalizeCountBadge"><!-- KEEP ME! --></span>
+						<span class="pull-right">
+							<span class="fa fa-question-circle help-popover" data-toggle="tooltip" data-placement="top" title="${normalizePostsHelp}"><!-- KEEP ME! --></span>
+						</span>
 					</h3>
 				</div>
 			</div>
@@ -131,9 +133,10 @@
 						<input type="checkbox" id="checkboxDelete"
 							   style="margin-right:2px"/>
 						<fmt:message key="batchedit.delete.heading"/>
-						<span class="badge" style="vertical-align: middle; margin-top: -0.5em; margin-left: 1em" id="deleteCountBadge"><!-- KEEP ME! --></span>
-						<span class="fa fa-question-circle help-popover pull-right" data-toggle="tooltip"
-							  data-placement="top" title="${deletePostsHelp}"><!-- KEEP ME! --></span>
+						<span class="badge" style="vertical-align: middle; margin-left: 1em" id="deleteCountBadge"><!-- KEEP ME! --></span>
+						<span class="pull-right">
+							<span class="fa fa-question-circle help-popover" data-toggle="tooltip" data-placement="top" title="${deletePostsHelp}"><!-- KEEP ME! --></span>
+						</span>
 					</h3>
 				</div>
 			</div>

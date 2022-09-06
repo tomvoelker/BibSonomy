@@ -59,7 +59,7 @@
 	<!--=======================-->
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
-	<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
+	<form id="batchedit" action="/batchEdit" class="form-horizontal" method="post">
 		<!-- the following variables are defined to communicate with .js file -->
 		<input type="hidden" name="action"/>
 		<input type="hidden" name="updateExistingPost" value="${updateExistingPost}"/>

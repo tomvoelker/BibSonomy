@@ -27,7 +27,13 @@
 	<!-- page title -->
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
-	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}" noSidebar="true">
+	<layout:paneLayout requPath="${requPath}"
+					   command="${command}"
+					   pageTitle="${pageTitle}"
+					   activeTab="my"
+					   headerMessageKey="batchedit.info"
+					   showPageOptions="${true}"
+					   noSidebar="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="post.meta.edit" />
 		</jsp:attribute>
