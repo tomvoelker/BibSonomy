@@ -59,7 +59,6 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 	 */
 	@Override
 	public boolean hasArguments() {
-		// TODO check, why always true
 		return true;
 	}
 
