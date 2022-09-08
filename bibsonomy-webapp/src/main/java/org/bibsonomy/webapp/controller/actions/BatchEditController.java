@@ -113,12 +113,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	/*
 	 * TODO: use enum for this
 	 */
-	private static final Integer IGNORE_ACTION = Integer.valueOf(0);
-	private static final Integer ADD_TAGS_TO_ALL_POSTS_ACTION = Integer.valueOf(1);
-	private static final Integer UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = Integer.valueOf(2);
-	private static final Integer NORMALIZE_ACTION = Integer.valueOf(3);
-	private static final Integer DELETE_ACTION = Integer.valueOf(4);
-	private static final Integer UPDATE_VIEWABLE_ACTION = Integer.valueOf(5);
+	private static final Integer IGNORE_ACTION = 0;
+	private static final Integer ADD_TAGS_TO_ALL_POSTS_ACTION = 1;
+	private static final Integer UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = 2;
+	private static final Integer NORMALIZE_ACTION = 3;
+	private static final Integer DELETE_ACTION = 4;
+	private static final Integer UPDATE_VIEWABLE_ACTION = 5;
 
 	/**
 	 *
@@ -539,7 +539,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	private static Set<Tag> getTagsCopy(final Set<Tag> tags) {
-		final Set<Tag> tagsCopy = new TreeSet<Tag>();
+		final Set<Tag> tagsCopy = new TreeSet<>();
 		for (final Tag tag : tags) {
 			tagsCopy.add(new Tag(tag));
 		}
