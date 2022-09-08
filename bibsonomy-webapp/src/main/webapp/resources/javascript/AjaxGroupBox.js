@@ -8,14 +8,16 @@ var OTHER_GROUPING = 'other';
 var FRIENDS_GROUP_NAME = 'friends';
 
 
-$(document).ready(function () {	
-	
+$(document).ready(function () {
+
 	// TODO: move and use in post edit views
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).change(onAbstractGroupingClick);
 	$.each($('.abstractGroupingGroup'), function(index, box) {
 		toggleGroupBox(box);
 	});
-	
+
+	//Simple solution to activate the group select list in case the button was prechecked
+	toggleGroupBox($(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR+ ":checked"));
 });
 
 

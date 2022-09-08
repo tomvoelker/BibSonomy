@@ -38,6 +38,7 @@ import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -47,6 +48,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
@@ -1055,5 +1057,22 @@ public class Functions {
             }
         }
         return result;
+    }
+
+    /**
+     * Generates the Set needed by ajaxGroupBox to preselect an option
+     * @param abstractGrouping distinguishes between public, private and other
+     * @param groups stores the selected group(s) if it's not public or private.
+     * @return the Set needed by ajaxGroupBox to preselect an option
+     */
+    public static Set<Group> selectedGroups(String abstractGrouping, List<String> groups){
+        if(abstractGrouping.equals("public"))
+            return new HashSet<>(Collections.singleton(GroupUtils.buildPublicGroup()));
+        if(abstractGrouping.equals("private"))
+            return new HashSet<>(Collections.singleton(GroupUtils.buildPrivateGroup()));
+        if(groups.contains("friends"))
+            return new HashSet<>(Collections.singleton(GroupUtils.buildFriendsGroup()));
+        //else
+        return groups.stream().map(Group::new).collect(Collectors.toSet());
     }
 }

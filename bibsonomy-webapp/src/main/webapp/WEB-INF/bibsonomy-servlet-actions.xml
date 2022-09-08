@@ -542,11 +542,15 @@
 								<value>posts[*].checked</value>
 								<value>posts[*].newTags</value>
 								<value>posts[*].oldTags</value>
+								<value>posts[*].normalize</value>
+								<value>posts[*].updateVisibility</value>
+								<value>posts[*].delete</value>
 								<value>action</value>
 								<value>referer</value>
 								<!-- retaining postPublication options -->
 								<value>updateExistingPost</value>
 								<value>overwrite</value>
+								<value>directEdit</value>
 								
 								<value>resourcetype</value>
 								<value>format</value>

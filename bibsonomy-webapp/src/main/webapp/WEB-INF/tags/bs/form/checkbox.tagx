@@ -25,6 +25,7 @@
 	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
 	<jsp:directive.attribute name="disabled" type="java.lang.Boolean" required="false" description="element disabled"/>
 	<jsp:directive.attribute name="classAtt" type="java.lang.String" required="false" description="classes for the checkbox"/>
+	<jsp:directive.attribute name="checked" type="java.lang.Boolean" required="false" description="checkbox pre-checked"/>
 
 	<c:if test="${ empty inputColSpan or inputColSpan lt 2}">
 		<c:set var="inputColSpan" value="10" />
@@ -65,6 +66,7 @@
 								tabindex="${tabindex}"
 								value="${false}"
 								disabled="${disabled}"
+								checked="${checked}"
 							/>
 						</c:when>
 						<c:otherwise>
@@ -74,6 +76,7 @@
 								tabindex="${tabindex}"
 								value="${false}"
 								disabled="${disabled}"
+								checked="${checked}"
 							/>
 						</c:otherwise>
 					</c:choose>

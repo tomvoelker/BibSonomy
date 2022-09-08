@@ -113,12 +113,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	/*
 	 * TODO: use enum for this
 	 */
-	private static final Integer IGNORE_ACTION = Integer.valueOf(0);
-	private static final Integer ADD_TAGS_TO_ALL_POSTS_ACTION = Integer.valueOf(1);
-	private static final Integer UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = Integer.valueOf(2);
-	private static final Integer NORMALIZE_ACTION = Integer.valueOf(3);
-	private static final Integer DELETE_ACTION = Integer.valueOf(4);
-	private static final Integer UPDATE_VIEWABLE_ACTION = Integer.valueOf(5);
+	private static final Integer IGNORE_ACTION = 0;
+	private static final Integer ADD_TAGS_TO_ALL_POSTS_ACTION = 1;
+	private static final Integer UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = 2;
+	private static final Integer NORMALIZE_ACTION = 3;
+	private static final Integer DELETE_ACTION = 4;
+	private static final Integer UPDATE_VIEWABLE_ACTION = 5;
 
 	/**
 	 *
@@ -155,11 +155,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	}
 
 	/**
-	 * This controller is called in two cases:
-	 * 1. DirectEdit: When user clicks the gear button and selects 'edit own
-	 * entries'
-	 * 2. Import: When user imports several bibTexes through: Add post-> post
-	 * publication->BibTeX/EndNote snippet
+	 * This controller was originally written for two cases: DirectEdit and IndirectEdit-Mode.
 	 *
 	 * Differences:
 	 * In direct edit, user each time can apply one edit option to the posts. So
@@ -168,6 +164,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * In indirect edit, choosing several edit options at the same time is also
 	 * possible. So we have only one list (postsToCombiUpdate) of posts and a
 	 * complete update will be performed on the post.
+	 *
+	 * Since the batchEdit page has been rewritten to support multiple Changes at once, currently only IndirectEdit-Mode is in use.
+	 *
+	 * The controller is called in two cases:
+	 * 1. When user clicks the gear button and selects 'edit own entries'
+	 * 2. When user imports several bibTexes through: Add post-> post publication->BibTeX/EndNote snippet
 	 */
 	@Override
 	public View workOn(final BatchEditCommand command) {
@@ -332,7 +334,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * STEP 1: Check if post should be deleted or ignored.
 			 */
-			if (action.contains(DELETE_ACTION)) {
+			if (action.contains(DELETE_ACTION) && (directEdit || markedPost.getValue().isDelete())) {
 				postsToDelete.add(PostUtils.getKeyForPost(intraHash, postOwner));
 				continue;
 			}
@@ -361,7 +363,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 */
 			post.setDate(now);
 
-			if (action.contains(NORMALIZE_ACTION)) {
+			if (action.contains(NORMALIZE_ACTION) && (directEdit || markedPost.getValue().isNormalize())) {
 				if (!BibTex.class.isAssignableFrom(resourceClass)) {
 					throw new IllegalArgumentException("BibTex Key can only be normalized for publications");
 				}
@@ -415,7 +417,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 				}
 			}
-			if (action.contains(UPDATE_VIEWABLE_ACTION)) {
+			if (action.contains(UPDATE_VIEWABLE_ACTION) && (directEdit || markedPost.getValue().isUpdateVisibility())) {
 				/*
 				 * set visibility of this post for the groups,
 				 * the user specified
@@ -507,18 +509,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/* *******************************************************
 		 * SIXTH: return to view
-		 * ******************************************************
-		 */
-		/*
-		 * handle AJAX requests
-		 */
+		 * *******************************************************/
+
+		// handle AJAX requests
 		if ("ajax".equals(command.getFormat())) {
 			return Views.AJAX_EDITTAGS;
 		}
 
-		/*
-		 * return to batch edit view on errors
-		 */
+		// return to batch edit view on errors
 		if (this.errors.hasErrors()) {
 			if (postsArePublications) {
 				return Views.BATCHEDITBIB;
@@ -526,11 +524,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			return Views.BATCHEDITURL;
 		}
 
-		/*
-		 * return to either the user page or current page(batchedit)
-		 */
+		// return to either the user page or current page(batchedit)
+		if (!directEdit) {
+			command.setReferer(null);
+		}
+		
 		return this.getFinalRedirect(command.getReferer(), loginUserName);
-
 	}
 
 	/**
@@ -540,7 +539,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	private static Set<Tag> getTagsCopy(final Set<Tag> tags) {
-		final Set<Tag> tagsCopy = new TreeSet<Tag>();
+		final Set<Tag> tagsCopy = new TreeSet<>();
 		for (final Tag tag : tags) {
 			tagsCopy.add(new Tag(tag));
 		}

@@ -1,282 +1,314 @@
 var action = [];
-var index;
+var showNormalize;
+var isImport;
 
-function isAnyPostSelected() {
-    return ($('input[name^=posts]:checkbox:checked').length > 0);
-}
+var tagCheckBoxSelector = 'input[name^=posts][name$=checked]:checkbox';
+var visibilityCheckBoxSelector = 'input[name^=posts][name$=updateVisibility]:checkbox';
+var normalizeCheckBoxSelector = 'input[name^=posts][name$=normalize]:checkbox';
+var deleteCheckBoxSelector = 'input[name^=posts][name$=delete]:checkbox';
 
-function isAnyPostNotSelected() {
-    return ($('input[name^=posts]:checkbox:not(:checked)').length > 0);
-}
+var myOwnTag = "myOwn"
 
 $(document).ready(function () {
-    var selector = $('#selector');
-    $(selector).find('option:eq(0)').prop("selected", true);
-    $('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
+    $('[data-toggle="tooltip"]').tooltip();
+    showNormalize = $('input[name=resourcetype]').val() === 'bibtex';
+    isImport = $('input[name=isImport]').val() === 'true';
+
+    updateBadges();
+    toggleTagEdit(countCheckedBoxes(tagCheckBoxSelector) === 0);
+    if (!isImport) {
+		toggleEditVisibility(countCheckedBoxes(visibilityCheckBoxSelector) === 0);
+	}
+    if (showNormalize) {
+		toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector) === 0);
+	}
+    if (!isImport) {
+		toggleDelete(countCheckedBoxes(deleteCheckBoxSelector) === 0);
+	}
 
     /**
-     * handler to change all sub checkboxes with the select all option
+     * handler to change all tag checkboxes with the select all option
      */
-    $('#selectAll').change(function () {
+    $('#selectAllTags').change(function () {
         var markAllChecked = $(this).is(':checked');
-
-        /**
-         * mega haxxor jquery selector to select input checkboxes with name beginning
-         * with posts.
-         */
-        $('input[name^=posts]:checkbox').each(function () {
-            $(this).prop('checked', markAllChecked);
-            $(this).change();
+        $(tagCheckBoxSelector).each(function () {
+            if (!isDeleteOrDisabled(this, 'checked'))
+                $(this).prop('checked', markAllChecked).change();
         });
     });
+    $(tagCheckBoxSelector).change(function () {
+        //If oneNotChecked is false, 'select all' checkbox should be selected
+        var oneNotChecked = false;
 
-    $('input[name^=posts]:checkbox').change(function () {
-        if ($(this).is(':checked')) {
-            if ($(selector).val() === 1) {
-                changeTagInputs(this, false);
-            } else {
-                changeTagInputs(this, true);
-            }
-        } else {
-            changeTagInputs(this, true);
-        }
+        //jquery selector to select tag input checkboxes that are not checked.
+        $(tagCheckBoxSelector + ':not(:checked)').each(function () {
+            oneNotChecked = true;
+        });
+        $('#selectAllTags').prop('checked', !oneNotChecked);
 
-        $('#selectAll').prop('checked', !isAnyPostNotSelected());
-
-        if (isAnyPostSelected()) {
-            $(selector).change();
-            /**
-             * The following function works only in indirect mode
-             */
-            triggerCheckboxes();
-        }
-
-        // if no post is checked, every thing should be hidden.
-        if (!isAnyPostSelected()) {
-            $('.selectPostAlert').toggleClass('invisible', false);
-            $('.selectPostAlert').toggleClass('hidden', false);
-            $('.emptyBlock').toggleClass('hidden', true);
-            resetSelection();
-        }
+        var allNotChecked = countCheckedBoxes(tagCheckBoxSelector) === 0;
+        toggleTagEdit(allNotChecked);
+        updateBadges();
+        if (isImport) {
+			updateAddMyOwnTagButton();
+		}
     });
 
-    $(selector).change(function () {
-        resetSelection();
-
-        if ($(this).val() == 0) {
-            $('.selectPostAlert').toggleClass('invisible', false);
-            $('.selectPostAlert').toggleClass('hidden', false);
-        }
+    if (showNormalize) {
         /**
-         * If at least one post is selected, options can be enabled and do their job!
+         * handler to change all sub checkboxes with the normalize keys option
          */
-        if (isAnyPostSelected()) {
-            $('.selectPostAlert').toggleClass('invisible', true);
-            $('.selectPostAlert').toggleClass('hidden', true);
-            $('.emptyBlock').toggleClass('hidden', false);
-            if ($(this).val() == 1) { //If edit all tag
-                addAllTag();
-            } else if ($(this).val() == 2) { // If edit each posts' tag
-                addEachTag();
-            } else if ($(this).val() == 3) { // If normalize BibTex Key
-                normalizeBibTexKey();
-            } else if ($(this).val() == 4) { // If delete post
-                deletePosts();
-            } else if ($(this).val() == 5) { // If update privacy
-                updatePrivacy();
-            }
-        }
-    });
-    /**
-     * This function is called in indirect mode*/
-    $('#checkboxAllTag').change(function () {
-        if (isAnyPostSelected()) {
-            if ($(this).is(':checked')) {
-                action.push(1);
-                addAllTag();
-            } else {
-                //remove action
-                action.splice(index, 1);
-                addAllTagUncheck();
-            }
-        } else {
-            $('.emptyBlock').toggleClass('hidden', true);
-            $('.selectPostAlert').toggleClass('invisible', false);
-            $('.selectPostAlert').toggleClass('hidden', false);
-        }
-    });
-    /**
-     * This function is called in indirect mode*/
-    $('#checkboxEachTag').change(function () {
-        if (isAnyPostSelected()) {
-            if ($(this).is(':checked')) {
-                action.push(2);
-                addEachTag();
-            } else {
-                //remove action
-                action.splice(index, 2);
-                addEachTagUncheck();
-            }
-        } else {
-            $('.emptyBlock').toggleClass('hidden', true);
-            $('.selectPostAlert').toggleClass('invisible', false);
-            $('.selectPostAlert').toggleClass('hidden', false);
-        }
-    });
-    /**
-     * This function is called in indirect mode*/
-    $('#checkboxNormalize').change(function () {
-        if (isAnyPostSelected()) {
-            if ($(this).is(':checked')) {
-                action.push(3);
-                normalizeBibTexKey();
-            } else {
-                //remove action
-                action.splice(index, 3);
-                normalizeBibTexKeyUncheck();
-            }
-        } else {
-            $('.emptyBlock').toggleClass('hidden', true);
-            $('.selectPostAlert').toggleClass('invisible', false);
-            $('.selectPostAlert').toggleClass('hidden', false);
-        }
-    });
-    /**
-     * This function is called in indirect mode*/
-    $('#checkboxPrivacy').change(function () {
-        if (isAnyPostSelected()) {
-            if ($(this).is(':checked')) {
-                action.push(5);
-                updatePrivacy();
-            } else {
-                //remove action
-                action.splice(index, 5);
-                updatePrivacyUncheck();
-            }
-        } else {
-            $('.emptyBlock').toggleClass('hidden', true);
-            $('.selectPostAlert').toggleClass('invisible', false);
-            $('.selectPostAlert').toggleClass('hidden', false);
-        }
-    });
-    $('.batchUpdateButton').click(function () {
-        /**
-         * If  we are in indirect mode, action variable is set via this .js file,
-         * therefore action var is not empty. Otherwise action is set in content.tagx file
-         * via selector option value and it is empty here*/
+        $('#checkboxNormalize').change(function () {
+            var markAllChecked = $(this).is(':checked');
+            $(normalizeCheckBoxSelector).each(function () {
+                if (!isDeleteOrDisabled(this, 'normalize')) {
+					$(this).prop('checked', markAllChecked).change();
+				}
+            });
+        });
+        $(normalizeCheckBoxSelector).change(function () {
+            toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector) === 0);
+            updateBadges();
+        });
+    }
 
-        if (action.length !== 0) {
-            $('input[name=action]').val(action);
-        } else {
-            $('input[name=action]').val($(selector).val());
+    if (!isImport) {
+        /**
+         * handler to change all sub checkboxes with the update visibility option
+         */
+        $('#checkboxVisibility').change(function () {
+            var markAllChecked = $(this).is(':checked');
+            $(visibilityCheckBoxSelector).each(function () {
+                if (!isDeleteOrDisabled(this, 'updateVisibility')) {
+					$(this).prop('checked', markAllChecked).change();
+				}
+            });
+        });
+        $(visibilityCheckBoxSelector).change(function () {
+            toggleEditVisibility(countCheckedBoxes(visibilityCheckBoxSelector) === 0);
+            updateBadges();
+        });
+
+        /**
+         * handler to change all sub checkboxes with the delete option
+         */
+        $('#checkboxDelete').change(function () {
+            var markAllChecked = $(this).is(':checked');
+            $(deleteCheckBoxSelector).each(function () {
+                if ($('input[name=' + $(this).prop('name').replace('delete', 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() !== 'true') {
+					$(this).prop('checked', markAllChecked).change();
+				}
+            });
+        });
+        $(deleteCheckBoxSelector).change(function () {
+            //disabled entries can not be marked for deletion
+            if ($('input[name=' + $(this).prop('name').replace('delete', 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() === 'true')
+                return;
+            if ($(this).is(':checked')) {
+                $(this).parent().parent().prop('style', "background-color: #f2dede; ");
+                $('input[name=' + $(this).prop('name').replace('delete', 'checked').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
+                $('input[name=' + $(this).prop('name').replace('delete', 'normalize').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
+                $('input[name=' + $(this).prop('name').replace('delete', 'updateVisibility').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('checked', false).prop('disabled', true).change();
+                $('input[name=' + $(this).prop('name').replace('delete', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', true);
+            } else {
+                $(this).parent().parent().prop('style', "");
+                $('input[name=' + $(this).prop('name').replace('delete', 'checked').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
+                $('input[name=' + $(this).prop('name').replace('delete', 'normalize').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
+                $('input[name=' + $(this).prop('name').replace('delete', 'updateVisibility').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox').prop('disabled', false);
+                $('input[name=' + $(this).prop('name').replace('delete', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
+            }
+            toggleDelete(countCheckedBoxes(deleteCheckBoxSelector) === 0);
+            updateBadges();
+        });
+    } else {
+        $('#visibilitySelection').change(function () {
+            if ($.inArray(5, action) === -1) {
+				action.push(5);
+			}
+        });
+    }
+
+    /**
+     * Listeners to check if any of the tag edit options were used
+     */
+    var addUpdateTagsAction = function () {
+        if ($.inArray(2, action) === -1) {
+			action.push(2);
+		}
+        if (isImport) {
+			updateAddMyOwnTagButton();
+		}
+    }
+
+    if (isImport) {
+        $('#addMyOwnTagButton').click(function () {
+            if ($('#addMyOwnTagButton').hasClass("btn-danger")) {
+                removeTags(myOwnTag);
+            } else {
+                addTags(myOwnTag);
+            }
+            addUpdateTagsAction();
+        });
+    }
+
+    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction)
+    $('.addTagsButton').click(function () {
+        addTags($('#tagsInput').val());
+        $('#tagsInput').val("");
+        addUpdateTagsAction();
+    });
+    $('.addTagsButton').click(function () {
+        addTags($('#tagsInput').val());
+        $('#tagsInput').val("");
+        addUpdateTagsAction();
+    });
+
+    $('.batchUpdateButton').click(function () {
+        if ($('#tagsInput').val() !== '' && !window.confirm($('input[name=editTagsWarning]').val())) {
+            return false
         }
     });
+
+    $('#batchedit').submit(function () {
+        //We check all posts, since the controller currently only processes checked posts due to the legacy version of this page still used by the batch edit page
+        $(tagCheckBoxSelector).each(function () {
+            $(this).prop('checked', true);
+            $(this).prop('disabled', false);
+            $('input[name=' + $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
+        });
+
+        $('input[name=action]').val(action);
+    });
+
 });
 
-function triggerCheckboxes() {
-    if (isAnyPostSelected()) {
-        $('.selectPostAlert').toggleClass('invisible', true);
-        $('.selectPostAlert').toggleClass('hidden', true);
-    }
-    $('#checkboxAllTag').change();
-    $('#checkboxEachTag').change();
-    $('#checkboxNormalize').change();
-    $('#checkboxPrivacy').change();
+function toggleTagEdit(disabled) {
+    $('input[name=tags]').prop('disabled', disabled);
+    $('#addAllTags').prop('disabled', disabled);
+    $('#removeAllTags').prop('disabled', disabled);
 }
 
-function updatePrivacy() {
-    $('.batchUpdateButton').prop('disabled', false);
-    $('td[id=viewable]').css({'font-weight': 'bold'});
-    $('#batchedit').find('input[name=abstractGrouping]').prop('disabled', false);
-}
-
-function updatePrivacyUncheck() {
-    $('td[id=viewable]').css({'font-weight': 'normal'});
-    $('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
-
-    if (!isAnyPostSelected()) {
-        $('.emptyBlock').toggleClass('hidden', false);
-        $('.batchUpdateButton').prop('disabled', true);
+function toggleEditVisibility(disabled) {
+    $('#checkboxVisibility').prop('checked', !disabled);
+    if (disabled) {
+        $('#visibilitySelection').prop('style', "filter: grayscale(100%);");
+        $('input[name=abstractGrouping]').prop('disabled', true);
+        if ($.inArray(5, action) !== -1) {
+			action.splice($.inArray(5, action), 1);
+		}
+    } else {
+        $('#visibilitySelection').prop('style', "");
+        $('input[name=abstractGrouping]').prop('disabled', false);
+        if ($.inArray(5, action) === -1) {
+			action.push(5);
+		}
     }
 }
 
-function deletePosts() {
-    $('.emptyBlock').toggleClass('hidden', true);
-    $('.deleteAlert').toggleClass('invisible', false);
-    $('.batchUpdateButton').prop('disabled', false);
-    $('.deleteAlert').toggleClass('hidden', false);
-}
-
-function normalizeBibTexKey() {
-    $('.emptyBlock').toggleClass('hidden', true);
-    $('.batchUpdateButton').prop('disabled', false);
-    $('.normalizeAlert').toggleClass('invisible', false);
-    $('.normalizeAlert').toggleClass('hidden', false);
-}
-
-function normalizeBibTexKeyUncheck() {
-    $('.normalizeAlert').toggleClass('invisible', true);
-    $('.normalizeAlert').toggleClass('hidden', true);
-    $('.emptyBlock').toggleClass('hidden', false);
-
-    if (!isAnyPostSelected()) {
-        $('.batchUpdateButton').prop('disabled', true);
+function toggleNormalize(disabled) {
+    $('.emptyBlock').toggleClass('hidden', !disabled);
+    $('.normalizeAlert').toggleClass('invisible', disabled);
+    $('.normalizeAlert').toggleClass('hidden', disabled);
+    $('#checkboxNormalize').prop('checked', !disabled);
+    if (disabled && $.inArray(3, action) !== -1) {
+        action.splice($.inArray(3, action), 1);
+    } else if (!disabled && $.inArray(3, action) === -1) {
+        action.push(3);
     }
 }
 
-function addEachTag() {
-    changeTagInputs('input[name^=posts]:checkbox:checked', false);
-    $('td[id=yourTags]').css({'font-weight': 'bold'});
-    $('.batchUpdateButton').prop('disabled', false);
-}
-
-function addEachTagUncheck() {
-    changeTagInputs('input[name^=posts]:checkbox:checked', true);
-    $('td[id=yourTags]').css({'font-weight': 'normal'});
-
-    if (!isAnyPostSelected()) {
-        $('.emptyBlock').toggleClass('hidden', false);
-        $('.batchUpdateButton').prop('disabled', true);
+function toggleDelete(disabled) {
+    $('.emptyBlock').toggleClass('hidden', !disabled);
+    $('.deleteAlert').toggleClass('invisible', disabled);
+    $('.deleteAlert').toggleClass('hidden', disabled);
+    $('#checkboxDelete').prop('checked', !disabled);
+    if (disabled && $.inArray(4, action) !== -1) {
+        action.splice($.inArray(4, action), 1);
+    } else if (!disabled && $.inArray(4, action) === -1) {
+        action.push(4);
     }
 }
 
-function addAllTag() {
-    $('td[id=allTags]').css({'font-weight': 'bold'});
-    $('input[name=tags]').prop('disabled', false);
-    $('.batchUpdateButton').prop('disabled', false);
-}
-
-function addAllTagUncheck() {
-    $('td[id=allTags]').css({'font-weight': 'normal'});
-    $('input[name=tags]').prop('disabled', true);
-
-    if (!isAnyPostSelected()) {
-        $('.emptyBlock').toggleClass('hidden', false);
-        $('.batchUpdateButton').prop('disabled', true);
-    }
-}
-
-function resetSelection() {
-    changeTagInputs('input[name^=posts]:checkbox:checked', true);
-    $('input[name=tags]').prop('disabled', true);
-    $('.batchUpdateButton').prop('disabled', true);
-    $('#batchedit').find('input[name=abstractGrouping]').prop('disabled', true);
-    $('.deleteAlert').toggleClass('invisible', true);
-    $('.deleteAlert').toggleClass('hidden', true);
-    $('.normalizeAlert').toggleClass('invisible', true);
-    $('.normalizeAlert').toggleClass('hidden', true);
-
-    $('td[id=viewable]').css({'font-weight': 'normal'});
-    $('td[id=yourTags]').css({'font-weight': 'normal'});
-    $('td[id=allTags]').css({'font-weight': 'normal'});
-}
-
-function changeTagInputs(selector, disabled) {
-    $(selector).each(function () {
-        /*
-         * remove possible special characters from selector string
-         */
+function addTags(tags) {
+    $(tagCheckBoxSelector + ':checked').each(function () {
         var attr = $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
-        $('input[name=' + attr + ']:text').prop('disabled', disabled);
+        var textInput = $('input[name=' + attr + ']:text');
+        var currentTags = textInput.val().split(" ");
+        var newTags = tags.split(" ");
+        newTags = newTags.filter(function (val) {
+            return currentTags.indexOf(val) === -1;
+        });
+        var combinedTags = currentTags.concat(newTags);
+        textInput.val(combinedTags.join(" "));
     });
 }
+
+function removeTags(tags) {
+    $(tagCheckBoxSelector + ':checked').each(function () {
+        var attr = $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+        var textInput = $('input[name=' + attr + ']:text');
+        var currentTags = textInput.val().split(" ");
+        var tagsToDelete = tags.split(" ");
+        currentTags = currentTags.filter(function (val) {
+            return tagsToDelete.indexOf(val) === -1;
+        });
+        textInput.val(currentTags.join(" "));
+    });
+}
+
+function updateBadges() {
+    $('#tagsCountBadge').text(countCheckedBoxes(tagCheckBoxSelector));
+    if (!isImport) {
+		$('#visibilityCountBadge').text(countCheckedBoxes(visibilityCheckBoxSelector));
+	}
+    if (showNormalize) {
+		$('#normalizeCountBadge').text(countCheckedBoxes(normalizeCheckBoxSelector));
+	}
+    if (!isImport) {
+		$('#deleteCountBadge').text(countCheckedBoxes(deleteCheckBoxSelector));
+	}
+}
+
+function countCheckedBoxes(querySelector) {
+    var count = 0;
+    $(querySelector + ':checked').each(function () {
+        count++;
+    });
+    return count;
+}
+
+/**
+ * Help function to check if an entry is disabled (not editable) or marked for deletion (also not editable)
+ */
+function isDeleteOrDisabled(entry, type) {
+    return ($('input[name=' + $(entry).prop('name').replace(type, 'delete').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:checkbox:checked').length
+        || $('input[name=' + $(entry).prop('name').replace(type, 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() === 'true');
+}
+
+/**
+ * Help function to determine if any or all of the selected entries have 'myOwn' as a Tag
+ * @returns {number} of selected entries with 'myOwn' as a Tag
+ */
+function countMyOwnTags() {
+    var count = 0;
+    $(tagCheckBoxSelector + ':checked').each(function () {
+        var attr = $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+        var textInput = $('input[name=' + attr + ']:text');
+        var currentTags = textInput.val().split(" ");
+        if ($.inArray(myOwnTag, currentTags) !== -1) {
+			count++;
+		}
+    });
+    return count;
+}
+
+function updateAddMyOwnTagButton() {
+    if (countMyOwnTags() === countCheckedBoxes(tagCheckBoxSelector)) {
+        $('#addMyOwnTagButton').removeClass("btn-success").addClass("btn-danger");
+        $('#addMyOwnTagButton').text($('input[name=removeMyOwnText]').val());
+    } else if (countMyOwnTags() === 0) {
+        $('#addMyOwnTagButton').removeClass("btn-danger").addClass("btn-success");
+        $('#addMyOwnTagButton').text($('input[name=addMyOwnText]').val());
+    }
+}
+
