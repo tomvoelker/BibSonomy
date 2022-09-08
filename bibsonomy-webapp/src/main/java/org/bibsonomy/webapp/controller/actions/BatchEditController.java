@@ -509,18 +509,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/* *******************************************************
 		 * SIXTH: return to view
-		 * ******************************************************
-		 */
-		/*
-		 * handle AJAX requests
-		 */
+		 * *******************************************************/
+
+		// handle AJAX requests
 		if ("ajax".equals(command.getFormat())) {
 			return Views.AJAX_EDITTAGS;
 		}
 
-		/*
-		 * return to batch edit view on errors
-		 */
+		// return to batch edit view on errors
 		if (this.errors.hasErrors()) {
 			if (postsArePublications) {
 				return Views.BATCHEDITBIB;
@@ -528,13 +524,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			return Views.BATCHEDITURL;
 		}
 
-		/*
-		 * return to either the user page or current page(batchedit)
-		 */
-		if(!directEdit)
+		// return to either the user page or current page(batchedit)
+		if (!directEdit) {
 			command.setReferer(null);
+		}
+		
 		return this.getFinalRedirect(command.getReferer(), loginUserName);
-
 	}
 
 	/**
