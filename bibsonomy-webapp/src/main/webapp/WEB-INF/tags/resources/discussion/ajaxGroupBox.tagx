@@ -29,7 +29,7 @@
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="selectedGroups" type="java.util.Set" required="false"/>
-	
+
 	<c:set var="isPublic" value="${mtl:contains(selectedGroups, publicGroup)}" />
 	<c:set var="isPrivate" value="${mtl:contains(selectedGroups, privateGroup)}" />
 	<c:set var="isFriend" value="${mtl:contains(selectedGroups, friendsGroup)}" />
@@ -43,7 +43,7 @@
 				<label>
 					<c:choose>
 						<c:when test="${fn:length(selectedGroups) == 0 or isPublic}">
-							<input name="abstractGrouping" value="public" tabindex="2" type="radio"  checked="checked" />
+							<input name="abstractGrouping" value="public" tabindex="2" type="radio" checked="checked" />
 						</c:when>
 						<c:otherwise>
 							<input name="abstractGrouping" value="public" tabindex="2" type="radio" />

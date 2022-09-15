@@ -476,4 +476,10 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>boolean containsSentTag(java.util.Set, java.lang.String)</function-signature>
 	</function>
+
+	<function>
+		<name>selectedGroups</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Set selectedGroups(java.lang.String,java.util.List)</function-signature>
+	</function>
 </taglib>
