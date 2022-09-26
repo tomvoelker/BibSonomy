@@ -31,6 +31,7 @@ package org.bibsonomy.webapp.command;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.model.User;
 
@@ -39,22 +40,23 @@ import org.bibsonomy.model.User;
  *
  * @author dzo
  */
+@Getter
 @Setter
 public class FriendsOverviewCommand extends MultiResourceViewCommand {
 
-	private List<User> friends;
-	private List<User> ofFriends;
-	private int entriesPerPage = -1;
+    private List<User> friends;
+    private List<User> ofFriends;
+    private int entriesPerPage = -1;
 
-	/**
-	 * @return entries per page
-	 */
-	public int getEntriesPerPage() {
-		if (this.entriesPerPage == -1) {
-			// fallback to user settings, if not set explicitly before via url parameter
-			this.entriesPerPage = this.getContext().getLoginUser().getSettings().getListItemcount();
-		}
-		return this.entriesPerPage;
-	}
+    /**
+     * @return entries per page
+     */
+    public int getEntriesPerPage() {
+        if (this.entriesPerPage == -1) {
+            // fallback to user settings, if not set explicitly before via url parameter
+            this.entriesPerPage = this.getContext().getLoginUser().getSettings().getListItemcount();
+        }
+        return this.entriesPerPage;
+    }
 
 }
