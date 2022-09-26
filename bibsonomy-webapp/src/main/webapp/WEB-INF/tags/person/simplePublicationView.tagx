@@ -21,9 +21,11 @@
 	<c:choose>
 		<c:when test="${showButtons}">
 			<c:set var="pubDivClass" value="simplePubFirstLine simplePubFirstLinePaddingRight"/>
+			<c:set var="authorsDivClass" value="simplePubAuthor simplePubAuthorPaddingRight"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="pubDivClass" value="simplePubFirstLine"/>
+			<c:set var="authorsDivClass" value="simplePubAuthor"/>
 		</c:otherwise>
 	</c:choose>
 
@@ -34,7 +36,8 @@
 
 		<c:if test="${showButtons and not empty loggedinUserName}">
 			<div class="simplePubEntry-buttons btn-group">
-				<c:if test="${enforceCommunityPost or empty post.user or post.user.name eq loggedinUserName}">
+				<c:set var="ableToEditApproved" value="${!post.approved or command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN'}" />
+				<c:if test="${(enforceCommunityPost and ableToEditApproved) or empty post.user or post.user.name eq loggedinUserName}">
 					<buttons:editPostButton post="${post}" resourceType="publication" buttonClasses="btn btn-default btn-xs"
 											referer="${referer}" enforceCommunityPost="${enforceCommunityPost}" />
 				</c:if>
@@ -43,18 +46,33 @@
 		</c:if>
 
 		<div class="${pubDivClass}">
-			<span class="simplePubTitle"><bib:title post="${post}" />
-				<span class="simplePubYear"><bib:year publication="${post.resource}" braces="true" /></span>
+			<span class="simplePubTitle">
+				<bib:title post="${post}"/>
 			</span>
 		</div>
 
 		<div class="clearflat"><!-- KEEP ME --></div>
-		<span class="simplePubAuthor"><bib:author publication="${post.resource}" post="${post}" onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" /></span>
+
+		<div class="${authorsDivClass}">
+			<span>
+				<bib:author publication="${post.resource}" post="${post}"
+							onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
+			</span>
+		</div>
+
 		<div class="clearflat"><!-- KEEP ME --></div>
 
-		<span class="simplePubJournal"><bib:journal publication="${post.resource}" suffix="." /></span>
-		<span class="simplePubPublisher"><bib:publisher publication="${post.resource}" suffix="." /></span>
-		<span class="simplePubEntrytype"><bib:entrytype publication="${post.resource}" /></span>
+		<div class="simplePubInfos">
+			<span><bib:entrytype publication="${post.resource}" suffix=", "/></span>
+			<span><bib:year publication="${post.resource}" braces="${false}"/></span>
+			<c:if test="${not empty post.resource.journal or not empty post.resource.publisher}">
+				<c:out value=" &amp;ndash; " escapeXml="${false}"/>
+			</c:if>
+			<div class="simplePubEntrypesInfo">
+				<span><bib:journal publication="${post.resource}" suffix=". "/></span>
+				<span><bib:publisher publication="${post.resource}" suffix=". "/></span>
+			</div>
+		</div>
 	</li>
 
 </jsp:root>

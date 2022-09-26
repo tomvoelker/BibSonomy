@@ -5,12 +5,19 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	<jsp:directive.attribute name="suffix" type="java.lang.String" required="false" />
 
 	<c:if test="${not empty publication.entrytype}">
 		<fmt:message key="post.resource.entrytype.${publication.entrytype}.title" var="messageString" />
-		<c:if test="${!fn:startsWith(messageString,'???')}">
-			<c:out value="${messageString}"/>
-		</c:if>
+		<c:choose>
+			<c:when test="${!fn:startsWith(messageString,'???')}">
+				<c:out value="${messageString}"/>
+			</c:when>
+			<c:otherwise>
+				<c:out value="${publication.entrytype}"/>
+			</c:otherwise>
+		</c:choose>
+		<c:out value="${suffix}"/>
 	</c:if>
 
 </jsp:root>
