@@ -63,15 +63,15 @@
 		<div class="clearflat"><!-- KEEP ME --></div>
 
 		<div class="simplePubInfos">
-			<span><bib:entrytype publication="${post.resource}" suffix=", "/></span>
-			<span><bib:year publication="${post.resource}" braces="${false}"/></span>
-			<c:if test="${not empty post.resource.journal or not empty post.resource.publisher}">
-				<c:out value=" &amp;ndash; " escapeXml="${false}"/>
-			</c:if>
 			<div class="simplePubEntrypesInfo">
-				<span><bib:journal publication="${post.resource}" suffix=". "/></span>
-				<span><bib:publisher publication="${post.resource}" suffix=". "/></span>
+				<bib:journal publication="${post.resource}" suffix=". "/>
+				<bib:publisher publication="${post.resource}" suffix=". "/>
 			</div>
+			<c:if test="${not empty post.resource.journal or not empty post.resource.publisher}">
+				<c:out value="&amp;nbsp;" escapeXml="${false}"/>
+			</c:if>
+			<bib:entrytype publication="${post.resource}" suffix=" "/>
+			<bib:year publication="${post.resource}" braces="${true}"/>
 		</div>
 	</li>
 
