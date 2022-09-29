@@ -18,32 +18,30 @@
 		<result property="resourcePersonRelations" resultMap="SearchPersonCommon.simplePersonResourceRelationWithoutPost" />
 	</resultMap>
 
-	<!-- List of selected columns in query from a single source, for example just the bibtex table.
-	All column names will have the prefix b. for the table -->
-	<sql id="allGoldStandardPublicationAttributesWithSimHashesSearchSingle">
-		<include refid="allGoldStandardPublicationAttributesSearchSingle"/>,
+	<!-- List of selected columns for a query from a table with no approved column. -->
+	<sql id="allGoldStandardPublicationAttributesWithSimHashesSearch">
+		<include refid="allGoldStandardPublicationAttributesSearch"/>,
 		<include refid="bibtexSimHashes"/>
 	</sql>
 
-	<!-- List of selected columns in query from two sources after a JOIN, for example the bibtex joined with gold_standard table.
-	All column names will have the prefix b. or gb. for the tables respectively. -->
-	<sql id="allGoldStandardPublicationAttributesWithSimHashesSearchMultiple">
-		<include refid="allGoldStandardPublicationAttributesSearchMultiple"/>,
+	<!-- List of selected columns for a query from a table with an approved column. -->
+	<sql id="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved">
+		<include refid="allGoldStandardPublicationAttributesSearchWithApproved"/>,
 		<include refid="bibtexSimHashes"/>
 	</sql>
 
-	<sql id="allGoldStandardPublicationAttributesSearchSingle">
+	<sql id="allGoldStandardPublicationAttributesSearch">
 		b.content_id, b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, b.url, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, COALESCE(b.approved, 0) AS approved
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 0 AS approved
 	</sql>
 	
-	<sql id="allGoldStandardPublicationAttributesSearchMultiple">
+	<sql id="allGoldStandardPublicationAttributesSearchWithApproved">
 		b.content_id, b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, b.url, b.description, b.bibtexKey, b.misc,
-		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, COALESCE(gb.approved, 0) AS approved
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, COALESCE(approved, 0) AS approved
 	</sql>
 
 	<sql id="goldStandardOtherFields">
