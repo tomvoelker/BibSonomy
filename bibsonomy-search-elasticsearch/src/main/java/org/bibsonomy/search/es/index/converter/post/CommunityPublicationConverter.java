@@ -75,9 +75,16 @@ public class CommunityPublicationConverter extends PublicationConverter {
 	}
 
 	@Override
+	protected void convertPostInternal(Post<BibTex> post, Map<String, Object> jsonDocument) {
+		super.convertPostInternal(post, jsonDocument);
+		jsonDocument.put(ESConstants.Fields.APPROVED, post.isApproved());
+	}
+
+	@Override
 	protected void convertPostInternal(final Map<String, Object> source, final Post<BibTex> post) {
 		// read the resource relations
 		post.setResourcePersonRelations(readPersonResourceRelations(source));
+		post.setApproved((boolean) source.get(ESConstants.Fields.APPROVED));
 	}
 
 	private static List<ResourcePersonRelation> readPersonResourceRelations(final Map<String, Object> source) {

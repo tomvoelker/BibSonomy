@@ -185,6 +185,8 @@ public final class ESConstants {
 		String FIELDS = "fields";
 		/** relation field */
 		String RELATION_FIELD = "relations";
+		/** type boolean */
+		String BOOLEAN_TYPE = "boolean";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -254,6 +256,8 @@ public final class ESConstants {
 		public static final String DESCRIPTION = "description";
 		/** Ids of the associated authors, editors, supervisors, etc */
 		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
+		/** the approved status (only for community posts/gold standards) */
+		String APPROVED = "approved";
 
 		public interface Resource {
 			/** the title of the resource */
@@ -348,6 +352,7 @@ public final class ESConstants {
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
 			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE, PROJECT, ABTEILUNG, ORCID);
+
 			/** the document */
 			interface Document {
 				String NAME = "name";

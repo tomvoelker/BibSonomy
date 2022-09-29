@@ -83,7 +83,7 @@
 	</sql>
 
 	<sql id="personResourceRelationWithPostColumns">
-		<include refid="personResourceRelationColumns" />, per.person_change_id, per.college AS college, <include refid="allGoldStandardPublicationAttributesSearch" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings, NULL AS other_user_name
+		<include refid="personResourceRelationColumns" />, per.person_change_id, per.college AS college, <include refid="allGoldStandardPublicationAttributesSearchSingle" />, b.simhash1 AS interHash, b.simhash2 AS intraHash, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings, NULL AS other_user_name
 	</sql>
 
 	<!-- FIXME: move to other file -->

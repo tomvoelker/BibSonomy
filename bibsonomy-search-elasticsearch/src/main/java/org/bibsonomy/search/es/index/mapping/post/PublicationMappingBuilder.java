@@ -296,6 +296,9 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 					.endObject()
 				.endObject()
+			.endObject()
+			.startObject(Fields.APPROVED)
+				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.BOOLEAN_TYPE)
 			.endObject();
 			// special misc fields
 			for (final String specialMiscField : Fields.Publication.SPECIAL_MISC_FIELDS) {
