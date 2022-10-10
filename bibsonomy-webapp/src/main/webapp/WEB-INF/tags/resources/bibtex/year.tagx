@@ -4,14 +4,17 @@
 
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="braces" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="prefix" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="suffix" type="java.lang.String" required="false" />
+
+	<c:out value="${prefix}"/>
 
 	<c:if test="${braces}">(</c:if>
-	<em>
-		<span>
-			<c:out value="${mtl:getDate('', '', publication.year, locale)}" />
-			<meta itemprop="datePublished" content="${mtl:cleanBibtex(publication.year)}" />
-		</span>
-	</em>
+	<span>
+		<c:out value="${mtl:getDate('', '', publication.year, locale)}" />
+		<meta itemprop="datePublished" content="${mtl:cleanBibtex(publication.year)}" />
+	</span>
 	<c:if test="${braces}">)</c:if>
 
+	<c:out value="${suffix}"/>
 </jsp:root>

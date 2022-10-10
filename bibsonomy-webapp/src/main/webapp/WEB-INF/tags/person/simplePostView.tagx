@@ -34,7 +34,7 @@
 
 		<div class="clearflat"><!-- KEEP ME --></div>
 		<span class="${authorsDivClass}"><bib:author publication="${post.resource}" post="${post}" onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" /></span>
-		<span class="simplePubPublisher"><bib:publisher publication="${post.resource}" suffix="" /></span>
+		<span class="simplePubPublisher"><bib:publisher publication="${post.resource}" suffix=" " /></span>
 	</div>
 
 

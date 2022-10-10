@@ -33,7 +33,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.webapp.command.PersonPageCommand;
@@ -49,7 +49,7 @@ public class EditPersonCommand extends PersonPageCommand {
 
     private String personId;
     private boolean claimedPerson;
-    private PersonUpdateOperation updateOperation;
+    private PersonOperation operation;
 
     /** Properties for editing names of person */
     private PersonName personName;

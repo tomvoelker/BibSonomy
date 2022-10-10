@@ -6,7 +6,7 @@
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="text" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="operation" type="org.bibsonomy.common.enums.PersonUpdateOperation" required="true" description="Defines the desired update operation"/>
+	<jsp:directive.attribute name="operation" type="org.bibsonomy.common.enums.PersonOperation" required="true" description="Defines the desired update operation"/>
 	<jsp:directive.attribute name="disabled" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="loginUserName" value="${loginUser.name}"/>

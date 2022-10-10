@@ -29,7 +29,7 @@
  */
 package org.bibsonomy.rest.client.queries.put;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -45,9 +45,9 @@ import java.io.StringWriter;
  */
 public class UpdatePersonQuery extends AbstractQuery<String> {
 	private final Person person;
-	private final PersonUpdateOperation operation;
+	private final PersonOperation operation;
 
-	public UpdatePersonQuery(Person person, PersonUpdateOperation operation) {
+	public UpdatePersonQuery(Person person, PersonOperation operation) {
 		this.person = person;
 		this.operation = operation;
 	}

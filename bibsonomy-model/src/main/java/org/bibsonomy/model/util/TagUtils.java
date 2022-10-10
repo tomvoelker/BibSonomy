@@ -320,4 +320,22 @@ public class TagUtils {
 		tag.setUsercount(1000000);
 		return tag;
 	}
+
+	/**
+	 * Check if a tag with the needle as name is contained in a set of tags.
+	 * @param tags
+	 * @param needle
+	 * @return true if needle is in set of tags, otherwise false
+	 */
+	public static boolean containsTag(final Set<Tag> tags, final String needle) {
+		Tag needleTag = new Tag(needle);
+
+		for (Tag tag : tags) {
+			if (tag.equals(needleTag)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

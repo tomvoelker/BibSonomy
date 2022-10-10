@@ -29,10 +29,9 @@
  */
 package org.bibsonomy.model.logic;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -80,7 +79,7 @@ public interface PersonLogicInterface {
 	 * @param person		the person to update
 	 * @param operation		the desired update operation
 	 */
-	void updatePerson(final Person person, final PersonUpdateOperation operation);
+	void updatePerson(final Person person, final PersonOperation operation);
 
 	/**
 	 * stores the specified person relation

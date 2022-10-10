@@ -56,7 +56,9 @@
 				</c:otherwise>
 			</c:choose>
 
-			<c:if test="${not empty reportFunction}">
+			<c:if test="${properties['report.person.duplicate.publications'] and
+							not empty properties['project.reportMail'] and
+							not empty reportFunction}">
 				<button type="button"
 						class="btn btn-default btn-xs report-button"
 						onclick="${reportFunction}"

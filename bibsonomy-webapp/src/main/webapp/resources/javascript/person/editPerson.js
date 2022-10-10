@@ -30,7 +30,7 @@ function initDetailsEditing() {
         }
 
         var formData = $('#formEditPersonDetails').serializeArray();
-        formData.push({name: 'updateOperation', value: 'UPDATE_DETAILS'});
+        formData.push({name: 'operation', value: 'UPDATE_DETAILS'});
         formData.push({name: 'personId', value: getPersonId()});
         formData.push({name: 'claimedPerson', value: getClaimedPerson()});
 
@@ -144,7 +144,7 @@ function initNameEditing() {
         }
 
         var formData = $("#formEditPersonNames").serializeArray();
-        formData.push({name: "updateOperation", value: 'ADD_NAME'});
+        formData.push({name: "operation", value: 'ADD_NAME'});
         formData.push({name: "personId", value: getPersonId()});
 
         $.ajax({
@@ -177,7 +177,7 @@ function initNameEditing() {
             async: false,
             url: '/editPerson',
             data: {
-                updateOperation: "SELECT_MAIN_NAME",
+                operation: "SELECT_MAIN_NAME",
                 personId: getPersonId(),
                 "personName.firstName": btn.data('first-name'),
                 "personName.lastName": btn.data('last-name'),
@@ -207,7 +207,7 @@ function initNameEditing() {
             async: false,
             url: '/editPerson',
             data: {
-                updateOperation: 'DELETE_NAME',
+                operation: 'DELETE_NAME',
                 personId: getPersonId(),
                 "personName.firstName": btn.data('first-name'),
                 "personName.lastName": btn.data('last-name'),
@@ -239,7 +239,7 @@ function initUserLinking() {
             async: false,
             url: '/editPerson',
             data: {
-                updateOperation: 'LINK_USER',
+                operation: 'LINK_USER',
                 personId: getPersonId()
             },
             beforeSend: function (data) {
@@ -267,7 +267,7 @@ function initUserLinking() {
             async: false,
             url: '/editPerson',
             data: {
-                updateOperation: 'UNLINK_USER',
+                operation: 'UNLINK_USER',
                 personId: getPersonId()
             },
             beforeSend: function (data) {

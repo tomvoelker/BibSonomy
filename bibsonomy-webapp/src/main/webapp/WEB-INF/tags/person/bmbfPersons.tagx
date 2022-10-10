@@ -50,7 +50,6 @@
                 <div class="col-sm-9">
 
                     <div id="search">
-                        <a name="search"><!--  --></a>
                         <h2 class="getting-started" style="text-align: left">
                             <fmt:message key="persons.intro.navi.search">
                                 <fmt:param value="${properties['project.name']}" />

@@ -16,20 +16,17 @@
 	<c:set var="loggedInNotSpammer" value="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}"/>
 
 	<div>
-		<!-- Edit Person -->
+
 		<c:if test="${hasClaimedPerson or isAdmin}">
-			<!-- Edit person modal dialog -->
-			<modals:editPersonDetails command="${command}" id="editPersonDetails"/>
+			<!-- Edit person details -->
+			<modals:editPersonDetails command="${command}" id="editPersonDetails"/> <!-- Edit person modal dialog -->
 			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#editPersonDetails">
 				<fontawesome:icon icon="user-edit" fixedWidth="${true}"/>
 				<fmt:message key="person.show.editDetailsButton"/>
 			</a>
-		</c:if>
 
-		<!-- Edit Person Names -->
-		<c:if test="${loggedInNotSpammer}">
-			<!-- Edit person modal dialog -->
-			<modals:editPersonNames command="${command}" id="editPersonNames"/>
+			<!-- Edit person names -->
+			<modals:editPersonNames command="${command}" id="editPersonNames"/> <!-- Edit person modal dialog -->
 			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#editPersonNames">
 				<fontawesome:icon icon="pencil" fixedWidth="${true}"/>
 				<fmt:message key="person.show.editNamesButton"/>

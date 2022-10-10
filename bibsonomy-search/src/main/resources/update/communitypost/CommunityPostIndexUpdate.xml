@@ -8,7 +8,7 @@
 		SELECT bb.*, <include refid="goldStandardOtherFields" />, <include refid="personResourceRelationExtendedColumns" />
 		FROM
 		(
-			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group
 			FROM gold_standard b
 			WHERE b.content_id > #lastContentId#
 			AND b.content_type = 2
@@ -28,7 +28,7 @@
 		(
 			SELECT tb.* FROM
 			(
-				SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+				SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group
 				FROM bibtex b
 				LEFT JOIN gold_standard gb USING (simhash1) <!-- select only posts that do not have a corresponding gold standard -->
 				WHERE b.user_name = #userName#
@@ -47,14 +47,14 @@
 	</select>
 
 	<select id="getDeletedGoldStandardPublicationPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_gold_standard b
 		WHERE log_date > #lastLogDate#
 		AND content_type = 2
 	</select>
 
 	<select id="getGoldStandardPublicationPostsForUser" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost" parameterClass="string">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM bibtex b
 		LEFT JOIN gold_standard gb USING(simhash1)
 		WHERE b.user_name = #userName#
@@ -168,7 +168,7 @@
 
 	<!-- "normal" publications -->
 	<select id="getDeletedBibTexPosts" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group, <include refid="goldStandardOtherFieldsDummyOtherUsers" />
 		FROM log_bibtex b
 		LEFT JOIN gold_standard gb USING(simhash1)
 		WHERE b.log_date > #lastLogDate#
@@ -180,11 +180,11 @@
 		SELECT bb.*, <include refid="goldStandardOtherFields" />
 		FROM
 		(
-			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group
+			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group
 			FROM bibtex b
-			LEFT JOIN gold_standard gp USING(simhash1)
+			LEFT JOIN gold_standard gb USING(simhash1)
 			WHERE b.content_id >= #lastContentId#
-			AND gp.title IS NULL
+			AND gb.title IS NULL
 			ORDER BY b.content_id DESC
 			LIMIT #limit#
 			OFFSET #offset#

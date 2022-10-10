@@ -47,7 +47,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -67,7 +67,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -838,7 +837,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person, org.bibsonomy.common.enums.PersonUpdateOperation)
 	 */
 	@Override
-	public void updatePerson(Person person, PersonUpdateOperation operation) {
+	public void updatePerson(Person person, PersonOperation operation) {
 		throwReadOnlyException();
 	}
 

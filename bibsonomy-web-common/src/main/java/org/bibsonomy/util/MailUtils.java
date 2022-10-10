@@ -452,6 +452,24 @@ public class MailUtils {
 		}
 	}
 
+	public boolean sendUnableToMatchRelationMail(final String title, final String interhash, final String personId, final String receivermail) {
+		try {
+			final String postUrl = absoluteURLGenerator.getPublicationUrlByInterHash(interhash);
+			final Object[] messagesParameters = { postUrl, title, personId };
+
+			final Locale locale = Locale.ENGLISH;
+			final String messageSubject = messageSource.getMessage("database.exception.systemTag.addRelation.subject", null, locale);
+			final String messageBody = messageSource.getMessage("database.exception.systemTag.addRelation.body", messagesParameters, locale);
+
+			this.sendHTMLMail(new String[]{receivermail}, messageSubject, messageBody, receivermail);
+		} catch (final MessagingException e) {
+			log.fatal("Could not send mail to report matching failed: " + e.getMessage());
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Sends a plain mail to the given recipients
 	 * 

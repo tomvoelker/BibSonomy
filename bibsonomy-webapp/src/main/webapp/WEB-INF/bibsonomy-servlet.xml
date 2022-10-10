@@ -168,7 +168,7 @@
 		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
-	
+
 	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
 	</bean>

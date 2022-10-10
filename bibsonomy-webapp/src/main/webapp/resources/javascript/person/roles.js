@@ -76,7 +76,7 @@ function initRoleEditing() {
         }
 
         var formData = $("#addRoleForm").serializeArray();
-        formData.push({name: "updateOperation", value: "ADD_ROLE"});
+        formData.push({name: "operation", value: "ADD_ROLE"});
         formData.push({name: "newName.firstName", value: firstName});
         formData.push({name: "newName.lastName", value: lastName});
         formData.push({name: "personId", value: e.attr("data-person-id")});
@@ -108,7 +108,7 @@ function initRoleEditing() {
         var e = $(this);
         $.post("/editPerson",
             {
-                updateOperation: "DELETE_ROLE",
+                operation: "DELETE_ROLE",
                 formResourcePersonRelationId: e.attr("data-resourcePersonRelation-id")
             }
         ).done(function (data) {

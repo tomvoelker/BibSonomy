@@ -8,6 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
@@ -173,11 +174,28 @@
 				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
-			<c:if test="${not hidePostRating}">
-				<div class="post-rating pull-left">
-					<discussion:rating post="${post}" />
-				</div>
-			</c:if>
+
+			<c:set var="bibliographyUser" value="${properties['bibliography.bibliographyUser']}" />
+			<c:choose>
+				<c:when test="${not empty bibliographyUser}">
+					<c:if test="${mtl:containsSentTag(post.tags, bibliographyUser)}">
+						<div class="post-bibliography-sent pull-left">
+							<fmt:message key="post.bibliography.sent.title" var="sentTitle"/>
+							<span data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(sentTitle)}">
+								<fontawesome:icon icon="check-circle" />
+							</span>
+						</div>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${not hidePostRating}">
+						<div class="post-rating pull-left">
+							<discussion:rating post="${post}" />
+						</div>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+
 			<c:if test="${not hidePostMenu}">
 				<div class="post-buttons pull-right">
 					<jsp:invoke fragment="actions"/>

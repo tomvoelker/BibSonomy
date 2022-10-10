@@ -8,13 +8,13 @@
 	<jsp:directive.attribute name="suffix" type="java.lang.String" required="false" />
 
 	<c:if test="${empty suffix}">
-		<c:set var="suffix" value="," />
+		<c:set var="suffix" value=", "/>
 	</c:if>
 	
 	<c:if test="${not empty publication.publisher}">
 		<em>
 			<span itemprop="publisher"><c:out value="${mtl:cleanBibtex(publication.publisher)}" /></span>
-			<c:out value="${suffix} "/>
+			<c:out value="${suffix}"/>
 		</em>
 	</c:if>
 </jsp:root>

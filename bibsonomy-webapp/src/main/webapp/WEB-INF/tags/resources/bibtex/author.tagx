@@ -125,10 +125,14 @@
 		<c:if test="${personListRestricted}">
 			<c:out value=" "/><fmt:message key="and"/><c:out value=" ${numberOfPersonsNotShown} "/><fmt:message key="persons.others" /><c:out value=" "/><fmt:message key="post.resource.${personMessageKey}" />
 		</c:if>
-		<!-- append "(eds.)" -->
-		<c:if test="${empty publication.author and not empty publication.editor}">
-			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>)
-		</c:if>
+		<!-- append "(eds.)" and suffix -->
+		<c:choose>
+			<c:when test="${empty publication.author and not empty publication.editor}">
+				<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/><c:out value=") "/>
+			</c:when>
+			<c:otherwise>
+				<c:out value=". "/>
+			</c:otherwise>
+		</c:choose>
 	</span>
-	<c:out value=". "/>
 </jsp:root>

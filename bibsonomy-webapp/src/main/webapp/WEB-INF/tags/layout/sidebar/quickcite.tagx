@@ -104,7 +104,7 @@
             </jsp:attribute>
 
             <jsp:attribute name="modalFooter">
-                <c:if test="${properties['report.citation.broken']}">
+                <c:if test="${properties['report.citation.broken'] and not empty properties['project.reportMail']}">
                     <bsform:button
                             id="sidebar-quick-cite-box-modal-report-button"
                             size="defaultSize"

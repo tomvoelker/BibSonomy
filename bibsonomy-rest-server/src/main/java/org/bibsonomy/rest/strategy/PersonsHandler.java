@@ -29,7 +29,7 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -136,7 +136,7 @@ public class PersonsHandler implements ContextHandler {
 			case GET:
 				return new GetPersonStrategy(context, personId);
 			case PUT:
-				final PersonUpdateOperation operation = PersonUpdateOperation.valueOf(
+				final PersonOperation operation = PersonOperation.valueOf(
 						context.getStringAttribute("operation", "update_all").toUpperCase());
 				return new UpdatePersonStrategy(context, personId, operation);
 			default:
