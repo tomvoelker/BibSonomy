@@ -1,17 +1,24 @@
 var resultLimit = 100;
 
 $(document).ready(function() {
-	setupPersonAutocomplete('.typeahead', "search", 'extendedPersonName', function(data) {
-		window.location.pathname = "/person/" + data.personId;
-	});
+    setupPersonSearchWithLink("#searchPersonAutocomplete");
 });
 
-function setupPersonSearch(inputFieldSelector, buttonSelector) {
-	setupPersonAutocomplete(inputFieldSelector, "search", 'extendedPersonName', function(data) {
-		$(buttonSelector).attr("data-person-name", data.personName);
-		$(buttonSelector).attr("data-extended-person-name", data.extendedPersonName);
-		$(buttonSelector).attr("data-person-id", data.personId);
-	});
+function setupPersonSearchWithLink(inputFieldSelector) {
+    setupPersonAutocomplete(inputFieldSelector, "search", 'extendedPersonName', function (data) {
+        // Set browser location to selected person page
+        window.location.pathname = "/person/" + data.personId;
+    });
+}
+
+function setupPersonSearchWithSubmit(inputFieldSelector, buttonSelector) {
+    setupPersonAutocomplete(inputFieldSelector, "search", 'extendedPersonName', function (data) {
+        $(buttonSelector)
+            .attr("data-person-id", data.personId)
+            .attr("data-person-name", data.personName)
+            .attr("data-extended-person-name", data.extendedPersonName)
+            .removeClass("disabled"); // enable submit button
+    });
 }
 
 function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
@@ -24,67 +31,59 @@ function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
 	});
 }
 
-function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
-	setupPersonAutocomplete(inputFieldSelector, "searchPub", 'extendedPublicationName', function(data) {
-		$(formSelector + " input[name='formInterHash']").val(data.interhash);
-		$(formSelector + " input[name='resourcePersonRelation.personIndex']").val(data.personIndex);
-	});
-}
-
 function setupPersonAutocomplete(inputFieldSelector, operation, displayKey, selectionHandler) {
-	// constructs the suggestion engine
-	var personNames = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: '/editPerson?operation=' + operation + '&selectedName=%QUERY',
-		wildcard: '%QUERY',
-		rateLimitWait: 800
-	});
+    // constructs the suggestion engine
+    var personNames = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: '/editPerson?operation=' + operation + '&selectedName=%QUERY',
+        wildcard: '%QUERY',
+        rateLimitWait: 800
+    });
 
-	// kicks off the loading/processing of `local` and `prefetch`
-	personNames.initialize();
+    // kicks off the loading/processing of `local` and `prefetch`
+    personNames.initialize();
 
-	var personNameTypeahead = $(inputFieldSelector).typeahead({
-		hint: true,
-		highlight: true,
-		minLength: 1,
-	},
-	{
-		name: 'personNames',
-		limit: resultLimit,
-		
-		// display – For a given suggestion, determines the string representation of it. 
-		// This will be used when setting the value of the input control after a suggestion is selected. 
-		// Can be either a key string or a function that transforms a suggestion object into a string. Defaults to stringifying the suggestion.
-		// `ttAdapter` wraps the suggestion engine in an adapter that is compatible with the typeahead jQuery plugin
-		displayKey: displayKey,
-
-		source: personNames.ttAdapter(),
-		templates: {
-            header: printResults,
-            empty: [ '<h5 class="response">' + getString('persons.intro.search.result0') + '</h5>' ]
+    var personNameTypeahead = $(inputFieldSelector).typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1,
         },
-	});
-	
-	personNameTypeahead.on('typeahead:selected', function(evt, data) {
-		selectionHandler(data);
-	}).on('typeahead:asyncrequest', function() {
-	    $(this).addClass("ui-autocomplete-loading");
-	})
-	.on('typeahead:asynccancel typeahead:asyncreceive', function() {
-	    $(this).removeClass("ui-autocomplete-loading");
-	})
-	.on('typeahead:change', function(evt, data, async, name) {
-		$('#btnAddRoleSubmit').removeClass('disabled');
-	});
+        {
+            name: 'personNames',
+            limit: resultLimit,
+
+            // display – For a given suggestion, determines the string representation of it.
+            // This will be used when setting the value of the input control after a suggestion is selected.
+            // Can be either a key string or a function that transforms a suggestion object into a string. Defaults to stringifying the suggestion.
+            // `ttAdapter` wraps the suggestion engine in an adapter that is compatible with the typeahead jQuery plugin
+            displayKey: displayKey,
+            source: personNames.ttAdapter(),
+            templates: {
+                header: printResults,
+                empty: ['<h5 class="response">' + getString('persons.intro.search.result0') + '</h5>']
+            },
+        });
+
+    personNameTypeahead
+        .on('typeahead:selected', function (evt, data) {
+            selectionHandler(data);
+        })
+        .on('typeahead:asyncrequest', function () {
+            $(this).addClass("ui-autocomplete-loading");
+        })
+        .on('typeahead:asynccancel typeahead:asyncreceive', function () {
+            $(this).removeClass("ui-autocomplete-loading");
+        });
 }
 
 var printResults = function (context) {
-	var responseText = "";	
-	if (context.suggestions.length < resultLimit)
-		responseText = getString('persons.intro.search.result', [context.suggestions.length]);
-	else
-		responseText = getString('persons.intro.search.resultMax', [context.suggestions.length]);
-	
-	return '<h5 class="response">' + responseText + '</h5>';
+    var responseText = "";
+    if (context.suggestions.length < resultLimit) {
+        responseText = getString('persons.intro.search.result', [context.suggestions.length]);
+    } else {
+        responseText = getString('persons.intro.search.resultMax', [context.suggestions.length]);
+    }
+
+    return '<h5 class="response">' + responseText + '</h5>';
 }
