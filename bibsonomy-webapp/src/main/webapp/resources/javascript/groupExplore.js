@@ -89,10 +89,11 @@ function updateResults(page) {
     var sortPageOrder = selectedSort.data('asc') ? 'asc' : 'desc';
 
     $.ajax({
-        url: '/ajax/explore/group', // The url you are fetching the results.
+        url: '/ajax/explore', // The url you are fetching the results.
         data: {
             // These are the variables you can pass to the request
-            'requestedGroup': groupName,
+            'requestedName': groupName,
+            'entityType': 'group',
             'search': query,
             'sortPage': sortPage,
             'sortPageOrder': sortPageOrder,
@@ -120,11 +121,12 @@ function updateCounters() {
     var query = buildSearchQuery();
 
     $.ajax({
-        url: '/ajax/explore/group', // The url you are fetching the results.
+        url: '/ajax/explore', // The url you are fetching the results.
         dataType: 'json',
         data: {
             // These are the variables you can pass to the request
-            'requestedGroup': groupName,
+            'requestedName': groupName,
+            'entityType': 'group',
             'distinctCount': true,
             'search': query
         },

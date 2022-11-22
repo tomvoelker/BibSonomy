@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import lombok.Setter;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
@@ -21,7 +22,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.object.FieldDescriptor;
-import org.bibsonomy.webapp.command.GroupExploreViewCommand;
+import org.bibsonomy.webapp.command.ExploreViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -29,13 +30,16 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
- * Controller for group explore pages
+ * Controller for explore pages
  *
  * /explore/group/GROUP
+ * /explore/user/USER
  *
  * @author kchoong
  */
-public class GroupExplorePageController extends SingleResourceListController implements MinimalisticController<GroupExploreViewCommand>, ErrorAware {
+
+@Setter
+public class ExplorePageController extends SingleResourceListController implements MinimalisticController<ExploreViewCommand>, ErrorAware {
 
     private static final String PRESET_FIELD_NAME = "preset";
 
@@ -44,17 +48,24 @@ public class GroupExplorePageController extends SingleResourceListController imp
 
     private User loggedInUser;
 
-    /** the requested group */
-    private String requestedGroup;
+    /** the requested content type */
+    private GroupingEntity entityType;
+
+    /** the requested content name for user/group */
+    private String requestedName;
+
+    private User user;
     private Group group;
 
+    private Errors errors;
+
     @Override
-    public View workOn(GroupExploreViewCommand command) {
+    public View workOn(ExploreViewCommand command) {
         this.loggedInUser = command.getContext().getLoginUser();
 
         // get group details
-        this.requestedGroup = command.getRequestedGroup();
-        this.group = this.logic.getGroupDetails(requestedGroup, false);
+        this.requestedName = command.getRequestedName();
+        this.group = this.logic.getGroupDetails(requestedName, false);
         command.setGroup(this.group);
 
         // create filter list
@@ -62,7 +73,14 @@ public class GroupExplorePageController extends SingleResourceListController imp
         command.addFilters(YEAR_FIELD_NAME, generateFilters(YEAR_FIELD_NAME, 200, true));
         command.addFilters(PRESET_FIELD_NAME, generatePresetTagFilters(group.getPresetTags()));
 
-        return Views.GROUPEXPLOREPAGE;
+        switch (this.entityType) {
+            case USER:
+                return Views.GROUPEXPLOREPAGE;
+            case GROUP:
+                return Views.GROUPEXPLOREPAGE;
+            default:
+                return Views.ERROR;
+        }
     }
 
     private FieldDescriptor<BibTex, ?> createFieldDescriptor(String field) {
@@ -101,13 +119,13 @@ public class GroupExplorePageController extends SingleResourceListController imp
      */
     private List<SearchFilterElement> generateFilters(String field, int size, boolean reverse) {
         // build query for group posts to aggregate for counts
-        PostSearchQuery<BibTex> groupPostsQuery = new PostSearchQuery<>();
-        groupPostsQuery.setGrouping(GroupingEntity.GROUP);
-        groupPostsQuery.setGroupingName(this.requestedGroup);
+        PostSearchQuery<BibTex> postsQuery = new PostSearchQuery<>();
+        postsQuery.setGrouping(this.entityType);
+        postsQuery.setGroupingName(this.requestedName);
 
         // get aggregated count by given field
         DistinctFieldQuery<BibTex, ?> distinctFieldQuery = new DistinctFieldQuery<>(BibTex.class, createFieldDescriptor(field));
-        distinctFieldQuery.setPostQuery(groupPostsQuery);
+        distinctFieldQuery.setPostQuery(postsQuery);
         distinctFieldQuery.setSize(size);
         final Set<?> distinctFieldCounts = this.logic.getMetaData(this.loggedInUser, distinctFieldQuery);
 
@@ -127,47 +145,20 @@ public class GroupExplorePageController extends SingleResourceListController imp
     }
 
     @Override
-    public GroupExploreViewCommand instantiateCommand() {
-        return new GroupExploreViewCommand();
-    }
-
-    /**
-     * @param logic the logic to set
-     */
-    public void setLogic(LogicInterface logic) {
-        this.logic = logic;
-    }
-
-    /**
-     * @param mappers the mappers to set
-     */
-    public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {
-        this.mappers = mappers;
-    }
-
-    /**
-     *
-     * @param requestedGroup the requested group to set
-     */
-    public void setRequestedGroup(String requestedGroup) {
-        this.requestedGroup = requestedGroup;
-    }
-
-    /**
-     * @param group the actual requested group to set
-     */
-    public void setGroup(Group group) {
-        this.group = group;
+    public ExploreViewCommand instantiateCommand() {
+        ExploreViewCommand command = new ExploreViewCommand();
+        command.setEntityType(this.entityType);
+        return command;
     }
 
     @Override
     public Errors getErrors() {
-        return null;
+        return this.errors;
     }
 
     @Override
     public void setErrors(Errors errors) {
-
+        this.errors = errors;
     }
 
 }

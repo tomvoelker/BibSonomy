@@ -575,7 +575,7 @@
 						<property name="controllerBeanName" value="groupExplorePageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>requestedGroup</value>
+								<value>requestedName</value>
 								<value>search</value>
 							</list>
 						</property>
@@ -1019,6 +1019,18 @@
 		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
+	<bean id="userExplorePageController" class="org.bibsonomy.webapp.controller.ExplorePageController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
+		<property name="entityType" value="USER" />
+	</bean>
+
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="fileLogic" ref="fileLogic" />
@@ -1105,7 +1117,7 @@
 		<property name="logic" ref="logic" />
 	</bean>
 
-	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.GroupExplorePageController" scope="request">
+	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.ExplorePageController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="mappers">
 			<map>
@@ -1114,6 +1126,7 @@
 				</entry>
 			</map>
 		</property>
+		<property name="entityType" value="GROUP" />
 	</bean>
 
 	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">
