@@ -63,20 +63,23 @@ public class ExplorePageController extends SingleResourceListController implemen
     public View workOn(ExploreViewCommand command) {
         this.loggedInUser = command.getContext().getLoginUser();
 
-        // get group details
+        // get details for requested entity
         this.requestedName = command.getRequestedName();
-        this.group = this.logic.getGroupDetails(requestedName, false);
-        command.setGroup(this.group);
 
         // create filter list
         command.addFilters(ENTRYTYPE_FIELD_NAME, generateEntrytypeFilters());
         command.addFilters(YEAR_FIELD_NAME, generateFilters(YEAR_FIELD_NAME, 200, true));
-        command.addFilters(PRESET_FIELD_NAME, generatePresetTagFilters(group.getPresetTags()));
 
         switch (this.entityType) {
             case USER:
-                return Views.GROUPEXPLOREPAGE;
+                this.user = this.logic.getUserDetails(requestedName);
+                command.setUser(this.user);
+                return Views.USEREXPLOREPAGE;
             case GROUP:
+                this.group = this.logic.getGroupDetails(requestedName, false);
+                command.setGroup(this.group);
+                // Add filters for group's preset tags
+                command.addFilters(PRESET_FIELD_NAME, generatePresetTagFilters(group.getPresetTags()));
                 return Views.GROUPEXPLOREPAGE;
             default:
                 return Views.ERROR;

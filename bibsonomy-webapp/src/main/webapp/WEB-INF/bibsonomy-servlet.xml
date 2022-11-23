@@ -470,6 +470,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/explore/user">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userExplorePageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedName</value>
+								<value>search</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvPageController"/>

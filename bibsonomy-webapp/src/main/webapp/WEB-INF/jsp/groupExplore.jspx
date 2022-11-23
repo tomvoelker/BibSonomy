@@ -9,6 +9,7 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
           xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 >
 
@@ -32,8 +33,8 @@
 
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/explorePosts.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/explorePage.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/groupExplore.js"><!-- keep me --></script>
 		</jsp:attribute>
 
         <jsp:attribute name="heading">
@@ -43,95 +44,43 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:groupcrumb requestedGroup="${groupName}"/>
-					<nav:crumb name="Explore" active="true" />
+					<nav:groupcrumb requestedGroup="${groupName}" active="true"/>
+					<nav:crumb name="Explore" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
 
         <jsp:attribute name="content">
-			<div id="groupExploreContent">
-				<div class="row">
-					<div class="col-md-12">
-						<fmt:message var="headerMessage" key="explore.header">
-							<fmt:param value="${fn:escapeXml(groupTitleName)}" />
-						</fmt:message>
-						<h1 id="requestedGroup" data-group="${groupName}"><c:out value="${headerMessage}" /></h1>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<p><c:out value="${group.description}" /></p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-9">
-						<div class="row">
-							<div class="col-md-12">
-								<parts:extendedSearch headerMessage="" searchPlaceholderKey="publications.search"
-													  formAction="" formInputValue="${command.search}"
-													  enableReset="${true}" alwaysShow="${true}" toggleFiltersOption="${true}"/>
+			<fmt:message var="headerMessage" key="explore.header">
+				<fmt:param value="${fn:escapeXml(groupTitleName)}" />
+			</fmt:message>
+
+			<resources:explorePosts requestedName="${groupName}" entityType="group" headerMessage="${headerMessage}" descriptionMessage="${group.description}">
+                <jsp:attribute name="filterOptions">
+                    <c:if test="${groupName eq properties['group.explore.nav.id']}">
+						<sidebar:searchFilterList filterField="tags"
+												  headerMessageKey="explore.filter.tags.header"
+												  headerMessageIcon="tags" hide="${true}"/>
+						<div id="filter-list-custom" class="filter-list hidden" data-field="tags">
+							<sidebar:sidebarHeader textKey="explore.filter.custom.header" iconKey="sitemap"/>
+							<fmt:message var="customFilterPlaceholder" key="explore.filter.search.placeholder"/>
+							<input id="searchCustomFilters" class="form-control" type="text"
+								   placeholder="${customFilterPlaceholder}"
+								   aria-label="${customFilterPlaceholder}" onkeyup="searchCustomFilters()"/>
+							<div id="filter-entries-custom" class="filter-entries search-filter-selection">
+								<!-- keep me -->
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<h3 class="list-headline">
-									<div class="btn-group dropdown-align-right all-resources-menu">
-										<rc:actions resourceType="bibtex"
-													sortPage="pubdate"
-													sortPageOrder="desc"
-													entriesPerPage="20"
-													showBookmark="${false}"
-													showPublication="${true}"
-													showInboxActions="${false}"
-													isClipboard="${false}"
-													disableFiltering="${true}"
-													ignoreSortLinks="${true}"
-													overridePath="/group/${groupName}" />
-									</div>
-								</h3>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<parts:spinner/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<div id="groupExplorePublications"><!-- keep me --></div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-3 sidebar">
-						<div id="groupExploreFilterHeader">
-							<!--<h3><fmt:message key="explore.filter.header"/></h3>-->
-							<a id="resetFilterLink" href="#" onclick="resetFilterSelection()"><fmt:message key="explore.filter.reset"/></a>
-						</div>
-						<c:if test="${groupName eq properties['group.explore.nav.id']}">
-							<sidebar:searchFilterList filterField="tags" headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" hide="${true}" />
-							<div id="filter-list-custom" class="filter-list hidden" data-field="tags">
-								<sidebar:sidebarHeader textKey="explore.filter.custom.header" iconKey="sitemap"/>
-								<fmt:message var="customFilterPlaceholder" key="explore.filter.search.placeholder" />
-								<input id="searchCustomFilters" class="form-control" type="text" placeholder="${customFilterPlaceholder}" aria-label="${customFilterPlaceholder}" onkeyup="searchCustomFilters()" />
-								<div id="filter-entries-custom" class="filter-entries search-filter-selection"><!-- keep me --></div>
-							</div>
-						</c:if>
-						<c:if test="${properties['group.presetTags.enabled'] and command.filterMap.containsKey('preset')}">
-							<sidebar:searchFilterList filterField="tags" filterEntries="${command.filterMap.get('preset')}" hideCounts="${true}"
-													  headerMessageKey="explore.filter.tags.header" headerMessageIcon="tags" buttonClass="filter-entry-counter" />
-						</c:if>
-						<c:if test="${command.filterMap.containsKey('entrytype')}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.filterMap.get('entrytype')}"
-													  headerMessageKey="explore.filter.entrytype.header" headerMessageIcon="book" buttonClass="filter-entry-counter" />
-						</c:if>
-						<c:if test="${command.filterMap.containsKey('year')}">
-							<sidebar:searchFilterList filterField="year" filterEntries="${command.filterMap.get('year')}"
-													  headerMessageKey="explore.filter.pubyear.header" headerMessageIcon="calendar-alt" buttonClass="filter-entry-counter" showMore="${true}" />
-						</c:if>
-					</div>
-				</div>
-			</div>
+					</c:if>
+					<c:if test="${properties['group.presetTags.enabled'] and command.filterMap.containsKey('preset')}">
+						<sidebar:searchFilterList filterField="tags"
+												  filterEntries="${command.filterMap.get('preset')}"
+												  hideCounts="${true}"
+												  headerMessageKey="explore.filter.tags.header"
+												  headerMessageIcon="tags" buttonClass="filter-entry-counter"/>
+					</c:if>
+                </jsp:attribute>
+            </resources:explorePosts>
 		</jsp:attribute>
     </layout:paneLayout>
 </jsp:root>
