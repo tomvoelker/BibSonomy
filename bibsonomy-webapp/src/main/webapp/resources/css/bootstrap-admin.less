@@ -1,3 +1,41 @@
 .admin-rectable > tr.inactive {
 	color: grey;
 }
+
+.searchindex-panel {
+	.searchindex-mapping-version {
+		float: right;
+	}
+
+	.searchindex-status {
+		text-transform: uppercase;
+		margin-left: 5px;
+	}
+
+	.searchindex-status-active {
+		background-color: green !important;
+	}
+
+	.searchindex-status-inactive {
+		background-color: red !important;
+	}
+
+	.searchindex-status-generating {
+		background-color: blue !important;
+	}
+
+	.searchindex-status-standby {
+		background-color: grey !important;
+	}
+
+	.searchindex-properties {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		strong {
+			display: inline-block;
+			width: 150px;
+		}
+	}
+}

@@ -1,163 +1,148 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+          xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+          xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+          xmlns:form="http://www.springframework.org/tags/form"
+          xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+          xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
-	<fmt:message key="navi.admin" var="pageTitle" />
-	
-	<layout:layout 
-		pageTitle="full text search"
-		loginUser="${command.context.loginUser}" 
-		requPath="${requPath}"
-		noSidebar="${true}">
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
+
+    <fmt:message key="navi.admin" var="pageTitle"/>
+
+    <layout:layout
+            pageTitle="full text search"
+            loginUser="${command.context.loginUser}"
+            requPath="${requPath}"
+            noSidebar="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<nav:admin />
-					<nav:crumb nameKey="navi.admin.fulltextsearch" active="true" />
+					<nav:admin/>
+					<nav:crumb nameKey="navi.admin.fulltextsearch" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-		
-		<jsp:attribute name="content">
-			<h2>Elasticsearch Indices</h2>
-			
-			<c:forEach items="${command.searchIndexInfo}" var="searchIndexInfoEntry">
-				<c:set var="searchIndexInfos" value="${searchIndexInfoEntry.value}" />
-				<c:set var="entity" value="${searchIndexInfoEntry.key}" />
-				<h3><c:out value="${entity} Indices" /></h3>
-				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}" />
-				<c:choose>
-					<c:when test="${searchIndexInfosSize > 0 }">
-						<c:set var="dualSyncState" value="${searchIndexInfos[0].syncState['class'].simpleName eq 'SearchIndexDualSyncState'}" />
-						<table class="table table-condensed">
-							<thead>
-								<tr>
-									<th>Index Name</th>
-									<th>State</th>
-									<th># Docs</th>
-									<th>Version</th>
 
-									<c:choose>
-										<c:when test="${dualSyncState}">
-											<th>first last id</th>
-											<th>first last log date</th>
-											<th>second last id</th>
-											<th>second last log date</th>
-										</c:when>
-										<c:otherwise>
-											<th>Last tas id</th>
-											<th>Last log date</th>
-											<th>Last Doc date</th>
-											<th>Last p. id</th>
-										</c:otherwise>
-									</c:choose>
+        <jsp:attribute name="content">
+			<h2><fmt:message key="admin.search.title"/></h2>
 
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-							<c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
-								<tr>
-									<td><c:out value="${searchIndexInfo.id}" /></td>
-									<td><c:out value="${searchIndexInfo.state}" /></td>
-									<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
-									<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
-									<c:choose>
-										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
-											<c:choose>
-												<c:when test="${dualSyncState}">
-													<c:set var="firstState" value="${searchIndexInfo.syncState.firstState}" />
-													<c:set var="secondState" value="${searchIndexInfo.syncState.secondState}" />
-													<td><c:out value="${firstState.lastPostContentId}" /></td>
-													<td><c:out value="${firstState.lastLogDate}" /></td>
-													<td><c:out value="${secondState.lastPostContentId}" /></td>
-													<td><c:out value="${secondState.lastLogDate}" /></td>
-												</c:when>
-												<c:otherwise>
-													<td><c:out value="${searchIndexInfo.syncState.lastTasId}" /></td>
-													<td><c:out value="${searchIndexInfo.syncState.lastLogDate}" /></td>
-													<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
-													<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
-												</c:otherwise>
-											</c:choose>
-											<td>
-												<div class="btn-group">
-													<c:if test="${searchIndexInfo.state eq 'STANDBY'}">
-														<form class="form-inline">
-															<input type="hidden" name="entity" value="${entity}" />
-															<input type="hidden" name="action" value="ENABLE_INDEX" />
-															<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-															<button class="btn btn-default btn-xs"><fontawsome:icon icon="check" /></button>
-														</form>
-													</c:if>
-													<form class="popover-confirm form-inline">
-														<input type="hidden" name="entity" value="${entity}" />
-														<input type="hidden" name="action" value="regenerate_index" />
-														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-info btn-xs confirm'>regenerate&lt;/button>" class="btn btn-default btn-xs"><fontawsome:icon icon="refresh" /></button>
-													</form>
-													<form class="popover-confirm form-inline">
-														<input type="hidden" name="entity" value="${entity}" />
-														<input type="hidden" name="action" value="delete_index" />
-														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-danger btn-xs confirm'>delete&lt;/button>" class="btn btn-danger btn-xs"><fontawsome:icon icon="trash" /></button>
-													</form>
-												</div>
-											</td>
-										</c:when>
-										
-										<c:otherwise>
-											<td colspan="6">
-												<bs:progress progress="${searchIndexInfo.indexGenerationProgress * 100}" showProgressLabel="${true}" />
-											</td>
-										</c:otherwise>
-									</c:choose>
-									
-									<th><!-- keep me --></th>
-								</tr>
-							</c:forEach>
-							</tbody>
-						</table>
-						<c:if test="${searchIndexInfosSize lt 2}">
-							<bs:alert style="warning">
-								<jsp:attribute name="alertBody">
-									There is only one index. Please generate another one.
-								</jsp:attribute>
-							</bs:alert>
+			<c:set var="indexOrder"
+                   value="${fn:split('BibTex,GoldStandardPublication,Bookmark,GoldStandardBookmark,Group,Person,Project',',')}"/>
+
+			<c:forEach items="${indexOrder}" var="entity">
+				<h3>
+					<fmt:message key="admin.search.index.title">
+						<fmt:param value="${entity}"/>
+					</fmt:message>
+				</h3>
+				<c:set var="searchIndexInfos" value="${command.searchIndexInfo.get(entity)}"/>
+				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}"/>
+
+				<c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
+					<c:set var="state" value="${fn:toLowerCase(searchIndexInfo.state)}" />
+
+					<div class="searchindex-panel panel panel-default">
+						<div class="panel-heading" role="tab" id="${searchIndexInfo.id}Heading">
+							<h4 class="panel-title">
+								<c:choose>
+									<c:when test="${state != 'inactive'}">
+										<a role="button" data-toggle="collapse" href="#${searchIndexInfo.id}Collapse"
+										   aria-expanded="true" aria-controls="#${searchIndexInfo.id}Collapse">
+											<span class="searchindex-id">${searchIndexInfo.id}</span>
+											<span class="searchindex-status searchindex-status-${state} badge">${state}</span>
+											<pre class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</pre>
+										</a>
+									</c:when>
+									<c:otherwise>
+										<a class="collapsed" role="button" data-toggle="collapse" href="#${searchIndexInfo.id}Collapse"
+										   aria-expanded="false" aria-controls="#${searchIndexInfo.id}Collapse">
+											<span>${searchIndexInfo.id}</span>
+											<span class="searchindex-status searchindex-status-${state} badge">${state}</span>
+											<pre class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</pre>
+										</a>
+									</c:otherwise>
+								</c:choose>
+							</h4>
+						</div>
+
+						<c:set var="collapseIn" value="" />
+						<c:if test="${state != 'inactive'}">
+							<c:set var="collapseIn" value="in" />
 						</c:if>
-					</c:when>
-					
-					<c:otherwise>
+						<div id="${searchIndexInfo.id}Collapse" class="panel-collapse collapse ${collapseIn}" role="tabpanel" aria-labelledby="${searchIndexInfo.id}Heading">
+						    <div class="panel-body">
+							    <div class="row">
+								    <div class="col-md-6">
+										<ul class="searchindex-properties">
+											<li>
+												<strong>ID:</strong>
+												<span>${searchIndexInfo.id}</span>
+											</li>
+											<li>
+												<strong>State:</strong>
+												<span>${searchIndexInfo.state}</span>
+											</li>
+											<li>
+												<strong>Mapping Version:</strong>
+												<span>${searchIndexInfo.syncState.mappingVersion}</span>
+											</li>
+											<li>
+												<strong># Documents:</strong>
+												<span>${searchIndexInfo.statistics.numberOfDocuments}</span>
+											</li>
+										</ul>
+								    </div>
+								    <div class="col-md-6">
+										<ul class="searchindex-properties">
+										</ul>
+								    </div>
+							    </div>
+						    </div>
+						</div>
+					</div>
+				</c:forEach>
+
+				<!-- Warning for none or one existing index -->
+				<c:choose>
+					<c:when test="${searchIndexInfosSize eq 0}">
 						<bs:alert style="warning">
 							<jsp:attribute name="alertBody">
-								Did not found any indices. Please generate an index.
+								<fmt:message key="admin.search.index.none"/>
 							</jsp:attribute>
 						</bs:alert>
-					</c:otherwise>
+					</c:when>
+
+					<c:when test="${searchIndexInfosSize eq 1}">
+						<bs:alert style="warning">
+							<jsp:attribute name="alertBody">
+								<fmt:message key="admin.search.index.one"/>
+							</jsp:attribute>
+						</bs:alert>
+					</c:when>
 				</c:choose>
+
 				<form method="post">
-					<input type="hidden" name="entity" value="${entity}" />
-					<input type="hidden" name="action" value="generate_index" />
-					<bsform:button size="defaultSize" style="defaultStyle" value="Generate new ${entity} index" type="submits"/>
+					<input type="hidden" name="entity" value="${entity}"/>
+					<input type="hidden" name="action" value="generate_index"/>
+					<fmt:message var="generateMsg" key="admin.search.index.generate">
+						<fmt:param value="${entity}"/>
+					</fmt:message>
+					<bsform:button size="defaultSize" style="defaultStyle" value="${generateMsg}" type="submits"/>
 				</form>
-				<br />
+
+				<hr/>
 			</c:forEach>
-		</jsp:attribute>
+    	</jsp:attribute>
 	</layout:layout>
 </jsp:root>

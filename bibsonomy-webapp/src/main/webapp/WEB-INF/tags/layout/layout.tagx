@@ -108,9 +108,11 @@
 							<c:if test="${not empty breadcrumbs}">
 								<jsp:invoke fragment="breadcrumbs" />
 							</c:if>
-							<div id="intro">
-								<jsp:invoke fragment="contentIntro"/>
-							</div>
+							<c:if test="${not empty contentIntro}">
+								<div id="intro">
+									<jsp:invoke fragment="contentIntro"/>
+								</div>
+							</c:if>
 							<jsp:invoke fragment="content"/>
 						</c:when>
 						<c:otherwise>
