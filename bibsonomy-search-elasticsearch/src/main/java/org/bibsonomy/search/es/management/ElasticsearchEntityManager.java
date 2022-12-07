@@ -41,7 +41,7 @@ import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 
 /**
- * general entity manager that only updates a single entity
+ * Elasticsearch manager for single entity indices
  *
  * @author dzo
  */
@@ -51,19 +51,30 @@ public class ElasticsearchEntityManager<T> extends ElasticsearchManager<T, Defau
 	private final IndexUpdateLogic<T> updateIndexLogic;
 
 	/**
-	 * default constructor
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param databaseInformationLogic
 	 * @param updateIndexLogic
 	 */
-	public ElasticsearchEntityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<T, DefaultSearchIndexSyncState> generator, Converter<DefaultSearchIndexSyncState, Map<String, Object>, Object> syncStateConverter, EntityInformationProvider<T> entityInformationProvider, DatabaseInformationLogic<DefaultSearchIndexSyncState> databaseInformationLogic, IndexUpdateLogic<T> updateIndexLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
+	public ElasticsearchEntityManager(URI systemURI,
+									  ESClient client,
+									  ElasticsearchIndexGenerator<T, DefaultSearchIndexSyncState> generator,
+									  Converter<DefaultSearchIndexSyncState, Map<String, Object>, Object> syncStateConverter,
+									  EntityInformationProvider<T> entityInformationProvider,
+									  boolean indexEnabled,
+									  boolean updateEnabled,
+									  boolean regenerateEnabled,
+									  DatabaseInformationLogic<DefaultSearchIndexSyncState> databaseInformationLogic,
+									  IndexUpdateLogic<T> updateIndexLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.databaseInformationLogic = databaseInformationLogic;
 		this.updateIndexLogic = updateIndexLogic;
 	}

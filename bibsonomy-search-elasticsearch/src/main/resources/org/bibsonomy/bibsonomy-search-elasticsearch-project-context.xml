@@ -57,7 +57,7 @@
 	</bean>
 
 	<bean id="elasticsearchProjectManager" class="org.bibsonomy.search.es.management.ElasticsearchOneToManyManager" parent="elasticsearchAbstractIndexManager">
-		<constructor-arg>
+		<constructor-arg name="generator">
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchOneToManyIndexGenerator">
 				<constructor-arg ref="esClient" />
 				<constructor-arg ref="systemURI" />
@@ -67,10 +67,11 @@
 				<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg ref="dualSyncStateConverter" />
-		<constructor-arg ref="elasticsearchProjectEntityInformationProvider" />
-		<constructor-arg ref="elasticsearchProjectPersonUpdateLogic" />
-		<constructor-arg ref="elasticsearchProjectPersonDatabaseInformationLogic" />
+		<constructor-arg name="syncStateConverter" ref="dualSyncStateConverter" />
+		<constructor-arg name="oneToManyEntityInformationProvider" ref="elasticsearchProjectEntityInformationProvider" />
+		<constructor-arg name="updateIndexLogic" ref="elasticsearchProjectPersonUpdateLogic" />
+		<constructor-arg name="databaseInformationLogic" ref="elasticsearchProjectPersonDatabaseInformationLogic" />
+		<constructor-arg name="regenerateEnabled" value="false" />
 	</bean>
 
 </beans>

@@ -80,7 +80,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * manager that manages the indices for the specified type
+ * Elasticsearch manager, that manages the indices for the specified type.
+ *
  * @param <T>
  *
  * @author dzo
@@ -88,41 +89,50 @@ import java.util.stream.Collectors;
 public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> implements SearchIndexManager {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchManager.class);
 
-
 	private final Semaphore updateLock = new Semaphore(1);
 	private final Semaphore generatorLock = new Semaphore(1);
-
-	private final boolean disabledIndexing;
-	private final boolean updateEnabled;
-
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-	private final ElasticsearchIndexGenerator<T, S> generator;
 
+	/** the URI for the elasticsearch */
+	protected final URI systemURI;
 	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
+	private final ElasticsearchIndexGenerator<T, S> generator;
 	protected final Converter<S, Map<String, Object>, Object> syncStateConverter;
-
 	protected final EntityInformationProvider<T> entityInformationProvider;
-	protected final URI systemId;
+
+	private final boolean indexEnabled;
+	private final boolean updateEnabled;
+	private final boolean regenerateEnabled;
 
 	/**
-	 * default constructor
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 */
-	public ElasticsearchManager(final URI systemId, final boolean disabledIndexing, final boolean updateEnabled, final ESClient client, ElasticsearchIndexGenerator<T, S> generator, final Converter<S, Map<String, Object>, Object> syncStateConverter, final EntityInformationProvider<T> entityInformationProvider) {
-		this.disabledIndexing = disabledIndexing;
-		this.updateEnabled = updateEnabled;
-		this.generator = generator;
+	public ElasticsearchManager(final URI systemURI,
+								final ESClient client,
+								final ElasticsearchIndexGenerator<T, S> generator,
+								final Converter<S, Map<String, Object>, Object> syncStateConverter,
+								final EntityInformationProvider<T> entityInformationProvider,
+								final boolean indexEnabled,
+								final boolean updateEnabled,
+								final boolean regenerateEnabled) {
+		this.systemURI = systemURI;
 		this.client = client;
+		this.generator = generator;
 		this.syncStateConverter = syncStateConverter;
 		this.entityInformationProvider = entityInformationProvider;
-		this.systemId = systemId;
+		this.indexEnabled = indexEnabled;
+		this.updateEnabled = updateEnabled;
+		this.regenerateEnabled = regenerateEnabled;
 	}
 
 	/**
@@ -153,7 +163,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @return
 	 */
 	protected String getAliasNameForState(final SearchIndexState state) {
-		return ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, state);
+		return ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemURI, state);
 	}
 
 	/**
@@ -271,7 +281,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 				return;
 			}
 
-			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
+			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI);
 
 			final S oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName, this.syncStateConverter);
 			this.updateIndex(realIndexName, oldState);
@@ -376,7 +386,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		 */
 		state.setMappingVersion(oldState.getMappingVersion());
 		indexData.setSource(this.syncStateConverter.convert(state));
-		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, indexData);
 	}
 
 	/**
@@ -454,7 +464,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		searchIndexInfo.setId(indexName);
 
 		if (loadSyncState) {
-			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, this.syncStateConverter));
+			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, this.syncStateConverter));
 		}
 
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();
@@ -479,7 +489,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			throw new IndexAlreadyGeneratingException();
 		}
 
-		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexRegenerationTask<T> task = new ElasticSearchIndexRegenerationTask<>(this, this.generator, newIndexName, indexNameToReplace);
 		this.executeTask(async, task);
 	}
@@ -506,9 +516,16 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 */
 	@Override
 	public void regenerateAllIndices() {
-		if (this.disabledIndexing) {
+		if (!client.isConnected()) {
+			LOG.debug("skipping regenerating all indices, index connection invalid/connection lost");
 			return;
 		}
+
+		if (!this.regenerateEnabled) {
+			LOG.debug("skipping regenerating all indices, regenerating disabled");
+			return;
+		}
+
 		try {
 			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
 			if (present(activeIndex)) {
@@ -554,7 +571,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
 		}
-		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexGenerationTask<T> task = new ElasticSearchIndexGenerationTask<>(this, this.generator, newIndexName, activeIndexAfterGeneration);
 		this.executeTask(async, task);
 	}

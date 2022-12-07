@@ -60,8 +60,9 @@
 		<property name="projectNoSpamEmail" ref="projectNoSpamEmail" />
 		<property name="projectAPIEmail" ref="projectApiEmail" />
 		<property name="client" ref="esClient" />
+		<property name="indexEnabled" value="#{isIndexEnabled}" />
+		<property name="updateEnabled" value="#{isIndexEnabled and isIndexUpdateEnabled}" />
 		<property name="factory" ref="markdownFactory" />
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
-		<property name="indexingDisabled" value="#{!isValidESConnection}" />
 	</bean>
 </beans>

@@ -43,7 +43,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -142,10 +141,7 @@ public class HelpSearchManager implements HelpSearch {
 		}
 	}
 	
-	private boolean indexingDisabled;
-	
 	private String path;
-	
 	private String projectName;
 	private String projectTheme;
 	private String projectHelpTheme;
@@ -157,6 +153,8 @@ public class HelpSearchManager implements HelpSearch {
 	private URLGenerator urlGenerator;
 	
 	private ESClient client;
+	private boolean indexEnabled;
+	private boolean updateEnabled;
 	
 	private HelpParserFactory factory;
 	
@@ -166,7 +164,7 @@ public class HelpSearchManager implements HelpSearch {
 	 * re-index the complete help pages
 	 */
 	public void reindex() {
-		if (this.indexingDisabled) {
+		if (!this.indexEnabled || !this.updateEnabled) {
 			return;
 		}
 

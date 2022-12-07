@@ -63,7 +63,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
- * manager for Elasticsearch
+ * Elasticsearch manager for post (bookmark) indices
  *
  * @author dzo
  * @param <R> 
@@ -79,19 +79,28 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	protected final SearchDBInterface<R> inputLogic;
 
 	/**
-	 * default constructor
+	 * Default constructor
 	 *
-	 * @param disabledIndexing
-	 * @param updateEnabled
-	 * @param generator
+	 * @param systemURI
 	 * @param client
+	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
-	 * @param systemId
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
 	 */
-	public ElasticsearchPostManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<R>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<R> inputLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
+	public ElasticsearchPostManager(URI systemURI,
+									ESClient client,
+									ElasticsearchIndexGenerator<Post<R>, DefaultSearchIndexSyncState> generator,
+									Converter syncStateConverter,
+									EntityInformationProvider entityInformationProvider,
+									boolean indexEnabled,
+									boolean updateEnabled,
+									boolean regenerateEnabled,
+									final SearchDBInterface<R> inputLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.inputLogic = inputLogic;
 	}
 
@@ -113,8 +122,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		 */
 		if (oldState.getLastLogDate() != null) {
 			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLastLogDate().getTime() - QUERY_TIME_OFFSET_MS));
-			
-			
+
 			final List<DeleteData> idsToDelete = new LinkedList<>();
 			for (final Integer contentId : contentIdsToDelete) {
 				final String indexID = String.valueOf(contentId.intValue());

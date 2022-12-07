@@ -42,7 +42,7 @@ import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.bibsonomy.search.util.Converter;
 
 /**
- * a manager that can update a one to many index
+ * Elasicsearch manager for One-Many entity indices
  *
  * @author dzo
  * @param <T>
@@ -54,20 +54,31 @@ public class ElasticsearchOneToManyManager<T, M> extends ElasticsearchManager<T,
 	private final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic;
 	private final OneToManyEntityInformationProvider<T, M> oneToManyEntityInformationProvider;
 
+
 	/**
-	 * constructor to build a new one to many manager
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param updateIndexLogic
 	 * @param databaseInformationLogic
 	 * @param oneToManyEntityInformationProvider
 	 */
-	public ElasticsearchOneToManyManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<T, SearchIndexDualSyncState> generator, Converter<SearchIndexDualSyncState, Map<String, Object>, Object> syncStateConverter, OneToManyIndexUpdateLogic<T, M> updateIndexLogic, DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic, OneToManyEntityInformationProvider<T, M> oneToManyEntityInformationProvider) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, oneToManyEntityInformationProvider);
+	public ElasticsearchOneToManyManager(URI systemURI,
+										 ESClient client,
+										 ElasticsearchIndexGenerator<T, SearchIndexDualSyncState> generator,
+										 Converter<SearchIndexDualSyncState, Map<String, Object>, Object> syncStateConverter,
+										 boolean indexEnabled,
+										 boolean updateEnabled,
+										 boolean regenerateEnabled,
+										 final OneToManyIndexUpdateLogic<T, M> updateIndexLogic,
+										 final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic,
+										 final OneToManyEntityInformationProvider<T, M> oneToManyEntityInformationProvider) {
+		super(systemURI, client, generator, syncStateConverter, oneToManyEntityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.updateIndexLogic = updateIndexLogic;
 		this.databaseInformationLogic = databaseInformationLogic;
 		this.oneToManyEntityInformationProvider = oneToManyEntityInformationProvider;

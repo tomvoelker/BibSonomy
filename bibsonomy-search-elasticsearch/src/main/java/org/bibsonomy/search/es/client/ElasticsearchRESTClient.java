@@ -456,11 +456,11 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean isValidConnection() {
+	public boolean isConnected() {
 		try {
 			return this.client.ping(this.buildRequestOptions());
 		} catch (final Exception e) {
-			LOG.error("disabling index", e);
+			LOG.error("Connection to an elasticsearch instance could not be established. Please check the connection or properties.", e);
 		}
 
 		return false;

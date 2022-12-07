@@ -61,10 +61,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * special implementation for {@link ElasticsearchCommunityPostManager} to update publication specific fields
- * these fields are:
+ * Elasticsearch manager for goldstandard/community publication indices
+ * This is a special implementation of {@link ElasticsearchCommunityPostManager} to update publication specific fields.
+ * These fields are:
  *
- * - person resource relations
+ * - {@link ResourcePersonRelation}
  *
  * @author dzo
  */
@@ -127,23 +128,36 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 	private final PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic;
 
 	/**
-	 * default constructor
+	 * Default constructor
 	 *
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
-	 * @param communityPostUpdateLogic
-	 * @param postUpdateLogic
 	 * @param databaseInformationLogic
+	 * @param postUpdateLogic
+	 * @param communityPostUpdateLogic
 	 * @param personResourceRelationUpdateLogic
 	 */
-	public ElasticsearchCommunityPostPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic, PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider, inputLogic, communityPostUpdateLogic, postUpdateLogic, databaseInformationLogic);
+	public ElasticsearchCommunityPostPublicationManager(URI systemURI,
+														ESClient client,
+														ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator,
+														Converter syncStateConverter,
+														EntityInformationProvider entityInformationProvider,
+														boolean indexEnabled,
+														boolean updateEnabled,
+														boolean regenerateEnabled,
+														final SearchDBInterface<G> inputLogic,
+														final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic,
+														final CommunityPostIndexUpdateLogic<G> postUpdateLogic,
+														final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic,
+														final PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled, inputLogic, databaseInformationLogic, postUpdateLogic, communityPostUpdateLogic);
 		this.personResourceRelationUpdateLogic = personResourceRelationUpdateLogic;
 	}
 

@@ -237,10 +237,11 @@ public interface ESClient {
 	boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete);
 
 	/**
-	 * checks if the client can connect to the es instance
-	 * @return
+	 * Check, if the client is successfully connected to an elasticsearch instance
+	 *
+	 * @return true, if valid elasticsearch connection
 	 */
-	boolean isValidConnection();
+	boolean isConnected();
 
 	/**
 	 * gets the index settings for the specified index

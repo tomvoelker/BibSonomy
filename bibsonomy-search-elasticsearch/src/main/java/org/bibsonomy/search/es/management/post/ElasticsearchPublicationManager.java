@@ -63,7 +63,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 /**
- * manager that also updates person informations
+ * Elasticsearch manager for publication indices.
+ * This is a special implementation of {@link ElasticsearchPostManager} to update publication specific fields.
  *
  * @author dzo
  * @author jensi
@@ -75,18 +76,28 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
 
 	/**
-	 * default constructor
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
 	 */
-	public ElasticsearchPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<P>, DefaultSearchIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<P> inputLogic) {
-		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId, inputLogic);
+	public ElasticsearchPublicationManager(URI systemURI,
+										   ESClient client,
+										   ElasticsearchIndexGenerator<Post<P>, DefaultSearchIndexSyncState> generator,
+										   Converter syncStateConverter,
+										   EntityInformationProvider entityInformationProvider,
+										   boolean indexEnabled,
+										   boolean updateEnabled,
+										   boolean regenerateEnabled,
+										   SearchDBInterface<P> inputLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled, inputLogic);
 	}
 
 	/* (non-Javadoc)

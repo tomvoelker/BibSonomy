@@ -65,7 +65,7 @@ import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 
 /**
- * special class that manages community posts
+ * Elasticsearch manager for goldstandard/community post (bookmark) indices
  *
  * @author dzo
  * @param <G> the community resource class
@@ -82,24 +82,38 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	private final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic;
 
 	/**
-	 * default constructor
-	 *  @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
-	 * @param communityPostUpdateLogic
+	 * @param databaseInformationLogic
 	 * @param postUpdateLogic
+	 * @param communityPostUpdateLogic
 	 */
-	public ElasticsearchCommunityPostManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
-		this.communityPostUpdateLogic = communityPostUpdateLogic;
-		this.postUpdateLogic = postUpdateLogic;
+	public ElasticsearchCommunityPostManager(URI systemURI,
+											 ESClient client,
+											 ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator,
+											 Converter syncStateConverter,
+											 EntityInformationProvider entityInformationProvider,
+											 boolean indexEnabled,
+											 boolean updateEnabled,
+											 boolean regenerateEnabled,
+											 final SearchDBInterface<G> inputLogic,
+											 final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic,
+											 final CommunityPostIndexUpdateLogic<G> postUpdateLogic,
+											 final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.inputLogic = inputLogic;
 		this.databaseInformationLogic = databaseInformationLogic;
+		this.postUpdateLogic = postUpdateLogic;
+		this.communityPostUpdateLogic = communityPostUpdateLogic;
 	}
 
 	@Override
