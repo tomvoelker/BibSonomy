@@ -59,6 +59,7 @@
 		<property name="projectEmail" ref="projectEmail" />
 		<property name="projectNoSpamEmail" ref="projectNoSpamEmail" />
 		<property name="projectAPIEmail" ref="projectApiEmail" />
+		<property name="supportedLocales" value="${system.locales.supported}" />
 		<property name="client" ref="esClient" />
 		<property name="indexEnabled" value="#{isIndexEnabled}" />
 		<property name="updateEnabled" value="#{isIndexEnabled and isIndexUpdateEnabled}" />
