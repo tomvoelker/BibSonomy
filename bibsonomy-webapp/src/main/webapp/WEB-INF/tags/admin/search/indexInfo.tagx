@@ -11,30 +11,34 @@
 
     <c:set var="state" value="${fn:toLowerCase(searchIndexInfo.state)}" />
 
-    <div class="searchindex-panel panel panel-primary">
+    <div class="searchindex-panel panel panel-default">
         <div class="panel-heading" role="tab" id="${searchIndexInfo.id}Heading">
-            <h4 class="panel-title">
-                <c:choose>
-                    <c:when test="${state != 'inactive'}">
-                        <a role="button" data-toggle="collapse" href="#${searchIndexInfo.id}Collapse"
-                           aria-expanded="true" aria-controls="#${searchIndexInfo.id}Collapse">
+            <c:choose>
+                <c:when test="${state != 'inactive'}">
+                    <div data-toggle="collapse" data-target="#${searchIndexInfo.id}Collapse"
+                       aria-expanded="true" aria-controls="#${searchIndexInfo.id}Collapse">
+                        <h4 class="panel-title">
                             <span class="searchindex-id">${searchIndexInfo.id}</span>
                             <span class="searchindex-status searchindex-status-${state} badge">${state}</span>
-                            <pre class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</pre>
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="collapsed" role="button" data-toggle="collapse" href="#${searchIndexInfo.id}Collapse"
-                           aria-expanded="false" aria-controls="#${searchIndexInfo.id}Collapse">
-                            <span>${searchIndexInfo.id}</span>
+                            <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
+                                <code class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</code>
+                            </c:if>
+                        </h4>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="collapsed" data-toggle="collapse" data-target="#${searchIndexInfo.id}Collapse"
+                         aria-expanded="false" aria-controls="#${searchIndexInfo.id}Collapse">
+                        <h4 class="panel-title">
+                            <span class="searchindex-id">${searchIndexInfo.id}</span>
                             <span class="searchindex-status searchindex-status-${state} badge">${state}</span>
                             <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
-                                <pre class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</pre>
+                                <code class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</code>
                             </c:if>
-                        </a>
-                    </c:otherwise>
-                </c:choose>
-            </h4>
+                        </h4>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
 
         <c:set var="collapseIn" value="" />
@@ -47,72 +51,68 @@
                     <c:choose>
                         <c:when test="${state != 'generating'}">
                             <div class="col-md-6">
-                                <ul class="searchindex-properties">
-                                    <li>
-                                        <strong><fmt:message key="admin.search.info.id"/></strong>
-                                        <span>${searchIndexInfo.id}</span>
-                                    </li>
-                                    <li>
-                                        <strong><fmt:message key="admin.search.info.state"/></strong>
-                                        <span>${searchIndexInfo.state}</span>
-                                    </li>
-                                    <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
-                                        <li>
-                                            <strong><fmt:message key="admin.search.info.mappingVersion"/></strong>
-                                            <span>${searchIndexInfo.syncState.mappingVersion}</span>
-                                        </li>
-                                    </c:if>
-                                    <li>
-                                        <strong><fmt:message key="admin.search.info.documents"/></strong>
-                                        <span>${searchIndexInfo.statistics.numberOfDocuments}</span>
-                                    </li>
-                                </ul>
+                                <div class="row">
+                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.id"/></strong></div>
+                                    <div class="col-md-8"><span>${searchIndexInfo.id}</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.state"/></strong></div>
+                                    <div class="col-md-8"><span>${searchIndexInfo.state}</span></div>
+                                </div>
+                                <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
+                                    <div class="row">
+                                        <div class="col-md-4"><strong><fmt:message key="admin.search.info.mappingVersion"/></strong></div>
+                                        <div class="col-md-8"><span>${searchIndexInfo.syncState.mappingVersion}</span></div>
+                                    </div>
+                                </c:if>
+                                <div class="row">
+                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.documents"/></strong></div>
+                                    <div class="col-md-8"><span>${searchIndexInfo.statistics.numberOfDocuments}</span></div>
+                                </div>
                             </div>
                             <c:if test="${searchIndexInfo.syncState != null}">
                                 <div class="col-md-6">
-                                    <ul class="searchindex-properties">
-                                        <c:set var="isDualSyncState" value="${searchIndexInfo.syncState['class'].simpleName eq 'SearchIndexDualSyncState'}" />
-                                        <c:choose>
-                                            <c:when test="${isDualSyncState}">
-                                                <c:set var="firstState" value="${searchIndexInfo.syncState.firstState}" />
-                                                <c:set var="secondState" value="${searchIndexInfo.syncState.secondState}" />
-                                                <li>
-                                                    <strong>First last content ID:</strong>
-                                                    <span>${firstState.lastPostContentId}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>First last Log Date:</strong>
-                                                    <span>${firstState.lastLogDate}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>Second last content ID:</strong>
-                                                    <span>${secondState.lastPostContentId}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>Second last Log Date:</strong>
-                                                    <span>${secondState.lastLogDate}</span>
-                                                </li>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <li>
-                                                    <strong>Last TAS ID:</strong>
-                                                    <span>${searchIndexInfo.syncState.lastTasId}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>Last Log Date:</strong>
-                                                    <span>${searchIndexInfo.syncState.lastLogDate}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>Last Document Date:</strong>
-                                                    <span>${searchIndexInfo.syncState.lastDocumentDate}</span>
-                                                </li>
-                                                <li>
-                                                    <strong>Last Person Change ID:</strong>
-                                                    <span>${searchIndexInfo.syncState.lastPersonChangeId}</span>
-                                                </li>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </ul>
+                                    <c:set var="isDualSyncState" value="${searchIndexInfo.syncState['class'].simpleName eq 'SearchIndexDualSyncState'}" />
+                                    <c:choose>
+                                        <c:when test="${isDualSyncState}">
+                                            <c:set var="firstState" value="${searchIndexInfo.syncState.firstState}" />
+                                            <c:set var="secondState" value="${searchIndexInfo.syncState.secondState}" />
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>First last content ID</strong></div>
+                                                <div class="col-md-8"><span>${firstState.lastPostContentId}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>First last Log Date</strong></div>
+                                                <div class="col-md-8"><span>${firstState.lastLogDate}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>Second last content ID</strong></div>
+                                                <div class="col-md-8"><span>${secondState.lastPostContentId}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>Second last Log Date</strong></div>
+                                                <div class="col-md-8"><span>${secondState.lastLogDate}</span></div>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>Last TAS ID</strong></div>
+                                                <div class="col-md-8"><span>${searchIndexInfo.syncState.lastTasId}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>Last Log Date</strong></div>
+                                                <div class="col-md-8"><span>${searchIndexInfo.syncState.lastLogDate}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>Last Document Date</strong></div>
+                                                <div class="col-md-8"><span>${searchIndexInfo.syncState.lastDocumentDate}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4"><strong>Last Person Change ID</strong></div>
+                                                <div class="col-md-8"><span>${searchIndexInfo.syncState.lastPersonChangeId}</span></div>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </c:if>
                         </c:when>

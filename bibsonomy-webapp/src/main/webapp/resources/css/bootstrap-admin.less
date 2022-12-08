@@ -3,11 +3,27 @@
 }
 
 .searchindex-panel {
+
+	.panel-heading {
+		cursor: pointer;
+	}
+
+	.panel-title {
+		color: @font-color;
+		font-weight: bold;
+	}
+
+	.searchindex-id {
+		cursor: text;
+	}
+
 	.searchindex-mapping-version {
+		cursor: text;
 		float: right;
 	}
 
 	.searchindex-status {
+		color: white;
 		text-transform: uppercase;
 		margin-left: 5px;
 	}
@@ -28,14 +44,4 @@
 		background-color: grey !important;
 	}
 
-	.searchindex-properties {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-
-		strong {
-			display: inline-block;
-			width: 175px;
-		}
-	}
 }
