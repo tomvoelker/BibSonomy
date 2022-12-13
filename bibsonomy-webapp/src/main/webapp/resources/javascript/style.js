@@ -350,21 +350,6 @@ $(function() {
 			}
 		});
 	});
-	
-	$('form.popover-confirm > *[data-toggle="popover"]').on('shown.bs.popover', function () {
-		$('.popover-content > .confirm').click(function() {
-			var form = $(this).parents('form.popover-confirm');
-			form.data("confirmed", "yes");
-			form.submit();
-			return false;
-		});
-	});
-	$('form.popover-confirm').submit(function() {
-		var confirmed = $(this).data("confirmed");
-		if (confirmed !== "yes") {
-			return false;
-		}
-	});
 
 	/*
 	 * Initialize popover with manual click trigger

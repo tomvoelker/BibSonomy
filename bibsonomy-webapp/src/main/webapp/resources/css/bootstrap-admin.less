@@ -29,19 +29,30 @@
 	}
 
 	.searchindex-status-active {
-		background-color: green !important;
+		background-color: @brand-success !important;
 	}
 
 	.searchindex-status-inactive {
-		background-color: red !important;
+		background-color: @brand-danger !important;
 	}
 
 	.searchindex-status-generating {
-		background-color: blue !important;
+		background-color: @brand-primary !important;
 	}
 
 	.searchindex-status-standby {
-		background-color: grey !important;
+		background-color: @brand-warning !important;
 	}
 
+	.searchindex-actions {
+		padding-top: 15px;
+
+		form {
+			display: inline-block;
+		}
+
+		button {
+			margin-right: 5px;
+		}
+	}
 }

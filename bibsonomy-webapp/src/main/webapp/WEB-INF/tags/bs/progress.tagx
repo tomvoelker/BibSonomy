@@ -8,7 +8,7 @@
 	
 	<fmt:formatNumber var="roundedProgress" value="${progress}" maxFractionDigits="2" />
 	<div class="progress">
-		<div class="progress-bar" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100" style="width: ${progress}%;">
+		<div class="progress-bar" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100" style="width: ${progress}%; min-width: 2em;">
 			<c:choose>
 				<c:when test="${not empty showProgressLabel and showProgressLabel}">
 					${roundedProgress}%

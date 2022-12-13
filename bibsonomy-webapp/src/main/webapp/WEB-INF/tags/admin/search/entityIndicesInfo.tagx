@@ -23,7 +23,7 @@
     <c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}"/>
 
     <c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
-        <adminSearch:indexInfo searchIndexInfo="${searchIndexInfo}" />
+        <adminSearch:indexInfo entity="${entity}" searchIndexInfo="${searchIndexInfo}" />
     </c:forEach>
 
     <c:if test="${showWarning}">
