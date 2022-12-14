@@ -60,7 +60,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.search.model.SearchIndexState;
+import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
@@ -352,7 +352,7 @@ public class HelpSearchManager implements HelpSearch {
 			final String indexName = this.getIndexNameForLanguage(locale);
 			final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
 			searchIndexInfo.setId(indexName);
-			searchIndexInfo.setState(SearchIndexState.ACTIVE);
+			searchIndexInfo.setState(SearchIndexStatus.ACTIVE);
 
 			// searchIndexInfo.setSyncState(); TODO
 

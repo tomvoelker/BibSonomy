@@ -30,11 +30,11 @@
 package org.bibsonomy.search.model;
 
 /**
- * enum representing the different states of an index
+ * enum representing the different statuses of an index
  * 
  * @author dzo
  */
-public enum SearchIndexState {
+public enum SearchIndexStatus {
 	/** the index is currently used for search */
 	ACTIVE,
 	

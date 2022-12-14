@@ -39,7 +39,7 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.model.SearchIndexState;
+import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
@@ -158,7 +158,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
 		}
 
-		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.GENERATING));
 	}
 
 	protected int retrieveNumberOfEntities() {
@@ -266,8 +266,8 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	 * methods removes the index state generating and adds the index state alias standby to the generated index
 	 */
 	private void indexCreated(final String indexName) {
-		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
-		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
+		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.STANDBY));
 	}
 
 	/**

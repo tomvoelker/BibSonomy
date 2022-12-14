@@ -40,7 +40,7 @@ public class SearchIndexInfo {
 	/** The id of the index represented by this object */
 	private String id;
 	
-	private SearchIndexState state;
+	private SearchIndexStatus state;
 	
 	private SearchIndexSyncState syncState;
 	
@@ -84,14 +84,14 @@ public class SearchIndexInfo {
 	/**
 	 * @return the state
 	 */
-	public SearchIndexState getState() {
+	public SearchIndexStatus getState() {
 		return this.state;
 	}
 
 	/**
 	 * @param state the state to set
 	 */
-	public void setState(SearchIndexState state) {
+	public void setState(SearchIndexStatus state) {
 		this.state = state;
 	}
 

@@ -50,7 +50,7 @@ import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.search.model.SearchIndexState;
+import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
@@ -162,7 +162,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param state
 	 * @return
 	 */
-	protected String getAliasNameForState(final SearchIndexState state) {
+	protected String getAliasNameForState(final SearchIndexStatus state) {
 		return ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemURI, state);
 	}
 
@@ -170,14 +170,14 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @return
 	 */
 	protected String getInactiveLocalAlias() {
-		return this.getAliasNameForState(SearchIndexState.INACTIVE);
+		return this.getAliasNameForState(SearchIndexStatus.INACTIVE);
 	}
 
 	/**
 	 * @return
 	 */
 	protected String getActiveLocalAlias() {
-		return this.getAliasNameForState(SearchIndexState.ACTIVE);
+		return this.getAliasNameForState(SearchIndexStatus.ACTIVE);
 	}
 
 	/**
@@ -233,7 +233,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
 			// remove the standby alias
-			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexState.STANDBY)));
+			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexStatus.STANDBY)));
 			// only set the alias if the index should not be deleted
 			final boolean preferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
@@ -401,7 +401,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			final String localActiveAlias = this.getActiveLocalAlias();
 			final String localActiveIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			if (present(localActiveIndexName)) {
-				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveIndexName, SearchIndexState.ACTIVE, true);
+				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveIndexName, SearchIndexStatus.ACTIVE, true);
 				infos.add(searchIndexInfo);
 			}
 		} catch (final IndexNotFoundException e) {
@@ -413,7 +413,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String localInactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
 			if (present(localInactiveIndexName)) {
-				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localInactiveIndexName, SearchIndexState.INACTIVE, true);
+				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localInactiveIndexName, SearchIndexStatus.INACTIVE, true);
 				infos.add(searchIndexInfo);
 			}
 		} catch (final IndexNotFoundException e) {
@@ -423,7 +423,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		// get infos about the standby indices
 		final List<String> indices = this.getAllStandByIndices();
 		for (final String indexName : indices) {
-			final SearchIndexInfo searchIndexInfoStandBy = getIndexInfoForIndex(indexName, SearchIndexState.STANDBY, true);
+			final SearchIndexInfo searchIndexInfoStandBy = getIndexInfoForIndex(indexName, SearchIndexStatus.STANDBY, true);
 			searchIndexInfoStandBy.setId(indexName);
 			infos.add(searchIndexInfoStandBy);
 		}
@@ -432,7 +432,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		if (this.generator.isGenerating()) {
 			try {
 				final SearchIndexInfo searchIndexInfoGeneratingIndex = new SearchIndexInfo();
-				searchIndexInfoGeneratingIndex.setState(SearchIndexState.GENERATING);
+				searchIndexInfoGeneratingIndex.setState(SearchIndexStatus.GENERATING);
 				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.generator.getProgress());
 				searchIndexInfoGeneratingIndex.setId(this.generator.getIndexName());
 				infos.add(searchIndexInfoGeneratingIndex);
@@ -449,7 +449,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @return all standby index names
 	 */
 	private List<String> getAllStandByIndices() {
-		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexState.STANDBY));
+		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexStatus.STANDBY));
 	}
 
 	/**
@@ -458,7 +458,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param loadSyncState
 	 * @return
 	 */
-	private SearchIndexInfo getIndexInfoForIndex(final String indexName, final SearchIndexState state, boolean loadSyncState) {
+	private SearchIndexInfo getIndexInfoForIndex(final String indexName, final SearchIndexStatus state, boolean loadSyncState) {
 		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
 		searchIndexInfo.setState(state);
 		searchIndexInfo.setId(indexName);
@@ -585,11 +585,11 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		try {
 			final String activeAlias = this.getActiveLocalAlias();
 			final String inactiveAlias = this.getInactiveLocalAlias();
-			final String standbyAlias = this.getAliasNameForState(SearchIndexState.STANDBY);
+			final String standbyAlias = this.getAliasNameForState(SearchIndexStatus.STANDBY);
 
 			final List<String> indices = this.client.getIndexNamesForAlias(standbyAlias);
 			if (!present(indexName) || !indices.contains(indexName)) {
-				throw new IllegalStateException("index not in state " + SearchIndexState.STANDBY);
+				throw new IllegalStateException("index not in state " + SearchIndexStatus.STANDBY);
 			}
 
 			final String activeIndexName = this.client.getIndexNameForAlias(activeAlias);
