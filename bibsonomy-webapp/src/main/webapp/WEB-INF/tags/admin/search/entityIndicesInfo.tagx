@@ -12,7 +12,7 @@
     <jsp:directive.attribute type="java.lang.String" name="entity" required="true" description="Indices infromation for this entity" />
     <jsp:directive.attribute type="java.util.List" name="searchIndexInfos" required="true" description="List of search index information" />
     <jsp:directive.attribute type="java.lang.Boolean" name="showWarning" required="false" description="Flag to show warnings about the number of indices" />
-    <jsp:directive.attribute type="java.lang.Boolean" name="generateBtn" required="false" description="Flag to show button to create generate index button" />
+    <jsp:directive.attribute type="java.lang.Boolean" name="showActions" required="false" description="Flag to show action buttons for indices" />
 
     <h3>
         <fmt:message key="admin.search.index.title">
@@ -23,7 +23,7 @@
     <c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}"/>
 
     <c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
-        <adminSearch:indexInfo entity="${entity}" searchIndexInfo="${searchIndexInfo}" />
+        <adminSearch:indexInfo entity="${entity}" searchIndexInfo="${searchIndexInfo}" showActions="${showActions}"/>
     </c:forEach>
 
     <c:if test="${showWarning}">
@@ -47,7 +47,7 @@
         </c:choose>
     </c:if>
 
-    <c:if test="${generateBtn}">
+    <c:if test="${showActions}">
         <form method="post">
             <input type="hidden" name="entity" value="${entity}"/>
             <input type="hidden" name="action" value="generate_index"/>

@@ -35,10 +35,10 @@
 
 			<c:forEach items="${indexOrder}" var="entity">
 				<c:set var="searchIndexInfos" value="${command.searchIndexInfo.get(entity)}"/>
-				<adminSearch:entityIndicesInfo entity="${entity}" searchIndexInfos="${searchIndexInfos}" showWarning="${true}" generateBtn="${true}" />
+				<adminSearch:entityIndicesInfo entity="${entity}" searchIndexInfos="${searchIndexInfos}" showWarning="${true}" showActions="${true}" />
 			</c:forEach>
 
-			<adminSearch:entityIndicesInfo entity="Help" searchIndexInfos="${command.searchIndexInfo.get('Help')}" showWarning="${false}" generateBtn="${false}" />
+			<adminSearch:entityIndicesInfo entity="Help" searchIndexInfos="${command.searchIndexInfo.get('Help')}" showWarning="${false}" showActions="${false}" />
     	</jsp:attribute>
 	</layout:layout>
 </jsp:root>

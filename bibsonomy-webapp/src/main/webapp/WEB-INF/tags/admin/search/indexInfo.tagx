@@ -10,6 +10,7 @@
 
     <jsp:directive.attribute type="java.lang.String" name="entity" required="true" description="Indices infromation for this entity" />
     <jsp:directive.attribute type="org.bibsonomy.search.model.SearchIndexInfo" name="searchIndexInfo" required="true" description="Search index information" />
+    <jsp:directive.attribute type="java.lang.Boolean" name="showActions" required="false" description="Flag to show action buttons for indices" />
 
     <c:set var="state" value="${fn:toLowerCase(searchIndexInfo.state)}" />
 
@@ -125,42 +126,44 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <div class="searchindex-actions row">
-                    <div class="col-md-12">
-                        <c:if test="${searchIndexInfo.state eq 'STANDBY'}">
+                <c:if test="${showActions}">
+                    <div class="searchindex-actions row">
+                        <div class="col-md-12">
+                            <c:if test="${searchIndexInfo.state eq 'STANDBY'}">
+                                <form class="form-inline">
+                                    <input type="hidden" name="entity" value="${entity}" />
+                                    <input type="hidden" name="action" value="ENABLE_INDEX" />
+                                    <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+                                    <fmt:message var="confirmEnable" key="admin.search.actions.enable.confirm"/>
+                                    <button type="submit" class="btn btn-default" onclick="return confirm('${confirmEnable}')">
+                                        <fontawsome:icon icon="check" fixedWidth="${true}" />
+                                        <fmt:message key="admin.search.actions.enable" />
+                                    </button>
+                                </form>
+                            </c:if>
                             <form class="form-inline">
                                 <input type="hidden" name="entity" value="${entity}" />
-                                <input type="hidden" name="action" value="ENABLE_INDEX" />
+                                <input type="hidden" name="action" value="regenerate_index" />
                                 <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-                                <fmt:message var="confirmEnable" key="admin.search.actions.enable.confirm"/>
-                                <button type="submit" class="btn btn-default" onclick="return confirm('${confirmEnable}')">
-                                    <fontawsome:icon icon="check" fixedWidth="${true}" />
-                                    <fmt:message key="admin.search.actions.enable" />
+                                <fmt:message var="confirmRegenerate" key="admin.search.actions.regenerate.confirm"/>
+                                <button type="submit" class="btn btn-default" onclick="return confirm('${confirmRegenerate}')">
+                                    <fontawsome:icon icon="refresh" fixedWidth="${true}" />
+                                    <fmt:message key="admin.search.actions.regenerate"/>
                                 </button>
                             </form>
-                        </c:if>
-                        <form class="form-inline">
-                            <input type="hidden" name="entity" value="${entity}" />
-                            <input type="hidden" name="action" value="regenerate_index" />
-                            <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-                            <fmt:message var="confirmRegenerate" key="admin.search.actions.regenerate.confirm"/>
-                            <button type="submit" class="btn btn-default" onclick="return confirm('${confirmRegenerate}')">
-                                <fontawsome:icon icon="refresh" fixedWidth="${true}" />
-                                <fmt:message key="admin.search.actions.regenerate"/>
-                            </button>
-                        </form>
-                        <form class="form-inline">
-                            <input type="hidden" name="entity" value="${entity}" />
-                            <input type="hidden" name="action" value="delete_index" />
-                            <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-                            <fmt:message var="confirmDelete" key="admin.search.actions.delete.confirm"/>
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('${confirmDelete}')">
-                                <fontawsome:icon icon="trash" fixedWidth="${true}" />
-                                <fmt:message key="admin.search.actions.delete"/>
-                            </button>
-                        </form>
+                            <form class="form-inline">
+                                <input type="hidden" name="entity" value="${entity}" />
+                                <input type="hidden" name="action" value="delete_index" />
+                                <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+                                <fmt:message var="confirmDelete" key="admin.search.actions.delete.confirm"/>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('${confirmDelete}')">
+                                    <fontawsome:icon icon="trash" fixedWidth="${true}" />
+                                    <fmt:message key="admin.search.actions.delete"/>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                </c:if>
             </div>
         </div>
     </div>
