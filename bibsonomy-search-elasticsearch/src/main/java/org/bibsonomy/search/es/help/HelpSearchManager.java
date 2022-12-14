@@ -352,7 +352,7 @@ public class HelpSearchManager implements HelpSearch {
 			final String indexName = this.getIndexNameForLanguage(locale);
 			final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
 			searchIndexInfo.setId(indexName);
-			searchIndexInfo.setState(SearchIndexStatus.ACTIVE);
+			searchIndexInfo.setStatus(SearchIndexStatus.ACTIVE);
 
 			// searchIndexInfo.setSyncState(); TODO
 

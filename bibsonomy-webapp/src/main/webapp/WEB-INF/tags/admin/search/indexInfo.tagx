@@ -12,7 +12,7 @@
     <jsp:directive.attribute type="org.bibsonomy.search.model.SearchIndexInfo" name="searchIndexInfo" required="true" description="Search index information" />
     <jsp:directive.attribute type="java.lang.Boolean" name="showActions" required="false" description="Flag to show action buttons for indices" />
 
-    <c:set var="state" value="${fn:toLowerCase(searchIndexInfo.state)}" />
+    <c:set var="state" value="${fn:toLowerCase(searchIndexInfo.status)}" />
 
     <div class="searchindex-panel panel panel-default">
         <div class="panel-heading" role="tab" id="${searchIndexInfo.id}Heading">
@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4"><strong><fmt:message key="admin.search.info.state"/></strong></div>
-                                    <div class="col-md-8"><span>${searchIndexInfo.state}</span></div>
+                                    <div class="col-md-8"><span>${searchIndexInfo.status}</span></div>
                                 </div>
                                 <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
                                     <div class="row">
@@ -121,7 +121,11 @@
                         </c:when>
                         <c:otherwise>
                             <div class="col-md-12">
-                                <bs:progress progress="${searchIndexInfo.indexGenerationProgress * 100}" showProgressLabel="${true}" />
+                                <bs:progress progress="${searchIndexInfo.generationProgress * 100}" />
+                                <c:if test="${not empty searchIndexInfo.allDocuments and searchIndexInfo.allDocuments != 0}">
+                                    <strong><fmt:message key="admin.search.info.progress"/></strong>
+                                    <c:out value=" ${searchIndexInfo.writtenDocuments}/${searchIndexInfo.allDocuments}" />
+                                </c:if>
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -129,7 +133,7 @@
                 <c:if test="${showActions}">
                     <div class="searchindex-actions row">
                         <div class="col-md-12">
-                            <c:if test="${searchIndexInfo.state eq 'STANDBY'}">
+                            <c:if test="${searchIndexInfo.status eq 'STANDBY'}">
                                 <form class="form-inline">
                                     <input type="hidden" name="entity" value="${entity}" />
                                     <input type="hidden" name="action" value="ENABLE_INDEX" />

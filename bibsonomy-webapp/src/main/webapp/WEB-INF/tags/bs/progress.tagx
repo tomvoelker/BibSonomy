@@ -2,24 +2,14 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-	
+
 	<jsp:directive.attribute name="progress" type="java.lang.Double" required="true" />
-	<jsp:directive.attribute name="showProgressLabel" type="java.lang.Boolean" required="false" />
 	
 	<fmt:formatNumber var="roundedProgress" value="${progress}" maxFractionDigits="2" />
 	<div class="progress">
 		<div class="progress-bar" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100" style="width: ${progress}%; min-width: 2em;">
-			<c:choose>
-				<c:when test="${not empty showProgressLabel and showProgressLabel}">
-					${roundedProgress}%
-				</c:when>
-				
-				<c:otherwise>
-					<!-- TODO: i18n -->
-					<span class="sr-only">${roundedProgress}% Complete</span>
-				</c:otherwise>
-			</c:choose>
-			
+			${roundedProgress}%
+			<span class="sr-only">${roundedProgress}% Complete</span> <!-- TODO i18n -->
 		</div>
 	</div>
 </jsp:root>

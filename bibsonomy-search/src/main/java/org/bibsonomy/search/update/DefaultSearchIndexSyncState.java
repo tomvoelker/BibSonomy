@@ -86,8 +86,6 @@ public class DefaultSearchIndexSyncState extends SearchIndexSyncState {
 		this.lastPredictionChangeDate = state.lastPredictionChangeDate;
 		this.setMappingVersion(state.getMappingVersion());
 	}
-	
-
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

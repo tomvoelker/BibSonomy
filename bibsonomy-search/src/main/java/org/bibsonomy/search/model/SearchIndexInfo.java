@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.search.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
@@ -36,105 +38,28 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
  *
  * @author ?
  */
+@Getter
+@Setter
 public class SearchIndexInfo {
 	/** The id of the index represented by this object */
 	private String id;
-	
-	private SearchIndexStatus state;
+
+	/** The current status of the index (active, inactive, generating, standby) */
+	private SearchIndexStatus status;
 	
 	private SearchIndexSyncState syncState;
-	
-	/** statistics */
+
 	private SearchIndexStatistics statistics;
-	
-	private double indexGenerationProgress;
 
-	/** 
-	 * indicates if the index is in sync with the DB
-	 */
-	private boolean correct;
+	private int writtenDocuments;
+	private int allDocuments;
 
-	/**
-	 * @return correct
-	 */
-	public boolean isCorrect() {
-		return correct;
-	}
+	public double getGenerationProgress() {
+		if (this.allDocuments == 0) {
+			// Catch dividing by zero
+			return 0;
+		}
 
-	/**
-	 * @param correct the correct to set
-	 */
-	public void setCorrect(boolean correct) {
-		this.correct = correct;
-	}
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the state
-	 */
-	public SearchIndexStatus getState() {
-		return this.state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(SearchIndexStatus state) {
-		this.state = state;
-	}
-
-	/**
-	 * @return the statistics
-	 */
-	public SearchIndexStatistics getStatistics() {
-		return this.statistics;
-	}
-
-	/**
-	 * @param statistics the statistics to set
-	 */
-	public void setStatistics(SearchIndexStatistics statistics) {
-		this.statistics = statistics;
-	}
-
-	/**
-	 * @param indexGenerationProgress
-	 *            the progress of the index-generation
-	 */
-	public void setIndexGenerationProgress(final double indexGenerationProgress) {
-		this.indexGenerationProgress = indexGenerationProgress;
-	}
-
-	/**
-	 * @return the syncState
-	 */
-	public SearchIndexSyncState getSyncState() {
-		return this.syncState;
-	}
-
-	/**
-	 * @param syncState the syncState to set
-	 */
-	public void setSyncState(SearchIndexSyncState syncState) {
-		this.syncState = syncState;
-	}
-
-	/**
-	 * @return the progress of the index-generation
-	 */
-	public double getIndexGenerationProgress() {
-		return indexGenerationProgress;
+		return (double) this.writtenDocuments / this.allDocuments;
 	}
 }

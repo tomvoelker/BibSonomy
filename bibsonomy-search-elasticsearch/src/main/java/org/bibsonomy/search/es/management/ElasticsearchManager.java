@@ -432,8 +432,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		if (this.generator.isGenerating()) {
 			try {
 				final SearchIndexInfo searchIndexInfoGeneratingIndex = new SearchIndexInfo();
-				searchIndexInfoGeneratingIndex.setState(SearchIndexStatus.GENERATING);
-				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.generator.getProgress());
+				searchIndexInfoGeneratingIndex.setStatus(SearchIndexStatus.GENERATING);
+				searchIndexInfoGeneratingIndex.setWrittenDocuments(this.generator.getWrittenEntities());
+				searchIndexInfoGeneratingIndex.setAllDocuments(this.generator.getNumberOfEntities());
 				searchIndexInfoGeneratingIndex.setId(this.generator.getIndexName());
 				infos.add(searchIndexInfoGeneratingIndex);
 			} catch (final IndexNotFoundException e) {
@@ -460,7 +461,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 */
 	private SearchIndexInfo getIndexInfoForIndex(final String indexName, final SearchIndexStatus state, boolean loadSyncState) {
 		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
-		searchIndexInfo.setState(state);
+		searchIndexInfo.setStatus(state);
 		searchIndexInfo.setId(indexName);
 
 		if (loadSyncState) {

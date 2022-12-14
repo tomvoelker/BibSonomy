@@ -270,26 +270,18 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.STANDBY));
 	}
 
-	/**
-	 * @return the progress
-	 */
-	public double getProgress() {
-		if (this.numberOfEntities == 0) {
-			return 0;
-		}
-		return this.writtenEntities / (double) this.numberOfEntities;
-	}
-
-	/**
-	 * @return the generating
-	 */
 	public boolean isGenerating() {
 		return generating;
 	}
 
-	/**
-	 * @return the indexName
-	 */
+	public int getNumberOfEntities() {
+		return numberOfEntities;
+	}
+
+	public int getWrittenEntities() {
+		return writtenEntities;
+	}
+
 	public String getIndexName() {
 		return indexName;
 	}
