@@ -348,6 +348,10 @@
 		<constructor-arg value="${system.cris}" />
 	</bean>
 
+	<bean id="genealogyEnabled" class="java.lang.Boolean">
+		<constructor-arg value="${genealogy.activated}" />
+	</bean>
+
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -874,7 +878,7 @@
 				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="#{crisSystem ? 'personsPageController' : 'personIntroPageController'}"/>
+						<property name="controllerBeanName" value="#{crisSystem or not genealogyEnabled ? 'personsPageController' : 'personIntroPageController'}"/>
 						<property name="allowedFields">
 							<list>
 								<value>search</value>
