@@ -31,7 +31,6 @@ package org.bibsonomy.search.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * infos about a search index
@@ -47,7 +46,7 @@ public class SearchIndexInfo {
 	/** The current status of the index (active, inactive, generating, standby) */
 	private SearchIndexStatus status;
 	
-	private SearchIndexSyncState syncState;
+	private SearchIndexState syncState;
 
 	private SearchIndexStatistics statistics;
 

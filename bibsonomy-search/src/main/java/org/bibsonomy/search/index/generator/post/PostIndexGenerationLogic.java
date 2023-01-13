@@ -29,6 +29,13 @@
  */
 package org.bibsonomy.search.index.generator.post;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
@@ -37,24 +44,18 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
-import org.bibsonomy.search.management.database.params.SearchParam;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.bibsonomy.search.model.SearchIndexState;
+import org.bibsonomy.search.model.SearchParam;
 
 /**
  * generation logic for posts
  *
  * @param <R>
  */
-public class PostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>>, DatabaseInformationLogic<DefaultSearchIndexSyncState> {
+public class PostIndexGenerationLogic<R extends Resource> extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Post<R>>, DatabaseInformationLogic<SearchIndexState> {
+
 	protected Class<R> resourceClass;
 	private GeneralDatabaseManager generalDatabaseManager;
 	protected PersonDatabaseManager personDatabaseManager;
@@ -107,13 +108,13 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	}
 
 	@Override
-	public DefaultSearchIndexSyncState getDbState() {
-		final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState();
+	public SearchIndexState getDbState() {
+		final SearchIndexState newState = new SearchIndexState();
+		newState.setLastEntityLogDate(this.getLastLogDate());
 		newState.setLastTasId(this.getLastTasId());
-		newState.setLastLogDate(this.getLastLogDate());
-		newState.setLastPersonChangeId(this.getLastPersonChangeId());
 		newState.setLastDocumentDate(this.getLastDocumentDate());
-		newState.setLastPredictionChangeDate(this.getLastPredictionDate());
+		// newState.setLastPersonChangeId(this.getLastPersonChangeId());
+		// newState.setLastPredictionChangeDate(this.getLastPredictionDate());
 		return newState;
 	}
 

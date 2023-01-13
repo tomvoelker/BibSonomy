@@ -34,7 +34,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.index.utils.SearchParamUtils;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 import java.util.Collections;
 import java.util.Date;

@@ -45,8 +45,7 @@ import org.bibsonomy.search.index.update.person.PersonResourceRelationUpdateLogi
 import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateLogic;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.script.Script;
@@ -146,14 +145,14 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 	 */
 	public ElasticsearchCommunityPostPublicationManager(URI systemURI,
 														ESClient client,
-														ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator,
+														ElasticsearchIndexGenerator<Post<G>, SearchIndexState> generator,
 														Converter syncStateConverter,
 														EntityInformationProvider entityInformationProvider,
 														boolean indexEnabled,
 														boolean updateEnabled,
 														boolean regenerateEnabled,
 														final SearchDBInterface<G> inputLogic,
-														final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic,
+														final DatabaseInformationLogic databaseInformationLogic,
 														final CommunityPostIndexUpdateLogic<G> postUpdateLogic,
 														final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic,
 														final PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
@@ -162,19 +161,18 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 	}
 
 	@Override
-	protected void updateResourceSpecificFields(final String indexName, final SearchIndexDualSyncState oldState, final SearchIndexDualSyncState targetState) {
-		final DefaultSearchIndexSyncState communitySearchIndexState = oldState.getFirstState();
+	protected void updateResourceSpecificFields(final String indexName, final SearchIndexState oldState, final SearchIndexState targetState) {
 
 		final List<Pair<String, UpdateData>> updateDataMap = new LinkedList<>();
 		/*
 		 * add new resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(communitySearchIndexState.getLastPersonChangeId(), communitySearchIndexState.getLastRelationLogDate(), limit, offset));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(oldState.getLastPersonChangeId(), oldState.getLastRelationChangeDate(), limit, offset));
 
 		/*
 		 * remove resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(communitySearchIndexState.getLastRelationLogDate()));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(oldState.getLastRelationChangeDate()));
 		
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}

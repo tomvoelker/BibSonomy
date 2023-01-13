@@ -33,8 +33,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
 import org.junit.Test;
 
 /**
@@ -47,8 +47,8 @@ public class ProjectDatabaseInformationLogicTest extends AbstractDatabaseManager
 
 	@Test
 	public void testDBState() {
-		final DefaultSearchIndexSyncState state = LOGIC.getDbState();
-		assertThat(state.getLastPostContentId(), is(3l));
+		final SearchIndexState state = LOGIC.getDbState();
+		assertThat(state.getLastEntityContentId(), is(3l));
 	}
 
 }

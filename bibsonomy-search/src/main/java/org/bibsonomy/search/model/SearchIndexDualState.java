@@ -27,22 +27,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.update;
+package org.bibsonomy.search.model;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * a index sync state information state for community indices
+ * class for all search index sync states with dual entities
  *
  * @author dzo
  */
 @Getter
 @Setter
-public class SearchIndexDualSyncState extends SearchIndexSyncState {
+public class SearchIndexDualState extends SearchIndexState {
 
-	private DefaultSearchIndexSyncState firstState;
+	private SearchIndexState firstState;
 
-	private DefaultSearchIndexSyncState secondState;
+	private SearchIndexState secondState;
 
 }

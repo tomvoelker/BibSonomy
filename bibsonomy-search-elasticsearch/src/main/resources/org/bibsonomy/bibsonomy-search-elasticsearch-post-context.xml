@@ -53,11 +53,11 @@
 					</list>
 				</constructor-arg>
 				<constructor-arg ref="communityBookmarkDatabaseInformationLogic" />
-				<constructor-arg ref="dualSyncStateConverter" />
+				<constructor-arg ref="postSyncStateConverter" />
 				<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="syncStateConverter" ref="dualSyncStateConverter" />
+		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
 		<constructor-arg name="entityInformationProvider" ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 		<constructor-arg name="inputLogic" ref="goldStandardBookmarkSearchDBLogic" />
 		<constructor-arg name="communityPostUpdateLogic" ref="communityIndexUpdateLogicCommunityBookmark" />
@@ -78,11 +78,11 @@
 					</list>
 				</constructor-arg>
 				<constructor-arg ref="communityPublicationDatabaseInformationLogic" />
-				<constructor-arg ref="dualSyncStateConverter" />
+				<constructor-arg ref="postSyncStateConverter" />
 				<constructor-arg ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="syncStateConverter" ref="dualSyncStateConverter" />
+		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
 		<constructor-arg name="entityInformationProvider" ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 		<constructor-arg name="inputLogic" ref="goldStandardPublicationSearchDBLogic" />
 		<constructor-arg name="communityPostUpdateLogic" ref="communityIndexUpdateLogicCommunityPublication" />

@@ -39,8 +39,8 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.model.SearchIndexStatus;
-import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
+public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
 	private final ESClient client;

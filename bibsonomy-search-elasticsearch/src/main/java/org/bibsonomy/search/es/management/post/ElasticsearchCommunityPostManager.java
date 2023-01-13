@@ -34,7 +34,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,8 +57,7 @@ import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateLogic;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
@@ -70,7 +68,7 @@ import org.elasticsearch.script.ScriptType;
  * @author dzo
  * @param <G> the community resource class
  */
-public class ElasticsearchCommunityPostManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchIndexDualSyncState> {
+public class ElasticsearchCommunityPostManager<G extends Resource> extends ElasticsearchManager<Post<G>, SearchIndexState> {
 
 	private static final String USER_KEY = "user";
 	private static final String UPDATE_ALL_USERS_REMOVE_SCRIPT = "ctx._source." + ESConstants.Fields.ALL_USERS + ".removeAll(Collections.singleton(params." + USER_KEY + "))";
@@ -79,7 +77,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	private final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic;
 	private final CommunityPostIndexUpdateLogic<G> postUpdateLogic;
 	private final SearchDBInterface<G> inputLogic;
-	private final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexState> databaseInformationLogic;
 
 	/**
 	 * Default constructor
@@ -99,14 +97,14 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	 */
 	public ElasticsearchCommunityPostManager(URI systemURI,
 											 ESClient client,
-											 ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator,
+											 ElasticsearchIndexGenerator<Post<G>, SearchIndexState> generator,
 											 Converter syncStateConverter,
 											 EntityInformationProvider entityInformationProvider,
 											 boolean indexEnabled,
 											 boolean updateEnabled,
 											 boolean regenerateEnabled,
 											 final SearchDBInterface<G> inputLogic,
-											 final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic,
+											 final DatabaseInformationLogic<SearchIndexState> databaseInformationLogic,
 											 final CommunityPostIndexUpdateLogic<G> postUpdateLogic,
 											 final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic) {
 		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
@@ -117,29 +115,27 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	}
 
 	@Override
-	protected void updateIndex(final String indexName, SearchIndexDualSyncState oldState) {
-		final DefaultSearchIndexSyncState oldNormalSearchIndexState = oldState.getSecondState();
-		final DefaultSearchIndexSyncState oldCommunitySearchIndexState = oldState.getFirstState();
+	protected void updateIndex(final String indexName, SearchIndexState oldState) {
 
-		final Integer communityPostLastContentId = oldCommunitySearchIndexState.getLastTasId();
-		final Integer postLastContentId = oldNormalSearchIndexState.getLastTasId();
-		final Date communityPostLastLogDate = oldCommunitySearchIndexState.getLastLogDate();
-		final Date postLastLogDate = oldNormalSearchIndexState.getLastLogDate();
+		final Integer lastPostContentId = oldState.getLastEntityContentId();
+		final Date lastPostLogDate = oldState.getLastEntityLogDate();
+		final Integer lastCommunityPostContentId = oldState.getLastCommunityEntityContentId();
+		final Date lastCommunityPostLogDate = oldState.getLastCommunityEntityLogDate();
 
-		final SearchIndexDualSyncState targetState = this.databaseInformationLogic.getDbState();
+		final SearchIndexState targetState = this.databaseInformationLogic.getDbState();
 
 		/*
 		 * 1. step: get only deleted entries, not updated
 		 *
 		 * a) get all community deletes
 		 */
-		final List<Post<G>> deletedEntities = this.communityPostUpdateLogic.getDeletedEntities(communityPostLastLogDate);
+		final List<Post<G>> deletedEntities = this.communityPostUpdateLogic.getDeletedEntities(lastCommunityPostLogDate);
 		this.deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedEntities);
 
 		/*
 		 * now all normal posts that were deleted without a community post
 		 */
- 		final List<Post<G>> deletedNormalPosts = this.postUpdateLogic.getDeletedEntities(postLastLogDate);
+ 		final List<Post<G>> deletedNormalPosts = this.postUpdateLogic.getDeletedEntities(lastPostLogDate);
 		this.deletePostsFromIndexAndInsertOtherPostInDB(indexName, deletedNormalPosts);
 
 		/*
@@ -147,12 +143,12 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		 * a) for the "normal" posts
 		 * here posts with a community post are excluded by the logic
 		 */
-		this.insertNewPosts(indexName, postLastContentId, postLastLogDate, this.postUpdateLogic);
+		this.insertNewPosts(indexName, lastPostContentId, lastPostLogDate, this.postUpdateLogic);
 
 		/*
 		 * b) new posts for gold standard posts
 		 */
-		this.insertNewPosts(indexName, communityPostLastContentId, communityPostLastLogDate, this.communityPostUpdateLogic);
+		this.insertNewPosts(indexName, lastCommunityPostContentId, lastCommunityPostLogDate, this.communityPostUpdateLogic);
 
 		/*
 		 * 3. handle flagging of users
@@ -162,7 +158,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		 * user unflagged as spammer: the post in the index must be updated iff there is no community post in the database
 		 * and the post is newer than the post in the index
 		 */
-		final List<User> users = this.inputLogic.getPredictionForTimeRange(oldNormalSearchIndexState.getLastPredictionChangeDate(), targetState.getSecondState().getLastPredictionChangeDate());
+		final List<User> users = this.inputLogic.getPredictionForTimeRange(oldState.getLastPredictionDate(), oldState.getLastPredictionDate());
 		final Map<String, IndexData> postsToInsert = new LinkedHashMap<>();
 		for (final User user : users) {
 			final String userName = user.getName();
@@ -208,7 +204,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		/*
 		 * update the all_users field; add users, and remove users
 		 */
-		this.updateAllUsersField(indexName, oldNormalSearchIndexState);
+		this.updateAllUsersField(indexName, oldState);
 
 		this.updateResourceSpecificFields(indexName, oldState, targetState);
 
@@ -225,15 +221,15 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	 * @param oldState the old state for the update
 	 * @param targetState the target state for the update
 	 */
-	protected void updateResourceSpecificFields(final String indexName, final SearchIndexDualSyncState oldState, final SearchIndexDualSyncState targetState) {
+	protected void updateResourceSpecificFields(final String indexName, final SearchIndexState oldState, final SearchIndexState targetState) {
 		// noop
 	}
 
-	private void updateAllUsersField(final String indexName, final DefaultSearchIndexSyncState oldNormalSearchIndexState) {
+	private void updateAllUsersField(final String indexName, final SearchIndexState oldNormalSearchIndexState) {
 		/*
 		 * remove deleted posts
 		 */
-		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLastLogDate(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLastEntityLogDate(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
 
 		/*
 		 * now add new posts

@@ -39,8 +39,8 @@
 		<constructor-arg value="${search.es.systemURI}" />
 	</bean>
 
-	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.DefaultSearchIndexSyncStateConverter" />
-	<bean id="dualSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexDualSyncStateConverter" />
+	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexStateConverter" />
+	<bean id="dualSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexDualStateConverter" />
 
 	<bean id="elasticsearchAbstractIndexManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" abstract="true" destroy-method="shutdown">
 		<constructor-arg name="systemURI" ref="systemURI" />

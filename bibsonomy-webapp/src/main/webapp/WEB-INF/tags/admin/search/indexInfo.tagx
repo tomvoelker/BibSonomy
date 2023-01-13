@@ -75,6 +75,7 @@
                             </div>
                             <c:if test="${searchIndexInfo.syncState != null}">
                                 <div class="col-md-6">
+                                    <!--
                                     <c:set var="isDualSyncState" value="${searchIndexInfo.syncState['class'].simpleName eq 'SearchIndexDualSyncState'}" />
                                     <c:choose>
                                         <c:when test="${isDualSyncState}">
@@ -116,6 +117,7 @@
                                             </div>
                                         </c:otherwise>
                                     </c:choose>
+                                    -->
                                 </div>
                             </c:if>
                         </c:when>

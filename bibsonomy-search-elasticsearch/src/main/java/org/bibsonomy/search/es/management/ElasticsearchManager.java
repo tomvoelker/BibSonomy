@@ -52,8 +52,7 @@ import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.model.SearchIndexStatistics;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.Sets;
@@ -86,7 +85,7 @@ import java.util.stream.Collectors;
  *
  * @author dzo
  */
-public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> implements SearchIndexManager {
+public abstract class ElasticsearchManager<T, S extends SearchIndexState> implements SearchIndexManager {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchManager.class);
 
 	private final Semaphore updateLock = new Semaphore(1);
@@ -295,9 +294,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 	protected abstract void updateIndex(final String indexName, S oldState);
 
-	protected <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
-		final long lastContentId = oldState.getLastPostContentId();
-		final Date lastLogDate = oldState.getLastLogDate();
+	protected <E> void updateEntity(final String indexName, final SearchIndexState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
+		final long lastContentId = oldState.getLastEntityContentId();
+		final Date lastLogDate = oldState.getLastEntityLogDate();
 		final String entityType = entityInformationProvider.getType();
 
 		/*

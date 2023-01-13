@@ -42,7 +42,7 @@ import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.*;
@@ -56,7 +56,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S extends SearchIndexSyncState, O> {
+public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S extends SearchIndexState, O> {
 
 	protected final ElasticsearchManager<T, S> manager;
 	private final Converter<T, Map<String, Object>, O> converter;

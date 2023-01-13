@@ -32,25 +32,25 @@ package org.bibsonomy.search.es.index.generator;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.OneToManyIndexGenerationLogic;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 
 import java.net.URI;
 import java.util.Map;
 
 /**
- * generator to generate a entity with a to-many relation
+ * generator to generate an entity with a to-many relation
  *
  * @param <T>
  * @param <M>
  */
-public class ElasticsearchOneToManyIndexGenerator<T, M, S extends SearchIndexSyncState> extends ElasticsearchIndexGenerator<T, S> {
+public class ElasticsearchOneToManyIndexGenerator<T, M, S extends SearchIndexState> extends ElasticsearchIndexGenerator<T, S> {
 
 	private final OneToManyIndexGenerationLogic<T,M> generatorLogic;
 	private final OneToManyEntityInformationProvider<T, M> entityInformationProvider;
 
 	/**
-	 * default construtor with all required fields
+	 * default constructor with all required fields
 	 *
 	 * @param client
 	 * @param systemId

@@ -128,7 +128,7 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 			final List<SearchIndexInfo> information = manager.getIndexInformations();
 			infoMap.put(managementEntry.getKey().getSimpleName(), information);
 		}
-		infoMap.put("Help", helpSearchManager.getIndexInformations());
+		// infoMap.put("Help", helpSearchManager.getIndexInformations());
 
 		return Views.ADMIN_FULL_TEXT_SEARCH;
 	}
