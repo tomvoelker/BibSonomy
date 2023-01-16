@@ -11,8 +11,6 @@
 	<modals:addSupervisedThesis command="${command}"/>
 	<!-- Add role modal dialog -->
 	<modals:addRole command="${command}"/>
-	<!-- Edit role modal dialog -->
-	<modals:editRole command="${command}"/>
 	<!-- Delete role modal dialog -->
 	<modals:deleteRole command="${command}"/>
 
@@ -23,7 +21,7 @@
 
 	<div class="tab-content pub-person-tab-content" >
 		<!-- Own Thesis tab content-->
-		<div id='ownThesis' class="tab-pane active">
+		<div id="ownThesis" class="tab-pane active">
 			<per:thesis command="${command}" thesis="${command.thesis}" isOwnThesis="${true}"/>
 		</div>
 

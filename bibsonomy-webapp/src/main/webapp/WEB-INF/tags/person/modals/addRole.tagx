@@ -16,9 +16,9 @@
                 <div class="modal-body">
                     <fieldset>
                         <div id="person-scroll-menu" class="form-group person-search">
-                            <label for='addRoleAuto' class="control-label col-md-3"><fmt:message key="person.show.person" /></label>
+                            <label for='addRoleSearch' class="control-label col-md-3"><fmt:message key="person.show.person" /></label>
                             <fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
-                            <input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
+                            <input class='form-control typeahead' id='addRoleSearch' type='text' name='addRoleSearch' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
                         </div>
                     </fieldset>
                 </div>
@@ -26,7 +26,9 @@
                     <form action="" method="post" id='addRoleForm' class='form-horizontal'>
                         <input type="hidden" name="ckey" value="${ckey}"/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
-                        <button type="button" class="btn btn-primary" id='btnAddRoleSubmit'><fmt:message key="person.show.addRoleButton" /></button>
+                        <button type="button" class="btn btn-primary" id='btnAddRoleSubmit'>
+                            <fmt:message key="person.show.addRoleButton" />
+                        </button>
                     </form>
                 </div>
             </div>
