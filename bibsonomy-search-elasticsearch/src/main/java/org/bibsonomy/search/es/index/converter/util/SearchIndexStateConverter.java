@@ -33,8 +33,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.search.model.SearchIndexError;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 
@@ -49,49 +51,86 @@ public class SearchIndexStateConverter implements Converter<SearchIndexState, Ma
 	 * @param date the date for the index
 	 * @return date
 	 */
-	private static Date getDateForIndex(Date date) {
+	private static long getDateForIndex(Date date) {
 		if (!present(date)) {
-			return new Date();
+			return new Date().getTime();
 		}
-		return date;
+		return date.getTime();
+	}
+
+	private static Date getDateFromIndex(Long timestamp) {
+		return new Date(timestamp);
 	}
 
 	@Override
 	public Map<String, Object> convert(SearchIndexState state) {
-		final Map<String, Object> values = new HashMap<>();
+		final Map<String, Object> doc = new HashMap<>();
 
-		values.put(SearchIndexState.LAST_ENTITY_CONTENT_ID, state.getLastEntityContentId());
+		doc.put(SearchIndexState.FIELD_INDEX_ID, state.getIndexId());
+		doc.put(SearchIndexState.FIELD_MAPPING_VERSION, state.getMappingVersion());
+		doc.put(SearchIndexState.FIELD_UPDATED_AT, getDateForIndex(state.getUpdatedAt()));
+		doc.put(SearchIndexState.FIELD_ERRORS, state.getErrors()); // TODO
 
-		final Date lastLogDate = getDateForIndex(state.getLastEntityLogDate());
-		values.put(SearchIndexState.LAST_ENTITY_LOG_DATE, lastLogDate.getTime());
+		doc.put(SearchIndexState.FIELD_ENTITY_ID, state.getEntityId());
+		doc.put(SearchIndexState.FIELD_ENTITY_LOG_DATE, getDateForIndex(state.getEntityLogDate()));
 
-		values.put(SearchIndexState.MAPPING_VERSION, state.getMappingVersion());
+		doc.put(SearchIndexState.FIELD_COMMUNITY_ENTITY_ID, state.getCommunityEntityId());
+		doc.put(SearchIndexState.FIELD_COMMUNITY_ENTITY_LOG_DATE, getDateForIndex(state.getCommunityEntityLogDate()));
 
-		final Date updatedAt = getDateForIndex(state.getUpdatedAt());
-		values.put(SearchIndexState.UPDATED_AT, updatedAt.getTime());
+		doc.put(SearchIndexState.FIELD_TAS_ID, state.getTasId());
+		doc.put(SearchIndexState.FIELD_TAS_LOG_DATE, getDateForIndex(state.getTasLogDate()));
 
-		return values;
+		doc.put(SearchIndexState.FIELD_DOCUMENT_ID, state.getDocumentId());
+		doc.put(SearchIndexState.FIELD_DOCUMENT_LOG_DATE, getDateForIndex(state.getDocumentLogDate()));
+
+		doc.put(SearchIndexState.FIELD_PERSON_ID, state.getPersonId());
+		doc.put(SearchIndexState.FIELD_PERSON_LOG_DATE, getDateForIndex(state.getPersonLogDate()));
+
+		doc.put(SearchIndexState.FIELD_RELATION_ID, state.getRelationId());
+		doc.put(SearchIndexState.FIELD_RELATION_LOG_DATE, getDateForIndex(state.getRelationLogDate()));
+
+		doc.put(SearchIndexState.FIELD_PREDICTION_ID, state.getPredictionId());
+		doc.put(SearchIndexState.FIELD_PREDICTION_LOG_DATE, getDateForIndex(state.getPredictionLogDate()));
+
+		return doc;
 	}
 
 	@Override
 	public SearchIndexState convert(Map<String, Object> source, Object options) {
-		final SearchIndexState searchIndexState = new SearchIndexState();
+		final SearchIndexState state = new SearchIndexState();
 
-		final Long dateAsTime = (Long) source.get(SearchIndexState.LAST_ENTITY_LOG_DATE);
-		final Date lastLogDate = new Date(dateAsTime);
-		searchIndexState.setLastEntityLogDate(lastLogDate);
-
-		if (source.containsKey(SearchIndexState.LAST_ENTITY_CONTENT_ID)) {
-			searchIndexState.setLastEntityContentId((Integer) source.get(SearchIndexState.LAST_ENTITY_CONTENT_ID));
-		}
+		state.setIndexId((String) source.get(SearchIndexState.FIELD_INDEX_ID));
+		state.setUpdatedAt(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_UPDATED_AT)));
 
 		// mapping version
-		String mappingVersion = (String) source.get(SearchIndexState.MAPPING_VERSION);
+		String mappingVersion = (String) source.get(SearchIndexState.FIELD_MAPPING_VERSION);
 		if (mappingVersion == null) {
-			mappingVersion = "unknown";
+			mappingVersion = SearchIndexState.UNKNOWN_VERSION;
 		}
-		searchIndexState.setMappingVersion(mappingVersion);
+		state.setMappingVersion(mappingVersion);
+		state.setErrors((List<SearchIndexError>) source.get(SearchIndexState.FIELD_ERRORS)); // TODO
 
-		return searchIndexState;
+		state.setEntityId((Integer) source.get(SearchIndexState.FIELD_ENTITY_ID));
+		state.setEntityLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_ENTITY_LOG_DATE)));
+
+		state.setCommunityEntityId((Integer) source.get(SearchIndexState.FIELD_COMMUNITY_ENTITY_ID));
+		state.setCommunityEntityLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_COMMUNITY_ENTITY_LOG_DATE)));
+
+		state.setTasId((Integer) source.get(SearchIndexState.FIELD_TAS_ID));
+		state.setTasLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_TAS_LOG_DATE)));
+
+		state.setDocumentId((Integer) source.get(SearchIndexState.FIELD_DOCUMENT_ID));
+		state.setDocumentLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_DOCUMENT_LOG_DATE)));
+
+		state.setPersonId((Integer) source.get(SearchIndexState.FIELD_PERSON_ID));
+		state.setPersonLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_PERSON_LOG_DATE)));
+
+		state.setRelationId((Integer) source.get(SearchIndexState.FIELD_RELATION_ID));
+		state.setRelationLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_RELATION_LOG_DATE)));
+
+		state.setPredictionId((Integer) source.get(SearchIndexState.FIELD_PREDICTION_ID));
+		state.setPredictionLogDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_PREDICTION_LOG_DATE)));
+
+		return state;
 	}
 }

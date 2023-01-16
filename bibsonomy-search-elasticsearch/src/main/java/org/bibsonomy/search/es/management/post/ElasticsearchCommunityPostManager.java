@@ -117,10 +117,10 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 	@Override
 	protected void updateIndex(final String indexName, SearchIndexState oldState) {
 
-		final Integer lastPostContentId = oldState.getLastEntityContentId();
-		final Date lastPostLogDate = oldState.getLastEntityLogDate();
-		final Integer lastCommunityPostContentId = oldState.getLastCommunityEntityContentId();
-		final Date lastCommunityPostLogDate = oldState.getLastCommunityEntityLogDate();
+		final Integer lastPostContentId = oldState.getTasId();
+		final Date lastPostLogDate = oldState.getEntityLogDate();
+		final Integer lastCommunityPostContentId = oldState.getCommunityEntityId();
+		final Date lastCommunityPostLogDate = oldState.getCommunityEntityLogDate();
 
 		final SearchIndexState targetState = this.databaseInformationLogic.getDbState();
 
@@ -158,7 +158,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		 * user unflagged as spammer: the post in the index must be updated iff there is no community post in the database
 		 * and the post is newer than the post in the index
 		 */
-		final List<User> users = this.inputLogic.getPredictionForTimeRange(oldState.getLastPredictionDate(), oldState.getLastPredictionDate());
+		final List<User> users = this.inputLogic.getPredictionForTimeRange(oldState.getPredictionLogDate(), oldState.getPredictionLogDate());
 		final Map<String, IndexData> postsToInsert = new LinkedHashMap<>();
 		for (final User user : users) {
 			final String userName = user.getName();
@@ -229,12 +229,12 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 		/*
 		 * remove deleted posts
 		 */
-		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getLastEntityLogDate(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllDeletedNormalPosts(oldNormalSearchIndexState.getEntityLogDate(), limit, offset), () -> UPDATE_ALL_USERS_REMOVE_SCRIPT);
 
 		/*
 		 * now add new posts
 		 */
-		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllNewPosts(oldNormalSearchIndexState.getLastTasId(), limit, offset), () -> UPDATE_ALL_USERS_ADD_SCRIPT);
+		this.loopPosts(indexName, (limit, offset) -> this.communityPostUpdateLogic.getAllNewPosts(oldNormalSearchIndexState.getTasId(), limit, offset), () -> UPDATE_ALL_USERS_ADD_SCRIPT);
 	}
 
 	@FunctionalInterface

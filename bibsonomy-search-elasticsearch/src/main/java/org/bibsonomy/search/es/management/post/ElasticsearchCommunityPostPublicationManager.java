@@ -152,7 +152,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 														boolean updateEnabled,
 														boolean regenerateEnabled,
 														final SearchDBInterface<G> inputLogic,
-														final DatabaseInformationLogic databaseInformationLogic,
+														final DatabaseInformationLogic<SearchIndexState> databaseInformationLogic,
 														final CommunityPostIndexUpdateLogic<G> postUpdateLogic,
 														final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic,
 														final PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
@@ -167,12 +167,12 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 		/*
 		 * add new resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(oldState.getLastPersonChangeId(), oldState.getLastRelationChangeDate(), limit, offset));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(oldState.getPersonId(), oldState.getRelationLogDate(), limit, offset));
 
 		/*
 		 * remove resource relations
 		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(oldState.getLastRelationChangeDate()));
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(oldState.getRelationLogDate()));
 		
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}

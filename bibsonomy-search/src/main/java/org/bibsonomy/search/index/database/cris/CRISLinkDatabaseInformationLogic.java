@@ -51,13 +51,13 @@ public class CRISLinkDatabaseInformationLogic extends AbstractDatabaseManagerWit
 		try (final DBSession session = this.openSession()) {
 			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer lastId = this.queryForObject("getLastCRISLinkId", ConstantID.LINKABLE_ID.getId(), Integer.class, session);
-			searchIndexState.setLastEntityContentId(lastId);
+			searchIndexState.setEntityId(lastId);
 			Date logDate = this.queryForObject("getLastCRISLinkLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexState.setLastEntityLogDate(logDate);
+			searchIndexState.setEntityLogDate(logDate);
 			return searchIndexState;
 		}
 	}

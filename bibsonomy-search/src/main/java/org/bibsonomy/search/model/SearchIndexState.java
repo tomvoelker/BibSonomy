@@ -30,10 +30,10 @@
 package org.bibsonomy.search.model;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang.ObjectUtils;
 
 /**
  * class for all search index sync states
@@ -44,56 +44,63 @@ import org.apache.commons.lang.ObjectUtils;
 @Setter
 public class SearchIndexState {
 
-	public static final String LAST_ENTITY_LOG_DATE = "last_entity_log_date";
+	public static final String UNKNOWN_VERSION = "UNKNOWN";
 
-	public static final String LAST_ENTITY_CONTENT_ID = "last_entity_content_id";
+	public static final String FIELD_INDEX_ID = "index_id";
+	public static final String FIELD_MAPPING_VERSION = "mapping_version";
+	public static final String FIELD_UPDATED_AT = "updated_at";
+	public static final String FIELD_ENTITY_ID = "entity_id";
+	public static final String FIELD_ENTITY_LOG_DATE = "entity_log_date";
+	public static final String FIELD_COMMUNITY_ENTITY_ID = "community_entity_id";
+	public static final String FIELD_COMMUNITY_ENTITY_LOG_DATE = "community_entity_log_date";
+	public static final String FIELD_TAS_ID = "tas_id";
+	public static final String FIELD_TAS_LOG_DATE = "tas_log_date";
+	public static final String FIELD_DOCUMENT_ID = "document_id";
+	public static final String FIELD_DOCUMENT_LOG_DATE = "document_log_date";
+	public static final String FIELD_PERSON_ID = "person_id";
+	public static final String FIELD_PERSON_LOG_DATE = "person_log_date";
+	public static final String FIELD_RELATION_ID = "relation_id";
+	public static final String FIELD_RELATION_LOG_DATE = "relation_log_date";
+	public static final String FIELD_PREDICTION_ID = "prediction_id";
+	public static final String FIELD_PREDICTION_LOG_DATE = "prediction_log_date";
 
-	public static final String LAST_TAS_ID = "last_tas_id";
+	public static final String FIELD_ERRORS = "errors";
 
-	public static final String LAST_DOCUMENT_DATE = "last_document_date";
-
-	public static final String LAST_PREDICTION_DATE = "last_prediction_date";
-
-	//public static final String LAST_PERSON_LOG_DATE = "last_person_log_date";
-	//public static final String LAST_RELATION_LOG_DATE = "last_relation_log_date";
-	//public static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
-
-	public static final String MAPPING_VERSION = "mapping_version";
-
-	public static final String UPDATED_AT = "updated_at";
-
+	/** Name/ID of the index */
+	private String indexId;
 	/** Mapping version of the index (currently the project version) */
-	protected String mappingVersion;
-
+	private String mappingVersion;
 	/** Timestamp when the index was last updated at */
-	protected Date updatedAt;
+	private Date updatedAt;
+	private List<SearchIndexError> errors;
 
-	/** Timestamp when the last CREATED/DELETED entity was logged in the database corresponding the type of the index */
-	protected Integer lastEntityContentId;
+	/** Last entity ID and change log date in DB from previous index update */
+	private Integer entityId;
+	private Date entityLogDate;
 
-	/** Timestamp when the last DELETED entity was logged in the database corresponding the type of the index */
-	protected Date lastEntityLogDate;
+	/** Last community entity ID and change log date in DB from previous index update */
+	private Integer communityEntityId;
+	private Date communityEntityLogDate;
 
-	/** Last logged TAS ID */
-	protected Integer lastTasId;
+	/** Last TAS ID and change log date in DB from previous index update */
+	private Integer tasId;
+	private Date tasLogDate;
 
-	/** Last logged document date */
-	protected Date lastDocumentDate;
+	/** Last document ID and change log date in DB from previous index update */
+	private Integer documentId;
+	private Date documentLogDate;
 
-	/** Last logged prediction date */
-	protected Date lastPredictionDate;
+	/** Last person ID and change log date in DB from previous index update */
+	private Integer personId;
+	private Date personLogDate;
 
-	/** Last logged person ID to a person-resource relation */
-	protected Integer lastPersonChangeId;
+	/** Last person-resource-relation ID and change log date in DB from previous index update */
+	private Integer relationId;
+	private Date relationLogDate;
 
-	/** Last timestamp when the last person-resource relation was changed */
-	protected Date lastRelationChangeDate;
-
-	/** Last timestamp when the last CREATED/DELETED community entity was logged in the database corresponding the type of the index */
-	protected Integer lastCommunityEntityContentId;
-
-	/** Last timestamp when the last DELETED community entity was logged in the database corresponding the type of the index */
-	protected Date lastCommunityEntityLogDate;
+	/** Last prediction ID and change log date in DB from previous index update */
+	private Integer predictionId;
+	private Date predictionLogDate;
 
 	/**
 	 * default constructor
@@ -103,46 +110,31 @@ public class SearchIndexState {
 	}
 
 	public SearchIndexState(SearchIndexState state) {
-		this.lastEntityContentId = state.lastEntityContentId;
-		this.lastEntityLogDate = state.lastEntityLogDate;
+		this.indexId = state.indexId;
 		this.mappingVersion = state.mappingVersion;
 		this.updatedAt = state.updatedAt;
+		this.errors = state.errors;
+
+		this.entityId = state.entityId;
+		this.entityLogDate = state.entityLogDate;
+
+		this.communityEntityId = state.communityEntityId;
+		this.communityEntityLogDate = state.communityEntityLogDate;
+
+		this.tasId = state.tasId;
+		this.tasLogDate = state.tasLogDate;
+
+		this.documentId = state.documentId;
+		this.documentLogDate = state.documentLogDate;
+
+		this.personId = state.personId;
+		this.personLogDate = state.personLogDate;
+
+		this.relationId = state.relationId;
+		this.relationLogDate = state.relationLogDate;
+
+		this.predictionId = state.predictionId;
+		this.predictionLogDate = state.predictionLogDate;
 	}
 
-	@Override
-	public int hashCode() {
-		return ObjectUtils.hashCode(this.lastEntityContentId) + ObjectUtils.hashCode(this.lastEntityLogDate) + ObjectUtils.hashCode(this.mappingVersion);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SearchIndexState)) {
-			return false;
-		}
-
-		final SearchIndexState otherState = (SearchIndexState) obj;
-
-		if (!ObjectUtils.equals(this.lastEntityContentId, otherState.lastEntityContentId)) {
-			return false;
-		}
-
-		if (!ObjectUtils.equals(this.lastEntityLogDate, otherState.lastEntityLogDate)) {
-			return false;
-		}
-
-		if (!ObjectUtils.equals(this.mappingVersion, otherState.mappingVersion)) {
-			return false;
-		}
-
-		if (!ObjectUtils.equals(this.updatedAt, otherState.updatedAt)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + this.lastEntityContentId + ", " + this.lastEntityLogDate + ", " + this.mappingVersion + ", " + this.updatedAt + "]";
-	}
 }

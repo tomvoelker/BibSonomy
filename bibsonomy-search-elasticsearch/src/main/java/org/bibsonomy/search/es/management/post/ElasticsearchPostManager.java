@@ -110,18 +110,18 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	@Override
 	protected void updateIndex(final String indexName, final SearchIndexState oldState) {
 		final SearchIndexState targetState = this.inputLogic.getDbState();
-		final int oldLastTasId = oldState.getLastTasId();
+		final int oldLastTasId = oldState.getTasId();
 		
 		/*
 		 * 1) flag/unflag spammer
 		 */
-		this.updatePredictions(indexName, oldState.getLastPredictionDate(), targetState.getLastPredictionDate());
+		this.updatePredictions(indexName, oldState.getPredictionLogDate(), targetState.getPredictionLogDate());
 		
 		/*
 		 * 2) remove old deleted or updated posts
 		 */
-		if (oldState.getLastEntityLogDate() != null) {
-			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLastEntityLogDate().getTime() - QUERY_TIME_OFFSET_MS));
+		if (oldState.getEntityLogDate() != null) {
+			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getEntityLogDate().getTime() - QUERY_TIME_OFFSET_MS));
 
 			final List<DeleteData> idsToDelete = new LinkedList<>();
 			for (final Integer contentId : contentIdsToDelete) {
@@ -170,10 +170,10 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		// 4) update the index state
 		try {
 			final SearchIndexState newState = new SearchIndexState(oldState);
-			newState.setLastEntityLogDate(targetState.getLastEntityLogDate());
-			newState.setLastTasId(targetState.getLastTasId());
-			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
-			newState.setLastDocumentDate(targetState.getLastDocumentDate());
+			newState.setEntityLogDate(targetState.getEntityLogDate());
+			newState.setTasId(targetState.getTasId());
+			newState.setPersonId(targetState.getPersonId());
+			newState.setDocumentLogDate(targetState.getDocumentLogDate());
 			this.updateIndexState(indexName, oldState, newState);
 		} catch (final RuntimeException e) {
 			this.updateIndexState(indexName, oldState, oldState);

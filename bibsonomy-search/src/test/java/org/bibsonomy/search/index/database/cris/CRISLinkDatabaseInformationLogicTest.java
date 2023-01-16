@@ -48,6 +48,6 @@ public class CRISLinkDatabaseInformationLogicTest extends AbstractDatabaseManage
 	@Test
 	public void testGetDBState() {
 		final SearchIndexState dbState = INFORMATION_LOGIC.getDbState();
-		assertThat(dbState.getLastEntityContentId(), is(2l));
+		assertThat(dbState.getEntityId(), is(2l));
 	}
 }

@@ -42,7 +42,7 @@ public class OneToManyIndexGenerationLogicAdapter<E, M> implements OneToManyInde
 	private final IndexGenerationLogic<M> toManyGenerationLogic;
 
 	/**
-	 * constructs a new generation logic for one to many relations that uses a
+	 * constructs a new generation logic for one-to-many relations that uses a
 	 * @param entityGenerationLogic
 	 * @param toManyGenerationLogic
 	 */

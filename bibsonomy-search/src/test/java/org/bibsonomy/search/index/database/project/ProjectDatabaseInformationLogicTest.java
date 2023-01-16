@@ -48,7 +48,7 @@ public class ProjectDatabaseInformationLogicTest extends AbstractDatabaseManager
 	@Test
 	public void testDBState() {
 		final SearchIndexState state = LOGIC.getDbState();
-		assertThat(state.getLastEntityContentId(), is(3l));
+		assertThat(state.getEntityId(), is(3l));
 	}
 
 }

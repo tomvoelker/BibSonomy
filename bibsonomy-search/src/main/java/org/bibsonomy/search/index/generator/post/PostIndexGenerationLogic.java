@@ -110,11 +110,11 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	@Override
 	public SearchIndexState getDbState() {
 		final SearchIndexState newState = new SearchIndexState();
-		newState.setLastEntityLogDate(this.getLastLogDate());
-		newState.setLastTasId(this.getLastTasId());
-		newState.setLastDocumentDate(this.getLastDocumentDate());
-		// newState.setLastPersonChangeId(this.getLastPersonChangeId());
-		// newState.setLastPredictionChangeDate(this.getLastPredictionDate());
+		newState.setEntityLogDate(this.getLastLogDate());
+		newState.setTasId(this.getLastTasId());
+		newState.setDocumentLogDate(this.getLastDocumentDate());
+		newState.setPersonId(this.getLastPersonChangeId());
+		newState.setPredictionLogDate(this.getLastPredictionDate());
 		return newState;
 	}
 
@@ -159,9 +159,9 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 		}
 	}
 
-	private long getLastPersonChangeId() {
+	private Integer getLastPersonChangeId() {
 		try (final DBSession session = this.openSession()) {
-			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
+			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session);
 		}
 	}
 

@@ -29,10 +29,13 @@
  */
 package org.bibsonomy.search.es.index.converter.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.search.model.SearchIndexDualState;
 import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,39 +46,50 @@ import java.util.Map;
  */
 public class SearchIndexDualStateConverter implements Converter<SearchIndexDualState, Map<String, Object>, Object> {
 
-	private static final String FIRST_STATE = "firstState";
-	private static final String SECOND_STATE = "secondState";
-
 	private final SearchIndexStateConverter converter = new SearchIndexStateConverter();
 
 	@Override
-	public Map<String, Object> convert(SearchIndexDualState source) {
-		final Map<String, Object> converted = new HashMap<>();
+	public Map<String, Object> convert(SearchIndexDualState state) {
+		final Map<String, Object> doc = new HashMap<>();
 
-		final Map<String, Object> communityState = this.converter.convert(source.getFirstState());
-		converted.put(FIRST_STATE, communityState);
+		doc.put(SearchIndexState.FIELD_INDEX_ID, state.getIndexId());
+		doc.put(SearchIndexState.FIELD_MAPPING_VERSION, state.getMappingVersion());
+		if (!present(state.getUpdatedAt())) {
+			doc.put(SearchIndexState.FIELD_UPDATED_AT, new Date().getTime());
+		} else {
+			doc.put(SearchIndexState.FIELD_UPDATED_AT, state.getUpdatedAt().getTime());
+		}
 
-		final Map<String, Object> normalState = this.converter.convert(source.getSecondState());
-		converted.put(SECOND_STATE, normalState);
+		final Map<String, Object> communityState = this.converter.convert(state.getFirstState());
+		doc.put(SearchIndexDualState.FIELD_FIRST_STATE, communityState);
 
-		converted.put(SearchIndexState.MAPPING_VERSION, source.getMappingVersion());
+		final Map<String, Object> normalState = this.converter.convert(state.getSecondState());
+		doc.put(SearchIndexDualState.FIELD_SECOND_STATE, normalState);
 
-		return converted;
+		return doc;
 	}
 
 	@Override
 	public SearchIndexDualState convert(Map<String, Object> source, Object options) {
 		final SearchIndexDualState state = new SearchIndexDualState();
 
-		final Map<String, Object> communitySource = (Map<String, Object>) source.get(FIRST_STATE);
+		state.setIndexId((String) source.get(SearchIndexState.FIELD_INDEX_ID));
+		state.setUpdatedAt(new Date((Long) source.get(SearchIndexState.FIELD_UPDATED_AT)));
+
+		// mapping version
+		String mappingVersion = (String) source.get(SearchIndexState.FIELD_MAPPING_VERSION);
+		if (mappingVersion == null) {
+			mappingVersion = SearchIndexState.UNKNOWN_VERSION;
+		}
+		state.setMappingVersion(mappingVersion);
+
+		final Map<String, Object> communitySource = (Map<String, Object>) source.get(SearchIndexDualState.FIELD_FIRST_STATE);
 		final SearchIndexState commnunityState = this.converter.convert(communitySource, null);
 		state.setFirstState(commnunityState);
 
-		final Map<String, Object> normalSource = (Map<String, Object>) source.get(SECOND_STATE);
+		final Map<String, Object> normalSource = (Map<String, Object>) source.get(SearchIndexDualState.FIELD_SECOND_STATE);
 		final SearchIndexState normalState = this.converter.convert(normalSource, null);
 		state.setSecondState(normalState);
-
-		state.setMappingVersion((String) source.get(SearchIndexState.MAPPING_VERSION));
 
 		return state;
 	}

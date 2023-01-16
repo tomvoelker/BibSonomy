@@ -106,11 +106,11 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	@Override
 	protected void updateResourceSpecificProperties(String indexName, SearchIndexState oldState, SearchIndexState targetState) {
 		// TODO: limit offset TODODZO
-		Date lastDocDate = oldState.getLastDocumentDate();
+		Date lastDocDate = oldState.getDocumentLogDate();
 		if (!present(lastDocDate)) {
-			lastDocDate = targetState.getLastDocumentDate();
+			lastDocDate = targetState.getDocumentLogDate();
 		}
-		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(lastDocDate, targetState.getLastDocumentDate());
+		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(lastDocDate, targetState.getDocumentLogDate());
 		
 		// TODO: bulk update
 		for (final Post<P> postDocUpdate : postsForDocUpdate) {
@@ -135,7 +135,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	 * @param updatedInterhashes
 	 */
 	private void applyPersonChangesToIndex(String indexName, SearchIndexState oldState, SearchIndexState targetState, LRUMap updatedInterhashes) {
-		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
+		for (long minPersonChangeId = oldState.getPersonId() + 1; minPersonChangeId < targetState.getPersonId(); minPersonChangeId = Math.min(targetState.getPersonId(), minPersonChangeId + SQL_BLOCKSIZE)) {
 			final List<PersonName> personMainNameChanges = this.inputLogic.getPersonMainNamesByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			for (PersonName name : personMainNameChanges) {
 				final String personId = name.getPersonId();
@@ -200,7 +200,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	}
 
 	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexState oldState, SearchIndexState targetState, final LRUMap updatedInterhashes) {
-		for (long minPersonChangeId = oldState.getLastPersonChangeId(); minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
+		for (long minPersonChangeId = oldState.getPersonId(); minPersonChangeId < targetState.getPersonId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.inputLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {
 				log.info("found " + relChanges.size() + " relation changes to update");

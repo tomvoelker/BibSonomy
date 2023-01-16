@@ -41,6 +41,9 @@ import lombok.Setter;
 @Setter
 public class SearchIndexDualState extends SearchIndexState {
 
+	public static final String FIELD_FIRST_STATE = "first_state";
+	public static final String FIELD_SECOND_STATE = "second_state";
+
 	private SearchIndexState firstState;
 
 	private SearchIndexState secondState;

@@ -295,8 +295,8 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 	protected abstract void updateIndex(final String indexName, S oldState);
 
 	protected <E> void updateEntity(final String indexName, final SearchIndexState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
-		final long lastContentId = oldState.getLastEntityContentId();
-		final Date lastLogDate = oldState.getLastEntityLogDate();
+		final long lastContentId = oldState.getEntityId();
+		final Date lastLogDate = oldState.getEntityLogDate();
 		final String entityType = entityInformationProvider.getType();
 
 		/*

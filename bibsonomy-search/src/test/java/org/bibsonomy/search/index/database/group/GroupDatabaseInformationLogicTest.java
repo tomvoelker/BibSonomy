@@ -49,6 +49,6 @@ public class GroupDatabaseInformationLogicTest extends AbstractDatabaseManagerTe
 	@Test
 	public void testGetDBState() {
 		final SearchIndexState dbState = INFORMATION_LOGIC.getDbState();
-		assertThat(dbState.getLastCommunityEntityContentId(), is(12l));
+		assertThat(dbState.getEntityId(), is(12l));
 	}
 }

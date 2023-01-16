@@ -85,6 +85,6 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void testGetDbState() {
 		final SearchIndexState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
-		assertThat(dbState.getLastEntityContentId(), is(36l));
+		assertThat(dbState.getPersonId(), is(36l));
 	}
 }
