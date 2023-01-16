@@ -47,6 +47,7 @@ import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,7 +180,9 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 		// initialize variables
 		// FIXME: introduce a index state for each entity
 		final S newState = this.databaseInformationLogic.getDbState();
+		newState.setIndexId(indexName);
 		newState.setMappingVersion(BasicUtils.VERSION);
+		newState.setUpdatedAt(new Date());
 
 		this.insertDataIntoIndex(indexName);
 		this.writeMetaInfoToIndex(indexName, newState);

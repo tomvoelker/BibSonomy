@@ -48,17 +48,17 @@ public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithS
 	@Override
 	public SearchIndexState getDbState() {
 		try (final DBSession session = this.openSession()) {
-			final SearchIndexState searchIndexSyncState = new SearchIndexState();
+			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer personChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
-			searchIndexSyncState.setEntityId(personChangeId);
+			searchIndexState.setEntityId(personChangeId);
 			Date logDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setEntityLogDate(logDate);
+			searchIndexState.setEntityLogDate(logDate);
 
-			return searchIndexSyncState;
+			return searchIndexState;
 		}
 	}
 }
