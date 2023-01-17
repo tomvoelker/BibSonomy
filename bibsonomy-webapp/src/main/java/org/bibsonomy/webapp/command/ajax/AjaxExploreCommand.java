@@ -31,16 +31,16 @@ package org.bibsonomy.webapp.command.ajax;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bibsonomy.webapp.command.GroupExploreViewCommand;
+import org.bibsonomy.webapp.command.ExploreViewCommand;
 
 /**
- * Command for group explore AJAX calls
+ * Command for explore AJAX calls
  *
  * @author kchoong
  */
 @Getter
 @Setter
-public class AjaxGroupExploreCommand extends GroupExploreViewCommand {
+public class AjaxExploreCommand extends ExploreViewCommand {
 
     /**
      * page of pagination

@@ -91,6 +91,11 @@ public enum Views implements View {
 	USERPAGE("user"),
 
 	/**
+	 * user explore page
+	 */
+	USEREXPLOREPAGE("userExplore"),
+
+	/**
 	 * the user specific friend-of-a-friend (FOAF) project output
 	 */
 	FOAF("foaf"),
