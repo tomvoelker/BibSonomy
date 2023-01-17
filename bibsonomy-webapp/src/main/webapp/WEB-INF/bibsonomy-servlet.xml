@@ -348,6 +348,10 @@
 		<constructor-arg value="${system.cris}" />
 	</bean>
 
+	<bean id="genealogyEnabled" class="java.lang.Boolean">
+		<constructor-arg value="${genealogy.activated}" />
+	</bean>
+
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -470,6 +474,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/explore/user">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userExplorePageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedName</value>
+								<value>search</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvPageController"/>
@@ -575,7 +590,7 @@
 						<property name="controllerBeanName" value="groupExplorePageController"/>
 						<property name="allowedFields">
 							<list>
-								<value>requestedGroup</value>
+								<value>requestedName</value>
 								<value>search</value>
 							</list>
 						</property>
@@ -863,7 +878,7 @@
 				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="#{crisSystem ? 'personsPageController' : 'personIntroPageController'}"/>
+						<property name="controllerBeanName" value="#{crisSystem or not genealogyEnabled ? 'personsPageController' : 'personIntroPageController'}"/>
 						<property name="allowedFields">
 							<list>
 								<value>search</value>
@@ -1019,6 +1034,18 @@
 		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
+	<bean id="userExplorePageController" class="org.bibsonomy.webapp.controller.ExplorePageController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
+		<property name="entityType" value="USER" />
+	</bean>
+
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="fileLogic" ref="fileLogic" />
@@ -1105,7 +1132,7 @@
 		<property name="logic" ref="logic" />
 	</bean>
 
-	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.GroupExplorePageController" scope="request">
+	<bean id="groupExplorePageController" class="org.bibsonomy.webapp.controller.ExplorePageController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="mappers">
 			<map>
@@ -1114,6 +1141,7 @@
 				</entry>
 			</map>
 		</property>
+		<property name="entityType" value="GROUP" />
 	</bean>
 
 	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">

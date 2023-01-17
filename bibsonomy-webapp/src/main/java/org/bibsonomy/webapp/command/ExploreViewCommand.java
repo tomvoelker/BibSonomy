@@ -35,7 +35,9 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.SearchFilterElement;
 
 /**
@@ -43,10 +45,16 @@ import org.bibsonomy.model.extra.SearchFilterElement;
  */
 @Setter
 @Getter
-public class GroupExploreViewCommand extends SimpleResourceViewCommand {
+public class ExploreViewCommand extends SimpleResourceViewCommand {
 
-    // Requested group id
-    private String requestedGroup;
+    // Requested entity type
+    private GroupingEntity entityType;
+
+    // Requested name
+    private String requestedName;
+
+    // User
+    private User user;
 
     // Group
     private Group group;
