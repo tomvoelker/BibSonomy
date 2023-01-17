@@ -27,22 +27,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.update;
-
-import lombok.Getter;
-import lombok.Setter;
+package org.bibsonomy.search.model;
 
 /**
- * a index sync state information state for community indices
- *
+ * enum representing the different statuses of an index
+ * 
  * @author dzo
  */
-@Getter
-@Setter
-public class SearchIndexDualSyncState extends SearchIndexSyncState {
-
-	private DefaultSearchIndexSyncState firstState;
-
-	private DefaultSearchIndexSyncState secondState;
-
+public enum SearchIndexStatus {
+	/** the index is currently used for search */
+	ACTIVE,
+	
+	/** the index can be used for updating */
+	INACTIVE,
+	
+	/** the index is currently generating */
+	GENERATING,
+	
+	/** not used but generated */
+	STANDBY;
 }

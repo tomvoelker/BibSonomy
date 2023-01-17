@@ -32,7 +32,7 @@ package org.bibsonomy.search.es.index.generator;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 
 import java.net.URI;
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticsearchIndexGeneratorWithMultipleSources<E, S extends SearchIndexSyncState> extends ElasticsearchIndexGenerator<E, S> {
+public class ElasticsearchIndexGeneratorWithMultipleSources<E, S extends SearchIndexState> extends ElasticsearchIndexGenerator<E, S> {
 
 	private final List<IndexGenerationLogic<E>> generationLogics;
 

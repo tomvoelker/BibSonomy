@@ -31,34 +31,34 @@ package org.bibsonomy.search.index.database.project;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
+
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-
-import java.util.Date;
+import org.bibsonomy.search.model.SearchIndexState;
 
 /**
  * the database information logic for {@link org.bibsonomy.model.cris.Project}s
  *
  * @author dzo
  */
-public class ProjectDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<DefaultSearchIndexSyncState> {
+public class ProjectDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<SearchIndexState> {
 
 	@Override
-	public DefaultSearchIndexSyncState getDbState() {
+	public SearchIndexState getDbState() {
 		try (final DBSession session = this.openSession()) {
-			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
+			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer lastId = this.queryForObject("getLastProjectChangeId", ConstantID.PROJECT_ID.getId(), Integer.class, session);
-			searchIndexSyncState.setLastPostContentId(lastId);
+			searchIndexState.setEntityId(lastId);
 			Date logDate = this.queryForObject("getLastProjectChangeLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setLastLogDate(logDate);
-			return searchIndexSyncState;
+			searchIndexState.setEntityLogDate(logDate);
+			return searchIndexState;
 		}
 	}
 }

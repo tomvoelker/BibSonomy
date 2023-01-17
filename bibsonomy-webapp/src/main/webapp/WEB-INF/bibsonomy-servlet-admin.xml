@@ -152,6 +152,7 @@
 
 	<bean id="adminFullTextSearchController" class="org.bibsonomy.webapp.controller.admin.AdminFullTextSearchController" scope="request">
 		<property name="managers" ref="elasticsearchManagers" />
+		<property name="helpSearchManager" ref="helpSearchManager" />
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">

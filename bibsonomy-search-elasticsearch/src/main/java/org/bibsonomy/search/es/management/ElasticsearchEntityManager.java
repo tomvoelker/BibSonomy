@@ -37,40 +37,51 @@ import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 
 /**
- * general entity manager that only updates a single entity
+ * Elasticsearch manager for single entity indices
  *
  * @author dzo
  */
-public class ElasticsearchEntityManager<T> extends ElasticsearchManager<T, DefaultSearchIndexSyncState> {
+public class ElasticsearchEntityManager<T> extends ElasticsearchManager<T, SearchIndexState> {
 
-	private final DatabaseInformationLogic<DefaultSearchIndexSyncState> databaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexState> databaseInformationLogic;
 	private final IndexUpdateLogic<T> updateIndexLogic;
 
 	/**
-	 * default constructor
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param databaseInformationLogic
 	 * @param updateIndexLogic
 	 */
-	public ElasticsearchEntityManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<T, DefaultSearchIndexSyncState> generator, Converter<DefaultSearchIndexSyncState, Map<String, Object>, Object> syncStateConverter, EntityInformationProvider<T> entityInformationProvider, DatabaseInformationLogic<DefaultSearchIndexSyncState> databaseInformationLogic, IndexUpdateLogic<T> updateIndexLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
+	public ElasticsearchEntityManager(URI systemURI,
+									  ESClient client,
+									  ElasticsearchIndexGenerator<T, SearchIndexState> generator,
+									  Converter<SearchIndexState, Map<String, Object>, Object> syncStateConverter,
+									  EntityInformationProvider<T> entityInformationProvider,
+									  boolean indexEnabled,
+									  boolean updateEnabled,
+									  boolean regenerateEnabled,
+									  DatabaseInformationLogic<SearchIndexState> databaseInformationLogic,
+									  IndexUpdateLogic<T> updateIndexLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.databaseInformationLogic = databaseInformationLogic;
 		this.updateIndexLogic = updateIndexLogic;
 	}
 
 	@Override
-	protected void updateIndex(String indexName, DefaultSearchIndexSyncState oldState) {
-		final DefaultSearchIndexSyncState targetState = this.databaseInformationLogic.getDbState();
+	protected void updateIndex(String indexName, SearchIndexState oldState) {
+		final SearchIndexState targetState = this.databaseInformationLogic.getDbState();
 
 		this.updateEntity(indexName, targetState, this.updateIndexLogic, this.entityInformationProvider);
 

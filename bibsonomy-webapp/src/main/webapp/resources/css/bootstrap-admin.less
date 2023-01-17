@@ -1,3 +1,58 @@
 .admin-rectable > tr.inactive {
 	color: grey;
 }
+
+.searchindex-panel {
+
+	.panel-heading {
+		cursor: pointer;
+	}
+
+	.panel-title {
+		color: @font-color;
+		font-weight: bold;
+	}
+
+	.searchindex-id {
+		cursor: text;
+	}
+
+	.searchindex-mapping-version {
+		cursor: text;
+		float: right;
+	}
+
+	.searchindex-status {
+		color: white;
+		text-transform: uppercase;
+		margin-left: 5px;
+	}
+
+	.searchindex-status-active {
+		background-color: @brand-success !important;
+	}
+
+	.searchindex-status-inactive {
+		background-color: @brand-danger !important;
+	}
+
+	.searchindex-status-generating {
+		background-color: @brand-primary !important;
+	}
+
+	.searchindex-status-standby {
+		background-color: @brand-warning !important;
+	}
+
+	.searchindex-actions {
+		padding-top: 15px;
+
+		form {
+			display: inline-block;
+		}
+
+		button {
+			margin-right: 5px;
+		}
+	}
+}

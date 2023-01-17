@@ -40,13 +40,14 @@ import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
+public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
 	private final ESClient client;
@@ -158,7 +159,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
 		}
 
-		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.GENERATING));
 	}
 
 	protected int retrieveNumberOfEntities() {
@@ -179,7 +180,9 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		// initialize variables
 		// FIXME: introduce a index state for each entity
 		final S newState = this.databaseInformationLogic.getDbState();
+		newState.setIndexId(indexName);
 		newState.setMappingVersion(BasicUtils.VERSION);
+		newState.setUpdatedAt(new Date());
 
 		this.insertDataIntoIndex(indexName);
 		this.writeMetaInfoToIndex(indexName, newState);
@@ -266,30 +269,22 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	 * methods removes the index state generating and adds the index state alias standby to the generated index
 	 */
 	private void indexCreated(final String indexName) {
-		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
-		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
+		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.STANDBY));
 	}
 
-	/**
-	 * @return the progress
-	 */
-	public double getProgress() {
-		if (this.numberOfEntities == 0) {
-			return 0;
-		}
-		return this.writtenEntities / (double) this.numberOfEntities;
-	}
-
-	/**
-	 * @return the generating
-	 */
 	public boolean isGenerating() {
 		return generating;
 	}
 
-	/**
-	 * @return the indexName
-	 */
+	public int getNumberOfEntities() {
+		return numberOfEntities;
+	}
+
+	public int getWrittenEntities() {
+		return writtenEntities;
+	}
+
 	public String getIndexName() {
 		return indexName;
 	}

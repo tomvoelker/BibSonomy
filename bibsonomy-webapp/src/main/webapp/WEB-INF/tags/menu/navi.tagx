@@ -122,7 +122,6 @@
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
 										<ul class="dropdown-menu">
 											<li><a href="${relativeUrlGenerator.getUserUrlByUserName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
-											<li><a href="${relativeUrlGenerator.getExploreUrlByUser(grp.name)}"><fmt:message key="user.explore.navi"/></a></li>
 											<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.activity"/></a></li>
 											<c:if test="${grp.sharedDocuments}">
 												<li>

@@ -8,15 +8,15 @@ $(function () {
 
 
 function initDeleteRelationButtons(button) {
-        var interhash = $(button).data('interhash');
-        var index = $(button).data('personindex');
-        var type = $(button).data('relationtype');
+    var interhash = $(button).data('interhash');
+    var index = $(button).data('personindex');
+    var type = $(button).data('relationtype');
 
-        var form = $('#deletePersonResourceRelationForm');
-        form.find('#interhash').val(interhash);
-        form.find('#index').val(index);
-        form.find('#type').val(type);
-        $("#unlinkPublication").modal("toggle");
+    var form = $('#deletePersonResourceRelationForm');
+    form.find('#interhash').val(interhash);
+    form.find('#index').val(index);
+    form.find('#type').val(type);
+    $("#unlinkPublication").modal("toggle");
 }
 
 function initAddRelationButtons() {
@@ -43,16 +43,16 @@ function initAddRelationButtons() {
         $("#linkPublication").modal("toggle");
     });
 
-    $('#addPublicationAuthorSelect').change(function() {
+    $('#addPublicationAuthorSelect').change(function () {
         $('#addPersonResourceRelationForm').find('#index').val($(this).val())
     });
 }
 
-function reset_select(){
+function reset_select() {
     $('#addPublicationAuthorSelect').find('option').remove();
 }
 
-function extract_authors(e){
+function extract_authors(e) {
     var list = [];
     var names = e.split(",");
     for (var i = 0; i < names.length; i = i + 2) {

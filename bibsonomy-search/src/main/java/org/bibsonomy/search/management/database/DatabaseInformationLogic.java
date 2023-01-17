@@ -29,7 +29,7 @@
  */
 package org.bibsonomy.search.management.database;
 
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 
 /**
  * logic to get information for the database state
@@ -37,5 +37,5 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
  */
 public interface DatabaseInformationLogic {
 
-	SearchIndexSyncState getDbState();
+	SearchIndexState getDbState();
 }

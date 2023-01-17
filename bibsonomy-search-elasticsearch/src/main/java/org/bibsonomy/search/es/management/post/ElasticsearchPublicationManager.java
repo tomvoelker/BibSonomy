@@ -53,7 +53,7 @@ import org.bibsonomy.search.es.index.converter.post.PublicationConverter;
 import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.index.engine.DocumentMissingException;
@@ -63,7 +63,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 /**
- * manager that also updates person informations
+ * Elasticsearch manager for publication indices.
+ * This is a special implementation of {@link ElasticsearchPostManager} to update publication specific fields.
  *
  * @author dzo
  * @author jensi
@@ -75,31 +76,41 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
 
 	/**
-	 * default constructor
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
 	 */
-	public ElasticsearchPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<P>, DefaultSearchIndexSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<P> inputLogic) {
-		super(disabledIndexing, updateEnabled, generator, client, syncStateConverter, entityInformationProvider, systemId, inputLogic);
+	public ElasticsearchPublicationManager(URI systemURI,
+										   ESClient client,
+										   ElasticsearchIndexGenerator<Post<P>, SearchIndexState> generator,
+										   Converter syncStateConverter,
+										   EntityInformationProvider entityInformationProvider,
+										   boolean indexEnabled,
+										   boolean updateEnabled,
+										   boolean regenerateEnabled,
+										   SearchDBInterface<P> inputLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled, inputLogic);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.management.ElasticSearchManager#updateResourceSpecificProperties(java.lang.String, org.bibsonomy.search.update.SearchIndexState, org.bibsonomy.search.update.SearchIndexState)
 	 */
 	@Override
-	protected void updateResourceSpecificProperties(String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState) {
+	protected void updateResourceSpecificProperties(String indexName, SearchIndexState oldState, SearchIndexState targetState) {
 		// TODO: limit offset TODODZO
-		Date lastDocDate = oldState.getLastDocumentDate();
+		Date lastDocDate = oldState.getDocumentLogDate();
 		if (!present(lastDocDate)) {
-			lastDocDate = targetState.getLastDocumentDate();
+			lastDocDate = targetState.getDocumentLogDate();
 		}
-		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(lastDocDate, targetState.getLastDocumentDate());
+		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(lastDocDate, targetState.getDocumentLogDate());
 		
 		// TODO: bulk update
 		for (final Post<P> postDocUpdate : postsForDocUpdate) {
@@ -123,8 +134,8 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	 * @param targetState
 	 * @param updatedInterhashes
 	 */
-	private void applyPersonChangesToIndex(String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState, LRUMap updatedInterhashes) {
-		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
+	private void applyPersonChangesToIndex(String indexName, SearchIndexState oldState, SearchIndexState targetState, LRUMap updatedInterhashes) {
+		for (long minPersonChangeId = oldState.getPersonId() + 1; minPersonChangeId < targetState.getPersonId(); minPersonChangeId = Math.min(targetState.getPersonId(), minPersonChangeId + SQL_BLOCKSIZE)) {
 			final List<PersonName> personMainNameChanges = this.inputLogic.getPersonMainNamesByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			for (PersonName name : personMainNameChanges) {
 				final String personId = name.getPersonId();
@@ -188,8 +199,8 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		}
 	}
 
-	private void applyChangesInPubPersonRelationsToIndex(final String indexName, DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState, final LRUMap updatedInterhashes) {
-		for (long minPersonChangeId = oldState.getLastPersonChangeId(); minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
+	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexState oldState, SearchIndexState targetState, final LRUMap updatedInterhashes) {
+		for (long minPersonChangeId = oldState.getPersonId(); minPersonChangeId < targetState.getPersonId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.inputLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {
 				log.info("found " + relChanges.size() + " relation changes to update");

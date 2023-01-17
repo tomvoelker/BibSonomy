@@ -27,28 +27,51 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.update;
+package org.bibsonomy.search.model;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.bibsonomy.database.common.enums.CRISEntityType;
+
+import java.util.Date;
 
 /**
- * abstract class for all search index sync states
+ * Class for search queries
  *
- * @author dzo
+ * @author Jens Illig
  */
-public abstract class SearchIndexSyncState {
+@Getter
+@Setter
+public class SearchParam {
 
-	private String mappingVersion;
+    private String userName;
 
-	/**
-	 * @return the mappingVersion
-	 */
-	public String getMappingVersion() {
-		return mappingVersion;
-	}
+    /** The SQL-Limit */
+    private int limit;
 
-	/**
-	 * @param mappingVersion the mappingVersion to set
-	 */
-	public void setMappingVersion(String mappingVersion) {
-		this.mappingVersion = mappingVersion;
-	}
+    /** The SQL-Offset */
+    private int offset;
+
+    /** newest tas_id during last index update */
+    private Integer lastTasId;
+
+    private long lastContentId;
+
+    private int lastOffset; // TODO or just use offset?
+
+    /** newest change_date during last index update */
+    private Date lastLogDate;
+
+    private Date lastDate;
+
+    private Date lastDocumentDate;
+
+    private String userRelation;
+
+    private boolean includeRelatedEntityUpdates;
+
+    private CRISEntityType sourceType;
+
+    private CRISEntityType targetType;
+
 }

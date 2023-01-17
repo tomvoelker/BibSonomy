@@ -48,7 +48,7 @@ import org.bibsonomy.search.es.index.converter.group.GroupFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.services.searcher.GroupSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -62,7 +62,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group, GroupQuery, DefaultSearchIndexSyncState, Object> implements GroupSearch {
+public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group, GroupQuery, SearchIndexState, Object> implements GroupSearch {
 
 	/**
 	 * default constructor
@@ -70,7 +70,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	 * @param manager the manager that is responsible for this search
 	 * @param converter the converter for converting elasticsearch documents to
 	 */
-	public ElasticsearchGroupSearch(final ElasticsearchManager<Group, DefaultSearchIndexSyncState> manager, final Converter<Group, Map<String, Object>, Object> converter) {
+	public ElasticsearchGroupSearch(final ElasticsearchManager<Group, SearchIndexState> manager, final Converter<Group, Map<String, Object>, Object> converter) {
 		super(manager, converter);
 	}
 
