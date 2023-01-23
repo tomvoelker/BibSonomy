@@ -31,24 +31,23 @@ package org.bibsonomy.search.index.database.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
+
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.ResourceAwareAbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
-
-import java.util.Date;
+import org.bibsonomy.search.model.SearchIndexState;
 
 /**
  * database information for community posts
  *
  * @author dzo
  */
-public class CommunityPostDatabaseInformationLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements DatabaseInformationLogic<SearchIndexDualSyncState> {
+public class CommunityPostDatabaseInformationLogic<R extends Resource> extends ResourceAwareAbstractDatabaseManagerWithSessionManagement<R> implements DatabaseInformationLogic<SearchIndexState> {
 
-	private final DatabaseInformationLogic<DefaultSearchIndexSyncState> normalPostDatabaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexState> normalPostDatabaseInformationLogic;
 
 	/**
 	 * default constructor
@@ -56,46 +55,40 @@ public class CommunityPostDatabaseInformationLogic<R extends Resource> extends R
 	 * @param resourceClass
 	 * @param normalPostDatabaseInformationLogic
 	 */
-	public CommunityPostDatabaseInformationLogic(Class<R> resourceClass, DatabaseInformationLogic<DefaultSearchIndexSyncState> normalPostDatabaseInformationLogic) {
+	public CommunityPostDatabaseInformationLogic(Class<R> resourceClass, DatabaseInformationLogic<SearchIndexState> normalPostDatabaseInformationLogic) {
 		super(resourceClass);
 		this.normalPostDatabaseInformationLogic = normalPostDatabaseInformationLogic;
 	}
 
 	@Override
-	public SearchIndexDualSyncState getDbState() {
-		final SearchIndexDualSyncState searchIndexDualSyncState = new SearchIndexDualSyncState();
-		searchIndexDualSyncState.setFirstState(this.queryForCommunitySearchIndexState());
-		searchIndexDualSyncState.setSecondState(this.normalPostDatabaseInformationLogic.getDbState());
-		return searchIndexDualSyncState;
-	}
+	public SearchIndexState getDbState() {
+		final SearchIndexState searchIndexState = this.normalPostDatabaseInformationLogic.getDbState();
 
-	private DefaultSearchIndexSyncState queryForCommunitySearchIndexState() {
 		try (final DBSession session = this.openSession()) {
-			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
+
 			final ConstantID contentType = this.getConstantID();
 			final int contentTypeId = contentType.getId();
 
-			final Integer lastContentId = this.queryForObject("getLastContentIdCommunity", contentTypeId, Integer.class, session);
-			searchIndexSyncState.setLastTasId(lastContentId);
+			final Integer lastCommunityContentId = this.queryForObject("getLastContentIdCommunity", contentTypeId, Integer.class, session);
+			searchIndexState.setCommunityEntityId(lastCommunityContentId);
+
+			Date lastCommunityContentDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);
+			if (!present(lastCommunityContentDate)) {
+				lastCommunityContentDate = new Date();
+			}
+			searchIndexState.setCommunityEntityLogDate(lastCommunityContentDate);
 
 			final Integer lastPersonChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
-			searchIndexSyncState.setLastPersonChangeId(lastPersonChangeId);
-
-			final Date lastLogDate = this.queryForObject("getLastLogDateCommunity", contentTypeId, Date.class, session);
-			searchIndexSyncState.setLastLogDate(lastLogDate);
-
-			Date lastPersonLogDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
-			if (!present(lastPersonLogDate)) {
-				lastPersonLogDate = new Date();
-			}
-			searchIndexSyncState.setLastPersonLogDate(lastPersonLogDate);
+			searchIndexState.setPersonId(lastPersonChangeId);
 
 			Date lastRelationLogDate = this.queryForObject("getLastRelationLogDateCommunity", Date.class, session);
 			if (!present(lastRelationLogDate)) {
 				lastRelationLogDate = new Date();
 			}
-			searchIndexSyncState.setLastRelationLogDate(lastRelationLogDate);
-			return searchIndexSyncState;
+			searchIndexState.setRelationLogDate(lastRelationLogDate);
 		}
+
+		return searchIndexState;
 	}
+
 }

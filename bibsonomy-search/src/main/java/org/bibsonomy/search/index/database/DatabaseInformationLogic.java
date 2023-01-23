@@ -29,13 +29,13 @@
  */
 package org.bibsonomy.search.index.database;
 
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 
 /**
  * logic to get information for the database state
  * @author dzo
  */
-public interface DatabaseInformationLogic<S extends SearchIndexSyncState> {
+public interface DatabaseInformationLogic<S extends SearchIndexState> {
 
 	/**
 	 * @return the current database state

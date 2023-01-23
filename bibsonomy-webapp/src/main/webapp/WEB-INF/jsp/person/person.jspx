@@ -58,13 +58,12 @@
 
 			<!-- TODO (kch): combine more -->
 			<script type='text/javascript' src='/resources/javascript/person/theses.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
             <script type='text/javascript' src='/resources/javascript/person/relations.js'><!-- keep me --></script>
 
 			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 
-			<script type='text/javascript' src='/resources/javascript/explorePage.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/explorePosts.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/editPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/mergePerson.js'><!-- keep me --></script>

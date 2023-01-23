@@ -36,7 +36,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
@@ -197,7 +197,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public <S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
+	public <S extends SearchIndexState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);
@@ -456,11 +456,11 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean isValidConnection() {
+	public boolean isConnected() {
 		try {
 			return this.client.ping(this.buildRequestOptions());
 		} catch (final Exception e) {
-			LOG.error("disabling index", e);
+			LOG.error("Connection to an elasticsearch instance could not be established. Please check the connection or properties.", e);
 		}
 
 		return false;

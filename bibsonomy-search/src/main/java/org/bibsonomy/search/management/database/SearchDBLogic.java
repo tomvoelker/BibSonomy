@@ -43,7 +43,7 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic;
 import org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 /**
  * class for accessing the main database 

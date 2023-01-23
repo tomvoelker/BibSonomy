@@ -14,7 +14,6 @@ $(function () {
 
 	// init sorting options
 	initSortOptions('sorting-dropdown-menu', initPublicationPagination);
-	// init sorting options
 	initSortOptions('sorting-dropdown-menu-similar', loadSimilarAuthors);
 });
 

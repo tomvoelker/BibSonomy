@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * provides entity informations
+ * provides entity information
  * @param <E>
  */
 public abstract class EntityInformationProvider<E> {

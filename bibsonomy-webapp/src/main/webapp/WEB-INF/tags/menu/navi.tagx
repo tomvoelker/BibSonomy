@@ -128,7 +128,7 @@
 													<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
 												</li>
 											</c:if>
-											<li><a href="${relativeUrlGenerator.getExploreUrlByGroup(grp.name)}"><fmt:message key="group.explore.abbrev"/></a></li>
+											<li><a href="${relativeUrlGenerator.getExploreUrlByGroup(grp.name)}"><fmt:message key="group.explore.navi"/></a></li>
 											<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 												<li class="divider"><!-- keep me --></li>
 												<c:if test="${properties['group.relevantFor.enabled']}">
@@ -276,17 +276,17 @@
 		| persons
 		+-->
 	<c:set target="${navElements}" property="persons">
-		<c:if test="${crisSystem}">
-			<li class="${activeTab eq 'person' ? 'active' : ''}">
-				<a href="${relativeUrlGenerator.getPersonsUrl()}">
-					<fmt:message key="persons"/>
-				</a>
-			</li>
+		<c:set var="genealogyEnabled" value="${properties['genealogy.activated'] eq 'true'}" />
+		<fmt:message key="navi.persons" var="personNaviLabel"/>
+		<c:if test="${crisSystem or not genealogyEnabled}">
+			<fmt:message key="persons" var="personNaviLabel"/>
 		</c:if>
 
-		<c:if test="${properties['genealogy.activated'] eq 'true' and not crisSystem}">
-			<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
-		</c:if>
+		<li class="${activeTab eq 'persons' ? 'active' : ''}">
+			<a href="${relativeUrlGenerator.getPersonsUrl()}">
+				<c:out value="${personNaviLabel}" />
+			</a>
+		</li>
 	</c:set>
 
 	<!--+

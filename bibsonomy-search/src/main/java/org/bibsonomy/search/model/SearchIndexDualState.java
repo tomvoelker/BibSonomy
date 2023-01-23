@@ -27,38 +27,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.index.generator.project;
+package org.bibsonomy.search.model;
 
-import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.search.index.generator.IndexGenerationLogic;
-import org.bibsonomy.search.model.SearchParam;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * generation logic for {@link Project}s
+ * class for all search index sync states with dual entities
  *
  * @author dzo
  */
-public class ProjectIndexGenerationLogic extends AbstractDatabaseManagerWithSessionManagement implements IndexGenerationLogic<Project> {
+@Getter
+@Setter
+public class SearchIndexDualState extends SearchIndexState {
 
-	@Override
-	public int getNumberOfEntities() {
-		try (final DBSession session = this.openSession()) {
-			return this.queryForObject("getProjectsCount", Integer.class, session);
-		}
-	}
+	public static final String FIELD_FIRST_STATE = "first_state";
+	public static final String FIELD_SECOND_STATE = "second_state";
 
-	@Override
-	public List<Project> getEntities(int lastContenId, int limit) {
-		try (final DBSession session = this.openSession()) {
-			final SearchParam param = new SearchParam();
-			param.setLastContentId(lastContenId);
-			param.setLimit(limit);
+	private SearchIndexState firstState;
 
-			return this.queryForList("getProjects", param, Project.class, session);
-		}
-	}
+	private SearchIndexState secondState;
+
 }

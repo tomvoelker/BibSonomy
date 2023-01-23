@@ -55,7 +55,7 @@ import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.EntityInformationProvider;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -63,12 +63,12 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
- * manager for Elasticsearch
+ * Elasticsearch manager for post (bookmark) indices
  *
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchManager<Post<R>, DefaultSearchIndexSyncState> {
+public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchManager<Post<R>, SearchIndexState> {
 	private static final Log log = LogFactory.getLog(ElasticsearchPostManager.class);
 	
 	/** how many posts should be retrieved from the database */
@@ -79,19 +79,28 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	protected final SearchDBInterface<R> inputLogic;
 
 	/**
-	 * default constructor
+	 * Default constructor
 	 *
-	 * @param disabledIndexing
-	 * @param updateEnabled
-	 * @param generator
+	 * @param systemURI
 	 * @param client
+	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
-	 * @param systemId
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
 	 */
-	public ElasticsearchPostManager(boolean disabledIndexing, boolean updateEnabled, ElasticsearchIndexGenerator<Post<R>, DefaultSearchIndexSyncState> generator, ESClient client, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, URI systemId, SearchDBInterface<R> inputLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider);
+	public ElasticsearchPostManager(URI systemURI,
+									ESClient client,
+									ElasticsearchIndexGenerator<Post<R>, SearchIndexState> generator,
+									Converter syncStateConverter,
+									EntityInformationProvider entityInformationProvider,
+									boolean indexEnabled,
+									boolean updateEnabled,
+									boolean regenerateEnabled,
+									final SearchDBInterface<R> inputLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.inputLogic = inputLogic;
 	}
 
@@ -99,22 +108,21 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param indexName
 	 */
 	@Override
-	protected void updateIndex(final String indexName, final DefaultSearchIndexSyncState oldState) {
-		final DefaultSearchIndexSyncState targetState = this.inputLogic.getDbState();
-		final int oldLastTasId = oldState.getLastTasId().intValue();
+	protected void updateIndex(final String indexName, final SearchIndexState oldState) {
+		final SearchIndexState targetState = this.inputLogic.getDbState();
+		final int oldLastTasId = oldState.getTasId();
 		
 		/*
 		 * 1) flag/unflag spammer
 		 */
-		this.updatePredictions(indexName, oldState.getLastPredictionChangeDate(), targetState.getLastPredictionChangeDate());
+		this.updatePredictions(indexName, oldState.getPredictionLogDate(), targetState.getPredictionLogDate());
 		
 		/*
 		 * 2) remove old deleted or updated posts
 		 */
-		if (oldState.getLastLogDate() != null) {
-			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLastLogDate().getTime() - QUERY_TIME_OFFSET_MS));
-			
-			
+		if (oldState.getEntityLogDate() != null) {
+			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getEntityLogDate().getTime() - QUERY_TIME_OFFSET_MS));
+
 			final List<DeleteData> idsToDelete = new LinkedList<>();
 			for (final Integer contentId : contentIdsToDelete) {
 				final String indexID = String.valueOf(contentId.intValue());
@@ -161,11 +169,11 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 		
 		// 4) update the index state
 		try {
-			final DefaultSearchIndexSyncState newState = new DefaultSearchIndexSyncState(oldState);
-			newState.setLastLogDate(targetState.getLastLogDate());
-			newState.setLastTasId(targetState.getLastTasId());
-			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
-			newState.setLastDocumentDate(targetState.getLastDocumentDate());
+			final SearchIndexState newState = new SearchIndexState(oldState);
+			newState.setEntityLogDate(targetState.getEntityLogDate());
+			newState.setTasId(targetState.getTasId());
+			newState.setPersonId(targetState.getPersonId());
+			newState.setDocumentLogDate(targetState.getDocumentLogDate());
 			this.updateIndexState(indexName, oldState, newState);
 		} catch (final RuntimeException e) {
 			this.updateIndexState(indexName, oldState, oldState);
@@ -185,7 +193,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 	 * @param targetState
 	 * @param indexName
 	 */
-	protected void updateResourceSpecificProperties(final String indexName, final DefaultSearchIndexSyncState oldState, DefaultSearchIndexSyncState targetState) {
+	protected void updateResourceSpecificProperties(final String indexName, final SearchIndexState oldState, SearchIndexState targetState) {
 		// noop
 	}
 	
@@ -220,7 +228,7 @@ public class ElasticsearchPostManager<R extends Resource> extends ElasticsearchM
 				 * flag/unflag spammer, depending on user.getPrediction()
 				 */
 				log.debug("updating spammer status for user " + userName);
-				switch (user.getPrediction().intValue()) {
+				switch (user.getPrediction()) {
 				case 0:
 					log.debug("user " + userName + " flagged as non-spammer");
 					

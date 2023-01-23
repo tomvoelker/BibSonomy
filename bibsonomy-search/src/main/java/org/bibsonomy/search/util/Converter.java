@@ -38,7 +38,7 @@ package org.bibsonomy.search.util;
 public interface Converter<S, T, O> {
 
 	/**
-	 * convert the our model to the model required by the resource search
+	 * convert our model to the model required by the resource search
 	 * @param source
 	 * @return the converted model
 	 */

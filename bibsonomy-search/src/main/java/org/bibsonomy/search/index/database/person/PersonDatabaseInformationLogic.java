@@ -34,8 +34,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 
 import java.util.Date;
 
@@ -44,26 +43,22 @@ import java.util.Date;
  *
  * @author dzo
  */
-public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<SearchIndexDualSyncState> {
+public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic {
 
 	@Override
-	public SearchIndexDualSyncState getDbState() {
+	public SearchIndexState getDbState() {
 		try (final DBSession session = this.openSession()) {
-			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
+			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer personChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
-			searchIndexSyncState.setLastPostContentId(personChangeId);
+			searchIndexState.setEntityId(personChangeId);
 			Date logDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setLastLogDate(logDate);
+			searchIndexState.setEntityLogDate(logDate);
 
-			// both persons and person resource relations are using the same database id
-			final SearchIndexDualSyncState state = new SearchIndexDualSyncState();
-			state.setFirstState(searchIndexSyncState);
-			state.setSecondState(searchIndexSyncState);
-			return state;
+			return searchIndexState;
 		}
 	}
 }

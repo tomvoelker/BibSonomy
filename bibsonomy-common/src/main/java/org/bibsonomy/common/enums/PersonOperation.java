@@ -65,9 +65,6 @@ public enum PersonOperation {
 	/** Delete role of person to a resource relation */
 	DELETE_ROLE,
 
-	/** Update role of a person to a resource relation */
-	UPDATE_ROLE,
-
 	/** link person to a user */
 	LINK_USER,
 

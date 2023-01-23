@@ -30,7 +30,7 @@
 package org.bibsonomy.search.index.update;
 
 /**
- * an index update logic for a index with a one to many relation
+ * an index update logic for an index with a one-to-many relation
  *
  * @author dzo
  */

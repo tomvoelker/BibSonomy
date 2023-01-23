@@ -1,5 +1,5 @@
 /**
- * BibSonomy Search - Helper classes for search modules.
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
@@ -15,34 +15,60 @@
  *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.update;
+package org.bibsonomy.webapp.command;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.extra.SearchFilterElement;
 
 /**
- * a index sync state information state for community indices
- *
- * @author dzo
+ * @author kchoong
  */
-@Getter
 @Setter
-public class SearchIndexDualSyncState extends SearchIndexSyncState {
+@Getter
+public class ExploreViewCommand extends SimpleResourceViewCommand {
 
-	private DefaultSearchIndexSyncState firstState;
+    // Requested entity type
+    private GroupingEntity entityType;
 
-	private DefaultSearchIndexSyncState secondState;
+    // Requested name
+    private String requestedName;
+
+    // User
+    private User user;
+
+    // Group
+    private Group group;
+
+    // Search string
+    private String search;
+
+    // Search filter map with attribute field as key
+    private Map<String, List<SearchFilterElement>> filterMap = new HashMap<>();
+
+    public void addFilters(String field, List<SearchFilterElement> filters) {
+        if (!filters.isEmpty()) {
+            filterMap.put(field, filters);
+        }
+    }
 
 }

@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -58,6 +59,9 @@ import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.model.SearchIndexInfo;
+import org.bibsonomy.search.model.SearchIndexStatus;
+import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpParser;
@@ -84,7 +88,9 @@ import org.jsoup.Jsoup;
 
 /**
  * manager for searching the help pages
- * 
+ *
+ * TODO implement like other search managers
+ *
  * @author dzo
  */
 @Setter
@@ -142,10 +148,7 @@ public class HelpSearchManager implements HelpSearch {
 		}
 	}
 	
-	private boolean indexingDisabled;
-	
 	private String path;
-	
 	private String projectName;
 	private String projectTheme;
 	private String projectHelpTheme;
@@ -153,10 +156,13 @@ public class HelpSearchManager implements HelpSearch {
 	private String projectEmail;
 	private String projectNoSpamEmail;
 	private String projectAPIEmail;
+	private List<String> supportedLocales;
 
 	private URLGenerator urlGenerator;
 	
 	private ESClient client;
+	private boolean indexEnabled;
+	private boolean updateEnabled;
 	
 	private HelpParserFactory factory;
 	
@@ -166,7 +172,7 @@ public class HelpSearchManager implements HelpSearch {
 	 * re-index the complete help pages
 	 */
 	public void reindex() {
-		if (this.indexingDisabled) {
+		if (!this.indexEnabled || !this.updateEnabled) {
 			return;
 		}
 
@@ -183,6 +189,11 @@ public class HelpSearchManager implements HelpSearch {
 
 				languageFolders.forEach(languageFolder -> {
 					final String language = languageFolder.toFile().getName();
+					// Skip reindexing currently not supported locales of the system
+					if (!this.supportedLocales.contains(language)) {
+						return;
+					}
+
 					final String indexName = getIndexNameForLanguage(language);
 
 					if (!this.client.existsIndexWithName(indexName)) {
@@ -331,5 +342,27 @@ public class HelpSearchManager implements HelpSearch {
 			text = text.substring(0, tagStartIndex);
 		}
 		return text;
+	}
+
+	public List<SearchIndexInfo> getIndexInformations() {
+
+		final List<SearchIndexInfo> infos = new LinkedList<>();
+
+		for (String locale : this.supportedLocales) {
+			final String indexName = this.getIndexNameForLanguage(locale);
+			final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
+			searchIndexInfo.setId(indexName);
+			searchIndexInfo.setStatus(SearchIndexStatus.ACTIVE);
+
+			// searchIndexInfo.setSyncState(); TODO
+
+			final SearchIndexStatistics statistics = new SearchIndexStatistics();
+			final long count = this.client.getDocumentCount(indexName, HELP_PAGE_TYPE, null);
+			statistics.setNumberOfDocuments(count);
+			searchIndexInfo.setStatistics(statistics);
+			infos.add(searchIndexInfo);
+		}
+
+		return infos;
 	}
 }
