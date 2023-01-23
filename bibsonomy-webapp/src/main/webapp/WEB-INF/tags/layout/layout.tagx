@@ -62,6 +62,40 @@
 			personalized="${personalized}"
 			/>
 			<body data-spy="scroll" data-target="#sidebar-nav">
+
+
+				<c:choose>
+					<c:when test="${pageContext.response.locale eq 'en'}">
+						<c:set var="alertMessage" value="${properties['project.header.alert.message.en']}" />
+					</c:when>
+					<c:when test="${pageContext.response.locale eq 'de'}">
+						<c:set var="alertMessage" value="${properties['project.header.alert.message.de']}" />
+					</c:when>
+					<c:otherwise></c:otherwise>
+				</c:choose>
+
+				<c:choose>
+					<c:when test="${properties['project.header.alert.type'] eq 'alert'}">
+						<div class="alert alert-danger alert-dismissible text-center" style="padding: 7px;"  role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:when test="${properties['project.header.alert.type'] eq 'warning'}">
+						<div class="alert alert-warning alert-dismissible text-center" style="padding: 7px;" role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:when test="${properties['project.header.alert.type'] eq 'info'}">
+						<div class="alert alert-info alert-dismissible text-center" style="padding: 7px;" role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:otherwise></c:otherwise>
+				</c:choose>
+
 				<div class="container header">
 					<div id="page-header" class="bib-header">
 						<div class="row">
