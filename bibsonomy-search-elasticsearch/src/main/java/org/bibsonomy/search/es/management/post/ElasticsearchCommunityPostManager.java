@@ -319,7 +319,7 @@ public class ElasticsearchCommunityPostManager<G extends Resource> extends Elast
 			deleteData.setType(this.entityInformationProvider.getType());
 			postsToDelete.add(deleteData);
 
-			// check it there is another post in the database to ensure community post exists
+			// check if there is another post in the database to ensure community post exists
 			final Post<G> newestPostByInterHash = this.communityPostUpdateLogic.getNewestPostByInterHash(interHash);
 			if (present(newestPostByInterHash)) {
 				// prepare the post for indexing

@@ -283,6 +283,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI);
 
 			final S oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName, this.syncStateConverter);
+			// Update the inactive index and switch afterwards
 			this.updateIndex(realIndexName, oldState);
 			this.switchActiveAndInactiveIndex();
 		} catch (final IndexNotFoundException e) {
@@ -358,6 +359,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		/*
 		 * maybe we are updating an updated entity in es
 		 */
+		// TODO currently ignore return value
 		this.client.updateOrCreateDocuments(indexName, convertedEntities);
 		convertedEntities.clear();
 	}
