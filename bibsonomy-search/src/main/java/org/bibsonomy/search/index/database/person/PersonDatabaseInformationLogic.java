@@ -34,6 +34,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
+import org.bibsonomy.search.model.SearchIndexDualState;
 import org.bibsonomy.search.model.SearchIndexState;
 
 import java.util.Date;
@@ -43,10 +44,10 @@ import java.util.Date;
  *
  * @author dzo
  */
-public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic {
+public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<SearchIndexDualState> {
 
 	@Override
-	public SearchIndexState getDbState() {
+	public SearchIndexDualState getDbState() {
 		try (final DBSession session = this.openSession()) {
 			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer personChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
@@ -58,7 +59,11 @@ public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithS
 			}
 			searchIndexState.setEntityLogDate(logDate);
 
-			return searchIndexState;
+			final SearchIndexDualState dualState = new SearchIndexDualState();
+			dualState.setFirstState(searchIndexState);
+			dualState.setSecondState(searchIndexState);
+
+			return dualState;
 		}
 	}
 }
