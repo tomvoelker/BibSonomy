@@ -173,7 +173,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	public boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
-			// convert each document to a indexrequest object and add all to the request
+			// convert each document to an index request object and add all to the request
 			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName,entity.getKey(), entity.getValue()));
 
 			indexRequests.forEach(bulkRequest::add);
@@ -383,6 +383,7 @@ public class ElasticsearchRESTClient implements ESClient {
 				this.bulkDeleteHits(indexName, type, firstHits.getHits());
 			}
 
+			// Likely to delete the scrolls/bulks after the initial scroll ID of the first request
 			final SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId);
 			searchScrollRequest.scroll(TimeValue.timeValueMinutes(3L));
 
@@ -396,11 +397,12 @@ public class ElasticsearchRESTClient implements ESClient {
 				this.bulkDeleteHits(indexName, type, hits);
 			}
 
+			// https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-clear-scroll.html
 			final ClearScrollRequest request = new ClearScrollRequest();
 			request.addScrollId(scrollId);
 			this.client.clearScroll(request, this.buildRequestOptions());
 			return null;
-		}, null, "error deleting documents form index " + indexName);
+		}, null, "error deleting documents from index " + indexName);
 	}
 
 	private void bulkDeleteHits(String indexName, String type, SearchHit[] hits) throws IOException {
