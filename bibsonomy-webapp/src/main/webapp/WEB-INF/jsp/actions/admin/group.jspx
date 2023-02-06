@@ -29,7 +29,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:admin />
-					<nav:crumb nameKey="navi.admin.group" active="true" />
+					<nav:crumb nameKey="navi.admin.groups" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

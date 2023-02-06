@@ -326,15 +326,15 @@
 	<c:set target="${navElements}" property="admin">
 		<c:if test="${userIsAdmin}">
 			<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.admin"/><b class="caret">&amp;nbsp;</b></a>
 				<ul class="dropdown-menu">
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}">full text search</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}"><fmt:message key="navi.admin.spam"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}"><fmt:message key="navi.admin.groups"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}"><fmt:message key="navi.admin.searchIndices"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}"><fmt:message key="navi.admin.recommenders"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}"><fmt:message key="navi.admin.oauthConsumers"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}"><fmt:message key="navi.admin.sync"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}"><fmt:message key="navi.admin.statistics"/></a></li>
 				</ul>
 			</li>
 		</c:if>

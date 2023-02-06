@@ -10,10 +10,10 @@
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-    <fmt:message key="navi.admin" var="pageTitle"/>
+    <fmt:message key="navi.admin.searchIndices" var="pageTitle"/>
 
     <layout:layout
-            pageTitle="full text search"
+            pageTitle="${pageTitle}"
             loginUser="${command.context.loginUser}"
             requPath="${requPath}"
             noSidebar="${true}">

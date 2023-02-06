@@ -28,7 +28,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:admin />
-					<nav:crumb nameKey="navi.admin.synchronization" active="true" />
+					<nav:crumb nameKey="navi.admin.sync" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
