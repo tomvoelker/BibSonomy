@@ -22,7 +22,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:admin/>
-					<nav:crumb nameKey="navi.admin.fulltextsearch" active="true"/>
+					<nav:crumb nameKey="navi.admin.searchIndices" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
