@@ -1,5 +1,5 @@
 /**
- * Little helper JS for the admin/group page
+ * Little helper JS for the admin/groups page
  */
 $(document).ready(function() {
 	$('.declineGroupCancel').click(function() {

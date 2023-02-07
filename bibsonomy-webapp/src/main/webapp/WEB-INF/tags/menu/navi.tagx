@@ -329,10 +329,10 @@
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.admin"/><b class="caret">&amp;nbsp;</b></a>
 				<ul class="dropdown-menu">
 					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}"><fmt:message key="navi.admin.spam"/></a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}"><fmt:message key="navi.admin.groups"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('groups')}"><fmt:message key="navi.admin.groups"/></a></li>
 					<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}"><fmt:message key="navi.admin.searchIndices"/></a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}"><fmt:message key="navi.admin.recommenders"/></a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}"><fmt:message key="navi.admin.oauthConsumers"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommenders')}"><fmt:message key="navi.admin.recommenders"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauthconsumers')}"><fmt:message key="navi.admin.oauthConsumers"/></a></li>
 					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}"><fmt:message key="navi.admin.sync"/></a></li>
 					<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}"><fmt:message key="navi.admin.statistics"/></a></li>
 				</ul>

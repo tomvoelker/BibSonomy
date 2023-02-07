@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.webapp.command.admin.AdminRecommenderViewCommand;
+import org.bibsonomy.webapp.command.admin.AdminRecommendersCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -64,8 +64,8 @@ import recommender.impl.webservice.WebserviceRecommender;
  * 
  * @author bsc
  */
-public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand> {
-	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
+public class AdminRecommendersController implements MinimalisticController<AdminRecommendersCommand> {
+	private static final Log log = LogFactory.getLog(AdminRecommendersController.class);
 	
 	private static final String CMD_ACTIVATE_RECOMMENDER = "activateRecommender";
 	private static final String CMD_DEACTIVATE_RECOMMENDER = "deactivateRecommender";
@@ -76,7 +76,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private Map<Class<? extends RecommendationResult>, MultiplexingRecommender<?, ?>> recommenderMap;
 	
 	@Override
-	public View workOn(final AdminRecommenderViewCommand command) {
+	public View workOn(final AdminRecommendersCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 		/*
@@ -103,7 +103,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		
 		command.setAction(null);
 		this.getRecommenderInformationsForView(command);
-		return Views.ADMIN_RECOMMENDER;
+		return Views.ADMIN_RECOMMENDERS;
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * fetch setting_id, rec_id, average latency from database; store in
 	 * command.recOverview
 	 */
-	private void getRecommenderInformationsForView(final AdminRecommenderViewCommand command) {
+	private void getRecommenderInformationsForView(final AdminRecommendersCommand command) {
 		final Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> overviewMap = new HashMap<Class<? extends RecommendationResult>, List<RecAdminOverview>>();
 		for (final Entry<Class<? extends RecommendationResult>, MultiplexingRecommender<?, ?>> recommenderMapEntity : this.recommenderMap.entrySet()) {
 			final Class<? extends RecommendationResult> recomClass = recommenderMapEntity.getKey();
@@ -130,13 +130,13 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setRecommenderOverviewMap(overviewMap);
 	}
 	
-	private static void handleActivateRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
+	private static void handleActivateRecommender(final AdminRecommendersCommand command, final MultiplexingRecommender<?, ?> recommender) {
 		final Long recommenderId = command.getRecommenderId();
 		recommender.enableRecommender(recommenderId);
 		command.setAdminResponse("Activated recommender!");
 	}
 	
-	private static void handleDeactivateRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
+	private static void handleDeactivateRecommender(final AdminRecommendersCommand command, final MultiplexingRecommender<?, ?> recommender) {
 		if (recommender.getAllActiveRecommenders().size() == 1) {
 			command.setAdminResponse("Can't deactivate last active recommender");
 			return;
@@ -146,7 +146,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setAdminResponse("Deactivated recommender!");
 	}
 	
-	private static void handleRemoveRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<?, ?> recommender) {
+	private static void handleRemoveRecommender(final AdminRecommendersCommand command, final MultiplexingRecommender<?, ?> recommender) {
 		final Long selectedRecommender = command.getRecommenderId();
 		if (!present(selectedRecommender)) {
 			command.setAdminResponse("Please select a recommender first!");
@@ -159,7 +159,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		}
 	}
 	
-	private static <E, R extends RecommendationResult> void handleAddRecommender(final AdminRecommenderViewCommand command, final MultiplexingRecommender<E, R> recommender) {
+	private static <E, R extends RecommendationResult> void handleAddRecommender(final AdminRecommendersCommand command, final MultiplexingRecommender<E, R> recommender) {
 		final URL recommenderUrl = command.getNewrecurl();
 		try {
 			if (!UrlUtils.isValid(recommenderUrl.toString())) {
@@ -178,8 +178,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	}
 	
 	@Override
-	public AdminRecommenderViewCommand instantiateCommand() {
-		return new AdminRecommenderViewCommand();
+	public AdminRecommendersCommand instantiateCommand() {
+		return new AdminRecommendersCommand();
 	}
 
 	/**

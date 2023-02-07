@@ -51,7 +51,7 @@ import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.MailUtils;
-import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
+import org.bibsonomy.webapp.command.admin.AdminGroupsCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -66,15 +66,15 @@ import org.springframework.validation.Errors;
  *
  * @author bsc, tni
  */
-public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(AdminGroupController.class);
+public class AdminGroupsController implements MinimalisticController<AdminGroupsCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(AdminGroupsController.class);
 
 	private LogicInterface logic;
 	private MailUtils mailUtils;
 	private Errors errors;
 
 	@Override
-	public View workOn(final AdminGroupViewCommand command) {
+	public View workOn(final AdminGroupsCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
@@ -100,7 +100,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				if (present(requestingUser.getEmail())) {
 					this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 				}
-				return new ExtendedRedirectView("/admin/group");
+				return new ExtendedRedirectView("/admin/groups");
 			case DECLINE_GROUP:
 				final String groupName = group.getName();
 				group = this.logic.getGroupDetails(groupName, true);
@@ -119,7 +119,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				if (present(requestingUser.getEmail())) {
 					this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 				}
-				return new ExtendedRedirectView("/admin/group");
+				return new ExtendedRedirectView("/admin/groups");
 			case FETCH_GROUP_SETTINGS:
 				this.setGroupOrMarkNonExistent(command);
 				break;
@@ -193,13 +193,13 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		
 		command.setAllDeletedGroupNames(allDeletedGroupNames);
 
-		return Views.ADMIN_GROUP;
+		return Views.ADMIN_GROUPS;
 	}
 
 	/**
 	 * TODO: Documentation.
 	 */
-	private void updateGroupPermissions(final AdminGroupViewCommand command) {
+	private void updateGroupPermissions(final AdminGroupsCommand command) {
 		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
 		if (present(dbGroup) && GroupID.INVALID.getId() != dbGroup.getGroupId()) {
 			dbGroup.setGroupLevelPermissions(new HashSet<>());
@@ -221,7 +221,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	/**
 	 * TODO: Documentation.
 	 */
-	private void setGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
+	private void setGroupOrMarkNonExistent(final AdminGroupsCommand command) {
 		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
 		if (present(dbGroup)) {
 			command.setGroup(dbGroup);
@@ -231,7 +231,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	/**
 	 * TODO: Documentation.
 	 */
-	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
+	private Group getGroupOrMarkNonExistent(final AdminGroupsCommand command) {
 		final Group dbGroup = this.logic.getGroupDetails(command.getGroup().getName(), false);
 
 		if (!GroupUtils.isValidGroup(dbGroup)) {
@@ -241,8 +241,8 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	}
 
 	@Override
-	public AdminGroupViewCommand instantiateCommand() {
-		return new AdminGroupViewCommand();
+	public AdminGroupsCommand instantiateCommand() {
+		return new AdminGroupsCommand();
 	}
 
 	/**

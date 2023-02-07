@@ -36,7 +36,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -47,7 +46,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 @Getter
 @Setter
-public class AdminGroupViewCommand extends BaseCommand {
+public class AdminGroupsCommand extends BaseCommand {
 
 	/** specific action for admin page */
 	private AdminGroupOperation action;
@@ -66,7 +65,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private List<String> allGroupNames;
 	private List<String> allDeletedGroupNames;
 	
-	public AdminGroupViewCommand() {
+	public AdminGroupsCommand() {
 		this.group = new Group();
 	}
 
