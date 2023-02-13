@@ -18,7 +18,7 @@
 
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.persons" command="${command}"
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.personsGenealogy" command="${command}"
 					   pageTitle="${pageTitle}" activeTab="persons">
 
 		<!--+
@@ -42,7 +42,7 @@
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
-					<fmt:message key="navi.persons" var="persons"/>
+					<fmt:message key="navi.personsGenealogy" var="persons"/>
 					<nav:crumb name="${persons}" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>

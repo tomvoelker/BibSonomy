@@ -276,11 +276,14 @@
 		| persons
 		+-->
 	<c:set target="${navElements}" property="persons">
-		<c:set var="genealogyEnabled" value="${properties['genealogy.activated'] eq 'true'}" />
-		<fmt:message key="navi.persons" var="personNaviLabel"/>
-		<c:if test="${crisSystem or not genealogyEnabled}">
-			<fmt:message key="persons" var="personNaviLabel"/>
-		</c:if>
+		<c:choose>
+			<c:when test="${properties['genealogy.activated']}">
+				<fmt:message key="navi.personsGenealogy" var="personNaviLabel"/>
+			</c:when>
+			<c:otherwise>
+				<fmt:message key="navi.persons" var="personNaviLabel"/>
+			</c:otherwise>
+		</c:choose>
 
 		<li class="${activeTab eq 'persons' ? 'active' : ''}">
 			<a href="${relativeUrlGenerator.getPersonsUrl()}">
