@@ -50,9 +50,9 @@ import org.springframework.security.access.AccessDeniedException;
 /**
  * @author wla
  */
-public class AdminSyncViewController implements MinimalisticController<AdminSyncCommand> {
+public class AdminSyncController implements MinimalisticController<AdminSyncCommand> {
 
-	private static final Log log = LogFactory.getLog(AdminSyncViewController.class);
+	private static final Log log = LogFactory.getLog(AdminSyncController.class);
 	private final String CREATE_SERVICE = "createService";
 	private final String DELETE_SERVICE = "deleteService";
 	

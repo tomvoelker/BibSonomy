@@ -16,7 +16,7 @@
 			<map merge="true">
 				<entry key="/admin/spam">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="spamPageController" />
+						<property name="controllerBeanName"	value="adminSpamController" />
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
@@ -31,9 +31,9 @@
 				<!--+
 					| TODO check user info functionality
 				+-->
-				<entry key="/admin/userinfo">
+				<entry key="/admin/spam">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="spamPageController" />
+						<property name="controllerBeanName"	value="adminSpamController" />
 						<property name="allowedFields">
 							<list>
 								<value>userinfo</value>
@@ -43,7 +43,7 @@
 				</entry>
 				<entry key="/admin/fulltextsearch">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminFullTextSearchController" />
+						<property name="controllerBeanName"	value="adminSearchIndicesController" />
 						<property name="allowedFields">
 							<list>
 								<value>action</value>
@@ -69,9 +69,9 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/admin/recommender">
+				<entry key="/admin/recommenders">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminRecommenderController" />
+						<property name="controllerBeanName"	value="adminRecommendersController" />
 					 	<property name="allowedFields">
 							<list>
 								<value>action</value>
@@ -84,9 +84,9 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/admin/group">
+				<entry key="/admin/groups">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminGroupController" />
+						<property name="controllerBeanName"	value="adminGroupsController" />
 					 	<property name="allowedFields">
 							<list>
 								<value>action</value>
@@ -113,9 +113,9 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/admin/oauth">
+				<entry key="/admin/oauthconsumers">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminOAuthController" />
+						<property name="controllerBeanName"	value="adminOAuthConsumersController" />
 					 	<property name="allowedFields">
 							<list>
 								<value>adminAction</value>
@@ -143,14 +143,12 @@
 		</property>
 	</bean>
 
-
-
-	<!--  #################### controller #################### -->
-	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.admin.SpamPageController" scope="request">
+	<!--  #################### controllers #################### -->
+	<bean id="adminSpamController" class="org.bibsonomy.webapp.controller.admin.AdminSpamController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 
-	<bean id="adminFullTextSearchController" class="org.bibsonomy.webapp.controller.admin.AdminFullTextSearchController" scope="request">
+	<bean id="adminSearchIndicesController" class="org.bibsonomy.webapp.controller.admin.AdminSearchIndicesController" scope="request">
 		<property name="managers" ref="elasticsearchManagers" />
 		<property name="helpSearchManager" ref="helpSearchManager" />
 	</bean>
@@ -162,7 +160,7 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="request">
+	<bean id="adminRecommendersController" class="org.bibsonomy.webapp.controller.admin.AdminRecommendersController" scope="request">
 		<property name="recommenderMap">
 			<util:map key-type="java.lang.Class">
 				<entry key="org.bibsonomy.recommender.tag.model.RecommendedTag" value-ref="multiplexingTagRecommender" />
@@ -177,12 +175,12 @@
 		</property>
 	</bean>
 	
-	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
+	<bean id="adminGroupsController" class="org.bibsonomy.webapp.controller.admin.AdminGroupsController" scope="request">
 		<property name="mailUtils" ref="mailUtils"/>
 		<property name="logic" ref="logic"/>
 	</bean>
 	
-	<bean id="adminOAuthController" class="org.bibsonomy.webapp.controller.admin.AdminOAuthController" scope="request">
+	<bean id="adminOAuthConsumersController" class="org.bibsonomy.webapp.controller.admin.AdminOAuthConsumersController" scope="request">
 		<property name="oauthLogic" ref="oAuthLogic"/>
 	</bean>
 	

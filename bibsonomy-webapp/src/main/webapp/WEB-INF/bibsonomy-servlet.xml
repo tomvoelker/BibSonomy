@@ -878,7 +878,7 @@
 				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="#{crisSystem or not genealogyEnabled ? 'personsPageController' : 'personIntroPageController'}"/>
+						<property name="controllerBeanName" value="#{genealogyEnabled ? 'personIntroPageController' : 'personsPageController'}"/>
 						<property name="allowedFields">
 							<list>
 								<value>search</value>

@@ -83,7 +83,7 @@ public class AdminSettingsCommand {
 		 * initialize options
 		 */
 		//algorithm options
-		// TODO enum in options übergeben
+		// TODO pass enum in options
 		algorithmOptions = new HashMap<String, String>();
 		algorithmOptions.put(ClassifierAlgorithm.IBK.name(), ClassifierAlgorithm.IBK.getDescription());
 		algorithmOptions.put(ClassifierAlgorithm.NAIVE_BAYES.name(), ClassifierAlgorithm.NAIVE_BAYES.getDescription());

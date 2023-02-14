@@ -48,7 +48,7 @@
 	<!--  #################### controller #################### -->
 	
 	<!-- handles sync admin page -->
-	<bean id="adminSyncController" class="org.bibsonomy.webapp.controller.admin.AdminSyncViewController" scope="request">
+	<bean id="adminSyncController" class="org.bibsonomy.webapp.controller.admin.AdminSyncController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
 	

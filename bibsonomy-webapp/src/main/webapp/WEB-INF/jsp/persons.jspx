@@ -9,25 +9,24 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
-	<c:set var="genealogyEnabled" value="${properties['genealogy.activated'] eq 'true'}" />
-	<c:set var="showGenealogy" value="${not crisSystem and genealogyEnabled}" />
+	<c:set var="genealogyEnabled" value="${properties['genealogy.activated']}}" />
 
 	<c:choose>
-		<c:when test="${not crisSystem}">
-			<fmt:message key="persons.intro.head.title" var="personIntroTitle">
+
+		<c:when test="${properties['genealogy.activated']}">
+			<fmt:message key="persons.intro.head.title" var="pageTitle">
 				<fmt:param value="${properties['project.name']}" />
 			</fmt:message>
 		</c:when>
 		<c:otherwise>
-			<fmt:message key="persons" var="personIntroTitle" />
+			<fmt:message key="persons" var="pageTitle" />
 		</c:otherwise>
 	</c:choose>
 
-	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
+	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
-			<c:if test="${showGenealogy}">
+			<c:if test="${genealogyEnabled}">
 				<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
 			</c:if>
 		</jsp:attribute>
@@ -44,8 +43,8 @@
 		
 		<jsp:attribute name="content">
 			<c:choose>
-				<c:when test="${showGenealogy}">
-					<persons:personsGenealogy title="${personIntroTitle}" command="${command}" />
+				<c:when test="${genealogyEnabled}">
+					<persons:personsGenealogy title="${pageTitle}" command="${command}" />
 				</c:when>
 				<c:otherwise>
 					<persons:personsOverview command="${command}" />

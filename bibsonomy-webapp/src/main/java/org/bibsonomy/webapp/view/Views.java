@@ -400,27 +400,27 @@ public enum Views implements View {
 	/**
 	 * spam admin page
 	 */
-	ADMIN_SPAM("actions/admin/spam"),
+	ADMIN_SPAM("admin/spam"),
 	/**
 	 * full text search admin page
 	 */
-	ADMIN_FULL_TEXT_SEARCH("admin/search"),
+	ADMIN_SEARCH_INDICES("admin/search"),
 	/**
-	 * recommender admin page
+	 * recommenders admin page
 	 */
-	ADMIN_RECOMMENDER("actions/admin/recommender"),
+	ADMIN_RECOMMENDERS("admin/recommenders"),
 	/**
 	 * Show the page for administrating groups
 	 */
-	ADMIN_GROUP("actions/admin/group"),
+	ADMIN_GROUPS("admin/groups"),
 	/**
 	 * manage OAuth consumer keys
 	 */
-	ADMIN_OAUTH("actions/admin/oauth"),
+	ADMIN_OAUTH_CONSUMERS("admin/oauthConsumers"),
 	/**
 	 * manage synchronization settings
 	 */
-	ADMIN_SYNC("actions/admin/sync"),
+	ADMIN_SYNC("admin/sync"),
 	
 	/** statistics about the system */
 	ADMIN_STATISTICS("admin/statistics"),
