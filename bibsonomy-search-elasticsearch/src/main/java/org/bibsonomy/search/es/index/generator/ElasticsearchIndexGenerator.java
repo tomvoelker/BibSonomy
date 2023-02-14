@@ -130,7 +130,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 	}
 
 	/**
-	 * resets the index, e.g. after success or after failture
+	 * resets the index, e.g. after success or after failure
 	 */
 	public void reset() {
 		this.indexName = null;

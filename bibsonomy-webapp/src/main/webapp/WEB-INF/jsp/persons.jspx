@@ -9,7 +9,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="genealogyEnabled" value="${properties['genealogy.activated']}}" />
+	<c:set var="genealogyEnabled" value="${properties['genealogy.activated']}" />
 
 	<c:choose>
 
