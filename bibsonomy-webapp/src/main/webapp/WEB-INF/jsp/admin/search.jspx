@@ -39,7 +39,10 @@
 				<adminSearch:entityIndicesInfo entity="${entity}" searchIndexInfos="${searchIndexInfos}" showWarning="${true}" showActions="${true}" />
 			</c:forEach>
 
-			<adminSearch:entityIndicesInfo entity="Help" searchIndexInfos="${command.searchIndexInfo.get('Help')}" showWarning="${false}" showActions="${false}" />
+			<c:if test="${not empty command.searchIndexInfo.get('Help')}">
+				<adminSearch:entityIndicesInfo entity="Help" searchIndexInfos="${command.searchIndexInfo.get('Help')}" showWarning="${false}" showActions="${false}" />
+			</c:if>
+
     	</jsp:attribute>
 	</layout:layout>
 </jsp:root>

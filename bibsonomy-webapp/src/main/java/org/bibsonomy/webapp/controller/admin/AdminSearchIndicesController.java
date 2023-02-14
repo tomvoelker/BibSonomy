@@ -128,7 +128,9 @@ public class AdminSearchIndicesController implements MinimalisticController<Admi
 			final List<SearchIndexInfo> information = manager.getIndexInformations();
 			infoMap.put(managementEntry.getKey().getSimpleName(), information);
 		}
-		// infoMap.put("Help", helpSearchManager.getIndexInformations());
+
+		// get infos about the help page indices for all locales
+		infoMap.put("Help", helpSearchManager.getIndexInformations());
 
 		return Views.ADMIN_SEARCH_INDICES;
 	}

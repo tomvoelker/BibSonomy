@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * abstract class to generate an index of the specified type
@@ -184,7 +185,19 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 		newState.setMappingVersion(BasicUtils.VERSION);
 		newState.setUpdatedAt(new Date());
 
+		// init starting build time
+		Date startTime = new Date();
+
+		// insert documents for the index
 		this.insertDataIntoIndex(indexName);
+
+		// set build time with the difference in minutes
+		Date endTime = new Date();
+		TimeUnit minutes = TimeUnit.MINUTES;
+		Integer buildTime = (int) minutes.convert(endTime.getTime() - startTime.getTime(), TimeUnit.MILLISECONDS);
+		newState.setBuildTime(buildTime);
+
+		// insert meta info for the index
 		this.writeMetaInfoToIndex(indexName, newState);
 	}
 

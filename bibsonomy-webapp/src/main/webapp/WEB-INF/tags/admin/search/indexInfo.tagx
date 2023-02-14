@@ -69,6 +69,14 @@
                                     </div>
                                 </c:if>
                                 <div class="row">
+                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.buildTime"/></strong></div>
+                                    <div class="col-md-8"><span>
+                                        <fmt:message key="admin.search.info.buildTime.minutes">
+                                            <fmt:param value="${searchIndexInfo.syncState.buildTime}"/>
+                                        </fmt:message>
+                                    </span></div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4"><strong><fmt:message key="admin.search.info.documents"/></strong></div>
                                     <div class="col-md-8"><span>${searchIndexInfo.statistics.numberOfDocuments}</span></div>
                                 </div>
