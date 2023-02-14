@@ -386,6 +386,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		 * BasicUtils#VERSION maybe contain a new deployed version
 		 */
 		state.setMappingVersion(oldState.getMappingVersion());
+		state.setBuildTime(oldState.getBuildTime());
 		state.setUpdatedAt(new Date());
 		indexData.setSource(this.syncStateConverter.convert(state));
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, indexData);
