@@ -130,6 +130,14 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 			return this.urlGenerator.getUserUrlByUserName(owner);
 		}
 
+		/*
+		 * If no owner/user is passed, a goldstandard post has been deleted.
+		 * We redirect to publications page
+		 */
+		if (!present(owner)) {
+			return this.urlGenerator.getPublicationsUrl();
+		}
+
 		// else use the referer
 		return referer;
 	}
