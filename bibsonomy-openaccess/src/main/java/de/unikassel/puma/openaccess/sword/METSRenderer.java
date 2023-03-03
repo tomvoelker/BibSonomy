@@ -183,12 +183,6 @@ public class METSRenderer extends JAXBRenderer {
 					}
 				}
 			}
-
-			/*
-			 * add publisher info / romeo sherpa 
-			 */
-			// TODO: get info from romeo/sherpa
-			//myPost.setPublisherinfo("");
 		}
 
 		return myPost;

@@ -106,6 +106,7 @@
 	<bean id="publicationClassificationController" class="de.unikassel.puma.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
 		<property name="classificator" ref="classificator"/>
 	</bean>
+
 	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton" />
 
 	<!--+ 
