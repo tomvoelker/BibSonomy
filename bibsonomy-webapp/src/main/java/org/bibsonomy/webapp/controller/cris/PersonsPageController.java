@@ -33,6 +33,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -47,10 +50,12 @@ import org.bibsonomy.webapp.view.Views;
  * the controller for
  * - /persons
  *
- * if the system is configured to cris mode
+ * if the system is configured to cris mode or genealogy is deactivated
  *
  * @author dzo
  */
+@Getter
+@Setter
 public class PersonsPageController implements MinimalisticController<PersonsPageCommand> {
 
 	private LogicInterface logicInterface;
@@ -69,13 +74,14 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 
 		final ListCommand<Person> personListCommand = command.getPersons();
 		final String search = command.getSearch();
+		final Prefix prefix = command.getPrefix();
 		final PersonQuery query = new PersonQuery(search);
 		query.setUsePrefixMatch(true);
-		query.setPrefix(command.getPrefix());
+		query.setPrefix(prefix);
 		final int personListStart = personListCommand.getStart();
 		query.setStart(personListStart);
 		query.setEnd(personListStart + personListCommand.getEntriesPerPage());
-		query.setOrder(present(search) ? null : PersonSortKey.MAIN_NAME_LAST_NAME);
+		query.setOrder(present(search) ? PersonSortKey.RANK : PersonSortKey.MAIN_NAME_LAST_NAME);
 		query.setUsePrefixMatch(true);
 		if (!isUserLoggedin || !command.isShowAllPersons()) {
 			query.setCollege(this.crisCollege);
@@ -85,20 +91,6 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		personListCommand.setList(persons);
 
 		return Views.PERSON_INTRO;
-	}
-
-	/**
-	 * @param logicInterface the logicInterface to set
-	 */
-	public void setLogicInterface(LogicInterface logicInterface) {
-		this.logicInterface = logicInterface;
-	}
-
-	/**
-	 * @param crisCollege the crisCollege to set
-	 */
-	public void setCrisCollege(String crisCollege) {
-		this.crisCollege = crisCollege;
 	}
 
 }
