@@ -498,7 +498,7 @@ public class UrlUtils {
 		 * append http suffix if not set
 		 */
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
-			url = "http://" + url;
+			url = "https://" + url;
 		}
 
 		/*
