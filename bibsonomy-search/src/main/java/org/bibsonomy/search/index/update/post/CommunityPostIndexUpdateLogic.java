@@ -37,7 +37,7 @@ import org.bibsonomy.database.common.ResourceAwareAbstractDatabaseManagerWithSes
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 /**
  * index update logic for normal posts for the community logic

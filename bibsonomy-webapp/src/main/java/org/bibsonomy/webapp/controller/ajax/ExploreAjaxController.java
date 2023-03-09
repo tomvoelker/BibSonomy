@@ -21,7 +21,7 @@ import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.ajax.AjaxGroupExploreCommand;
+import org.bibsonomy.webapp.command.ajax.AjaxExploreCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -33,24 +33,23 @@ import org.json.simple.JSONObject;
  *
  * @author kchoong
  */
-public class GroupExploreAjaxController extends AjaxController implements MinimalisticController<AjaxGroupExploreCommand> {
+public class ExploreAjaxController extends AjaxController implements MinimalisticController<AjaxExploreCommand> {
 
     private Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers;
 
     private User loggedInUser;
 
-
     @Override
-    public View workOn(AjaxGroupExploreCommand command) {
+    public View workOn(AjaxExploreCommand command) {
         this.loggedInUser = command.getContext().getLoginUser();
 
         // get group details
-        final String requestedGroup = command.getRequestedGroup();
-        final Group group = this.logic.getGroupDetails(requestedGroup, false);
+        final String requestedName = command.getRequestedName();
+        final GroupingEntity entityType = command.getEntityType();
 
         PostQueryBuilder builder = new PostQueryBuilder()
-                .setGrouping(GroupingEntity.GROUP)
-                .setGroupingName(requestedGroup)
+                .setGrouping(entityType)
+                .setGroupingName(requestedName)
                 .search(command.getSearch());
 
         // check, if only the distinct counts of the query should be retrieved
@@ -61,7 +60,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         return workOnPublications(command, builder);
     }
 
-    public View workOnDistinctCounts(AjaxGroupExploreCommand command, PostQueryBuilder builder) {
+    public View workOnDistinctCounts(AjaxExploreCommand command, PostQueryBuilder builder) {
         PostSearchQuery<BibTex> distinctPostQuery = new PostSearchQuery<>(builder.createPostQuery(BibTex.class));
 
         final JSONObject response = new JSONObject();
@@ -78,7 +77,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         return Views.AJAX_JSON;
     }
 
-    public View workOnPublications(AjaxGroupExploreCommand command, PostQueryBuilder builder) {
+    public View workOnPublications(AjaxExploreCommand command, PostQueryBuilder builder) {
         // start + end
         final int postsPerPage = command.getPageSize();
         final int start = postsPerPage * command.getPage();
@@ -88,7 +87,7 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
         List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(SortUtils.parseSortKeys(command.getSortPage()), SortUtils.parseSortOrders(command.getSortPageOrder()));
         builder.setSortCriteria(sortCriteria);
 
-        // get posts of the group
+        // get posts of the requested entity
         ListCommand<Post<BibTex>> bibtexCommand = command.getBibtex();
         bibtexCommand.setEntriesPerPage(postsPerPage);
         bibtexCommand.setStart(start);
@@ -135,8 +134,8 @@ public class GroupExploreAjaxController extends AjaxController implements Minima
     }
 
     @Override
-    public AjaxGroupExploreCommand instantiateCommand() {
-        return new AjaxGroupExploreCommand();
+    public AjaxExploreCommand instantiateCommand() {
+        return new AjaxExploreCommand();
     }
 
     public void setMappers(Map<Class<?>, Function<String, FieldDescriptor<?, ?>>> mappers) {

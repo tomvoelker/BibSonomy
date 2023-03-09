@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy Search - Helper classes for search modules.
  *
  * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
@@ -15,52 +15,35 @@
  *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.extra.SearchFilterElement;
+package org.bibsonomy.search.model;
 
 /**
- * @author kchoong
+ * enum representing the different statuses of an index
+ * 
+ * @author dzo
  */
-@Setter
-@Getter
-public class GroupExploreViewCommand extends SimpleResourceViewCommand {
-
-    // Requested group id
-    private String requestedGroup;
-
-    // Group
-    private Group group;
-
-    // Search string
-    private String search;
-
-    // Search filter map with attribute field as key
-    private Map<String, List<SearchFilterElement>> filterMap = new HashMap<>();
-
-    public void addFilters(String field, List<SearchFilterElement> filters) {
-        if (!filters.isEmpty()) {
-            filterMap.put(field, filters);
-        }
-    }
-
+public enum SearchIndexStatus {
+	/** the index is currently used for search */
+	ACTIVE,
+	
+	/** the index can be used for updating */
+	INACTIVE,
+	
+	/** the index is currently generating */
+	GENERATING,
+	
+	/** not used but generated */
+	STANDBY;
 }

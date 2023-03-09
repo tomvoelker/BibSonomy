@@ -27,67 +27,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command.admin;
-
-import java.util.LinkedList;
-import java.util.List;
+package org.bibsonomy.webapp.command.ajax;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bibsonomy.common.enums.AdminGroupOperation;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.BaseCommand;
-
+import org.bibsonomy.webapp.command.ExploreViewCommand;
 
 /**
- * Command bean for admin page
+ * Command for explore AJAX calls
  *
- * @author bsc
+ * @author kchoong
  */
 @Getter
 @Setter
-public class AdminGroupViewCommand extends BaseCommand {
+public class AjaxExploreCommand extends ExploreViewCommand {
 
-	/** specific action for admin page */
-	private AdminGroupOperation action;
+    /**
+     * page of pagination
+     */
+    private int page;
+    /**
+     * entries per page
+     */
+    private int pageSize;
 
-	private String adminResponse;
-	private Group group;
+    /**
+     * flag to set, if call should retrieve just the distinct counts
+     */
+    private boolean distinctCount;
 
-	private String declineMessage;
-
-	@Deprecated
-	// TODO a more general field should be Set<GroupLevelPermission>
-	private boolean communityPostInspectionPermission;
-	private boolean permissionsUpdated = false;
-	/** list of pending groups */
-	private List<Group> pendingGroups;
-	private List<String> allGroupNames;
-	private List<String> allDeletedGroupNames;
-	
-	public AdminGroupViewCommand() {
-		this.group = new Group();
-	}
-
-	/**
-	 * @return the pendingGroups
-	 */
-	public List<Group> getPendingGroups() {
-		if (this.pendingGroups == null) {
-			this.pendingGroups = new LinkedList<Group>();
-		}
-		return this.pendingGroups;
-	}
-
-	@Deprecated
-	public boolean isCommunityPostInspectionPermission() {
-		return this.communityPostInspectionPermission;
-	}
-
-	@Deprecated
-	public void setCommunityPostInspectionPermission(final boolean communityPostInspectionPermission) {
-		this.communityPostInspectionPermission = communityPostInspectionPermission;
-	}
+    /**
+     * JSON response string
+     */
+    private String responseString;
 
 }

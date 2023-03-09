@@ -439,6 +439,14 @@
 		<to type="redirect" last="true">/user/$1</to>
 	</rule>
 
+	<!-- /explore/user/USER -->
+	<rule>
+		<name>/explore/user/USER</name>
+		<from>^/+explore/+user/+([^/]+)$</from>
+		<set type="parameter" name="requestedName">${unescapePath:$1}</set>
+		<to last="true">/explore/user</to>
+	</rule>
+
 	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
 	<rule>
 		<name>redirect /foaf/user/USER</name>
@@ -613,7 +621,7 @@
 	<rule>
 		<name>/explore/group/GROUP</name>
 		<from>^/+explore/+group/+([^/]+)$</from>
-		<set type="parameter" name="requestedGroup">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedName">${unescapePath:$1}</set>
 		<to last="true">/explore/group</to>
 	</rule>
 

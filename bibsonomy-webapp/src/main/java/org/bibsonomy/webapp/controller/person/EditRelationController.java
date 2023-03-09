@@ -152,40 +152,11 @@ public class EditRelationController extends AbstractEditPersonController {
         }
 
         jsonResponse.put("personId", resourcePersonRelation.getPerson().getPersonId());
-        jsonResponse.put("resourcePersonRelationid", resourcePersonRelation.getPersonRelChangeId() + "");
+        jsonResponse.put("resourcePersonRelationId", resourcePersonRelation.getPersonRelChangeId() + "");
         jsonResponse.put("personUrl", this.urlGenerator.getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
         command.setResponseString(jsonResponse.toJSONString());
 
         return Views.AJAX_JSON;
-    }
-
-    /**
-     * Action called when a user wants to edit the role of a person in a thesis
-     * @param command
-     *
-     * @return the ajax json response
-     */
-    protected View editRoleAction(final EditPersonCommand command) {
-        // TODO not used? remove?
-        for (String role : command.getFormPersonRoles()) {
-            final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-            Post<BibTex> post = new Post<>();
-            post.setResource(new BibTex());
-            post.getResource().setInterHash(command.getFormInterHash());
-            resourcePersonRelation.setPost(post);
-            resourcePersonRelation.setPerson(new Person());
-            resourcePersonRelation.getPerson().setPersonId(command.getPersonId());
-            resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
-            final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role));
-            resourcePersonRelation.setRelationType(relationType);
-            try {
-                this.logic.createResourceRelation(resourcePersonRelation);
-            } catch (LogicException e) {
-                command.getLogicExceptions().add(e);
-            }
-        }
-
-        return new ExtendedRedirectView(this.urlGenerator.getPersonUrl(command.getPerson().getPersonId()));
     }
 
     /**
@@ -195,7 +166,7 @@ public class EditRelationController extends AbstractEditPersonController {
      * @return the ajax json response
      */
     protected View deleteRoleAction(final EditPersonCommand command) {
-        this.logic.removeResourceRelation(null, null, -1, null); // FIXME: change
+        this.logic.removeResourceRelation(command.getPersonId(), command.getFormInterHash(), command.getFormPersonIndex(), command.getFormPersonRole());
 
         return Views.AJAX_TEXT;
     }

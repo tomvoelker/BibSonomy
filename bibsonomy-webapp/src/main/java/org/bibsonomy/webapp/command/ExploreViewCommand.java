@@ -27,7 +27,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command.admin;
+package org.bibsonomy.webapp.command;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,44 +35,40 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.webapp.command.BaseCommand;
-
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.extra.SearchFilterElement;
 
 /**
- * Command bean for admin page 
- * 
- * @author Sven Stefani
- * @author bsc
+ * @author kchoong
  */
-@Getter
 @Setter
-public class AdminFullTextSearchCommand extends BaseCommand {
-	
-	/**
-	 * all actions for a full text index
-	 * @author dzo
-	 */
-	public enum AdminFullTextAction {
-		/** regenerate an index = generate new and delete the specified index */
-		REGENERATE_INDEX,
-		/** generate index */
-		GENERATE_INDEX,
-		/** delete index */
-		DELETE_INDEX,
-		/** enables an index */
-		ENABLE_INDEX;
-	}
-	
-	/** specific action for admin page */
-	private AdminFullTextAction action;
-	
-	/** the specific index id for the indexd to be updated **/
-	private String id;
-	
-	/** the resource class to handle */
-	private String entity;
-	
-	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
+@Getter
+public class ExploreViewCommand extends SimpleResourceViewCommand {
+
+    // Requested entity type
+    private GroupingEntity entityType;
+
+    // Requested name
+    private String requestedName;
+
+    // User
+    private User user;
+
+    // Group
+    private Group group;
+
+    // Search string
+    private String search;
+
+    // Search filter map with attribute field as key
+    private Map<String, List<SearchFilterElement>> filterMap = new HashMap<>();
+
+    public void addFilters(String field, List<SearchFilterElement> filters) {
+        if (!filters.isEmpty()) {
+            filterMap.put(field, filters);
+        }
+    }
 
 }

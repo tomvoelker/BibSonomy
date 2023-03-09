@@ -30,7 +30,7 @@
 package org.bibsonomy.search.index.utils;
 
 import org.bibsonomy.database.common.enums.CRISEntityType;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 import java.util.Date;
 

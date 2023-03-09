@@ -1523,6 +1523,20 @@ public class URLGenerator {
 
 		return this.getUrl(builder.asString());
 	}
+
+	/**
+	 * Constructs the URL for the user's explore page
+	 * @param userName the username
+	 * @return URL to user's explore page
+	 */
+	public String getExploreUrlByUser(final String userName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(EXPLORE_PREFIX);
+		builder.addPathElement(USER_PREFIX);
+		builder.addPathElement(userName);
+
+		return this.getUrl(builder.asString());
+	}
 	
 	/**
 	 * Constructs the URL for the posts viewable for friends, i.e.

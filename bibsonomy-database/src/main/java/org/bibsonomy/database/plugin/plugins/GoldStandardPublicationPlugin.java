@@ -67,7 +67,7 @@ public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 		param.setRefHash(interhash);
 		param.setUsername(loggedinUser.getName());
 
-		// delete the references, but before log it
+		// delete the references, but before log it (delete and log for both directions)
 		this.insert("logDeletedRelationsGoldStandardPublication", param, session);
 		this.insert("logDeletedGoldStandardPublicationRelations", param, session);
 		this.delete("deleteRelationsGoldStandardPublication", param, session);

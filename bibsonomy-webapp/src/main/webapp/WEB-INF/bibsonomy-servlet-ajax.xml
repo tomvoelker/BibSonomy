@@ -316,12 +316,13 @@
 					</bean>
 				</entry>
 
-				<entry key="/ajax/explore/group">
+				<entry key="/ajax/explore">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="groupExploreAjaxController" />
+						<property name="controllerBeanName" value="exploreAjaxController" />
 						<property name="allowedFields">
 							<list>
-								<value>requestedGroup</value>
+								<value>entityType</value>
+								<value>requestedName</value>
 								<value>search</value>
 								<value>sortPage</value>
 								<value>sortPageOrder</value>
@@ -454,7 +455,7 @@
 		<property name="logic" ref="adminLogic" />
 	</bean>
 
-	<bean id="groupExploreAjaxController" class="org.bibsonomy.webapp.controller.ajax.GroupExploreAjaxController" scope="request" parent="ajaxController">
+	<bean id="exploreAjaxController" class="org.bibsonomy.webapp.controller.ajax.ExploreAjaxController" scope="request" parent="ajaxController">
 		<property name="logic" ref="adminLogic" />
 		<property name="mappers">
 			<map>

@@ -87,11 +87,9 @@ public class EditPersonController extends AbstractEditPersonController implement
             case SELECT_MAIN_NAME:
                 return this.detailsController.setMainNameAction(command);
             case ADD_ROLE:
-                this.relationController.addRoleAction(command);
+                return this.relationController.addRoleAction(command);
             case DELETE_ROLE:
-                this.relationController.deleteRoleAction(command);
-            case UPDATE_ROLE:
-                return this.relationController.editRoleAction(command);
+                return this.relationController.deleteRoleAction(command);
             case LINK_USER:
                 return this.relationController.linkAction(command);
             case UNLINK_USER:

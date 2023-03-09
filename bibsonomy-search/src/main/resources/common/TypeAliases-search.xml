@@ -9,6 +9,6 @@
 	<typeAlias alias="searchPost"       type="org.bibsonomy.search.SearchPost" />
 	
 	<!-- Parameters -->
-	<typeAlias alias="searchParam"      type="org.bibsonomy.search.management.database.params.SearchParam" />
+	<typeAlias alias="searchParam"      type="org.bibsonomy.search.model.SearchParam" />
 	<typeAlias alias="pair"				type="org.bibsonomy.common.Pair" />
 </sqlMap>

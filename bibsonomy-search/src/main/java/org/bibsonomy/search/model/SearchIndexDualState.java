@@ -27,28 +27,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.update;
+package org.bibsonomy.search.model;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * abstract class for all search index sync states
+ * class for all search index sync states with dual entities
  *
  * @author dzo
  */
-public abstract class SearchIndexSyncState {
+@Getter
+@Setter
+public class SearchIndexDualState extends SearchIndexState {
 
-	private String mappingVersion;
+	public static final String FIELD_FIRST_STATE = "first_state";
+	public static final String FIELD_SECOND_STATE = "second_state";
 
-	/**
-	 * @return the mappingVersion
-	 */
-	public String getMappingVersion() {
-		return mappingVersion;
-	}
+	private SearchIndexState firstState;
 
-	/**
-	 * @param mappingVersion the mappingVersion to set
-	 */
-	public void setMappingVersion(String mappingVersion) {
-		this.mappingVersion = mappingVersion;
-	}
+	private SearchIndexState secondState;
+
 }

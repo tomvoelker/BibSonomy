@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
@@ -43,11 +44,12 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.search.es.help.HelpSearchManager;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand;
-import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand.AdminFullTextAction;
+import org.bibsonomy.webapp.command.admin.AdminSearchIndicesCommand;
+import org.bibsonomy.webapp.command.admin.AdminSearchIndicesCommand.AdminIndexAction;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -62,13 +64,16 @@ import org.springframework.security.access.AccessDeniedException;
  * @author jensi
  * @author dzo
  */
-public class AdminFullTextSearchController implements MinimalisticController<AdminFullTextSearchCommand> {
-	private static final Log log = LogFactory.getLog(AdminFullTextSearchController.class);
+@Setter
+public class AdminSearchIndicesController implements MinimalisticController<AdminSearchIndicesCommand> {
+	private static final Log log = LogFactory.getLog(AdminSearchIndicesController.class);
 
 	private Map<Class<?>, SearchIndexManager> managers;
+
+	private HelpSearchManager helpSearchManager;
 	
 	@Override
-	public View workOn(final AdminFullTextSearchCommand command) {
+	public View workOn(final AdminSearchIndicesCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
 		final RequestWrapperContext context = command.getContext();
@@ -82,7 +87,7 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 			throw new AccessDeniedException("please log in as admin");
 		}
 		
-		final AdminFullTextAction action = command.getAction();
+		final AdminIndexAction action = command.getAction();
 		if (present(action)) {
 			final Class<?> entityClass = getEntityClass(command.getEntity());
 			final SearchIndexManager mananger = this.managers.get(entityClass);
@@ -123,8 +128,11 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 			final List<SearchIndexInfo> information = manager.getIndexInformations();
 			infoMap.put(managementEntry.getKey().getSimpleName(), information);
 		}
-		
-		return Views.ADMIN_FULL_TEXT_SEARCH;
+
+		// get infos about the help page indices for all locales
+		infoMap.put("Help", helpSearchManager.getIndexInformations());
+
+		return Views.ADMIN_SEARCH_INDICES;
 	}
 
 	private static Class<?> getEntityClass(final String entity) {
@@ -141,14 +149,8 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 	}
 
 	@Override
-	public AdminFullTextSearchCommand instantiateCommand() {
-		return new AdminFullTextSearchCommand();
+	public AdminSearchIndicesCommand instantiateCommand() {
+		return new AdminSearchIndicesCommand();
 	}
 
-	/**
-	 * @param managers the managers to set
-	 */
-	public void setManagers(Map<Class<?>, SearchIndexManager> managers) {
-		this.managers = managers;
-	}
 }

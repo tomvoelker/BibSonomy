@@ -429,15 +429,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				convertedPerson.put(Fields.Publication.PERSON_COLLEGE, claimedPerson.getCollege());
 			}
 
-			// TODO FIXME ATTENTION!!!!! THIS IS TEMPORARY!!!
-			// PLEASE REFACTOR ACCORDINGLY IN THE FUTURE
-			// this "fix" has been introduced, to circumvent ES errors with publications
-			// that have a lot of authors (+500)
-			// all authors after the 500th are now simply cut off, except if they are already linked
-			if (index < 500 || personIndexRelationMap.containsKey(key)) {
-				serializedPersonNames.add(convertedPerson);
-			}
-
+			serializedPersonNames.add(convertedPerson);
 			index++;
 
 		}
@@ -450,6 +442,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @return
 	 */
 	private static String convertToPersonIndex(List<PersonName> persons) {
+		/*
+		 * Some publications are having too many persons for a keyword type.
+		 * We limit the number of persons to 10, that will be used for sorting.
+		 * NOTE: This will not affect the actual document in the index, just the sorting.
+		 */
+		if (persons.size() > 10) {
+			return PersonNameUtils.serializePersonNames(persons.subList(0, 10), true, " ");
+		}
 		return PersonNameUtils.serializePersonNames(persons, true, " ");
 	}
 

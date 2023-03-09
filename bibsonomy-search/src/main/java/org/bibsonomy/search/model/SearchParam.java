@@ -27,22 +27,51 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.update;
+package org.bibsonomy.search.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bibsonomy.database.common.enums.CRISEntityType;
+
+import java.util.Date;
 
 /**
- * a index sync state information state for community indices
+ * Class for search queries
  *
- * @author dzo
+ * @author Jens Illig
  */
 @Getter
 @Setter
-public class SearchIndexDualSyncState extends SearchIndexSyncState {
+public class SearchParam {
 
-	private DefaultSearchIndexSyncState firstState;
+    private String userName;
 
-	private DefaultSearchIndexSyncState secondState;
+    /** The SQL-Limit */
+    private int limit;
+
+    /** The SQL-Offset */
+    private int offset;
+
+    /** newest tas_id during last index update */
+    private Integer lastTasId;
+
+    private long lastContentId;
+
+    private int lastOffset; // TODO or just use offset?
+
+    /** newest change_date during last index update */
+    private Date lastLogDate;
+
+    private Date lastDate;
+
+    private Date lastDocumentDate;
+
+    private String userRelation;
+
+    private boolean includeRelatedEntityUpdates;
+
+    private CRISEntityType sourceType;
+
+    private CRISEntityType targetType;
 
 }

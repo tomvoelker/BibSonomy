@@ -36,11 +36,9 @@ import static org.junit.Assert.assertThat;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.search.model.SearchIndexDualState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
 import org.junit.Test;
 
 import java.util.List;
@@ -86,7 +84,7 @@ public class PersonIndexGenerationLogicTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void testGetDbState() {
-		final SearchIndexDualSyncState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
-		assertThat(dbState.getFirstState().getLastPostContentId(), is(36l));
+		final SearchIndexState dbState = PERSON_INDEX_GENERATIONLOGIC.getDbState();
+		assertThat(dbState.getPersonId(), is(36l));
 	}
 }

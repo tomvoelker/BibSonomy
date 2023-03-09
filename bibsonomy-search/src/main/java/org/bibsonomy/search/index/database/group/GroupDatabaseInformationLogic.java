@@ -37,7 +37,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagemen
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 
 /**
  * TODO: merge with {@link org.bibsonomy.search.index.database.cris.CRISLinkDatabaseInformationLogic}
@@ -46,21 +46,21 @@ import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
  *
  * @author dzo
  */
-public class GroupDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<DefaultSearchIndexSyncState> {
+public class GroupDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic {
 
 	@Override
-	public DefaultSearchIndexSyncState getDbState() {
+	public SearchIndexState getDbState() {
 		try (final DBSession session = this.openSession()) {
-			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
+			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer lastId = this.queryForObject("getLastGroupId", ConstantID.GROUP_ID.getId(), Integer.class, session);
-			searchIndexSyncState.setLastPostContentId(lastId);
+			searchIndexState.setEntityId(lastId);
 			Date logDate = this.queryForObject("getLastGroupLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setLastLogDate(logDate);
-			return searchIndexSyncState;
+			searchIndexState.setEntityLogDate(logDate);
+			return searchIndexState;
 		}
 	}
 }

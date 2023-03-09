@@ -17,9 +17,10 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.admin" var="adminPageTitle" />
+	<fmt:message key="navi.admin.oauthConsumers" var="oauthTitle" />
 	
 	<layout:oneColumnLayout
-			pageTitle="${adminPageTitle} | OAuth"
+			pageTitle="${oauthTitle} | ${adminPageTitle}"
 			requPath="${requPath}"
 			headerMessageKey="gettingStarted.headline"
 			loginUser="${command.context.loginUser}">
@@ -27,7 +28,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:admin />
-					<nav:crumb nameKey="navi.admin.oauth" active="true" />
+					<nav:crumb name="${oauthTitle}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>

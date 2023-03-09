@@ -29,59 +29,50 @@
  */
 package org.bibsonomy.webapp.command.admin;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.BaseCommand;
 
-import recommender.core.database.params.RecAdminOverview;
-import recommender.core.interfaces.model.RecommendationResult;
 
 /**
  * Command bean for admin page 
  * 
+ * @author Sven Stefani
  * @author bsc
  */
 @Getter
 @Setter
-public class AdminRecommenderViewCommand extends BaseCommand {
-	private Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> recommenderOverviewMap;
-	/** number of values which will be fetched from the database to calculate average recommender-latencies */
-	private Long queriesPerLatency;
-
-	/** the action which will be executed by the controller and set to null again */
-	private String action;
-	private Class<? extends RecommendationResult> recommendationResultClass;
-	private Long recommenderId;
-
-	/** url of new recommender to be added */
-	private URL newrecurl;
-	private boolean trusted = false;
-
-	/** response-message to the last action executed (e.g. failure, success etc.) set by the controller */
-	private String adminResponse;
+public class AdminSearchIndicesCommand extends BaseCommand {
 	
 	/**
-	 * default constructor
+	 * all actions for a full text index
+	 * @author dzo
 	 */
-	public AdminRecommenderViewCommand(){
-		this.queriesPerLatency = Long.valueOf(1000);
-		this.action = null;
+	public enum AdminIndexAction {
+		/** regenerate an index = generate new and delete the specified index */
+		REGENERATE_INDEX,
+		/** generate index */
+		GENERATE_INDEX,
+		/** delete index */
+		DELETE_INDEX,
+		/** enables an index */
+		ENABLE_INDEX;
 	}
 	
-	/**
-	 * @param queriesPerLatency number of values which will be fetched from the database to calculate average recommender-latencies
-	 */
-	public void setQueriesPerLatency(final Long queriesPerLatency){
-		// only accept positive values
-		if (present(queriesPerLatency) && queriesPerLatency.longValue() > 0) {
-			this.queriesPerLatency = queriesPerLatency;
-		}
-	}
+	/** specific action for admin page */
+	private AdminIndexAction action;
+	
+	/** the specific index id for the indexd to be updated **/
+	private String id;
+	
+	/** the resource class to handle */
+	private String entity;
+	
+	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
 
 }
