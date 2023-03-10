@@ -600,20 +600,20 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	protected void replacePostFields(final Post<RESOURCE> post, final String key, final Post<RESOURCE> newPost) {
 		switch (key) {
-		case TAGS_KEY:
-			post.setTags(newPost.getTags());
-			break;
-		case "description":
-			post.setDescription(newPost.getDescription());
-			break;
-		case "approved":
-			post.setApproved(newPost.isApproved());
-			break;
-		case "groups":
-			post.setGroups(newPost.getGroups());
-			break;
-		default:
-			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
+			case TAGS_KEY:
+				post.setTags(newPost.getTags());
+				break;
+			case "description":
+				post.setDescription(newPost.getDescription());
+				break;
+			case "approved":
+				post.setApproved(newPost.isApproved());
+				break;
+			case "groups":
+				post.setGroups(newPost.getGroups());
+				break;
+			default:
+				this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
 		if (newPost.isApproved()) {
 			post.setApproved(true);

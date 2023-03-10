@@ -32,13 +32,19 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -48,6 +54,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -71,10 +78,16 @@ import de.unikassel.puma.openaccess.sword.SwordService;
  * 
  * @author rja
  */
+@Setter
+@Getter
 public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> {
 	private static final Log log = LogFactory.getLog(EditPublicationController.class);
 
-	private SwordService swordService = null;
+	private SwordService swordService;
+
+	private String bibliographyGroup;
+
+	private boolean bibliographyAutoApproved;
 
 	@Override
 	protected EditPublicationCommand instantiateEditPostCommand() {
@@ -125,6 +138,34 @@ public class EditPublicationController extends AbstractEditPublicationController
 				// should not happen
 				log.error("error associating new post to person", e);
 				throw new RuntimeException(e);
+			}
+		}
+
+		/*
+		 * if automatically approved by the bibliography group is enabled, we will create or update
+		 * the goldstandard of the post as well AND set it to approved
+		 */
+
+		if (bibliographyAutoApproved && present(bibliographyGroup)) {
+			// TODO: Use group level permission?
+			for (Group group : loginUser.getGroups()) {
+				if (group.getName().equals(bibliographyGroup)) {
+					if (false) {
+						// 1. case: goldstandard already exists and needs to be updated
+						// noop
+					} else {
+						// 2. case: goldstandard doesn't exists
+						Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
+						gsPost.setApproved(true);
+						gsPost.setCopyFrom(loginUser.getName());
+						try {
+							final List<JobResult> results = this.logic.createPosts(Collections.singletonList(gsPost));
+						} catch (final DatabaseException de) {
+							this.errors.reject("error.post.update", "Could not update post.");
+						}
+					}
+					break;
+				}
 			}
 		}
 	}
@@ -242,11 +283,5 @@ public class EditPublicationController extends AbstractEditPublicationController
 		super.populateCommandWithPost(command, post);
 		command.setPerson(null);
 	}
-	
-	/**
-	 * @param swordService the swordService to set
-	 */
-	public void setSwordService(SwordService swordService) {
-		this.swordService = swordService;
-	}
+
 }

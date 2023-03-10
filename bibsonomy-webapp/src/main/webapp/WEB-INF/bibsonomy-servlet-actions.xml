@@ -1014,6 +1014,8 @@
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="swordService" ref="swordService"/>
+		<property name="bibliographyGroup" value="${bibliography.bibliographyUser}"/>
+		<property name="bibliographyAutoApproved" value="${bibliography.bibliographyGroup.autoApproved.enabled}"/>
 	</bean>
 	
 	<bean id="swordService" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
