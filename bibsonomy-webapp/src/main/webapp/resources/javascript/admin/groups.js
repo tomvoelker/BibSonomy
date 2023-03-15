@@ -21,13 +21,13 @@ function declineGroup(element) {
 function fetchGroupPermissions(id) {
 	groupname=$(id)[0].value
 	$.ajax({
-		url: "../admin/ajax",
+		url: "/admin/ajax",
 				data: {groupname:groupname, action:'fetch_group_with_permissions'},
 				async: false,
 			    contentType: "application/json;charset=utf-8",
 			    dataType: "json",
 				success: function (data) {
-					if (data.hasOwnProperty("groupLevelPermissions")) {
+					if (data.hasOwnProperty("groupLevelPermissions") && data.groupLevelPermissions.length > 0) {
 						for (var i=0; i< data.groupLevelPermissions.length; i++) {
 							permission = data.groupLevelPermissions[i];
 							var permissionCheckboxId="#".concat(permission);
@@ -37,7 +37,7 @@ function fetchGroupPermissions(id) {
 							}
 						}
 					}
-					var permissionCheckboxes=$(".permissionCheckbox");
+					var permissionCheckboxes = $(".permissionCheckbox");
 					for (var i=0; i<permissionCheckboxes.length; i++) {
 						permissionCheckboxes[i].disabled=false;
 					}

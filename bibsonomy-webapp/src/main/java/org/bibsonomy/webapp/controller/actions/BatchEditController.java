@@ -45,6 +45,7 @@ import java.util.TreeSet;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -504,6 +505,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				log.debug("storing " + postsToUpdateTags.size() + " posts for user " + loginUserName);
 				this.storePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
 			}
+
+			for (Post<?> post : postsToCombiUpdate) {
+				this.handleAutoApprove((Post<BibTex>) post, loginUserName);
+			}
 		}
 		log.debug("finished batch edit for user " + loginUserName);
 
@@ -646,8 +651,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 *        erroneous posts are added to that list
 	 * @param operation - the type of operation that should be performed with
 	 *        the posts in the database.
-	 * @param loginUserName - to complete the post from the database, we need
-	 *        the user's name
 	 */
 	private void updatePosts(final List<Post<? extends Resource>> posts, final Class<? extends Resource> resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation) {
 		try {
@@ -728,6 +731,39 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					this.errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
+		}
+	}
+
+	protected void handleAutoApprove(Post<BibTex> post, String loginUserName) {
+		// Convert the user post to a goldstandard publication
+		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
+		if (present(gsPost)) {
+			gsPost.setApproved(true);
+			gsPost.setCopyFrom(loginUserName);
+		} else {
+			// Failed to convert, unable to approve it and return
+			return;
+		}
+
+		// Check, if a goldstandard already exists of this publication
+		Post<? extends Resource> existingPost = null;
+		try {
+			existingPost = this.logic.getPostDetails(post.getResource().getInterHash(), "");
+		} catch (ObjectMovedException | ObjectNotFoundException e) {
+			// noop
+		}
+
+		// Create or update the approved goldstandard
+		try {
+			if (present(existingPost)) {
+				// goldstandard already exists and needs to be updated
+				final List<JobResult> results = this.logic.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL);
+			} else {
+				// goldstandard doesn't exist and needs to be created
+				final List<JobResult> results = this.logic.createPosts(Collections.singletonList(gsPost));
+			}
+		} catch (final DatabaseException de) {
+			this.errors.reject("error.post.group.autoApprove");
 		}
 	}
 

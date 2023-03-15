@@ -6,7 +6,7 @@
  * Configuration for additional entrytypes
  */
 
-var removedEntrytypes = ['article'];
+var removedEntrytypes = [];
 var extraEntrytypes = [];
 
 /**

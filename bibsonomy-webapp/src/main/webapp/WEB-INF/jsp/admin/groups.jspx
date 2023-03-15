@@ -73,12 +73,11 @@
 			<bsform:fieldset legendKey="settings.group.reactivate">
 				<jsp:attribute name="content">
 					<fmt:message key="settings.group.reactivate.description" />
-					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
+					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('groups')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="RESTORE_GROUP" name="action" />
 						<bsform:select path="group.name" itemsList="${command.allDeletedGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
 						
 						<bsform:input path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" id="designatedAdmin" helpKey="settings.group.reactivate.help" autocomplete="true" labelKey="group.groupRequest.adminName" />
-						
 						
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
@@ -93,7 +92,7 @@
 			<bsform:fieldset legendKey="settings.group.delete">
 				<jsp:attribute name="content">
 					<fmt:message key="settings.group.delete.description" />
-					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
+					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('groups')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="DELETE_GROUP" name="action" />
 						<bsform:select path="group.name" itemsList="${command.allGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
 						<div class="form-group">
@@ -108,10 +107,8 @@
 
 			<bsform:fieldset legendKey="settings.group.permissionHeading">
 				<jsp:attribute name="content">
-					
 
-					<form:form name="groupWithPermissions" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >
-						
+					<form:form name="groupWithPermissions" action="${relativeUrlGenerator.getAdminUrlByName('groups')}" method="POST" cssClass="form-horizontal" >
 						<input type="hidden" value="UPDATE_PERMISSIONS" name="action" />
 						
 						<div class="form-group">
