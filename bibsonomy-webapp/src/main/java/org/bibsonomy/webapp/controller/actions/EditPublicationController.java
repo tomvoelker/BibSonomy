@@ -181,6 +181,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 		try {
 			if (present(existingPost)) {
 				// goldstandard already exists and needs to be updated
+				gsPost.getResource().setIntraHash(gsPost.getResource().getInterHash());
 				final List<JobResult> results = this.logic.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL);
 			} else {
 				// goldstandard doesn't exist and needs to be created
