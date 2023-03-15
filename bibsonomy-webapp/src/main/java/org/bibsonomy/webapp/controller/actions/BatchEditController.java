@@ -42,6 +42,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,6 +62,7 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -105,6 +108,8 @@ import org.springframework.validation.Errors;
  * @author ema
  * @author Nasim
  */
+@Getter
+@Setter
 public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
@@ -120,6 +125,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final Integer NORMALIZE_ACTION = 3;
 	private static final Integer DELETE_ACTION = 4;
 	private static final Integer UPDATE_VIEWABLE_ACTION = 5;
+
+
+	private String bibliographyGroup;
+
+	private boolean bibliographyAutoApproved;
 
 	/**
 	 *
@@ -206,9 +216,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 
 		/*
-		 * get user name
+		 * get user and their name
 		 */
-		final String loginUserName = context.getLoginUser().getName();
+		final User loginUser = context.getLoginUser();
+		final String loginUserName = loginUser.getName();
 
 		/*
 		 * get edit action
@@ -506,8 +517,17 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				this.storePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
 			}
 
-			for (Post<?> post : postsToCombiUpdate) {
-				this.handleAutoApprove((Post<BibTex>) post, loginUserName);
+			/*
+			 * if automatically approved by the bibliography group is enabled, we will create or update
+			 * the goldstandard of all posts as well AND set it to approved
+			 */
+			if (bibliographyAutoApproved && present(bibliographyGroup)) {
+				// Check, if user is a member of the bibliography group // TODO: Use group level permission
+				if (present(GroupUtils.getGroupMembershipOfUserForGroup(loginUser, bibliographyGroup))) {
+					for (Post<?> post : postsToCombiUpdate) {
+						this.handleAutoApprove((Post<BibTex>) post, loginUserName);
+					}
+				}
 			}
 		}
 		log.debug("finished batch edit for user " + loginUserName);
@@ -841,32 +861,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-	}
-
-	/**
-	 * sets the logic
-	 *
-	 * @param logic the logic
-	 */
-	public void setLogic(final LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	/**
-	 * sets the requestLogic
-	 *
-	 * @param requestLogic the RequestLogic
-	 */
-	public void setRequestLogic(final RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
-	 *
-	 * @param urlGenerator
-	 */
-	public void setUrlGenerator(final URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
 	}
 
 }
