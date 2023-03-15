@@ -40,7 +40,10 @@ import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.BibTex;
@@ -48,6 +51,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -55,6 +59,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -145,28 +150,44 @@ public class EditPublicationController extends AbstractEditPublicationController
 		 * if automatically approved by the bibliography group is enabled, we will create or update
 		 * the goldstandard of the post as well AND set it to approved
 		 */
-
 		if (bibliographyAutoApproved && present(bibliographyGroup)) {
-			// TODO: Use group level permission?
-			for (Group group : loginUser.getGroups()) {
-				if (group.getName().equals(bibliographyGroup)) {
-					if (false) {
-						// 1. case: goldstandard already exists and needs to be updated
-						// noop
-					} else {
-						// 2. case: goldstandard doesn't exists
-						Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
-						gsPost.setApproved(true);
-						gsPost.setCopyFrom(loginUser.getName());
-						try {
-							final List<JobResult> results = this.logic.createPosts(Collections.singletonList(gsPost));
-						} catch (final DatabaseException de) {
-							this.errors.reject("error.post.update", "Could not update post.");
-						}
-					}
-					break;
-				}
+			// Check, if user is a member of the bibliography group // TODO: Use group level permission
+			if (present(GroupUtils.getGroupMembershipOfUserForGroup(loginUser, bibliographyGroup))) {
+				this.handleAutoApprove(command, loginUser, post);
 			}
+		}
+	}
+
+	protected void handleAutoApprove(EditPublicationCommand command, User loginUser, Post<BibTex> post) {
+		// Convert the user post to a goldstandard publication
+		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
+		if (present(gsPost)) {
+			gsPost.setApproved(true);
+			gsPost.setCopyFrom(loginUser.getName());
+		} else {
+			// Failed to convert, unable to approve it and return
+			return;
+		}
+
+		// Check, if a goldstandard already exists of this publication
+		Post<? extends Resource> existingPost = null;
+		try {
+			existingPost = this.logic.getPostDetails(post.getResource().getInterHash(), "");
+		} catch (ObjectMovedException | ObjectNotFoundException e) {
+			// noop
+		}
+
+		// Create or update the approved goldstandard
+		try {
+			if (present(existingPost)) {
+				// goldstandard already exists and needs to be updated
+				final List<JobResult> results = this.logic.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL);
+			} else {
+				// goldstandard doesn't exist and needs to be created
+				final List<JobResult> results = this.logic.createPosts(Collections.singletonList(gsPost));
+			}
+		} catch (final DatabaseException de) {
+			this.errors.reject("error.post.group.autoApprove");
 		}
 	}
 	
