@@ -224,7 +224,7 @@
 	</select>
 
 	<select id="getNewBookmarkPosts" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
-		SELECT b.*, 'public' AS group_name, 1 AS count, -1 AS rating, -1 AS number_of_ratings, b.user_name AS other_user_name, gs.approved
+		SELECT p.book_description AS title, p.book_extended AS description, u.book_url, p.content_id, p.book_url_hash AS intraHash, p.book_url_hash AS interHash, p.user_name, p.group, p.date, p.change_date, <include refid="goldStandardOtherFields" />, 0 AS approved
 		FROM (
 			SELECT DISTINCT t.content_id
 			FROM tas t
@@ -235,11 +235,11 @@
 			LIMIT #limit#
 			OFFSET #offset#
 		) AS tt
-		LEFT JOIN bookmark b USING (content_id)
+		LEFT JOIN bookmark p USING (content_id)
 		LEFT JOIN urls u USING (book_url_hash)
-		LEFT JOIN gold_standard gs ON (b.book_url_hash = gs.simhash1)
+		LEFT JOIN gold_standard gs ON (p.book_url_hash = gs.simhash1)
 		WHERE gs.title IS NULL
-		GROUP BY b.content_id;
+		GROUP BY p.content_id;
 	</select>
 
 </sqlMap>
