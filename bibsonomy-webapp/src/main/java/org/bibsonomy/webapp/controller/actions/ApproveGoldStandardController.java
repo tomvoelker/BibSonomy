@@ -125,22 +125,9 @@ public class ApproveGoldStandardController implements MinimalisticController<App
 
         // set interhash as intrahash for goldstandard, because intrahashToUpdate is actually INTERhashToUpdate
         postToUpdate.getResource().setIntraHash(interhash);
-        // set approved
-        postToUpdate.setApproved(true);
 
         try {
-            /*
-             * update post in DB
-             */
-            final List<JobResult> updateResults = this.logic.updatePosts(Collections.singletonList(postToUpdate), PostUpdateOperation.UPDATE_ALL);
-
-            if (Status.FAIL.equals(updateResults.get(0).getStatus())) {
-                /*
-                 * show error page FIXME: when/why can this happen? We get some
-                 * error messages here in the logs, but can't explain them.
-                 */
-                this.errors.reject("error.post.update", "Could not update post.");
-            }
+            final List<JobResult> results = this.logic.approvePost(postToUpdate, null, "", false);
             this.success = "actions.communityPost.update.success";
         } catch (final DatabaseException ex) {
             this.errors.reject("error.post.update", "Could not update post.");
@@ -153,14 +140,8 @@ public class ApproveGoldStandardController implements MinimalisticController<App
             this.errors.reject("error.post.notfound", "Could not find post.");
             return;
         }
-        postToCreate.setApproved(true);
         try {
-            // setting copyFrom if present
-            if (present(username)) {
-                postToCreate.setCopyFrom(username);
-            }
-
-            final List<JobResult> results = this.logic.createPosts(Collections.singletonList(postToCreate));
+            final List<JobResult> results = this.logic.approvePost(postToCreate, null, username, false);
             this.success = "actions.communityPost.update.success";
         } catch (final DatabaseException de) {
             this.errors.reject("error.post.update", "Could not update post.");

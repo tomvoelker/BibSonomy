@@ -47,7 +47,6 @@ import lombok.Setter;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -525,7 +524,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				// Check, if user is a member of the bibliography group // TODO: Use group level permission
 				if (present(GroupUtils.getGroupMembershipOfUserForGroup(loginUser, bibliographyGroup))) {
 					for (Post<?> post : postsToCombiUpdate) {
-						this.handleAutoApprove((Post<BibTex>) post, loginUserName);
+						this.logic.approvePost((Post<BibTex>) post, null, loginUserName, false);
 					}
 				}
 			}
@@ -751,40 +750,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					this.errors.rejectValue(getOldResourceName(resourceType) + ".list[" + postId + "].resource", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
-		}
-	}
-
-	protected void handleAutoApprove(Post<BibTex> post, String loginUserName) {
-		// Convert the user post to a goldstandard publication
-		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
-		if (present(gsPost)) {
-			gsPost.setApproved(true);
-			gsPost.setCopyFrom(loginUserName);
-		} else {
-			// Failed to convert, unable to approve it and return
-			return;
-		}
-
-		// Check, if a goldstandard already exists of this publication
-		Post<? extends Resource> existingPost = null;
-		try {
-			existingPost = this.logic.getPostDetails(post.getResource().getInterHash(), "");
-		} catch (ObjectMovedException | ObjectNotFoundException e) {
-			// noop
-		}
-
-		// Create or update the approved goldstandard
-		try {
-			if (present(existingPost)) {
-				// goldstandard already exists and needs to be updated
-				gsPost.getResource().setIntraHash(gsPost.getResource().getInterHash());
-				final List<JobResult> results = this.logic.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL);
-			} else {
-				// goldstandard doesn't exist and needs to be created
-				final List<JobResult> results = this.logic.createPosts(Collections.singletonList(gsPost));
-			}
-		} catch (final DatabaseException de) {
-			this.errors.reject("error.post.group.autoApprove");
 		}
 	}
 

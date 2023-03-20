@@ -75,6 +75,7 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -181,6 +182,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -1821,6 +1823,61 @@ public class DBLogic implements LogicInterface {
 		 * successfully updated
 		 */
 		return manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
+	}
+
+	/**
+	 * Approve and update the goldstandard of the given post.
+	 * If the goldstandard does not exist yet, it will be created and approved.
+	 */
+	@Override
+	public List<JobResult> approvePost(final Post<BibTex> post, final Post<BibTex> oldPost, final String username, final boolean unapproveOldPost) {
+		final List<JobResult> results = new LinkedList<>();
+
+		if (!present(post)) {
+			return results;
+		}
+
+		final String postInterHash = post.getResource().getInterHash();
+
+		/*
+		 * If the post has been updated and creates a new goldstandard,
+		 * we might want to unapprove the previous goldstandard before approving the new one
+		 */
+		if (unapproveOldPost && present(oldPost)) {
+
+		}
+
+		// Convert the user post to a goldstandard post
+		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
+		if (present(gsPost)) {
+			gsPost.setApproved(true);
+			gsPost.setCopyFrom(username);
+		} else {
+			// Failed to convert, unable to approve it and return false
+			results.add(JobResult.buildFailure(Collections.singletonList(new ErrorMessage("Could not convert to goldstandard post", postInterHash))));
+			return results;
+		}
+
+		// Check, if a goldstandard already exists of this publication
+		Post<? extends Resource> existingPost = this.getPostDetails(post.getResource().getInterHash(), "");
+
+		// Create or update the approved goldstandard
+		try {
+			if (present(existingPost)) {
+				// goldstandard already exists and needs to be updated
+				gsPost.getResource().setIntraHash(gsPost.getResource().getInterHash());
+				results.addAll(this.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL));
+			} else {
+				// goldstandard doesn't exist and needs to be created
+				results.addAll(this.createPosts(Collections.singletonList(gsPost)));
+			}
+			results.add(JobResult.buildSuccess(postInterHash));
+		} catch (final DatabaseException de) {
+			results.add(JobResult.buildFailure(Collections.singletonList(new ErrorMessage("Could not approve the goldstandard post", postInterHash))));
+			return results;
+		}
+
+		return results;
 	}
 
 	/*

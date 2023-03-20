@@ -29,8 +29,12 @@
  */
 package org.bibsonomy.model.logic;
 
+import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.JobResult;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 
@@ -61,4 +65,18 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	 * @param relation  the relation between a post and its reference
 	 */
 	void deleteResourceRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation);
+
+	/**
+	 * Approve and update the goldstandard of the given post.
+	 * If the goldstandard does not exist yet, it will be created and approved.
+	 * In case of an edit, where the interhash changed compared to the previous version,
+	 * it is possible to unapprove it.
+	 *
+	 * @param post				the post to approve the goldstandard of
+	 * @param oldPost			the possible old post to unapprove (due to interhash change)
+	 * @param username			the username of the post
+	 * @param unapproveOldPost	if true unapprove old post, otherwise remains unchanged
+	 * @return
+	 */
+	List<JobResult> approvePost(final Post<BibTex> post, final Post<BibTex> oldPost, final String username, final boolean unapproveOldPost);
 }
