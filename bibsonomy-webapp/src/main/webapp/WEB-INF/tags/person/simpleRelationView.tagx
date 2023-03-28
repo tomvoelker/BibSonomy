@@ -7,6 +7,7 @@
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 
@@ -15,7 +16,6 @@
 	<jsp:directive.attribute name="showButtons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
     <jsp:directive.attribute name="addPub" type="java.lang.Boolean" required="false" description="If true, user can add the publication. If false, user can delete it. Dependand from buttons."/>
 	<jsp:directive.attribute name="personId" type="java.lang.String" required="false" description="ID of the person"/>
-	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
 
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" description="ID of the person"/>
 
@@ -56,17 +56,33 @@
 				</c:otherwise>
 			</c:choose>
 
-			<c:if test="${properties['report.person.duplicate.publications'] and
-							not empty properties['project.reportMail'] and
-							not empty reportFunction}">
-				<button type="button"
-						class="btn btn-default btn-xs report-button"
-						onclick="${reportFunction}"
-						data-person="${personId}"
-						data-title="${post.resource.title}"
-						data-interhash="${post.resource.interHash}" >
-					<fontawesome:icon icon="flag"/>
-				</button>
+			<c:if test="${not empty properties['project.reportMail']}">
+				<c:choose>
+					<c:when test="${properties['report.person.publications.custom']}">
+						<fmt:message key="report.error.person.publications.custom.button.hint" var="buttonTitle" />
+						<button type="button"
+								class="btn btn-default btn-xs report-button"
+								title="${buttonTitle}"
+								data-toggle="modal"
+								data-target="#reportModal-${post.resource.interHash}">
+							<fontawesome:icon icon="flag"/>
+						</button>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${properties['report.person.publications.duplicate']}">
+							<fmt:message key="report.error.person.publications.duplicate.button.hint" var="buttonTitle" />
+							<button type="button"
+									class="btn btn-default btn-xs report-button"
+									title="${buttonTitle}"
+									onclick="reportDuplicatePublication(this)"
+									data-person="${personId}"
+									data-title="${post.resource.title}"
+									data-interhash="${post.resource.interHash}" >
+								<fontawesome:icon icon="flag"/>
+							</button>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 		</jsp:attribute>
 	</per:simplePublicationView>

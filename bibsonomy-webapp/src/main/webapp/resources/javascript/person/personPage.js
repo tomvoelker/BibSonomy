@@ -15,6 +15,9 @@ $(function () {
 	// init sorting options
 	initSortOptions('sorting-dropdown-menu', initPublicationPagination);
 	initSortOptions('sorting-dropdown-menu-similar', loadSimilarAuthors);
+
+	// init publication report
+	initPublicationReportSubmit();
 });
 
 /**
@@ -129,9 +132,44 @@ function initFilterButtons(field) {
 	});
 }
 
+/**
+ *
+ */
+function initPublicationReportSubmit() {
+	$('.publication-report-submit').click(function (e) {
+		e.preventDefault();
+
+		var btn = $(this);
+		var form = $("#formReportPublication-" + btn.data("interhash"));
+
+		var formData = form.serializeArray();
+		formData.map(function(x){formData[x.name] = x.value;});
+
+		$.ajax({
+			url: "/ajax/report/person/publications/custom",
+			data: {
+				'personId': formData.personId,
+				'title': formData.title,
+				'interhash': formData.interhash,
+				'message': formData.message,
+				'referer': window.location.href,
+			},
+			success: function(data) {
+				if (data.success === true) {
+					var successMsg = getString("report.error.feedback.success");
+					showAlert('success', successMsg);
+				} else {
+					var errorMsg = getString("report.error.feedback.error");
+					showAlert('danger', errorMsg);
+				}
+			}
+		});
+	});
+}
+
 function reportDuplicatePublication(publication) {
 	$.ajax({
-		url: "/ajax/report/person/duplicatePublications",
+		url: "/ajax/report/person/publications/duplicate",
 		data: {
 			'personId': $(publication).data('person'),
 			'title': $(publication).data('title'),

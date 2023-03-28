@@ -346,7 +346,7 @@
 					</bean>
 				</entry>
 
-				<entry key="/ajax/report/person/duplicatePublications">
+				<entry key="/ajax/report/person/publications/duplicate">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="duplicatePublicationReportController" />
 						<property name="allowedFields">
@@ -359,6 +359,22 @@
 						</property>
 					</bean>
 				</entry>
+
+				<entry key="/ajax/report/publications/custom">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="customPublicationReportController" />
+						<property name="allowedFields">
+							<list>
+								<value>personId</value>
+								<value>title</value>
+								<value>interhash</value>
+								<value>message</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
 			</map>
 		</property>
 	</bean>
@@ -479,6 +495,9 @@
 		  scope="request" parent="reportAjaxController" />
 
 	<bean id="duplicatePublicationReportController" class="org.bibsonomy.webapp.controller.ajax.report.DuplicatePublicationReportController"
+		  scope="request" parent="reportAjaxController" />
+
+	<bean id="customPublicationReportController" class="org.bibsonomy.webapp.controller.ajax.report.CustomPublicationReportController"
 		  scope="request" parent="reportAjaxController" />
 
 </beans>

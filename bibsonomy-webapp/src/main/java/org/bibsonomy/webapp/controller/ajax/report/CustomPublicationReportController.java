@@ -6,10 +6,10 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.webapp.command.ajax.ReportCommand;
 import org.bibsonomy.webapp.util.View;
 
-public class DuplicatePublicationReportController extends AbstractReportController {
+public class CustomPublicationReportController extends AbstractReportController {
 
-    private final static String SUBJECT_KEY = "report.error.person.publications.duplicate.mail.subject";
-    private final static String BODY_KEY = "report.error.person.publications.duplicate.mail.body";
+    private final static String SUBJECT_KEY = "report.error.person.publications.custom.mail.subject";
+    private final static String BODY_KEY = "report.error.person.publications.custom.mail.body";
 
     @Override
     public View workOn(ReportCommand command) {
@@ -20,16 +20,20 @@ public class DuplicatePublicationReportController extends AbstractReportControll
             return this.error(command, ERROR_KEY);
         }
 
-        // Set parameters for the messages
+        // Set parameters for the custom messages
         String personId = command.getPersonId();
         String title = command.getTitle();
+        String interhash = command.getInterhash();
+        String message = command.getMessage();
 
+        String username = loggedInUser.getName();
+        String postUrl = this.urlGenerator.getPublicationUrlByInterHash(interhash);
         Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, personId);
         String personName = person.getMainName().toString();
         String personUrl = this.urlGenerator.getPersonUrl(personId);
 
-        Object[] subjectParameters = {personName};
-        Object[] bodyParameters = {title, personName, personUrl, loggedInUser.getName()};
+        Object[] subjectParameters = {username};
+        Object[] bodyParameters = {message, title, postUrl, personName, personUrl, username};
 
         // Send e-mail
         boolean result = report(SUBJECT_KEY, BODY_KEY, subjectParameters, bodyParameters);
