@@ -39,37 +39,14 @@
 			</c:when>
 			<c:when test="${fn:length(relations) gt 0}">
 				<ul class="posts relations">
-					<fmt:message key="report.error.person.publications.custom.form.placeholder" var="reportModalPlaceholder" />
 					<c:forEach var="relation" items="${relations}">
 						<c:set var="post" value="${relation.post}"/>
-						<fmt:message key="report.error.person.publications.custom.form.title" var="reportModalTitle" />
 
-						<bs:modal id="reportModal-${post.resource.interHash}" modalTitle="${reportModalTitle}">
-							<jsp:attribute name="modalBody">
-								<div class="container-fluid">
-									<h3><c:out value="${post.resource.title}" /></h3>
-									<form id="formReportPublication-${post.resource.interHash}">
-										<input type="hidden" name="personId" value="${personId}"/>
-										<input type="hidden" name="title" value="${post.resource.title}"/>
-										<input type="hidden" name="interhash" value="${post.resource.interHash}"/>
-										<input type="hidden" name="referer" value="${requPath}"/>
-										<textarea id="message" name="message" placeholder="${reportModalPlaceholder}" rows="4" cols="55"><!-- keep me --></textarea>
-									</form>
-								</div>
-							</jsp:attribute>
-
-							<jsp:attribute name="modalFooter">
-								<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="box.close"/></button>
-								<button type="button" class="btn btn-primary publication-report-submit" data-interhash="${post.resource.interHash}">
-									<fmt:message key="report.error.button.label"/>
-								</button>
-							</jsp:attribute>
-						</bs:modal>
 						<per:simpleRelationView relation="${relation}"
 												showButtons="${true}"
 												personId="${personId}"
 												addPub="${isSimilarAuthors}"
-												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}" />
+												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 					</c:forEach>
 				</ul>
 			</c:when>

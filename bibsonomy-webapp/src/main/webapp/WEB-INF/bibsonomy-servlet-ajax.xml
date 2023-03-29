@@ -360,7 +360,7 @@
 					</bean>
 				</entry>
 
-				<entry key="/ajax/report/publications/custom">
+				<entry key="/ajax/report/person/publications/custom">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="customPublicationReportController" />
 						<property name="allowedFields">

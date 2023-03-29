@@ -15,9 +15,6 @@ $(function () {
 	// init sorting options
 	initSortOptions('sorting-dropdown-menu', initPublicationPagination);
 	initSortOptions('sorting-dropdown-menu-similar', loadSimilarAuthors);
-
-	// init publication report
-	initPublicationReportSubmit();
 });
 
 /**
@@ -133,41 +130,38 @@ function initFilterButtons(field) {
 }
 
 /**
- *
+ * Send a custom report via e-mail, if system is properly configured.
+ * The e-mail will contain the custom message of the reporter.
  */
-function initPublicationReportSubmit() {
-	$('.publication-report-submit').click(function (e) {
-		e.preventDefault();
+function reportPublicationCustom(publication) {
+	var interhash = $(publication).data("interhash");
+	var form = $("#formReportPublication-" + interhash);
 
-		var btn = $(this);
-		var form = $("#formReportPublication-" + btn.data("interhash"));
+	var formData = form.serializeArray();
+	formData.map(function(x){formData[x.name] = x.value;});
 
-		var formData = form.serializeArray();
-		formData.map(function(x){formData[x.name] = x.value;});
-
-		$.ajax({
-			url: "/ajax/report/person/publications/custom",
-			data: {
-				'personId': formData.personId,
-				'title': formData.title,
-				'interhash': formData.interhash,
-				'message': formData.message,
-				'referer': window.location.href,
-			},
-			success: function(data) {
-				if (data.success === true) {
-					var successMsg = getString("report.error.feedback.success");
-					showAlert('success', successMsg);
-				} else {
-					var errorMsg = getString("report.error.feedback.error");
-					showAlert('danger', errorMsg);
-				}
+	$.ajax({
+		url: "/ajax/report/person/publications/custom",
+		data: {
+			'personId': formData.personId,
+			'title': formData.title,
+			'interhash': formData.interhash,
+			'message': formData.message,
+			'referer': window.location.href,
+		},
+		success: function(data) {
+			if (data.success === true) {
+				var successMsg = getString("report.error.feedback.success");
+				showAlert('success', successMsg);
+			} else {
+				var errorMsg = getString("report.error.feedback.error");
+				showAlert('danger', errorMsg);
 			}
-		});
+		}
 	});
 }
 
-function reportDuplicatePublication(publication) {
+function reportPublicationDuplicate(publication) {
 	$.ajax({
 		url: "/ajax/report/person/publications/duplicate",
 		data: {
