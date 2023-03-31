@@ -143,7 +143,7 @@ public class EditPublicationController extends AbstractEditPublicationController
         if (bibliographyAutoApproved && present(bibliographyGroup)) {
             // Check, if user is a member of the bibliography group // TODO: Use group level permission
             if (present(GroupUtils.getGroupMembershipOfUserForGroup(loginUser, bibliographyGroup))) {
-                this.logic.approvePost(post, null, loginUser.getName(), false);
+                this.logic.approvePost(post, loginUser.getName());
             }
         }
     }

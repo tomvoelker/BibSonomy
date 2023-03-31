@@ -73,10 +73,8 @@ public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	 * it is possible to unapprove it.
 	 *
 	 * @param post				the post to approve the goldstandard of
-	 * @param oldPost			the possible old post to unapprove (due to interhash change)
 	 * @param username			the username of the post
-	 * @param unapproveOldPost	if true unapprove old post, otherwise remains unchanged
 	 * @return
 	 */
-	List<JobResult> approvePost(final Post<BibTex> post, final Post<BibTex> oldPost, final String username, final boolean unapproveOldPost);
+	List<JobResult> approvePost(final Post<BibTex> post, final String username);
 }

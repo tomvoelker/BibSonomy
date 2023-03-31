@@ -1830,7 +1830,7 @@ public class DBLogic implements LogicInterface {
 	 * If the goldstandard does not exist yet, it will be created and approved.
 	 */
 	@Override
-	public List<JobResult> approvePost(final Post<BibTex> post, final Post<BibTex> oldPost, final String username, final boolean unapproveOldPost) {
+	public List<JobResult> approvePost(final Post<BibTex> post, final String username) {
 		final List<JobResult> results = new LinkedList<>();
 
 		if (!present(post)) {
@@ -1838,14 +1838,6 @@ public class DBLogic implements LogicInterface {
 		}
 
 		final String postInterHash = post.getResource().getInterHash();
-
-		/*
-		 * If the post has been updated and creates a new goldstandard,
-		 * we might want to unapprove the previous goldstandard before approving the new one
-		 */
-		if (unapproveOldPost && present(oldPost)) {
-
-		}
 
 		// Convert the user post to a goldstandard post
 		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);

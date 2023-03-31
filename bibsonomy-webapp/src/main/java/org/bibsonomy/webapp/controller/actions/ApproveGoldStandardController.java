@@ -127,7 +127,7 @@ public class ApproveGoldStandardController implements MinimalisticController<App
         postToUpdate.getResource().setIntraHash(interhash);
 
         try {
-            final List<JobResult> results = this.logic.approvePost(postToUpdate, null, "", false);
+            final List<JobResult> results = this.logic.approvePost(postToUpdate, "");
             this.success = "actions.communityPost.update.success";
         } catch (final DatabaseException ex) {
             this.errors.reject("error.post.update", "Could not update post.");
@@ -141,7 +141,7 @@ public class ApproveGoldStandardController implements MinimalisticController<App
             return;
         }
         try {
-            final List<JobResult> results = this.logic.approvePost(postToCreate, null, username, false);
+            final List<JobResult> results = this.logic.approvePost(postToCreate, username);
             this.success = "actions.communityPost.update.success";
         } catch (final DatabaseException de) {
             this.errors.reject("error.post.update", "Could not update post.");

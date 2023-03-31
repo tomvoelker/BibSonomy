@@ -217,7 +217,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public List<JobResult> approvePost(Post<BibTex> post, Post<BibTex> oldPost, String username, boolean unapproveOldPost) {
+	public List<JobResult> approvePost(Post<BibTex> post, String username) {
 		this.doDefaultAction();
 		return null;
 	}

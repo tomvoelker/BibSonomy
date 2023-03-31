@@ -524,7 +524,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				// Check, if user is a member of the bibliography group // TODO: Use group level permission
 				if (present(GroupUtils.getGroupMembershipOfUserForGroup(loginUser, bibliographyGroup))) {
 					for (Post<?> post : postsToCombiUpdate) {
-						this.logic.approvePost((Post<BibTex>) post, null, loginUserName, false);
+						this.logic.approvePost((Post<BibTex>) post, loginUserName);
 					}
 				}
 			}
