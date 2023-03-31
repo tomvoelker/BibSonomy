@@ -61,11 +61,11 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected Post<BibTex> getPostDetails(final String interHash, final String userName) {
+	protected Post<BibTex> getPostDetails(final String resourceHash, final String userName) {
 		/*
 		 * get goldstandard post; username must be empty!
 		 */
-		return super.getPostDetails(interHash, "");
+		return super.getPostDetails(resourceHash, "");
 	}
 
 	@Override
