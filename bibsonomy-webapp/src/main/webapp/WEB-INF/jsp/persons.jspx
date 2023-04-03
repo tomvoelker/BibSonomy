@@ -9,11 +9,11 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="genealogyEnabled" value="${properties['genealogy.activated']}" />
+	<c:set var="genealogyLandingPageEnabled" value="${properties['genealogy.landingpage.enabled']}" />
 
 	<c:choose>
 
-		<c:when test="${properties['genealogy.activated']}">
+		<c:when test="${genealogyLandingPageEnabled}">
 			<fmt:message key="persons.intro.head.title" var="pageTitle">
 				<fmt:param value="${properties['project.name']}" />
 			</fmt:message>
@@ -26,7 +26,7 @@
 	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
-			<c:if test="${genealogyEnabled}">
+			<c:if test="${genealogyLandingPageEnabled}">
 				<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
 			</c:if>
 		</jsp:attribute>
@@ -43,7 +43,7 @@
 		
 		<jsp:attribute name="content">
 			<c:choose>
-				<c:when test="${genealogyEnabled}">
+				<c:when test="${genealogyLandingPageEnabled}">
 					<persons:personsGenealogy title="${pageTitle}" command="${command}" />
 				</c:when>
 				<c:otherwise>

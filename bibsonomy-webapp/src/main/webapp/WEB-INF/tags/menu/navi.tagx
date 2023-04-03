@@ -277,7 +277,7 @@
 		+-->
 	<c:set target="${navElements}" property="persons">
 		<c:choose>
-			<c:when test="${properties['genealogy.activated']}">
+			<c:when test="${properties['genealogy.landingpage.enabled']}">
 				<fmt:message key="navi.personsGenealogy" var="personNaviLabel"/>
 			</c:when>
 			<c:otherwise>

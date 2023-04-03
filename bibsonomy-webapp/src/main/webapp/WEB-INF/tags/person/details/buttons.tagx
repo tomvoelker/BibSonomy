@@ -16,7 +16,6 @@
 	<c:set var="loggedInNotSpammer" value="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}"/>
 
 	<div>
-
 		<c:if test="${hasClaimedPerson or isAdmin}">
 			<!-- Edit person details -->
 			<modals:editPersonDetails command="${command}" id="editPersonDetails"/> <!-- Edit person modal dialog -->
@@ -34,31 +33,33 @@
 		</c:if>
 
 		<!-- TODO: disable if CRIS system and person is in the configured college? -->
-		<c:choose>
-			<!-- Unclaim person -->
-			<c:when test='${hasClaimedPerson}'>
-				<!-- Unlink person modal dialog -->
-				<modals:unlinkPerson command="${command}" id="unlinkPerson"/>
-				<a href="#" class="btn btn-default" data-toggle="modal" data-target="#unlinkPerson">
-					<fontawesome:icon icon="unlink" fixedWidth="${true}"/>
-					<fmt:message key="person.show.unlinkPersonButton"/>
-				</a>
-			</c:when>
+		<c:if test="${not useCRISView}">
+			<c:choose>
+				<!-- Unclaim person -->
+				<c:when test='${hasClaimedPerson}'>
+					<!-- Unlink person modal dialog -->
+					<modals:unlinkPerson command="${command}" id="unlinkPerson"/>
+					<a href="#" class="btn btn-default" data-toggle="modal" data-target="#unlinkPerson">
+						<fontawesome:icon icon="unlink" fixedWidth="${true}"/>
+						<fmt:message key="person.show.unlinkPersonButton"/>
+					</a>
+				</c:when>
 
-			<!-- Claim person -->
-			<c:when test="${empty command.person.user and loggedInNotSpammer}">
-				<!-- Link person modal dialog -->
-				<modals:linkPerson command="${command}" id="linkPerson"/>
-				<a href="#" class="btn btn-default" data-toggle="modal" data-target="#linkPerson">
-					<fontawesome:icon icon="link" fixedWidth="${true}"/>
-					<fmt:message key="person.show.linkPersonButton"/>
-				</a>
-			</c:when>
+				<!-- Claim person -->
+				<c:when test="${empty command.person.user and loggedInNotSpammer}">
+					<!-- Link person modal dialog -->
+					<modals:linkPerson command="${command}" id="linkPerson"/>
+					<a href="#" class="btn btn-default" data-toggle="modal" data-target="#linkPerson">
+						<fontawesome:icon icon="link" fixedWidth="${true}"/>
+						<fmt:message key="person.show.linkPersonButton"/>
+					</a>
+				</c:when>
 
-			<c:otherwise>
+				<c:otherwise>
 
-			</c:otherwise>
-		</c:choose>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
 
 		<!-- Merge person -->
 		<c:if test="${fn:length(command.personMatchList) gt 0 and isAdmin}">

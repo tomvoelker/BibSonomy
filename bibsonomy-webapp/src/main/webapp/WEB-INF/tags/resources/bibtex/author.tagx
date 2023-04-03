@@ -87,6 +87,14 @@
 			<c:if test="${loopStatus.last and not loopStatus.first and not personListRestricted}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>
+			<c:choose>
+				<c:when test="${properties['genealogy.activated'] eq 'true'}">
+					<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
+				</c:when>
+				<c:otherwise>
+					<c:url var='pubAuthorUrl' value='${urlGenerator.getAuthorUrlByPersonName(person)}'/>
+				</c:otherwise>
+			</c:choose>
 			<span>
 				<c:choose>
 					<c:when test="${isRemotePost}">
@@ -98,7 +106,6 @@
 						<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
 							<c:choose>
 								<c:when test="${not onlyLinkAuthorsWithPersons or onlyLinkAuthorsWithPersons and relation.present and relation.get().person.college eq properties['system.cris.college']}">
-									<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
 									<a href="${pubAuthorUrl}" itemprop="url" title="${fn:escapeXml(firstName)} ${fn:escapeXml(lastName)}">
 										<span itemprop="name"><c:out value="${personName}"/></span>
 									</a>
