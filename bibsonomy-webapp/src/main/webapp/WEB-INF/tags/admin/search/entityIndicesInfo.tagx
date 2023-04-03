@@ -22,9 +22,11 @@
     <c:set var="searchIndexInfos" value="${command.searchIndexInfo.get(entity)}"/>
     <c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}"/>
 
-    <c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
-        <adminSearch:indexInfo entity="${entity}" searchIndexInfo="${searchIndexInfo}" showActions="${showActions}"/>
-    </c:forEach>
+    <div class="searchindex-panels">
+        <c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
+            <adminSearch:indexInfo entity="${entity}" searchIndexInfo="${searchIndexInfo}" showActions="${showActions}"/>
+        </c:forEach>
+    </div>
 
     <c:if test="${showWarning}">
         <!-- Warning for none or one existing index -->

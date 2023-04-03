@@ -2,23 +2,23 @@
 	color: grey;
 }
 
+.searchindex-panels {
+	.searchindex-panel:nth-child(2n) {
+		float: right;
+	}
+}
+
 .searchindex-panel {
 
-	.panel-heading {
-		cursor: pointer;
-	}
+	display: inline-block;
+	width: 49%;
 
 	.panel-title {
 		color: @font-color;
 		font-weight: bold;
 	}
 
-	.searchindex-id {
-		cursor: text;
-	}
-
 	.searchindex-mapping-version {
-		cursor: text;
 		float: right;
 	}
 
@@ -44,11 +44,15 @@
 		background-color: @brand-warning !important;
 	}
 
-	.searchindex-actions {
-		padding-top: 15px;
-
+	.panel-footer {
 		form {
 			display: inline-block;
+		}
+
+		code {
+			display: inline;
+			float: right;
+			font-size: 16px;
 		}
 
 		button {

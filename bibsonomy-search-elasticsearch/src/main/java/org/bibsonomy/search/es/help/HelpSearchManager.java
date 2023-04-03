@@ -350,17 +350,20 @@ public class HelpSearchManager implements HelpSearch {
 
 		for (String locale : this.supportedLocales) {
 			final String indexName = this.getIndexNameForLanguage(locale);
-			final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
-			searchIndexInfo.setId(indexName);
-			searchIndexInfo.setStatus(SearchIndexStatus.ACTIVE);
 
-			// searchIndexInfo.setSyncState(); TODO
+			if (this.client.existsIndexWithName(indexName)) {
+				final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
+				searchIndexInfo.setId(indexName);
+				searchIndexInfo.setStatus(SearchIndexStatus.ACTIVE);
 
-			final SearchIndexStatistics statistics = new SearchIndexStatistics();
-			final long count = this.client.getDocumentCount(indexName, HELP_PAGE_TYPE, null);
-			statistics.setNumberOfDocuments(count);
-			searchIndexInfo.setStatistics(statistics);
-			infos.add(searchIndexInfo);
+				// searchIndexInfo.setSyncState(); TODO
+
+				final SearchIndexStatistics statistics = new SearchIndexStatistics();
+				final long count = this.client.getDocumentCount(indexName, HELP_PAGE_TYPE, null);
+				statistics.setNumberOfDocuments(count);
+				searchIndexInfo.setStatistics(statistics);
+				infos.add(searchIndexInfo);
+			}
 		}
 
 		return infos;

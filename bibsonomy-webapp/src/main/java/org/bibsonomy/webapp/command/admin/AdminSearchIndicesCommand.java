@@ -47,13 +47,13 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 @Getter
 @Setter
-public class AdminFullTextSearchCommand extends BaseCommand {
+public class AdminSearchIndicesCommand extends BaseCommand {
 	
 	/**
 	 * all actions for a full text index
 	 * @author dzo
 	 */
-	public enum AdminFullTextAction {
+	public enum AdminIndexAction {
 		/** regenerate an index = generate new and delete the specified index */
 		REGENERATE_INDEX,
 		/** generate index */
@@ -65,7 +65,7 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	}
 	
 	/** specific action for admin page */
-	private AdminFullTextAction action;
+	private AdminIndexAction action;
 	
 	/** the specific index id for the indexd to be updated **/
 	private String id;

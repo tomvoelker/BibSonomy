@@ -285,7 +285,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param user
 	 * @return a post
 	 */
-	protected Post<RESOURCE> getCopyPost(final User loginUser, final String hash, final String user) {
+	protected Post<RESOURCE> getCopyPost(final User loginUser, final String resourceHash, final String user) {
 		if (this.urlGenerator.matchesPage(this.requestLogic.getReferer(), URLGenerator.Page.INBOX)) {
 			/*
 			 * The user tries to copy a post from his inbox.
@@ -294,12 +294,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 * that the user who owns the post already has deleted it (and thus
 			 * we must check the log table to get the post).
 			 */
-			return this.getInboxPost(loginUser.getName(), hash, user);
+			return this.getInboxPost(loginUser.getName(), resourceHash, user);
 		}
 		/*
 		 * regular copy
 		 */
-		return this.getPostDetails(hash, user);
+		return this.getPostDetails(resourceHash, user);
 	}
 
 	/**
@@ -600,20 +600,20 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	protected void replacePostFields(final Post<RESOURCE> post, final String key, final Post<RESOURCE> newPost) {
 		switch (key) {
-		case TAGS_KEY:
-			post.setTags(newPost.getTags());
-			break;
-		case "description":
-			post.setDescription(newPost.getDescription());
-			break;
-		case "approved":
-			post.setApproved(newPost.isApproved());
-			break;
-		case "groups":
-			post.setGroups(newPost.getGroups());
-			break;
-		default:
-			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
+			case TAGS_KEY:
+				post.setTags(newPost.getTags());
+				break;
+			case "description":
+				post.setDescription(newPost.getDescription());
+				break;
+			case "approved":
+				post.setApproved(newPost.isApproved());
+				break;
+			case "groups":
+				post.setGroups(newPost.getGroups());
+				break;
+			default:
+				this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
 		if (newPost.isApproved()) {
 			post.setApproved(true);
@@ -654,7 +654,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * check, if the post with the given hash exists NOW, we can ignore that
 	 * exception and instead just return null.
 	 *
-	 * @param intraHash
+	 * @param resourceHash 	hash value of the corresponding resource, it can be the intrahash for user/group posts
+	 *                         and the interhash for goldstandard posts
 	 * @param userName
 	 * @return
 	 * @see {https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:
@@ -664,13 +665,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 *      #gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29}
 	 */
 	@SuppressWarnings("unchecked")
-	protected Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
+	protected Post<RESOURCE> getPostDetails(final String resourceHash, final String userName) {
 		try {
-			return (Post<RESOURCE>) this.logic.getPostDetails(intraHash, userName);
+			return (Post<RESOURCE>) this.logic.getPostDetails(resourceHash, userName);
 		} catch (final ObjectMovedException e) {
 			/*
 			 * getPostDetails() has a redirect mechanism that checks for posts
-			 * in the log tables. If it find's a post with the given hash there,
+			 * in the log tables. If it finds a post with the given hash there,
 			 * it throws an exception, giving the hash of the next post. We want
 			 * to ignore this behavior, thus we ignore the exception
 			 *

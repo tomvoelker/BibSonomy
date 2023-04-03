@@ -63,6 +63,7 @@
 
 			<!-- script for custom entrytypes in PUMA instances -->
 			<c:if test="${resourceType eq 'Publication' or resourceType eq 'GoldStandardPublication'}">
+				<script type="text/javascript" src="${resdir}/javascript/configuration.js"><!-- keep me --></script>
 				<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 			</c:if>
 

@@ -122,10 +122,6 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 				log.error("could not update post with " + id, e);
 			}
 		}
-		
-		final LRUMap updatedInterhashes = new LRUMap(UPDATED_INTERHASHES_CACHE_SIZE);
-		applyChangesInPubPersonRelationsToIndex(indexName, oldState, targetState, updatedInterhashes);
-		applyPersonChangesToIndex(indexName, oldState, targetState, updatedInterhashes);
 	}
 	
 	/**

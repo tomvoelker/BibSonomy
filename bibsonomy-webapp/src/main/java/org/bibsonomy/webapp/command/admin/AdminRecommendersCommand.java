@@ -49,7 +49,8 @@ import recommender.core.interfaces.model.RecommendationResult;
  */
 @Getter
 @Setter
-public class AdminRecommenderViewCommand extends BaseCommand {
+public class AdminRecommendersCommand extends BaseCommand {
+
 	private Map<Class<? extends RecommendationResult>, List<RecAdminOverview>> recommenderOverviewMap;
 	/** number of values which will be fetched from the database to calculate average recommender-latencies */
 	private Long queriesPerLatency;
@@ -69,7 +70,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * default constructor
 	 */
-	public AdminRecommenderViewCommand(){
+	public AdminRecommendersCommand(){
 		this.queriesPerLatency = Long.valueOf(1000);
 		this.action = null;
 	}

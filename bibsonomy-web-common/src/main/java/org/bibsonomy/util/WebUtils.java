@@ -96,7 +96,7 @@ public class WebUtils {
 	 * mess up our heap. If this is not enough, please increase the size
 	 * carefully.
 	 */
-	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
+	private static final int MAX_CONTENT_LENGTH = 3 * 1024 * 1024;
 
 	/**
 	 * default config for http client
