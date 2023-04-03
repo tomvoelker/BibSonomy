@@ -7,13 +7,11 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-	<c:set var="reportFunction" value="reportDuplicatePublication(this)" />
-
 	<c:choose>
 		<c:when test="${fn:length(command.otherPubs) gt 0}">
 			<c:choose>
 				<c:when test="${empty command.personPostsLayout or command.personPostsLayout == 'DEFAULT'}">
-					<person:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}" reportFunction="${reportFunction}"/>
+					<person:publications command="${command}" relations="${command.otherPubs}" isSimilarAuthors="${false}" />
 				</c:when>
 				<c:otherwise>
 					<person:renderedPostList command="${command}" publications="${command.myownPosts}" hideHeadline="${true}" buttons="${true}" />

@@ -154,7 +154,7 @@
 													  headerMessageKey="explore.filter.entrytype.header"
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
-						<c:if test="${properties['report.person.duplicate.publications']}">
+						<c:if test="${properties['report.person.publications.duplicate']}">
 							<div>
 								<sidebar:sidebarItem>
 									<jsp:attribute name="content">

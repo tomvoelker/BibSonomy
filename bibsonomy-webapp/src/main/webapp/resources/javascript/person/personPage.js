@@ -129,9 +129,41 @@ function initFilterButtons(field) {
 	});
 }
 
-function reportDuplicatePublication(publication) {
+/**
+ * Send a custom report via e-mail, if system is properly configured.
+ * The e-mail will contain the custom message of the reporter.
+ */
+function reportPublicationCustom(publication) {
+	var interhash = $(publication).data("interhash");
+	var form = $("#formReportPublication-" + interhash);
+
+	var formData = form.serializeArray();
+	formData.map(function(x){formData[x.name] = x.value;});
+
 	$.ajax({
-		url: "/ajax/report/person/duplicatePublications",
+		url: "/ajax/report/person/publications/custom",
+		data: {
+			'personId': formData.personId,
+			'title': formData.title,
+			'interhash': formData.interhash,
+			'message': formData.message,
+			'referer': window.location.href,
+		},
+		success: function(data) {
+			if (data.success === true) {
+				var successMsg = getString("report.error.feedback.success");
+				showAlert('success', successMsg);
+			} else {
+				var errorMsg = getString("report.error.feedback.error");
+				showAlert('danger', errorMsg);
+			}
+		}
+	});
+}
+
+function reportPublicationDuplicate(publication) {
+	$.ajax({
+		url: "/ajax/report/person/publications/duplicate",
 		data: {
 			'personId': $(publication).data('person'),
 			'title': $(publication).data('title'),

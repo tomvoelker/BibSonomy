@@ -124,7 +124,13 @@ public class Person implements Linkable, Serializable {
                 }
             }
         }
-        return this.mainName;
+
+        // Return empty person name, if main name still null
+        if (this.mainName != null) {
+            return this.mainName;
+        }
+
+        return new PersonName();
     }
 
     /**
