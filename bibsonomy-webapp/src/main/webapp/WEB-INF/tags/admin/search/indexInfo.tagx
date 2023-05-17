@@ -44,7 +44,8 @@
                             <div class="row">
                                 <div class="col-md-4"><strong><fmt:message key="admin.search.info.buildTime"/></strong></div>
                                 <div class="col-md-8"><span>
-                            <fmt:message key="admin.search.info.buildTime.minutes">
+                            <fmt:message key="admin.search.info.buildTime.dateDuration">
+                                <fmt:param value="${searchIndexInfo.syncState.buildDate}"/>
                                 <fmt:param value="${searchIndexInfo.syncState.buildTime}"/>
                             </fmt:message>
                         </span></div>
