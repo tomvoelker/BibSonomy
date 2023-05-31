@@ -3,7 +3,6 @@
           xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
           xmlns:form="http://www.springframework.org/tags/form">
 
-    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
     <fmt:message key="person.show.close" var="textClose" />
 
     <div class="modal fade" id="linkPublication" tabindex="-1" role="dialog" aria-labelledby="linkPublicationLabel" aria-hidden="true">
@@ -13,16 +12,6 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
                     <h4 class="modal-title"><fmt:message key="person.show.modalLinkPublicationHeader" /></h4>
                 </div>
-                <div class="modal-body">
-                    <fmt:message key="person.show.modalLinkPublicationBody" /> <br/>
-                    <strong id="modalLinkPublicationContentText">&#160;</strong> <br/> <br/>
-                    <fmt:message key="person.show.modalLinkPublicationSelect"/> <br/>
-                    <label class="item item-select">
-                        <select class="form-control" id="addPublicationAuthorSelect">
-                            <!-- select will be dynamically filled by addPersonRelationResource.js. Keep me. -->
-                        </select>
-                    </label>
-                </div>
                 <div class="modal-footer">
                     <form:form action="/addPersonResourceRelation?ckey=${ckey}" method="post" id="addPersonResourceRelationForm">
                         <form:hidden path="index" />
@@ -30,7 +19,7 @@
                         <form:hidden path="interhash"/>
                         <form:hidden path="type"/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-                        <fmt:message key="friends.button.add" var="add"/>
+                        <fmt:message key="search.extended.add" var="add"/>
                         <input type="submit" class="btn btn-primary" value="${add}"/>
                     </form:form>
                 </div>

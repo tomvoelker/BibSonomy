@@ -36,16 +36,17 @@
 			<c:choose>
 				<c:when test="${addPub}">
 					<button type="button" class="btn btn-default btn-xs add-button"
+							onclick="addPersonRelation(this)"
 							data-interhash="${post.resource.interHash}"
-							data-index="${relation.personIndex}"
-							data-type="${relation.relationType}">
+							data-personindex="${relation.personIndex}"
+							data-relationtype="${relation.relationType}">
 						<fontawesome:icon icon="check"/>
 					</button>
 				</c:when>
 				<c:otherwise>
 					<c:if test="${loggedInUser.claimedPerson.personId eq personId or loggedInUser.role eq 'ADMIN'}">
 						<button type="button"
-								onclick="initDeleteRelationButtons(this)"
+								onclick="deletePersonRelation(this)"
 								class="btn btn-default btn-xs delete-button"
 								data-interhash="${post.resource.interHash}"
 								data-personindex="${relation.personIndex}"
