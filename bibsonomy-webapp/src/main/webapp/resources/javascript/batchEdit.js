@@ -151,14 +151,16 @@ $(document).ready(function () {
         });
     }
 
-    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction)
+    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction);
+
     $('.addTagsButton').click(function () {
         addTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
-    $('.addTagsButton').click(function () {
-        addTags($('#tagsInput').val());
+
+    $('.removeTagsButton').click(function () {
+        removeTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
@@ -244,6 +246,7 @@ function addTags(tags) {
 }
 
 function removeTags(tags) {
+    console.log(tags);
     $(tagCheckBoxSelector + ':checked').each(function () {
         var attr = $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
         var textInput = $('input[name=' + attr + ']:text');
@@ -254,6 +257,7 @@ function removeTags(tags) {
         });
         textInput.val(currentTags.join(" "));
     });
+    console.log("test?");
 }
 
 function updateBadges() {

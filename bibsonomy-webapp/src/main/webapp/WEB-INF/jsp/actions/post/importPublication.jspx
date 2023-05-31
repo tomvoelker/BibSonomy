@@ -18,14 +18,14 @@
 	<c:set var="isadmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
-		pageTitle="${pageTitle}" 
-		sidebar="${sidebar}"
+		pageTitle="${pageTitle}"
 		noSidebar="${true}"
 		requPath="${requPath}">
 		
 		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/configuration.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/extraEntrytypes.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
@@ -96,7 +96,7 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<bs:didYouKnow command="${command}"></bs:didYouKnow>
+					<bs:didYouKnow command="${command}" />
 				</jsp:attribute>
 			</parts:infobox>
 		</jsp:attribute>
