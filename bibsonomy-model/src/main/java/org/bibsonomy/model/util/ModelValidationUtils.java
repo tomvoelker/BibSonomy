@@ -48,20 +48,20 @@ import org.bibsonomy.rest.renderer.xml.UserType;
 
 /**
  * Sanity checks for the model.
- * 
+ *
  * FIXME: implement a validation layer that can be used by the REST service and the webapp
- * 
+ *
  * TODO: remove?
  * InvalidModelException was: 
- * 
+ *
  * public InvalidXMLException(final String message) {
  *   super("The body part of the received XML document is not valid: " + message);
  * }
- * 
+ *
  * Probably we want to have something similar again. Maybe we want a generic
  * ValidationException and an InvalidModelException and InvalidXMLException
  * inheriting from that.
- * 
+ *
  * @author Manuel Bork
  * @author Christian Schenk
  */
@@ -136,7 +136,7 @@ public class ModelValidationUtils {
 			throw new InvalidModelException("found a publication without author or editor assigned.");
 		}
 	}
-	
+
 	/**
 	 * @param xmlTag the object to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
@@ -146,7 +146,7 @@ public class ModelValidationUtils {
 		if (!present(tagName)) {
 			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "tag name is missing in element 'tag'");
 		}
-		
+
 		if (tagName.contains(" ")) {
 			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "tag name contains space character. To assign several tags to a post, please use one tag element for each tag.");
 		}
@@ -177,21 +177,21 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkPost(final PostType xmlPost) throws InvalidModelException {
- 		if (xmlPost.getTag() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "list of tags is missing");
-		
+		if (xmlPost.getTag() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "list of tags is missing");
+
 		// 2011/10/05, fei: deactivated test, as system tags are hidden and thus posts without tags are valid
 		// if (xmlPost.getTag().size() == 0) throw new InvalidModelException(XML_IS_INVALID_MSG + "no tags specified");
-		
+
 		if (xmlPost.getUser() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "user is missing");
 
 		final BibtexType xmlPublication = xmlPost.getBibtex();
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
 		final UploadDataType publicationUpload = xmlPost.getPublicationFileUpload();
-		
+
 		final boolean publicationPresent = xmlPublication != null;
 		final boolean bookmarkPresent = xmlBookmark != null;
 		final boolean uploadPresent = publicationUpload != null;
-		
+
 		if (!publicationPresent && !bookmarkPresent && !uploadPresent) {
 			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "resource (or publication upload) is missing inside element 'post'");
 		}
@@ -201,13 +201,12 @@ public class ModelValidationUtils {
 	}
 
 	/**
+	 * Validate the XML Post of a goldstandard post
+	 *
 	 * @param xmlPost the xml to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkStandardPost(final PostType xmlPost) throws InvalidModelException {
-		// user
-		if (xmlPost.getUser() == null) throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "user is missing");
-		
 		// resource
 		if (xmlPost.getGoldStandardPublication() == null) {
 			throw new InvalidModelException(DOCUMENT_NOT_VALID_ERROR_MESSAGE + "resource is missing inside element 'post'");
