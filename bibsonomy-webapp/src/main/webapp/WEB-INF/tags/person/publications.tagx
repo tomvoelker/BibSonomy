@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
 	<jsp:directive.attribute name="publications" type="java.util.List" required="false"/>
 	<jsp:directive.attribute name="relations" type="java.util.List" required="false"/>
+	<jsp:directive.attribute name="disableEdit" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="isSimilarAuthors" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
@@ -32,6 +33,7 @@
 					<c:forEach var="publication" items="${publications}">
 						<per:simplePublicationView post="${publication}"
 												   showButtons="${true}"
+												   disableEdit="${disableEdit}"
 												   onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
 												   referer="${referer}" />
 					</c:forEach>
@@ -44,6 +46,7 @@
 
 						<per:simpleRelationView relation="${relation}"
 												showButtons="${true}"
+												disableEdit="${disableEdit}"
 												personId="${personId}"
 												addPub="${isSimilarAuthors}"
 												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
