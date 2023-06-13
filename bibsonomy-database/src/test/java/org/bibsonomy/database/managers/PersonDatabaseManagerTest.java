@@ -40,7 +40,10 @@ import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -351,6 +354,16 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts("w.test.1", 100, 1, this.dbSession);
 		assertThat(relations.size(), equalTo(2));
+	}
+
+	@Test
+	public void testGetResourcePersonRelationsByChangeDate() throws ParseException {
+		String changeDateString = "01-01-2000";
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		Date changeDate = formatter.parse(changeDateString);
+
+		List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsByChangeDate(changeDate, this.dbSession);
+		assertThat(relations.size(), equalTo(9));
 	}
 
 	@Test

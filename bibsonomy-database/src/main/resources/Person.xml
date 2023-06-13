@@ -199,7 +199,6 @@
 		WHERE
 			pub_person.person_id = #personRelation.person.personId#
 	</select>
-	
 
 	<select id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
@@ -401,4 +400,13 @@
 		AND c.target_type = 2
 	</select>
 
+	<select id="getResourcePersonRelationByChangeDate" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		<include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+		<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE pub_person.log_changed_at >= #changeDate#
+		ORDER BY pub_person.person_id, pub_person.log_changed_at
+	</select>
 </sqlMap>

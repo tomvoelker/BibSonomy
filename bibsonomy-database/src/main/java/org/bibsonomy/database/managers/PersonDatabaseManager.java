@@ -719,6 +719,19 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
                 new GetPersonRelations(personId, limit, offset), ResourcePersonRelation.class, session);
     }
 
+    /**
+     * Get the list of person-resource-relations, that have been added and updated since the provided change date.
+     *
+     * @param changeDate the change date
+     * @param session the session
+     * @return list of relations
+     */
+    public List<ResourcePersonRelation> getResourcePersonRelationsByChangeDate(final Date changeDate, final DBSession session) {
+        final BibTexParam param = new BibTexParam();
+        param.setChangeDate(changeDate);
+        return this.queryForList("getResourcePersonRelationByChangeDate", param, ResourcePersonRelation.class, session);
+    }
+
     private BibTexParam buildBibTexParam(String personId) {
         final BibTexParam param = new BibTexParam();
 

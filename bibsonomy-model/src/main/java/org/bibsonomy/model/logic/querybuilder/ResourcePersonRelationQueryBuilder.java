@@ -30,6 +30,7 @@
 package org.bibsonomy.model.logic.querybuilder;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
@@ -52,6 +53,7 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	private String interhash;
 	private Integer authorIndex;
 	private String personId;
+	private Date changeDate;
 
 	private PersonResourceRelationType relationType;
 	private PersonResourceRelationOrder order;
@@ -111,6 +113,11 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 		this.authorIndex = authorIndex;
 		return this;
 	}
+
+	public ResourcePersonRelationQueryBuilder byChangeDate(Date changeDate) {
+		this.changeDate = changeDate;
+		return this;
+	}
 	
 	public ResourcePersonRelationQueryBuilder orderBy(PersonResourceRelationOrder order) {
 		this.order = order;
@@ -128,7 +135,7 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	 */
 	public ResourcePersonRelationQuery build() {
 		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
-				relationType, interhash, authorIndex, personId, order, onlyTheses, groupByInterhash);
+				relationType, interhash, authorIndex, changeDate, personId, order, onlyTheses, groupByInterhash);
 	}
 
 	@Override
