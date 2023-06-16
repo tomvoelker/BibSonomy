@@ -51,6 +51,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -179,13 +180,14 @@ public class EditRelationController extends AbstractEditPersonController {
      */
     @SuppressWarnings("unchecked")
     protected View searchAction(EditPersonCommand command) {
-        final PersonQuery query = new PersonQuery(command.getSelectedName());
-        query.setUsePrefixMatch(true);
+        final PersonQueryBuilder queryBuilder = new PersonQueryBuilder()
+                .search(command.getSelectedName())
+                .prefixMatch(true);
 
         /*
          * query the persons and get the publication that should be displayed alongside the person
          */
-        final List<Person> persons = this.logic.getPersons(query);
+        final List<Person> persons = this.logic.getPersons(queryBuilder.build());
         final JSONArray array = new JSONArray();
         for (final Person person : persons) {
             final JSONObject jsonPersonName = new JSONObject();

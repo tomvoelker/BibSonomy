@@ -29,40 +29,59 @@
  */
 package org.bibsonomy.rest.strategy.persons;
 
-import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
+import java.io.Writer;
+
 /**
- * stragegy for deleting a person resource relation
+ * strategy to create a new post person relation
  *
- * @author dzo
+ * @author pda
  */
-public class DeletePersonResourceRelationStrategy extends AbstractDeleteStrategy {
+public class PostPersonRelationStrategy extends AbstractCreateStrategy {
+
 	private final String personId;
-	private final String interHash;
-	private final int index;
-	private final PersonResourceRelationType type;
 
 	/**
-	 * inits a delete strategy for a {@link org.bibsonomy.model.ResourcePersonRelation}
+	 * default construtor
 	 * @param context
 	 * @param personId
-	 * @param interHash
-	 * @param index
-	 * @param type
 	 */
-	public DeletePersonResourceRelationStrategy(final Context context, final String personId, final String interHash, final int index, final PersonResourceRelationType type) {
+	public PostPersonRelationStrategy(final Context context, final String personId) {
 		super(context);
 		this.personId = personId;
-		this.interHash = interHash;
-		this.index = index;
-		this.type = type;
 	}
 
 	@Override
-	protected boolean delete() {
-		this.getLogic().removeResourceRelation(this.personId, this.interHash, this.index, this.type);
-		return true;
+	protected void render(final Writer writer, final String relationId) {
+		this.getRenderer().serializeResourceHash(writer, relationId);
+	}
+
+	@Override
+	protected String create() {
+		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
+		if (!present(person)) {
+			throw new BadRequestOrResponseException("Person with id " + this.personId + " doesn't exist.");
+		}
+
+		final ResourcePersonRelation resourcePersonRelation = this.getRenderer().parseResourcePersonRelation(this.doc);
+		resourcePersonRelation.setPerson(person);
+
+		try {
+			this.getLogic().createResourceRelation(resourcePersonRelation);
+			final Resource resource = resourcePersonRelation.getPost().getResource();
+			return resource.getInterHash();
+		} catch (final ResourcePersonAlreadyAssignedException e) {
+			throw new BadRequestOrResponseException(e);
+		}
 	}
 }

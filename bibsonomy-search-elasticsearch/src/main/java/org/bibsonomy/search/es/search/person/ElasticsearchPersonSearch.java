@@ -160,7 +160,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	private BoolQueryBuilder buildQuery(final PersonQuery query) {
-		final String personQuery = query.getQuery();
+		final String personQuery = query.getSearch();
 
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 		final BoolQueryBuilder filterQuery = this.buildFilterQuery(query);
@@ -240,7 +240,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	private QueryBuilder getNameQuery(final PersonQuery query) {
 		final boolean usePrefixMatch = query.isUsePrefixMatch();
 		final boolean phraseMatch = query.isPhraseMatch();
-		final String searchQuery = query.getQuery();
+		final String searchQuery = query.getSearch();
 
 		/*
 		 * the search terms must match in the order entered and the last is only a prefix match
@@ -263,9 +263,10 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
-		final PersonSortKey order = query.getOrder();
-		if (present(order)) {
-			switch (order) {
+		final PersonSortKey sortKey = query.getSortKey();
+		final SortOrder sortOrder = query.getSortOrder().toString().equalsIgnoreCase("ASC") ? SortOrder.ASC : SortOrder.DESC;
+		if (present(sortKey)) {
+			switch (sortKey) {
 				case RANK:
 					return null; // rank is the default order
 				case MAIN_NAME_LAST_NAME:

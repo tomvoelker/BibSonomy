@@ -125,6 +125,8 @@ public final class RESTConfig {
 
 	public static final String END_PARAM = "end";
 
+	public static final String CHANGE_DATE_PARAM = "changedate";
+
 	public static final String SYNC_STRATEGY_PARAM = "strategy";
 
 	public static final String SYNC_DIRECTION_PARAM = "direction";
@@ -139,8 +141,14 @@ public final class RESTConfig {
 
 	public static final String CLIPBOARD_CLEAR = "clear";
 
-	/** the query name for a person id */
+	/** the query param for a person id */
 	public static final String PERSON_ID_PARAM = "personId";
+
+	/** the query param for the source id of a person merge */
+	public static final String SOURCE_ID_PARAM = "sourceId";
+
+	/** the query param for the target id of a person merge */
+	public static final String TARGET_ID_PARAM = "targetId";
 
 	/** the query param name for an additional key for persons */
 	public static final String PERSON_ADDITIONAL_KEY_PARAM = "additionalKey";

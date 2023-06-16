@@ -29,46 +29,40 @@
  */
 package org.bibsonomy.rest.strategy.persons;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ObjectMovedException;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
-
-import java.io.ByteArrayOutputStream;
 
 /**
- * strategy to get a person by his/her person id
+ * strategy for deleting a person resource relation
  *
- * @author pda
+ * @author dzo
  */
-public class GetPersonStrategy extends Strategy {
-
+public class DeletePersonRelationStrategy extends AbstractDeleteStrategy {
 	private final String personId;
+	private final String interHash;
+	private final int index;
+	private final PersonResourceRelationType type;
 
 	/**
-	 * default constructor
-	 *
+	 * inits a delete strategy for a {@link org.bibsonomy.model.ResourcePersonRelation}
 	 * @param context
 	 * @param personId
+	 * @param interHash
+	 * @param index
+	 * @param type
 	 */
-	public GetPersonStrategy(final Context context, final String personId) {
+	public DeletePersonRelationStrategy(final Context context, final String personId, final String interHash, final int index, final PersonResourceRelationType type) {
 		super(context);
 		this.personId = personId;
+		this.interHash = interHash;
+		this.index = index;
+		this.type = type;
 	}
 
 	@Override
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
-		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
-		if (!present(person)) {
-			throw new NoSuchResourceException("The requested person with id '" + this.personId + "' does not exist.");
-		}
-		this.getRenderer().serializePerson(this.writer, person, new ViewModel());
+	protected boolean delete() {
+		this.getLogic().removeResourceRelation(this.personId, this.interHash, this.index, this.type);
+		return true;
 	}
 }

@@ -38,16 +38,56 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
- * returns a list of persons
+ * strategy to get a list of person
+ *
  * @author dzo
  */
 public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Person>> {
+
+	private final String userName;
+
+	private final String personId;
+
+	private final AdditionalKey additionalKey;
+
+	/**
+	 * @param context
+	 */
+	public GetListOfPersonsStrategy(final Context context) {
+		super(context);
+		this.userName = context.getStringAttribute(GroupingEntity.USER.toString().toLowerCase(), null);
+		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
+		this.additionalKey = extractAdditionalKey(context);
+	}
+
+	@Override
+	protected void render(final Writer writer, final List<Person> persons) {
+		this.getRenderer().serializePersons(writer, persons, this.getView());
+	}
+
+	@Override
+	protected List<Person> getList() {
+		final PersonQueryBuilder queryBuilder = new PersonQueryBuilder()
+				.byUserName(this.userName)
+				.byPersonId(this.personId)
+				.byAdditionalKey(this.additionalKey)
+				.start(this.getView().getStartValue())
+				.end(this.getView().getEndValue());
+
+		return this.getLogic().getPersons(queryBuilder.build());
+	}
+
+	@Override
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForPersons();
+	}
 
 	/**
 	 * extracts the additional key from the context
@@ -69,37 +109,5 @@ public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Perso
 		}
 
 		return new AdditionalKey(split[0], split[1]);
-	}
-
-	private final String userName;
-	private final AdditionalKey additionalKey;
-
-	/**
-	 * @param context
-	 */
-	public GetListOfPersonsStrategy(final Context context) {
-		super(context);
-		this.userName = context.getStringAttribute(GroupingEntity.USER.toString().toLowerCase(), null);
-		this.additionalKey = extractAdditionalKey(context);
-	}
-
-	@Override
-	protected void render(final Writer writer, final List<Person> persons) {
-		this.getRenderer().serializePersons(writer, persons, this.getView());
-	}
-
-	@Override
-	protected List<Person> getList() {
-		final PersonQuery query = new PersonQuery();
-		query.setStart(this.getView().getStartValue());
-		query.setEnd(this.getView().getEndValue());
-		query.setUserName(this.userName);
-		query.setAdditionalKey(this.additionalKey);
-		return this.getLogic().getPersons(query);
-	}
-
-	@Override
-	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForPersons();
 	}
 }

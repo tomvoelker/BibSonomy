@@ -63,7 +63,10 @@ import org.bibsonomy.util.UrlBuilder;
 /**
  * FIXME: move the duplicate code to the code (see webapp)
  *
- * Strategy to get the publications of a person by their ID.
+ * Strategy to get the publications related to a person.
+ *
+ * If the linked user of the person has set their publication option as 'myown' posts, we will return those,
+ * otherwise we convert resource-person-relations to goldstandard publication posts.
  *
  * @author kchoong
  */

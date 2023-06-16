@@ -38,6 +38,7 @@ import org.bibsonomy.database.managers.ProjectDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.search.es.search.project.AbstractProjectSearchTest;
 import org.junit.Test;
 
@@ -56,7 +57,7 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 	@Test
 	public void testGenerated() {
-		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
+		final ProjectQueryBuilder projectQueryBuilder = new ProjectQueryBuilder();
 		projectQueryBuilder.type("DFG");
 		final List<Project> projects = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, projectQueryBuilder.build());
 
@@ -75,7 +76,7 @@ public class ElasticsearchProjectManagerITCase extends AbstractProjectSearchTest
 
 		updateIndex();
 
-		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
+		final ProjectQueryBuilder projectQueryBuilder = new ProjectQueryBuilder();
 		projectQueryBuilder.search("DeepScan");
 		final List<Project> projects = PROJECT_SEARCH.getProjects(NOT_LOGGEDIN_USER, projectQueryBuilder.build());
 

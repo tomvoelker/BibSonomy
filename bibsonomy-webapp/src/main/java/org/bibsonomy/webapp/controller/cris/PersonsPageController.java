@@ -36,10 +36,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.PersonsPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -75,19 +77,19 @@ public class PersonsPageController implements MinimalisticController<PersonsPage
 		final ListCommand<Person> personListCommand = command.getPersons();
 		final String search = command.getSearch();
 		final Prefix prefix = command.getPrefix();
-		final PersonQuery query = new PersonQuery(search);
-		query.setUsePrefixMatch(true);
-		query.setPrefix(prefix);
 		final int personListStart = personListCommand.getStart();
-		query.setStart(personListStart);
-		query.setEnd(personListStart + personListCommand.getEntriesPerPage());
-		query.setOrder(present(search) ? PersonSortKey.RANK : PersonSortKey.MAIN_NAME_LAST_NAME);
-		query.setUsePrefixMatch(true);
-		if (!isUserLoggedin || !command.isShowAllPersons()) {
-			query.setCollege(this.crisCollege);
-		}
 
-		final List<Person> persons = this.logicInterface.getPersons(query);
+		final PersonQueryBuilder queryBuilder = new PersonQueryBuilder()
+				.search(search)
+				.byCollege(!isUserLoggedin || !command.isShowAllPersons() ? this.crisCollege : null)
+				.byPrefix(prefix)
+				.prefixMatch(true)
+				.start(personListStart)
+				.end(personListStart + personListCommand.getEntriesPerPage())
+				.sortBy(present(search) ? PersonSortKey.RANK : PersonSortKey.MAIN_NAME_LAST_NAME)
+				.orderBy(present(search) ? SortOrder.DESC : SortOrder.ASC);
+
+		final List<Person> persons = this.logicInterface.getPersons(queryBuilder.build());
 		personListCommand.setList(persons);
 
 		return Views.PERSON_INTRO;

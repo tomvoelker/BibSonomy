@@ -42,6 +42,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.search.es.search.person.AbstractPersonSearchTest;
 import org.junit.Test;
 
@@ -81,7 +82,8 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 
 		PERSON_DATABASE_MANAGER.updateAcademicDegree(person, this.dbSession);
 		this.updateIndex();
-		final List<Person> personSuggestionsAfterAttributeUpdate = PERSON_SEARCH.getPersons(new PersonQuery("Müller"));
+		final PersonQuery afterQuery = new PersonQueryBuilder().search("Müller").build();
+		final List<Person> personSuggestionsAfterAttributeUpdate = PERSON_SEARCH.getPersons(afterQuery);
 		assertThat(personSuggestionsAfterAttributeUpdate.size(), is(1));
 		final Person person1 = personSuggestionsAfterAttributeUpdate.get(0);
 		assertThat(person1.getAcademicDegree(), is(newAcademicDegree));
@@ -91,7 +93,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		personName.setFirstName("John");
 		personName.setLastName("Doe");
 
-		final PersonQuery personQuery = new PersonQuery(personName.toString());
+		final PersonQuery personQuery = new PersonQueryBuilder().search(personName.toString()).build();
 		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(personQuery);
 		assertThat(personSuggestions.size(), is(0));
 
@@ -119,7 +121,7 @@ public class ElasticsearchPersonManagerITCase extends AbstractPersonSearchTest {
 		newPerson.setChangeDate(new Date()); // FIXME: move to database manager?
 
 		// check that the person is not in the index
-		final PersonQuery newPersonQuery = new PersonQuery(reynolds.toString());
+		final PersonQuery newPersonQuery = new PersonQueryBuilder().search(reynolds.toString()).build();
 
 		final List<Person> newPersonSuggestion = PERSON_SEARCH.getPersons(newPersonQuery);
 		assertThat(newPersonSuggestion.size(), is(0));

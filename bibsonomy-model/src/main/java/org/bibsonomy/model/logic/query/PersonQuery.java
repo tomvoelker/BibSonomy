@@ -32,6 +32,7 @@ package org.bibsonomy.model.logic.query;
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.enums.Prefix;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.extra.AdditionalKey;
@@ -40,41 +41,55 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 /**
  * adapter for {@link PersonSuggestionQueryBuilder}
  *
- * FIXME add real person query builder
  * @author dzo
  */
 @Getter
 @Setter
-public class PersonQuery extends PersonSuggestionQueryBuilder implements PaginatedQuery, Query {
+public class PersonQuery extends BasicQuery {
 
-	private String college;
-	private Prefix prefix;
-	private int start = 0;
-	private int end = 20;
-	private PersonSortKey order;
-	/** the organization to filter for */
-	private Group organization;
-	/** find the person claimed by the specified user */
-	private String userName;
-	/** additiona person key */
-	private AdditionalKey additionalKey;
+    /** find the person claimed by the specified user */
+    private String userName;
 
-	/** the query provided is only a prefix, perform a prefix search */
-	private boolean usePrefixMatch = false;
-	private boolean phraseMatch = false;
+    /** find by person id */
+    private String personId;
 
-	/**
-	 * default person query with empty search
-	 */
-	public PersonQuery() {
-		super(null);
-	}
+    /** find by additional person key */
+    private AdditionalKey additionalKey;
 
-	/**
-	 * @param query any combination of title, author-name
-	 */
-	public PersonQuery(String query) {
-		super(query);
-	}
+    /** find by college */
+    private String college;
+
+    /** find by organization */
+    private Group organization;
+
+    /** find by name prefix */
+    private Prefix prefix;
+
+    /** pagination and sorting */
+    private int start = 0;
+    private int end = 20;
+    private PersonSortKey sortKey = PersonSortKey.MAIN_NAME_LAST_NAME;
+    private SortOrder sortOrder = SortOrder.ASC;
+
+    /** the query provided is only a prefix, perform a prefix search */
+    private boolean usePrefixMatch = false;
+    private boolean phraseMatch = false;
+
+    public PersonQuery(String userName, String personId, AdditionalKey additionalKey, String college, Group organization,
+                       Prefix prefix, int start, int end, PersonSortKey sortKey, SortOrder sortOrder,
+                       boolean usePrefixMatch, boolean phraseMatch) {
+        this.userName = userName;
+        this.personId = personId;
+        this.additionalKey = additionalKey;
+        this.college = college;
+        this.organization = organization;
+        this.prefix = prefix;
+        this.start = start;
+        this.end = end;
+        this.sortKey = sortKey;
+        this.sortOrder = sortOrder;
+        this.usePrefixMatch = usePrefixMatch;
+        this.phraseMatch = phraseMatch;
+    }
 
 }
