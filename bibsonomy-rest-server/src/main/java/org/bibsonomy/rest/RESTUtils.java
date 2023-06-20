@@ -39,8 +39,11 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,7 @@ import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -64,6 +68,8 @@ public class RESTUtils {
 	
 	/** the default rendering format */
 	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
+
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	/**
 	 * all supported rendering formats by the rest server
@@ -249,4 +255,51 @@ public class RESTUtils {
 	
 		return userName;
 	}
+
+	/**
+	 * extracts a date param with default date format
+	 * @param context		context
+	 * @param paramName		parameter key
+	 * @return				extracted date
+	 */
+	public static Date getDateParam(final Context context, final String paramName) {
+		return RESTUtils.getDateParam(context, paramName, DEFAULT_DATE_FORMAT);
+	}
+
+	/**
+	 * extracts a date param with a set date format
+	 * @param context		context
+	 * @param paramName		parameter key
+	 * @param dateFormat	date format
+	 * @return				extracted date
+	 */
+	public static Date getDateParam(final Context context, final String paramName, final String dateFormat) {
+		String dateString = context.getStringAttribute(paramName, null);
+		if (present(dateString)) {
+			SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+			try {
+				return formatter.parse(dateString);
+			} catch (ParseException e) {
+				// noop, return null at the end
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * extracts the additional key from the context
+	 * @param context	the context
+	 * @return			the additional key
+	 */
+	public static AdditionalKey getAdditionalKeyParam(final Context context) {
+		final String additionalKeyStr = context.getStringAttribute(RESTConfig.PERSON_ADDITIONAL_KEY_PARAM, null);
+		if (present(additionalKeyStr)) {
+			final String[] split = additionalKeyStr.split(RESTConfig.PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR);
+			if (split.length == 2) {
+				return new AdditionalKey(split[0], split[1]);
+			}
+		}
+		return null;
+	}
+
 }

@@ -765,7 +765,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
         }
     }
 
-
     /**
      * based on the query this logic returns all matching persons
      * @param query
