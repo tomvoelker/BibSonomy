@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
@@ -47,7 +48,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
@@ -74,7 +75,6 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	private String personId;
 	private final AdditionalKey additionalKey;
-
 	private final Date changeDate;
 
 	// TODO REMOVE ASAP
@@ -119,7 +119,8 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 				.withPosts(true)
 				.withPersonsOfPosts(true)
 				.groupByInterhash(true)
-				.orderBy(PersonResourceRelationOrder.PublicationYear)
+				.sortBy(PersonResourceRelationSortKey.PublicationYear)
+				.orderBy(SortOrder.DESC)
 				.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
 
 		final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(queryBuilder.build());

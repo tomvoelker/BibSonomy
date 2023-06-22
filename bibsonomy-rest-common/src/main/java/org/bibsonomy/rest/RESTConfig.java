@@ -47,7 +47,9 @@ public final class RESTConfig {
 		// noop
 	}
 
-	private static final String DATE_FORMAT_STRING = "yyyy-MM-DD HH:mm:ss";
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+	public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-DD HH:mm:ss";
 
 	public static final String POSTS_URL = "posts";
 
@@ -119,6 +121,14 @@ public final class RESTConfig {
 
 	public static final String SUB_TAG_PARAM = "subtag";
 
+	public static final String INTERHASH_PARAM = "interhash";
+
+	public static final String INTRAHASH_PARAM = "intrahash";
+
+	public static final String RELATION_TYPE_PARAM = "relationType";
+
+	public static final String RELATION_INDEX_PARAM = "relationIndex";
+
 	public static final String REGEX_PARAM = FILTER_PARAM;
 
 	public static final String START_PARAM = "start";
@@ -156,6 +166,17 @@ public final class RESTConfig {
 	/** the separator used to separate key and value */
 	public static final String PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR = "=";
 
+	public static final String WITH_PERSONS_PARAM = "withPersons";
+
+	public static final String WITH_POSTS_PARAM = "withPosts";
+
+	public static final String WITH_PERSONS_OF_POSTS_PARAM = "withPersonsOfPosts";
+
+	public static final String ONLY_THESES_PARAM = "onlyTheses";
+
+	public static final String GROUP_BY_INTERHASH_PARAM = "groupByInterhash";
+
+
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
 	 */
@@ -179,14 +200,24 @@ public final class RESTConfig {
 
 	public static final String IDENTITY_PROVIDER_TYPE = "identityProviderType";
 
-
+	/**
+	 * serialize a date with default date format for param
+	 * @param date		date
+	 * @return			serialized date
+	 */
 	public static String serializeDate(final Date date) {
-		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
+		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATE_FORMAT);
 		return fmt.format(date);
 	}
 
-	public static Date parseDate(final String dateString) throws ParseException {
-		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
-		return fmt.parse(dateString);
+	/**
+	 * serialize a date with default datetime format for param
+	 * @param date		date
+	 * @return			serialized datetime
+	 */
+	public static String serializeDateTime(final Date date) {
+		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATETIME_FORMAT);
+		return fmt.format(date);
 	}
+
 }

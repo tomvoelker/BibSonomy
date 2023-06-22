@@ -69,8 +69,6 @@ public class RESTUtils {
 	/** the default rendering format */
 	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
 
-	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
 	/**
 	 * all supported rendering formats by the rest server
 	 * ordered by preference
@@ -263,18 +261,22 @@ public class RESTUtils {
 	 * @return				extracted date
 	 */
 	public static Date getDateParam(final Context context, final String paramName) {
-		return RESTUtils.getDateParam(context, paramName, DEFAULT_DATE_FORMAT);
+		String dateString = context.getStringAttribute(paramName, null);
+		return RESTUtils.parseDateString(dateString, RESTConfig.DEFAULT_DATE_FORMAT);
 	}
 
 	/**
-	 * extracts a date param with a set date format
+	 * extracts a date time param with default date time format
 	 * @param context		context
 	 * @param paramName		parameter key
-	 * @param dateFormat	date format
-	 * @return				extracted date
+	 * @return				extracted date time
 	 */
-	public static Date getDateParam(final Context context, final String paramName, final String dateFormat) {
+	public static Date getDateTimeParam(final Context context, final String paramName) {
 		String dateString = context.getStringAttribute(paramName, null);
+		return RESTUtils.parseDateString(dateString, RESTConfig.DEFAULT_DATETIME_FORMAT);
+	}
+
+	public static Date parseDateString(final String dateString, final String dateFormat) {
 		if (present(dateString)) {
 			SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 			try {
@@ -283,6 +285,7 @@ public class RESTUtils {
 				// noop, return null at the end
 			}
 		}
+
 		return null;
 	}
 

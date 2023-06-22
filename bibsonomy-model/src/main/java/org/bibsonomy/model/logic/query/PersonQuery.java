@@ -66,14 +66,14 @@ public class PersonQuery extends BasicQuery {
     private Prefix prefix;
 
     /** pagination and sorting */
-    private int start = 0;
-    private int end = 20;
-    private PersonSortKey sortKey = PersonSortKey.MAIN_NAME_LAST_NAME;
-    private SortOrder sortOrder = SortOrder.ASC;
+    private int start;
+    private int end;
+    private PersonSortKey sortKey;
+    private SortOrder sortOrder;
 
     /** the query provided is only a prefix, perform a prefix search */
-    private boolean usePrefixMatch = false;
-    private boolean phraseMatch = false;
+    private boolean usePrefixMatch;
+    private boolean phraseMatch;
 
     public PersonQuery(String userName, String personId, AdditionalKey additionalKey, String college, Group organization,
                        Prefix prefix, int start, int end, PersonSortKey sortKey, SortOrder sortOrder,

@@ -32,15 +32,18 @@ package org.bibsonomy.rest.strategy.persons;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
@@ -53,35 +56,48 @@ import org.bibsonomy.util.UrlBuilder;
 public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<ResourcePersonRelation>> {
 
     private String personId;
-    private Date changeDate;
+    private final AdditionalKey additionalKey;
+    private final Date changeDate;
 
     public GetPersonRelationsStrategy(final Context context) {
         super(context);
 
         this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
-
-        String changeDateString = context.getStringAttribute(RESTConfig.CHANGE_DATE_PARAM, null);
-        if (present(changeDateString)) {
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                this.changeDate = formatter.parse(changeDateString);
-            } catch (ParseException e) {
-                this.changeDate = null;
-            }
-        }
+        this.additionalKey = RESTUtils.getAdditionalKeyParam(context);
+        this.changeDate = RESTUtils.getDateParam(context, RESTConfig.CHANGE_DATE_PARAM);
     }
 
     @Override
     protected List<ResourcePersonRelation> getList() {
+        final Person person = this.getPerson();
+
+        if (present(person)) {
+            // Set person id, if additional keys were used
+            this.personId = person.getPersonId();
+        }
+
         final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
                 .byPersonId(this.personId)
                 .byChangeDate(this.changeDate)
                 .withPosts(true)
                 .withPersonsOfPosts(true)
                 .groupByInterhash(true)
-                .orderBy(PersonResourceRelationOrder.PublicationYear);
+                .sortBy(PersonResourceRelationSortKey.PublicationYear)
+                .orderBy(SortOrder.DESC);
 
         return this.getLogic().getResourceRelations(queryBuilder.build());
+    }
+
+    private Person getPerson() {
+        if (present(this.personId)) {
+            return this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
+        }
+
+        if (present(this.additionalKey)) {
+            return this.getLogic().getPersonByAdditionalKey(this.additionalKey.getKeyName(), this.additionalKey.getKeyValue());
+        }
+
+        return null;
     }
 
     @Override
@@ -91,6 +107,6 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
 
     @Override
     protected UrlBuilder getLinkPrefix() {
-        return this.getUrlRenderer().createUrlBuilderForResourcePersonRelations(this.personId);
+        return this.getUrlRenderer().createUrlBuilderForPersonRelations(this.personId);
     }
 }

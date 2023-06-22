@@ -32,7 +32,8 @@ package org.bibsonomy.model.logic.query;
 import java.util.Date;
 
 import lombok.Getter;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
@@ -43,45 +44,48 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 @Getter
 public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
 
-    private boolean withPersons;
-    private boolean withPosts;
-    private boolean withPersonsOfPosts;
+    private final String personId;
+    private final String interhash;
+    private final PersonResourceRelationType relationType;
+    private final Integer authorIndex;
+    private final Date changeDate;
 
-    private String interhash;
-    private Integer authorIndex;
-    private String personId;
+    private final boolean withPersons;
+    private final boolean withPosts;
+    private final boolean withPersonsOfPosts;
+    private final boolean onlyTheses;
+    private final boolean groupByInterhash;
 
-    private PersonResourceRelationType relationType;
-    private PersonResourceRelationOrder order;
+    private final PersonResourceRelationSortKey sortKey;
+    private final SortOrder sortOrder;
 
-    private boolean onlyTheses;
-    private boolean groupByInterhash;
-
-    private Date changeDate;
-
-    public ResourcePersonRelationQuery(int start, int end,
-                                       boolean withPersons, boolean withPosts, boolean withPersonsOfPosts,
-                                       PersonResourceRelationType relationType,
+    public ResourcePersonRelationQuery(String personId,
                                        String interhash,
+                                       PersonResourceRelationType relationType,
                                        Integer authorIndex,
                                        Date changeDate,
-                                       String personId,
-                                       PersonResourceRelationOrder order,
+                                       boolean withPersons,
+                                       boolean withPosts,
+                                       boolean withPersonsOfPosts,
                                        boolean onlyTheses,
-                                       boolean groupByInterhash) {
-
+                                       boolean groupByInterhash,
+                                       PersonResourceRelationSortKey sortKey,
+                                       SortOrder sortOrder,
+                                       int start,
+                                       int end) {
         super(start, end);
+
+        this.personId = personId;
+        this.interhash = interhash;
+        this.relationType = relationType;
+        this.authorIndex = authorIndex;
+        this.changeDate = changeDate;
         this.withPersons = withPersons;
         this.withPosts = withPosts;
         this.withPersonsOfPosts = withPersonsOfPosts;
-        this.relationType = relationType;
-        this.interhash = interhash;
-        this.authorIndex = authorIndex;
-        this.personId = personId;
-        this.order = order;
         this.onlyTheses = onlyTheses;
         this.groupByInterhash = groupByInterhash;
-        this.changeDate = changeDate;
+        this.sortKey = sortKey;
+        this.sortOrder = sortOrder;
     }
-
 }

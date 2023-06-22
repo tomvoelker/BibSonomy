@@ -158,7 +158,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -3567,8 +3567,8 @@ public class DBLogic implements LogicInterface {
 			}
 			relations = new LinkedList<>(byInterHash.values());
 		}
-		final PersonResourceRelationOrder order = query.getOrder();
-		if (order == PersonResourceRelationOrder.PublicationYear) {
+		final PersonResourceRelationSortKey sortKey = query.getSortKey();
+		if (sortKey == PersonResourceRelationSortKey.PublicationYear) {
 			relations.sort((o1, o2) -> {
 				try {
 					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
@@ -3581,7 +3581,7 @@ public class DBLogic implements LogicInterface {
 				}
 				return System.identityHashCode(o1) - System.identityHashCode(o2);
 			});
-		} else if (order != null) {
+		} else if (sortKey != null) {
 			throw new UnsupportedOperationException();
 		}
 		return relations;

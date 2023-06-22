@@ -34,6 +34,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
+import org.bibsonomy.rest.strategy.persons.DeletePersonRelationStrategy;
 import org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonPostsStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonRelationsStrategy;
@@ -130,9 +131,10 @@ public class PersonsHandler implements ContextHandler {
 		switch (httpMethod) {
 			case GET:
 				return new GetPersonRelationsStrategy(context);
+			case DELETE:
+				return new DeletePersonRelationStrategy(context);
 			case POST:
 			case PUT:
-			case DELETE:
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonRelations");
 		}

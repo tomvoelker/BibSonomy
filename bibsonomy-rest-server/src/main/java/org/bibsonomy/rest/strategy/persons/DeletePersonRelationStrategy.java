@@ -30,6 +30,7 @@
 package org.bibsonomy.rest.strategy.persons;
 
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -41,23 +42,20 @@ import org.bibsonomy.rest.strategy.Context;
 public class DeletePersonRelationStrategy extends AbstractDeleteStrategy {
 	private final String personId;
 	private final String interHash;
-	private final int index;
 	private final PersonResourceRelationType type;
+	private final int index;
 
 	/**
 	 * inits a delete strategy for a {@link org.bibsonomy.model.ResourcePersonRelation}
 	 * @param context
-	 * @param personId
-	 * @param interHash
-	 * @param index
-	 * @param type
 	 */
-	public DeletePersonRelationStrategy(final Context context, final String personId, final String interHash, final int index, final PersonResourceRelationType type) {
+	public DeletePersonRelationStrategy(final Context context) {
 		super(context);
-		this.personId = personId;
-		this.interHash = interHash;
-		this.index = index;
-		this.type = type;
+
+		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
+		this.interHash = context.getStringAttribute(RESTConfig.INTERHASH_PARAM, null);
+		this.type = PersonResourceRelationType.getByRelatorCode(context.getStringAttribute(RESTConfig.RELATION_TYPE_PARAM, null));
+		this.index = context.getIntAttribute(RESTConfig.RELATION_INDEX_PARAM, 0);
 	}
 
 	@Override

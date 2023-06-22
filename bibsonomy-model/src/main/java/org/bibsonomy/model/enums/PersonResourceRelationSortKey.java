@@ -32,7 +32,6 @@ package org.bibsonomy.model.enums;
 /**
  * @author jensi
  */
-public enum PersonResourceRelationOrder {
-
+public enum PersonResourceRelationSortKey {
 	PublicationYear
 }
