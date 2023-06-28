@@ -482,4 +482,10 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.Set selectedGroups(java.lang.String,java.util.List)</function-signature>
 	</function>
+
+	<function>
+		<name>join</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.lang.String join(java.util.List, java.lang.String)</function-signature>
+	</function>
 </taglib>

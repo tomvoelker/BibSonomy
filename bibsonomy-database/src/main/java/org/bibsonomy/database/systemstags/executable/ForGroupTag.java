@@ -279,7 +279,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			}
 		} catch (final DatabaseException dbex) {
 			/*
-			 *  Add the DatabaseException of the copied post to the Exception of the original one
+			 *  Add the DatabaseException of the copied post to the exception to the original one
 			 */
 			for (final String hash : dbex.getErrorMessages().keySet()) {
 				for (final ErrorMessage errorMessage : dbex.getErrorMessages(hash)) {
