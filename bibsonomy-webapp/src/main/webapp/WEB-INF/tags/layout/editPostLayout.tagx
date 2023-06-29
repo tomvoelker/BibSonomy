@@ -60,7 +60,7 @@
 						<!-- sent to -->
 						<post:sendToGroupBox userGroups="${groups}"
 											 selectedGroups="${command.sendToGroups}"
-											 selectedPresetTags="${command.selectedPresetTags}"
+											 selectedPresetTags="${command.selectedPresetTagsByGroup}"
 											 labelColSpan="3" inputColSpan="9"/>
 
 						<!-- relevant for -->

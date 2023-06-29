@@ -1092,13 +1092,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		// Process selected preset tags
-		if (present(command.getSelectedPresetTagsJson())) {
-			Map<String, List<String>> selectedPresetTags = command.getSelectedPresetTags();
+		if (present(command.getSelectedPresetTags())) {
+			Map<String, List<String>> selectedPresetTags = command.getSelectedPresetTagsByGroup();
 			List<String> selectedPresetSystemTags = command.getSelectedPresetSystemTags();
 
 			JSONParser parser = new JSONParser();
 			try {
-				JSONObject json = (JSONObject) parser.parse(command.getSelectedPresetTagsJson());
+				JSONObject json = (JSONObject) parser.parse(command.getSelectedPresetTags());
 				for (String group : command.getSendToGroups()) {
 					if (json.containsKey(group)) {
 						List<String> selectedTags = new ArrayList<>();
@@ -1111,7 +1111,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 					}
 				}
 			} catch (ParseException e) {
-				log.debug("unable to parse the following JSON string for selected preset tags: " + command.getSelectedPresetTagsJson());
+				log.debug("unable to parse the following JSON string for selected preset tags: " + command.getSelectedPresetTags());
 			}
 		}
 	}

@@ -106,9 +106,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private List<String> sendToGroups = new ArrayList<>();
 
-	private String selectedPresetTagsJson;
+	private String selectedPresetTags;
 
-	private Map<String, List<String>> selectedPresetTags = new HashMap<>();
+	private Map<String, List<String>> selectedPresetTagsByGroup = new HashMap<>();
 
 	private List<String> selectedPresetSystemTags = new ArrayList<>();
 
