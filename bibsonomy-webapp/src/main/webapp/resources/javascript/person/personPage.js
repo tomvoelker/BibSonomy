@@ -157,6 +157,8 @@ function reportPublicationCustom(publication) {
 				var errorMsg = getString("report.error.feedback.error");
 				showAlert('danger', errorMsg);
 			}
+			// Close modal
+			$('#reportModal-' + formData.interhash).modal('hide');
 		}
 	});
 }
@@ -194,7 +196,7 @@ function showAlert(type, message) {
 
 	alert.append(closeBtn);
 	if (type === 'danger') {
-		alert.append($('<strong></strong>').html('Error: '));
+		alert.append($('<strong></strong>').html(getString("error") + ': '));
 	}
 	alert.append(message);
 

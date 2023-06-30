@@ -29,7 +29,7 @@
 			</c:choose>
 		</c:when>
 		<c:when test="${fn:length(command.similarAuthorPubs) gt 0}">
-			<person:publications command="${command}" relations="${command.similarAuthorPubs}" isSimilarAuthors="${true}"/>
+			<person:publications command="${command}" relations="${command.similarAuthorPubs}" isSimilarAuthors="${true}" disableEdit="${true}"/>
 		</c:when>
 		<c:otherwise>
 

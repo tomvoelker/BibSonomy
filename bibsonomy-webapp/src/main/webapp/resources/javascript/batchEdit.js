@@ -151,14 +151,16 @@ $(document).ready(function () {
         });
     }
 
-    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction)
+    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction);
+
     $('.addTagsButton').click(function () {
         addTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
-    $('.addTagsButton').click(function () {
-        addTags($('#tagsInput').val());
+
+    $('.removeTagsButton').click(function () {
+        removeTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });

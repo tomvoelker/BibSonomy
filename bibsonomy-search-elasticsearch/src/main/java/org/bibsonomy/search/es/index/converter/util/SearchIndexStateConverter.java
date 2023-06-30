@@ -69,6 +69,7 @@ public class SearchIndexStateConverter implements Converter<SearchIndexState, Ma
 		doc.put(SearchIndexState.FIELD_INDEX_ID, state.getIndexId());
 		doc.put(SearchIndexState.FIELD_MAPPING_VERSION, state.getMappingVersion());
 		doc.put(SearchIndexState.FIELD_UPDATED_AT, getDateForIndex(state.getUpdatedAt()));
+		doc.put(SearchIndexState.FIELD_BUILD_DATE, getDateForIndex(state.getBuildDate()));
 		doc.put(SearchIndexState.FIELD_BUILD_TIME, state.getBuildTime());
 		doc.put(SearchIndexState.FIELD_ERRORS, state.getErrors()); // TODO
 
@@ -102,6 +103,7 @@ public class SearchIndexStateConverter implements Converter<SearchIndexState, Ma
 
 		state.setIndexId((String) source.get(SearchIndexState.FIELD_INDEX_ID));
 		state.setUpdatedAt(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_UPDATED_AT)));
+		state.setBuildDate(getDateFromIndex((Long) source.get(SearchIndexState.FIELD_BUILD_DATE)));
 		state.setBuildTime((Integer) source.get(SearchIndexState.FIELD_BUILD_TIME));
 
 		// mapping version

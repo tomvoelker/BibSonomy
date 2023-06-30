@@ -187,6 +187,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 
 		// init starting build time
 		Date startTime = new Date();
+		newState.setBuildDate(startTime);
 
 		// insert documents for the index
 		this.insertDataIntoIndex(indexName);

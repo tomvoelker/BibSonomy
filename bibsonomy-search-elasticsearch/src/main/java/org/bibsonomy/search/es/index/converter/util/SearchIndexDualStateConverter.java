@@ -54,11 +54,8 @@ public class SearchIndexDualStateConverter implements Converter<SearchIndexDualS
 
 		doc.put(SearchIndexState.FIELD_INDEX_ID, state.getIndexId());
 		doc.put(SearchIndexState.FIELD_MAPPING_VERSION, state.getMappingVersion());
-		if (!present(state.getUpdatedAt())) {
-			doc.put(SearchIndexState.FIELD_UPDATED_AT, new Date().getTime());
-		} else {
-			doc.put(SearchIndexState.FIELD_UPDATED_AT, state.getUpdatedAt().getTime());
-		}
+		doc.put(SearchIndexState.FIELD_UPDATED_AT, state.getUpdatedAt().getTime());
+		doc.put(SearchIndexState.FIELD_BUILD_DATE, state.getBuildDate().getTime());
 		doc.put(SearchIndexState.FIELD_BUILD_TIME, state.getBuildTime());
 
 		final Map<String, Object> communityState = this.converter.convert(state.getFirstState());
@@ -76,6 +73,7 @@ public class SearchIndexDualStateConverter implements Converter<SearchIndexDualS
 
 		state.setIndexId((String) source.get(SearchIndexState.FIELD_INDEX_ID));
 		state.setUpdatedAt(new Date((Long) source.get(SearchIndexState.FIELD_UPDATED_AT)));
+		state.setBuildDate(new Date((Long) source.get(SearchIndexState.FIELD_BUILD_DATE)));
 		state.setBuildTime((Integer) source.get(SearchIndexState.FIELD_BUILD_TIME));
 
 		// mapping version
