@@ -358,12 +358,12 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void testGetResourcePersonRelationsByChangeDate() throws ParseException {
-		String changeDateString = "2000-01-01";
+		String changeDateString = "2016-01-01";
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date changeDate = formatter.parse(changeDateString);
 
 		List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsByChangeDate(changeDate, this.dbSession);
-		assertThat(relations.size(), equalTo(9));
+		assertThat(relations.size(), equalTo(3));
 	}
 
 	@Test
