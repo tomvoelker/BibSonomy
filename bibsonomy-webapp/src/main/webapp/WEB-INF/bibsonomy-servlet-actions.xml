@@ -421,7 +421,7 @@
 								<value>referer</value>
 								<value>relevantForGroups</value>
 								<value>sendToGroups</value>
-								<value>presetTagsForGroups</value>
+								<value>selectedPresetTags</value>
 								<value>acceptComma</value>
 								<value>postID</value>
 								<value>hash</value>

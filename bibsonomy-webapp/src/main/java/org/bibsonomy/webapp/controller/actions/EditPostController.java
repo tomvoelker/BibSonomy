@@ -37,9 +37,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
@@ -94,7 +97,10 @@ import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.beans.factory.annotation.Required;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -110,6 +116,8 @@ import recommender.core.database.RecommenderStatisticsManager;
  * @param <RESOURCE>
  * @param <COMMAND>
  */
+@Getter
+@Setter
 public abstract class EditPostController<RESOURCE extends Resource, COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 
@@ -190,12 +198,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		final User loginUser = context.getLoginUser();
-		if (present(command.getGroupUser())) {
-			final String groupName = command.getGroupUser().getName();
-			command.setGroupUser(this.logic.getUserDetails(groupName));
-			final Group groupUserAsGroup = this.logic.getGroupDetails(groupName, false);
-			command.setPresetTagsOfGroupUser(groupUserAsGroup.getPresetTags());
-		}
+
+		/*
+		 * Preparation of command for preset tags for groups handling
+		 */
+		this.handlePresetTags(command);
 
 		/*
 		 * After having handled the general issues (login, referer, etc.), sub
@@ -281,7 +288,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	/**
 	 * @param loginUser
-	 * @param hash
+	 * @param resourceHash
 	 * @param user
 	 * @return a post
 	 */
@@ -379,7 +386,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	// FIXME: Make clear if this is called for the postOwner or the loginUser
 	protected View getEditPostView(final COMMAND command, final User loginUser) {
 		/*
-		 * initialize tag sets for groups
+		 * initialize tag sets for groups of the logged-in user
 		 */
 		this.initGroupTagSets(loginUser);
 
@@ -718,7 +725,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * add all group preset tags
 			 */
-			post.getTags().addAll(TagUtils.parse(command.getPresetTagsForGroups()));
+			post.getTags().addAll(TagUtils.parse(String.join(" ", command.getSelectedPresetSystemTags())));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
 			this.errors.rejectValue(TAGS_KEY, "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
@@ -1071,6 +1078,45 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
+	 * Prepare the command with all relevant tasks to handle the preset tags of groups.
+	 *
+	 * @param command
+	 */
+	protected void handlePresetTags(COMMAND command) {
+		// Set preset tags for group user, that has preset tags
+		if (present(command.getGroupUser())) {
+			final String groupName = command.getGroupUser().getName();
+			command.setGroupUser(this.logic.getUserDetails(groupName));
+			final Group groupUserAsGroup = this.logic.getGroupDetails(groupName, false);
+			command.setPresetTagsOfGroupUser(groupUserAsGroup.getPresetTags());
+		}
+
+		// Process selected preset tags
+		if (present(command.getSelectedPresetTags())) {
+			Map<String, List<String>> selectedPresetTags = command.getSelectedPresetTagsByGroup();
+			List<String> selectedPresetSystemTags = command.getSelectedPresetSystemTags();
+
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject json = (JSONObject) parser.parse(command.getSelectedPresetTags());
+				for (String group : command.getSendToGroups()) {
+					if (json.containsKey(group)) {
+						List<String> selectedTags = new ArrayList<>();
+						JSONArray selectedTagsJson = (JSONArray) json.get(group);
+						selectedTagsJson.forEach(element -> {
+							selectedTags.add(element.toString());
+							selectedPresetSystemTags.add("sys:group:" + group + ":" + element.toString());
+						});
+						selectedPresetTags.put(group, selectedTags);
+					}
+				}
+			} catch (ParseException e) {
+				log.debug("unable to parse the following JSON string for selected preset tags: " + command.getSelectedPresetTags());
+			}
+		}
+	}
+
+	/**
 	 * sets user; inits post groups, relevant tags and recommender
 	 *
 	 * @param command
@@ -1201,33 +1247,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
-	 * @param recommender the recommender to set
-	 */
-	public void setRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> recommender) {
-		this.recommender = recommender;
-	}
-
-	/**
-	 * Give this controller an instance of {@link Captcha}.
-	 *
-	 * @param captcha
-	 */
-	@Required
-	public void setCaptcha(final Captcha captcha) {
-		this.captcha = captcha;
-	}
-
-	/**
-	 * Give this controller an instance of {@link RequestLogic}.
-	 *
-	 * @param requestLogic
-	 */
-	@Required
-	public void setRequestLogic(final RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
-	/**
 	 * Sets a string attribute in the session.
 	 *
 	 * @param key
@@ -1245,32 +1264,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 */
 	protected Object getSessionAttribute(final String key) {
 		return this.requestLogic.getSessionAttribute(key);
-	}
-
-	/**
-	 * Set the URLGenerator to be used to generate (redirect) URLs.
-	 *
-	 * @param urlGenerator
-	 */
-	@Required
-	public void setUrlGenerator(final URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
-
-	/**
-	 * A service that sends pingbacks / trackbacks to posted URLs.
-	 *
-	 * @param pingback
-	 */
-	public void setPingback(final Pingback pingback) {
-		this.pingback = pingback;
-	}
-
-	/**
-	 * @param maxQuerySize the maxQuerySize to set
-	 */
-	public void setMaxQuerySize(int maxQuerySize) {
-		this.maxQuerySize = maxQuerySize;
 	}
 
 }
