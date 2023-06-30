@@ -77,16 +77,8 @@ public class UrlBuilder {
 	 * @return the builder
 	 */
 	public UrlBuilder addParameter(final String key, final Object value) {
-		if (present(key) && present(value)) {
-			if (this.parameters == null) {
-				this.parameters = new HashMap<>();
-			}
-			this.parameters.put(key, String.valueOf(value));
-		}
-
-		return this;
+		return addParameter(key, String.valueOf(value));
 	}
-
 
 	/**
 	 * Removes all parameters whose name is not contained in the given collection
