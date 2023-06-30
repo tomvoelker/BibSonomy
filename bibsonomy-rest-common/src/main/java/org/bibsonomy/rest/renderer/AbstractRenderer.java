@@ -291,7 +291,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private static <T, E> void setCollectionValue(Collection<T> consumer, Collection<E> producer,
-																								Function<E, T> transformer) {
+												  Function<E, T> transformer) {
 		if (present(producer)) {
 			consumer.addAll(producer.stream().map(transformer).collect(Collectors.toList()));
 		}
@@ -519,6 +519,9 @@ public abstract class AbstractRenderer implements Renderer {
 			}
 
 			xmlPost.setGoldStandardPublication(xmlPublication);
+
+			// set approved status
+			xmlPost.setApproved(post.isApproved());
 		}
 	}
 
@@ -660,7 +663,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(crisLinkTypeType::setEndDate, crisLink::getEndDate, this::createXmlCalendar);
 		if (present(crisLink.getLinkType())) {
 			crisLinkTypeType.setLinkType(ProjectPersonLinkTypeType.
-							valueOf(((ProjectPersonLinkType) crisLink.getLinkType()).name()));
+					valueOf(((ProjectPersonLinkType) crisLink.getLinkType()).name()));
 		}
 		if (present(crisLink.getDataSource())) {
 			crisLinkTypeType.setDataSource(CRISLinkDataSourceType.valueOf(crisLink.getDataSource().name()));
@@ -819,9 +822,9 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlResourcePersonRelation::setPerson, resourcePersonRelation::getPerson, this::createXmlPerson);
 		setValue(xmlResourcePersonRelation::setResource, resourcePersonRelation::getPost, this::createXmlResourceLink);
 		setValue(xmlResourcePersonRelation::setRelationType, resourcePersonRelation::getRelationType,
-						this::createXmlRelationType);
+				this::createXmlRelationType);
 		setValue(xmlResourcePersonRelation::setPersonIndex, resourcePersonRelation::getPersonIndex,
-						i -> BigInteger.valueOf(i.longValue()));
+				i -> BigInteger.valueOf(i.longValue()));
 		return xmlResourcePersonRelation;
 	}
 
@@ -918,7 +921,7 @@ public abstract class AbstractRenderer implements Renderer {
 	public void serializeGroupMemberships(Writer writer, Collection<GroupMembership> groupMemberships, ViewModel viewModel) {
 		final GroupMembershipsType groupMembershipsType = new GroupMembershipsType();
 		groupMembershipsType.getGroupMembership().addAll(
-						groupMemberships.stream().map(this::createXmlGroupMembership).collect(Collectors.toList()));
+				groupMemberships.stream().map(this::createXmlGroupMembership).collect(Collectors.toList()));
 		final BibsonomyXML xmlDoc = buildEmptyBibsonomyXMLWithOK();
 		xmlDoc.setGroupMemberships(groupMembershipsType);
 		this.serialize(writer, xmlDoc);
@@ -930,7 +933,7 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlGroupMembership::setUser, groupMembership::getUser, this::createXmlUser);
 		setValue(xmlGroupMembership::setUserSharedDocuments, groupMembership::isUserSharedDocuments);
 		setValue(xmlGroupMembership::setGroupRole, groupMembership::getGroupRole,
-						r -> GroupRoleType.valueOf(r.name().toUpperCase()));
+				r -> GroupRoleType.valueOf(r.name().toUpperCase()));
 		return xmlGroupMembership;
 	}
 
@@ -1318,7 +1321,7 @@ public abstract class AbstractRenderer implements Renderer {
 		resourcePersonRelation.setPost(createDummyResource(resourcePersonRelationType.getResource()));
 		resourcePersonRelation.setPersonIndex(resourcePersonRelationType.getPersonIndex().intValue());
 		resourcePersonRelation.setRelationType(PersonResourceRelationType.valueOf(
-						resourcePersonRelationType.getRelationType().name()));
+				resourcePersonRelationType.getRelationType().name()));
 		return resourcePersonRelation;
 	}
 
@@ -1409,7 +1412,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 		if (xmlDoc.getGroupMemberships() != null) {
 			return xmlDoc.getGroupMemberships().getGroupMembership().stream().
-							map(this::createGroupMembership).collect(Collectors.toList());
+					map(this::createGroupMembership).collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1421,7 +1424,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final GroupMembership groupMembership = new GroupMembership();
 		setValue(groupMembership::setUser, groupMembershipType::getUser, this::createUser);
 		setValue(groupMembership::setGroupRole, groupMembershipType::getGroupRole,
-						r -> GroupRole.valueOf(r.name().toUpperCase()));
+				r -> GroupRole.valueOf(r.name().toUpperCase()));
 		setValue(groupMembership::setUserSharedDocuments, groupMembershipType::isUserSharedDocuments);
 		setValue(groupMembership::setJoinDate, groupMembershipType::getJoinDate, AbstractRenderer::createDate);
 		return groupMembership;
@@ -1445,8 +1448,8 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroups() != null) {
 			return xmlDoc.getGroups().getGroup().stream()
-							.map(this::createGroup)
-							.collect(Collectors.toList());
+					.map(this::createGroup)
+					.collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1465,7 +1468,7 @@ public abstract class AbstractRenderer implements Renderer {
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
 					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" +
-									post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+							post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
 			}
 			return posts;
@@ -1481,8 +1484,8 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
 			return xmlDoc.getTags().getTag().stream()
-							.map(this::createTag)
-							.collect(Collectors.toList());
+					.map(this::createTag)
+					.collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1893,10 +1896,18 @@ public abstract class AbstractRenderer implements Renderer {
 		post.setDescription(xmlPost.getDescription());
 		post.setDate(createDate(xmlPost.getPostingdate()));
 		post.setChangeDate(createDate(xmlPost.getChangedate()));
+		if (xmlPost.isApproved() == null) {
+			post.setApproved(false);
+		} else {
+			post.setApproved(xmlPost.isApproved());
+		}
 
-		// user
-		final User user = this.createUser(xmlPost);
-		post.setUser(user);
+		// create user, if not goldstandard
+		if (!this.isCommunityPost(xmlPost)) {
+			final User user = this.createUser(xmlPost);
+			post.setUser(user);
+		}
+
 		return post;
 	}
 
