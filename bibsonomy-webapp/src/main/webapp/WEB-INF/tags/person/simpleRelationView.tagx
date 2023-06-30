@@ -110,7 +110,8 @@
 									title="${buttonTitle}"
 									data-person="${personId}"
 									data-title="${post.resource.title}"
-									data-interhash="${post.resource.interHash}" >
+									data-interhash="${post.resource.interHash}"
+									onclick="reportPublicationDuplicate(this)">
 								<fontawesome:icon icon="flag"/>
 							</button>
 						</c:if>

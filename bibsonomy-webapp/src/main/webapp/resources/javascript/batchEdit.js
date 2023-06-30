@@ -246,7 +246,6 @@ function addTags(tags) {
 }
 
 function removeTags(tags) {
-    console.log(tags);
     $(tagCheckBoxSelector + ':checked').each(function () {
         var attr = $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
         var textInput = $('input[name=' + attr + ']:text');
@@ -257,7 +256,6 @@ function removeTags(tags) {
         });
         textInput.val(currentTags.join(" "));
     });
-    console.log("test?");
 }
 
 function updateBadges() {

@@ -50,6 +50,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.sksamuel.diffpatch.DiffMatchPatch;
+import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,9 +93,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.pegdown.PegDownProcessor;
-
-import com.sksamuel.diffpatch.DiffMatchPatch;
-import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -1085,5 +1084,12 @@ public class Functions {
     public static boolean containsSentTag(Set<Tag> tags, String user) {
         String sentTag = "sent:" + user;
         return TagUtils.containsTag(tags, sentTag);
+    }
+
+    public static String join(List<String> list, String separator) {
+        if (present(list)) {
+            return String.join(separator, list);
+        }
+        return "";
     }
 }
