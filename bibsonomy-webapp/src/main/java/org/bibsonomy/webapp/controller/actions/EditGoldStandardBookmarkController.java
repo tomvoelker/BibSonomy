@@ -71,8 +71,8 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
-	protected Post<Bookmark> getPostDetails(final String intraHash, final String userName) {
-		return super.getPostDetails(intraHash, "");
+	protected Post<Bookmark> getPostDetails(final String resourceHash, final String userName) {
+		return super.getPostDetails(resourceHash, "");
 	}
 
 	@Override

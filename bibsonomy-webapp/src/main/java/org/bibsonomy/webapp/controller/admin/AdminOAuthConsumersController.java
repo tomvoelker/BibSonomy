@@ -57,8 +57,8 @@ import org.springframework.validation.Errors;
  * 
  * @author Folke Mitzlaff
  **/
-public class AdminOAuthController implements ValidationAwareController<OAuthAdminCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(AdminOAuthController.class);
+public class AdminOAuthConsumersController implements ValidationAwareController<OAuthAdminCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(AdminOAuthConsumersController.class);
 	
 	/** database access to the OAuth consumer store */
 	private OAuthLogic oauthLogic;
@@ -114,7 +114,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 		List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
 		command.setConsumers(consumerInfo);
 		
-		return Views.ADMIN_OAUTH;
+		return Views.ADMIN_OAUTH_CONSUMERS;
 	}
 
 	//------------------------------------------------------------------------

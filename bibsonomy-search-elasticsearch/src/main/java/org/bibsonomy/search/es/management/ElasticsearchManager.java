@@ -151,6 +151,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 				this.switchActiveAndInactiveIndex();
 			}
 
+			LOG.info("deleting index " + indexName);
 			this.client.deleteIndex(indexName);
 		} finally {
 			this.updateLock.release();
@@ -385,7 +386,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		 * here we use the mapping version info of the old state
 		 * BasicUtils#VERSION maybe contain a new deployed version
 		 */
-		state.setMappingVersion(BasicUtils.VERSION);
+		state.setMappingVersion(oldState.getMappingVersion());
+		state.setBuildDate(oldState.getBuildDate());
+		state.setBuildTime(oldState.getBuildTime());
 		state.setUpdatedAt(new Date());
 		indexData.setSource(this.syncStateConverter.convert(state));
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, indexData);
@@ -494,6 +497,8 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexRegenerationTask<T> task = new ElasticSearchIndexRegenerationTask<>(this, this.generator, newIndexName, indexNameToReplace);
+
+		LOG.info("regenerating index: " + indexNameToReplace + "->" + newIndexName);
 		this.executeTask(async, task);
 	}
 
@@ -576,6 +581,8 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		}
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexGenerationTask<T> task = new ElasticSearchIndexGenerationTask<>(this, this.generator, newIndexName, activeIndexAfterGeneration);
+
+		LOG.info("generating new index " + newIndexName);
 		this.executeTask(async, task);
 	}
 

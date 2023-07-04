@@ -129,9 +129,43 @@ function initFilterButtons(field) {
 	});
 }
 
-function reportDuplicatePublication(publication) {
+/**
+ * Send a custom report via e-mail, if system is properly configured.
+ * The e-mail will contain the custom message of the reporter.
+ */
+function reportPublicationCustom(publication) {
+	var interhash = $(publication).data("interhash");
+	var form = $("#formReportPublication-" + interhash);
+
+	var formData = form.serializeArray();
+	formData.map(function(x){formData[x.name] = x.value;});
+
 	$.ajax({
-		url: "/ajax/report/person/duplicatePublications",
+		url: "/ajax/report/person/publications/custom",
+		data: {
+			'personId': formData.personId,
+			'title': formData.title,
+			'interhash': formData.interhash,
+			'message': formData.message,
+			'referer': window.location.href,
+		},
+		success: function(data) {
+			if (data.success === true) {
+				var successMsg = getString("report.error.feedback.success");
+				showAlert('success', successMsg);
+			} else {
+				var errorMsg = getString("report.error.feedback.error");
+				showAlert('danger', errorMsg);
+			}
+			// Close modal
+			$('#reportModal-' + formData.interhash).modal('hide');
+		}
+	});
+}
+
+function reportPublicationDuplicate(publication) {
+	$.ajax({
+		url: "/ajax/report/person/publications/duplicate",
 		data: {
 			'personId': $(publication).data('person'),
 			'title': $(publication).data('title'),
@@ -162,7 +196,7 @@ function showAlert(type, message) {
 
 	alert.append(closeBtn);
 	if (type === 'danger') {
-		alert.append($('<strong></strong>').html('Error: '));
+		alert.append($('<strong></strong>').html(getString("error") + ': '));
 	}
 	alert.append(message);
 

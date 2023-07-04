@@ -12,16 +12,16 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.admin" var="adminPageTitle" />
+	<fmt:message key="navi.admin.groups" var="groupsTitle" />
 
 	<layout:layout 
-		pageTitle="${adminPageTitle} | Group" 
+		pageTitle="${groupsTitle} | ${adminPageTitle}"
 		loginUser="${command.context.loginUser}" 
 		requPath="${requPath}">
 
@@ -29,7 +29,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:admin />
-					<nav:crumb nameKey="navi.admin.group" active="true" />
+					<nav:crumb name="${groupsTitle}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -73,12 +73,11 @@
 			<bsform:fieldset legendKey="settings.group.reactivate">
 				<jsp:attribute name="content">
 					<fmt:message key="settings.group.reactivate.description" />
-					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
+					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('groups')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="RESTORE_GROUP" name="action" />
 						<bsform:select path="group.name" itemsList="${command.allDeletedGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
 						
 						<bsform:input path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" id="designatedAdmin" helpKey="settings.group.reactivate.help" autocomplete="true" labelKey="group.groupRequest.adminName" />
-						
 						
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
@@ -93,7 +92,7 @@
 			<bsform:fieldset legendKey="settings.group.delete">
 				<jsp:attribute name="content">
 					<fmt:message key="settings.group.delete.description" />
-					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
+					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('groups')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="DELETE_GROUP" name="action" />
 						<bsform:select path="group.name" itemsList="${command.allGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
 						<div class="form-group">
@@ -108,10 +107,8 @@
 
 			<bsform:fieldset legendKey="settings.group.permissionHeading">
 				<jsp:attribute name="content">
-					
 
-					<form:form name="groupWithPermissions" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >
-						
+					<form:form name="groupWithPermissions" action="${relativeUrlGenerator.getAdminUrlByName('groups')}" method="POST" cssClass="form-horizontal" >
 						<input type="hidden" value="UPDATE_PERMISSIONS" name="action" />
 						
 						<div class="form-group">
@@ -177,7 +174,7 @@
 									</td>
 									<td>
 										<span class="groupsButtons">
-											<a href="/admin/group?action=ACCEPT_GROUP&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>
+											<a href="/admin/groups?action=ACCEPT_GROUP&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>
 											${mtl:ch('nbsp')}
 											<a href="javascript:void(0)" class="declineGroupExpand" onclick="declineGroup(this);"><fmt:message key="admin.actions.group.decline"/></a>	
 										</span>
@@ -191,7 +188,7 @@
 											<fmt:param value="${fn:escapeXml(entry.name)}" />
 										</fmt:message>
 									
-										<form:form name="declineGroupRequest" action="/admin/group?action=DECLINE_GROUP&amp;group.name=${fn:escapeXml(entry.name)}" method="POST" cssClass="form-horizontal" >
+										<form:form name="declineGroupRequest" action="/admin/groups?action=DECLINE_GROUP&amp;group.name=${fn:escapeXml(entry.name)}" method="POST" cssClass="form-horizontal" >
 											<bsform:textarea noHelp="true" labelText="${decLabelText}" path="declineMessage" labelColSpan="3" inputColSpan="9" />
 											
 											<div class="form-group">

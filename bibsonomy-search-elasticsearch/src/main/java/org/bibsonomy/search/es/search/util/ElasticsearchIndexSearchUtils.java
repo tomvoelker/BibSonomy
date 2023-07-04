@@ -98,7 +98,7 @@ public class ElasticsearchIndexSearchUtils {
 	/**
 	 * @param call
 	 * @param <T>
-	 * @return short cut for callSearch
+	 * @return shortcut for callSearch
 	 */
 	public static <T> ResultList<T> callSearch(final Supplier<ResultList<T>> call) {
 		return callSearch(call, new ResultList<>());

@@ -92,11 +92,11 @@ public class WebUtils {
 
 	/**
 	 * The maximum number of characters (~bytes) to read from a HTTP connection.
-	 * We fixed this to 1 MB to avoid that radio streams or huge files
+	 * We fixed this to 3 MB to avoid that radio streams or huge files
 	 * mess up our heap. If this is not enough, please increase the size
 	 * carefully.
 	 */
-	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
+	private static final int MAX_CONTENT_LENGTH = 3 * 1024 * 1024;
 
 	/**
 	 * default config for http client

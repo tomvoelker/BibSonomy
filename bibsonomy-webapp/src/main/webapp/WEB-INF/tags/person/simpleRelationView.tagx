@@ -7,6 +7,8 @@
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 
@@ -15,10 +17,9 @@
 	<jsp:directive.attribute name="showButtons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
     <jsp:directive.attribute name="addPub" type="java.lang.Boolean" required="false" description="If true, user can add the publication. If false, user can delete it. Dependand from buttons."/>
 	<jsp:directive.attribute name="personId" type="java.lang.String" required="false" description="ID of the person"/>
-	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="disableEdit" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" description="ID of the person"/>
-
 	<c:set var="post" value="${relation.post}"/>
 
 	<c:if test="${empty personId}">
@@ -31,21 +32,23 @@
 							   showButtons="${showButtons}"
 							   onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
 							   referer="${relativeUrlGenerator.getPersonUrl(personId)}"
+							   disableEdit="${disableEdit}"
 							   enforceCommunityPost="${true}">
 		<jsp:attribute name="buttons">
 			<c:choose>
 				<c:when test="${addPub}">
 					<button type="button" class="btn btn-default btn-xs add-button"
+							onclick="addPersonRelation(this)"
 							data-interhash="${post.resource.interHash}"
-							data-index="${relation.personIndex}"
-							data-type="${relation.relationType}">
+							data-personindex="${relation.personIndex}"
+							data-relationtype="${relation.relationType}">
 						<fontawesome:icon icon="check"/>
 					</button>
 				</c:when>
 				<c:otherwise>
 					<c:if test="${loggedInUser.claimedPerson.personId eq personId or loggedInUser.role eq 'ADMIN'}">
 						<button type="button"
-								onclick="initDeleteRelationButtons(this)"
+								onclick="deletePersonRelation(this)"
 								class="btn btn-default btn-xs delete-button"
 								data-interhash="${post.resource.interHash}"
 								data-personindex="${relation.personIndex}"
@@ -56,17 +59,64 @@
 				</c:otherwise>
 			</c:choose>
 
-			<c:if test="${properties['report.person.duplicate.publications'] and
-							not empty properties['project.reportMail'] and
-							not empty reportFunction}">
-				<button type="button"
-						class="btn btn-default btn-xs report-button"
-						onclick="${reportFunction}"
-						data-person="${personId}"
-						data-title="${post.resource.title}"
-						data-interhash="${post.resource.interHash}" >
-					<fontawesome:icon icon="flag"/>
-				</button>
+			<c:if test="${not empty properties['project.reportMail']}">
+				<c:choose>
+					<c:when test="${properties['report.person.publications.custom']}">
+						<fmt:message key="report.error.person.publications.custom.form.title" var="reportModalTitle" />
+						<fmt:message key="report.error.person.publications.custom.form.placeholder" var="reportModalPlaceholder" />
+						<fmt:message key="report.error.person.publications.custom.button.hint" var="buttonTitle" />
+
+						<bs:modal id="reportModal-${post.resource.interHash}" modalTitle="${reportModalTitle}">
+							<jsp:attribute name="modalBody">
+								<div class="container-fluid">
+									<h3><c:out value="${post.resource.title}" /></h3>
+									<form id="formReportPublication-${post.resource.interHash}">
+										<input type="hidden" name="personId" value="${personId}"/>
+										<input type="hidden" name="title" value="${post.resource.title}"/>
+										<input type="hidden" name="interhash" value="${post.resource.interHash}"/>
+										<input type="hidden" name="referer" value="${requPath}"/>
+										<textarea id="message" name="message" placeholder="${reportModalPlaceholder}" rows="4" cols="55"><!-- keep me --></textarea>
+									</form>
+								</div>
+							</jsp:attribute>
+
+							<jsp:attribute name="modalFooter">
+								<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="box.close"/></button>
+								<button type="button"
+										class="btn btn-primary publication-report-submit"
+										title="${buttonTitle}"
+										onclick="reportPublicationCustom(this)"
+										data-interhash="${post.resource.interHash}"
+										data-person="${personId}"
+										data-title="${post.resource.title}">
+									<fmt:message key="report.error.button.label"/>
+								</button>
+							</jsp:attribute>
+						</bs:modal>
+
+						<button type="button"
+								class="btn btn-default btn-xs report-button"
+								title="${buttonTitle}"
+								data-toggle="modal"
+								data-target="#reportModal-${post.resource.interHash}">
+							<fontawesome:icon icon="flag"/>
+						</button>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${properties['report.person.publications.duplicate']}">
+							<fmt:message key="report.error.person.publications.duplicate.button.hint" var="buttonTitle" />
+							<button type="button"
+									class="btn btn-default btn-xs report-button"
+									title="${buttonTitle}"
+									data-person="${personId}"
+									data-title="${post.resource.title}"
+									data-interhash="${post.resource.interHash}"
+									onclick="reportPublicationDuplicate(this)">
+								<fontawesome:icon icon="flag"/>
+							</button>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 		</jsp:attribute>
 	</per:simplePublicationView>

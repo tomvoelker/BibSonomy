@@ -15,143 +15,128 @@
     <c:set var="state" value="${fn:toLowerCase(searchIndexInfo.status)}" />
 
     <div class="searchindex-panel panel panel-default">
-        <div class="panel-heading" role="tab" id="${searchIndexInfo.id}Heading">
-            <c:choose>
-                <c:when test="${state != 'inactive'}">
-                    <div data-toggle="collapse" data-target="#${searchIndexInfo.id}Collapse"
-                       aria-expanded="true" aria-controls="#${searchIndexInfo.id}Collapse">
-                        <h4 class="panel-title">
-                            <span class="searchindex-id">${searchIndexInfo.id}</span>
-                            <span class="searchindex-status searchindex-status-${state} badge">${state}</span>
-                            <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
-                                <code class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</code>
-                            </c:if>
-                        </h4>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="collapsed" data-toggle="collapse" data-target="#${searchIndexInfo.id}Collapse"
-                         aria-expanded="false" aria-controls="#${searchIndexInfo.id}Collapse">
-                        <h4 class="panel-title">
-                            <span class="searchindex-id">${searchIndexInfo.id}</span>
-                            <span class="searchindex-status searchindex-status-${state} badge">${state}</span>
-                            <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
-                                <code class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</code>
-                            </c:if>
-                        </h4>
-                    </div>
-                </c:otherwise>
-            </c:choose>
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <span class="searchindex-id">${searchIndexInfo.id}</span>
+                <span class="searchindex-status searchindex-status-${state} badge">${state}</span>
+            </h4>
         </div>
 
-        <c:set var="collapseIn" value="" />
-        <c:if test="${state != 'inactive'}">
-            <c:set var="collapseIn" value="in" />
-        </c:if>
-        <div id="${searchIndexInfo.id}Collapse" class="panel-collapse collapse ${collapseIn}" role="tabpanel" aria-labelledby="${searchIndexInfo.id}Heading">
-            <div class="panel-body">
-                <div class="row">
-                    <c:choose>
-                        <c:when test="${state != 'generating'}">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.id"/></strong></div>
-                                    <div class="col-md-8"><span>${searchIndexInfo.id}</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.state"/></strong></div>
-                                    <div class="col-md-8"><span>${searchIndexInfo.status}</span></div>
-                                </div>
-                                <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
-                                    <div class="row">
-                                        <div class="col-md-4"><strong><fmt:message key="admin.search.info.mappingVersion"/></strong></div>
-                                        <div class="col-md-8"><span>${searchIndexInfo.syncState.mappingVersion}</span></div>
-                                    </div>
-                                </c:if>
-                                <div class="row">
-                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.documents"/></strong></div>
-                                    <div class="col-md-8"><span>${searchIndexInfo.statistics.numberOfDocuments}</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.updatedAt"/></strong></div>
-                                    <div class="col-md-8"><span>${searchIndexInfo.syncState.updatedAt}</span></div>
-                                </div>
+        <div class="panel-body">
+            <div class="container-fluid">
+                <c:choose>
+                    <c:when test="${state != 'generating'}">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-md-4"><strong><fmt:message key="admin.search.info.id"/></strong></div>
+                                <div class="col-md-8"><span>${searchIndexInfo.id}</span></div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong><fmt:message key="admin.search.info.state"/></strong></div>
+                                <div class="col-md-8"><span>${searchIndexInfo.status}</span></div>
+                            </div>
+                            <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
+                                <div class="row">
+                                    <div class="col-md-4"><strong><fmt:message key="admin.search.info.mappingVersion"/></strong></div>
+                                    <div class="col-md-8"><span>${searchIndexInfo.syncState.mappingVersion}</span></div>
+                                </div>
+                            </c:if>
+                            <div class="row">
+                                <div class="col-md-4"><strong><fmt:message key="admin.search.info.buildTime"/></strong></div>
+                                <div class="col-md-8"><span>
+                            <fmt:message key="admin.search.info.buildTime.dateDuration">
+                                <fmt:param value="${searchIndexInfo.syncState.buildDate}"/>
+                                <fmt:param value="${searchIndexInfo.syncState.buildTime}"/>
+                            </fmt:message>
+                        </span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong><fmt:message key="admin.search.info.documents"/></strong></div>
+                                <div class="col-md-8"><span>${searchIndexInfo.statistics.numberOfDocuments}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><strong><fmt:message key="admin.search.info.updatedAt"/></strong></div>
+                                <div class="col-md-8"><span>${searchIndexInfo.syncState.updatedAt}</span></div>
+                            </div>
+
                             <c:if test="${searchIndexInfo.syncState != null}">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-4"><strong>Last entity ID:</strong></div>
-                                        <c:set var="entityId" value="${searchIndexInfo.syncState.entityId}"/>
-                                        <c:if test="${empty entityId}">
-                                            <c:set var="entityId" value="${searchIndexInfo.syncState.tasId}"/>
-                                        </c:if>
-                                        <div class="col-md-8"><span>${entityId}</span></div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4"><strong>Last entity log date:</strong></div>
-                                        <div class="col-md-8"><span>${searchIndexInfo.syncState.entityLogDate}</span></div>
-                                    </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Last entity ID:</strong></div>
+                                    <c:set var="entityId" value="${searchIndexInfo.syncState.entityId}"/>
+                                    <c:if test="${empty entityId}">
+                                        <c:set var="entityId" value="${searchIndexInfo.syncState.tasId}"/>
+                                    </c:if>
+                                    <div class="col-md-8"><span>${entityId}</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Last entity log date:</strong></div>
+                                    <div class="col-md-8"><span>${searchIndexInfo.syncState.entityLogDate}</span></div>
+                                </div>
+                                <c:if test="${searchIndexInfo.syncState.communityEntityId != null}">
                                     <div class="row">
                                         <div class="col-md-4"><strong>Last community entity ID:</strong></div>
                                         <div class="col-md-8"><span>${searchIndexInfo.syncState.communityEntityId}</span></div>
                                     </div>
+                                </c:if>
+                                <c:if test="${searchIndexInfo.syncState.communityEntityLogDate != null}">
                                     <div class="row">
                                         <div class="col-md-4"><strong>Last community entity log date:</strong></div>
                                         <div class="col-md-8"><span>${searchIndexInfo.syncState.communityEntityLogDate}</span></div>
                                     </div>
-                                </div>
-                            </c:if>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="col-md-12">
-                                <bs:progress progress="${searchIndexInfo.generationProgress * 100}" />
-                                <c:if test="${not empty searchIndexInfo.allDocuments and searchIndexInfo.allDocuments != 0}">
-                                    <strong><fmt:message key="admin.search.info.progress"/></strong>
-                                    <c:out value=" ${searchIndexInfo.writtenDocuments}/${searchIndexInfo.allDocuments}" />
                                 </c:if>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-                <c:if test="${showActions}">
-                    <div class="searchindex-actions row">
-                        <div class="col-md-12">
-                            <c:if test="${searchIndexInfo.status eq 'STANDBY'}">
-                                <form class="form-inline">
-                                    <input type="hidden" name="entity" value="${entity}" />
-                                    <input type="hidden" name="action" value="ENABLE_INDEX" />
-                                    <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-                                    <fmt:message var="confirmEnable" key="admin.search.actions.enable.confirm"/>
-                                    <button type="submit" class="btn btn-default" onclick="return confirm('${confirmEnable}')">
-                                        <fontawsome:icon icon="check" fixedWidth="${true}" />
-                                        <fmt:message key="admin.search.actions.enable" />
-                                    </button>
-                                </form>
                             </c:if>
-                            <form class="form-inline">
-                                <input type="hidden" name="entity" value="${entity}" />
-                                <input type="hidden" name="action" value="regenerate_index" />
-                                <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-                                <fmt:message var="confirmRegenerate" key="admin.search.actions.regenerate.confirm"/>
-                                <button type="submit" class="btn btn-default" onclick="return confirm('${confirmRegenerate}')">
-                                    <fontawsome:icon icon="refresh" fixedWidth="${true}" />
-                                    <fmt:message key="admin.search.actions.regenerate"/>
-                                </button>
-                            </form>
-                            <form class="form-inline">
-                                <input type="hidden" name="entity" value="${entity}" />
-                                <input type="hidden" name="action" value="delete_index" />
-                                <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-                                <fmt:message var="confirmDelete" key="admin.search.actions.delete.confirm"/>
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('${confirmDelete}')">
-                                    <fontawsome:icon icon="trash" fixedWidth="${true}" />
-                                    <fmt:message key="admin.search.actions.delete"/>
-                                </button>
-                            </form>
                         </div>
-                    </div>
-                </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="col-md-12">
+                            <bs:progress progress="${searchIndexInfo.generationProgress * 100}" />
+                            <c:if test="${not empty searchIndexInfo.allDocuments and searchIndexInfo.allDocuments != 0}">
+                                <strong><fmt:message key="admin.search.info.progress"/></strong>
+                                <c:out value=" ${searchIndexInfo.writtenDocuments}/${searchIndexInfo.allDocuments}" />
+                            </c:if>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
+        </div>
+        <div class="panel-footer">
+            <c:if test="${showActions}">
+                <c:if test="${searchIndexInfo.status eq 'STANDBY'}">
+                    <form class="form-inline">
+                        <input type="hidden" name="entity" value="${entity}" />
+                        <input type="hidden" name="action" value="ENABLE_INDEX" />
+                        <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+                        <fmt:message var="confirmEnable" key="admin.search.actions.enable.confirm"/>
+                        <button type="submit" class="btn btn-default" onclick="return confirm('${confirmEnable}')">
+                            <fontawsome:icon icon="check" fixedWidth="${true}" />
+                            <fmt:message key="admin.search.actions.enable" />
+                        </button>
+                    </form>
+                </c:if>
+                <form class="form-inline">
+                    <input type="hidden" name="entity" value="${entity}" />
+                    <input type="hidden" name="action" value="regenerate_index" />
+                    <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+                    <fmt:message var="confirmRegenerate" key="admin.search.actions.regenerate.confirm"/>
+                    <button type="submit" class="btn btn-default" onclick="return confirm('${confirmRegenerate}')">
+                        <fontawsome:icon icon="refresh" fixedWidth="${true}" />
+                        <fmt:message key="admin.search.actions.regenerate"/>
+                    </button>
+                </form>
+                <form class="form-inline">
+                    <input type="hidden" name="entity" value="${entity}" />
+                    <input type="hidden" name="action" value="delete_index" />
+                    <input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+                    <fmt:message var="confirmDelete" key="admin.search.actions.delete.confirm"/>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('${confirmDelete}')">
+                        <fontawsome:icon icon="trash" fixedWidth="${true}" />
+                        <fmt:message key="admin.search.actions.delete"/>
+                    </button>
+                </form>
+            </c:if>
+            <c:if test="${searchIndexInfo.syncState.mappingVersion != null}">
+                <code class="searchindex-mapping-version">${searchIndexInfo.syncState.mappingVersion}</code>
+            </c:if>
         </div>
     </div>
 
