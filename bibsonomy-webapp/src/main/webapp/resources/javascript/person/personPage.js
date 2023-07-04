@@ -152,10 +152,10 @@ function reportPublicationCustom(publication) {
 		success: function(data) {
 			if (data.success === true) {
 				var successMsg = getString("report.error.feedback.success");
-				showAlert('success', successMsg);
+				showAjaxAlert('success', successMsg);
 			} else {
 				var errorMsg = getString("report.error.feedback.error");
-				showAlert('danger', errorMsg);
+				showAjaxAlert('danger', errorMsg);
 			}
 			// Close modal
 			$('#reportModal-' + formData.interhash).modal('hide');
@@ -175,30 +175,11 @@ function reportPublicationDuplicate(publication) {
 		success: function(data) {
 			if (data.success === true) {
 				var successMsg = getString("report.error.feedback.success");
-				showAlert('success', successMsg);
+				showAjaxAlert('success', successMsg);
 			} else {
 				var errorMsg = getString("report.error.feedback.error");
-				showAlert('danger', errorMsg);
+				showAjaxAlert('danger', errorMsg);
 			}
 		}
 	});
-}
-
-function showAlert(type, message) {
-	var alert = $('<div></div>')
-		.attr('class', 'alert alert-dismissible alert-' + type)
-		.attr('role', 'alert');
-
-	var closeBtn = $('<button></button>')
-		.attr('class', 'close')
-		.attr('data-dismiss', 'alert')
-		.html('<span aria-hidden="true">&times;</span>');
-
-	alert.append(closeBtn);
-	if (type === 'danger') {
-		alert.append($('<strong></strong>').html(getString("error") + ': '));
-	}
-	alert.append(message);
-
-	$('#ajaxAlerts').append(alert);
 }

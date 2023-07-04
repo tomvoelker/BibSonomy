@@ -63,19 +63,13 @@ import org.json.simple.JSONObject;
 public class OpenAccessController extends AjaxController implements MinimalisticController<OpenAccessCommand> {
 
 	private static final String GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
-
 	private static final String DISSEMIN = "DISSEMIN";
 
 	private int maxQuerySize;
-	
-	@Override
-	public OpenAccessCommand instantiateCommand() {
-		return new OpenAccessCommand();
-	}
 
 	@Override
 	public View workOn(final OpenAccessCommand command) {
-		final JSONObject json = new JSONObject();
+		final JSONObject responseJson = new JSONObject();
 
 		// check if user is logged in
 		if (!command.getContext().isUserLoggedIn()) {
@@ -86,48 +80,48 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		if (present(action)) {
 			switch (action) {
 				case GET_SENT_REPOSITORIES:
-					final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
-					postQueryBuilder.setGrouping(GroupingEntity.USER)
+					final PostQueryBuilder postQueryBuilder = new PostQueryBuilder()
+							.setGrouping(GroupingEntity.USER)
 							.setGroupingName(command.getContext().getLoginUser().getName())
 							.setScope(QueryScope.LOCAL)
 							.setFilters(Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY))
-							.entriesStartingAt(this.maxQuerySize, 0); // TODO: adapt limit to get all posts
+							.entriesStartingAt(this.maxQuerySize, 0); // TODO retrieve all posts
 					final List<Post<BibTex>> posts = logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 
-					// TODO: implement this
 					/*
-					 * Schleife über alle Posts
-					 * nimm Repository-Speicher-Datum und User
-					 * schreibe JSON-Output mit Datum und Flag ob selbst versendet oder durch wen anderes
-					 *
-					 * Titel, Link mit intrahash, Datum
+					 * Iterate all retrieved posts and build a JSON document.
+					 * The JSON document contains information about the post's intrahash, the repository-sent-date and the sender.
 					 */
-					final JSONObject jsonpost = new JSONObject();
-					for (final Post<BibTex> p : posts) {
-						final JSONObject jsonObject = new JSONObject();
-						final JSONArray jsonArray = new JSONArray();
-						jsonArray.addAll(p.getRepositorys());
-						jsonObject.put("repositories", jsonArray);
-						jsonObject.put("selfsent", (command.getContext().getLoginUser().getName().equals(p.getUser().getName())?1:0) );
-						jsonObject.put("intrahash", p.getResource().getIntraHash());
-						jsonpost.put(p.getResource().getIntraHash(), jsonObject);
+					final JSONObject jsonPosts = new JSONObject();
+					for (final Post<BibTex> post : posts) {
+						final JSONObject postJson = new JSONObject();
+						final JSONArray repositoriesJson = new JSONArray();
+						repositoriesJson.addAll(post.getRepositorys());
+						postJson.put("repositories", repositoriesJson);
+						postJson.put("sentBySelf", (command.getContext().getLoginUser().getName().equals(post.getUser().getName()) ? 1 : 0));
+						postJson.put("intrahash", post.getResource().getIntraHash());
+						jsonPosts.put(post.getResource().getIntraHash(), postJson);
 					}
 
-					json.put("posts", jsonpost);
-					command.setResponseString(json.toString());
-					return Views.AJAX_JSON;
+					responseJson.put("posts", jsonPosts);
+					break;
 				case DISSEMIN:
-
 					Post<? extends Resource> post = logic.getPostDetails(command.getIntrahash(), command.getUsername());
 					DisseminController disseminController = new DisseminController();
 					disseminController.getPolicyForPost((Post<? extends BibTex>) post);
-					return Views.AJAX_JSON;
+					break;
 				default:
 					break;
 			}
 		}
-		
+
+		command.setResponseString(responseJson.toString());
 		return Views.AJAX_JSON;
+	}
+
+	@Override
+	public OpenAccessCommand instantiateCommand() {
+		return new OpenAccessCommand();
 	}
 
 }

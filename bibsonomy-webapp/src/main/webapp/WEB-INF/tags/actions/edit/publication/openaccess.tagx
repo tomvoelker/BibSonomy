@@ -99,11 +99,6 @@
 						</div>
 					</div>
 					<div id="sendMetadataMarker">&amp;deg;</div>
-									
-					<!--						<div id="saveMetadataButtonContainer">-->
-					<!--							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>-->
-					<!--						</div>-->
-					
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
 						<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
 					</div>
@@ -122,9 +117,8 @@
 
 					<script type="text/javascript">
 						$(function() {
-		
-							// set metadatafields
-							var mdf = Array(); 
+							// set metadata fields
+							var fields = Array();
 							var i=0;
 							mdf[i++] = "post.resource.openaccess.additionalfields.institution";
 							mdf[i++] = "post.resource.openaccess.additionalfields.phdreferee";
@@ -132,7 +126,7 @@
 							mdf[i++] = "post.resource.openaccess.additionalfields.phdoralexam";
 							mdf[i++] = "post.resource.openaccess.additionalfields.sponsor";
 							mdf[i++] = "post.resource.openaccess.additionalfields.additionaltitle";
-							setMetadatafields(mdf);
+							setMetadataFields(mdf);
 		
 							setTimeout('initializeOpenAccessClassification(&quot;openAccessClassification&quot;, &quot;${bibtex.intraHash}&quot;)', 1);
 							//setTimeout('initialiseOpenAccessSendToRepository(&quot;oasendtorepositorybutton&quot;, &quot;${bibtex.intraHash}&quot;)', 1);

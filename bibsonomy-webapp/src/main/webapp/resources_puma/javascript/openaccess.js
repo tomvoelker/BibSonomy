@@ -1,174 +1,8 @@
-// FIXME: extract jquery.dump.js
-/**
- * jquery.dump.js
- * @author Torkild Dyvik Olsen
- * @version 1.0
- *
- * A simple debug function to gather information about an object.
- * Returns a nested tree with information.
- *
- */
-(function ($) {
+var OA_STATUS_URL = "/ajax/openaccess/status";
+var CLASSIFY_PUB_URL = "/ajax/openaccess/classifyPublication";
+var SWORD_SERVICE_URL = "/ajax/openaccess/swordService";
 
-    $.fn.dump = function () {
-        return $.dump(this);
-    }
-
-    $.dump = function (object) {
-        var recursion = function (obj, level) {
-            if (!level) level = 0;
-            var dump = '', p = '';
-            for (i = 0; i < level; i++) p += "\t";
-
-            t = type(obj);
-            switch (t) {
-                case "string":
-                    return '"' + obj + '"';
-                    break;
-                case "number":
-                    return obj.toString();
-                    break;
-                case "boolean":
-                    return obj ? 'true' : 'false';
-                case "date":
-                    return "Date: " + obj.toLocaleString();
-                case "array":
-                    dump += 'Array ( \n';
-                    $.each(obj, function (k, v) {
-                        dump += p + '\t' + k + ' => ' + recursion(v, level + 1) + '\n';
-                    });
-                    dump += p + ')';
-                    break;
-                case "object":
-                    dump += 'Object { \n';
-                    $.each(obj, function (k, v) {
-                        dump += p + '\t' + k + ': ' + recursion(v, level + 1) + '\n';
-                    });
-                    dump += p + '}';
-                    break;
-                case "jquery":
-                    dump += 'jQuery Object { \n';
-                    $.each(obj, function (k, v) {
-                        dump += p + '\t' + k + ' = ' + recursion(v, level + 1) + '\n';
-                    });
-                    dump += p + '}';
-                    break;
-                case "regexp":
-                    return "RegExp: " + obj.toString();
-                case "error":
-                    return obj.toString();
-                case "document":
-                case "domelement":
-                    dump += 'DOMElement [ \n'
-                        + p + '\tnodeName: ' + obj.nodeName + '\n'
-                        + p + '\tnodeValue: ' + obj.nodeValue + '\n'
-                        + p + '\tinnerHTML: [ \n';
-                    $.each(obj.childNodes, function (k, v) {
-                        if (k < 1) var r = 0;
-                        if (type(v) == "string") {
-                            if (v.textContent.match(/[^\s]/)) {
-                                dump += p + '\t\t' + (k - (r || 0)) + ' = String: ' + trim(v.textContent) + '\n';
-                            } else {
-                                r--;
-                            }
-                        } else {
-                            dump += p + '\t\t' + (k - (r || 0)) + ' = ' + recursion(v, level + 2) + '\n';
-                        }
-                    });
-                    dump += p + '\t]\n'
-                        + p + ']';
-                    break;
-                case "function":
-                    var match = obj.toString().match(/^(.*)\(([^\)]*)\)/im);
-                    match[1] = trim(match[1].replace(new RegExp("[\\s]+", "g"), " "));
-                    match[2] = trim(match[2].replace(new RegExp("[\\s]+", "g"), " "));
-                    return match[1] + "(" + match[2] + ")";
-                case "window":
-                default:
-                    dump += 'N/A: ' + t;
-                    break;
-            }
-
-            return dump;
-        }
-
-        var type = function (obj) {
-            var type = typeof (obj);
-
-            if (type != "object") {
-                return type;
-            }
-
-            switch (obj) {
-                case null:
-                    return 'null';
-                case window:
-                    return 'window';
-                case document:
-                    return 'document';
-                case window.event:
-                    return 'event';
-                default:
-                    break;
-            }
-
-            if (obj.jquery) {
-                return 'jquery';
-            }
-
-            switch (obj.constructor) {
-                case Array:
-                    return 'array';
-                case Boolean:
-                    return 'boolean';
-                case Date:
-                    return 'date';
-                case Object:
-                    return 'object';
-                case RegExp:
-                    return 'regexp';
-                case ReferenceError:
-                case Error:
-                    return 'error';
-                case null:
-                default:
-                    break;
-            }
-
-            switch (obj.nodeType) {
-                case 1:
-                    return 'domelement';
-                case 3:
-                    return 'string';
-                case null:
-                default:
-                    break;
-            }
-
-            return 'Unknown';
-        }
-
-        return recursion(object);
-    }
-
-    function trim(str) {
-        return ltrim(rtrim(str));
-    }
-
-    function ltrim(str) {
-        return str.replace(new RegExp("^[\\s]+", "g"), "");
-    }
-
-    function rtrim(str) {
-        return str.replace(new RegExp("[\\s]+$", "g"), "");
-    }
-
-})(jQuery);
-
-
-var oaBaseUrl = "/ajax/checkOpenAccess";
-var classificationURL = "/ajax/classificatePublication";
-var swordURL = "/ajax/swordService";
+// Actions
 var GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";
 var SAVE_CLASSIFICATION_ITEM = "SAVE_CLASSIFICATION_ITEM";
 var SAVE_ADDITIONAL_METADATA = "SAVE_ADDITIONAL_METADATA";
@@ -177,40 +11,23 @@ var REMOVE_CLASSIFICATION_ITEM = "REMOVE_CLASSIFICATION_ITEM";
 var GET_POST_CLASSIFICATION_LIST = "GET_POST_CLASSIFICATION_LIST";
 var GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION";
 var GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
-var publication_intrahash = ""; // will be set during initialisation
-var publication_interhash = ""; // will be set during initialisation
+var DISSEMIN = "DISSEMIN";
+
+var intrahash = ""; // will be set during initialisation
+var interhash = ""; // will be set during initialisation
 var metadataChanged = false; // flag to remember if metadata has changend
-var metadatafields = Array();
+var metadataFields = Array();
 var autoSaveMetadataCounter = 0;
 
 function setMetadatafields(mdf) {
-    metadatafields = mdf;
+    metadataFields = mdf;
 }
 
 function getMetadatafields() {
-    return metadatafields;
+    return metadataFields;
 }
 
-
 function empty(mixed_var) {
-    // !No description available for empty. @php.js developers: Please update the function summary text file.
-    // 
-    // version: 1103.1210
-    // discuss at: http://phpjs.org/functions/empty    // +   original by: Philippe Baumann
-    // +      input by: Onno Marsman
-    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +      input by: LH
-    // +   improved by: Onno Marsman    // +   improved by: Francesco
-    // +   improved by: Marc Jansen
-    // +   input by: Stoyan Kyosev (http://www.svest.org/)
-    // *     example 1: empty(null);
-    // *     returns 1: true    // *     example 2: empty(undefined);
-    // *     returns 2: true
-    // *     example 3: empty([]);
-    // *     returns 3: true
-    // *     example 4: empty({});    // *     returns 4: true
-    // *     example 5: empty({'aFunc' : function () { alert('humpty'); } });
-    // *     returns 5: false
     var key;
     if (mixed_var === "" || mixed_var === 0 || mixed_var === "0" || mixed_var === null || mixed_var === false || typeof mixed_var === 'undefined') {
         return true;
@@ -256,8 +73,8 @@ function initializeOpenAccessClassification(divBaseName, intraHash) {
         $('#' + divClassificationSelectName).show();
     }
 
-    publication_intrahash = $("#openAccessCurrentPublicationHash").val();
-    publication_interhash = $("#openAccessCurrentPublicationInterHash").val();
+    intrahash = $("#openAccessCurrentPublicationHash").val();
+    interhash = $("#openAccessCurrentPublicationInterHash").val();
 
     // init Classification
     initClassifications(divClassificationSelectName, divClassificationListName);
@@ -269,12 +86,10 @@ function sentPublicationToRepository(elementId, intraHash) {
         var loadingNode = document.createElement('img');
         loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 
-        var url = swordURL + "?resourceHash=" + intraHash;
-
         if (isMetadataChanged()) sendAdditionalMetadataFields(false);
 
         $.ajax({
-            url: url,
+            url: SWORD_SERVICE_URL + "?resourceHash=" + intraHash,
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
 
@@ -296,8 +111,7 @@ function sentPublicationToRepository(elementId, intraHash) {
                 // check and show response to user
                 $.each(data, function (i, response) {
                     if (null == data || null == data.response) {
-                        // FIXME: Show error without alert box
-                        //alert ("unknown response error");
+                        showAjaxAlert("error", "unknown response error");
                     } else {
                         // create text node behind transmit button, if not exists, to show response text in it
                         // confirmations and warnings get different css-classes
@@ -326,13 +140,10 @@ function sentPublicationToRepository(elementId, intraHash) {
 
                     }
                 });
-
-
             },
             error: function (req, status, e) {
                 $(loadingNode).remove();
-                // FIXME: Show error without alert box
-                //alert("Unable to send data to reposity: " + status);
+                showAjaxAlert("error", "Unable to send data to repository: " + status);
             }
         });
     } // end of if ($('#authorcontractconfirm').checked)
@@ -345,16 +156,14 @@ function checkOpenAccess() {
 }
 
 function initClassifications(divClassificationSelectName, divClassificationListName) {
-    var url = classificationURL + "?action=" + GET_AVAILABLE_CLASSIFICATIONS;
     $.ajax({
         dataType: 'json',
-        url: url,
+        url: CLASSIFY_PUB_URL + "?action=" + GET_AVAILABLE_CLASSIFICATIONS,
         success: function (data) {
             doInitialise(divClassificationSelectName, divClassificationListName, data);
         },
         error: function (req, status, e) {
-            // FIXME: Show error without alert box
-            //alert("There seems to be an error in the ajax request, classifications.js::init");
+            showAjaxAlert("error", "There seems to be an error in the ajax request, classifications.js::init");
         }
     });
 }
@@ -401,18 +210,14 @@ function doInitialise(divClassificationSelectName, divClassificationListName, da
 }
 
 function populate(classification, container) {
-
-    var url = classificationURL + "?classificationName=" + classification;
-    // perform ajax request
     $.ajax({
         dataType: 'json',
-        url: url,
+        url: CLASSIFY_PUB_URL + "?classificationName=" + classification,
         success: function (data) {
             createSubSelect(null, data, classification, "", container);
         },
         error: function (req, status, e) {
-            // FIXME: Show error without alert box
-            //alert("There seems to be an error in the ajax request, classifications.js::populate");
+            showAjaxAlert("error", "There seems to be an error in the ajax request, classifications.js::populate");
         }
     });
 }
@@ -458,8 +263,7 @@ function createNode(atts) {
         try {
             node[i] = atts[i];
         } catch (e) {
-            // FIXME: Show error without alert box
-            alert(e);
+            showAjaxAlert("error", e);
         }
     }
 
@@ -491,11 +295,11 @@ function createNewClassField(container) {
 
 }
 
-function _addClassificationItemToList(classificationName, ClassificationValue) {
+function _addClassificationItemToList(classificationName, classificationValue) {
     var node = document.createElement('div');
     node.className = "classificationListItemContainer";
     var saveListItem = document.createElement('div');
-    var classificationId = _removeSpecialChars(classificationName + ClassificationValue);
+    var classificationId = _removeSpecialChars(classificationName + classificationValue);
     saveListItem.setAttribute('id', "classificationListItemElement" + classificationId);
     saveListItem.setAttribute('class', 'classificationListItem');
 
@@ -520,12 +324,11 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
 
     $('#' + classificationName + 'saved').append(node);
 
-    $('#' + "classificationListItemElement" + classificationId).text(classificationName + ' ' + ClassificationValue + ' ');
+    $('#' + "classificationListItemElement" + classificationId).text(classificationName + ' ' + classificationValue + ' ');
 
-    var descriptionurl = classificationURL + "?action=" + GET_CLASSIFICATION_DESCRIPTION + "&key=" + classificationName + "&value=" + ClassificationValue;
     $.ajax({
         dataType: 'json',
-        url: descriptionurl,
+        url: CLASSIFY_PUB_URL + "?action=" + GET_CLASSIFICATION_DESCRIPTION + "&key=" + classificationName + "&value=" + classificationValue,
         success: function (data) {
             $('#classificationListItemElementDescription' + _removeSpecialChars(data.name + data.value)).text(data.description);
         },
@@ -539,11 +342,9 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
         var loadingNode = document.createElement('img');
         loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 
-        var removeurl = classificationURL + "?action=" + REMOVE_CLASSIFICATION_ITEM + "&hash=" + publication_intrahash + "&key=" + classificationName + "&value=" + ClassificationValue;
-
         $.ajax({
             dataType: 'json',
-            url: removeurl,
+            url: CLASSIFY_PUB_URL + "?action=" + REMOVE_CLASSIFICATION_ITEM + "&hash=" + intrahash + "&key=" + classificationName + "&value=" + classificationValue,
             beforeSend: function (XMLHttpRequest) {
                 $('#classificationListItemRemove' + classificationId).parent().append(loadingNode);
 
@@ -555,8 +356,7 @@ function _addClassificationItemToList(classificationName, ClassificationValue) {
             },
             error: function (req, status, e) {
                 $(loadingNode).remove();
-                // FIXME: Show error without alert box
-                //alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+                showAjaxAlert("error", ("There seems to be an error in the ajax request, classifications.js::createSubSelect"));
             }
         });
 
@@ -571,41 +371,26 @@ function addSaved(container, parentID, description) {
      * $().length / if length is 0, element does not exist
      */
     if (!$("#classificationListItemElement" + _removeSpecialChars(container + parentID)).length) {
-
-        // send item via ajax to database
-        var saveurl = classificationURL + "?action=" + SAVE_CLASSIFICATION_ITEM + "&hash=" + publication_intrahash + "&key=" + container + "&value=" + parentID;
-
         var loadingNode = document.createElement('img');
         loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 
         $.ajax({
             dataType: 'json',
-            url: saveurl,
+            url: CLASSIFY_PUB_URL + "?action=" + SAVE_CLASSIFICATION_ITEM + "&hash=" + intrahash + "&key=" + container + "&value=" + parentID,
             beforeSend: function (XMLHttpRequest) {
                 $('#' + container).append(loadingNode);
 
             },
             success: function (data) {
-
                 $(loadingNode).remove();
-
                 _addClassificationItemToList(container, parentID);
-
             },
             error: function (req, status, e) {
                 $(loadingNode).remove();
-                // FIXME: Show error without alert box
-                //alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+                showAjaxAlert("error", "There seems to be an error in the ajax request, classifications.js::createSubSelect");
             }
         });
-
-        // show item in list if database save request was successful
-
-        // otherwise show error
-
-
     }
-
 }
 
 function createSaveButton(parent, parentID, container) {
@@ -655,7 +440,7 @@ function createSubSelect(parent, data, classification, parentID, container) {
         options.push({tag: "option", value: item.id, text: item.id + " - " + item.description});
     });
 
-    if (options.length == 1) {
+    if (options.length === 1) {
         //no more options available
         createSaveButton(parent, parentID, container);
         return;
@@ -675,37 +460,31 @@ function createSubSelect(parent, data, classification, parentID, container) {
         onchange: function () {
             this.deleteChild();
 
-            if (this.value == "")
+            if (this.value === "")
                 return;
 
             var id = parentID + this.value;
-            var url = classificationURL + "?classificationName=" + classification + "&id=" + id;
-
             var loadingNode = document.createElement('img');
             loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 
             $.ajax({
                 dataType: 'json',
-                url: url,
+                url: CLASSIFY_PUB_URL + "?classificationName=" + classification + "&id=" + id,
                 beforeSend: function (XMLHttpRequest) {
                     $('#' + container).append(loadingNode);
-
                 },
                 success: function (data) {
-
                     $(loadingNode).remove();
                     createSubSelect(s, data, classification, id, container);
                 },
                 error: function (req, status, e) {
                     $(loadingNode).remove();
-                    // FIXME: Show error without alert box
-                    //alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+                    showAjaxAlert("error", "There seems to be an error in the ajax request, classifications.js::createSubSelect");
                 }
             });
         },
         deleteChild: function () {
             if (this.child) {
-
                 if (this.child.deleteChild) {
                     this.child.deleteChild();
                 }
@@ -723,18 +502,14 @@ function createSubSelect(parent, data, classification, parentID, container) {
     $('#' + container).append(s);
 }
 
-function sendAdditionalMetadataFields() {
-    sendAdditionalMetadataFields(true);
-}
-
 function sendAdditionalMetadataFields(async) {
-    if (async != true) async = false;
+    if (async !== true) async = false;
 
     var ElementId = "sendMetadataMarker";
     var mdf = Array();
     var i = 0;
 
-    mdf = getMetadatafields();
+    mdf = getMetadataFields();
 
     var collectedMetadataJSONText = '{ ';
     var collectedMetadataJSON = {};
@@ -744,18 +519,17 @@ function sendAdditionalMetadataFields(async) {
     collectedMetadataJSONText += " } ";
 
     // send item via ajax to database
-    var saveurl = classificationURL;
     var loadingNode = document.createElement('img');
     loadingNode.setAttribute('src', '/resources_puma/image/ajax-loader.gif');
 
     // send metadata
     $.ajax({
         dataType: 'json',
-        url: saveurl,
+        url: CLASSIFY_PUB_URL,
         async: async,
         data: {
             "action": SAVE_ADDITIONAL_METADATA,
-            "hash": publication_intrahash,
+            "hash": intrahash,
             "value": collectedMetadataJSONText
         },
         type: 'post',
@@ -767,27 +541,19 @@ function sendAdditionalMetadataFields(async) {
         success: function (data) {
             $(loadingNode).remove();
             setMetadataChanged(false);
-
-
         },
         error: function (req, status, e) {
             $(loadingNode).remove();
-            // FIXME: Show error without alert box
-            //alert("There seems to be an error in the ajax request, classifications.js::createSubSelect");
+            showAjaxAlert("error", "There seems to be an error in the ajax request, classifications.js::createSubSelect");
         }
     });
-
 }
 
 
 function loadAdditionalMetadataFields() {
-    // get data
-    // example data set: {"ACM":["C21","C22"],"JEL":["F41"]}
-    var url = classificationURL + "?action=" + GET_ADDITIONAL_METADATA + "&hash=" + publication_intrahash;
-    // perform ajax request
     $.ajax({
         dataType: 'json',
-        url: url,
+        url: CLASSIFY_PUB_URL + "?action=" + GET_ADDITIONAL_METADATA + "&hash=" + intrahash,
         success: function (data) {
             // iterate over data
             $.each(data, function (classification, classificationData) {
@@ -797,45 +563,41 @@ function loadAdditionalMetadataFields() {
             });
         },
         error: function (req, status, e) {
-            // FIXME: Show error without alert box
-            //alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
+            showAjaxAlert("error", "There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
         }
     });
-
 }
 
 /* Load send to repository dates of publication 
- * Result may be from another similar publication (interhash), if another user has sent this publication alreadey to. 
- * */
+ * Result may be from another similar publication (interhash), if another user has sent this publication already to.
+ */
 function loadSentRepositories() {
     // get data
-    /* {"posts":
-            {"5098b2741b211a04f2d3de9b48d8ff37":
-                {
-                    "repositories":[
-                        {
-                        "date":{"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
-                        "id":"REPOSITORY_1"
-                        },
-                        {
-                        "date":{"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
-                        "id":"REPOSITORY_1"
-                        }
-
-                    ],
-                    "selfsent": 1,
-                    "intrahash":"5098b2741b211a04f2d3de9b48d8ff37"
-                }
+    /*
+    {"posts":
+      {"5098b2741b211a04f2d3de9b48d8ff37":
+        {
+          "repositories": [
+            {
+              "date": {"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
+              "id": "REPOSITORY_1"
+            },
+            {
+              "date":{"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
+              "id":"REPOSITORY_1"
             },
             ...
+          ],
+          "selfsent": 1,
+          "intrahash":"5098b2741b211a04f2d3de9b48d8ff37"
         }
-
-        */
-    var url = oaBaseUrl + "?action=" + GET_SENT_REPOSITORIES + "&interhash=" + publication_interhash;
-    // perform ajax request
+      },
+      ...
+    }
+    */
     $.ajax({
         dataType: 'json',
-        url: url,
+        url: OA_STATUS_URL + "?action=" + GET_SENT_REPOSITORIES + "&interhash=" + interhash,
         success: function (data) {
             // iterate over data
             if (!empty(data.posts)) {
@@ -854,8 +616,7 @@ function loadSentRepositories() {
             }
         },
         error: function (req, status, e) {
-            // FIXME: Show error without alert box
-            //alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
+            showAjaxAlert("error", "There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
         }
     });
 
@@ -892,7 +653,7 @@ function setMetadataChanged(value) {
     booleanValue = value ? true : false;
     elementId = "sendMetadataMarker";
     elementClass = "highlight";
-    if (booleanValue == true) {
+    if (booleanValue === true) {
         // add class to tag
         if (!$("#" + elementId).hasClass(elementClass)) $("#" + elementId).addClass(elementClass);
         // start autosave counter
@@ -913,12 +674,9 @@ function loadStoredClassificationItems() {
     // clear list
 
     // get data
-    // example data set: {"ACM":["C21","C22"],"JEL":["F41"]}
-    var url = classificationURL + "?action=" + GET_POST_CLASSIFICATION_LIST + "&hash=" + publication_intrahash;
-    // perform ajax request
     $.ajax({
         dataType: 'json',
-        url: url,
+        url: CLASSIFY_PUB_URL + "?action=" + GET_POST_CLASSIFICATION_LIST + "&hash=" + intrahash,
         success: function (data) {
             // iterate over data
             $.each(data, function (classification, classificationData) {
@@ -946,9 +704,7 @@ function setBackgroundColor(container, color) {
     $("#" + container).css("background-color", color);
 }
 
-
 function checkauthorcontractconfirm() {
-
     if (document.getElementById('authorcontractconfirm').checked) {
         if ($('#oasendtorepositorybutton').hasClass("oadisabledsend2repositorybutton")) {
             $('#oasendtorepositorybutton').removeClass("oadisabledsend2repositorybutton");
@@ -960,6 +716,4 @@ function checkauthorcontractconfirm() {
             document.getElementById('oasendtorepositorybutton').disabled = true;
         }
     }
-
-
 }

@@ -59,8 +59,7 @@
 	<layout:layout pageTitle="${title}" 
 		requPath="${requPath}"
 		loginUser="${command.context.loginUser}"
-		noSidebar="${true}"
-		noContentPadding="${true}">
+		noSidebar="${true}" >
 		
 		<!--+
 			+ page heading

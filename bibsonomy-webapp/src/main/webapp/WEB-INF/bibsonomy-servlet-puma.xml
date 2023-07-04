@@ -43,7 +43,7 @@
 	<bean id="pumaUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-				<entry key="/ajax/checkOpenAccess">
+				<entry key="/ajax/openaccess/status">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="openAccessController" />
 						<property name="allowedFields">
@@ -57,8 +57,8 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/classificatePublication">
-					<bean id="publicationClassificationControllerBean" parent="controllerBase">
+				<entry key="/ajax/openaccess/classifyPublication">
+					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="publicationClassificationController" />
 						<property name="allowedFields">
 							<list>
@@ -72,13 +72,12 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/swordService">
-					<bean id="swordServiceControllerBean" parent="controllerBase">
+				<entry key="/ajax/openaccess/swordService">
+					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="swordServiceController" />
 						<property name="allowedFields">
 							<list>
 								<value>resourceHash</value>
-<!--								<value>id</value>-->
 							</list>
 						</property>
 					</bean>
