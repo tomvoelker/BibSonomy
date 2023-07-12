@@ -32,8 +32,8 @@ package de.unikassel.puma.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import java.util.Map;
 
-import de.unikassel.puma.openaccess.dissemin.DisseminController;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,12 +65,11 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 	private static final String GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
 	private static final String DISSEMIN = "DISSEMIN";
 
+	private DisseminController disseminController;
 	private int maxQuerySize;
 
 	@Override
 	public View workOn(final OpenAccessCommand command) {
-		final JSONObject responseJson = new JSONObject();
-
 		// check if user is logged in
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("error.method_not_allowed");
@@ -80,6 +79,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		if (present(action)) {
 			switch (action) {
 				case GET_SENT_REPOSITORIES:
+					final JSONObject responseJson = new JSONObject();
 					final PostQueryBuilder postQueryBuilder = new PostQueryBuilder()
 							.setGrouping(GroupingEntity.USER)
 							.setGroupingName(command.getContext().getLoginUser().getName())
@@ -104,18 +104,18 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 					}
 
 					responseJson.put("posts", jsonPosts);
+					command.setResponseString(responseJson.toString());
 					break;
 				case DISSEMIN:
-					Post<? extends Resource> post = logic.getPostDetails(command.getIntrahash(), command.getUsername());
-					DisseminController disseminController = new DisseminController();
-					disseminController.getPolicyForPost((Post<? extends BibTex>) post);
-					break;
+					Post<? extends Resource> post = logic.getPostDetails(command.getIntrahash(), command.getContext().getLoginUser().getName());
+					Map<String, String> policy = this.disseminController.getPolicyForPost((Post<? extends BibTex>) post);
+					command.setPolicy(policy);
+					return Views.AJAX_DISSEMIN;
 				default:
 					break;
 			}
 		}
 
-		command.setResponseString(responseJson.toString());
 		return Views.AJAX_JSON;
 	}
 

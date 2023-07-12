@@ -49,10 +49,7 @@
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
-	
-	
-	<fmt:message var="headline" key="page.url.headline" />
-	
+
 	<!--+
 		+ main layout
 		+ -->

@@ -37,10 +37,10 @@ function loadSimilarAuthors(page) {
 		success: function (data) {
 			$('#personSimilarAuthors').html(data);
 		},
-		'before': function(){
+		beforeSend: function(){
 			$("#similarAuthorsLoader").show(0);
 		},
-		'after': function(){
+		complete: function(){
 			$("#similarAuthorsLoader").hide(0);
 		}
 	});

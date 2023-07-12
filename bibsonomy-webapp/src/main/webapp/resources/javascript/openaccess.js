@@ -13,18 +13,37 @@ var GET_CLASSIFICATION_DESCRIPTION = "GET_CLASSIFICATION_DESCRIPTION";
 var GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
 var DISSEMIN = "DISSEMIN";
 
-var intrahash = ""; // will be set during initialisation
-var interhash = ""; // will be set during initialisation
 var metadataChanged = false; // flag to remember if metadata has changend
 var metadataFields = Array();
 var autoSaveMetadataCounter = 0;
 
-function setMetadatafields(mdf) {
-    metadataFields = mdf;
-}
+/**
+ * on load
+ */
+$(function () {
+    updateStatusOA();
+});
 
-function getMetadatafields() {
-    return metadataFields;
+function updateStatusOA() {
+    var intrahash = $('.post-openaccess').data('intrahash');
+
+    $.ajax({
+        url: OA_STATUS_URL,
+        data: {
+            // These are the variables you can pass to the request
+            'action': DISSEMIN,
+            'intrahash': intrahash
+        },
+        success: function (data) {
+            $('#oaPostStatus').html(data);
+        },
+        beforeSend: function(){
+            $("#oaPostStatusLoader").show(0);
+        },
+        complete: function(){
+            $("#oaPostStatusLoader").hide(0);
+        }
+    });
 }
 
 function empty(mixed_var) {
@@ -45,40 +64,6 @@ function empty(mixed_var) {
 function _removeSpecialChars(s) {
     s = s.replace(/[^a-zA-Z0-9]/g, '');
     return s;
-}
-
-function initializeOpenAccessClassification(divBaseName, intraHash) {
-    // div-structure for classification:
-    // divBaseName+'Container' - outer container - may be defined in html
-    // divBaseName+'List' - list of selected classification elements - must be defined in html
-    // divBaseName+'Select' - classifications to select an element  - must be defined in html
-    var divClassificationContainerName = divBaseName + 'Container';
-    var divClassificationListName = divBaseName + 'List';
-    var divClassificationSelectName = divBaseName + 'Select';
-
-    if ((null == document.getElementById(divClassificationListName)) || (null == document.getElementById(divClassificationListName))) {
-        return;
-    }
-
-    // set to visible
-    if (null != $('#' + divClassificationContainerName)) {
-        $('#' + divClassificationContainerName).show();
-    }
-    // set to visible
-    if (null != $('#' + divClassificationListName)) {
-        $('#' + divClassificationListName).show();
-    }
-    // set to visible
-    if (null != $('#' + divClassificationSelectName)) {
-        $('#' + divClassificationSelectName).show();
-    }
-
-    intrahash = $("#openAccessCurrentPublicationHash").val();
-    interhash = $("#openAccessCurrentPublicationInterHash").val();
-
-    // init Classification
-    initClassifications(divClassificationSelectName, divClassificationListName);
-
 }
 
 function sentPublicationToRepository(elementId, intraHash) {
@@ -131,7 +116,7 @@ function sentPublicationToRepository(elementId, intraHash) {
                         swordResponseStatusCode = data.response.statuscode;
 
                         // on error enable button
-                        if (data.response.statuscode == 0) {
+                        if (data.response.statuscode === 0) {
                             $(elementId).removeClass("oadisabledsend2repositorybutton");
                             document.getElementById(elementId).disabled = false;
                         }
@@ -147,12 +132,6 @@ function sentPublicationToRepository(elementId, intraHash) {
             }
         });
     } // end of if ($('#authorcontractconfirm').checked)
-}
-
-
-/* open access check */
-function checkOpenAccess() {
-
 }
 
 function initClassifications(divClassificationSelectName, divClassificationListName) {
@@ -271,28 +250,6 @@ function createNode(atts) {
         parent.child = node;
 
     return node;
-}
-
-/* 
- * TODO: wird diese Funktion benutzt?
- * hardcoded #classifications und JEL 
- */
-function createNewClassField(container) {
-    var node = document.createElement('div');
-    node.id = container + '1';
-
-    var input = document.createElement('input');
-    input.type = 'text';
-    input.size = '25';
-    input.id = node.id + '_input';
-    input.disabled = 'true';
-
-    node.appendChild(input);
-
-    $('#classifications').append(node);
-
-    populate('JEL', node.id);
-
 }
 
 function _addClassificationItemToList(classificationName, classificationValue) {
@@ -549,79 +506,6 @@ function sendAdditionalMetadataFields(async) {
     });
 }
 
-
-function loadAdditionalMetadataFields() {
-    $.ajax({
-        dataType: 'json',
-        url: CLASSIFY_PUB_URL + "?action=" + GET_ADDITIONAL_METADATA + "&hash=" + intrahash,
-        success: function (data) {
-            // iterate over data
-            $.each(data, function (classification, classificationData) {
-                $.each(classificationData, function (j, item) {
-                    $("#" + (classification.replace(/\./g, '\\.'))).val(item);
-                });
-            });
-        },
-        error: function (req, status, e) {
-            showAjaxAlert("error", "There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
-        }
-    });
-}
-
-/* Load send to repository dates of publication 
- * Result may be from another similar publication (interhash), if another user has sent this publication already to.
- */
-function loadSentRepositories() {
-    // get data
-    /*
-    {"posts":
-      {"5098b2741b211a04f2d3de9b48d8ff37":
-        {
-          "repositories": [
-            {
-              "date": {"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
-              "id": "REPOSITORY_1"
-            },
-            {
-              "date":{"date":1,"day":2,"hours":18,"minutes":25,"month":1,"seconds":39,"time":1296581139000,"timezoneOffset":-60,"year":111},
-              "id":"REPOSITORY_1"
-            },
-            ...
-          ],
-          "selfsent": 1,
-          "intrahash":"5098b2741b211a04f2d3de9b48d8ff37"
-        }
-      },
-      ...
-    }
-    */
-    $.ajax({
-        dataType: 'json',
-        url: OA_STATUS_URL + "?action=" + GET_SENT_REPOSITORIES + "&interhash=" + interhash,
-        success: function (data) {
-            // iterate over data
-            if (!empty(data.posts)) {
-                $("#oaRepositorySent").append('<div id="oaRepositorySentHeader">' + getString("post.resource.openaccess.repository.sent.info") + ':</div>');
-                $.each(data.posts, function (intrahash, post) {
-                    $.each(post.repositories, function (key, item) {
-                        var sentDate = new Date(item.date.time);
-                        var sentDateFormatted = sentDate.getDate() + "." + (sentDate.getMonth() + 1) + "." + sentDate.getFullYear();
-                        var publicationsVersions = getString("post.resource.openaccess.repository.sent.versions");
-                        $("#oaRepositorySent").append('<div>' + getString("post.resource.openaccess.repository.sent.date") + ': ' + sentDateFormatted + '. <a href="/bibtex/2' + intrahash + '">' + publicationsVersions + '</a>' + (post.selfsent == 1 ? "" : +getString("post.resource.openaccess.repository.sent.other")) + '</div');
-                    });
-                });
-                // set message in headline of open access box and close box
-                $("#oaRepositorySentInfo").append('<div>' + getString("post.resource.openaccess.repository.sent.info") + '.</div>');
-                foldUnfold('openAccessContainer');
-            }
-        },
-        error: function (req, status, e) {
-            showAjaxAlert("error", "There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
-        }
-    });
-
-}
-
 function autoSaveMetadata(value) {
     booleanValue = value ? true : false;
     //console.log("autoSaveMetadata:"+autoSaveMetadataCounter);
@@ -648,7 +532,6 @@ function autoSaveMetadata(value) {
 
 }
 
-
 function setMetadataChanged(value) {
     booleanValue = value ? true : false;
     elementId = "sendMetadataMarker";
@@ -664,44 +547,6 @@ function setMetadataChanged(value) {
     }
 
     metadataChanged = booleanValue;
-}
-
-function isMetadataChanged() {
-    return metadataChanged;
-}
-
-function loadStoredClassificationItems() {
-    // clear list
-
-    // get data
-    $.ajax({
-        dataType: 'json',
-        url: CLASSIFY_PUB_URL + "?action=" + GET_POST_CLASSIFICATION_LIST + "&hash=" + intrahash,
-        success: function (data) {
-            // iterate over data
-            $.each(data, function (classification, classificationData) {
-                $.each(classificationData, function (j, item) {
-                    /*
-                     * add only a new item, if it does not exist.
-                     * $().length / if length is 0, element does not exist
-                     */
-                    if (!$("#classificationListItemElement" + _removeSpecialChars(classification + item)).length) {
-                        _addClassificationItemToList(classification, item);
-                    }
-                });
-            });
-            // add item to list
-            // addSaved()
-        },
-        error: function (req, status, e) {
-            alert("There seems to be an error in the ajax request, openaccess.js::loadStoredClassificationItems");
-        }
-    });
-
-}
-
-function setBackgroundColor(container, color) {
-    $("#" + container).css("background-color", color);
 }
 
 function checkauthorcontractconfirm() {

@@ -48,10 +48,8 @@
 						<property name="controllerBeanName" value="openAccessController" />
 						<property name="allowedFields">
 							<list>
-								<value>publisher</value>
-								<value>jTitle</value>
-								<value>qType</value>
 								<value>action</value>
+								<value>intrahash</value>
 								<value>interhash</value>
 							</list>
 						</property>
@@ -91,11 +89,13 @@
 		| PUMA-specific beans
 		|
 	 	+-->
+	<bean id="disseminController" class="de.unikassel.puma.webapp.controller.ajax.DisseminController" scope="request" parent="ajaxController"/>
+
 	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController">
+		<property name="disseminController" ref="disseminController"/>
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
-		
-	</bean>	
-	
+	</bean>
+
 	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
 		<property name="swordService" ref="swordService"/>	
 		<property name="messageSource" ref="messageSource"/>

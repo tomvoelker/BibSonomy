@@ -79,30 +79,17 @@
 		</c:choose>
 
 		<!-- only shown on PUMA (transfer publication to OpenAccess repository) -->
-		<div class="row">
-			<div class="col-md-12">
-				<c:if test="${properties['publication.reporting.enabled'] eq 'true'}">
+		<c:if test="${properties['publication.reporting.enabled'] eq 'true'}">
+			<div class="row">
+				<div class="col-md-12">
 					<c:set var="reportingMode" value="${properties['publication.reporting.mode']}" />
 					<!-- show only, if publication is own one (tagged myown) -->
 					<c:if test="${isOwnEntry and mtl:hasTagMyown(post)}">
-						<c:if test="${(reportingMode eq 'ALL' or reportingMode eq 'GROUP' and mtl:userIsGroup(command.context.loginUser))}"> <!-- only if publication is tagged with myown system tag -->
-							<editpub:openaccess referer="${referer}" bibtex="${publication}"/>
-						</c:if>
-						<c:if test="${reportingMode eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
-							<c:forEach var="group" items="${command.context.loginUser.groups}">
-								<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
-								<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
-									<h3 style="clear:both;"><a class="foldUnfold" href="#groupReporting"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="group.reporting.headline"/></a></h3>
-									<fmt:message key="group.reporting" var="reportDesc">
-										<fmt:param value="${group.name}" />
-									</fmt:message>
-									<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><c:out value="${reportDesc} "/></a>
-								</c:if>
-							</c:forEach>
-						</c:if>
+						<hr />
+						<editpub:openaccess post="${post}" bibtex="${publication}" reportingMode="${reportingMode}" referer="${referer}"/>
 					</c:if>
-				</c:if>
+				</div>
 			</div>
-		</div>
+		</c:if>
 	</div>
 </jsp:root>

@@ -29,6 +29,8 @@
  */
 package de.unikassel.puma.webapp.command.ajax;
 
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.webapp.command.ajax.AjaxCommand;
@@ -41,7 +43,11 @@ import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 public class OpenAccessCommand extends AjaxCommand<String> {
 
 	private String username;
+
 	private String intrahash;
+
 	private String interhash;
+
+	private Map<String, String> policy;
 
 }
