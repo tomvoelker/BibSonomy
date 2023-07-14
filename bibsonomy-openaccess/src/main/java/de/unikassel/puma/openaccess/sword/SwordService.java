@@ -43,11 +43,12 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import ch.qos.logback.core.net.server.Client;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -58,7 +59,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.HashUtils;
-import org.springframework.beans.factory.annotation.Required;
 import org.swordapp.client.AuthCredentials;
 import org.swordapp.client.ClientConfiguration;
 import org.swordapp.client.Deposit;
@@ -68,71 +68,65 @@ import org.swordapp.client.SWORDClient;
 import org.swordapp.client.SWORDClientException;
 import org.swordapp.client.SWORDError;
 import org.swordapp.client.ServiceDocument;
-import org.swordapp.client.UriRegistry;
 
 /**
- * Sword main
+ * SWORD Service
  * 
- * @author:  sven
- * 
+ * @author  sven
  */
+@Getter
+@Setter
 public class SwordService {
 	private static final Log log = LogFactory.getLog(SwordService.class);
 	
-	private static final String SWORDFILETYPE = "application/zip";
-	private static final String SWORDFORMAT = "http://purl.org/net/sword-types/METSDSpaceSIP"; 
-	
-	public static final String AF_ADDITIONALTITLE = "post.resource.openaccess.additionalfields.additionaltitle";
-	public static final String AF_SPONSOR = "post.resource.openaccess.additionalfields.sponsor";
-	public static final String AF_PHDORALEXAM = "post.resource.openaccess.additionalfields.phdoralexam";
-	public static final String AF_PHDREFEREE2 = "post.resource.openaccess.additionalfields.phdreferee2";
-	public static final String AF_PHDREFEREE = "post.resource.openaccess.additionalfields.phdreferee";
-	public static final String AF_INSTITUTION = "post.resource.openaccess.additionalfields.institution";
+	private static final String SWORD_FILETYPE = "application/zip";
+	private static final String SWORD_FORMAT = "https://purl.org/net/sword-types/METSDSpaceSIP"; // TODO doesn't exist anymore
 
-	public static final String[] AF_FIELD_NAMES = new String[] {
-		AF_INSTITUTION,
-		AF_PHDREFEREE,
-		AF_PHDREFEREE2,
-		AF_PHDORALEXAM,
-		AF_SPONSOR,
-		AF_ADDITIONALTITLE
-	};
-	
-	private SwordConfig repositoryConfig;
+	/** name or url of SWORD server of repository */
+	private String swordServer;
+
+	/** port number of SWORD server */
+	private int swordPort;
+
+	/** user agent to send to SWORD server */
+	private String swordUserAgent;
+
+	/** url to SWORD service document, e.g.: "/sword/servicedocument" */
+	private String swordDocumentUrl;
+
+	/** url to deposit SWORD document, e.g. "http://servername:8080/sword/deposit/urn:nbn:de:hebis:12-3456" */
+	private String swordDepositUrl;
+
+	/** SWORD authentication username */
+	private String swordUsername;
+
+	/** SWORD authentication password */
+	private String swordPassword;
+
+	/** API logic interface factory */
 	private LogicInterfaceFactory logicInterfaceFactory;
-	
-	private String projectDocumentPath;
+
+	/** Temp directory path to build zip-file for sword-deposit */
+	private String tempPath;
+
+	/** Deposit document path */
+	private String documentPath;
+
+	/** API URL renderer */
 	private UrlRenderer urlRenderer;
-
-
-	//Internationalized Resource Identifiers
-	private String getIRI(){
-		return this.repositoryConfig.getHttpServer() + ":" +
-				this.repositoryConfig.getHttpPort() +
-				this.repositoryConfig.getHttpServicedocumentUrl();
-	}
 
 	/**
 	 * retrieve service document from sword server
 	 * @return
 	 */
-	private ServiceDocument retrieveServicedocument(){
+	private ServiceDocument retrieveServicedocument() {
+		// Internationalized Resource Identifiers
+		String iri = this.swordServer + ":" + this.swordPort + this.swordDocumentUrl;
 		ServiceDocument serviceDocument = null;
 		final SWORDClient swordClient = this.createClient();
+
 		try {
-
-			//swordClient.setServer(this.repositoryConfig.getHttpServer(), this.repositoryConfig.getHttpPort());
-			//swordClient.setUserAgent(this.repositoryConfig.getHttpUserAgent());
-			//swordClient.setCredentials(this.repositoryConfig.getAuthUsername(), this.repositoryConfig.getAuthPassword());
-
-
-
-			serviceDocument = swordClient.getServiceDocument(
-					this.getIRI(),
-					new AuthCredentials(
-							this.repositoryConfig.getAuthUsername(),
-							this.repositoryConfig.getAuthPassword())
-			);
+			serviceDocument = swordClient.getServiceDocument(iri, new AuthCredentials(this.swordUsername, this.swordPassword));
 		} catch (final SWORDClientException e) {
 			log.info("SWORDClientException! getServiceDocument" + e.getMessage());
 		} catch (ProtocolViolationException e) {
@@ -143,29 +137,28 @@ public class SwordService {
 	}
 	
 	/**
-	 * Check if servicedocument is available and repository contains configured deposit collection
-	 *    
-	 * @param doc Servicedocument
+	 * Check if document service is available and repository contains configured deposit collection
+	 *
+	 * @param doc service document
 	 * @param url deposit url
 	 * @param accept "application/zip"
-	 * @param acceptPackaging "http://purl.org/net/sword-types/METSDSpaceSIP"
+	 * @param acceptPackaging "https://purl.org/net/sword-types/METSDSpaceSIP"
 	 * @return
 	 */
-	private boolean checkServicedokument(final ServiceDocument doc, final String url, final String accept, final String acceptPackaging) {
-		// TODO: check service document
+	private boolean checkServiceDocument(final ServiceDocument doc, final String url, final String accept, final String acceptPackaging) {
+		// TODO check service document
 		return true;
 	}
 	
 	
 	/**
-	 * collects all informations to send Documents with metadata to repository 
+	 * collects all information to send Documents with metadata to repository
 	 * @param pumaData 
-	 * @param user 
-	 * @throws SwordException 
+	 * @param user
 	 */
 	public void submitDocument(final PumaData<?> pumaData, final User user) throws SwordException, FileNotFoundException {
 		log.info("starting sword");
-		//DepositResponse depositResponse = new DepositResponse(999);
+		// DepositResponse depositResponse = new DepositResponse(999);
 		File swordZipFile = null;
 
 		final Post<?> post = pumaData.getPost(); 
@@ -179,7 +172,7 @@ public class SwordService {
 			final String fileID = HashUtils.getMD5Hash(user.getName().getBytes()) + "_" + post.getResource().getIntraHash();
 					
 			// Destination directory 
-			final File destinationDirectory = new File(this.repositoryConfig.getDirTemp() + "/" +fileID);
+			final File destinationDirectory = new File(this.tempPath + "/" +fileID);
 
 			// zip-filename
 			swordZipFile = new File(destinationDirectory.getAbsoluteFile() + "/" + fileID + ".zip");
@@ -225,7 +218,7 @@ public class SwordService {
 					// Set the compression ratio
 					zipOutputStream.setLevel(Deflater.DEFAULT_COMPRESSION);
 					
-					final String inputFilePath = this.projectDocumentPath + document.getFileHash().substring(0, 2) + "/" + document.getFileHash();
+					final String inputFilePath = this.documentPath + document.getFileHash().substring(0, 2) + "/" + document.getFileHash();
 					final FileInputStream in = new FileInputStream(inputFilePath);
 		
 					// Add ZIP entry to output stream.
@@ -309,8 +302,8 @@ public class SwordService {
 			//deposit.setSuggestedIdentifier(); TODO needed?
 
 			try {
-				// check depositurl against service document
-				if (this.checkServicedokument(this.retrieveServicedocument(), this.repositoryConfig.getHttpServicedocumentUrl(), SWORDFILETYPE, SWORDFORMAT)) {
+				// check deposit URL against service document
+				if (this.checkServiceDocument(this.retrieveServicedocument(), this.swordDocumentUrl, SWORD_FILETYPE, SWORD_FORMAT)) {
 
 					// transmit sword message (zip file with document metadata and document files
 //					swordMessage.setDestination(this.repositoryConfig.getHttpDepositUrl());
@@ -318,56 +311,17 @@ public class SwordService {
 //					depositResponse = swordClient.postFile(swordMessage);
 
 					DepositReceipt receipt = swordClient.deposit(
-							this.repositoryConfig.getHttpDepositUrl(),
+							this.swordDepositUrl,
 							deposit,
-							new AuthCredentials(
-									this.repositoryConfig.getAuthUsername(),
-									this.repositoryConfig.getAuthPassword())
+							new AuthCredentials(this.swordUsername, this.swordPassword)
 					);
 
-					/*
-					 * 200 OK Used in response to successful GET operations and
-					 * to Media Resource Creation operations where X-No-Op is
-					 * set to true and the server supports this header.
-					 * 
-					 * 201 Created
-					 * 
-					 * 202 Accepted - One of these MUST be used to indicate that
-					 * a deposit was successful. 202 Accepted is used when
-					 * processing of the data is not yet complete.
-					 * 
-					 * 
-					 * 400 Bad Request - used to indicate that there is some
-					 * problem with the request where there is no more
-					 * appropriate 4xx code.
-					 * 
-					 * 401 Unauthorized - In addition to the usage described in
-					 * HTTP, servers that support mediated deposit SHOULD use
-					 * this status code when the server does not understand the
-					 * value given in the X-Behalf-Of header. In this case a
-					 * human-readable explanation MUST be provided.
-					 * 
-					 * 403 Forbidden - indicates that there was a problem making
-					 * the deposit, it may be that the depositor is not
-					 * authorised to deposit on behalf of the target owner, or
-					 * the target owner does not have permission to deposit into
-					 * the specified collection.
-					 * 
-					 * 412 Precondition failed - MUST be returned by server
-					 * implementations if a calculated checksum does not match a
-					 * value provided by the client in the Content-MD5 header.
-					 * 
-					 * 415 Unsupported Media Type - MUST be used to indicate
-					 * that the format supplied in either a Content-Type header
-					 * or in an X-Packaging header or the combination of the two
-					 * is not accepted by the server.
-					 */
 					log.info("SWORD deposit status code: " + receipt.getStatusCode());
 					//throw new SwordException("error.sword.errcode"+depositResponse.getHttpResponse());
 				}
 
 			} catch (final SWORDClientException e) {
-				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + this.repositoryConfig.getHttpDepositUrl());
+				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + this.swordDepositUrl);
 				throw new SwordException("error.sword.urlnotaccessable");
 			} catch (ProtocolViolationException e) {
 				e.printStackTrace();
@@ -380,12 +334,9 @@ public class SwordService {
 
 	private SWORDClient createClient() {
 		final ClientConfiguration clientConfiguration = new ClientConfiguration();
-		clientConfiguration.setUserAgent(this.repositoryConfig.getHttpUserAgent());
+		clientConfiguration.setUserAgent(this.swordUserAgent);
 
 		final SWORDClient swordClient = new SWORDClient(clientConfiguration);
-		//swordClient.setServer(this.repositoryConfig.getHttpServer(), this.repositoryConfig.getHttpPort());
-		//swordClient.setUserAgent(this.repositoryConfig.getHttpUserAgent());
-		//swordClient.setCredentials(this.repositoryConfig.getAuthUsername(), this.repositoryConfig.getAuthPassword());
 		return swordClient;
 	}
 	
@@ -400,7 +351,7 @@ public class SwordService {
 		log.info("getting database access for user " + username);
 		final LogicInterface logic = this.logicInterfaceFactory.getLogicAccess(username, user.getApiKey());
 		
-		// get meta data for post
+		// get metadata for post
 		try {
 			final Post<? extends Resource> post = logic.getPostDetails(resourceHash, username); 
 			if (post.getResource() instanceof BibTex) {
@@ -416,38 +367,4 @@ public class SwordService {
 		return null;
 	}
 
-	/**
-	 * Configuration of Sword-Server (Repository) 
-	 * 
-	 * @param repositoryConfig the repositoryConfig to set
-	 */
-	public void setRepositoryConfig(final SwordConfig repositoryConfig) {
-		this.repositoryConfig = repositoryConfig;
-	}
-	
-	/**
-	 * The path to the documents.
-	 * 
-	 * @param projectDocumentPath
-	 */
-	@Required
-	public void setProjectDocumentPath(final String projectDocumentPath) {
-		this.projectDocumentPath = projectDocumentPath;
-	}
-
-	/**
-	 * The URL renderer to create the proper API XML.
-	 * @param urlRenderer
-	 */
-	@Required
-	public void setUrlRenderer(final UrlRenderer urlRenderer) {
-		this.urlRenderer = urlRenderer;
-	}
-
-	/**
-	 * @param logicInterfaceFactory the logicInterfaceFactory to set
-	 */
-	public void setLogicInterfaceFactory(final LogicInterfaceFactory logicInterfaceFactory) {
-		this.logicInterfaceFactory = logicInterfaceFactory;
-	}
 }

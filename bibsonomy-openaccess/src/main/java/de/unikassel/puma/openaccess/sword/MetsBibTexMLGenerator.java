@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -74,7 +75,7 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
  *
  * METS/MODS could possibly be generated with XSLT 
  * 
- * @author:  sven
+ * @author  sven
  */
 public class MetsBibTexMLGenerator {
 	private static final Log log = LogFactory.getLog(MetsBibTexMLGenerator.class);
@@ -144,22 +145,23 @@ public class MetsBibTexMLGenerator {
 		this.post.getPost().setTags(pumaPost.getTags());
 		this.post.getPost().setUser(pumaPost.getUser());
 		
-		this.post.setClassification(pumaData.getClassification());
+		this.post.setClassifications(pumaData.getClassifications());
 		
-		this.post.setAuthor(pumaData.getAuthor());
-		this.post.setExaminstitution(pumaData.getExaminstitution());
-		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());
-		this.post.setExamreferee(pumaData.getExamreferee());
-		this.post.setPhdoralexam(pumaData.getPhdoralexam());
-		this.post.setSponsors(pumaData.getSponsors());
-		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());
+		this.post.setAuthors(pumaData.getAuthors());
+		this.post.setInstitution(pumaData.getInstitution());
+		this.post.setAdditionalTitle(pumaData.getAdditionalTitle());
+		this.post.setReferee1(pumaData.getReferee1());
+		this.post.setReferee2(pumaData.getReferee2());
+		this.post.setOralExamDate(pumaData.getOralExamDate());
+		this.post.setSponsor(pumaData.getSponsor());
+		this.post.setAdditionalTitle(pumaData.getAdditionalTitle());
 	}
 
 	public void writeMets(OutputStream outputStream) throws IOException {
 		/*
 		 * helper
 		 */
-		final Writer writer = new FilterInvalidXMLCharsWriter(new OutputStreamWriter(outputStream, StringUtils.CHARSET_UTF_8));
+		final Writer writer = new FilterInvalidXMLCharsWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
 		final ObjectFactory objectFactory = new ObjectFactory();
 		
 		/*
@@ -275,7 +277,7 @@ public class MetsBibTexMLGenerator {
 		/* our post */
 		final PumaPost pumaPost = this.xmlRenderer.createPumaPost(this.post, this.user);
 		xmlData.getAny().add(pumaPost);
-		this.xmlRenderer.serializeMets(writer, mets);
+		this.xmlRenderer.serializeMETS(writer, mets);
 		writer.close();
 	}
 

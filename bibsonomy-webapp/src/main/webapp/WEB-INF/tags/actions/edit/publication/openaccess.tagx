@@ -46,63 +46,73 @@
 				<h4 class="pub-details"><fontawesome:icon icon="paper-plane" fixedWidth="${true}" spaceAfter="5"/><fmt:message key="post.resource.openaccess.submit.headline"/></h4>
 				<p><fmt:message key="post.resource.openaccess.submit.description"/></p>
 
-				<form class="form-horizontal">
+				<form class="form-horizontal" id="formSubmitRepository">
 					<!-- show additional fields, if the publication is a PhD or Master thesis -->
 					<c:choose>
 						<c:when test="${bibtex.entrytype=='phdthesis' || bibtex.entrytype=='mastersthesis'}">
-							<c:set var="fields" value="${fn:split('institution,referee1,referee2,phdoralexam,sponsor,additionaltitle',',')}"/>
+							<c:set var="fields" value="${fn:split('institution,referee1,referee2,oralExamDate,sponsor,additionalTitle',',')}"/>
 						</c:when>
 						<c:otherwise>
-							<c:set var="fields" value="${fn:split('sponsor,additionaltitle',',')}"/>
+							<c:set var="fields" value="${fn:split('sponsor,additionalTitle',',')}"/>
 						</c:otherwise>
 					</c:choose>
 
-					<fieldset>
-						<div id="openAccessContainer">
-							<div id="openAccessMetaDataContainer">
-								<c:forEach var="field" items="${fields}" varStatus="status">
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="oaFields-${field}"><fmt:message key="post.resource.openaccess.submit.fields.${field}"/></label>
-										<div class="col-sm-9">
-											<input type="text" class="form-control help-popover" name="oaFields-${field}" id="oaFields-${field}"/>
-											<div class="help help-header hide"><!-- keep me --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.submit.fields.${field}.help"/></div>
-										</div>
-									</div>
-								</c:forEach>
-
-								<div id="pumaAddon" class="clearboth" ><!-- used for puma--> </div>
-
-								<div class="form-group" id="openAccessClassificationContainer">
-									<label class="control-label col-sm-3"><fmt:message key="post.resource.openaccess.submit.classification.headline"/></label>
-
+					<div id="openAccessContainer">
+						<div id="openAccessMetaDataContainer">
+							<c:forEach var="field" items="${fields}" varStatus="status">
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="oaFields-${field}"><fmt:message key="post.resource.openaccess.submit.fields.${field}"/></label>
 									<div class="col-sm-9">
-										<div class="oadescription"><fmt:message key="post.resource.openaccess.submit.classification.description"/></div>
-										<div id="openAccessClassificationList"><!-- openAccessClassificationListContainer --></div>
-										<div id="openAccessClassificationSelect"><!-- openAccessClassificationSelectContainer --></div>
+										<input type="text" class="form-control help-popover" name="pumaData.${field}"/>
+										<div class="help help-header hide"><!-- keep me --></div>
+										<div class="help help-content hide"><fmt:message key="post.resource.openaccess.submit.fields.${field}.help"/></div>
 									</div>
 								</div>
+							</c:forEach>
 
-								<div class="form-group" id="authorcontract">
-									<div class="col-sm-offset-3 col-sm-9">
-										<div class="checkbox">
-											<label id="authorcontractconfirmcontainer">
-												<input onclick="checkauthorcontractconfirm();" onchange="checkauthorcontractconfirm();" type="checkbox" id="authorcontractconfirm"/>
-												<fmt:message key="post.resource.openaccess.submit.authorcontractconfirm"/>
-											</label>
-										</div>
-									</div>
+							<!--
+							<div class="form-group" id="openAccessClassificationContainer">
+								<label class="control-label col-sm-3"><fmt:message key="post.resource.openaccess.submit.classification.headline"/></label>
+
+								<div class="col-sm-9">
+									<div class="oadescription"><fmt:message key="post.resource.openaccess.submit.classification.description"/></div>
+									<div id="openAccessClassificationList"><></div>
+									<div id="openAccessClassificationSelect"><></div>
 								</div>
+							</div>
+							-->
 
-								<div class="form-group" id="oaSubmitContainer">
-									<div class="col-sm-offset-3 col-sm-9" id="pumaSword">
-										<fmt:message key="post.resource.openaccess.button.sendtorepository" var="oaButtonSendtorepository"/>
-										<input id="oasendtorepositorybutton" type="button" class="ajaxButton oadisabledsend2repositorybutton btn btn-primary" onclick="sentPublicationToRepository('oasendtorepositorybutton','${bibtex.intraHash}')" value="${oaButtonSendtorepository}" disabled="disabled"/>
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-9">
+									<div class="checkbox">
+										<input type="checkbox" id="authorAgreement"/>
+										<fmt:message key="post.resource.openaccess.submit.authorcontractconfirm"/>
 									</div>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-9">
+									<parts:spinner id="submitRepositoryLoader" fullscreen="${true}">
+										<jsp:attribute name="message">
+											<p>
+												<fmt:message key="post.resource.openaccess.submit.loading" />
+											</p>
+											<p id="submitRepositoryCancelBtn">
+												<a href="#" onclick="cancelSubmitToRepository()">
+													<fmt:message key="post_bibtex.orcid.action.cancel" />
+												</a>
+											</p>
+										</jsp:attribute>
+									</parts:spinner>
+
+									<input type="hidden" name="intrahash" value="${bibtex.intraHash}" />
+									<fmt:message key="post.resource.openaccess.button.submitRepository" var="submitRepositoryLabel"/>
+									<input type="button" class="btn btn-primary" id="submitRepositoryBtn" onclick="sendToRepository()" value="${submitRepositoryLabel}"/>
+								</div>
+							</div>
 						</div>
-					</fieldset>
+					</div>
 				</form>
 			</div>
 		</c:if>

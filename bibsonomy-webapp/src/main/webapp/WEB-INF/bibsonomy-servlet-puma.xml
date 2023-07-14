@@ -75,7 +75,14 @@
 						<property name="controllerBeanName" value="swordServiceController" />
 						<property name="allowedFields">
 							<list>
-								<value>resourceHash</value>
+								<value>intrahash</value>
+								<value>interhash</value>
+								<value>pumaData.institution</value>
+								<value>pumaData.referee1</value>
+								<value>pumaData.referee2</value>
+								<value>pumaData.examOralDate</value>
+								<value>pumaData.sponsor</value>
+								<value>pumaData.additionalTitle</value>
 							</list>
 						</property>
 					</bean>
@@ -98,8 +105,8 @@
 
 	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
 		<property name="swordService" ref="swordService"/>	
-		<property name="messageSource" ref="messageSource"/>
 		<property name="mode" value="${publication.reporting.mode}" />
+		<property name="messageSource" ref="messageSource"/>
 	</bean>
 	
 	<bean id="publicationClassificationController" class="de.unikassel.puma.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
@@ -108,28 +115,19 @@
 
 	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton" />
 
-	<!--+ 
-		|
-		| PUMA-specific beans that must also be provided for BibSonomy (using
-		| NullFactoryBeanin bibsonomy2-servlet-bibsonomy.xml).
-		|
-	 	+-->
-	<bean id="swordConfig" class="de.unikassel.puma.openaccess.sword.SwordConfig">
-		<property name="dirTemp" value="${sword.dirTemp}"/>
-		<property name="httpServer" value="${sword.httpServer}"/>
-		<property name="httpPort" value="${sword.httpPort}"/>
-		<property name="httpUserAgent" value="${sword.httpUserAgent}"/>
-		<property name="authUsername" value="${sword.authUsername}"/>
-		<property name="authPassword" value="${sword.authPassword}"/>
-		<property name="httpServicedocumentUrl" value="${sword.httpServicedocumentUrl}"/>
-		<property name="httpDepositUrl" value="${sword.httpDepositUrl}"/>
-	</bean>
 	
 	<bean id="apiLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractLogicInterfaceFactory" />
 
 	<bean id="realSwordService" class="de.unikassel.puma.openaccess.sword.SwordService">
-		<property name="repositoryConfig" ref="swordConfig"/>
-		<property name="projectDocumentPath" value="${project.document.path}"/>
+		<property name="swordServer" value="${sword.server}"/>
+		<property name="swordPort" value="${sword.port}"/>
+		<property name="swordUserAgent" value="${sword.userAgent}"/>
+		<property name="swordUsername" value="${sword.username}"/>
+		<property name="swordPassword" value="${sword.password}"/>
+		<property name="swordDocumentUrl" value="${sword.documentUrl}"/>
+		<property name="swordDepositUrl" value="${sword.depositUrl}"/>
+		<property name="tempPath" value="${sword.tempPath}"/>
+		<property name="documentPath" value="${project.document.path}"/>
 		<property name="urlRenderer" ref="restUrlRenderer"/>
 		<property name="logicInterfaceFactory" ref="apiLogicFactory" />
 	</bean>
