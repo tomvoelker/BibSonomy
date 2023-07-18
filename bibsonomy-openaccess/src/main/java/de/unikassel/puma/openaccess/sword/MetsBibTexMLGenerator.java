@@ -111,7 +111,7 @@ public class MetsBibTexMLGenerator {
 	public MetsBibTexMLGenerator(final UrlRenderer urlRenderer) {
 		this.xmlRenderer = new METSRenderer(urlRenderer);
 		this.xmlRenderer.init();
-		this.post = new PumaData<BibTex>();
+		this.post = new PumaData<>();
 	}
 
 	public String getFilename(final int elementnumber) {
@@ -136,25 +136,7 @@ public class MetsBibTexMLGenerator {
 	 */
 	public void setMetadata(final PumaData<BibTex> pumaData) {
 		final Post<BibTex> pumaPost = pumaData.getPost();
-		this.post.getPost().setDescription(pumaPost.getDescription());
-		this.post.getPost().setContentId(pumaPost.getContentId());
-		this.post.getPost().setDate(pumaPost.getDate());
-		this.post.getPost().setGroups(pumaPost.getGroups());
-		this.post.getPost().setRanking(pumaPost.getRanking());
-		this.post.getPost().setResource(pumaPost.getResource());
-		this.post.getPost().setTags(pumaPost.getTags());
-		this.post.getPost().setUser(pumaPost.getUser());
-		
-		this.post.setClassifications(pumaData.getClassifications());
-		
-		this.post.setAuthors(pumaData.getAuthors());
-		this.post.setInstitution(pumaData.getInstitution());
-		this.post.setAdditionalTitle(pumaData.getAdditionalTitle());
-		this.post.setReferee1(pumaData.getReferee1());
-		this.post.setReferee2(pumaData.getReferee2());
-		this.post.setOralExamDate(pumaData.getOralExamDate());
-		this.post.setSponsor(pumaData.getSponsor());
-		this.post.setAdditionalTitle(pumaData.getAdditionalTitle());
+		this.post.setPost(pumaPost);
 	}
 
 	public void writeMets(OutputStream outputStream) throws IOException {
@@ -278,7 +260,6 @@ public class MetsBibTexMLGenerator {
 		final PumaPost pumaPost = this.xmlRenderer.createPumaPost(this.post, this.user);
 		xmlData.getAny().add(pumaPost);
 		this.xmlRenderer.serializeMETS(writer, mets);
-		writer.close();
 	}
 
 }

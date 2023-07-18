@@ -60,39 +60,13 @@ function sendToRepository() {
             // statuscode can be 0 (error/warning) or 1 (success)
 
             // check and show response to user
-            /*
             $.each(data, function (i, response) {
                 if (null == data || null == data.response) {
                     showAjaxAlert("error", "unknown response error");
                 } else {
-                    // create text node behind transmit button, if not exists, to show response text in it
-                    // confirmations and warnings get different css-classes
-                    var s = createNode({
-                        tag: 'div',
-                        parent: null,
-                        child: null,
-                        childNodes: null,
-                        parentID: null,
-                        id: 'swordresponse',
-                        className: "ajaxresponse" + data.response.statuscode
-                    });
-
-                    s.appendChild(document.createTextNode(data.response.localizedMessage));
-                    $('#pumaSword').append(s);
-
-                    swordResponseStatusCode = data.response.statuscode;
-
-                    // on error enable button
-                    if (data.response.statuscode === 0) {
-                        $(elementId).removeClass("oadisabledsend2repositorybutton");
-                        document.getElementById(elementId).disabled = false;
-                    }
-
-                    // show response text
 
                 }
             });
-             */
         },
         error: function (req, status, e) {
             showAjaxAlert("error", "Unable to send data to repository: " + status);

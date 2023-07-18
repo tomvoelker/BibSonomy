@@ -36,12 +36,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -57,6 +54,7 @@ import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.json.simple.JSONObject;
 import org.springframework.context.MessageSource;
 
 import de.unikassel.puma.common.ReportingMode;
@@ -94,6 +92,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		
 		if (!present(post)) {
 			// TODO: do something
+			return Views.AJAX_JSON;
 		}
 		
 		// add some metadata to post
@@ -122,13 +121,13 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		// log successful store to repository 
 		if (statuscode == 1) {
 			//final Post<?> createdPost = logic.getPostDetails(command.getResourceHash(), user.getName());
-			final List<Repository> repositorys = new ArrayList<Repository>();
+			final List<Repository> repositories = new ArrayList<Repository>();
 			final Repository repo = new Repository();
-			repo.setId("REPOSITORY");  // TODO: set ID to current repository - it should be possible in fututre to send a post to multiple/different repositories 
-			repositorys.add(repo);
-			post.setRepositorys(repositorys);
+			repo.setId("REPOSITORY");  // TODO: set ID to current repository - it should be possible in future to send a post to multiple/different repositories
+			repositories.add(repo);
+			post.setRepositories(repositories);
 	
-			this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_REPOSITORY);
+			this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_REPOSITORIES);
 		}
 	
 		final JSONObject json = new JSONObject();

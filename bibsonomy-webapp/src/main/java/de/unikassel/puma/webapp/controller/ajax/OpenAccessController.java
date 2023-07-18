@@ -96,7 +96,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 					for (final Post<BibTex> post : posts) {
 						final JSONObject postJson = new JSONObject();
 						final JSONArray repositoriesJson = new JSONArray();
-						repositoriesJson.addAll(post.getRepositorys());
+						repositoriesJson.addAll(post.getRepositories());
 						postJson.put("repositories", repositoriesJson);
 						postJson.put("sentBySelf", (command.getContext().getLoginUser().getName().equals(post.getUser().getName()) ? 1 : 0));
 						postJson.put("intrahash", post.getResource().getIntraHash());
