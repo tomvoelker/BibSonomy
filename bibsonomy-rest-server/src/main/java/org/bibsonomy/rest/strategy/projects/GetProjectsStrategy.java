@@ -31,6 +31,7 @@ package org.bibsonomy.rest.strategy.projects;
 
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -69,8 +70,11 @@ public class GetProjectsStrategy extends AbstractGetListStrategy<List<Project>> 
 	@Override
 	protected List<Project> getList() {
 		final ViewModel viewModel = this.getView();
-		final ProjectQuery projectQuery = new ProjectQuery.ProjectQueryBuilder().internalId(this.internalId).
-						start(viewModel.getStartValue()).end(viewModel.getEndValue()).build();
+		final ProjectQuery projectQuery = new ProjectQueryBuilder()
+				.internalId(this.internalId)
+				.start(viewModel.getStartValue())
+				.end(viewModel.getEndValue())
+				.build();
 		return this.getLogic().getProjects(projectQuery);
 	}
 

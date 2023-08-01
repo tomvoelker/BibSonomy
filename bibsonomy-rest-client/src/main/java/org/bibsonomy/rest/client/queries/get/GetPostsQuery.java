@@ -33,6 +33,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.SortCriteria;
@@ -41,6 +43,8 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -51,118 +55,44 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
+@Getter
+@Setter
 public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resource>>> {
 	private static final Log log = LogFactory.getLog(GetPostsQuery.class);
 
+	private final String userName;
+	private final Class<? extends Resource> resourceType;
+	private final GroupingEntity grouping;
+	private final String groupingValue;
+	private final String search;
+	private final List<String> tags;
+	private final String resourceHash;
+	private final List<SortCriteria> sortCriteria;
+	private final QueryScope searchType;
+
 	private final int start;
 	private final int end;
-	private List<SortCriteria> sortCriteria;
-	private String search;
-	private Class<? extends Resource> resourceType;
-	private List<String> tags;
-	private GroupingEntity grouping = GroupingEntity.ALL;
-	private String groupingValue;
-	private String resourceHash;
-	private String userName;
-	private QueryScope searchType;
 
 	/**
 	 * Gets bibsonomy's posts list.
 	 */
-	public GetPostsQuery() {
-		this(0, 19);
-	}
-
-	/**
-	 * Gets bibsonomy's posts list.
-	 * 
-	 * @param start
-	 *            start of the list
-	 * @param end
-	 *            end of the list
-	 */
-	public GetPostsQuery(int start, int end) {
-		if (start < 0) {
-			start = 0;
-		}
-		if (end < start) {
-			end = start;
-		}
-
-		this.start = start;
-		this.end = end;
-	}
-
-	/**
-	 * Set the grouping used for this query. If {@link GroupingEntity#ALL} is
-	 * chosen, the groupingValue isn't evaluated (-> it can be null or empty).
-	 * 
-	 * @param grouping
-	 *            the grouping to use
-	 * @param groupingValue
-	 *            the value for the chosen grouping; for example the username if
-	 *            grouping is {@link GroupingEntity#USER}
-	 * @throws IllegalArgumentException
-	 *             if grouping is != {@link GroupingEntity#ALL} and
-	 *             groupingValue is null or empty
-	 */
-	public void setGrouping(final GroupingEntity grouping, final String groupingValue) throws IllegalArgumentException {
-		if (grouping == GroupingEntity.ALL) {
-			this.grouping = grouping;
-			return;
-		}
-		if (!present(groupingValue)) {
+	public GetPostsQuery(PostQuery<? extends Resource> query, User loggedInUser) {
+		this.grouping = present(query.getGrouping()) ? query.getGrouping() : GroupingEntity.ALL;
+		this.groupingValue = query.getGroupingName();
+		if (this.grouping != GroupingEntity.ALL && !present(this.groupingValue)) {
 			throw new IllegalArgumentException("no grouping value given");
 		}
 
-		this.grouping = grouping;
-		this.groupingValue = groupingValue;
-	}
+		this.resourceHash = query.getHash();
+		this.resourceType = query.getResourceClass();
+		this.tags = query.getTags();
+		this.search = query.getSearch();
+		this.sortCriteria = query.getSortCriteria();
+		this.userName = loggedInUser.getName();
+		this.searchType = query.getScope();
 
-	/**
-	 * set the resource type of the resources of the posts.
-	 * 
-	 * @param type
-	 *            the type to set
-	 */
-	public void setResourceType(final Class<? extends Resource> type) {
-		this.resourceType = type;
-	}
-
-	/**
-	 * @param resourceHash
-	 *            The resourceHash to set.
-	 */
-	public void setResourceHash(final String resourceHash) {
-		this.resourceHash = resourceHash;
-	}
-
-	/**
-	 * @param tags
-	 *            the tags to set
-	 */
-	public void setTags(final List<String> tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @param sortCriteria
-	 * 				the sort criteriums to set
-	 */
-	public void setSortCriteria(final List<SortCriteria> sortCriteria) {
-		this.sortCriteria = sortCriteria;
-	}
-
-	/**
-	 * @param search
-	 *            the search string to set
-	 */
-	public void setSearch(final String search) {
-		this.search = search;
-	}
-
-	public void setSearchType(QueryScope searchType) {
-		this.searchType = searchType;
+		this.start = query.getStart();
+		this.end = query.getEnd();
 	}
 
 	@Override
@@ -187,13 +117,5 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		}
 		this.downloadedDocument = performGetRequest(url);
-	}
-
-	/**
-	 * @param userName
-	 *            the userName to set
-	 */
-	public void setUserName(final String userName) {
-		this.userName = userName;
 	}
 }

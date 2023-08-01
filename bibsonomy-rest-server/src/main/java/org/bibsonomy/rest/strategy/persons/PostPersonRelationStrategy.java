@@ -31,44 +31,57 @@ package org.bibsonomy.rest.strategy.persons;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
-import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
-import java.io.ByteArrayOutputStream;
+import java.io.Writer;
 
 /**
- * strategy to get a person by his/her person id
+ * strategy to create a new post person relation
  *
  * @author pda
  */
-public class GetPersonStrategy extends Strategy {
+public class PostPersonRelationStrategy extends AbstractCreateStrategy {
 
 	private final String personId;
 
 	/**
-	 * default constructor
-	 *
+	 * default construtor
 	 * @param context
 	 * @param personId
 	 */
-	public GetPersonStrategy(final Context context, final String personId) {
+	public PostPersonRelationStrategy(final Context context, final String personId) {
 		super(context);
 		this.personId = personId;
 	}
 
 	@Override
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectMovedException, ObjectNotFoundException {
+	protected void render(final Writer writer, final String relationId) {
+		this.getRenderer().serializeResourceHash(writer, relationId);
+	}
+
+	@Override
+	protected String create() {
 		final Person person = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personId);
 		if (!present(person)) {
-			throw new NoSuchResourceException("The requested person with id '" + this.personId + "' does not exist.");
+			throw new BadRequestOrResponseException("Person with id " + this.personId + " doesn't exist.");
 		}
-		this.getRenderer().serializePerson(this.writer, person, new ViewModel());
+
+		final ResourcePersonRelation resourcePersonRelation = this.getRenderer().parseResourcePersonRelation(this.doc);
+		resourcePersonRelation.setPerson(person);
+
+		try {
+			this.getLogic().createResourceRelation(resourcePersonRelation);
+			final Resource resource = resourcePersonRelation.getPost().getResource();
+			return resource.getInterHash();
+		} catch (final ResourcePersonAlreadyAssignedException e) {
+			throw new BadRequestOrResponseException(e);
+		}
 	}
 }
