@@ -3517,31 +3517,24 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		// TODO: implement a chain
-
 		try (final DBSession session = this.openSession()) {
-			Person person;
-			if (PersonIdType.PERSON_ID == idType) {
-				person = this.personDBManager.getPersonById(id, session);
-			} else if (PersonIdType.DNB_ID == idType) {
-				person = this.personDBManager.getPersonByDnbId(id, session);
-				// } else if (PersonIdType.ORCID == idType) {
-				//	TODO: implement
-			} else if (PersonIdType.USER == idType) {
-				person = this.personDBManager.getPersonByUser(id, session);
-			} else {
-				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
+			Person person = null;
+			switch (idType) {
+				case PERSON_ID:
+					person = this.personDBManager.getPersonById(id, session);
+					break;
+				case USER:
+					person = this.personDBManager.getPersonByUser(id, session);
+					break;
+				case DNB_ID:
+					person = this.personDBManager.getPersonByDnbId(id, session);
+				case ORCID:
+					// TODO
+					break;
+				default:
+					break;
 			}
 			return person;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
-	 */
-	@Override
-	public Person getPersonByAdditionalKey(final String key, final String value) {
-		try (final DBSession session = this.openSession()) {
-			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
 		}
 	}
 

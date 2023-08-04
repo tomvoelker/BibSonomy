@@ -64,6 +64,7 @@ import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.util.PersonResourceRelationUtils;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.object.FieldDescriptor;
@@ -90,7 +91,6 @@ import org.springframework.validation.Errors;
 @Setter
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 
-    public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
     public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
     private static final int DEFAULT_NO_OF_ENTRYTYPES = 25;
 
@@ -152,12 +152,11 @@ public class PersonPageController extends SingleResourceListController implement
         final List<ResourcePersonRelation> authorEditorRelations = new ArrayList<>();
         final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 
-        for (ResourcePersonRelation thesis : thesesRelations) {
-            final boolean isAuthorEditor = PUBLICATION_RELATED_RELATION_TYPES.contains(thesis.getRelationType());
-            if (isAuthorEditor) {
-                authorEditorRelations.add(thesis);
+        for (ResourcePersonRelation thesisRelation : thesesRelations) {
+            if (PersonResourceRelationUtils.isAuthorEditorRelation(thesisRelation)) {
+                authorEditorRelations.add(thesisRelation);
             } else {
-                advisorRelations.add(thesis);
+                advisorRelations.add(thesisRelation);
             }
         }
 

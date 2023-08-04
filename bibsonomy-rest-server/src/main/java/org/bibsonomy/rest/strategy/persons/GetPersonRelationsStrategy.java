@@ -41,6 +41,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.extra.AdditionalKey;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
@@ -94,7 +95,11 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
         }
 
         if (present(this.additionalKey)) {
-            return this.getLogic().getPersonByAdditionalKey(this.additionalKey.getKeyName(), this.additionalKey.getKeyValue());
+            PersonQueryBuilder queryBuilder = new PersonQueryBuilder().byAdditionalKey(this.additionalKey);
+            List<Person> persons = this.getLogic().getPersons(queryBuilder.build());
+            if (present(persons)) {
+                return persons.get(0);
+            }
         }
 
         return null;
