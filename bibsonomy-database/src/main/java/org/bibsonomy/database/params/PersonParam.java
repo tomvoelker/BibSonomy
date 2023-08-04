@@ -27,47 +27,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.params.person;
+package org.bibsonomy.database.params;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Parameters to get a person by an additional key
+ * Parameters for retrieving a list of persons or details of a person
+ *
  * @author kchoong
  */
-public class PersonAdditionalKeyParam {
-	private final String personId;
-	private final String keyName;
-	private final String keyValue;
+@Getter
+@Setter
+public class PersonParam extends GenericParam {
+    private String personId;
 
-	/**
-	 * Default constructor
-	 * @param personId
-	 * @param keyName
-	 * @param keyValue
-	 */
-	public PersonAdditionalKeyParam(String personId, String keyName, String keyValue) {
-		this.personId = personId;
-		this.keyName = keyName;
-		this.keyValue = keyValue;
-	}
+    private String organizationName;
 
-	/**
-	 * @return the personId
-	 */
-	public String getPersonId() {
-		return personId;
-	}
+    private int limit;
 
-	/**
-	 * @return the keyName
-	 */
-	public String getKeyName() {
-		return keyName;
-	}
+    private int offset;
 
-	/**
-	 * @return the keyValue
-	 */
-	public String getKeyValue() {
-		return keyValue;
-	}
+    private String additionalKeyName;
+
+    private String additionalKeyValue;
 }
