@@ -33,8 +33,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.util.Sets;
 
 /**
  * util functions for person resource relations
@@ -42,9 +45,8 @@ import org.bibsonomy.model.ResourcePersonRelation;
  * @author dzo
  */
 public final class PersonResourceRelationUtils {
-	private PersonResourceRelationUtils() {
-		// noop
-	}
+
+	private static final Set<PersonResourceRelationType> AUTHOR_EDITOR_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	/**
 	 * get a relation for a specified index
@@ -57,5 +59,10 @@ public final class PersonResourceRelationUtils {
 			return Optional.empty();
 		}
 		return relations.stream().filter(relation -> relation.getPersonIndex() == index).findFirst();
+	}
+
+	public static boolean isAuthorEditorRelation(ResourcePersonRelation relation) {
+		PersonResourceRelationType type = relation.getRelationType();
+		return AUTHOR_EDITOR_TYPES.contains(type);
 	}
 }

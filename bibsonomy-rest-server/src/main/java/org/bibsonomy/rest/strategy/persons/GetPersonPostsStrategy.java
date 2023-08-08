@@ -36,8 +36,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -49,15 +50,15 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.util.PersonResourceRelationUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
 
 
@@ -73,12 +74,11 @@ import org.bibsonomy.util.UrlBuilder;
  */
 public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
+	private static final Log log = LogFactory.getLog(GetPersonPostsStrategy.class);
+
 	private String personId;
 	private final AdditionalKey additionalKey;
 	private final Date changeDate;
-
-	// TODO REMOVE ASAP
-	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	/**
 	 * constructor for /persons/posts
@@ -93,15 +93,16 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
+		final List<Post<? extends BibTex>> results = new LinkedList<>();
 		final Person person = this.getPerson();
 
-		if (present(person)) {
-			// Set person id, if additional keys were used
-			this.personId = person.getPersonId();
+		if (!present(person)) {
+			log.debug("No person was found with " + this.personId + " : " + this.additionalKey);
+			return results;
 		}
 
 		// Check, if a user has claimed this person and opt for myown-posts
-		if (present(person) && present(person.getUser())) {
+		if (present(person.getUser())) {
 			// Get person posts style settings of the linked user
 			final User user = this.getAdminLogic().getUserDetails(person.getUser());
 			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
@@ -114,7 +115,7 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		// Default: return the gold standards
 		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(this.personId)
+				.byPersonId(person.getPersonId())
 				.byChangeDate(this.changeDate)
 				.withPosts(true)
 				.withPersonsOfPosts(true)
@@ -122,9 +123,7 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 				.sortBy(PersonResourceRelationSortKey.PublicationYear)
 				.orderBy(SortOrder.DESC)
 				.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
-
 		final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(queryBuilder.build());
-		final List<Post<? extends BibTex>> postRelations = new LinkedList<>();
 
 		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
@@ -134,16 +133,13 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 			publication.setNumberOfRatings(null);
 
 			// only add author and editor relations to the result list
-			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
-
-			if (isAuthorEditorRelation) {
-				postRelations.add(resourcePersonRelation.getPost());
+			if (PersonResourceRelationUtils.isAuthorEditorRelation(resourcePersonRelation)) {
+				results.add(resourcePersonRelation.getPost());
 			}
 		}
 
-		return postRelations;
+		return results;
 	}
-
 
 	protected List<? extends Post<? extends Resource>> handleMyOwnPosts(final Person person) {
 		// Get 'myown' posts of the linked user
@@ -162,7 +158,11 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		}
 
 		if (present(this.additionalKey)) {
-			return this.getLogic().getPersonByAdditionalKey(this.additionalKey.getKeyName(), this.additionalKey.getKeyValue());
+			PersonQueryBuilder queryBuilder = new PersonQueryBuilder().byAdditionalKey(this.additionalKey);
+			List<Person> persons = this.getLogic().getPersons(queryBuilder.build());
+			if (present(persons)) {
+				return persons.get(0);
+			}
 		}
 
 		return null;

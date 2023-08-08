@@ -155,12 +155,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public Person getPersonByAdditionalKey(String key, String value) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	@Override
 	public List<Person> getPersons(PersonQuery query) {
 		this.doDefaultAction();
 		return null;

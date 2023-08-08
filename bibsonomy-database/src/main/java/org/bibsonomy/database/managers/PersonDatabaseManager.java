@@ -60,8 +60,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.CRISLinkParam;
 import org.bibsonomy.database.params.DNBAliasParam;
 import org.bibsonomy.database.params.DenyMatchParam;
-import org.bibsonomy.database.params.person.GetPersonByOrganizationParam;
-import org.bibsonomy.database.params.person.PersonAdditionalKeyParam;
+import org.bibsonomy.database.params.PersonParam;
 import org.bibsonomy.database.params.relations.GetPersonRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
@@ -237,32 +236,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
     }
 
     /**
-     * Returns a Person identified by an additional key value
-     *
-     * @param keyName        additional key name
-     * @param keyValue        additional key value
-     * @param session        db session
-     * @return Person        retrieved person
-     */
-    public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
-        final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(null, keyName, keyValue);
-        final Person person = this.queryForObject("getPersonByAdditionalKey", param, Person.class, session);
-        return person;
-    }
-
-    /**
-     * Creates a new additional key and corresponding value for the specified Person
-     * @param personId        specified person
-     * @param keyName        new additional key name
-     * @param keyValue        additional key value
-     * @param session        db session
-     */
-    public void createAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
-        final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, keyValue);
-        this.insert("insertAdditionalKeyForPerson", param, session);
-    }
-
-    /**
      * Creates a new name and adds it to the specified Person
      *
      * @param name
@@ -301,18 +274,6 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
         } finally {
             session.endTransaction();
         }
-    }
-
-    /**
-     * Remove an additional key entry of the specified person
-     *
-     * @param personId        specified person
-     * @param keyName        additional key name to remove
-     * @param session        db session
-     */
-    public void removePersonAdditionalKey(final String personId, final String keyName, final DBSession session) {
-        final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, null);
-        this.delete("deleteAdditionalKeyForPerson", param, session);
     }
 
     private PersonName getPersonNameById(int personNameChangeId, final DBSession session) {
@@ -357,6 +318,71 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
         }
 
         return JobResult.buildSuccess();
+    }
+
+    /**
+     * Return the first person in the results identified by an additional key value.
+     *
+     * @param keyName        additional key name
+     * @param keyValue       additional key value
+     * @param session        db session
+     * @return Person        retrieved person
+     */
+    public Person getPersonByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
+        List<Person> persons = this.getPersonsByAdditionalKey(keyName, keyValue, session);
+        if (present(persons)) {
+            return persons.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * Returns a list of persons identified by an additional key value.
+     * There are possibly multiple persons identified by an additional key value,
+     * due to the external keys not necessarily being unique.
+     *
+     * @param keyName        additional key name
+     * @param keyValue       additional key value
+     * @param session        db session
+     * @return Person        retrieved list of persons
+     */
+    public List<Person> getPersonsByAdditionalKey(final String keyName, final String keyValue, final DBSession session) {
+        final PersonParam param = new PersonParam();
+        param.setAdditionalKeyName(keyName);
+        param.setAdditionalKeyValue(keyValue);
+
+        return this.queryForList("getPersonsByAdditionalKey", param, Person.class, session);
+    }
+
+    /**
+     * Creates a new additional key and corresponding value for the specified Person
+     * @param personId        specified person
+     * @param keyName        new additional key name
+     * @param keyValue        additional key value
+     * @param session        db session
+     */
+    public void createAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
+        final PersonParam param = new PersonParam();
+        param.setPersonId(personId);
+        param.setAdditionalKeyName(keyName);
+        param.setAdditionalKeyValue(keyValue);
+
+        this.insert("insertAdditionalKeyForPerson", param, session);
+    }
+
+    /**
+     * Remove an additional key entry of the specified person
+     *
+     * @param personId        specified person
+     * @param keyName        additional key name to remove
+     * @param session        db session
+     */
+    public void removePersonAdditionalKey(final String personId, final String keyName, final DBSession session) {
+        final PersonParam param = new PersonParam();
+        param.setPersonId(personId);
+        param.setAdditionalKeyName(keyName);
+
+        this.delete("deleteAdditionalKeyForPerson", param, session);
     }
 
     private JobResult updatePersonAdditionalKeys(final Person person, final DBSession session) {
@@ -475,7 +501,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
      * @param session        db session
      */
     public void updateAdditionalKey(final String personId, final String keyName, final String keyValue, final DBSession session) {
-        final PersonAdditionalKeyParam param = new PersonAdditionalKeyParam(personId, keyName, keyValue);
+        final PersonParam param = new PersonParam();
+        param.setPersonId(personId);
+        param.setAdditionalKeyName(keyName);
+        param.setAdditionalKeyValue(keyValue);
+
         this.update("updateAdditionalKeyForPerson", param, session);
     }
 
@@ -794,7 +824,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
      * @return
      */
     public List<Person> getPersonsByOrganization(final Group organization, final int limit, final int offset, final DBSession session) {
-        final GetPersonByOrganizationParam param = new GetPersonByOrganizationParam(organization.getName(), limit, offset);
+        final PersonParam param = new PersonParam();
+        param.setOrganizationName(organization.getName());
+        param.setLimit(limit);
+        param.setOffset(offset);
+
         return this.queryForList("getPersonsByOrganization", param, Person.class, session);
     }
 
