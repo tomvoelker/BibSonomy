@@ -44,7 +44,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>puma-4.0.49-SNAPSHOT</version>
+		<version>4.0.58</version>
 	</parent>
 	<licenses>
 		<license>
