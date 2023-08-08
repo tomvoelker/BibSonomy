@@ -524,6 +524,7 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<!--
 	<distributionManagement>
 		<repository>
 			<id>bibsonomyReleases</id>
@@ -531,6 +532,7 @@
 			<url>http://artifactory.cs.uni-kassel.de/artifactory/bibsonomy-release</url>
 		</repository>
 	</distributionManagement>
+	-->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
