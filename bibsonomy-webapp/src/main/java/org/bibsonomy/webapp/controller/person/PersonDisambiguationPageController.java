@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
@@ -47,6 +48,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PostQuery;
@@ -189,8 +191,10 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
 		final PersonQueryBuilder queryBuilder = new PersonQueryBuilder()
 				.search(name)
-				.end(5)
-				.phraseMatch(true);
+				.phraseMatch(true)
+				.sortBy(PersonSortKey.RANK)
+				.orderBy(SortOrder.DESC)
+				.end(5);
 
 		final List<Person> persons = this.logic.getPersons(queryBuilder.build());
 		command.setPersonSuggestions(persons);
