@@ -46,6 +46,11 @@ import org.bibsonomy.util.Sets;
  */
 public final class PersonResourceRelationUtils {
 
+	// TODO: can this be removed?
+	private PersonResourceRelationUtils() {
+		// noop
+	}
+
 	private static final Set<PersonResourceRelationType> AUTHOR_EDITOR_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
 	/**
