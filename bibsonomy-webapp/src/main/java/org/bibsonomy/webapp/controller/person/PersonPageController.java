@@ -29,9 +29,8 @@
  */
 package org.bibsonomy.webapp.controller.person;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import static org.bibsonomy.model.BibTex.ENTRYTYPE_FIELD_NAME;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +50,7 @@ import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -59,14 +59,13 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.util.PersonMatchUtils;
 import org.bibsonomy.model.util.PersonResourceRelationUtils;
 import org.bibsonomy.services.searcher.PostSearchQuery;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -182,6 +181,11 @@ public class PersonPageController extends SingleResourceListController implement
                 this.setGoldStandards(command);
                 break;
         }
+
+        // Set person matches for merge and their conflicts
+        final List<PersonMatch> personMatches = this.logic.getPersonMatches(personId);
+        command.setPersonMatchList(personMatches);
+        command.setMergeConflicts(PersonMatchUtils.getMergeConflicts(personMatches));
 
         return Views.PERSON_SHOW;
     }
