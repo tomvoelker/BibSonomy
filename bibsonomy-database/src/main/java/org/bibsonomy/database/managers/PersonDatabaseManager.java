@@ -47,6 +47,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.MissingObjectErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
@@ -1381,6 +1382,11 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
         final String loggedinUserName = loginUser.getName();
         final String person1User = match.getPerson1().getUser();
         final String person2User = match.getPerson2().getUser();
+
+        // TODO FIXME REWORK
+        if (Role.ADMIN.equals(loginUser.getRole())) {
+            return true;
+        }
 
         final boolean p1Claim = present(person1User);
         final boolean p2Claim = present(person2User);
