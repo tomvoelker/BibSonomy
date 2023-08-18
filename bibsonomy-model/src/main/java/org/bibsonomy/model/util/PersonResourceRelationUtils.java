@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import lombok.NoArgsConstructor;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.util.Sets;
@@ -45,6 +46,11 @@ import org.bibsonomy.util.Sets;
  * @author dzo
  */
 public final class PersonResourceRelationUtils {
+
+	// TODO: can this be removed?
+	private PersonResourceRelationUtils() {
+		// noop
+	}
 
 	private static final Set<PersonResourceRelationType> AUTHOR_EDITOR_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
 
