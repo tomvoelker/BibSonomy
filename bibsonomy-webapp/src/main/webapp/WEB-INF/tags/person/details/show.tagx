@@ -45,9 +45,9 @@
 				<div class="col-md-12">
 					<div style="clear: both;">
 						<h3 class="list-headline">
-							<div class="btn-group dropdown-align-right all-resources-menu">
+							<div class="btn-group dropdown-align-right all-resources-menu all-resources-menu-lg">
 								<div class="btn-group">
-									<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
+									<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
 									<ul id="sorting-dropdown-menu-similar" class="dropdown-menu">
 										<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
 									</ul>
