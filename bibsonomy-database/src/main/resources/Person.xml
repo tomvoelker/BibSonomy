@@ -307,8 +307,8 @@
 	
 	<update id="updatePersonMatchAfterMerge" parameterClass="personMatch">
 		UPDATE person_match
-		SET person1_id = IF(person1_id = #person2.personId#, #person1.personId#, person1_id),
-			person2_id = IF(person2_id = #person2.personId#, #person1.personId#, person2_id)
+		SET person1_id = IF(person1_id = #sourcePerson.personId#, #targetPerson.personId#, person1_id),
+			person2_id = IF(person2_id = #sourcePerson.personId#, #targetPerson.personId#, person2_id)
 		WHERE match_id != #matchID# and state != 2
 	</update>
 	
@@ -321,8 +321,8 @@
 	<select id="getSimilarMatchesForMatch" parameterClass="personMatch" resultMap="PersonCommon.personMatch">
 		SELECT *
 		FROM person_match
-		WHERE (person1_id = #person1.personId# AND person2_id = #person2.personId#)
-		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
+		WHERE (person1_id = #targetPerson.personId# AND person2_id = #sourcePerson.personId#)
+		OR (person1_id = #sourcePerson.personId# AND person2_id = #targetPerson.personId#)
 	</select>
 
 	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">

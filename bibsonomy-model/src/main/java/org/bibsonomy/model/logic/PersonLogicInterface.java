@@ -106,7 +106,8 @@ public interface PersonLogicInterface {
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
 
 	/**
-	 * TODO: add documentation
+	 * Get the merge matches for a person by the person ID.
+	 * The ID can be either the source or the target ID.
 	 *
 	 * @param personID the id of the person
 	 * @return

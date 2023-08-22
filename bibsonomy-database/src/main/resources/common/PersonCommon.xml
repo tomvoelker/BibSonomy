@@ -87,13 +87,13 @@
 	</resultMap>
 	
 	<resultMap id="personMatch" class="personMatch">
-		<result property="matchID" column="match_id"/>
-		<result property="state" column="state"/>
-		<result property="person1"          column="person1_id"       javaType="person"		select="getPersonById"/>
-		<result property="person2"          column="person2_id"       javaType="person"		select="getPersonById"/>
-		<result property="userDenies"		column="match_id"		  javaType="string"		select="getDeniesForMatch" />
-		<result property="person1Posts"		column="person1_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
-		<result property="person2Posts"		column="person2_id"		  javaType="org.bibsonomy.model.Post"		  select="getPostsForPerson" />
+		<result property="matchID" 			column="match_id"/>
+		<result property="state" 			column="state"/>
+		<result property="targetPerson"     column="person1_id"       javaType="person"						select="getPersonById"/>
+		<result property="sourcePerson"     column="person2_id"       javaType="person"						select="getPersonById"/>
+		<result property="userDenies"		column="match_id"		  javaType="string"						select="getDeniesForMatch" />
+		<result property="targetPosts"		column="person1_id"		  javaType="org.bibsonomy.model.Post"	select="getPostsForPerson" />
+		<result property="sourcePosts"		column="person2_id"		  javaType="org.bibsonomy.model.Post"	select="getPostsForPerson" />
 	</resultMap>
 	
 	<resultMap id="phdRecommendation" class="org.bibsonomy.model.PhDRecommendation">

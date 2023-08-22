@@ -3581,6 +3581,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
+	 * Get the merge matches for a person by the person ID.
+	 * The ID can be either the source or the target ID.
 	 * 
 	 * @param personID
 	 * @return a list of all matches for a person
