@@ -252,7 +252,7 @@
 	</select>
 
 	<select id="getMatches" resultMap="PersonCommon.personMatch">
-		SELECT match_id, person1_id, person2_id, state
+		SELECT match_id, target_person_id, source_person_id, state
 		FROM person_match
 		WHERE state = 0
 	</select>
@@ -267,15 +267,15 @@
 	</select>
 
 	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
-		SELECT match_id, person1_id, person2_id, state
+		SELECT match_id, target_person_id, source_person_id, state
 		FROM person_match
 		WHERE match_id = #matchID#
 	</select>
 	
 	<select id="getMatchesFor" parameterClass="string" resultMap="PersonCommon.personMatch">
-		SELECT match_id, person1_id, person2_id, state
+		SELECT match_id, target_person_id, source_person_id, state
 		FROM person_match
-		WHERE (person1_id = #personid# OR person2_id = #personid#)
+		WHERE (target_person_id = #personid# OR source_person_id = #personid#)
 		AND state = 0
 	</select>
 	
@@ -291,7 +291,7 @@
 	
 	<delete id="removeReflexivPersonMatches">
 		DELETE FROM person_match
-		WHERE person1_id = person2_id
+		WHERE target_person_id = source_person_id
 	</delete>
 	
 	<delete id="removePersonMatch" parameterClass="int">
@@ -307,8 +307,8 @@
 	
 	<update id="updatePersonMatchAfterMerge" parameterClass="personMatch">
 		UPDATE person_match
-		SET person1_id = IF(person1_id = #sourcePerson.personId#, #targetPerson.personId#, person1_id),
-			person2_id = IF(person2_id = #sourcePerson.personId#, #targetPerson.personId#, person2_id)
+		SET target_person_id = IF(target_person_id = #sourcePerson.personId#, #targetPerson.personId#, target_person_id),
+			source_person_id = IF(source_person_id = #sourcePerson.personId#, #targetPerson.personId#, source_person_id)
 		WHERE match_id != #matchID# and state != 2
 	</update>
 	
@@ -321,8 +321,8 @@
 	<select id="getSimilarMatchesForMatch" parameterClass="personMatch" resultMap="PersonCommon.personMatch">
 		SELECT *
 		FROM person_match
-		WHERE (person1_id = #targetPerson.personId# AND person2_id = #sourcePerson.personId#)
-		OR (person1_id = #sourcePerson.personId# AND person2_id = #targetPerson.personId#)
+		WHERE (target_person_id = #targetPerson.personId# AND source_person_id = #sourcePerson.personId#)
+		OR (target_person_id = #sourcePerson.personId# AND source_person_id = #targetPerson.personId#)
 	</select>
 
 	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
@@ -352,9 +352,9 @@
 	</select>
 
 	<select id="getPersonForward" resultClass='string' parameterClass='string'>
-		SELECT person1_id
+		SELECT target_person_id
 		FROM person_match
-		WHERE person2_id = #personId#
+		WHERE source_person_id = #personId#
 		AND state = 2
 	</select>
 

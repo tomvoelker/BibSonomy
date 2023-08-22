@@ -803,7 +803,7 @@ INSERT INTO `pub_person` (`person_change_id`, `simhash1`, `simhash2`, `relator_c
 (29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2016-07-06 14:19:55','testuserP'),
 (30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2016-07-06 14:19:55','testuserP');
 
-INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES
+INSERT INTO `person_match` (match_id, target_person_id, source_person_id, state) VALUES
 (1, 'w.test.1', 'w.test.2', 0),
 (2, 'w.test.1', 'w.test.3', 0),
 (3, 'w.test.2', 'w.test.3', 0),

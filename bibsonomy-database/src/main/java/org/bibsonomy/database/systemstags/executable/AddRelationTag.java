@@ -49,6 +49,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.MailUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -94,6 +95,8 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
                 relation.setPost((Post<? extends BibTex>) post);
                 relation.setPerson(person);
                 relation.setRelationType(PersonResourceRelationType.AUTHOR);
+                relation.setChangedBy(loggedInUser.getName());
+                relation.setChangedAt(new Date());
 
                 // Find author index in the post and add relation when found
                 final BibTex resource = (BibTex) post.getResource();
