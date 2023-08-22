@@ -3299,9 +3299,9 @@ public class DBLogic implements LogicInterface {
 		final ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQueryBuilder()
 						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
 						.byRelationType(resourcePersonRelation.getRelationType())
-						.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex()));
+						.byAuthorIndex(resourcePersonRelation.getPersonIndex());
 		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder.build());
-		if (existingRelations.size() > 0) {
+		if (!existingRelations.isEmpty()) {
 			final ResourcePersonRelation existingRelation = existingRelations.get(0);
 			throw new ResourcePersonAlreadyAssignedException(existingRelation);
 		}

@@ -35,6 +35,7 @@ import lombok.Setter;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
@@ -45,6 +46,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.MailUtils;
 
@@ -53,7 +57,7 @@ import java.util.Date;
 import java.util.List;
 
 @Setter
-public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableSystemTag{
+public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
     private static final boolean toHide = true;
     public static final String NAME = "rel";
@@ -115,8 +119,21 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
                             mailUtils.sendUnableToMatchRelationMail(resource.getTitle(), resource.getInterHash(), personId, this.receiverMail);
                         }
                     } else {
+                        // Set found relation person index
                         relation.setPersonIndex(matchingAuthorPos.get(0));
-                        personDb.addResourceRelation(relation, loggedInUser, session);
+                        // Check, if the relation already exists to another person
+                        final ResourcePersonRelationQuery query = new ResourcePersonRelationQueryBuilder()
+                                .byInterhash(relation.getPost().getResource().getInterHash())
+                                .byRelationType(relation.getRelationType())
+                                .byAuthorIndex(relation.getPersonIndex())
+                                .build();
+                        final List<ResourcePersonRelation> existingRelations = personDb.queryForResourcePersonRelations(new QueryAdapter<>(query, loggedInUser), session);
+                        if (existingRelations.isEmpty()) {
+                            log.debug("adding relation for interhash: " + relation.getPost().getResource().getInterHash() + ", type: " + relation.getRelationType() + ", index: " + relation.getPersonIndex());
+                            personDb.addResourceRelation(relation, loggedInUser, session);
+                        } else {
+                            log.debug("relation already exists for interhash: " + relation.getPost().getResource().getInterHash() + ", type: " + relation.getRelationType() + ", index: " + relation.getPersonIndex());
+                        }
                     }
                 } else {
                     log.debug("unable to match person id to an author");
