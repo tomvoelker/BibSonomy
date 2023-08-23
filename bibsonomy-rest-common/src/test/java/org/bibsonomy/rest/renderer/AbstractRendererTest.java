@@ -585,7 +585,7 @@ public abstract class AbstractRendererTest {
 
 	@Test
 	public void testSerializeGoldStandardPost() throws PersonListParserException {
-		final Post<Resource> post = new Post<Resource>();
+		final Post<Resource> post = new Post<>();
 		post.setUser(new User("foo"));
 
 		final GoldStandardPublication publication = new GoldStandardPublication();
