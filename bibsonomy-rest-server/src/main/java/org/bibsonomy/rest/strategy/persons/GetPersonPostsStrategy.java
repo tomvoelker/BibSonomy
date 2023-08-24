@@ -96,26 +96,29 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		final List<Post<? extends BibTex>> results = new LinkedList<>();
 		final Person person = this.getPerson();
 
-		if (!present(person)) {
-			log.debug("No person was found with " + this.personId + " : " + this.additionalKey);
+		if (!present(person) && !present(this.changeDate)) {
+			log.debug("No change date given and no person was found with " + this.personId + " : " + this.additionalKey);
 			return results;
 		}
 
-		// Check, if a user has claimed this person and opt for myown-posts
-		if (present(person.getUser())) {
-			// Get person posts style settings of the linked user
-			final User user = this.getAdminLogic().getUserDetails(person.getUser());
-			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+		if (present(person)) {
+			// Set person id, if additional keys were used
+			this.personId = person.getPersonId();
 
-			if (personPostsStyle == PersonPostsStyle.MYOWN) {
-				return this.handleMyOwnPosts(person);
+			// Check, if a user has claimed this person and opt for myown-posts
+			if (present(person.getUser())) {
+				// Get person posts style settings of the linked user
+				final User user = this.getAdminLogic().getUserDetails(person.getUser());
+				final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+				if (personPostsStyle == PersonPostsStyle.MYOWN) {
+					return this.handleMyOwnPosts(person);
+				}
 			}
 		}
 
 		// Default: return the gold standards
-		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-				.byPersonId(person.getPersonId())
+				.byPersonId(this.personId)
 				.byChangeDate(this.changeDate)
 				.withPosts(true)
 				.withPersonsOfPosts(true)
