@@ -74,7 +74,7 @@ public final class PersonMatchUtils {
 			List<PersonMergeFieldConflict> conflictFields = getPersonMergeConflicts(match);
 			final PersonMergeFieldConflict[] p = new PersonMergeFieldConflict[conflictFields.size()];
 			conflictFields.toArray(p);
-			map.put(new Integer(match.getMatchID()), p);
+			map.put(match.getMatchID(), p);
 		}
 		return map;
 	}
@@ -89,29 +89,29 @@ public final class PersonMatchUtils {
 		try {
 			for (String fieldName : Person.fieldsWithResolvableMergeConflicts) {
 				PropertyDescriptor desc = new PropertyDescriptor(fieldName, Person.class);
-				Object person1Value = desc.getReadMethod().invoke(match.getPerson1());
-				Object person2Value = desc.getReadMethod().invoke(match.getPerson2());
-				if (person1Value != null && person2Value != null) {
+				Object targetValue = desc.getReadMethod().invoke(match.getTargetPerson());
+				Object sourceValue = desc.getReadMethod().invoke(match.getSourcePerson());
+				if (targetValue != null && sourceValue != null) {
 					//test if the values are different and add them to the list
-					if (person1Value.getClass().equals(String.class)) {
-						if (!person1Value.equals(person2Value)) {
-							conflictFields.add(new PersonMergeFieldConflict(fieldName, (String) person1Value, (String) person2Value));
+					if (targetValue.getClass().equals(String.class)) {
+						if (!targetValue.equals(sourceValue)) {
+							conflictFields.add(new PersonMergeFieldConflict(fieldName, (String) targetValue, (String) sourceValue));
 						}
-					} else if (person1Value.getClass().equals(PersonName.class)) {
+					} else if (targetValue.getClass().equals(PersonName.class)) {
 
-						final PersonName personName1 = (PersonName) person1Value;
-						final String person1Name = PersonNameUtils.serializePersonName(personName1);
-						final PersonName personName2 = (PersonName) person2Value;
-						final String person2Name = PersonNameUtils.serializePersonName(personName2);
-						if (!person1Name.equals(person2Name)) {
-							conflictFields.add(new PersonMergeFieldConflict(fieldName, person1Name, person2Name));
+						final PersonName targetName = (PersonName) targetValue;
+						final String targetNameStr = PersonNameUtils.serializePersonName(targetName);
+						final PersonName sourceName = (PersonName) sourceValue;
+						final String sourceNameStr = PersonNameUtils.serializePersonName(sourceName);
+						if (!targetNameStr.equals(sourceNameStr)) {
+							conflictFields.add(new PersonMergeFieldConflict(fieldName, targetNameStr, sourceNameStr));
 						}
-					} else if (person1Value.getClass().equals(Gender.class)) {
-						if (!person1Value.equals(person2Value)) {
-							conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) person1Value).name(), ((Gender) person2Value).name()));
+					} else if (targetValue.getClass().equals(Gender.class)) {
+						if (!targetValue.equals(sourceValue)) {
+							conflictFields.add(new PersonMergeFieldConflict(fieldName, ((Gender) targetValue).name(), ((Gender) sourceValue).name()));
 						}
 					} else {
-						LOG.warn("Missing " + person1Value.getClass() + " class case for merge conflict detection");
+						LOG.warn("Missing " + targetValue.getClass() + " class case for merge conflict detection");
 					}
 				}
 			}
