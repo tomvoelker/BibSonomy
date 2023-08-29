@@ -71,11 +71,6 @@
 		<result property="person"          resultMap="PersonCommon.personWithNamesPrefilled" />
 	</resultMap>
 	
-	<resultMap id="resourcePersonRelationLogStub" class="org.bibsonomy.model.ResourcePersonRelationLogStub" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
-		<result property="personId"        column="person_id"       javaType="java.lang.String" />
-		<result property="postInterhash"   column="simhash1"        javaType="java.lang.String" />
-	</resultMap>
-	
 	<resultMap id="preFilledResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            resultMap="BibTexCommon.bibtexPost" />

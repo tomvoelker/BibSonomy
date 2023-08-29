@@ -45,7 +45,6 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
@@ -195,19 +194,4 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		}
 	}
 
-	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexState oldState, SearchIndexState targetState, final LRUMap updatedInterhashes) {
-		for (long minPersonChangeId = oldState.getPersonId(); minPersonChangeId < targetState.getPersonId(); minPersonChangeId += SQL_BLOCKSIZE) {
-			final List<ResourcePersonRelationLogStub> relChanges = this.inputLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
-			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {
-				log.info("found " + relChanges.size() + " relation changes to update");
-			}
-			for (ResourcePersonRelationLogStub rel : relChanges) {
-				final String interhash = rel.getPostInterhash();
-				if (updatedInterhashes.put(interhash, interhash) == null) {
-					List<ResourcePersonRelation> newRels = this.inputLogic.getResourcePersonRelationsByPublication(interhash);
-					this.updateIndexWithPersonRelation(indexName, interhash, newRels);
-				}
-			}
-		}
-	}
 }
