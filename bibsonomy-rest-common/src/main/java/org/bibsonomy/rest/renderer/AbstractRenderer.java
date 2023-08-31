@@ -725,11 +725,11 @@ public abstract class AbstractRenderer implements Renderer {
 	private PersonMatchType createXmlPersonMatch(PersonMatch match) {
 		final PersonMatchType xmlPersonMatch = new PersonMatchType();
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
-		setValue(xmlPersonMatch::setPerson1, match::getPerson1, this::createXmlPerson);
-		setValue(xmlPersonMatch::setPerson2, match::getPerson2, this::createXmlPerson);
+		setValue(xmlPersonMatch::setTargetPerson, match::getTargetPerson, this::createXmlPerson);
+		setValue(xmlPersonMatch::setSourcePerson, match::getSourcePerson, this::createXmlPerson);
 		setValue(xmlPersonMatch::setState, match::getState);
-		setCollectionValue(xmlPersonMatch.getPerson1Posts(), match.getPerson1Posts(), this::createXmlPost);
-		setCollectionValue(xmlPersonMatch.getPerson2Posts(), match.getPerson2Posts(), this::createXmlPost);
+		setCollectionValue(xmlPersonMatch.getTargetPosts(), match.getTargetPosts(), this::createXmlPost);
+		setCollectionValue(xmlPersonMatch.getSourcePosts(), match.getSourcePosts(), this::createXmlPost);
 		setValue(xmlPersonMatch::setMatchId, match::getMatchID);
 		setValue(xmlPersonMatch::setState, match::getState);
 		setValue(xmlPersonMatch.getUserDenies()::addAll, match::getUserDenies);

@@ -46,7 +46,9 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.OrganizationPageCommand;
@@ -89,49 +91,44 @@ public class OrganizationPageController implements MinimalisticController<Organi
 	@Override
 	public View workOn(final OrganizationPageCommand command) {
 		final String requestedOrganizationName = command.getRequestedOrganizationName();
-		final Group group = this.logic.getGroupDetails(requestedOrganizationName, false);
+		final Group organization = this.logic.getGroupDetails(requestedOrganizationName, false);
 
-		if (!present(group)) {
+		if (!present(organization)) {
 			throw new ObjectNotFoundException(requestedOrganizationName);
 		}
+		command.setGroup(organization); // TODO check, if group is organization (dzo)
 
-		/*
-		 * TODO: check if group is organization
-		 */
-
-		command.setGroup(group);
-
-		/*
-		 * person query
-		 */
+		// query for persons of organization
 		final ListCommand<Person> personsListCommand = command.getPersons();
-		final PersonQuery personOrganizationQuery = new PersonQuery();
-		personOrganizationQuery.setOrganization(group);
-		personOrganizationQuery.setOrder(PersonSortKey.MAIN_NAME_LAST_NAME);
 		final int personStart = personsListCommand.getStart();
-		personOrganizationQuery.setStart(personStart);
-		personOrganizationQuery.setEnd(personStart + personsListCommand.getEntriesPerPage());
 
-		/*
-		 * publication query
-		 */
+		final PersonQuery personQuery =  new PersonQueryBuilder()
+				.byOrganization(organization)
+				.sortBy(PersonSortKey.MAIN_NAME_LAST_NAME)
+				.orderBy(SortOrder.ASC)
+				.start(personStart)
+				.end(personStart + personsListCommand.getEntriesPerPage())
+				.build();
+
+		// query for publications of organization
 		final ListCommand<Post<GoldStandardPublication>> publicationsListCommand = command.getPublications();
-		final int start = publicationsListCommand.getStart();
-		final PostQuery<GoldStandardPublication> postOrganizationQuery = new PostQueryBuilder()
+		final int postStart = publicationsListCommand.getStart();
+		final PostQuery<GoldStandardPublication> postQuery = new PostQueryBuilder()
 						.setSortCriteria(Collections.singletonList(new SortCriteria(SortKey.YEAR, SortOrder.DESC)))
 						.setGrouping(GroupingEntity.ORGANIZATION)
-						.setGroupingName(group.getName())
+						.setGroupingName(organization.getName())
 						.entriesStartingAt(publicationsListCommand.getEntriesPerPage(), publicationsListCommand.getStart())
 						.createPostQuery(GoldStandardPublication.class);
 
-		/*
-		 * project query
-		 */
+		// query for projects of organization
 		final ListCommand<Project> projectsListCommand = command.getProjects();
-		final ProjectQuery.ProjectQueryBuilder projectQueryBuilder = new ProjectQuery.ProjectQueryBuilder();
 		final int projectStart = projectsListCommand.getStart();
-		projectQueryBuilder.organization(group).start(projectStart).end(start + projectsListCommand.getEntriesPerPage());
-		final ProjectQuery projectsQuery = projectQueryBuilder.build();
+
+		final ProjectQuery projectQuery = new ProjectQueryBuilder()
+				.organization(organization)
+				.start(projectStart)
+				.end(projectStart + projectsListCommand.getEntriesPerPage())
+				.build();
 
 		final OrganizationPageSubPage subPage = getSubPage(command);
 		switch (subPage) {
@@ -139,34 +136,26 @@ public class OrganizationPageController implements MinimalisticController<Organi
 				// nothing to do
 				break;
 			case PERSONS:
-				/*
-				 * get persons for the organization
-				 */
-				final List<Person> persons = this.logic.getPersons(personOrganizationQuery);
+				// get persons for the organization
+				final List<Person> persons = this.logic.getPersons(personQuery);
 				personsListCommand.setList(persons);
 				break;
 			case PROJECTS:
-				/*
-				 * get projects for the organization
-				 */
-				final List<Project> projects = this.logic.getProjects(projectsQuery);
+				// get projects for the organization
+				final List<Project> projects = this.logic.getProjects(projectQuery);
 				projectsListCommand.setList(projects);
 				break;
 			case PUBLICATIONS:
-				/*
-				 * get publications for organization
-				 */
-				final List<Post<GoldStandardPublication>> organizationPosts = this.logic.getPosts(postOrganizationQuery);
+				// get publications for organization
+				final List<Post<GoldStandardPublication>> organizationPosts = this.logic.getPosts(postQuery);
 				publicationsListCommand.setList(organizationPosts);
 				break;
 		}
 
-		/*
-		 * set total counts if not set already (for menu)
-		 */
-		this.setTotalCount(publicationsListCommand, () -> this.logic.getStatistics(postOrganizationQuery));
-		this.setTotalCount(personsListCommand, () -> this.logic.getStatistics(personOrganizationQuery));
-		this.setTotalCount(projectsListCommand, () -> this.logic.getStatistics(projectsQuery));
+		// set total counts if not set already (for menu)
+		this.setTotalCount(publicationsListCommand, () -> this.logic.getStatistics(postQuery));
+		this.setTotalCount(personsListCommand, () -> this.logic.getStatistics(personQuery));
+		this.setTotalCount(projectsListCommand, () -> this.logic.getStatistics(projectQuery));
 
 		return Views.ORGANIZATION_PAGE;
 	}

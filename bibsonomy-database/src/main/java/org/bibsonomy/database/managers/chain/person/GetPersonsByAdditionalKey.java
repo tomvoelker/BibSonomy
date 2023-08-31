@@ -55,13 +55,7 @@ public class GetPersonsByAdditionalKey extends PersonChainElement {
     @Override
     protected List<Person> handle(QueryAdapter<PersonQuery> param, DBSession session) {
         final AdditionalKey additionalKey = param.getQuery().getAdditionalKey();
-        final Person personByAdditionalKey = this.getPersonDatabaseManager()
-                .getPersonByAdditionalKey(additionalKey.getKeyName(), additionalKey.getKeyValue(), session);
-        if (present(personByAdditionalKey)) {
-            return Collections.singletonList(personByAdditionalKey);
-        }
-
-        return Collections.emptyList();
+        return this.getPersonDatabaseManager().getPersonsByAdditionalKey(additionalKey.getKeyName(), additionalKey.getKeyValue(), session);
     }
 
     @Override

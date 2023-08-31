@@ -37,7 +37,6 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.model.SearchIndexState;
@@ -91,13 +90,6 @@ public interface SearchDBInterface<R extends Resource> extends DatabaseInformati
     // methods for building the index
     // TODO: maybe we should introduce a special class hierarchy
     //------------------------------------------------------------------------
-
-    /**
-     * @param fromPersonChangeId
-     * @param toPersonChangeIdExclusive
-     * @return
-     */
-    public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive);
 
     /**
      * @param firstChangeId

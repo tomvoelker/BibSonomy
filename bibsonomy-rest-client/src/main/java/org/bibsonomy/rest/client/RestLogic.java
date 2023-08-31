@@ -80,6 +80,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteCRISLinkQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteResourcePersonRelationQuery;
+import org.bibsonomy.rest.client.queries.get.GetPersonPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetResourcePersonRelationsQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
@@ -273,16 +274,7 @@ public class RestLogic extends AbstractLogicInterface {
 	public <R extends Resource> List<Post<R>> getPosts(PostQuery<R> query) {
 		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
-		final GetPostsQuery restQuery = new GetPostsQuery(query.getStart(), query.getEnd());
-		restQuery.setGrouping(query.getGrouping(), query.getGroupingName());
-		restQuery.setResourceHash(query.getHash());
-		restQuery.setResourceType(query.getResourceClass());
-		restQuery.setTags(query.getTags());
-		restQuery.setSearch(query.getSearch());
-		restQuery.setSortCriteria(query.getSortCriteria());
-		restQuery.setUserName(this.getAuthenticatedUser().getName());
-		restQuery.setSearchType(query.getScope());
-		return (List) execute(restQuery);
+		return (List) execute(new GetPostsQuery(query, this.getAuthenticatedUser()));
 	}
 	
 	@Override
@@ -599,7 +591,12 @@ public class RestLogic extends AbstractLogicInterface {
 
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
-		return this.execute(new GetResourcePersonRelationsQuery(query.getPersonId()));
+		return this.execute(new GetResourcePersonRelationsQuery(query));
+	}
+
+	// TODO implement as full logic method and full db query with posts and relations
+	public List<Post<? extends Resource>> getPersonPosts(ResourcePersonRelationQuery query) {
+		return this.execute(new GetPersonPostsQuery(query));
 	}
 
 	@Override

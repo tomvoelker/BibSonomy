@@ -46,7 +46,9 @@
 					</button>
 				</c:when>
 				<c:otherwise>
-					<c:if test="${loggedInUser.claimedPerson.personId eq personId or loggedInUser.role eq 'ADMIN'}">
+					<c:set var="ableToDeleteApproved" value="${(!post.approved and loggedInUser.claimedPerson.personId eq personId)
+					or command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN'}" />
+					<c:if test="${ableToDeleteApproved}">
 						<button type="button"
 								onclick="deletePersonRelation(this)"
 								class="btn btn-default btn-xs delete-button"

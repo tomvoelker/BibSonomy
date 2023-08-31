@@ -48,4 +48,8 @@ public class AdditionalKey {
 	private String keyName;
 	private String keyValue;
 
+	@Override
+	public String toString() {
+		return keyName + "=" + keyValue;
+	}
 }

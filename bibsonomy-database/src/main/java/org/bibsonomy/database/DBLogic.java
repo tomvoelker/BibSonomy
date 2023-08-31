@@ -158,7 +158,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -3299,9 +3299,9 @@ public class DBLogic implements LogicInterface {
 		final ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQueryBuilder()
 						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
 						.byRelationType(resourcePersonRelation.getRelationType())
-						.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex()));
+						.byAuthorIndex(resourcePersonRelation.getPersonIndex());
 		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder.build());
-		if (existingRelations.size() > 0) {
+		if (!existingRelations.isEmpty()) {
 			final ResourcePersonRelation existingRelation = existingRelations.get(0);
 			throw new ResourcePersonAlreadyAssignedException(existingRelation);
 		}
@@ -3517,31 +3517,24 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		// TODO: implement a chain
-
 		try (final DBSession session = this.openSession()) {
-			Person person;
-			if (PersonIdType.PERSON_ID == idType) {
-				person = this.personDBManager.getPersonById(id, session);
-			} else if (PersonIdType.DNB_ID == idType) {
-				person = this.personDBManager.getPersonByDnbId(id, session);
-				// } else if (PersonIdType.ORCID == idType) {
-				//	TODO: implement
-			} else if (PersonIdType.USER == idType) {
-				person = this.personDBManager.getPersonByUser(id, session);
-			} else {
-				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
+			Person person = null;
+			switch (idType) {
+				case PERSON_ID:
+					person = this.personDBManager.getPersonById(id, session);
+					break;
+				case USER:
+					person = this.personDBManager.getPersonByUser(id, session);
+					break;
+				case DNB_ID:
+					person = this.personDBManager.getPersonByDnbId(id, session);
+				case ORCID:
+					// TODO
+					break;
+				default:
+					break;
 			}
 			return person;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
-	 */
-	@Override
-	public Person getPersonByAdditionalKey(final String key, final String value) {
-		try (final DBSession session = this.openSession()) {
-			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
 		}
 	}
 
@@ -3567,8 +3560,8 @@ public class DBLogic implements LogicInterface {
 			}
 			relations = new LinkedList<>(byInterHash.values());
 		}
-		final PersonResourceRelationOrder order = query.getOrder();
-		if (order == PersonResourceRelationOrder.PublicationYear) {
+		final PersonResourceRelationSortKey sortKey = query.getSortKey();
+		if (sortKey == PersonResourceRelationSortKey.PublicationYear) {
 			relations.sort((o1, o2) -> {
 				try {
 					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
@@ -3581,13 +3574,15 @@ public class DBLogic implements LogicInterface {
 				}
 				return System.identityHashCode(o1) - System.identityHashCode(o2);
 			});
-		} else if (order != null) {
+		} else if (sortKey != null) {
 			throw new UnsupportedOperationException();
 		}
 		return relations;
 	}
 
 	/**
+	 * Get the merge matches for a person by the person ID.
+	 * The ID can be either the source or the target ID.
 	 * 
 	 * @param personID
 	 * @return a list of all matches for a person

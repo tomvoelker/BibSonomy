@@ -35,13 +35,15 @@
 				/>
 			</c:when>
 			<c:otherwise>
-				<buttons:editPostButton
-						post="${post}"
-						resourceType="${resourceType}"
-						buttonClasses="${buttonClasses}"
-						enforceCommunityPost="${true}"
-						additionalText="${additionalText}"
-				/>
+				<c:if test="${!post.approved or loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or loginUser.role eq 'ADMIN'}">
+					<buttons:editPostButton
+							post="${post}"
+							resourceType="${resourceType}"
+							buttonClasses="${buttonClasses}"
+							enforceCommunityPost="${true}"
+							additionalText="${additionalText}"
+					/>
+				</c:if>
 			</c:otherwise>
 		</c:choose>
 		</c:if>

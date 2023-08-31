@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
@@ -47,10 +48,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
-import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -187,10 +189,14 @@ public class PersonDisambiguationPageController extends SingleResourceListContro
 		 * get candidate persons with the name of the author/editor
 		 */
 		final String name = QueryParser.escape(BibTexUtils.cleanBibTex(requestedName.toString()));
-		final PersonQuery personQuery = new PersonQuery(name);
-		personQuery.setEnd(5);
-		personQuery.setPhraseMatch(true);
-		final List<Person> persons = this.logic.getPersons(personQuery);
+		final PersonQueryBuilder queryBuilder = new PersonQueryBuilder()
+				.search(name)
+				.phraseMatch(true)
+				.sortBy(PersonSortKey.RANK)
+				.orderBy(SortOrder.DESC)
+				.end(5);
+
+		final List<Person> persons = this.logic.getPersons(queryBuilder.build());
 		command.setPersonSuggestions(persons);
 
 		/*

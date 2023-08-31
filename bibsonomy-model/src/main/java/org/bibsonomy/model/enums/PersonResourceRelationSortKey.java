@@ -27,22 +27,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model;
-
-import lombok.Getter;
-import lombok.Setter;
+package org.bibsonomy.model.enums;
 
 /**
- * TODO: add documentation to this class
- * 
  * @author jensi
  */
-@Getter
-@Setter
-public class ResourcePersonRelationLogStub extends ResourcePersonRelationBase {
-
-	private String personId;
-	private String postInterhash;
-	private boolean deleted;
-
+public enum PersonResourceRelationSortKey {
+	PublicationYear
 }

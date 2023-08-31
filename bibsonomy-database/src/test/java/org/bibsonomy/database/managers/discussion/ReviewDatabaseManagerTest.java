@@ -97,7 +97,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(review);
 		assertNotNull(review.getDate());
 		assertEquals(rating, review.getRating(), 0);
-		assertEquals(null, review.getText());
+        assertNull(review.getText());
 		
 		// try to insert a new review for the same resource
 		try {

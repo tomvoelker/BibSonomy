@@ -29,53 +29,38 @@
  */
 package org.bibsonomy.rest.strategy.persons;
 
-import java.io.Writer;
-import java.util.List;
-
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
-import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
- * strategy to get a list of resource person relations
+ * strategy for deleting a person resource relation
  *
- * @author dzo, pda
+ * @author dzo
  */
-public class GetResourcePersonRelationsStrategy extends AbstractGetListStrategy<List<ResourcePersonRelation>> {
-
+public class DeletePersonRelationStrategy extends AbstractDeleteStrategy {
 	private final String personId;
+	private final String interHash;
+	private final PersonResourceRelationType type;
+	private final int index;
 
 	/**
-	 * default constructor
+	 * inits a delete strategy for a {@link org.bibsonomy.model.ResourcePersonRelation}
 	 * @param context
-	 * @param personId
 	 */
-	public GetResourcePersonRelationsStrategy(final Context context, final String personId) {
+	public DeletePersonRelationStrategy(final Context context) {
 		super(context);
-		this.personId = personId;
+
+		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
+		this.interHash = context.getStringAttribute(RESTConfig.INTERHASH_PARAM, null);
+		this.type = PersonResourceRelationType.getByRelatorCode(context.getStringAttribute(RESTConfig.RELATION_TYPE_PARAM, null));
+		this.index = context.getIntAttribute(RESTConfig.RELATION_INDEX_PARAM, 0);
 	}
 
 	@Override
-	protected void render(final Writer writer, final List<ResourcePersonRelation> resultList) {
-		this.getRenderer().serializeResourcePersonRelations(writer, resultList);
-	}
-
-	@Override
-	protected List<ResourcePersonRelation> getList() {
-		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-						.byPersonId(this.personId)
-						.withPosts(true)
-						.withPersonsOfPosts(true)
-						.groupByInterhash(true)
-						.orderBy(PersonResourceRelationOrder.PublicationYear);
-		return this.getLogic().getResourceRelations(queryBuilder.build());
-	}
-
-	@Override
-	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().createUrlBuilderForResourcePersonRelations(this.personId);
+	protected boolean delete() {
+		this.getLogic().removeResourceRelation(this.personId, this.interHash, this.index, this.type);
+		return true;
 	}
 }

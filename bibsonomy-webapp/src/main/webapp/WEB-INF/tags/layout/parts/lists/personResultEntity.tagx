@@ -19,12 +19,16 @@
 		<c:set var="iconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
 	</c:if>
 
+	<c:if test="${properties['person.email.show']}">
+		<c:set var="description" value="${person.email}"/>
+	</c:if>
+
 	<lists:listResultEntity
 			columnSize="${columnSize}"
 			headingTitle="${personName}"
 			subHeadingTitle="${person.academicDegree}"
 			headingUrl="${personUrl}"
-			description="${person.email}"
+			description="${description}"
 			iconUrl="${iconUrl}"
 			iconFallback="user"
 			iconCircle="${true}"

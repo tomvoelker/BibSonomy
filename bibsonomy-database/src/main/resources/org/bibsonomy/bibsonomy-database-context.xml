@@ -304,6 +304,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsByChangeDate">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
 			</list>
 		</property>
 	</bean>
