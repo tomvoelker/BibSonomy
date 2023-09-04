@@ -3,6 +3,8 @@ image: tomvoelker/maven-mariadb
 stages:
   - build
   - test
+  - prepVisualize
+  - visualize
   - deploy
 
 variables:
@@ -55,7 +57,9 @@ test:
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON tag_recommender_db.* TO '$MARIADB_USER'@'%';"
     - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
   script:
-    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS -s misc/scripts/settings.xml --fail-at-end -P bibsonomy-test-settings
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -s misc/scripts/settings.xml -P bibsonomy-test-settings
+  after_script:
+    - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
   artifacts:
     untracked: true
     when: always
@@ -71,12 +75,11 @@ test:
 
 test-scraper:
   stage: test
-  allow_failure: true
   rules:
     - when: manual
-      if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i 
+      if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i
   script:
-    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-at-end -pl bibsonomy-scraper -P allTests
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -pl bibsonomy-scraper -P allTests
   artifacts:
     untracked: true
     when: always
@@ -90,11 +93,12 @@ test-scraper:
       - target/
 
 get_history:
-  stage: deploy
-  allow_failure: true
+  stage: prepVisualize
+  dependencies:
+    - build
   image: ubuntu
-  before_script: 
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
+  before_script:
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )"
     - eval $(ssh-agent -s)
     - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -107,12 +111,10 @@ get_history:
     untracked: true
 
 report:
-  stage: deploy
+  stage: visualize
   dependencies:
+    - test
     - get_history
-  needs:
-    - get_history
-  allow_failure: true
   image: tomvoelker/simple-allure-cli
   script:
     - allure generate -c -o target/report allure-results
@@ -127,44 +129,41 @@ report:
 
 # https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
 coverage:
-  stage: deploy
+  stage: visualize
   dependencies:
-    - get_history
-  needs:
-    - get_history
-  allow_failure: true
+    - test
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura, using relative project path
-    - 'python /opt/cover2cover.py coverage/target/site/jacoco-aggregate/jacoco.xml
-                        $CI_PROJECT_DIR/bibsonomy-bibtex-parser/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-common/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-database/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-database-common/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-exporter/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-importer/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-layout/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-logging/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-marc-parser/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-model/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-openaccess/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-opensocial/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-pingback/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-qrcode/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-recommender/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-rest-client/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-rest-client-oauth/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-rest-common/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-rest-server/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-scraper/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-scrapingservice/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-search/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-search-elasticsearch/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-synchronization/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-web-common/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-webapp/src/main/java/
-                        $CI_PROJECT_DIR/bibsonomy-wiki/src/main/java/
-                         > coverage/target/site/coverage.xml'
+    - "python /opt/cover2cover.py coverage/target/site/jacoco-aggregate/jacoco.xml
+      $CI_PROJECT_DIR/bibsonomy-bibtex-parser/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-common/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-database/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-database-common/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-exporter/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-importer/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-layout/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-logging/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-marc-parser/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-model/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-openaccess/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-opensocial/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-pingback/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-qrcode/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-recommender/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-rest-client/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-rest-client-oauth/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-rest-common/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-rest-server/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-scraper/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-scrapingservice/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-search/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-search-elasticsearch/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-synchronization/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-web-common/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-webapp/src/main/java/
+      $CI_PROJECT_DIR/bibsonomy-wiki/src/main/java/
+      > coverage/target/site/coverage.xml"
   artifacts:
     expire_in: 1 hour
     reports:
@@ -178,12 +177,8 @@ deploy_results:
   dependencies:
     - report
     - coverage
-  needs:
-    - report
-    - coverage
-  allow_failure: true
-  before_script: 
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )'
+  before_script:
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )"
     - eval $(ssh-agent -s)
     - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -201,8 +196,10 @@ deploy_results:
 
 deploy_biblicious:
   stage: deploy
+  dependencies:
+    - test
   rules:
     - when: manual
-      # if: $CI_COMMIT_TAG == "biblicious"
+      if: $CI_COMMIT_BRANCH =~ /^.*biblicious.*$/i
   script:
     - mvn -f bibsonomy-webapp/pom.xml tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious -Dtomcat.username=tcadmin -Dtomcat.password=$(echo $thewhitetomcatdeploy | base64 -di -) -DskipTests
