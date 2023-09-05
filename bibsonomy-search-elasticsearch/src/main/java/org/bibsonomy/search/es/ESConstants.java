@@ -85,6 +85,13 @@ public final class ESConstants {
 	public static final String RAW_SUFFIX = "raw";
 
 	/**
+	 * max result window size
+	 *
+	 * TODO this is only a temporary solution, until search after has been implemented
+	 */
+	public static final int MAX_RESULT_WINDOW = 30000;
+
+	/**
 	 * returns the standard ngram field for the parent field
 	 * @param fieldName
 	 * @return the field name for the ngram subfield
@@ -163,6 +170,7 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 						.endObject()
+						.field("max_result_window", MAX_RESULT_WINDOW)
 					.endObject());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
