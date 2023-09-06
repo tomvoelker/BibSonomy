@@ -223,7 +223,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
-			// set the preferedIndexToDelete to the inactive one iff no index specified
+			// set the preferredIndexToDelete to the inactive one iff no index specified
 			if (!present(indexToDelete)) {
 				indexToDelete = inactiveIndexName;
 			}
@@ -235,18 +235,18 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 			// remove the standby alias
 			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexStatus.STANDBY)));
 			// only set the alias if the index should not be deleted
-			final boolean preferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
+			final boolean preferredDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
 				// remove active alias from the current active index
 				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
 				// we use the index as inactive index if we do not want to delete it
-				if (!preferedDeletedActiveIndex) {
+				if (!preferredDeletedActiveIndex) {
 					aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
 				}
 			}
 
 			// only remove the alias if the other index should be deleted
-			if (present(inactiveIndexName) && !preferedDeletedActiveIndex) {
+			if (present(inactiveIndexName) && !preferredDeletedActiveIndex) {
 				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
 			}
 
@@ -535,31 +535,39 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		}
 
 		try {
+			// Wait 15 minutes to lock the updates of the elasticsearch manager
+			/*
+			if (!this.updateLock.tryAcquire(15, TimeUnit.MINUTES)) {
+				LOG.error("can't acquire lock for updates to regenerate all indices");
+				return;
+			}
+			 */
 			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			if (present(activeIndex)) {
-				this.regenerateIndex(activeIndex, false);
+			final String inactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+
+			if (present(inactiveIndex)) {
+				// If there is an inactive index, we regenerate it first and switch to it
+				this.regenerateIndex(inactiveIndex, false);
 			} else {
+				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
-			final String currentActiveIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			final String currentInactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
 
-			final String secondIndexToRegenerate;
-			if (present(activeIndex) && !activeIndex.equals(currentActiveIndex)) {
-				secondIndexToRegenerate = currentActiveIndex;
+			// IMPORTANT: `activeIndex` is now INACTIVE
+			String nextIndexToRegenerate = activeIndex;
+			if (present(nextIndexToRegenerate)) {
+				// If there is an nextIndexToRegenerate, we regenerate it and switch to it
+				this.regenerateIndex(nextIndexToRegenerate, false);
 			} else {
-				secondIndexToRegenerate = currentInactiveIndex;
-			}
-
-			if (present(secondIndexToRegenerate)) {
-				this.regenerateIndex(secondIndexToRegenerate, false);
-			} else {
+				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
 		} catch (final IndexAlreadyGeneratingException e) {
 			LOG.error("error while regeneration all indices", e);
+		} finally {
+			this.updateLock.release();
 		}
-	}
+    }
 
 	/**
 	 * generates a new index for the resource

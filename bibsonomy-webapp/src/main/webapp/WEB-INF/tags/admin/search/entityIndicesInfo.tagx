@@ -57,7 +57,7 @@
             <fmt:message var="generateMsg" key="admin.search.index.generate">
                 <fmt:param value="${entity}"/>
             </fmt:message>
-            <bsform:button size="defaultSize" style="defaultStyle" value="${generateMsg}" type="submits"/>
+            <bsform:button size="defaultSize" style="defaultStyle" value="${generateMsg}" type="submit"/>
         </form>
 
         <form method="post" class="searchindex-actions-form">

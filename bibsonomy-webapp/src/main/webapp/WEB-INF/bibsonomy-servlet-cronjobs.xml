@@ -27,6 +27,9 @@
 		<task:scheduled ref="elasticsearchPublicationManager" method="regenerateAllIndices" cron="0 0 3 ? * SAT" />
 		<task:scheduled ref="elasticsearchCommunityBookmarkManager" method="regenerateAllIndices" cron="0 0 0 ? * SUN" />
 		<task:scheduled ref="elasticsearchCommunityPublicationManager" method="regenerateAllIndices" cron="0 0 3 ? * SUN" />
+		<task:scheduled ref="elasticsearchGroupManager" method="regenerateAllIndices" cron="0 0 0 ? * MON" />
+		<task:scheduled ref="elasticsearchPersonManager" method="regenerateAllIndices" cron="0 0 2 ? * MON" />
+		<task:scheduled ref="elasticsearchProjectManager" method="regenerateAllIndices" cron="0 0 4 ? * MON" />
 	</task:scheduled-tasks>
 
 	<task:scheduler id="miscTaskScheduler" pool-size="10"/>
