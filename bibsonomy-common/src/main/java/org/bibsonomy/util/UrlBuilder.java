@@ -63,14 +63,23 @@ public class UrlBuilder {
 	public UrlBuilder addParameter(final String key, final String value) {
 		if (present(key) && present(value)) {
 			if (this.parameters == null) {
-				this.parameters = new HashMap<String, String>();
+				this.parameters = new HashMap<>();
 			}
 			this.parameters.put(key, value);
 		}
 		
 		return this;
 	}
-	
+
+	/**
+	 * @param key
+	 * @param value
+	 * @return the builder
+	 */
+	public UrlBuilder addParameter(final String key, final Object value) {
+		return addParameter(key, String.valueOf(value));
+	}
+
 	/**
 	 * Removes all parameters whose name is not contained in the given collection
 	 * @param allowedParams the set of allowed parameter names or null (in that case the method does nothing)

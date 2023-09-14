@@ -59,7 +59,10 @@ public class SearchIndexStateConverter implements Converter<SearchIndexState, Ma
 	}
 
 	private static Date getDateFromIndex(Long timestamp) {
-		return new Date(timestamp);
+		if (present(timestamp)) {
+			return new Date(timestamp);
+		}
+		return null;
 	}
 
 	@Override

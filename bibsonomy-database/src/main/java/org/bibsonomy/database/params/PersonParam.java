@@ -27,46 +27,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.params.person;
+package org.bibsonomy.database.params;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * @author dzo
+ * Parameters for retrieving a list of persons or details of a person
+ *
+ * @author kchoong
  */
-public class GetPersonByOrganizationParam {
-	private final String organizationName;
-	private final int limit;
-	private final int offset;
+@Getter
+@Setter
+public class PersonParam extends GenericParam {
+    private String personId;
 
-	/**
-	 * default constructor
-	 * @param organizationName
-	 * @param limit
-	 * @param offset
-	 */
-	public GetPersonByOrganizationParam(String organizationName, int limit, int offset) {
-		this.organizationName = organizationName;
-		this.limit = limit;
-		this.offset = offset;
-	}
+    private String organizationName;
 
-	/**
-	 * @return the organizationName
-	 */
-	public String getOrganizationName() {
-		return organizationName;
-	}
+    private int limit;
 
-	/**
-	 * @return the limit
-	 */
-	public int getLimit() {
-		return limit;
-	}
+    private int offset;
 
-	/**
-	 * @return the offset
-	 */
-	public int getOffset() {
-		return offset;
-	}
+    private String additionalKeyName;
+
+    private String additionalKeyValue;
 }

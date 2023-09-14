@@ -857,11 +857,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public Person getPersonByAdditionalKey(String keyName, String keyValue) {
-		return this.logicinterface.getPersonByAdditionalKey(keyName, keyValue);
-	}
-
-	@Override
 	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query) {
 		return this.logicinterface.getResourceRelations(query);
 	}
