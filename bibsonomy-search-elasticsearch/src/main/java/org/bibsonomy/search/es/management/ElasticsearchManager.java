@@ -557,8 +557,6 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 			}
 		} catch (final IndexAlreadyGeneratingException e) {
 			LOG.error("error while regeneration all indices", e);
-		} finally {
-			this.updateLock.release();
 		}
     }
 
