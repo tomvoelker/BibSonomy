@@ -59,98 +59,104 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Controller for the full text search admin page
- * 
+ *
  * @author Sven Stefani
  * @author jensi
  * @author dzo
  */
 @Setter
 public class AdminSearchIndicesController implements MinimalisticController<AdminSearchIndicesCommand> {
-	private static final Log log = LogFactory.getLog(AdminSearchIndicesController.class);
+    private static final Log log = LogFactory.getLog(AdminSearchIndicesController.class);
 
-	private Map<Class<?>, SearchIndexManager> managers;
+    private Map<Class<?>, SearchIndexManager> managers;
 
-	private HelpSearchManager helpSearchManager;
-	
-	@Override
-	public View workOn(final AdminSearchIndicesCommand command) {
-		log.debug(this.getClass().getSimpleName());
+    private HelpSearchManager helpSearchManager;
 
-		final RequestWrapperContext context = command.getContext();
-		final User loginUser = context.getLoginUser();
+    @Override
+    public View workOn(final AdminSearchIndicesCommand command) {
+        log.debug(this.getClass().getSimpleName());
 
-		/* 
-		 * check user role
-		 * If user is not logged in or not an admin: show error message
-		 */
-		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new AccessDeniedException("please log in as admin");
-		}
-		
-		final AdminIndexAction action = command.getAction();
-		if (present(action)) {
-			final Class<?> entityClass = getEntityClass(command.getEntity());
-			final SearchIndexManager mananger = this.managers.get(entityClass);
-			if (mananger == null) {
-				throw new IllegalArgumentException("cannot find manager for resource " + entityClass);
-			}
-			final String indexId = command.getId();
-			switch (action) {
-			case REGENERATE_INDEX:
-				try {
-					mananger.regenerateIndex(indexId);
-				} catch (final IndexAlreadyGeneratingException e) {
-					throw new IllegalStateException(e);
-				}
-				break;
-			case GENERATE_INDEX:
-				try {
-					mananger.generateIndex();
-				} catch (final IndexAlreadyGeneratingException e) {
-					throw new IllegalStateException(e);
-				}
-				break;
-			case ENABLE_INDEX:
-				mananger.enableIndex(indexId);
-				break;
-			case DELETE_INDEX:
-				mananger.deleteIndex(indexId);
-				break;
-			}
-			return new ExtendedRedirectView("/admin/fulltextsearch");
-		}
-		
-		// get some infos about the search indices
-		final Map<String, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
-		for (final Entry<Class<?>, SearchIndexManager> managementEntry : this.managers.entrySet()) {
-			final SearchIndexManager manager = managementEntry.getValue();
-			
-			final List<SearchIndexInfo> information = manager.getIndexInformations();
-			infoMap.put(managementEntry.getKey().getSimpleName(), information);
-		}
+        final RequestWrapperContext context = command.getContext();
+        final User loginUser = context.getLoginUser();
 
-		// get infos about the help page indices for all locales
-		infoMap.put("Help", helpSearchManager.getIndexInformations());
+        /*
+         * check user role
+         * If user is not logged in or not an admin: show error message
+         */
+        if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+            throw new AccessDeniedException("please log in as admin");
+        }
 
-		return Views.ADMIN_SEARCH_INDICES;
-	}
+        final AdminIndexAction action = command.getAction();
+        if (present(action)) {
+            final Class<?> entityClass = getEntityClass(command.getEntity());
+            final SearchIndexManager manager = this.managers.get(entityClass);
+            if (manager == null) {
+                throw new IllegalArgumentException("cannot find manager for resource " + entityClass);
+            }
+            final String indexId = command.getId();
+            switch (action) {
+                case REGENERATE_ALL_INDICES:
+                    manager.regenerateAllIndices();
+                    break;
+                case REGENERATE_INDEX:
+                    try {
+                        manager.regenerateIndex(indexId);
+                    } catch (final IndexAlreadyGeneratingException e) {
+                        throw new IllegalStateException(e);
+                    }
+                    break;
+                case GENERATE_INDEX:
+                    try {
+                        manager.generateIndex();
+                    } catch (final IndexAlreadyGeneratingException e) {
+                        throw new IllegalStateException(e);
+                    }
+                    break;
+                case ENABLE_INDEX:
+                    manager.enableIndex(indexId);
+                    break;
+                case DELETE_INDEX:
+                    manager.deleteIndex(indexId);
+                    break;
+            }
+            return new ExtendedRedirectView("/admin/fulltextsearch");
+        }
 
-	private static Class<?> getEntityClass(final String entity) {
-		// TODO: move to some model factory
-		if (present(entity)) {
-			switch (entity) {
-				case "Person": return Person.class;
-				case "Group": return Group.class;
-				case "Project" : return Project.class;
-			}
-		}
+        // get some infos about the search indices
+        final Map<String, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
+        for (final Entry<Class<?>, SearchIndexManager> managementEntry : this.managers.entrySet()) {
+            final SearchIndexManager manager = managementEntry.getValue();
 
-		return ResourceFactory.getResourceClass(entity);
-	}
+            final List<SearchIndexInfo> information = manager.getIndexInformations();
+            infoMap.put(managementEntry.getKey().getSimpleName(), information);
+        }
 
-	@Override
-	public AdminSearchIndicesCommand instantiateCommand() {
-		return new AdminSearchIndicesCommand();
-	}
+        // get infos about the help page indices for all locales
+        infoMap.put("Help", helpSearchManager.getIndexInformations());
+
+        return Views.ADMIN_SEARCH_INDICES;
+    }
+
+    private static Class<?> getEntityClass(final String entity) {
+        // TODO: move to some model factory
+        if (present(entity)) {
+            switch (entity) {
+                case "Person":
+                    return Person.class;
+                case "Group":
+                    return Group.class;
+                case "Project":
+                    return Project.class;
+            }
+        }
+
+        return ResourceFactory.getResourceClass(entity);
+    }
+
+    @Override
+    public AdminSearchIndicesCommand instantiateCommand() {
+        return new AdminSearchIndicesCommand();
+    }
 
 }
