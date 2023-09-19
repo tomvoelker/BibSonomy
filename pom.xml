@@ -805,5 +805,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>4.0.59</version>
+	<version>4.0.59-2</version>
 </project>
