@@ -10,7 +10,6 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -125,11 +124,6 @@
 							<h1 class="content-heading"><fmt:message key="post.resource.edit${resourceType}" /></h1>
 						</c:otherwise> 
 					</c:choose>
-					
-					<!--+ 
-						| show global errors / warnings
-						+ -->
-					<errors:global />
 
 					<c:set var="isGroupPost" value="${not empty postOwner and postOwner ne command.context.loginUser}" />
 					<c:if test="${isGroupPost}">
