@@ -535,29 +535,22 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		}
 
 		try {
-			// Wait 15 minutes to lock the updates of the elasticsearch manager
-			/*
-			if (!this.updateLock.tryAcquire(15, TimeUnit.MINUTES)) {
-				LOG.error("can't acquire lock for updates to regenerate all indices");
-				return;
-			}
-			 */
-			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			final String inactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			// First we try to regenerate the inactive index
+			final String firstToRegenerate = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			// Then the active next
+			final String secondToRegenerate = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
 
-			if (present(inactiveIndex)) {
+			if (present(firstToRegenerate)) {
 				// If there is an inactive index, we regenerate it first and switch to it
-				this.regenerateIndex(inactiveIndex, false);
+				this.regenerateIndex(firstToRegenerate, false);
 			} else {
 				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
 
-			// IMPORTANT: `activeIndex` is now INACTIVE
-			String nextIndexToRegenerate = activeIndex;
-			if (present(nextIndexToRegenerate)) {
-				// If there is an nextIndexToRegenerate, we regenerate it and switch to it
-				this.regenerateIndex(nextIndexToRegenerate, false);
+			if (present(secondToRegenerate)) {
+				// If there is an secondToRegenerate, we regenerate it and switch to it
+				this.regenerateIndex(secondToRegenerate, false);
 			} else {
 				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
