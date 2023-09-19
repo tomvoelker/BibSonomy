@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
@@ -79,6 +80,7 @@
 
 					
 					<div class="row">
+						<errors:global/>
 						<jsp:invoke fragment="content"/>
 						<jsp:invoke fragment="pageOptions"/>
 					</div>

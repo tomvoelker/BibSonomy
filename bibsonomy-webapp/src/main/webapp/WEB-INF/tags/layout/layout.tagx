@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
@@ -62,7 +63,6 @@
 			personalized="${personalized}"
 			/>
 			<body data-spy="scroll" data-target="#sidebar-nav">
-
 
 				<c:choose>
 					<c:when test="${pageContext.response.locale eq 'en'}">
@@ -137,6 +137,7 @@
 					<c:choose>
 						<c:when test="${noSidebar}">
 							<!-- without sidebar -->
+							<errors:global/>
 							<parts:successMessage />
 							<!-- Breadcrumbs -->
 							<c:if test="${not empty breadcrumbs}">
@@ -163,6 +164,7 @@
 											</jsp:attribute>
 										</bs:alert>
 									</c:if>
+									<errors:global/>
 									<parts:successMessage />
 
 									<!-- Breadcrumbs -->
@@ -171,7 +173,6 @@
 									</c:if>
 									<div class="wrapper">
 										<div id="intro">
-
 											<jsp:invoke fragment="contentIntro"/>
 										</div>
 										<jsp:invoke fragment="content"/>
