@@ -29,11 +29,11 @@
 		-->
 	<insert id="updateReviewRatingsCacheInsert" parameterClass="reviewParam">
 		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_arithmetic_mean) VALUES (#interHash#, 1 , #review.rating#)
-  			ON DUPLICATE KEY UPDATE rating_arithmetic_mean = (rating_arithmetic_mean * number_of_ratings + #review.rating#)/NULLIF(number_of_ratings + 1, 0), number_of_ratings = number_of_ratings + 1;
+  			ON DUPLICATE KEY UPDATE rating_arithmetic_mean = (rating_arithmetic_mean * number_of_ratings + #review.rating#)/(number_of_ratings + 1), number_of_ratings = number_of_ratings + 1;
 	</insert>
 	
 	<!-- COALASCE the result because devision by zero returns null -->
 	<update id="updateReviewRatingsCacheDelete" parameterClass="reviewParam">
-		UPDATE review_ratings_cache SET rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - #review.rating#)/NULLIF(number_of_ratings - 1, 0), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
+		UPDATE review_ratings_cache SET rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - #review.rating#)/(number_of_ratings - 1), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
 	</update>
 </sqlMap>
