@@ -64,45 +64,47 @@
 			<c:if test="${not empty properties['project.reportMail']}">
 				<c:choose>
 					<c:when test="${properties['report.person.publications.custom']}">
-						<fmt:message key="report.error.person.publications.custom.form.title" var="reportModalTitle" />
-						<fmt:message key="report.error.person.publications.custom.form.placeholder" var="reportModalPlaceholder" />
-						<fmt:message key="report.error.person.publications.custom.button.hint" var="buttonTitle" />
+						<c:if test="${post.approved}">
+							<fmt:message key="report.error.person.publications.custom.form.title" var="reportModalTitle" />
+							<fmt:message key="report.error.person.publications.custom.form.placeholder" var="reportModalPlaceholder" />
+							<fmt:message key="report.error.person.publications.custom.button.hint" var="buttonTitle" />
 
-						<bs:modal id="reportModal-${post.resource.interHash}" modalTitle="${reportModalTitle}">
-							<jsp:attribute name="modalBody">
-								<div class="container-fluid">
-									<h3><c:out value="${post.resource.title}" /></h3>
-									<form id="formReportPublication-${post.resource.interHash}">
-										<input type="hidden" name="personId" value="${personId}"/>
-										<input type="hidden" name="title" value="${post.resource.title}"/>
-										<input type="hidden" name="interhash" value="${post.resource.interHash}"/>
-										<input type="hidden" name="referer" value="${requPath}"/>
-										<textarea id="message" name="message" placeholder="${reportModalPlaceholder}" rows="4" cols="55"><!-- keep me --></textarea>
-									</form>
-								</div>
-							</jsp:attribute>
+							<bs:modal id="reportModal-${post.resource.interHash}" modalTitle="${reportModalTitle}">
+								<jsp:attribute name="modalBody">
+									<div class="container-fluid">
+										<h3><c:out value="${post.resource.title}" /></h3>
+										<form id="formReportPublication-${post.resource.interHash}">
+											<input type="hidden" name="personId" value="${personId}"/>
+											<input type="hidden" name="title" value="${post.resource.title}"/>
+											<input type="hidden" name="interhash" value="${post.resource.interHash}"/>
+											<input type="hidden" name="referer" value="${requPath}"/>
+											<textarea id="message" name="message" placeholder="${reportModalPlaceholder}" rows="4" cols="55"><!-- keep me --></textarea>
+										</form>
+									</div>
+								</jsp:attribute>
 
-							<jsp:attribute name="modalFooter">
-								<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="box.close"/></button>
-								<button type="button"
-										class="btn btn-primary publication-report-submit"
-										title="${buttonTitle}"
-										onclick="reportPublicationCustom(this)"
-										data-interhash="${post.resource.interHash}"
-										data-person="${personId}"
-										data-title="${post.resource.title}">
-									<fmt:message key="report.error.button.label"/>
-								</button>
-							</jsp:attribute>
-						</bs:modal>
+								<jsp:attribute name="modalFooter">
+									<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="box.close"/></button>
+									<button type="button"
+											class="btn btn-primary publication-report-submit"
+											title="${buttonTitle}"
+											onclick="reportPublicationCustom(this)"
+											data-interhash="${post.resource.interHash}"
+											data-person="${personId}"
+											data-title="${post.resource.title}">
+										<fmt:message key="report.error.button.label"/>
+									</button>
+								</jsp:attribute>
+							</bs:modal>
 
-						<button type="button"
-								class="btn btn-default btn-xs report-button"
-								title="${buttonTitle}"
-								data-toggle="modal"
-								data-target="#reportModal-${post.resource.interHash}">
-							<fontawesome:icon icon="flag"/>
-						</button>
+							<button type="button"
+									class="btn btn-default btn-xs report-button"
+									title="${buttonTitle}"
+									data-toggle="modal"
+									data-target="#reportModal-${post.resource.interHash}">
+								<fontawesome:icon icon="flag"/>
+							</button>
+						</c:if>
 					</c:when>
 					<c:otherwise>
 						<c:if test="${properties['report.person.publications.duplicate']}">
