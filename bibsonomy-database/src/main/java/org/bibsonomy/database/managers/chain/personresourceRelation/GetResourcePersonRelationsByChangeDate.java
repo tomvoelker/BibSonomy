@@ -26,7 +26,14 @@ public class GetResourcePersonRelationsByChangeDate extends ResourcePersonRelati
     protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> param, DBSession session) {
         final ResourcePersonRelationQuery query = param.getQuery();
         final Date changeDate = query.getChangeDate();
-        return this.getPersonDatabaseManager().getResourcePersonRelationsByChangeDate(changeDate, session);
+
+        List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsByChangeDate(changeDate, session);
+
+        if (query.isWithPersonsOfPosts()) {
+            this.getPersonDatabaseManager().loadAllRelationsInPosts(relations, session);
+        }
+
+        return relations;
     }
 
     @Override

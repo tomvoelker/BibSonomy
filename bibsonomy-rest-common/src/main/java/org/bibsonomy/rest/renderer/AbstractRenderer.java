@@ -1318,6 +1318,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private ResourcePersonRelation createResourcePersonRelation(ResourcePersonRelationType resourcePersonRelationType) {
 		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+		resourcePersonRelation.setPerson(createPerson(resourcePersonRelationType.getPerson()));
 		resourcePersonRelation.setPost(createDummyResource(resourcePersonRelationType.getResource()));
 		resourcePersonRelation.setPersonIndex(resourcePersonRelationType.getPersonIndex().intValue());
 		resourcePersonRelation.setRelationType(PersonResourceRelationType.valueOf(
