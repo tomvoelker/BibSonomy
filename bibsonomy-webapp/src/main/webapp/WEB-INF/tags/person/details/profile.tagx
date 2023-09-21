@@ -60,7 +60,7 @@
 				</c:choose>
 
 				<!-- E-Mail -->
-				<c:if test="${not empty command.person.email}">
+				<c:if test="${properties['person.email.show'] and not empty command.person.email}">
 					<perdetails:property command="${command}" type="email" value="${command.person.email}"/>
 				</c:if>
 

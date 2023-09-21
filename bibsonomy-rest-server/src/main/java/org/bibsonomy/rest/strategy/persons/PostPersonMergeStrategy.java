@@ -96,8 +96,9 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 			this.getLogic().updatePerson(targetPerson, PersonOperation.UPDATE_DETAILS);
 		}
 		this.getLogic().updatePerson(targetPerson, PersonOperation.UPDATE_NAMES);
-		final PersonMatch personMatch = this.getLogic().getPersonMatches(mergeSourceId).stream().
-						filter(p -> p.getPerson2().getPersonId().equals(mergeTargetId)).findAny().orElse(null);
+		final PersonMatch personMatch = this.getLogic().getPersonMatches(mergeSourceId).stream()
+				.filter(p -> p.getSourcePerson().getPersonId().equals(mergeSourceId) && p.getTargetPerson().getPersonId().equals(mergeTargetId))
+				.findAny().orElse(null);
 		if (!present(personMatch)) {
 			//FIXME ????????
 			throw new BadRequestOrResponseException("Error in matching....");

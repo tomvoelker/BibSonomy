@@ -64,7 +64,7 @@ public class PostsHandler implements ContextHandler {
 				
 				switch(httpMethod) {
 				case GET:
-						// /posts/added or popular or person
+						// /posts/(added|popular|person)
 						if (RESTConfig.POSTS_ADDED_SUB_PATH.equalsIgnoreCase(path)) {
 							return new GetNewPostsStrategy(context);
 						} else if (RESTConfig.POSTS_POPULAR_SUB_PATH.equalsIgnoreCase(path)) {

@@ -264,7 +264,6 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 
 	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
 		final PersonSortKey sortKey = query.getSortKey();
-		final SortOrder sortOrder = query.getSortOrder().toString().equalsIgnoreCase("ASC") ? SortOrder.ASC : SortOrder.DESC;
 		if (present(sortKey)) {
 			switch (sortKey) {
 				case RANK:

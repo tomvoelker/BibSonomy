@@ -124,8 +124,8 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div style="clear: both;">
-        							<h3 class="list-headline">
-										<c:if test="${!showProjectLinks}">
+									<h3 class="list-headline">
+										<c:if test="${useCRISView and not showProjectLinks}">
 											<strong><fmt:message key="person.show.publications"/></strong><c:out value=" "/>
 											<span class="badge badge-primary"><c:out value="${command.totalCount}"/></span>
 										</c:if>

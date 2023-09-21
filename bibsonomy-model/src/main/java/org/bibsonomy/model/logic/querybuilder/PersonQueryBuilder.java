@@ -63,8 +63,8 @@ public class PersonQueryBuilder extends BasicQueryBuilder<PersonQueryBuilder> {
 	private Prefix prefix;
 
 	/** sorting */
-	private PersonSortKey sortKey = PersonSortKey.MAIN_NAME_LAST_NAME;
-	private SortOrder sortOrder = SortOrder.ASC;
+	private PersonSortKey sortKey;
+	private SortOrder sortOrder;
 
 	public PersonQueryBuilder byUserName(String userName) {
 		this.userName = userName;
@@ -112,7 +112,7 @@ public class PersonQueryBuilder extends BasicQueryBuilder<PersonQueryBuilder> {
 	 */
 	public PersonQuery build() {
 		return new PersonQuery(this.userName, this.personId, this.additionalKey, this.college, this.organization,
-				this.prefix, this.start, this.end, this.sortKey, this.sortOrder, this.usePrefixMatch, this.phraseMatch);
+				this.prefix, this.search, this.start, this.end, this.sortKey, this.sortOrder, this.usePrefixMatch, this.phraseMatch);
 	}
     
     @Override
