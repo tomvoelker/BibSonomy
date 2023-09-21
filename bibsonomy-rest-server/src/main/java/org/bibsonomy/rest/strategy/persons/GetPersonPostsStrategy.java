@@ -79,6 +79,11 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 	private String personId;
 	private final AdditionalKey additionalKey;
 	private final Date changeDate;
+	private final boolean withPersons;
+	private final boolean withPosts;
+	private final boolean withPersonsOfPosts;
+	private final boolean onlyTheses;
+	private final boolean groupByInterhash;
 
 	/**
 	 * constructor for /persons/posts
@@ -89,6 +94,11 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
 		this.additionalKey = RESTUtils.getAdditionalKeyParam(context);
 		this.changeDate = RESTUtils.getDateParam(context, RESTConfig.CHANGE_DATE_PARAM);
+		this.withPersons = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.WITH_PERSONS_PARAM, "false"));
+		this.withPosts = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.WITH_POSTS_PARAM, "false"));
+		this.withPersonsOfPosts = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.WITH_PERSONS_OF_POSTS_PARAM, "false"));
+		this.onlyTheses = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.ONLY_THESES_PARAM, "false"));
+		this.groupByInterhash = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.GROUP_BY_INTERHASH_PARAM, "false"));
 	}
 
 	@Override
@@ -120,9 +130,11 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
 				.byPersonId(this.personId)
 				.byChangeDate(this.changeDate)
-				.withPosts(true)
-				.withPersonsOfPosts(true)
-				.groupByInterhash(true)
+				.withPersons(this.withPersons)
+				.withPosts(this.withPosts)
+				.withPersonsOfPosts(this.withPersonsOfPosts)
+				.onlyTheses(this.onlyTheses)
+				.groupByInterhash(this.groupByInterhash)
 				.sortBy(PersonResourceRelationSortKey.PublicationYear)
 				.orderBy(SortOrder.DESC)
 				.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
