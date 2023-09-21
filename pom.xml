@@ -365,6 +365,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<!-- Specifying the maven resource plugin version, due to issues with non UTF-8 files in the project -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.1.0</version>
