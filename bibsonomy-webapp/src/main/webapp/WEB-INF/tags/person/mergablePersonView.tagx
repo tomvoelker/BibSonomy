@@ -19,9 +19,9 @@
 
 	<div class="simpleMatchEntry" id="match_${personMatch.matchID}">
 		<c:set var="matchedPersonIndex"
-			value="${(currentPerson.personId == personMatch.person1.personId) ? 2 : 1}" />
+			value="${(currentPerson.personId == personMatch.targetPerson.personId) ? 2 : 1}" />
 		<c:set var="matchedPerson"
-			value="${(matchedPersonIndex == 1) ? personMatch.person1 : personMatch.person2}" />
+			value="${(matchedPersonIndex == 1) ? personMatch.targetPerson : personMatch.sourcePerson}" />
 		<c:set var="personUrlTemplate">${relativeUrlGenerator.getPersonUrl(matchedPerson.personId)}</c:set>
 
 		<div class="simpleMatchFirstLine">
@@ -35,18 +35,18 @@
 						test="${fn:length(conflicts.get(personMatch.matchID)) gt 0}">
 						<button type="button"
 							class="btn btn-warning btn-xs conflictMergeButton"
-							match-id="${personMatch.matchID}" conflicts="${conflicts.get(personMatch.matchID)}"
+							data-match-id="${personMatch.matchID}" data-conflicts="${conflicts.get(personMatch.matchID)}"
 							title="${textConflictMerge}" data-toggle='modal'
 							data-target='#conflictModal'>(&#10004;)</button>
 					</c:when>
 					<c:otherwise>
 						<button type="button" class="btn btn-success btn-xs mergeButton"
-							data-operation="MERGE_ACCEPT" match-id="${personMatch.matchID}"
+							data-operation="MERGE_ACCEPT" data-match-id="${personMatch.matchID}"
 							title="${textMerge}">&#10004;</button>
 					</c:otherwise>
 				</c:choose>
 				<button type="button" class="btn btn-danger btn-xs mergeButton"
-					data-operation="MERGE_DENIED" match-id="${personMatch.matchID}"
+					data-operation="MERGE_DENIED" data-match-id="${personMatch.matchID}"
 					title="${textDeny}">&#10006;</button>
 			</div>
 			<!-- FIXME: sql statements not working -->

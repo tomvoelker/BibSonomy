@@ -283,21 +283,21 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Map<String, String> map = new HashMap<>();
 		for (final PersonMergeFieldConflict conflict : mergeConflictsToTest) {
-			map.put(conflict.getFieldName(), conflict.getPerson2Value());
+			map.put(conflict.getFieldName(), conflict.getSourceValue());
 		}
 
 		assertThat(PERSON_DATABASE_MANAGER.mergePersonsWithConflicts(personMatch4.getMatchID(), map, loginUser, this.dbSession), is(true));
-		final Person personMergeTarget = personMatch4.getPerson1();
+		final Person targetPerson = personMatch4.getTargetPerson();
 		// second person should be merged into the first person
-		final Person personToMerge = personMatch4.getPerson2();
+		final Person personToMerge = personMatch4.getSourcePerson();
 		try {
 			PERSON_DATABASE_MANAGER.getPersonById(personToMerge.getPersonId(), this.dbSession);
 			fail("object moved exception expected");
 		} catch (final ObjectMovedException e) {
-			assertThat(e.getNewId(), is(personMergeTarget.getPersonId()));
+			assertThat(e.getNewId(), is(targetPerson.getPersonId()));
 		}
 
-		final List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(personMergeTarget.getPersonId(), null, null, this.dbSession);
+		final List<ResourcePersonRelation> relations = PERSON_DATABASE_MANAGER.getResourcePersonRelationsWithPosts(targetPerson.getPersonId(), null, null, this.dbSession);
 
 		for (final ResourcePersonRelation relation : relations) {
 			assertThat(relation.getRelationType(), is(notNullValue()));
@@ -305,7 +305,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// the person should have a new name and a the gender should be updated
 
-		final Person updatedPerson = PERSON_DATABASE_MANAGER.getPersonById(personMergeTarget.getPersonId(), this.dbSession);
+		final Person updatedPerson = PERSON_DATABASE_MANAGER.getPersonById(targetPerson.getPersonId(), this.dbSession);
 		assertThat(updatedPerson.getMainName(), is(personToMerge.getMainName()));
 		assertThat(updatedPerson.getGender(), is(personToMerge.getGender()));
 
@@ -321,7 +321,7 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		PersonMatch deniedMatch = newMatches.get(0);
 		PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, loginUser.getName(), this.dbSession);
 
-		newMatches = PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(deniedMatch.getPerson1().getPersonId(), loginUser.getName(), this.dbSession);
+		newMatches = PERSON_DATABASE_MANAGER.getMatchesForFilterWithUserName(deniedMatch.getTargetPerson().getPersonId(), loginUser.getName(), this.dbSession);
 		assertThat(newMatches.size(), is(0));
 		for (int i = 2; i < PersonMatch.MAX_NUMBER_OF_DENIES; i++) {
 			PERSON_DATABASE_MANAGER.denyMatch(deniedMatch, "testuser" + i, this.dbSession);

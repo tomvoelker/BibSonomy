@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS `pub_person_simhash1_relator_code_person_index_idx` ON `pub_person` (`simhash1`,`relator_code`,`person_index`);

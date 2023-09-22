@@ -14,8 +14,8 @@ $(function () {
 function initMergeButton() {
     $('.mergeButton').click(function () {
         var form_data = {
-            operation: $(this).attr("data-operation"),
-            formMatchId: $(this).attr("match-id")
+            operation: $(this).data("operation"),
+            formMatchId: $(this).data("match-id")
         };
 
         $.post("/editPerson", form_data).done(function (data) {
@@ -44,7 +44,7 @@ function initConflictButton() {
             }
         });
 
-        form_data["formMatchId"] = $("#conflictModalAccept").attr("match-id");
+        form_data["formMatchId"] = $("#conflictModalAccept").data("match-id");
         form_data["operation"] = "MERGE_CONFLICTS";
 
         $.post("/editPerson", form_data).done(function (data) {
@@ -61,13 +61,13 @@ function initConflictButton() {
 
 function initConflictMergeButton() {
     $('.conflictMergeButton').click(function () {
-        $('#conflictModalAccept')[0].setAttribute("match-id", $(this).attr("match-id"));
+        $('#conflictModalAccept')[0].setAttribute("match-id", $(this).data("match-id"));
         $('#conflictModalAccept').prop("disabled", true);
-        $('#conflictModalDeny')[0].setAttribute("match-id", $(this).attr("match-id"));
+        $('#conflictModalDeny')[0].setAttribute("match-id", $(this).data("match-id"));
         var body = $('#conflictModalDiaBody');
         form_data = {
             operation: "MERGE_GET_CONFLICTS",
-            formMatchId: $(this).attr("match-id")
+            formMatchId: $(this).data("match-id")
         }
 
         $.post("/editPerson", form_data).done(function (data) {
@@ -92,7 +92,7 @@ function initConflictMergeButton() {
                 $(input)[0].setAttribute("type", "text");
                 $(input)[0].setAttribute("id", "text");
                 $(input)[0].setAttribute("name", 'person.' + data[conflict].field);
-                $(input)[0].setAttribute("placeholder", "( " + data[conflict].person1Value + " | " + data[conflict].person2Value + " )");
+                $(input)[0].setAttribute("placeholder", "( " + data[conflict].targetValue + " | " + data[conflict].sourceValue + " )");
                 if (data[conflict].field === 'gender') {
                     $(input)[0].setAttribute("pattern", "(m|F)");
                     $(input)[0].setAttribute("title", "Gender must be 'm' or 'F'");

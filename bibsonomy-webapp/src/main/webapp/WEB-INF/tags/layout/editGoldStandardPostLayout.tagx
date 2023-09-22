@@ -258,7 +258,7 @@
 												<bsform:button type="submit" id="save-send-post-button" size="defaultSize"
 															   name="saveAndSendTo" style="primary"
 															   valueKey="save.and.sendToBibliography" title="${sendToBibliographyHint}"
-															   onclick="addForFriendTag('${bibliographyUser}');" tabindex="2"/>
+															   onclick="addForFriendTag('${bibliographyUser}'); beforeSubmitForm();" tabindex="2"/>
 											</div>
 										</c:if>
 									</div>

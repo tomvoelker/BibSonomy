@@ -71,12 +71,8 @@ public class PersonQuery extends BasicQuery {
     private PersonSortKey sortKey;
     private SortOrder sortOrder;
 
-    /** the query provided is only a prefix, perform a prefix search */
-    private boolean usePrefixMatch;
-    private boolean phraseMatch;
-
     public PersonQuery(String userName, String personId, AdditionalKey additionalKey, String college, Group organization,
-                       Prefix prefix, int start, int end, PersonSortKey sortKey, SortOrder sortOrder,
+                       Prefix prefix, String search, int start, int end, PersonSortKey sortKey, SortOrder sortOrder,
                        boolean usePrefixMatch, boolean phraseMatch) {
         this.userName = userName;
         this.personId = personId;
@@ -84,6 +80,7 @@ public class PersonQuery extends BasicQuery {
         this.college = college;
         this.organization = organization;
         this.prefix = prefix;
+        this.search = search;
         this.start = start;
         this.end = end;
         this.sortKey = sortKey;

@@ -37,10 +37,10 @@ function loadSimilarAuthors(page) {
 		success: function (data) {
 			$('#personSimilarAuthors').html(data);
 		},
-		beforeSend: function(){
+		'before': function(){
 			$("#similarAuthorsLoader").show(0);
 		},
-		complete: function(){
+		'after': function(){
 			$("#similarAuthorsLoader").hide(0);
 		}
 	});
@@ -152,10 +152,10 @@ function reportPublicationCustom(publication) {
 		success: function(data) {
 			if (data.success === true) {
 				var successMsg = getString("report.error.feedback.success");
-				showAjaxAlert('success', successMsg);
+				showAlert('success', successMsg);
 			} else {
 				var errorMsg = getString("report.error.feedback.error");
-				showAjaxAlert('danger', errorMsg);
+				showAlert('danger', errorMsg);
 			}
 			// Close modal
 			$('#reportModal-' + formData.interhash).modal('hide');
@@ -175,11 +175,35 @@ function reportPublicationDuplicate(publication) {
 		success: function(data) {
 			if (data.success === true) {
 				var successMsg = getString("report.error.feedback.success");
-				showAjaxAlert('success', successMsg);
+				showAlert('success', successMsg);
 			} else {
 				var errorMsg = getString("report.error.feedback.error");
-				showAjaxAlert('danger', errorMsg);
+				showAlert('danger', errorMsg);
 			}
 		}
 	});
+}
+
+function showAlert(type, message) {
+	var alert = $('<div></div>')
+		.attr('class', 'alert alert-dismissible alert-' + type)
+		.attr('role', 'alert');
+
+	var closeBtn = $('<button></button>')
+		.attr('class', 'close')
+		.attr('data-dismiss', 'alert')
+		.html('<span aria-hidden="true">&times;</span>');
+
+	alert.append(closeBtn);
+	if (type === 'danger') {
+		alert.append($('<strong></strong>').html(getString("error") + ': '));
+	}
+	alert.append(message);
+
+	$('#globalAjaxAlerts').append(alert);
+
+	// Scroll to the global AJAX alerts section
+	$('html, body').animate({
+		scrollTop: $("#globalAjaxAlerts").offset().top
+	}, 1000);
 }

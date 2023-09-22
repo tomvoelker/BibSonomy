@@ -54,6 +54,8 @@ public class AdminSearchIndicesCommand extends BaseCommand {
 	 * @author dzo
 	 */
 	public enum AdminIndexAction {
+		/** regenerate all indices of the specified entity class */
+		REGENERATE_ALL_INDICES,
 		/** regenerate an index = generate new and delete the specified index */
 		REGENERATE_INDEX,
 		/** generate index */
