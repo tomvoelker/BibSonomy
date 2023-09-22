@@ -29,16 +29,18 @@
  */
 package org.bibsonomy.rest.strategy.persons;
 
-import static org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy.extractAdditionalKey;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
@@ -47,57 +49,107 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.extra.AdditionalKey;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.util.PersonResourceRelationUtils;
 import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.UrlBuilder;
 
 
 /**
  * FIXME: move the duplicate code to the code (see webapp)
  *
- * Strategy to get the publications of a person by their ID.
+ * Strategy to get the publications related to a person.
+ *
+ * If the linked user of the person has set their publication option as 'myown' posts, we will return those,
+ * otherwise we convert resource-person-relations to goldstandard publication posts.
  *
  * @author kchoong
  */
 public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
-	private final String personId;
-	private final AdditionalKey additionalKey;
+	private static final Log log = LogFactory.getLog(GetPersonPostsStrategy.class);
 
-	// TODO REMOVE ASAP
-	public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
+	private String personId;
+	private final AdditionalKey additionalKey;
+	private final Date changeDate;
 
 	/**
-	 * constructor for /posts/person
+	 * constructor for /persons/posts
 	 * @param context
 	 */
 	public GetPersonPostsStrategy(final Context context) {
 		super(context);
 		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
-		this.additionalKey = extractAdditionalKey(context);
-	}
-
-	/**
-	 * @param context
-	 * @param personId
-	 */
-	public GetPersonPostsStrategy(final Context context, final String personId) {
-		super(context);
-		this.personId = personId;
-		this.additionalKey = null;
+		this.additionalKey = RESTUtils.getAdditionalKeyParam(context);
+		this.changeDate = RESTUtils.getDateParam(context, RESTConfig.CHANGE_DATE_PARAM);
 	}
 
 	@Override
-	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
-		this.getRenderer().serializePosts(writer, resultList, this.getView());
+	protected List<? extends Post<? extends Resource>> getList() {
+		final List<Post<? extends BibTex>> results = new LinkedList<>();
+		final Person person = this.getPerson();
+
+		if (!present(person)) {
+			log.debug("No person was found with " + this.personId + " : " + this.additionalKey);
+			return results;
+		}
+
+		// Check, if a user has claimed this person and opt for myown-posts
+		if (present(person.getUser())) {
+			// Get person posts style settings of the linked user
+			final User user = this.getAdminLogic().getUserDetails(person.getUser());
+			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
+
+			if (personPostsStyle == PersonPostsStyle.MYOWN) {
+				return this.handleMyOwnPosts(person);
+			}
+		}
+
+		// Default: return the gold standards
+		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
+		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
+				.byPersonId(person.getPersonId())
+				.byChangeDate(this.changeDate)
+				.withPosts(true)
+				.withPersonsOfPosts(true)
+				.groupByInterhash(true)
+				.sortBy(PersonResourceRelationSortKey.PublicationYear)
+				.orderBy(SortOrder.DESC)
+				.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
+		final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(queryBuilder.build());
+
+		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
+			final BibTex publication = post.getResource();
+			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
+			publication.setRating(null);
+			publication.setNumberOfRatings(null);
+
+			// only add author and editor relations to the result list
+			if (PersonResourceRelationUtils.isAuthorEditorRelation(resourcePersonRelation)) {
+				results.add(resourcePersonRelation.getPost());
+			}
+		}
+
+		return results;
+	}
+
+	protected List<? extends Post<? extends Resource>> handleMyOwnPosts(final Person person) {
+		// Get 'myown' posts of the linked user
+		final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
+				.setGrouping(GroupingEntity.USER)
+				.setGroupingName(person.getUser())
+				.setTags(Collections.singletonList("myown")) // TODO: use the myown system tag
+				.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
+
+		return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
 	}
 
 	private Person getPerson() {
@@ -106,68 +158,19 @@ public class GetPersonPostsStrategy extends AbstractGetListStrategy<List<? exten
 		}
 
 		if (present(this.additionalKey)) {
-			return this.getLogic().getPersonByAdditionalKey(this.additionalKey.getKeyName(), this.additionalKey.getKeyValue());
+			PersonQueryBuilder queryBuilder = new PersonQueryBuilder().byAdditionalKey(this.additionalKey);
+			List<Person> persons = this.getLogic().getPersons(queryBuilder.build());
+			if (present(persons)) {
+				return persons.get(0);
+			}
 		}
 
 		return null;
 	}
 
 	@Override
-	protected List<? extends Post<? extends Resource>> getList() {
-		final Person person = this.getPerson();
-		if (!present(person)) {
-			throw new NoSuchResourceException("person not found");
-		}
-
-		// check, if a user has claimed this person
-		if (present(person.getUser())) {
-			// Get person posts style settings of the linked user
-			final User user = this.getAdminLogic().getUserDetails(person.getUser());
-			final PersonPostsStyle personPostsStyle = user.getSettings().getPersonPostsStyle();
-
-			if (personPostsStyle == PersonPostsStyle.MYOWN) {
-				// Get 'myown' posts of the linked user
-				final PostQueryBuilder myOwnqueryBuilder = new PostQueryBuilder()
-								.fromTo(this.getView().getStartValue(), this.getView().getEndValue())
-								.setGrouping(GroupingEntity.USER)
-								.setGroupingName(person.getUser())
-								.setTags(Collections.singletonList("myown")); // TODO: use the myown system tag
-
-				return this.getLogic().getPosts(myOwnqueryBuilder.createPostQuery(BibTex.class));
-			}
-		}
-
-		// Default: return the gold standards
-		// TODO: this needs to be removed/refactored as soon as the ResourcePersonRelationQuery.ResourcePersonRelationQueryBuilder accepts start/end
-		final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
-						.byPersonId(person.getPersonId())
-						.withPosts(true)
-						.withPersonsOfPosts(true)
-						.groupByInterhash(true)
-						.orderBy(PersonResourceRelationOrder.PublicationYear)
-						.fromTo(this.getView().getStartValue(), this.getView().getEndValue());
-
-		final List<ResourcePersonRelation> resourceRelations = this.getLogic().getResourceRelations(queryBuilder.build());
-		final List<Post<? extends BibTex>> otherAuthorRelations = new LinkedList<>();
-
-		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			final Post<? extends BibTex> post = resourcePersonRelation.getPost();
-			final BibTex publication = post.getResource();
-			final boolean isThesis = publication.getEntrytype().toLowerCase().endsWith("thesis");
-			final boolean isAuthorEditorRelation = PUBLICATION_RELATED_RELATION_TYPES.contains(resourcePersonRelation.getRelationType());
-
-			if (isAuthorEditorRelation) {
-				if (!isThesis) {
-					otherAuthorRelations.add(resourcePersonRelation.getPost());
-				}
-			}
-
-			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
-			publication.setRating(null);
-			publication.setNumberOfRatings(null);
-		}
-
-		return otherAuthorRelations;
+	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
+		this.getRenderer().serializePosts(writer, resultList, this.getView());
 	}
 
 	@Override

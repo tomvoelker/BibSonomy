@@ -23,22 +23,18 @@
 	<jsp:directive.attribute name="leftContent" fragment="true" required="true"/>
 	<jsp:directive.attribute name="rightContent" fragment="true" required="true"/>
 	
-
-
-	
 	<!--+
 		| 
 		| document starts here
 		|
 		+-->
 		<layout:layout
-
-		heading="${heading}"
-		loginUser="${command.context.loginUser}"
-		pageTitle="${editPageTitle}" 
-		requPath="${requPath}" 
-		activeTab="${activeTab}"
-		noSidebar="${true}"
+			heading="${heading}"
+			loginUser="${command.context.loginUser}"
+			pageTitle="${editPageTitle}"
+			requPath="${requPath}"
+			activeTab="${activeTab}"
+			noSidebar="${true}"
 		>
 			<jsp:attribute name="content">
 				<c:if test="${not empty contentIntro}">

@@ -74,7 +74,7 @@ public class DeleteResourcePersonRelationQuery extends AbstractDeleteQuery {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String personResourceRelationUrl = this.getUrlRenderer().createUrlBuilderForPersonResourceRelation(this.personId, this.interHash, this.index, this.type).asString();
+		final String personResourceRelationUrl = this.getUrlRenderer().createUrlBuilderForPersonRelation(this.personId, this.interHash, this.type, this.index).asString();
 		this.downloadedDocument = performRequest(HttpMethod.DELETE, personResourceRelationUrl, null);
 	}
 }

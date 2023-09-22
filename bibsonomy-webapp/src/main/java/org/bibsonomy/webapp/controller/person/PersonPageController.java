@@ -45,7 +45,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.layout.citeproc.renderer.AdhocRenderer;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.model.BibTex;
@@ -58,12 +58,13 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.SearchFilterElement;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
+import org.bibsonomy.model.util.PersonResourceRelationUtils;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.object.FieldDescriptor;
@@ -72,7 +73,6 @@ import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -91,7 +91,6 @@ import org.springframework.validation.Errors;
 @Setter
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 
-    public static final Set<PersonResourceRelationType> PUBLICATION_RELATED_RELATION_TYPES = Sets.asSet(PersonResourceRelationType.AUTHOR, PersonResourceRelationType.EDITOR);
     public static final String NO_THESIS_SEARCH = "NOT entrytype:*thesis*";
     private static final int DEFAULT_NO_OF_ENTRYTYPES = 25;
 
@@ -145,19 +144,19 @@ public class PersonPageController extends SingleResourceListController implement
                 .withPersonsOfPosts(true)
                 .onlyTheses(true)
                 .groupByInterhash(true)
-                .orderBy(PersonResourceRelationOrder.PublicationYear)
+                .sortBy(PersonResourceRelationSortKey.PublicationYear)
+                .orderBy(SortOrder.DESC)
                 .fromTo(0, Integer.MAX_VALUE);
 
         final List<ResourcePersonRelation> thesesRelations = logic.getResourceRelations(queryBuilder.build());
         final List<ResourcePersonRelation> authorEditorRelations = new ArrayList<>();
         final List<ResourcePersonRelation> advisorRelations = new ArrayList<>();
 
-        for (ResourcePersonRelation thesis : thesesRelations) {
-            final boolean isAuthorEditor = PUBLICATION_RELATED_RELATION_TYPES.contains(thesis.getRelationType());
-            if (isAuthorEditor) {
-                authorEditorRelations.add(thesis);
+        for (ResourcePersonRelation thesisRelation : thesesRelations) {
+            if (PersonResourceRelationUtils.isAuthorEditorRelation(thesisRelation)) {
+                authorEditorRelations.add(thesisRelation);
             } else {
-                advisorRelations.add(thesis);
+                advisorRelations.add(thesisRelation);
             }
         }
 

@@ -5,7 +5,6 @@
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
@@ -29,11 +28,20 @@
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<jsp:directive.attribute name="noContentPadding" type="java.lang.Boolean" required="false"/>
-
+	
 	<jsp:directive.attribute name="sidebarId" type="java.lang.String" required="false"/>
 	<c:if test="${empty sidebarId}">
 		<c:set var="sidebarId" value="sidebar" />
 	</c:if>
+	
+	<c:choose>
+		<c:when test="${noContentPadding}">
+			<c:set var="containerPadding" value="no-padding" />
+		</c:when>
+		<c:otherwise>
+		<c:set var="containerPadding" value="" />
+		</c:otherwise>
+	</c:choose>
 
 	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
 	<!--+
@@ -53,6 +61,7 @@
 			personalized="${personalized}"
 			/>
 			<body data-spy="scroll" data-target="#sidebar-nav">
+
 				<c:choose>
 					<c:when test="${pageContext.response.locale eq 'en'}">
 						<c:set var="alertMessage" value="${properties['project.header.alert.message.en']}" />
@@ -122,14 +131,11 @@
 
 				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 
-				<div class="container main">
-					<!-- Error alerts TODO global errors in layouts instead of each page -->
-					<!-- <errors:global/> -->
-					<div id="globalAjaxAlerts"><!-- keep me for AJAX alerts --></div>
-
+				<div class="container main ${containerPadding}">
 					<c:choose>
 						<c:when test="${noSidebar}">
 							<!-- without sidebar -->
+							<errors:global/>
 							<parts:successMessage />
 							<!-- Breadcrumbs -->
 							<c:if test="${not empty breadcrumbs}">
@@ -156,6 +162,7 @@
 											</jsp:attribute>
 										</bs:alert>
 									</c:if>
+									<errors:global/>
 									<parts:successMessage />
 
 									<!-- Breadcrumbs -->

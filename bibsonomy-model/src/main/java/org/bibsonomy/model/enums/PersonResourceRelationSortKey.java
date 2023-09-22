@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
@@ -27,47 +27,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.params.person;
+package org.bibsonomy.model.enums;
 
 /**
- * Parameters to get a person by an additional key
- * @author kchoong
+ * @author jensi
  */
-public class PersonAdditionalKeyParam {
-	private final String personId;
-	private final String keyName;
-	private final String keyValue;
-
-	/**
-	 * Default constructor
-	 * @param personId
-	 * @param keyName
-	 * @param keyValue
-	 */
-	public PersonAdditionalKeyParam(String personId, String keyName, String keyValue) {
-		this.personId = personId;
-		this.keyName = keyName;
-		this.keyValue = keyValue;
-	}
-
-	/**
-	 * @return the personId
-	 */
-	public String getPersonId() {
-		return personId;
-	}
-
-	/**
-	 * @return the keyName
-	 */
-	public String getKeyName() {
-		return keyName;
-	}
-
-	/**
-	 * @return the keyValue
-	 */
-	public String getKeyValue() {
-		return keyValue;
-	}
+public enum PersonResourceRelationSortKey {
+	PublicationYear
 }

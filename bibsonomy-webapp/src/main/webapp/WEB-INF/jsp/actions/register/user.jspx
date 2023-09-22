@@ -9,7 +9,6 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
@@ -47,7 +46,6 @@
 				<br />
 				<div class="tab-pane active" id="local">
 					<form:form action="/register" method="POST" class="form-horizontal">
-						<errors:global />
 		
 						<bsform:fieldset legendKey="register.personal">
 							<jsp:attribute name="content">

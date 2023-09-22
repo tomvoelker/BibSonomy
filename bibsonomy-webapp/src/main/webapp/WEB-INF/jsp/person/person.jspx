@@ -8,7 +8,6 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -87,8 +86,6 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<!-- Error alerts -->
-			<errors:global/>
 
 			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
 				<div class="col-md-12">

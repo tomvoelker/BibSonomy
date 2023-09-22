@@ -8,7 +8,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
@@ -25,7 +24,6 @@
 		<jsp:attribute name="content">
 
 			<form:form action="/registerLDAP" method="POST" cssClass="form-horizontal">
-				<errors:global />
 
 				<fieldset class="fsOuter">
 					<!-- FIXME: is this the right place for this description? -->

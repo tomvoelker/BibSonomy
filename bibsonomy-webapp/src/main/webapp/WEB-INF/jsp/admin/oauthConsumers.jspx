@@ -9,7 +9,6 @@
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
@@ -142,11 +141,8 @@
 				<h3 id="register-consumer"><fmt:message key="admin.actions.consumer.register"/></h3>
 				
         	    <form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
-		        	<errors:global />
 					<bsform:fieldset legendKey="admin.oauth.consumer.details">
 						<jsp:attribute name="content">
-
-							<errors:global />
 
 							<bsform:input path="consumerInfo.consumerKey" labelKey="admin.oauth.consumer.key" inputColSpan="9" labelColSpan="3"/>
 

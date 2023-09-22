@@ -59,15 +59,6 @@ public interface PersonLogicInterface {
 	Person getPersonById(final PersonIdType idType, final String id);
 
 	/**
-	 * gets the person by any additional key and value
-	 * @param keyName
-	 * @param keyValue
-	 * @return
-	 */
-	@Deprecated // FIXME: use getPersons method, the key value type is not unique for one person in general
-	Person getPersonByAdditionalKey(final String keyName, final String keyValue);
-
-	/**
 	 * sets id for new persons
 	 *
 	 * @param person the person to be saved or updated

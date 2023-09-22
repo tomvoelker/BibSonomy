@@ -37,34 +37,37 @@ import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
+ * strategy to update a target person by merging with a source person
  * @author pda
  */
 public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
-	private final String personMergeTargetId;
-	private final String personToMergeId;
+	private final String mergeSourceId;
+	private final String mergeTargetId;
 
 	/**
 	 * default constructor
 	 *
 	 * @param context
-	 * @param personMergeTargetId
-	 * @param personToMergeId
 	 */
-	public PostPersonMergeStrategy(final Context context, final String personMergeTargetId, final String personToMergeId) {
+	public PostPersonMergeStrategy(final Context context) {
 		super(context);
-		if (!present(personMergeTargetId)) {
+
+		this.mergeSourceId = context.getStringAttribute(RESTConfig.SOURCE_ID_PARAM, null);
+		this.mergeTargetId = context.getStringAttribute(RESTConfig.TARGET_ID_PARAM, null);
+
+		if (!present(this.mergeSourceId)) {
+			throw new IllegalArgumentException("No personId given for the source person to merge.");
+		}
+
+		if (!present(this.mergeTargetId)) {
 			throw new IllegalArgumentException("No personId given for the target person to merge.");
 		}
-		if (!present(personToMergeId)) {
-			throw new IllegalArgumentException("No personId given for the person to merge.");
-		}
-		this.personMergeTargetId = personMergeTargetId;
-		this.personToMergeId = personToMergeId;
 	}
 
 	@Override
@@ -74,31 +77,31 @@ public class PostPersonMergeStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	protected String update() {
-		final Person personMergeTarget = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personMergeTargetId);
-		if (!present(personMergeTarget)) {
-			throw new BadRequestOrResponseException("No person with id " + personMergeTargetId + " as source.");
+		final Person sourcePerson = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.mergeSourceId);
+		if (!present(sourcePerson)) {
+			throw new BadRequestOrResponseException("No person with id " + this.mergeSourceId + " as source.");
 		}
 
-		final Person personToMerge = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.personToMergeId);
-		if (!present(personToMerge)) {
-			throw new BadRequestOrResponseException("No person with id " + personToMergeId + " as target.");
+		final Person targetPerson = this.getLogic().getPersonById(PersonIdType.PERSON_ID, this.mergeTargetId);
+		if (!present(targetPerson)) {
+			throw new BadRequestOrResponseException("No person with id " + this.mergeTargetId + " as target.");
 		}
 
 		// FIXME Should normally be done as a api call
-		personToMerge.getMainName().setMain(false);
-		personToMerge.setMainName(personMergeTarget.getMainName());
-		final String academicDegree = personMergeTarget.getAcademicDegree();
+		targetPerson.getMainName().setMain(false);
+		targetPerson.setMainName(sourcePerson.getMainName());
+		final String academicDegree = sourcePerson.getAcademicDegree();
 		if (present(academicDegree)) {
-			personToMerge.setAcademicDegree(academicDegree);
-			this.getLogic().updatePerson(personToMerge, PersonOperation.UPDATE_DETAILS);
+			targetPerson.setAcademicDegree(academicDegree);
+			this.getLogic().updatePerson(targetPerson, PersonOperation.UPDATE_DETAILS);
 		}
-		this.getLogic().updatePerson(personToMerge, PersonOperation.UPDATE_NAMES);
-		final PersonMatch personMatch = this.getLogic().getPersonMatches(personMergeTargetId).stream().
-						filter(p -> p.getPerson2().getPersonId().equals(personToMergeId)).findAny().orElse(null);
+		this.getLogic().updatePerson(targetPerson, PersonOperation.UPDATE_NAMES);
+		final PersonMatch personMatch = this.getLogic().getPersonMatches(mergeSourceId).stream().
+						filter(p -> p.getPerson2().getPersonId().equals(mergeTargetId)).findAny().orElse(null);
 		if (!present(personMatch)) {
 			//FIXME ????????
 			throw new BadRequestOrResponseException("Error in matching....");
 		}
-		return this.getLogic().acceptMerge(personMatch) ? this.personMergeTargetId : "no.merge";
+		return this.getLogic().acceptMerge(personMatch) ? this.mergeSourceId : "no.merge";
 	}
 }
