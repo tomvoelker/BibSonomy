@@ -79,7 +79,3 @@ function sendToRepository() {
         }
     });
 }
-
-function cancelSubmitToRepository() {
-
-}

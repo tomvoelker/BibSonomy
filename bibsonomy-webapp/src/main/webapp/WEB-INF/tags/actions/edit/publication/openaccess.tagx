@@ -98,11 +98,6 @@
 											<p>
 												<fmt:message key="post.resource.openaccess.submit.loading" />
 											</p>
-											<p id="submitRepositoryCancelBtn">
-												<a href="#" onclick="cancelSubmitToRepository()">
-													<fmt:message key="post_bibtex.orcid.action.cancel" />
-												</a>
-											</p>
 										</jsp:attribute>
 									</parts:spinner>
 

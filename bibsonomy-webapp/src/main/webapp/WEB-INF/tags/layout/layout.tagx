@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
