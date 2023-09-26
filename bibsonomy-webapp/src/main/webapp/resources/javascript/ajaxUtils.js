@@ -96,4 +96,9 @@ function showAjaxAlert(type, message) {
 	alert.append(message);
 
 	$('#globalAjaxAlerts').append(alert);
+
+	// Scroll to the global AJAX alerts section
+	$('html, body').animate({
+		scrollTop: $("#globalAjaxAlerts").offset().top
+	}, 1000);
 }

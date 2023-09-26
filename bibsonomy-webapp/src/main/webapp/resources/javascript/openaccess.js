@@ -15,8 +15,21 @@ var GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
  * on load
  */
 $(function () {
-    // Uncheck author contract agreement on load
-    $('#authorAgreement').prop('checked', false);
+    var submitButton = $('#submitRepositoryBtn');
+    var agreement = $('#openAccessAgreement');
+
+    // Uncheck author contract agreement on load and disable submit button
+    agreement.prop('checked', false);
+    submitButton.prop( "disabled", true);
+
+    // Enable submission, if checked
+    agreement.click(function () {
+        if ($(this).is(':checked')) {
+            submitButton.prop( "disabled", false);
+        } else {
+            submitButton.prop( "disabled", true);
+        }
+    });
 
     updateStatusOA();
 });
@@ -44,32 +57,35 @@ function updateStatusOA() {
 }
 
 function sendToRepository() {
-    if (!document.getElementById('authorAgreement').checked) {
+    if (!document.getElementById('openAccessAgreement').checked) {
         return;
     }
 
     var formData = $('#formSubmitRepository').serializeArray();
-    console.log(formData);
     $.ajax({
         url: SWORD_SERVICE_URL,
         data: formData,
         success: function (data) {
 
-            // response has following format:
+            // response has the following format:
             // {"response":{"message":"error.sword.noPDFattached","localizedMessage":"Keine PDF-Datei zum übermitteln gefunden","statuscode":0}}
-            // statuscode can be 0 (error/warning) or 1 (success)
+            // status code can be 0 (error/warning) or 1 (success)
 
             // check and show response to user
             $.each(data, function (i, response) {
                 if (null == data || null == data.response) {
-                    showAjaxAlert("error", "unknown response error");
+                    showAjaxAlert("danger", "unknown response error");
                 } else {
-
+                    if (data.response.statuscode === 0) {
+                        showAjaxAlert("danger", data.response.localizedMessage);
+                    } else {
+                        showAjaxAlert("success", data.response.localizedMessage);
+                    }
                 }
             });
         },
         error: function (req, status, e) {
-            showAjaxAlert("error", "Unable to send data to repository: " + status);
+            showAjaxAlert("danger", "Unable to send data to repository: " + status);
         },
         beforeSend: function () {
             $("#submitRepositoryLoader").show(0);

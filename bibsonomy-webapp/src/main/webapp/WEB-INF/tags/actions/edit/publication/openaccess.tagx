@@ -85,7 +85,7 @@
 							<div class="form-group">
 								<div class="col-sm-offset-3 col-sm-9">
 									<div class="checkbox">
-										<input type="checkbox" id="authorAgreement"/>
+										<input type="checkbox" id="openAccessAgreement"/>
 										<fmt:message key="post.resource.openaccess.submit.authorcontractconfirm"/>
 									</div>
 								</div>
@@ -103,7 +103,7 @@
 
 									<input type="hidden" name="intrahash" value="${bibtex.intraHash}" />
 									<fmt:message key="post.resource.openaccess.button.submitRepository" var="submitRepositoryLabel"/>
-									<input type="button" class="btn btn-primary" id="submitRepositoryBtn" onclick="sendToRepository()" value="${submitRepositoryLabel}"/>
+									<input type="button" class="btn btn-primary" id="submitRepositoryBtn" onclick="sendToRepository()" value="${submitRepositoryLabel}" disabled="disabled"/>
 								</div>
 							</div>
 						</div>
