@@ -33,6 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -146,6 +147,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected Post<R> getGoldStandardPostByHash(final String resourceHash, final DBSession session) {
 		final P param = this.createResourceParam(resourceHash);
 		return (Post<R>) this.queryForObject("getGoldStandardByHash", param, session);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Post<R>> getGoldStandardPostsByChangeDate(final Date changeDate, final DBSession session) {
+		final P param = this.createNewParam();
+		param.setChangeDate(changeDate);
+		return (List<Post<R>>) this.queryForList("getGoldStandardsByChangeDate", param, session);
 	}
 
 	private P createResourceParam(final String resourceHash) {

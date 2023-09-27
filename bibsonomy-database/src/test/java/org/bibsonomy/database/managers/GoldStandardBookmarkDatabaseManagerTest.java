@@ -30,6 +30,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,13 +39,17 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.GoldStandardBookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -67,6 +72,16 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		final GoldStandardBookmark bookmark = post.getResource();
 		assertEquals("http://www.uni-kassel.de", bookmark.getUrl());
 		assertEquals(1025, post.getContentId().intValue());
+	}
+
+	@Test
+	public void testGetGoldStandardsByChangeDate() throws ParseException {
+		String changeDateString = "2008-05-01";
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date changeDate = formatter.parse(changeDateString);
+
+		List<Post<GoldStandardBookmark>> posts = manager.getGoldStandardPostsByChangeDate(changeDate, this.dbSession);
+		assertThat(posts.size(), equalTo(1));
 	}
 	
 	@Test

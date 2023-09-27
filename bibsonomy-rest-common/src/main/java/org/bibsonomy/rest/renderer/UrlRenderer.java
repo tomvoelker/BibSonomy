@@ -885,14 +885,14 @@ public class UrlRenderer {
 	 * @param searchType
 	 * @return
 	 */
-	public String createHrefForPosts(final GroupingEntity grouping,
+	public UrlBuilder createHrefForPosts(final GroupingEntity grouping,
 									 final String groupingValue, final Class<? extends Resource> resourceType,
 									 final List<String> tags, final String resourceHash, final String search,
 									 final List<SortCriteria> sortCriteria, final int start, final int end, final QueryScope searchType) {
 		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, sortCriteria, searchType);
 
 		applyStartEnd(urlBuilder, start, end);
-		return urlBuilder.asString();
+		return urlBuilder;
 	}
 
 	/**

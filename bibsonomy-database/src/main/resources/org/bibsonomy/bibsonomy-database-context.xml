@@ -431,6 +431,7 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourceHistory" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByChangeDate" parent="abstractGoldStandardPublicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
 			</list>
 		</property>

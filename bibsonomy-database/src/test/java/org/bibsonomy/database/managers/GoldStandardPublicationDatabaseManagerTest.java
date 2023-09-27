@@ -30,6 +30,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,6 +38,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +55,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.util.GroupUtils;
@@ -282,6 +286,16 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         old.recalculateHashes();
         goldPubManager.updatePost(afterUpdate, newInterHash, loginUser, null, this.dbSession);
 
+    }
+
+    @Test
+    public void testGetGoldStandardsByChangeDate() throws ParseException {
+        String changeDateString = "2008-05-01";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date changeDate = formatter.parse(changeDateString);
+
+        List<Post<GoldStandardPublication>> posts = goldPubManager.getGoldStandardPostsByChangeDate(changeDate, this.dbSession);
+        assertThat(posts.size(), equalTo(2));
     }
 
     private void deletePost(final String interhash) {
