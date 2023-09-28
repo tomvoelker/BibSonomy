@@ -72,7 +72,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	private final String resourceHash;
 	private final List<SortCriteria> sortCriteria;
 	private final QueryScope searchType;
-	private final Date changeDate;
+	private final Date beforeChangeDate;
+	private final Date afterChangeDate;
 
 	private final int start;
 	private final int end;
@@ -92,7 +93,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		this.tags = query.getTags();
 		this.search = query.getSearch();
 		this.sortCriteria = query.getSortCriteria();
-		this.changeDate = query.getChangeDate();
+		this.beforeChangeDate = query.getBeforeChangeDate();
+		this.afterChangeDate = query.getAfterChangeDate();
 		this.userName = loggedInUser.getName();
 		this.searchType = query.getScope();
 
@@ -118,7 +120,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		}
 		
 		final UrlBuilder urlBuilder = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortCriteria, this.start, this.end, this.searchType);
-		urlBuilder.addParameter(RESTConfig.CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.changeDate));
+		urlBuilder.addParameter(RESTConfig.BEFORE_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.beforeChangeDate));
+		urlBuilder.addParameter(RESTConfig.AFTER_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.afterChangeDate));
 
 		final String url = urlBuilder.asString();
 		if (log.isDebugEnabled()) {

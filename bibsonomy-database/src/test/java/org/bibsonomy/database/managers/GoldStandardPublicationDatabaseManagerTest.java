@@ -55,7 +55,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.util.GroupUtils;
@@ -289,12 +288,12 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
     }
 
     @Test
-    public void testGetGoldStandardsByChangeDate() throws ParseException {
+    public void testGetGoldStandardsAfterChangeDate() throws ParseException {
         String changeDateString = "2008-05-01";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date changeDate = formatter.parse(changeDateString);
 
-        List<Post<GoldStandardPublication>> posts = goldPubManager.getGoldStandardPostsByChangeDate(changeDate, this.dbSession);
+        List<Post<GoldStandardPublication>> posts = goldPubManager.getGoldStandardPostsAfterChangeDate(changeDate, this.dbSession);
         assertThat(posts.size(), equalTo(2));
     }
 

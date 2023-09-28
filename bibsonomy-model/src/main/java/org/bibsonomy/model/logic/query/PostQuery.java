@@ -104,9 +104,14 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	private Date endDate;
 
 	/**
+	 * if given, only posts that have been updated before (inclusive) changeDate are returned
+	 */
+	private Date beforeChangeDate;
+
+	/**
 	 * if given, only posts that have been updated after (inclusive) changeDate are returned
 	 */
-	private Date changeDate;
+	private Date afterChangeDate;
 
 	/**
 	 * flag to retrieve posts where the person names are not assigned to a person

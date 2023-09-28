@@ -48,18 +48,18 @@ import org.bibsonomy.services.searcher.PostSearchQuery;
  * @param <RR>
  * @param <R>
  */
-public class GetGoldStandardsByChangeDate<RR extends Resource, R extends Resource & GoldStandard<RR>> extends GoldStandardChainElement<RR, R> {
+public class GetGoldStandardsAfterChangeDate<RR extends Resource, R extends Resource & GoldStandard<RR>> extends GoldStandardChainElement<RR, R> {
 
     @Override
     protected List<Post<R>> handle(final QueryAdapter<PostQuery<R>> param, final DBSession session) {
         final PostSearchQuery<?> query = new PostSearchQuery<>(param.getQuery());
-        final Date changeDate = query.getChangeDate();
-        return this.databaseManager.getGoldStandardPostsByChangeDate(changeDate, session);
+        final Date changeDate = query.getAfterChangeDate();
+        return this.databaseManager.getGoldStandardPostsAfterChangeDate(changeDate, session);
     }
 
     @Override
     protected boolean canHandle(QueryAdapter<PostQuery<R>> param) {
         PostQuery<R> query = param.getQuery();
-        return present(query.getChangeDate());
+        return present(query.getAfterChangeDate());
     }
 }

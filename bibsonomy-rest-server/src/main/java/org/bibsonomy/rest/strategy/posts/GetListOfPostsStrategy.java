@@ -94,7 +94,8 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 		query.setSearch(this.search);
 		query.setScope(this.searchType);
 		query.setSortCriteria(this.sortCriteria);
-		query.setChangeDate(this.changeDate);
+		query.setBeforeChangeDate(this.beforeChangeDate);
+		query.setAfterChangeDate(this.afterChangeDate);
 		final ViewModel view = this.getView();
 		query.setStart(view.getStartValue());
 		query.setEnd(view.getEndValue());

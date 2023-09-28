@@ -49,7 +49,6 @@ import org.bibsonomy.common.JobResult;
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.GoldStandardBookmark;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -75,12 +74,12 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 	}
 
 	@Test
-	public void testGetGoldStandardsByChangeDate() throws ParseException {
+	public void testGetGoldStandardsAfterChangeDate() throws ParseException {
 		String changeDateString = "2008-05-01";
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date changeDate = formatter.parse(changeDateString);
 
-		List<Post<GoldStandardBookmark>> posts = manager.getGoldStandardPostsByChangeDate(changeDate, this.dbSession);
+		List<Post<GoldStandardBookmark>> posts = manager.getGoldStandardPostsAfterChangeDate(changeDate, this.dbSession);
 		assertThat(posts.size(), equalTo(1));
 	}
 	

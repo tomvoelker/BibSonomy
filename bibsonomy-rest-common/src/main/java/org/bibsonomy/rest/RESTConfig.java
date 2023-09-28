@@ -135,7 +135,8 @@ public final class RESTConfig {
 
 	public static final String END_PARAM = "end";
 
-	public static final String CHANGE_DATE_PARAM = "changeDate";
+	public static final String BEFORE_CHANGE_DATE_PARAM = "beforeChangeDate";
+	public static final String AFTER_CHANGE_DATE_PARAM = "afterChangeDate";
 
 	public static final String SYNC_STRATEGY_PARAM = "strategy";
 

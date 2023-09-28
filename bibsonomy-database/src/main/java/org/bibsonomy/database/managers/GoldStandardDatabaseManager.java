@@ -150,10 +150,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Post<R>> getGoldStandardPostsByChangeDate(final Date changeDate, final DBSession session) {
+	public List<Post<R>> getGoldStandardPostsAfterChangeDate(final Date changeDate, final DBSession session) {
 		final P param = this.createNewParam();
 		param.setChangeDate(changeDate);
-		return (List<Post<R>>) this.queryForList("getGoldStandardsByChangeDate", param, session);
+		return (List<Post<R>>) this.queryForList("getGoldStandardsAfterChangeDate", param, session);
 	}
 
 	private P createResourceParam(final String resourceHash) {

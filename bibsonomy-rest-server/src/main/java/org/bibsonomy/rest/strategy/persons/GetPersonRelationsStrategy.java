@@ -58,7 +58,8 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
 
     private String personId;
     private final AdditionalKey additionalKey;
-    private final Date changeDate;
+    private final Date beforeChangeDate;
+    private final Date afterChangeDate;
     private final boolean withPersons;
     private final boolean withPosts;
     private final boolean withPersonsOfPosts;
@@ -70,7 +71,8 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
 
         this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
         this.additionalKey = RESTUtils.getAdditionalKeyParam(context);
-        this.changeDate = RESTUtils.getDateParam(context, RESTConfig.CHANGE_DATE_PARAM);
+        this.beforeChangeDate = RESTUtils.getDateParam(context, RESTConfig.BEFORE_CHANGE_DATE_PARAM);
+        this.afterChangeDate = RESTUtils.getDateParam(context, RESTConfig.AFTER_CHANGE_DATE_PARAM);
         this.withPersons = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.WITH_PERSONS_PARAM, "false"));
         this.withPosts = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.WITH_POSTS_PARAM, "false"));
         this.withPersonsOfPosts = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.WITH_PERSONS_OF_POSTS_PARAM, "false"));
@@ -89,7 +91,8 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
 
         final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
                 .byPersonId(this.personId)
-                .byChangeDate(this.changeDate)
+                .beforeChangeDate(this.beforeChangeDate)
+                .afterChangeDate(this.afterChangeDate)
                 .withPersons(this.withPersons)
                 .withPosts(this.withPosts)
                 .withPersonsOfPosts(this.withPersonsOfPosts)

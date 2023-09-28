@@ -304,7 +304,7 @@
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
-				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsByChangeDate">
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsAfterChangeDate">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 			</list>
@@ -431,7 +431,7 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourceHistory" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByChangeDate" parent="abstractGoldStandardPublicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsAfterChangeDate" parent="abstractGoldStandardPublicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
 			</list>
 		</property>

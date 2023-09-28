@@ -20,7 +20,7 @@
 		WHERE r.reference = #hash# AND b.simhash1 = r.publication AND r.relation_kind = #relation# ORDER BY b.title DESC
 	</select>
 
-	<select id="getGoldStandardsByChangeDate" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="resourceParam">
+	<select id="getGoldStandardsAfterChangeDate" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="resourceParam">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesAndContentId"/>, b.change_date, 1 AS count, content_type, <include refid="reviewRatingsRows" />
 		FROM gold_standard b
 		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
