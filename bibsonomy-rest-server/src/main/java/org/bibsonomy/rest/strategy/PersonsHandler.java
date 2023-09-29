@@ -94,8 +94,9 @@ public class PersonsHandler implements ContextHandler {
 			case POST:
 				return new PostPersonStrategy(context);
 			case PUT:
-				final PersonOperation operation = PersonOperation.valueOf(
-						context.getStringAttribute("operation", "update_all").toUpperCase());
+				final PersonOperation operation =
+						PersonOperation.valueOf(context.getStringAttribute(RESTConfig.OPERATION_PARAM, "update_all")
+								.toUpperCase());
 				return new UpdatePersonStrategy(context, operation);
 			case DELETE:
 			default:

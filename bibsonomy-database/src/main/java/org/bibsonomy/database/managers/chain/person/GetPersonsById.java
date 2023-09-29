@@ -31,7 +31,6 @@ package org.bibsonomy.database.managers.chain.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,6 +38,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
 
 /**
@@ -47,29 +47,41 @@ import org.bibsonomy.model.logic.query.PersonQuery;
  *
  * @author dzo
  */
-public class GetPersonsByUserName extends PersonChainElement {
+public class GetPersonsById extends PersonChainElement {
 
-	/**
-	 * default constructor
-	 *
-	 * @param personDatabaseManager
-	 */
-	public GetPersonsByUserName(final PersonDatabaseManager personDatabaseManager) {
-		super(personDatabaseManager);
-	}
+    /**
+     * default constructor
+     *
+     * @param personDatabaseManager
+     */
+    public GetPersonsById(final PersonDatabaseManager personDatabaseManager) {
+        super(personDatabaseManager);
+    }
 
-	@Override
-	protected List<Person> handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
-		final Person personByUser = this.getPersonDatabaseManager().getPersonByUser(param.getQuery().getUserName(), session);
-		if (present(personByUser)) {
-			return Arrays.asList(personByUser);
-		}
-		
-		return Collections.emptyList();
-	}
+    @Override
+    protected List<Person> handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
+        PersonQuery query = param.getQuery();
+        Person person = null;
+        if (present(query.getPersonId())) {
+            person = this.personDatabaseManager.getPersonById(query.getPersonId(), session);
+        } else if (present(query.getUserName())) {
+            person = this.personDatabaseManager.getPersonByUser(param.getQuery().getUserName(), session);
+        } else if (present(query.getAdditionalKey())) {
+            final AdditionalKey additionalKey = query.getAdditionalKey();
+            return this.personDatabaseManager.getPersonsByAdditionalKey(additionalKey.getKeyName(), additionalKey.getKeyValue(), session);
+        }
 
-	@Override
-	protected boolean canHandle(final QueryAdapter<PersonQuery> param) {
-		return present(param.getQuery().getUserName());
-	}
+        if (present(person)) {
+            return Collections.singletonList(person);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    protected boolean canHandle(final QueryAdapter<PersonQuery> param) {
+        PersonQuery query = param.getQuery();
+        return present(query.getUserName()) ||
+                present(query.getPersonId()) ||
+                present(query.getAdditionalKey());
+    }
 }

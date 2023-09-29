@@ -456,15 +456,6 @@ public class UrlRenderer {
 	}
 
 	/**
-	 * creates a persons url builder
-	 * @param userName the username of a user (when you want to find the claimed person of the user)
-	 * @return url builder
-	 */
-	public UrlBuilder createUrlBuilderForPersons(final String userName) {
-		return this.createUrlBuilderForPersons().addParameter(GroupingEntity.USER.toString().toLowerCase(), userName);
-	}
-
-	/**
 	 * creates a url builder for a person
 	 * @param personId the id of the person
 	 * @return url builder
@@ -479,16 +470,6 @@ public class UrlRenderer {
 	 */
 	public UrlBuilder createUrlBuilderForPersons() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
-	}
-
-	/**
-	 * creates a url builder to update a person
-	 * @param personId the person id
-	 * @param operation the update operation to apply
-	 * @return the url builder
-	 */
-	public UrlBuilder createUrlBuilderForPersons(String personId, PersonOperation operation) {
-		return createUrlBuilderForPerson(personId).addParameter("operation", operation.name().toLowerCase());
 	}
 
 	/**

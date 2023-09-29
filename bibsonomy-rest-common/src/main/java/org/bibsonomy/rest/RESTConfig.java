@@ -136,7 +136,10 @@ public final class RESTConfig {
 	public static final String END_PARAM = "end";
 
 	public static final String BEFORE_CHANGE_DATE_PARAM = "beforeChangeDate";
+
 	public static final String AFTER_CHANGE_DATE_PARAM = "afterChangeDate";
+
+	public static final String OPERATION_PARAM = "operation";
 
 	public static final String SYNC_STRATEGY_PARAM = "strategy";
 
@@ -151,6 +154,9 @@ public final class RESTConfig {
 	public static final String CLIPBOARD_SUBSTRING = "clipboard";
 
 	public static final String CLIPBOARD_CLEAR = "clear";
+
+	/** the query param for a username */
+	public static final String USER_PARAM = "user";
 
 	/** the query param for a person id */
 	public static final String PERSON_ID_PARAM = "personId";
