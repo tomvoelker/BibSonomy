@@ -97,6 +97,7 @@ public class DisseminController extends AjaxController {
                     }
                 }
             } catch (ParseException e) {
+                LOG.error("Unable to parse the response");
                 throw new RuntimeException(e);
             }
         }
@@ -110,8 +111,7 @@ public class DisseminController extends AjaxController {
             final String response = WebUtils.getContentAsString(WebUtils.getHttpClient(), httpGet);
             this.processResponse(response, policy);
         } catch (HttpException | IOException e) {
-            // TODO
-            e.printStackTrace();
+            LOG.error("Unable to retrieve the document with the DOI: " + doi);
         }
     }
 
@@ -127,8 +127,7 @@ public class DisseminController extends AjaxController {
             final String response = WebUtils.getContentAsString(WebUtils.getHttpClient(), httpPost);
             this.processResponse(response, policy);
         } catch (HttpException | IOException e) {
-            // TODO
-            e.printStackTrace();
+            LOG.error("Unable to retrieve the document with the metadata of this publication: " + post);
         }
     }
 
