@@ -400,7 +400,7 @@
 		AND c.target_type = 2
 	</select>
 
-	<select id="getResourcePersonRelationByChangeDate" resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass="bibtexParam">
+	<select id="getResourcePersonRelationAfterChangeDate" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
 		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
 		<include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
 		FROM gold_standard b

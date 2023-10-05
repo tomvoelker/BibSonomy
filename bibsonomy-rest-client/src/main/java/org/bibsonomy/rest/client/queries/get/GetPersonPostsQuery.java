@@ -57,7 +57,8 @@ public class GetPersonPostsQuery extends AbstractQuery<List<Post<? extends Resou
     private final String interhash;
     private final PersonResourceRelationType relationType;
     private final Integer authorIndex;
-    private final Date changeDate;
+    private final Date beforeChangeDate;
+    private final Date afterChangeDate;
 
     private final boolean withPersons;
     private final boolean withPosts;
@@ -82,7 +83,8 @@ public class GetPersonPostsQuery extends AbstractQuery<List<Post<? extends Resou
         this.interhash = query.getInterhash();
         this.relationType = query.getRelationType();
         this.authorIndex = query.getAuthorIndex();
-        this.changeDate = query.getChangeDate();
+        this.beforeChangeDate = query.getBeforeChangeDate();
+        this.afterChangeDate = query.getAfterChangeDate();
         this.withPersons = query.isWithPersons();
         this.withPosts = query.isWithPosts();
         this.withPersonsOfPosts = query.isWithPersonsOfPosts();
@@ -100,7 +102,8 @@ public class GetPersonPostsQuery extends AbstractQuery<List<Post<? extends Resou
         urlBuilder.addParameter(RESTConfig.INTERHASH_PARAM, this.interhash);
         urlBuilder.addParameter(RESTConfig.RELATION_TYPE_PARAM, this.relationType);
         urlBuilder.addParameter(RESTConfig.RELATION_INDEX_PARAM, this.authorIndex);
-        urlBuilder.addParameter(RESTConfig.CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.changeDate));
+        urlBuilder.addParameter(RESTConfig.BEFORE_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.beforeChangeDate));
+        urlBuilder.addParameter(RESTConfig.AFTER_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.afterChangeDate));
         urlBuilder.addParameter(RESTConfig.WITH_PERSONS_PARAM, this.withPersons);
         urlBuilder.addParameter(RESTConfig.WITH_POSTS_PARAM, this.withPosts);
         urlBuilder.addParameter(RESTConfig.WITH_PERSONS_OF_POSTS_PARAM, this.withPersonsOfPosts);

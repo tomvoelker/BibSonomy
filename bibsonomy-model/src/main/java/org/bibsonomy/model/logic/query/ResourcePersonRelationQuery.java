@@ -48,7 +48,8 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
     private final String interhash;
     private final PersonResourceRelationType relationType;
     private final Integer authorIndex;
-    private final Date changeDate;
+    private final Date beforeChangeDate;
+    private final Date afterChangeDate;
 
     private final boolean withPersons;
     private final boolean withPosts;
@@ -63,7 +64,8 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
                                        String interhash,
                                        PersonResourceRelationType relationType,
                                        Integer authorIndex,
-                                       Date changeDate,
+                                       Date beforeChangeDate,
+                                       Date afterChangeDate,
                                        boolean withPersons,
                                        boolean withPosts,
                                        boolean withPersonsOfPosts,
@@ -79,7 +81,8 @@ public class ResourcePersonRelationQuery extends BasicPaginatedQuery {
         this.interhash = interhash;
         this.relationType = relationType;
         this.authorIndex = authorIndex;
-        this.changeDate = changeDate;
+        this.beforeChangeDate = beforeChangeDate;
+        this.afterChangeDate = afterChangeDate;
         this.withPersons = withPersons;
         this.withPosts = withPosts;
         this.withPersonsOfPosts = withPersonsOfPosts;

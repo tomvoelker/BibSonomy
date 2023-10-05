@@ -31,10 +31,12 @@ package org.bibsonomy.rest.client.queries.put;
 
 import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 import java.io.StringWriter;
 
@@ -56,9 +58,11 @@ public class UpdatePersonQuery extends AbstractQuery<String> {
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializePerson(sw, this.person, null);
-		final String personUrl = this.getUrlRenderer().
-						createUrlBuilderForPersons(person.getPersonId(), operation).asString();
-		this.downloadedDocument = performRequest(HttpMethod.PUT, personUrl, sw.toString());
+		final String requestUrl = this.getUrlRenderer().createUrlBuilderForPerson(person.getPersonId())
+				.addParameter(RESTConfig.OPERATION_PARAM, this.operation.name().toLowerCase())
+				.asString();
+
+		this.downloadedDocument = performRequest(HttpMethod.PUT, requestUrl, sw.toString());
 	}
 
 	@Override

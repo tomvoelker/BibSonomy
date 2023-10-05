@@ -62,7 +62,7 @@ public class GetPersonsByOrganization extends PersonChainElement {
 		final Group organization = query.getOrganization();
 		final int start = query.getStart();
 		final int end = query.getEnd();
-		return this.getPersonDatabaseManager().getPersonsByOrganization(organization, end - start, start, session);
+		return this.personDatabaseManager.getPersonsByOrganization(organization, end - start, start, session);
 	}
 
 	@Override

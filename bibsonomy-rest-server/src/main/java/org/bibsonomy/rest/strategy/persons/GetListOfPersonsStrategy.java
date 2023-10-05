@@ -32,8 +32,9 @@ package org.bibsonomy.rest.strategy.persons;
 import java.io.Writer;
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.rest.RESTConfig;
@@ -60,7 +61,7 @@ public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Perso
 	 */
 	public GetListOfPersonsStrategy(final Context context) {
 		super(context);
-		this.userName = context.getStringAttribute(GroupingEntity.USER.toString().toLowerCase(), null);
+		this.userName = context.getStringAttribute(RESTConfig.USER_PARAM, null);
 		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
 		this.additionalKey = RESTUtils.getAdditionalKeyParam(context);
 	}
@@ -76,6 +77,8 @@ public class GetListOfPersonsStrategy extends AbstractGetListStrategy<List<Perso
 				.byUserName(this.userName)
 				.byPersonId(this.personId)
 				.byAdditionalKey(this.additionalKey)
+				.sortBy(PersonSortKey.RANK)
+				.orderBy(SortOrder.DESC)
 				.start(this.getView().getStartValue())
 				.end(this.getView().getEndValue());
 

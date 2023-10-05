@@ -27,39 +27,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.managers.chain.person;
+package org.bibsonomy.database.managers.chain.goldstandard.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.database.managers.chain.goldstandard.GoldStandardChainElement;
 import org.bibsonomy.database.managers.chain.util.QueryAdapter;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.extra.AdditionalKey;
-import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.GoldStandard;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.query.PostQuery;
+import org.bibsonomy.services.searcher.PostSearchQuery;
 
-public class GetPersonsByAdditionalKey extends PersonChainElement {
+/**
+ * @author dzo
+ * @param <RR>
+ * @param <R>
+ */
+public class GetGoldStandardsAfterChangeDate<RR extends Resource, R extends Resource & GoldStandard<RR>> extends GoldStandardChainElement<RR, R> {
 
-    /**
-     * default constructor
-     *
-     * @param personDatabaseManager
-     */
-    public GetPersonsByAdditionalKey(final PersonDatabaseManager personDatabaseManager) {
-        super(personDatabaseManager);
+    @Override
+    protected List<Post<R>> handle(final QueryAdapter<PostQuery<R>> param, final DBSession session) {
+        final PostSearchQuery<?> query = new PostSearchQuery<>(param.getQuery());
+        final Date changeDate = query.getAfterChangeDate();
+        return this.databaseManager.getGoldStandardPostsAfterChangeDate(changeDate, session);
     }
 
     @Override
-    protected List<Person> handle(QueryAdapter<PersonQuery> param, DBSession session) {
-        final AdditionalKey additionalKey = param.getQuery().getAdditionalKey();
-        return this.getPersonDatabaseManager().getPersonsByAdditionalKey(additionalKey.getKeyName(), additionalKey.getKeyValue(), session);
-    }
-
-    @Override
-    protected boolean canHandle(QueryAdapter<PersonQuery> param) {
-        return present(param.getQuery().getAdditionalKey());
+    protected boolean canHandle(QueryAdapter<PostQuery<R>> param) {
+        PostQuery<R> query = param.getQuery();
+        return present(query.getAfterChangeDate());
     }
 }
