@@ -69,11 +69,38 @@
 
 		<!-- If there is no post to edit -->
 		<c:if test="${empty listView.list}">
-			<div class="alert alert-info col-sm-10" style="margin-bottom:0px;" role="alert"><fmt:message
-					key="batchedit.noPost.message"/></div>
+			<div class="alert alert-info col-sm-12" role="alert">
+				<fmt:message key="batchedit.noPost.message"/>
+			</div>
+			<p class="clearfix"><!-- keep me --></p>
 		</c:if>
 		<!--  else.. -->
 		<c:if test="${not empty listView.list}">
+			<div class="row">
+				<div class="col-md-6">
+					<!-- we don't have pagination in indirect mode. -->
+					<c:if test="${directEdit}">
+						<div style="padding-left: 5px;">
+							<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
+							${mtl:ch('nbsp')}
+						</div>
+					</c:if>
+				</div>
+				<div class="col-md-2 col-md-offset-4">
+					<c:set var="entriesPerPage" value="${resourcetype}.entriesPerPage"/>
+					<c:set var="pageStart" value="${resourcetype}.start"/>
+					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+					<c:set var="entriesSelectUrl" value="${mtl:removeParam(requPathAndQuery, pageStart)}"/>
+					<select id="batchEditEntriesSelection" class="form-control pull-right" style="margin: 20px 0;">
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, listView.entriesPerPage)}">${listView.entriesPerPage}</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 5)}">5</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 10)}">10</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 20)}">20</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 100)}">100</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 10000)}">10000</option>
+					</select>
+				</div>
+			</div>
 			<table class="table table-striped" style="width: 100%; table-layout: fixed;">
 				<thead>
 					<tr>
@@ -232,8 +259,5 @@
 				</tbody>
 			</table>
 		</c:if>
-
-		<!-- Due to poor usability, pagination has been removed, requiring the user to select the page they wish to edit in advance.-->
-
 	</form>
 </jsp:root>
