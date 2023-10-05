@@ -178,8 +178,7 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 	}
 
 	private static String buildRemovePersonScript(final String field) {
-		return String.format("if (%s && %s) {%s; %s}", buildConditionFieldScript(field, ESConstants.Fields.Publication.PERSON_ID, PERSON_ID_KEY),
-				buildConditionFieldScript(field, ESConstants.Fields.Publication.PERSON_COLLEGE, COLLEGE_KEY),
+		return String.format("if (%s) {%s; %s}", buildConditionFieldScript(field, ESConstants.Fields.Publication.PERSON_ID, PERSON_ID_KEY),
 				buildRemoveFieldScript(field, ESConstants.Fields.Publication.PERSON_ID),
 				buildRemoveFieldScript(field, ESConstants.Fields.Publication.PERSON_COLLEGE));
 	}
