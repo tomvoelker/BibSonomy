@@ -70,6 +70,11 @@ $(document).ready(function () {
             toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector) === 0);
             updateBadges();
         });
+
+        // Entries selection
+        $("#batchEditEntriesSelection").change(function(){
+            window.location.href = $(this).find(":selected").val();
+        });
     }
 
     if (!isImport) {

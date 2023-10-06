@@ -49,7 +49,8 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	private String interhash;
 	private PersonResourceRelationType relationType;
 	private Integer authorIndex;
-	private Date changeDate;
+	private Date beforeChangeDate;
+	private Date afterChangeDate;
 
 	private boolean withPersons;
 	private boolean withPosts;
@@ -80,8 +81,13 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 		return this;
 	}
 
-	public ResourcePersonRelationQueryBuilder byChangeDate(Date changeDate) {
-		this.changeDate = changeDate;
+	public ResourcePersonRelationQueryBuilder beforeChangeDate(Date beforeChangeDate) {
+		this.beforeChangeDate = beforeChangeDate;
+		return this;
+	}
+
+	public ResourcePersonRelationQueryBuilder afterChangeDate(Date afterChangeDate) {
+		this.afterChangeDate = afterChangeDate;
 		return this;
 	}
 
@@ -138,7 +144,7 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	 * @return the query
 	 */
 	public ResourcePersonRelationQuery build() {
-		return new ResourcePersonRelationQuery(personId, interhash, relationType, authorIndex, changeDate, withPersons,
+		return new ResourcePersonRelationQuery(personId, interhash, relationType, authorIndex, beforeChangeDate, afterChangeDate, withPersons,
 				withPosts, withPersonsOfPosts, onlyTheses, groupByInterhash, sortKey, sortOrder, start, end);
 	}
 

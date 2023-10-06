@@ -25,7 +25,7 @@
 	<jsp:directive.variable name-given="post" scope="NESTED" />
 
 	<!-- page title -->
-	<fmt:message key="post.meta.edit" var="pageTitle" />
+	<fmt:message key="post.meta.batch_edit" var="pageTitle" />
 
 	<layout:paneLayout requPath="${requPath}"
 					   command="${command}"
@@ -40,19 +40,19 @@
 
 
 		<jsp:attribute name="content">
-			<h1 class="content-heading"><fmt:message key="post.meta.batch_edit" /></h1>
-			<batch:content
+			<h1 class="content-heading">${pageTitle}</h1>
+			<batch:batchEditContent
 					resourcetype="${resourceType}"
 					listView="${listView}"
 					otherPostsUrlPrefix="${otherPostsUrlPrefix}"
 					listViewStartParamName="${listViewStartParamName}"
 					updateExistingPost="${updateExistingPost}"
 					overwrite="${overwrite}"
-					directEdit="${false}">
+					directEdit="${true}">
 					<jsp:attribute name="shortPostDescription">
 						<jsp:invoke fragment="shortPostDescription" />
 					</jsp:attribute>
-			</batch:content> 
+			</batch:batchEditContent>
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

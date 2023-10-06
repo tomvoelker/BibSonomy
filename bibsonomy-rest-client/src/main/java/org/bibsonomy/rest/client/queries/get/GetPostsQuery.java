@@ -31,6 +31,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -46,9 +47,11 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.util.data.NoDataAccessor;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -69,6 +72,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	private final String resourceHash;
 	private final List<SortCriteria> sortCriteria;
 	private final QueryScope searchType;
+	private final Date beforeChangeDate;
+	private final Date afterChangeDate;
 
 	private final int start;
 	private final int end;
@@ -88,6 +93,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		this.tags = query.getTags();
 		this.search = query.getSearch();
 		this.sortCriteria = query.getSortCriteria();
+		this.beforeChangeDate = query.getBeforeChangeDate();
+		this.afterChangeDate = query.getAfterChangeDate();
 		this.userName = loggedInUser.getName();
 		this.searchType = query.getScope();
 
@@ -112,7 +119,11 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			return;
 		}
 		
-		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortCriteria, this.start, this.end, this.searchType);
+		final UrlBuilder urlBuilder = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.sortCriteria, this.start, this.end, this.searchType);
+		urlBuilder.addParameter(RESTConfig.BEFORE_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.beforeChangeDate));
+		urlBuilder.addParameter(RESTConfig.AFTER_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.afterChangeDate));
+
+		final String url = urlBuilder.asString();
 		if (log.isDebugEnabled()) {
 			log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		}

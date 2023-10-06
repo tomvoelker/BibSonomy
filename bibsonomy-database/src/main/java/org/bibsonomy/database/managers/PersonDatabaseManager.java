@@ -751,16 +751,16 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
     }
 
     /**
-     * Get the list of person-resource-relations, that have been added and updated since the provided change date.
+     * Get the list of person-resource-relations, that have been added and updated after the provided change date (inclusive).
      *
      * @param changeDate the change date
      * @param session the session
      * @return list of relations
      */
-    public List<ResourcePersonRelation> getResourcePersonRelationsByChangeDate(final Date changeDate, final DBSession session) {
+    public List<ResourcePersonRelation> getResourcePersonRelationsAfterChangeDate(final Date changeDate, final DBSession session) {
         final BibTexParam param = new BibTexParam();
         param.setChangeDate(changeDate);
-        return this.queryForList("getResourcePersonRelationByChangeDate", param, ResourcePersonRelation.class, session);
+        return this.queryForList("getResourcePersonRelationAfterChangeDate", param, ResourcePersonRelation.class, session);
     }
 
     private BibTexParam buildBibTexParam(String personId) {
@@ -1382,16 +1382,21 @@ public class PersonDatabaseManager extends AbstractDatabaseManager implements Li
         final String targetUsername = match.getTargetPerson().getUser();
         final String sourceUsername = match.getSourcePerson().getUser();
 
-        // TODO FIXME REWORK
+        final boolean targetClaimed = present(targetUsername);
+        final boolean sourceClaimed = present(sourceUsername);
+
+        // Unable to merge two claimed persons
+        if (targetClaimed && sourceClaimed) {
+            return false;
+        }
+
+        // Allow merge for admins, if only max one is claimed
         if (Role.ADMIN.equals(loginUser.getRole())) {
             return true;
         }
 
-        final boolean targetClaimed = present(targetUsername);
-        final boolean sourceClaimed = present(sourceUsername);
-        if (targetClaimed && sourceClaimed) {
-            return false;
-        } else if (!targetClaimed && !sourceClaimed) {
+        // Allow merge, if neither is claimed or target/source is the logged in user
+        if (!targetClaimed && !sourceClaimed) {
             return true;
         } else if (targetClaimed) {
             // TODO notify target user that there is a merge
