@@ -493,8 +493,13 @@ public class UrlUtils {
 		 * append http suffix if not set
 		 */
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
-			url = "https://" + url;
+			url = "http://" + url;
 		}
+
+		/*
+		 * convert to lower case FIXME: This could break some URLs!
+		 */
+		url = url.toLowerCase();
 
 		return url;
 	}
