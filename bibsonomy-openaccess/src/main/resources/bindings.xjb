@@ -1,15 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bindings version="2.1"
-  xmlns="http://java.sun.com/xml/ns/jaxb"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<bindings schemaLocation="puma-sword.xsd">
-		<schemaBindings>
-			<package name="de.unikassel.puma.sword.renderer.xml"/>
-		</schemaBindings>
-	</bindings>
-	<bindings schemaLocation="mets.xsd">
-		<schemaBindings>
-			<package name="gov.log.mets" />
-		</schemaBindings>
-	</bindings>
+          xmlns="http://java.sun.com/xml/ns/jaxb"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <bindings schemaLocation="puma-sword.xsd">
+        <schemaBindings>
+            <package name="de.unikassel.puma.sword.renderer.xml"/>
+        </schemaBindings>
+    </bindings>
+
+    <bindings schemaLocation="mets.xsd">
+        <schemaBindings>
+            <package name="gov.log.mets"/>
+        </schemaBindings>
+    </bindings>
+
+    <bindings schemaLocation="mods.xsd" version="1.0">
+        <!-- Customise the package name -->
+        <schemaBindings>
+            <package name="log.gov.mods"/>
+        </schemaBindings>
+
+        <!-- rename the value element -->
+        <bindings node="//xs:attributeGroup[@name='languageAttributeGroup']">
+            <bindings node=".//xs:attribute[@name='lang']">
+                <property name="langAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='noteDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:element[@name='text']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='physicalLocationDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='accessConditionDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='abstractDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='titleInfoDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='relatedItemDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='nameDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='tableOfContentsDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='subjectNameDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='physicalDescriptionNote']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='subjectTitleInfoDefinition']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+        <bindings node="//xs:complexType[@name='copyInformationDefinition']//xs:element[@name='note']">
+            <bindings node=".//xs:attribute[@name='type']">
+                <property name="typeAttribute"/>
+            </bindings>
+        </bindings>
+
+    </bindings>
 </bindings>
