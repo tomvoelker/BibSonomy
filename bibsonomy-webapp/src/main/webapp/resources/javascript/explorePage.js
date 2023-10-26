@@ -38,18 +38,23 @@ function initResourceMenu() {
     // init sorting options
     initSortOptions('sorting-dropdown-menu', updateResults);
 
+
+
     // add parameters for export and batch edit, when clicked
     $('#batchEditButton, #export-dropdown-menu > li > a').click(function (e) {
         e.preventDefault();
 
+        var requestedName = $('#requestedName').val();
+        var entityType = $('#entityType').val();
+        var query = buildSearchQuery();
+
         // append search query as a parameter to URL
         var href = $(this).attr('href');
-        var query = buildSearchQuery();
-        var hrefWithParams = href + '?search=' + encodeURI(query);
+        var hrefWithParams = href + '/' + entityType + '/' + requestedName + '?search=' + encodeURI(query);
 
         // open URL with query in new tab
         window.open(hrefWithParams, '_blank').focus();
-    })
+    });
 }
 
 /**

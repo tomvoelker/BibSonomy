@@ -14,14 +14,13 @@
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableFiltering" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="ignoreSortLinks" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="forAjaxPosts" type="java.lang.Boolean" required="false" />
+
 	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
-	<jsp:directive.attribute name="overridePath" type="java.lang.String" required="false"/>
 	
 	<!--+
 		+ heading, variables
@@ -33,16 +32,17 @@
 		<c:set var="isBookmark" value="${true}"/>
 	</c:if>
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-	<c:if test="${not empty overridePath}">
-		<c:set var="requPathAndQuery" value="${overridePath}"/>
-	</c:if>
-	
+
 	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
 		+-->
 	<c:if test="${command.context.userLoggedIn}">
 		<div class="btn-group">
-			<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}" iconOnly="${true}"/>
+			<rc:batchEdit isPublication="${isPublication}"
+						  isBookmark="${isBookmark}"
+						  iconOnly="${true}"
+						  forAjaxPosts="${forAjaxPosts}"
+						  requPathAndQuery="${requPathAndQuery}"/>
 		</div>
 		
 		<!--+ 
@@ -50,9 +50,11 @@
 		+-->
 		<c:if test="${isPublication}">
 			<div class="btn-group">
-				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.clipboard.title" />
+				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown"
+							   hideCaret="${true}" titleKey="post.meta.clipboard.title" />
 				<ul id="clipboard-dropdown-menu"  class="dropdown-menu">
-					<rc:clipboard isClipboard="${isClipboard}" />
+					<rc:clipboard isClipboard="${isClipboard}"
+								  forAjaxPosts="${forAjaxPosts}" />
 				</ul>
 			</div>
 		</c:if>
@@ -67,15 +69,18 @@
 			<ul id="filter-dropdown-menu" class="dropdown-menu">
 				<!-- show / hide resource types -->
 				<c:if test="${not disableResourcetypeSelection}">
-					<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
+					<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}"
+									 isBookmark="${isBookmark}" isPublication="${isPublication}"/>
 				</c:if>
 				<!--  entries per page -->
 				<c:if test="${not disableListNavigation}">
 					<c:if test="${isBookmark}">
-						<rc:itemcount entriesPerPage="${entriesPerPage}" entryType="${resourceType}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
+						<rc:itemcount entriesPerPage="${entriesPerPage}" entryType="${resourceType}"
+									  titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 					</c:if>
 					<c:if test="${isPublication}">
-						<rc:itemcount entriesPerPage="${entriesPerPage}" entryType="${resourceType}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
+						<rc:itemcount entriesPerPage="${entriesPerPage}" entryType="${resourceType}"
+									  titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
 					</c:if>
 				</c:if>
 			</ul>
@@ -89,7 +94,11 @@
 		<div class="btn-group">
 			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 			<ul id="sorting-dropdown-menu" class="dropdown-menu">
-				<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" sortPageOrder="${sortPageOrder}" isBibtex="${isPublication}" ignoreLinks="${ignoreSortLinks}" />
+				<rc:sorting requPathAndQuery="${requPathAndQuery}"
+							sortPage="${sortPage}"
+							sortPageOrder="${sortPageOrder}"
+							isBibtex="${isPublication}"
+							forAjaxPosts="${forAjaxPosts}" />
 				<li class="divider"><!-- keep me --></li>
 				<c:if test="${isPublication}">
 					<li><a href="${relativeUrlGenerator.getHelpPage('SortingPublications', pageContext.response.locale)}"><fmt:message key="post.meta.advanced"/>...</a></li>
@@ -103,20 +112,11 @@
 	<div class="btn-group">
 		<bsform:button size="xsmall" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.export.title" />
 		<ul id="export-dropdown-menu" class="dropdown-menu">
-			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
+			<rc:export requPathAndQuery="${requPathAndQuery}"
+					   isPublication="${isPublication}"
+					   isBookmark="${isBookmark}"
+					   forAjaxPosts="${forAjaxPosts}"/>
 		</ul>
 	</div>
-	
-	<!--+
-		+ inbox actions 
-		+-->
-	<c:if test="${command.context.userLoggedIn and showInboxActions}">
-		<li class="divider"><!--  --></li>
-		<li>
-			<span>
-				<h5><span class="fa fa-inbox"><!--  --></span>&amp;nbsp;<fmt:message key="navi.inbox"/></h5>
-				<rc:inbox />
-			</span>
-		</li>
-	</c:if>
+
 </jsp:root>

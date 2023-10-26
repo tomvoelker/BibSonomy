@@ -50,11 +50,9 @@
                                             entriesPerPage="20"
                                             showBookmark="${false}"
                                             showPublication="${true}"
-                                            showInboxActions="${false}"
                                             isClipboard="${false}"
                                             disableFiltering="${true}"
-                                            ignoreSortLinks="${true}"
-                                            overridePath="/group/${groupName}"/>
+                                            forAjaxPosts="${true}"/>
                             </div>
                         </h3>
                     </div>

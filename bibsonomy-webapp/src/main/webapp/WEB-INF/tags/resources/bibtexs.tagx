@@ -40,7 +40,6 @@
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
-	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 
 	<!-- fragments -->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
@@ -126,7 +125,6 @@
 									entriesPerPage="${listView.entriesPerPage}"
 									showBookmark="${showBookmark}"
 									showPublication="${showPublication}"
-									showInboxActions="${showInboxActions}"
 									isClipboard="${isClipboard}"
 									disableListNavigation="${disableListNavigation}"
 									disableResourcetypeSelection="${disableResourcetypeSelection}"
