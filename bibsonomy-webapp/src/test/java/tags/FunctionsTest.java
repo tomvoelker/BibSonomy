@@ -37,6 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +50,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -126,9 +128,6 @@ public class FunctionsTest {
 	public void testFormatDateISO8601NPECheck() throws ParseException {
 		assertEquals("", Functions.formatDateISO8601(null));
 	}
-	
-	
-
 	
 	@Test
 	public void testGetDate() throws Exception {
@@ -220,4 +219,23 @@ public class FunctionsTest {
 		assertFalse(actualGroups.get(0).isOrganization());
 		assertTrue(organizations.get(0).isOrganization());
 	}
+
+    /**
+     * tests  {@link Functions#split(String, String)}
+     */
+    @Test
+    public void testSplit() {
+        Collection<?> split = Functions.split("test article uppercase lowercase", " ");
+        Assert.assertEquals(4, split.size());
+    }
+
+    /**
+     * tests {@link tags.Functions#contains(java.util.Collection, Object)}
+     */
+    @Test
+    public void testContains() {
+        List<String> tags = Arrays.asList("test article uppercase lowercase".split(" "));
+        Assert.assertTrue(Functions.contains(tags, "test"));
+        Assert.assertFalse(Functions.contains(tags, "abc"));
+    }
 }

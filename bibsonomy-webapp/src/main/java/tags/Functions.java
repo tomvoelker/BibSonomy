@@ -37,6 +37,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -896,6 +897,20 @@ public class Functions {
     }
 
     /**
+     * Splits a string into a collection of substrings.
+     *
+     * @param input
+     * @param delimiters
+     * @return collection of substrings
+     */
+    public static Collection<?> split(final String input, final String delimiters) {
+        if (present(input) && delimiters != null) {
+            return Arrays.asList(input.split(delimiters));
+        }
+        return new ArrayList<>();
+    }
+
+    /**
      * Checks if the given collection contains the given object.
      *
      * @param collection
@@ -903,7 +918,7 @@ public class Functions {
      * @return <code>true</code>, iff object is contained in set.
      */
     public static boolean contains(final Collection<?> collection, final Object object) {
-        return (collection != null) && collection.contains(object);
+        return present(collection) && collection.contains(object);
     }
 
     /**
