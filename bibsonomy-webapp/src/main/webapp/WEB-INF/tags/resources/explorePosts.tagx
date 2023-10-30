@@ -79,13 +79,15 @@
                 <jsp:invoke fragment="filterOptions"/>
 
                 <c:if test="${command.filterMap.containsKey('entrytype')}">
-                    <sidebar:searchFilterList filterField="entrytype"
+                    <sidebar:searchFilterList filterName="entrytype"
+                                              filterField="entrytype"
                                               filterEntries="${command.filterMap.get('entrytype')}"
                                               headerMessageKey="explore.filter.entrytype.header"
                                               headerMessageIcon="book" buttonClass="filter-entry-counter"/>
                 </c:if>
                 <c:if test="${command.filterMap.containsKey('year')}">
-                    <sidebar:searchFilterList filterField="year"
+                    <sidebar:searchFilterList filterName="year"
+                                              filterField="year"
                                               filterEntries="${command.filterMap.get('year')}"
                                               headerMessageKey="explore.filter.pubyear.header"
                                               headerMessageIcon="calendar-alt"
