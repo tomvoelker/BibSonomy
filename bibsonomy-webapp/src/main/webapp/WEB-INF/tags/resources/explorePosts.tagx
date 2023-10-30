@@ -51,8 +51,10 @@
                                             showBookmark="${false}"
                                             showPublication="${true}"
                                             isClipboard="${false}"
+                                            disableClipboard="${true}"
                                             disableFiltering="${true}"
-                                            forAjaxPosts="${true}"/>
+                                            forAjaxPosts="${true}"
+                                            buttonSize="defaultSize"/>
                             </div>
                         </h3>
                     </div>

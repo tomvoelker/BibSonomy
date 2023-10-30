@@ -11,9 +11,14 @@
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="iconOnly" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="forAjaxPosts" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="buttonSize" type="java.lang.String" required="false" />
 
 	<c:if test="${empty iconOnly}">
 		<c:set var="iconOnly" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty buttonSize}">
+		<c:set var="buttonSize" value="xsmall" />
 	</c:if>
 
 	<!-- TODO: use urlgenerator -->
@@ -41,7 +46,7 @@
 				   block="${block}"
 				   style="link"
 				   href="${editUrl}"
-				   size="xsmall"
+				   size="${buttonSize}"
 				   textKey="${textKey}"
 				   titleKey="post.meta.edit.title"
 				   icon="pencil" />

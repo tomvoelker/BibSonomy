@@ -14,13 +14,18 @@
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableBatchEdit" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="disableClipboard" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableFiltering" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableExport" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="forAjaxPosts" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="buttonSize" type="java.lang.String" required="false" />
 
 	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
+	<jsp:directive.attribute name="additionalActions" fragment="true"/>
 	
 	<!--+
 		+ heading, variables
@@ -32,25 +37,33 @@
 		<c:set var="isBookmark" value="${true}"/>
 	</c:if>
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+	<c:if test="${empty buttonSize}">
+		<c:set var="buttonSize" value="xsmall" />
+	</c:if>
+
+	<jsp:invoke fragment="additionalActions"/>
 
 	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
 		+-->
 	<c:if test="${command.context.userLoggedIn}">
-		<div class="btn-group">
-			<rc:batchEdit isPublication="${isPublication}"
-						  isBookmark="${isBookmark}"
-						  iconOnly="${true}"
-						  forAjaxPosts="${forAjaxPosts}"
-						  requPathAndQuery="${requPathAndQuery}"/>
-		</div>
+		<c:if test="${not disableBatchEdit}">
+			<div class="btn-group">
+				<rc:batchEdit isPublication="${isPublication}"
+							  isBookmark="${isBookmark}"
+							  iconOnly="${true}"
+							  buttonSize="${buttonSize}"
+							  forAjaxPosts="${forAjaxPosts}"
+							  requPathAndQuery="${requPathAndQuery}"/>
+			</div>
+		</c:if>
 		
 		<!--+ 
 		+ clipboard actions (pick, unpick, clear clipboard) only for publications, and logged-in users
 		+-->
-		<c:if test="${isPublication}">
+		<c:if test="${not disableClipboard and isPublication}">
 			<div class="btn-group">
-				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown"
+				<bsform:button size="${buttonSize}" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown"
 							   hideCaret="${true}" titleKey="post.meta.clipboard.title" />
 				<ul id="clipboard-dropdown-menu"  class="dropdown-menu">
 					<rc:clipboard isClipboard="${isClipboard}"
@@ -65,7 +78,7 @@
 		+-->
 	<c:if test="${not disableFiltering}">
 		<div class="btn-group">
-			<bsform:button size="xsmall" style="link" icon="filter" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.filter.title" />
+			<bsform:button size="${buttonSize}" style="link" icon="filter" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.filter.title" />
 			<ul id="filter-dropdown-menu" class="dropdown-menu">
 				<!-- show / hide resource types -->
 				<c:if test="${not disableResourcetypeSelection}">
@@ -92,7 +105,7 @@
 		+-->
 	<c:if test="${not disableSort}">
 		<div class="btn-group">
-			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
+			<bsform:button size="${buttonSize}" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 			<ul id="sorting-dropdown-menu" class="dropdown-menu">
 				<rc:sorting requPathAndQuery="${requPathAndQuery}"
 							sortPage="${sortPage}"
@@ -110,13 +123,15 @@
 		+ export (RSS, BibTeX, XML, more...) 
 		+-->
 	<div class="btn-group">
-		<bsform:button size="xsmall" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.export.title" />
-		<ul id="export-dropdown-menu" class="dropdown-menu">
-			<rc:export requPathAndQuery="${requPathAndQuery}"
-					   isPublication="${isPublication}"
-					   isBookmark="${isBookmark}"
-					   forAjaxPosts="${forAjaxPosts}"/>
-		</ul>
+		<c:if test="${not disableExport}">
+			<bsform:button size="${buttonSize}" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.export.title" />
+			<ul id="export-dropdown-menu" class="dropdown-menu">
+				<rc:export requPathAndQuery="${requPathAndQuery}"
+						   isPublication="${isPublication}"
+						   isBookmark="${isBookmark}"
+						   forAjaxPosts="${forAjaxPosts}"/>
+			</ul>
+		</c:if>
 	</div>
 
 </jsp:root>
