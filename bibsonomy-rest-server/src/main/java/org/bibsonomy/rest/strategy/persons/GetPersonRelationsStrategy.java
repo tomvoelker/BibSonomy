@@ -40,6 +40,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
@@ -57,6 +58,9 @@ import org.bibsonomy.util.UrlBuilder;
 public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<ResourcePersonRelation>> {
 
     private String personId;
+    private final String interhash;
+    private final PersonResourceRelationType relationType;
+    private final Integer authorIndex;
     private final AdditionalKey additionalKey;
     private final Date beforeChangeDate;
     private final Date afterChangeDate;
@@ -70,6 +74,9 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
         super(context);
 
         this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
+        this.interhash = context.getStringAttribute(RESTConfig.INTERHASH_PARAM, null);
+        this.relationType = context.getEnumAttribute(RESTConfig.RELATION_TYPE_PARAM, PersonResourceRelationType.class, null);
+        this.authorIndex = context.getIntAttribute(RESTConfig.RELATION_INDEX_PARAM, -1);
         this.additionalKey = RESTUtils.getAdditionalKeyParam(context);
         this.beforeChangeDate = RESTUtils.getDateParam(context, RESTConfig.BEFORE_CHANGE_DATE_PARAM);
         this.afterChangeDate = RESTUtils.getDateParam(context, RESTConfig.AFTER_CHANGE_DATE_PARAM);
@@ -91,6 +98,9 @@ public class GetPersonRelationsStrategy extends AbstractGetListStrategy<List<Res
 
         final ResourcePersonRelationQueryBuilder queryBuilder = new ResourcePersonRelationQueryBuilder()
                 .byPersonId(this.personId)
+                .byInterhash(this.interhash)
+                .byAuthorIndex(this.authorIndex)
+                .byRelationType(this.relationType)
                 .beforeChangeDate(this.beforeChangeDate)
                 .afterChangeDate(this.afterChangeDate)
                 .withPersons(this.withPersons)
