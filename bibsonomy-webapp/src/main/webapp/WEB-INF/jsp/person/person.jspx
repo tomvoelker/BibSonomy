@@ -150,7 +150,8 @@
 					</div>
 					<div class="col-md-3 sidebar">
 						<c:if test="${not empty command.entrytypeFilters}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
+							<sidebar:searchFilterList filterName="entrytype" filterField="entrytype"
+													  filterEntries="${command.entrytypeFilters}"
 													  headerMessageKey="explore.filter.entrytype.header"
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
