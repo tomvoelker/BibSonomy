@@ -64,7 +64,6 @@ public class GetResourcePersonRelationsWithPersonsByInterhash extends ResourcePe
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 		return present(query.getInterhash()) &&
 						!query.isWithPosts() &&
-						!present(query.getAuthorIndex()) &&
 						!present(query.getPersonId()) &&
 						!present(query.getRelationType());
 	}

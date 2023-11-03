@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -152,12 +153,15 @@ public class Person implements Linkable, Serializable {
      @param name
      */
     public void setMainName(PersonName name) {
-        if (!this.names.contains(name)) {
-            name.setPersonId(this.getPersonId());
-            name.setMain(true);
-            this.names.add(name);
+        // Add name, if person doesn't already have the name
+        boolean isNewName = this.addName(name);
+
+        // Set selected name as new main name
+        Optional<PersonName> selectedName = this.names.stream().filter(n -> n.equals(name)).findFirst();
+        if (selectedName.isPresent()) {
+            selectedName.get().setMain(true);
+            this.mainName = selectedName.get();
         }
-        this.mainName = name;
     }
 
     /**

@@ -77,7 +77,9 @@ public class UrlBuilder {
 	 * @return the builder
 	 */
 	public UrlBuilder addParameter(final String key, final Object value) {
-		return addParameter(key, String.valueOf(value));
+		// Check, if value is not null because String.valueOf would create "null" strings
+		String valueStr = present(value) ? String.valueOf(value) : null;
+		return addParameter(key, valueStr);
 	}
 
 	/**

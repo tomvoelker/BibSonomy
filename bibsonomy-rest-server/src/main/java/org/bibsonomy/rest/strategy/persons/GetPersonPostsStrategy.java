@@ -50,6 +50,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
