@@ -44,18 +44,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div style="clear: both;">
-						<h3 class="list-headline">
-							<!--
-							<div class="btn-group dropdown-align-right all-resources-menu all-resources-menu-lg">
-								<div class="btn-group">
-									<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
-									<ul id="sorting-dropdown-menu-similar" class="dropdown-menu">
-										<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
-									</ul>
-								</div>
-							</div>
-							-->
-						</h3>
+						<h3 class="list-headline"><!-- keep me for separator line--></h3>
 					</div>
 				</div>
 			</div>

@@ -50,11 +50,11 @@
                                             entriesPerPage="20"
                                             showBookmark="${false}"
                                             showPublication="${true}"
-                                            showInboxActions="${false}"
                                             isClipboard="${false}"
+                                            disableClipboard="${true}"
                                             disableFiltering="${true}"
-                                            ignoreSortLinks="${true}"
-                                            overridePath="/group/${groupName}"/>
+                                            forAjaxPosts="${true}"
+                                            buttonSize="defaultSize"/>
                             </div>
                         </h3>
                     </div>
@@ -79,13 +79,15 @@
                 <jsp:invoke fragment="filterOptions"/>
 
                 <c:if test="${command.filterMap.containsKey('entrytype')}">
-                    <sidebar:searchFilterList filterField="entrytype"
+                    <sidebar:searchFilterList filterName="entrytype"
+                                              filterField="entrytype"
                                               filterEntries="${command.filterMap.get('entrytype')}"
                                               headerMessageKey="explore.filter.entrytype.header"
                                               headerMessageIcon="book" buttonClass="filter-entry-counter"/>
                 </c:if>
                 <c:if test="${command.filterMap.containsKey('year')}">
-                    <sidebar:searchFilterList filterField="year"
+                    <sidebar:searchFilterList filterName="year"
+                                              filterField="year"
                                               filterEntries="${command.filterMap.get('year')}"
                                               headerMessageKey="explore.filter.pubyear.header"
                                               headerMessageIcon="calendar-alt"

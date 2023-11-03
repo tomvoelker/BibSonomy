@@ -133,7 +133,11 @@
 											<div class="btn-group">
 												<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
 												<ul id="sorting-dropdown-menu" class="dropdown-menu">
-													<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
+													<rc:sorting requPathAndQuery="${requPathAndQuery}"
+																sortPage="pubdate"
+																sortPageOrder="desc"
+																isBibtex="${true}"
+																forAjaxPosts="${true}" />
 												</ul>
 											</div>
 										</div>
@@ -146,7 +150,8 @@
 					</div>
 					<div class="col-md-3 sidebar">
 						<c:if test="${not empty command.entrytypeFilters}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
+							<sidebar:searchFilterList filterName="entrytype" filterField="entrytype"
+													  filterEntries="${command.entrytypeFilters}"
 													  headerMessageKey="explore.filter.entrytype.header"
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
