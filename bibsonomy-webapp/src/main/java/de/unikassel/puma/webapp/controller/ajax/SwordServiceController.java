@@ -108,7 +108,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			message = ex.getMessage();
 			
 			// errcode 2xx is ok / 200, 201, 202
-			if (message.substring(0, 20).equals("error.sword.errcode2")){
+			if (message.startsWith("error.sword.errcode2")){
 				// transmission complete and successful
 				statuscode = 1;
 				message = "error.sword.sentsuccessful";

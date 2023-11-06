@@ -30,12 +30,10 @@
 package de.unikassel.puma.openaccess.sword;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.swordapp.client.UriRegistry.PACKAGE_SIMPLE_ZIP;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -70,7 +68,6 @@ import org.swordapp.client.SWORDClient;
 import org.swordapp.client.SWORDClientException;
 import org.swordapp.client.SWORDError;
 import org.swordapp.client.ServiceDocument;
-import org.swordapp.client.UriRegistry;
 
 /**
  * SWORD Service
@@ -159,18 +156,17 @@ public class SwordService {
 	 * @param pumaData
 	 * @param user
 	 */
-	public void submitDocument(final PumaData<?> pumaData, final User user) throws SwordException, FileNotFoundException {
-		log.info("starting sword");
+	public void submitDocument(final PumaData<BibTex> pumaData, final User user) throws SwordException, FileNotFoundException {
+		log.info("Starting SWORD submission");
 		// DepositResponse depositResponse = new DepositResponse(999);
 		File swordZipFile = null;
 
-		final Post<?> post = pumaData.getPost();
+		final Post<BibTex> post = pumaData.getPost();
 
 		/*
 		 * retrieve ZIP-FILE
 		 */
-		if (post.getResource() instanceof BibTex) {
-
+		if (present(post.getResource())) {
 			// fileprefix
 			final String fileID = HashUtils.getMD5Hash(user.getName().getBytes()) + "_" + post.getResource().getIntraHash();
 
@@ -192,7 +188,7 @@ public class SwordService {
 			// retrieve list of documents from database - workaround
 
 			// get documents for post and insert documents into post
-			final BibTex publication = (BibTex) post.getResource();
+			final BibTex publication = post.getResource();
 			publication.setDocuments(this.retrieveDocumentsFromDatabase(user, post.getResource().getIntraHash()));
 
 			if (!present(publication.getDocuments())) {
@@ -244,13 +240,11 @@ public class SwordService {
 				zipOutputStream.putNextEntry(zipEntry);
 
 				// create XML-Document
-
-				final MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator(this.urlRenderer);
-				metsBibTexMLGenerator.setUser(user);
-				metsBibTexMLGenerator.setFilenameList(fileList);
-
-				metsBibTexMLGenerator.setMetadata((PumaData<BibTex>) pumaData);
-				metsBibTexMLGenerator.writeMets(zipOutputStream);
+				final METSModsGenerator metsGenerator = new METSModsGenerator(this.urlRenderer);
+				metsGenerator.setUser(user);
+				metsGenerator.setFileNameList(fileList);
+				metsGenerator.setPumaData(pumaData);
+				metsGenerator.writeMETS(zipOutputStream);
 				zipOutputStream.closeEntry();
 
 				// close zip archive
