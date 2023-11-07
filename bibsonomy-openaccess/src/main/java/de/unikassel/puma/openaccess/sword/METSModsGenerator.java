@@ -125,7 +125,7 @@ public class METSModsGenerator extends AbstractMETSGenerator {
         // METS MODS data for DmdSec
         ModsDefinition mods = generateMods(pumaData.getPost(), objectFactory);
 
-        JAXBElement<ModsDefinition> modsJAXB = new JAXBElement<>(new QName("http://www.loc.gov/mods/", "mods", "mods"), ModsDefinition.class, null, mods);
+        JAXBElement<ModsDefinition> modsJAXB = new JAXBElement<>(new QName("http://www.loc.gov/mods/v3", "mods"), ModsDefinition.class, null, mods);
         xmlData.getAny().add(modsJAXB);
 
         // METS FileSec
@@ -207,12 +207,40 @@ public class METSModsGenerator extends AbstractMETSGenerator {
 
         // Title
         TitleInfoDefinition titleInfo = objectFactory.createTitleInfoDefinition();
-        titleInfo.setTitle(resource.getTitle());
+        List<Object> titleInfoList = titleInfo.getTitleOrSubTitleOrPartNumber();
+        StringPlusLanguage titleString = objectFactory.createStringPlusLanguage();
+        titleString.setValue(resource.getTitle());
+        titleInfoList.add(objectFactory.createTitle(titleString));
         elements.add(titleInfo);
 
-        // Related Item TODO
-        RelatedItemDefinition relatedItem = objectFactory.createRelatedItemDefinition();
-        elements.add(relatedItem);
+        // Related Item (Journal and Book for inbook)
+        if (present(resource.getBooktitle()) || present(resource.getJournal())) {
+            RelatedItemDefinition relatedItem = objectFactory.createRelatedItemDefinition();
+            relatedItem.setType("host");
+            List<Object> relatedItemList = relatedItem.getModsGroup();
+
+            // Build Journal/Book title
+            TitleInfoDefinition relatedTitleInfo = objectFactory.createTitleInfoDefinition();
+            List<Object> relatedTitleInfoList = relatedTitleInfo.getTitleOrSubTitleOrPartNumber();
+            StringPlusLanguage journalBookTitle = objectFactory.createStringPlusLanguage();
+            journalBookTitle.setValue(present(resource.getBooktitle()) ? resource.getBooktitle() : resource.getJournal());
+            relatedTitleInfoList.add(objectFactory.createTitle(journalBookTitle));
+            relatedItemList.add(relatedTitleInfo);
+
+            // Build parts
+            PartDefinition part = objectFactory.createPartDefinition();
+            List<Object> partDetails = part.getDetailOrExtentOrDate();
+            if (present(resource.getVolume())) {
+                partDetails.add(generatePartDetail(resource.getVolume(), objectFactory));
+            }
+            if (present(resource.getChapter())) {
+                partDetails.add(generatePartDetail(resource.getChapter(), objectFactory));
+            }
+            if (present(partDetails)) {
+                relatedItemList.add(part);
+            }
+            elements.add(relatedItem);
+        }
 
         // Personals (Authors)
         resource.getAuthor().forEach((author -> {
@@ -255,8 +283,20 @@ public class METSModsGenerator extends AbstractMETSGenerator {
             elements.add(subject);
         }
 
-        // Origin Info (Publisher and published dates)
+        // Origin Info (Publisher, place and published dates)
         OriginInfoDefinition originInfo = objectFactory.createOriginInfoDefinition();
+        List<JAXBElement<?>> originList = originInfo.getPlaceOrPublisherOrDateIssued();
+        if (present(resource.getPublisher())) {
+            StringPlusLanguagePlusSupplied publisherStr = objectFactory.createStringPlusLanguagePlusSupplied();
+            publisherStr.setValue(resource.getPublisher());
+            originList.add(objectFactory.createPublisher(publisherStr));
+        }
+        if (present(resource.getAddress())) {
+            PlaceDefinition place = objectFactory.createPlaceDefinition();
+            PlaceTermDefinition placeTerm = objectFactory.createPlaceTermDefinition();
+            placeTerm.setValue(resource.getAddress());
+            placeTerm.setType(CodeOrText.TEXT);
+        }
         elements.add(originInfo);
 
         // Identifiers (DOI, ISBN, ISSN, etc.) TODO any others?
@@ -278,6 +318,21 @@ public class METSModsGenerator extends AbstractMETSGenerator {
         elements.add(accessCondition);
 
         return mods;
+    }
+
+    private DetailDefinition generatePartDetail(String number, ObjectFactory objectFactory) {
+        DetailDefinition detail = objectFactory.createDetailDefinition();
+        List<JAXBElement<StringPlusLanguage>> detailList = detail.getNumberOrCaptionOrTitle();
+        StringPlusLanguage numberStr = objectFactory.createStringPlusLanguage();
+        numberStr.setValue(number);
+        detailList.add(objectFactory.createNumber(numberStr));
+        return detail;
+    }
+
+    private StringPlusLanguage generateStringPlusLanguage(String str, ObjectFactory objectFactory) {
+        StringPlusLanguage stringObj = objectFactory.createStringPlusLanguage();
+        stringObj.setValue(str);
+        return stringObj;
     }
 
     @Override

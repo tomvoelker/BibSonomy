@@ -55,8 +55,6 @@ import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
@@ -209,37 +207,8 @@ public class METSRenderer extends JAXBRenderer {
 			final Marshaller marshaller = this.context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd");
-			
-			/*
-			 * configure namespace
-			 */
-			final NamespacePrefixMapper npmapper = new NamespacePrefixMapper() {
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new MetsNamespacePrefixMapper());
 
-				private final String[] namespace_decls = new String[] {
-						"mets", "http://www.loc.gov/METS/",
-						"bib", "http://www.bibsonomy.org/2010/11/BibSonomy",
-						"puma", "http://puma.uni-kassel.de/2010/11/PUMA-SWORD",
-						"xsi", "http://www.w3.org/2001/XMLSchema-instance",
-						"xlink", "http://www.w3.org/1999/xlink"
-				};
-
-				@Override
-				public String getPreferredPrefix(final String arg0, final String arg1, final boolean arg2) {
-					return null;
-				}
-
-				@Override
-				public String[] getContextualNamespaceDecls() {
-					return this.namespace_decls;
-				}
-
-				@Override
-				public String[] getPreDeclaredNamespaceUris2() {
-					return this.namespace_decls;
-				}
-
-			};
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", npmapper);
 			if (this.validateXMLOutput) {
 				// TODO: is the correct schema used?
 				// validate the XML produced by the marshaller
@@ -270,44 +239,8 @@ public class METSRenderer extends JAXBRenderer {
 			// create a marshaller
 			final Marshaller marshaller = this.context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 https://www.loc.gov/standards/mods/v3/mods.xsd");
-
-			/*
-			 * configure namespace
-			 */
-			final NamespacePrefixMapper npmapper = new NamespacePrefixMapper() {
-
-				private final String[] namespace_decls = new String[] {
-						"mets", "http://www.loc.gov/METS/",
-						"mods", "https://www.loc.gov/mods/",
-						"bib", "http://www.bibsonomy.org/2010/11/BibSonomy",
-						"puma", "http://puma.uni-kassel.de/2010/11/PUMA-SWORD",
-						"xsi", "http://www.w3.org/2001/XMLSchema-instance",
-						"xlink", "http://www.w3.org/1999/xlink"
-				};
-
-				@Override
-				public String getPreferredPrefix(final String arg0, final String arg1, final boolean arg2) {
-					return null;
-				}
-
-				@Override
-				public String[] getContextualNamespaceDecls() {
-					return this.namespace_decls;
-				}
-
-				@Override
-				public String[] getPreDeclaredNamespaceUris2() {
-					return this.namespace_decls;
-				}
-
-			};
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", npmapper);
-			if (this.validateXMLOutput) {
-				// TODO: is the correct schema used?
-				// validate the XML produced by the marshaller
-				marshaller.setSchema(schema);
-			}
+			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods.xsd");
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new MetsNamespacePrefixMapper());
 
 			// marshal to the writer
 			marshaller.marshal(webserviceElement, writer);
