@@ -91,21 +91,6 @@
 			<artifactId>sword2-client</artifactId>
 			<version>0.9.3</version>
 		</dependency>
-		<!-- this is a updated version provided by the BibSonomy team,
-			which uses the httpclient version 4.x.x
-		<dependency>
-			<groupId>org.swordapp</groupId>
-			<artifactId>sword-common</artifactId>
-			<version>1.2.0</version>
-			<exclusions>
-				 xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven )
-				<exclusion>
-					<artifactId>xmlParserAPIs</artifactId>
-					<groupId>xerces</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
@@ -114,7 +99,12 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.bibsonomy</groupId>
+            <artifactId>bibsonomy-bibtex-parser</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	
 	<build>
 		<plugins>

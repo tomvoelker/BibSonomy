@@ -31,7 +31,6 @@ package de.unikassel.puma.openaccess.sword;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -39,11 +38,9 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -57,8 +54,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 
@@ -231,11 +228,15 @@ public class METSModsGenerator extends AbstractMETSGenerator {
             PartDefinition part = objectFactory.createPartDefinition();
             List<Object> partDetails = part.getDetailOrExtentOrDate();
             if (present(resource.getVolume())) {
-                partDetails.add(generatePartDetail(resource.getVolume(), objectFactory));
+                partDetails.add(generatePartDetail(resource.getVolume(), "volume", objectFactory));
             }
             if (present(resource.getChapter())) {
-                partDetails.add(generatePartDetail(resource.getChapter(), objectFactory));
+                partDetails.add(generatePartDetail(resource.getChapter(), "chapter", objectFactory));
             }
+            if (present(resource.getNumber())) {
+                partDetails.add(generatePartDetail(resource.getNumber(), "issue", objectFactory));
+            }
+
             if (present(partDetails)) {
                 relatedItemList.add(part);
             }
@@ -296,7 +297,16 @@ public class METSModsGenerator extends AbstractMETSGenerator {
             PlaceTermDefinition placeTerm = objectFactory.createPlaceTermDefinition();
             placeTerm.setValue(resource.getAddress());
             placeTerm.setType(CodeOrText.TEXT);
+            List<PlaceTermDefinition> placeTermList = place.getPlaceTerm();
+            placeTermList.add(placeTerm);
+            originList.add(objectFactory.createPlace(place));
         }
+
+        DateDefinition publishedDate = objectFactory.createDateDefinition();
+        publishedDate.setEncoding("iso8601");
+        publishedDate.setValue(BibTexUtils.getPublishedDate(resource));
+        originList.add(objectFactory.createDateIssued(publishedDate));
+
         elements.add(originInfo);
 
         // Identifiers (DOI, ISBN, ISSN, etc.) TODO any others?
@@ -311,6 +321,18 @@ public class METSModsGenerator extends AbstractMETSGenerator {
                     elements.add(identifier);
                 }
             });
+
+            // Language
+            if (misc.containsKey("language")) {
+                LanguageDefinition language = objectFactory.createLanguageDefinition();
+                LanguageTermDefinition languageTerm = objectFactory.createLanguageTermDefinition();
+                languageTerm.setType(CodeOrText.CODE);
+                languageTerm.setAuthority("rfc3066");
+                languageTerm.setValue(misc.get("language"));
+                List<LanguageTermDefinition> languageTermList = language.getLanguageTerm();
+                languageTermList.add(languageTerm);
+                elements.add(language);
+            }
         }
 
         // Access condition
@@ -320,8 +342,9 @@ public class METSModsGenerator extends AbstractMETSGenerator {
         return mods;
     }
 
-    private DetailDefinition generatePartDetail(String number, ObjectFactory objectFactory) {
+    private DetailDefinition generatePartDetail(String number, String type, ObjectFactory objectFactory) {
         DetailDefinition detail = objectFactory.createDetailDefinition();
+        detail.setType(type);
         List<JAXBElement<StringPlusLanguage>> detailList = detail.getNumberOrCaptionOrTitle();
         StringPlusLanguage numberStr = objectFactory.createStringPlusLanguage();
         numberStr.setValue(number);

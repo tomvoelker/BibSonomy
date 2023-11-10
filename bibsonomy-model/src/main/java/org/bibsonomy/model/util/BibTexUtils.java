@@ -863,6 +863,17 @@ public class BibTexUtils {
 		return Integer.MAX_VALUE;
 	}
 
+	public static String getPublishedDate(BibTex bib) {
+		if (present(bib.getMonth())) {
+			String monthNum = BibTexUtils.getMonthAsNumber(bib.getMonth());
+			if (present(bib.getDay())) {
+				return String.format("%s-%s-%s", bib.getYear(), monthNum, bib.getDay());
+			}
+			return String.format("%s-%s", bib.getYear(), monthNum);
+		}
+		return String.format("%s", bib.getYear());
+	}
+
 	/**
 	 * Sort a list of bibtex posts (and eventually remove duplicates).
 	 * 

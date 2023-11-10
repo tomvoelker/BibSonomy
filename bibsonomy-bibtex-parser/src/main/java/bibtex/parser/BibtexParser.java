@@ -104,14 +104,10 @@ public final class BibtexParser {
 
     private final static char[] EXCEPTION_SET_NAMES = new char[] { '"', '#', '%', '\'', '(', ')', ',', '=', '{', '}' };
 
+    // Not really the standard ones, but commonly used
     private final static String[] ENTRY_TYPES = new String[] { "string", "preamble", "article", "book", "booklet",
             "conference", "inbook", "incollection", "inproceedings", "manual", "mastersthesis", "misc", "phdthesis",
-            "proceedings", "techreport", "unpublished", "periodical", "collection" // not
-    // really
-    // standard
-    // but
-    // commonly
-    // used.
+            "proceedings", "techreport", "unpublished", "periodical", "collection"
     };
 
     /**

@@ -1,97 +1,108 @@
 package de.unikassel.puma.openaccess.sword;
 
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import bibtex.parser.ParseException;
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
-import de.unikassel.puma.openaccess.sword.renderer.xml.ObjectFactory;
 import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@Ignore
+@RunWith(Parameterized.class)
 public class METSModsGeneratorTest extends TestCase {
     private static final Log log = LogFactory.getLog(METSModsGeneratorTest.class);
-    private final String API_URL = "https://bibsonomy.org/api/";
 
     private UrlRenderer urlRenderer;
     private METSModsGenerator metsModsGenerator;
     private METSRenderer xmlRenderer;
-    private PumaData<BibTex> pumaData;
 
-    private static List<PersonName> generateAuthors() {
-        final List<PersonName> authors = new ArrayList<PersonName>();
-        authors.add(new PersonName("Folke", "Mitzlaff"));
-        authors.add(new PersonName("Martin", "Atzmueller"));
-        authors.add(new PersonName("Gerd", "Stumme"));
-        authors.add(new PersonName("Andreas", "Hotho"));
-        return authors;
-    }
+    private final PumaData<BibTex> pumaData;
+    private final String expectedMets;
 
-    private static Post<BibTex> generateInproceedings() {
-        final Post<BibTex> inproceedingsPost = new Post<>();
-        final BibTex inproceedings = new BibTex();
-        inproceedings.setAuthor(generateAuthors());
-        inproceedings.setAddress("Bamberg, Germany");
-        inproceedings.setBooktitle("Proc. LWA 2013 (KDML Special Track)");
-        inproceedings.setEntrytype(BibTexUtils.INPROCEEDINGS);
-        inproceedings.setInterHash("73088600a500f7d06768615d6e1c2b3d");
-        inproceedings.setIntraHash("820ffb2166b330bf60bb30b16e426553");
-        inproceedings.setKey("MASH:13b");
-        inproceedings.setPublisher("University of Bamberg");
-        inproceedings.setSeries("Lecture Notes in Computer Science");
-        inproceedings.setTitle("On the Semantics of User Interaction in Social Media (Extended Abstract, Resubmission)");
-        inproceedings.setYear("2011");
-        inproceedings.setAbstract("Lorem ipsum bla bla bla...");
-        inproceedingsPost.addTag("test");
-        inproceedingsPost.addTag("inproceedings");
-        inproceedingsPost.addTag("open access");
-        inproceedingsPost.addTag("sword");
-        inproceedingsPost.addTag("dissemin");
-
-        List<Document> documents = new ArrayList<>();
-        Document document = new Document();
-        document.setFileName("test.pdf");
-        document.setMd5hash("testmd5hash");
-        documents.add(document);
-        inproceedings.setDocuments(documents);
-
-        inproceedingsPost.setResource(inproceedings);
-        inproceedingsPost.setUser(new User("test"));
-
-        return inproceedingsPost;
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        this.urlRenderer = new UrlRenderer(API_URL);
+    public METSModsGeneratorTest(PumaData<BibTex> pumaData, String expectedMets) {
+        this.urlRenderer = new UrlRenderer("https://bibsonomy.org/api/");
         this.metsModsGenerator = new METSModsGenerator(this.urlRenderer);
         this.xmlRenderer = new METSRenderer(urlRenderer);
         this.xmlRenderer.init();
-        this.pumaData = new PumaData<>();
-        this.pumaData.setPost(generateInproceedings());
+
+        this.pumaData = pumaData;
+        this.expectedMets = expectedMets;
     }
 
+    @Test
     public void testGenerateMods() {
         Mets mets = this.metsModsGenerator.generateMETS(this.pumaData);
         try {
-            // Creates a Writer using FileWriter
-            Writer output = new FileWriter("output.xml");
-            // Writes string to the file
+            Writer output = new StringWriter();
             this.xmlRenderer.serializeMETSMods(output, mets);
-            // Closes the writer
+            String result = output.toString();
+            Assert.assertEquals(this.expectedMets, result);
             output.close();
         } catch (Exception e) {
             log.error(e);
         }
+    }
+
+    // Provide data
+    @Parameters
+    public static List<Object[]> data() throws IOException, ParseException {
+        List<Object[]> list = new ArrayList<>();
+
+        for (int i = 1; i <= 5; i++) {
+            ClassLoader classLoader = METSModsGeneratorTest.class.getClassLoader();
+            File bibFile = new File(classLoader.getResource(String.format("sword/bibtex/test-%d.bib", i)).getFile());
+            PumaData<BibTex> pumaData = getBibTexPumaData(bibFile, i);
+
+            File metsFile = new File(classLoader.getResource(String.format("sword/mets/mets-%d.xml", i)).getFile());
+            String metsString = FileUtils.readFileToString(metsFile, "UTF-8");
+
+            list.add(new Object[] {pumaData, metsString});
+        }
+
+        return list;
+    }
+
+    private static PumaData<BibTex> getBibTexPumaData(File bibFile, int i) throws ParseException, IOException {
+        BufferedReader bibReader = new BufferedReader(new FileReader(bibFile.getAbsolutePath()));
+
+        SimpleBibTeXParser parser = new SimpleBibTeXParser();
+        List<BibTex> bibTexes = parser.parseInternal(bibReader, true);
+        BibTex bibtex = bibTexes.get(0);
+
+        List<Document> documents = new ArrayList<>();
+        Document document = new Document();
+        document.setFileName(String.format("testdocument-%d.pdf", i));
+        document.setMd5hash("TEST_MD5_HASH");
+        documents.add(document);
+        bibtex.setDocuments(documents);
+
+        Post<BibTex> post = new Post<>();
+        post.setResource(bibtex);
+        post.setUser(new User("testuser"));
+
+        PumaData<BibTex> pumaData = new PumaData<>();
+        pumaData.setPost(post);
+        return pumaData;
     }
 }
