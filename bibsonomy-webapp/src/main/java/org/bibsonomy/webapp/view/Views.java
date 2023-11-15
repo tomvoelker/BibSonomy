@@ -390,6 +390,11 @@ public enum Views implements View {
 	AJAX_EDITTAGS("ajax/edittags"),
 
 	/**
+	 * response for open access status via Dissemin
+	 */
+	AJAX_DISSEMIN("ajax/openaccess/dissemin"),
+
+	/**
 	 * errors in JSON
 	 */
 	AJAX_ERRORS("ajax/errors"),

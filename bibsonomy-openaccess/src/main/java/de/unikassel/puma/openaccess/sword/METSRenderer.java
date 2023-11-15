@@ -55,14 +55,12 @@ import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
 
 /**
- * @author: sven
+ * @author sven
  */
 public class METSRenderer extends JAXBRenderer {
 
@@ -75,14 +73,14 @@ public class METSRenderer extends JAXBRenderer {
 	}
 
 	protected PumaPost createPumaPost(final PumaData<? extends Resource> pumaData, final User userData)	throws InternServerException {
-		final PumaPost myPost = new PumaPost();
-		this.fillXmlPost(myPost, pumaData.getPost());
+		final PumaPost post = new PumaPost();
+		this.fillXmlPost(post, pumaData.getPost());
 
 		/*
 		 * delete unwanted data from post
 		 * - remove all system tags. they should not be sent to repository
 		 */
-		final Iterator<TagType> tagIterator = myPost.getTag().iterator();
+		final Iterator<TagType> tagIterator = post.getTag().iterator();
 		while (tagIterator.hasNext()) {
 			final TagType tag = tagIterator.next();
 
@@ -94,21 +92,21 @@ public class METSRenderer extends JAXBRenderer {
 		/*
 		 * remove url. there is no need for this url to be present in repository
 		 */
-		final BibtexType bibtex = myPost.getBibtex();
+		final BibtexType bibtex = post.getBibtex();
 		bibtex.setUrl(null);
-		myPost.setBibtex(bibtex);
+		post.setBibtex(bibtex);
 
 		/*
-		 * add more user informations
+		 * add more user information
 		 */
 		if (userData != null) {
-			if (myPost.getUser() == null) {
-				myPost.setUser(new PumaUserType());
+			if (post.getUser() == null) {
+				post.setUser(new PumaUserType());
 			}
-			myPost.getUser().setName(userData.getName());
-			myPost.getUser().setRealname(userData.getRealname());
-			myPost.getUser().setEmail(userData.getEmail());
-			myPost.getUser().setId(userData.getLdapId());
+			post.getUser().setName(userData.getName());
+			post.getUser().setRealname(userData.getRealname());
+			post.getUser().setEmail(userData.getEmail());
+			post.getUser().setId(userData.getLdapId());
 		}
 
 		/*
@@ -118,80 +116,72 @@ public class METSRenderer extends JAXBRenderer {
 		if (resource instanceof BibTex) {
 			final BibTex bibtexResource = (BibTex) resource;
 			bibtexResource.parseMiscField();
-			if (null != myPost.getBibtex()) {
+			if (null != post.getBibtex()) {
 				final String isbn = bibtexResource.getMiscField("isbn");
 				if (present(isbn)) {
-					myPost.setISBN(isbn);
+					post.setISBN(isbn);
 				}
 				final String issn = bibtexResource.getMiscField("issn");
 				if (present(issn)) {
-					myPost.setISSN(issn);
+					post.setISSN(issn);
 				}
 				final String doi = bibtexResource.getMiscField("doi");
 				if (present(doi)) {
-					myPost.setDOI(doi);
+					post.setDOI(doi);
 				}
 				final String location = bibtexResource.getMiscField("location");
 				if (present(location)) {
-					myPost.setLocation(location);
+					post.setLocation(location);
 				}
 				final String dcc = bibtexResource.getMiscField("dcc");
 				if (present(dcc)) {
-					myPost.setDCC(dcc);
+					post.setDCC(dcc);
 				}
 			}
 
-			if (present(pumaData.getAuthor())) {
-				for (final PersonName personName : pumaData.getAuthor()) {
-					myPost.getAuthor().add(PersonNameUtils.serializePersonName(personName));
+			if (present(pumaData.getAuthors())) {
+				for (final PersonName personName : pumaData.getAuthors()) {
+					post.getAuthor().add(PersonNameUtils.serializePersonName(personName));
 				}
 			}
 
-			if (null != pumaData.getExaminstitution()) {
-				myPost.setExaminstitution(pumaData.getExaminstitution());
+			if (null != pumaData.getInstitution()) {
+				post.setExaminstitution(pumaData.getInstitution());
 			}
 
-			if (null != pumaData.getExamreferee()) {
-				for (final String item : pumaData.getExamreferee()) {
-					myPost.getExamreferee().add(item);
-				}
+			if (present(pumaData.getReferee1())) {
+				post.getExamreferee().add(pumaData.getReferee1());
 			}
 
-			if (null != pumaData.getPhdoralexam()) {
-				myPost.setPhdoralexam(pumaData.getPhdoralexam());
+			if (present(pumaData.getReferee2())) {
+				post.getExamreferee().add(pumaData.getReferee2());
 			}
 
-			if (null != pumaData.getSponsors()) {
-				for (final String item : pumaData.getSponsors()) {
-					myPost.getSponsors().add(item);
-				}
+			if (present(pumaData.getOralExamDate())) {
+				// post.setPhdoralexam(pumaData.getExamOralDate());
 			}
 
-			if (null != pumaData.getAdditionaltitle()) {
-				for (final String item : pumaData.getAdditionaltitle()) {
-					myPost.getAdditionaltitle().add(item);
-				}
+			if (present(pumaData.getSponsor())) {
+				post.getSponsors().add(pumaData.getSponsor());
 			}
 
-			if (null != pumaData.getClassification()) {
-				for (final Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
+			if (present(pumaData.getAdditionalTitle())) {
+				post.getAdditionaltitle().add(pumaData.getAdditionalTitle());
+			}
+
+			if (null != pumaData.getClassifications()) {
+				for (final Entry<String, List<String>> entry : pumaData.getClassifications().entrySet()) {
 					for (final String listValue : entry.getValue() ) {
 						final PumaPost.Classification pptClassification = new PumaPost.Classification();
 						pptClassification.setName(entry.getKey().toLowerCase(Locale.getDefault()).replaceAll("/ /",""));
 						pptClassification.setValue(listValue);
-						myPost.getClassification().add(pptClassification);
+						post.getClassification().add(pptClassification);
 					}
 				}
 			}
-
-			/*
-			 * add publisher info / romeo sherpa 
-			 */
-			// TODO: get info from romeo/sherpa
-			//myPost.setPublisherinfo("");
 		}
 
-		return myPost;
+		return post;
 	}
 
 	@Override
@@ -208,51 +198,49 @@ public class METSRenderer extends JAXBRenderer {
 	 * @throws InternServerException
 	 *             if the document can't be marshalled
 	 */
-	public void serializeMets(final Writer writer, final Mets mets) throws InternServerException {
+	public void serializeMETS(final Writer writer, final Mets mets) throws InternServerException {
 		try {
 			// buildup document model
-			final JAXBElement<Mets> webserviceElement = new JAXBElement<Mets>(new QName("http://www.loc.gov/METS/", "mets"), Mets.class, null, mets);
+			final JAXBElement<Mets> webserviceElement = new JAXBElement<>(new QName("http://www.loc.gov/METS/", "mets"), Mets.class, null, mets);
 
 			// create a marshaller
 			final Marshaller marshaller = this.context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd");
-			
-			/*
-			 * configure namespace
-			 */
-			final NamespacePrefixMapper npmapper = new NamespacePrefixMapper() {
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new MetsNamespacePrefixMapper());
 
-				private final String[] namespace_decls = new String[] {
-						"mets", "http://www.loc.gov/METS/",
-						"bib", "http://www.bibsonomy.org/2010/11/BibSonomy",
-						"puma", "http://puma.uni-kassel.de/2010/11/PUMA-SWORD",
-						"xsi", "http://www.w3.org/2001/XMLSchema-instance",
-						"xlink", "http://www.w3.org/1999/xlink"
-				};
-
-				@Override
-				public String getPreferredPrefix(final String arg0, final String arg1, final boolean arg2) {
-					return null;
-				}
-
-				@Override
-				public String[] getContextualNamespaceDecls() {
-					return this.namespace_decls;
-				}
-
-				@Override
-				public String[] getPreDeclaredNamespaceUris2() {
-					return this.namespace_decls;
-				}
-
-			};
-			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", npmapper);
 			if (this.validateXMLOutput) {
 				// TODO: is the correct schema used?
 				// validate the XML produced by the marshaller
 				marshaller.setSchema(schema);
 			}
+
+			// marshal to the writer
+			marshaller.marshal(webserviceElement, writer);
+		} catch (final JAXBException e) {
+			handleJAXBException(e);
+		}
+	}
+
+	/**
+	 * Initializes java xml bindings, builds the document and then marshalls
+	 * it to the writer.
+	 * @param writer
+	 * @param mets
+	 *
+	 * @throws InternServerException
+	 *             if the document can't be marshalled
+	 */
+	public void serializeMETSMods(final Writer writer, final Mets mets) throws InternServerException {
+		try {
+			// buildup document model
+			final JAXBElement<Mets> webserviceElement = new JAXBElement<>(new QName("http://www.loc.gov/METS/", "mets"), Mets.class, null, mets);
+
+			// create a marshaller
+			final Marshaller marshaller = this.context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods.xsd");
+			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new MetsNamespacePrefixMapper());
 
 			// marshal to the writer
 			marshaller.marshal(webserviceElement, writer);

@@ -50,6 +50,9 @@
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/quickcite.js"><!-- keep me --></script>
+			<c:if test="${properties['publication.reporting.enabled'] eq 'true'}">
+				<script type="text/javascript" src="${resdir}/javascript/openaccess.js"><!--  --></script>
+			</c:if>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">

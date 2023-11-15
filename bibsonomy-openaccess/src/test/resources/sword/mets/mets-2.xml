@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mets:mets ID="sort-mets_mets" OBJID="sword-mets" LABEL="METS/MODS SWORD Item" PROFILE="METS/MODS SIP Profile 1.0" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods.xsd" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:mets="http://www.loc.gov/METS/" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <mets:metsHdr CREATEDATE="2023-11-10T16:49:05.312+01:00">
+        <mets:agent ROLE="CUSTODIAN" TYPE="ORGANIZATION">
+            <mets:name>PUMA</mets:name>
+        </mets:agent>
+    </mets:metsHdr>
+    <mets:dmdSec ID="sword-mets-dmd-1" GROUPID="sword-mets-dmd-1_group-1">
+        <mets:mdWrap LABEL="SWAP Metadata" MDTYPE="MODS" MIMETYPE="text/xml">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:typeOfResource>text</mods:typeOfResource>
+                    <mods:genre>article</mods:genre>
+                    <mods:titleInfo>
+                        <mods:title>Universitätsbibliografie mit PUMA. Praxisbericht aus der Einführung der Universitätsbibliografie an der Universitätsbibliothek Stuttgart</mods:title>
+                    </mods:titleInfo>
+                    <mods:relatedItem xlink:type="host">
+                        <mods:titleInfo>
+                            <mods:title>o-bib. Das offene Bibliotheksjournal</mods:title>
+                        </mods:titleInfo>
+                        <mods:part>
+                            <mods:detail type="volume">
+                                <mods:number>4</mods:number>
+                            </mods:detail>
+                            <mods:detail type="issue">
+                                <mods:number>4</mods:number>
+                            </mods:detail>
+                        </mods:part>
+                    </mods:relatedItem>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Hermann</mods:namePart>
+                        <mods:namePart type="given">Sibylle</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Drößler</mods:namePart>
+                        <mods:namePart type="given">Stefan</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:abstract>Der Mehrwert des Akademischen Publikationsmanagements PUMA für die Universitätsbibliografie an der Universität Stuttgart gegenüber einer bibliothekarischen Katalogisierungsumgebung liegt in der automatisierten Weiterverarbeitungsmöglichkeit der Daten durch die Wissenschaftler/innen, ohne einen Zwischenschritt über die Bibliothek gehen zu müssen. Für das universitäre Content-ManagementSystem steht ein Plugin zur dynamischen Einbindung von Publikationslisten auf Mitarbeiterseiten zur Verfügung. Die Metadaten werden direkt aus PUMA geladen, gefiltert, sortiert und im gewünschten Zitationsstil ausgegeben. PUMA bietet viele Schnittstellen und Darstellungsmöglichkeiten.  The added value of the Academic Publication Management PUMA at the University of Stuttgart compared to a bibliographic cataloguing environment lies in the direct processing of data by scientists without an interim step via the library. For the university content management system, a plugin is available, which dynamically integrates publication lists into employees’ web pages. The metadata is loaded directly from PUMA, filtered, sorted and can be put out in the citation style desired. PUMA offers many interfaces and display possibilities. </mods:abstract>
+                    <mods:originInfo>
+                        <mods:dateIssued encoding="iso8601">2017</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:identifier type="doi">10.5282/o-bib/2017H4S155-161</mods:identifier>
+                    <mods:identifier type="issn">2363-9814</mods:identifier>
+                    <mods:accessCondition/>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp ID="sword-mets-fgrp-1" USE="CONTENT">
+            <mets:file ID="sword-mets-file-0" GROUPID="sword-mets-fgid-0" MIMETYPE="application/pdf" CHECKSUM="TEST_MD5_HASH" CHECKSUMTYPE="MD5">
+                <mets:FLocat LOCTYPE="URL" xlink:href="testdocument-2.pdf"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap ID="sword-mets-struct-1" TYPE="LOGICAL" LABEL="structure">
+        <mets:div ID="sword-mets-div-0" DMDID="sword-mets-dmd-1" TYPE="SWORD Object">
+            <mets:div ID="sword-mets-div-1" TYPE="File">
+                <mets:fptr FILEID="sword-mets-file-0"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

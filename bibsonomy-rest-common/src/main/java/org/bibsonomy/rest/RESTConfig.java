@@ -36,6 +36,8 @@ import java.util.Date;
 
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * DO NOT CHANGE any constant values after a release
  *
@@ -213,8 +215,11 @@ public final class RESTConfig {
 	 * @return			serialized date
 	 */
 	public static String serializeDate(final Date date) {
-		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATE_FORMAT);
-		return fmt.format(date);
+		if (present(date)) {
+			final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATE_FORMAT);
+			return fmt.format(date);
+		}
+		return null;
 	}
 
 	/**
@@ -223,8 +228,11 @@ public final class RESTConfig {
 	 * @return			serialized datetime
 	 */
 	public static String serializeDateTime(final Date date) {
-		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATETIME_FORMAT);
-		return fmt.format(date);
+		if (present(date)) {
+			final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATETIME_FORMAT);
+			return fmt.format(date);
+		}
+		return null;
 	}
 
 }

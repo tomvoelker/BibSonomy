@@ -49,18 +49,14 @@
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
-	
-	
-	<fmt:message var="headline" key="page.url.headline" />
-	
+
 	<!--+
 		+ main layout
 		+ -->
 	<layout:layout pageTitle="${title}" 
 		requPath="${requPath}"
 		loginUser="${command.context.loginUser}"
-		noSidebar="${true}"
-		noContentPadding="${true}">
+		noSidebar="${true}" >
 		
 		<!--+
 			+ page heading

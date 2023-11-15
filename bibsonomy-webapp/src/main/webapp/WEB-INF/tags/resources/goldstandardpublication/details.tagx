@@ -58,13 +58,13 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 
-	<div id="goldstandard" data-interhash="${goldstandard.interHash}">
+	<div class="goldstandard-details" >
 		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 
 			<!--+
 				| HEADER
 				+-->
-			<div class="row" id="info">
+			<div class="row" id="info" data-interhash="${goldstandard.interHash}">
 				<div class="col-md-10">
 					<div class="content-header-entrytype">
 						<c:if test="${post.approved}">
