@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,6 +54,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
@@ -103,9 +107,17 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 * Check if the controller was called by a bookmarklet which just
 		 * delivers URL + selection which should be passed to the scrapers.
 		 */
-		final String url = command.getUrl();
 		final String selection = command.getSelection();
-		
+		String url = command.getUrl();
+
+		/*
+		 * if the selection is a url set it as a url,
+		 * e.g. the postPublication autocomplete will set the selection to the url
+		 */
+		if (!present(url) && present(selection) && UrlUtils.isUrl(selection)) {
+			url = selection;
+		}
+
 		if (command.isMyOwn()) {
 			final String tags = command.getTags();
 			if (!present(tags)) {

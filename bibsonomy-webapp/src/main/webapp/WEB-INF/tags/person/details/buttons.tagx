@@ -1,0 +1,76 @@
+<jsp:root version="2.0"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:modals="urn:jsptagdir:/WEB-INF/tags/person/modals"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+>
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+	<jsp:directive.attribute name="useCRISView" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="hasClaimedPerson" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isAdmin" type="java.lang.Boolean" required="true" />
+
+	<c:set var="loggedInNotSpammer" value="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}"/>
+
+	<div>
+
+		<c:if test="${hasClaimedPerson or isAdmin}">
+			<!-- Edit person details -->
+			<modals:editPersonDetails command="${command}" id="editPersonDetails"/> <!-- Edit person modal dialog -->
+			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#editPersonDetails">
+				<fontawesome:icon icon="user-edit" fixedWidth="${true}"/>
+				<fmt:message key="person.show.editDetailsButton"/>
+			</a>
+
+			<!-- Edit person names -->
+			<modals:editPersonNames command="${command}" id="editPersonNames"/> <!-- Edit person modal dialog -->
+			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#editPersonNames">
+				<fontawesome:icon icon="pencil" fixedWidth="${true}"/>
+				<fmt:message key="person.show.editNamesButton"/>
+			</a>
+		</c:if>
+
+		<!-- TODO: disable if CRIS system and person is in the configured college? -->
+		<c:if test="${useCRISView}">
+			<c:choose>
+				<!-- Unclaim person -->
+				<c:when test='${hasClaimedPerson}'>
+					<!-- Unlink person modal dialog -->
+					<modals:unlinkPerson command="${command}" id="unlinkPerson"/>
+					<a href="#" class="btn btn-default" data-toggle="modal" data-target="#unlinkPerson">
+						<fontawesome:icon icon="unlink" fixedWidth="${true}"/>
+						<fmt:message key="person.show.unlinkPersonButton"/>
+					</a>
+				</c:when>
+
+				<!-- Claim person -->
+				<c:when test="${empty command.person.user and loggedInNotSpammer}">
+					<!-- Link person modal dialog -->
+					<modals:linkPerson command="${command}" id="linkPerson"/>
+					<a href="#" class="btn btn-default" data-toggle="modal" data-target="#linkPerson">
+						<fontawesome:icon icon="link" fixedWidth="${true}"/>
+						<fmt:message key="person.show.linkPersonButton"/>
+					</a>
+				</c:when>
+
+				<c:otherwise>
+
+				</c:otherwise>
+			</c:choose>
+		</c:if>
+
+		<!-- Merge person -->
+		<c:if test="${fn:length(command.personMatchList) gt 0 and isAdmin}">
+			<!-- Merge person modal dialog -->
+			<modals:mergePerson command="${command}" id="mergePerson"/>
+			<a href="#" class="btn btn-default" data-toggle="modal" data-target="#mergePerson">
+				<fontawesome:icon icon="users" fixedWidth="${true}"/>
+				<fmt:message key="person.show.mergePersonButton"/>
+			</a>
+		</c:if>
+	</div>
+
+</jsp:root>

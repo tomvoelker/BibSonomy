@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.nature;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NatureArticleScraperTest {
+	String resultDirectory = "nature/article/";
 
 	/**
 	 * 
@@ -46,8 +50,8 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest1Run(){
 		final String url = "http://www.nature.com/articles/ncomms14674";
-		final String resultFile = "NatureArticleScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, NatureArticleScraper.class, resultFile);
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest1.bib";
+		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
 	/**
@@ -56,8 +60,11 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest2Run(){
 		final String url = "http://www.nature.com/articles/nenergy201741";
-		final String resultFile = "NatureArticleScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, NatureArticleScraper.class, resultFile);
+		// generated: https://citation-needed.springer.com/v2/references/10.1038/nenergy201741?format=bibtex&flavour=citation
+		// real:      https://citation-needed.springer.com/v2/references/10.1038/nenergy.2017.41?format=bibtex&flavour=citation
+		// they are driving us crazy!
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest2.bib";
+		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
 	/**
@@ -66,8 +73,28 @@ public class NatureArticleScraperTest {
 	@Test
 	public void urlTest3Run(){
 		final String url = "https://www.nature.com/articles/nnano.2014.53?cacheBust=1508217952140";
-		final String resultFile = "NatureArticleScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, NatureArticleScraper.class, resultFile);
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest3.bib";
+		assertScraperResult(url, NatureArticleScraper.class, resultFile);
+	}
+	
+	/**
+	 * migrated from former NatureJournalScraperTest
+	 */
+	@Test
+	public void urlTest4Run(){
+		final String url = "https://www.nature.com/articles/nrn.2016.150";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest4.bib";
+		assertScraperResult(url, NatureArticleScraper.class, resultFile);
+	}
+	
+	/**
+	 * migrated from former NatureJournalScraperTest
+	 */
+	@Test
+	public void urlTest5Run(){
+		final String url = "https://www.nature.com/articles/onc2014416";
+		final String resultFile = resultDirectory + "NatureArticleScraperUnitURLTest5.bib";
+		assertScraperResult(url, NatureArticleScraper.class, resultFile);
 	}
 	
 }

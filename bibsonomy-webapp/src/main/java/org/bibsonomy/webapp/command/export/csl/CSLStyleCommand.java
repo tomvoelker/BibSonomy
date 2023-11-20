@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,22 +29,19 @@
  */
 package org.bibsonomy.webapp.command.export.csl;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author jp
  */
+@Getter
+@Setter
 public class CSLStyleCommand extends BaseCommand {
 	private String responseString;
 	private String style;
 	private String locale;
-	
-	/**
-	 * @return the style
-	 */
-	public String getStyle() {
-		return this.style;
-	}
 
 	/**
 	 * @param style the style to set
@@ -50,31 +50,4 @@ public class CSLStyleCommand extends BaseCommand {
 		this.style = style.toLowerCase();
 	}
 
-	/**
-	 * @return the locale
-	 */
-	public String getLocale() {
-		return this.locale;
-	}
-
-	/**
-	 * @param locale the locale to set
-	 */
-	public void setLocale(String locale) {
-		this.locale = locale;
-	}
-
-	/**
-	 * @return the responseString
-	 */
-	public String getResponseString() {
-		return this.responseString;
-	}
-
-	/**
-	 * @param responseString the responseString to set
-	 */
-	public void setResponseString(String responseString) {
-		this.responseString = responseString;
-	}
 }

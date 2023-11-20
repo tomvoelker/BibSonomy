@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,26 +29,22 @@
  */
 package org.bibsonomy.scraper.url.kde.cell;
 
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.scraper.generic.CitationManager4Scraper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author tst
  */
-public class CellScraper extends GenericRISURLScraper{
+public class CellScraper extends CitationManager4Scraper {
 	
 	private static final String SITE_NAME = "Cell";
 	private static final String SITE_URL = "http://www.cell.com/";
 	private static final String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
-	private static final Pattern patternId = Pattern.compile(".*cell.com.*/(.*)");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "cell.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
@@ -67,24 +66,6 @@ public class CellScraper extends GenericRISURLScraper{
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
-	}
-	
-	private static String extractId(URL url){
-		final Matcher m = patternId.matcher(url.toString());
-		if (m.find()){
-			return m.group(1).replaceAll("-", "").replaceAll("\\(", "").replaceAll("\\)", "");
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		final String contentID = extractId(url);
-		final String downloadUrl = "http://" + url.getHost().toString() + "/action/downloadCitation?objectUri=pii:" + contentID + "&direct=true&include=abs&submit=Export&code=cell-site";
-		return downloadUrl;
 	}
 
 }

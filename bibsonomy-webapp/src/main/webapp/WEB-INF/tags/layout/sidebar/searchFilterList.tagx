@@ -1,0 +1,62 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
+
+    <jsp:directive.attribute name="header" fragment="true" required="false" />
+    <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="headerMessageIcon" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
+    <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
+    <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="hide" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false" />
+    <jsp:directive.attribute name="buttonClass" type="java.lang.String" required="false" />
+    <jsp:directive.attribute name="showMore" type="java.lang.Boolean" required="false"/>
+
+    <c:if test="${hide}">
+        <c:set var="hidden" value="hidden" />
+    </c:if>
+
+    <div id="filter-list-${filterField}" class="filter-list  ${hidden}" data-field="${filterField}">
+        <sidebar:sidebarItem textKey="${headerMessageKey}" faIcon="${headerMessageIcon}">
+            <jsp:attribute name="content">
+                <div id="filter-entries-${filterField}" class="filter-entries">
+                    <c:if test="${not empty filterEntries}">
+                        <c:forEach var="entry" items="${filterEntries}" varStatus="status">
+                            <c:set var="label" value="${entry.name}" />
+                             <c:if test="${not empty entry.messageKey}">
+                                 <fmt:message var="label" key="${entry.messageKey}" />
+                                 <c:if test="${fn:startsWith(label, '???')}">
+                                     <c:set var="label" value="${entry.name}" />
+                                 </c:if>
+                            </c:if>
+                            <c:set var="tooltip" value="${entry.tooltip}" />
+                            <!-- Overwrite tooltip, if tooltip key is set -->
+                            <c:if test="${not empty entry.tooltipKey}">
+                                <fmt:message var="tooltip" key="${entry.tooltipKey}" />
+                                <c:if test="${fn:startsWith(tooltip, '???')}">
+                                    <c:set var="tooltip" value="" />
+                                </c:if>
+                            </c:if>
+                            <button type="button" class="btn btn-default btn-block filter-entry ${buttonClass}" title="${tooltip}" data-value="${entry.name}">
+                                <c:if test="${not hideCounts}">
+                                    <span class="badge badge-light"><c:out value="${entry.count}" /></span>
+                                    <c:out value=" "/>
+                                </c:if>
+                                <span class="filter-button-label"><c:out value="${label}" /></span>
+                            </button>
+                        </c:forEach>
+                    </c:if>
+                </div>
+                <c:if test="${showMore}">
+                    <span class="show-more-link" id="filter-more-${filterField}"><fmt:message key="explore.show.more" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></span>
+                </c:if>
+            </jsp:attribute>
+        </sidebar:sidebarItem>
+    </div>
+</jsp:root>

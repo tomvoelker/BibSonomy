@@ -1,5 +1,36 @@
+/**
+ * BibSonomy-Model - Java- and JAXB-Model.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -17,6 +48,8 @@ import java.util.Set;
  * @author dzo
  * @param <R>
  */
+@Getter
+@Setter
 public class PostQuery<R extends Resource> extends BasicQuery {
 	/**
 	 * resource type to be shown.
@@ -91,189 +124,8 @@ public class PostQuery<R extends Resource> extends BasicQuery {
 	 * default constructor
 	 * @param resourceClass
 	 */
-	public PostQuery(Class<R> resourceClass) {
+	public PostQuery(final Class<R> resourceClass) {
 		this.resourceClass = resourceClass;
 	}
 
-	/**
-	 * @return the scope
-	 */
-	public QueryScope getScope() {
-		return scope;
-	}
-
-	/**
-	 * @param scope the scope to set
-	 */
-	public void setScope(QueryScope scope) {
-		this.scope = scope;
-	}
-
-	/**
-	 * @return the grouping
-	 */
-	public GroupingEntity getGrouping() {
-		return grouping;
-	}
-
-	/**
-	 * @param grouping the grouping to set
-	 */
-	public void setGrouping(GroupingEntity grouping) {
-		this.grouping = grouping;
-	}
-
-	/**
-	 * @return the groupingName
-	 */
-	public String getGroupingName() {
-		return groupingName;
-	}
-
-	/**
-	 * @param groupingName the groupingName to set
-	 */
-	public void setGroupingName(String groupingName) {
-		this.groupingName = groupingName;
-	}
-
-	/**
-	 * @return the tags
-	 */
-	public List<String> getTags() {
-		return tags;
-	}
-
-	/**
-	 * @param tags the tags to set
-	 */
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return hash;
-	}
-
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-
-	/**
-	 * @return the filters
-	 */
-	public Set<Filter> getFilters() {
-		return filters;
-	}
-
-	/**
-	 * @param filters the filters to set
-	 */
-	public void setFilters(Set<Filter> filters) {
-		this.filters = filters;
-	}
-
-	/**
-	 * @return the startDate
-	 */
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	/**
-	 * @return the endDate
-	 */
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	/**
-	 * @return the resourceClass
-	 */
-	public Class<R> getResourceClass() {
-		return resourceClass;
-	}
-
-	/**
-	 * @param resourceClass the resourceClass to set
-	 */
-	public void setResourceClass(Class<R> resourceClass) {
-		this.resourceClass = resourceClass;
-	}
-
-	/**
-	 * @return the onlyIncludeAuthorsWithoutPersonId
-	 */
-	public boolean isOnlyIncludeAuthorsWithoutPersonId() {
-		return onlyIncludeAuthorsWithoutPersonId;
-	}
-
-	/**
-	 * @param onlyIncludeAuthorsWithoutPersonId the onlyIncludeAuthorsWithoutPersonId to set
-	 */
-	public void setOnlyIncludeAuthorsWithoutPersonId(boolean onlyIncludeAuthorsWithoutPersonId) {
-		this.onlyIncludeAuthorsWithoutPersonId = onlyIncludeAuthorsWithoutPersonId;
-	}
-
-	/**
-	 * @return the personNames
-	 */
-	public List<PersonName> getPersonNames() {
-		return personNames;
-	}
-
-	/**
-	 * @param personNames the personNames to set
-	 */
-	public void setPersonNames(List<PersonName> personNames) {
-		this.personNames = personNames;
-	}
-
-	/**
-	 * @return the college
-	 */
-	public String getCollege() {
-		return college;
-	}
-
-	/**
-	 * @param college the college to set
-	 */
-	public void setCollege(String college) {
-		this.college = college;
-	}
-
-	/**
-	 * @return the sortCriteria
-	 */
-	public List<SortCriteria> getSortCriteria() {
-		return sortCriteria;
-	}
-
-	/**
-	 * @param sortCriteria the sortCriteria to set
-	 */
-	public void setSortCriteria(List<SortCriteria> sortCriteria) {
-		this.sortCriteria = sortCriteria;
-	}
 }

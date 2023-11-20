@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.karlsruhe;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AIFBScraperTest {
+	String resultDirectory = "karlsruhe/aifb/";
 	
 	/**
 	 * starts URL test with id url_2
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://www.aifb.kit.edu/web/Article1764", AIFBScraper.class, "AIFBScraperUnitURLTest1.bib");
+		final String url = "https://www.aifb.kit.edu/web/Article1764";
+		final String resultFile = resultDirectory + "AIFBScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AIFBScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,7 +59,9 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("https://www.aifb.kit.edu/web/Inproceedings867", AIFBScraper.class, "AIFBScraperUnitURLTest2.bib");
+		final String url = "https://www.aifb.kit.edu/web/Inproceedings867";
+		final String resultFile = resultDirectory + "AIFBScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, AIFBScraper.class, resultFile);
 	}
 	
 	/**
@@ -61,7 +69,9 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		assertScraperResult("https://www.aifb.kit.edu/web/Book2015", AIFBScraper.class, "AIFBScraperUnitURLTest3.bib");
+		final String url = "https://www.aifb.kit.edu/web/Book2015";
+		final String resultFile = resultDirectory + "AIFBScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, AIFBScraper.class, resultFile);
 	}
 	
 	/**
@@ -69,7 +79,9 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertScraperResult("https://www.aifb.kit.edu/web/Incollection2044", AIFBScraper.class, "AIFBScraperUnitURLTest4.bib");
+		final String url = "https://www.aifb.kit.edu/web/Incollection2044";
+		final String resultFile = resultDirectory + "AIFBScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, AIFBScraper.class, resultFile);
 	}
 	
 	/**
@@ -77,7 +89,9 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		assertScraperResult("https//www.aifb.kit.edu/web/Phdthesis74", AIFBScraper.class, "AIFBScraperUnitURLTest5.bib");
+		final String url = "https://www.aifb.kit.edu/web/Phdthesis74";
+		final String resultFile = resultDirectory + "AIFBScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, AIFBScraper.class, resultFile);
 	}
 	
 	/**
@@ -85,6 +99,8 @@ public class AIFBScraperTest {
 	 */
 	@Test
 	public void url6TestRun() {
-		assertScraperResult("https://www.aifb.kit.edu/web/Techreport2020", AIFBScraper.class, "AIFBScraperUnitURLTest6.bib");
+		final String url = "https://www.aifb.kit.edu/web/Techreport2020";
+		final String resultFile = resultDirectory + "AIFBScraperUnitURLTest6.bib";
+		assertScraperResult(url, null, AIFBScraper.class, resultFile);
 	}
 }

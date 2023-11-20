@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -33,6 +39,8 @@ import java.io.Serializable;
  *
  * @author jhi
  */
+@Getter
+@Setter
 public class PhDRecommendation implements Serializable{
 
 	private static final long serialVersionUID = -6572434911635271629L;
@@ -41,54 +49,5 @@ public class PhDRecommendation implements Serializable{
 	private Person advisor;
 	private Float confidence;
 	private int rank;
-	/**
-	 * @return the doctor
-	 */
-	public Person getDoctor() {
-		return this.doctor;
-	}
-	/**
-	 * @param doctor the doctor to set
-	 */
-	public void setDoctor(Person doctor) {
-		this.doctor = doctor;
-	}
-	/**
-	 * @return the advisor
-	 */
-	public Person getAdvisor() {
-		return this.advisor;
-	}
-	/**
-	 * @param advisor the advisor to set
-	 */
-	public void setAdvisor(Person advisor) {
-		this.advisor = advisor;
-	}
-	/**
-	 * @return the confidence
-	 */
-	public Float getConfidence() {
-		return this.confidence;
-	}
-	/**
-	 * @param confidence the confidence to set
-	 */
-	public void setConfidence(Float confidence) {
-		this.confidence = confidence;
-	}
-	/**
-	 * @return the rank
-	 */
-	public int getRank() {
-		return this.rank;
-	}
-	/**
-	 * @param rank the rank to set
-	 */
-	public void setRank(int rank) {
-		this.rank = rank;
-	}
-	
-	
+
 }

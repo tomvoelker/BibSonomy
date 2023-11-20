@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +28,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.model.logic.querybuilder;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.bibsonomy.model.enums.PersonResourceRelationOrder;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -42,12 +48,17 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
-	private PersonResourceRelationType relationType;
+
 	private String interhash;
 	private Integer authorIndex;
 	private String personId;
+
+	private PersonResourceRelationType relationType;
 	private PersonResourceRelationOrder order;
+
+	private boolean onlyTheses;
 	private boolean groupByInterhash;
+
 
 	/**
 	 * @param withPersons whether to initialize the person references in the result objects
@@ -85,6 +96,11 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 		this.personId = personId;
 		return this;
 	}
+
+	public ResourcePersonRelationQueryBuilder onlyTheses(boolean onlyTheses) {
+		this.onlyTheses = onlyTheses;
+		return this;
+	}
 	
 	public ResourcePersonRelationQueryBuilder byRelationType(PersonResourceRelationType relationType) {
 		this.relationType = relationType;
@@ -112,7 +128,7 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 	 */
 	public ResourcePersonRelationQuery build() {
 		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
-						relationType, interhash, authorIndex, personId, order, groupByInterhash);
+				relationType, interhash, authorIndex, personId, order, onlyTheses, groupByInterhash);
 	}
 
 	@Override

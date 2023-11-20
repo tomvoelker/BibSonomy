@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,6 +56,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.util.SimHashUtils;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
@@ -120,23 +124,16 @@ public class LogicInterfaceHelper {
 		 */
 		final T param = buildParam(type, sortKey, start, end);
 
-		// if hash length is 33 ,than use the first character as hash type
-		if (hash != null && hash.length() == 33) {
-			HashID id = HashID.SIM_HASH1;
-			try {
-				id = HashID.getSimHash(Integer.valueOf(hash.substring(0, 1)));
-			} catch (final NumberFormatException ex) {
-				throw new RuntimeException(ex);
-			}
-			
+		// if hash length is 33, than use the first character as hash type
+		if (present(hash)) {
+			final SimHashUtils.HashAndId hashAndId = SimHashUtils.extractHashAndHashId(hash, HashID.SIM_HASH1);
+			param.setHash(hashAndId.getHash());
+
 			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
-				param.setSortKey(sortKey);
-				param.setSimHash(id);
+				param.setSimHash(hashAndId.getHashID());
 			}
-			param.setHash(hash.substring(1));
-		} else {
-			param.setHash(hash);
 		}
+
 		/*
 		 * set start and end date
 		 */

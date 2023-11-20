@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +29,15 @@
  */
 package org.bibsonomy.model.user.remote;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
  */
+@Getter
+@Setter
 public class SimpleRemoteUserId implements RemoteUserId {
 	private static final long serialVersionUID = -5200167887496639288L;
 	
@@ -51,20 +58,7 @@ public class SimpleRemoteUserId implements RemoteUserId {
 		this.remoteUserId = remoteUserId;
 	}
 	
-	/**
-	 * @return the remoteUserId
-	 */
-	public String getRemoteUserId() {
-		return this.remoteUserId;
-	}
 
-	/**
-	 * @param remoteUserId the remoteUserId to set
-	 */
-	public void setRemoteUserId(String remoteUserId) {
-		this.remoteUserId = remoteUserId;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return ((obj == this) || ((obj != null) && (obj.getClass() == this.getClass()) && (this.remoteUserId.equals(((SimpleRemoteUserId)obj).remoteUserId))));

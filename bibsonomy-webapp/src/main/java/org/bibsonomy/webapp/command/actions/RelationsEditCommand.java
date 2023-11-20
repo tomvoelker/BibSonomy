@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,9 +29,14 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author philipp
  */
+@Getter
+@Setter
 public class RelationsEditCommand {
 	
 	private String upper = "";
@@ -41,47 +49,5 @@ public class RelationsEditCommand {
 	 * 1 = del relation
 	 */
 	private int forcedAction;
-
-	/**
-	 * @param upper the upper to set
-	 */
-	public void setUpper(String upper) {
-		this.upper = upper;
-	}
-
-	/**
-	 * @return the upper
-	 */
-	public String getUpper() {
-		return upper;
-	}
-
-	/**
-	 * @param lower the lower to set
-	 */
-	public void setLower(String lower) {
-		this.lower = lower;
-	}
-
-	/**
-	 * @return the lower
-	 */
-	public String getLower() {
-		return lower;
-	}
-
-	/**
-	 * @param forcedAction the forcedAction to set
-	 */
-	public void setForcedAction(int forcedAction) {
-		this.forcedAction = forcedAction;
-	}
-
-	/**
-	 * @return the forcedAction
-	 */
-	public int getForcedAction() {
-		return forcedAction;
-	}
 
 }

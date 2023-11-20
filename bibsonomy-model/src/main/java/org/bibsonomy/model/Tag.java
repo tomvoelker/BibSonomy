@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,6 +33,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.util.TagUtils;
 
 /**
@@ -38,6 +43,8 @@ import org.bibsonomy.model.util.TagUtils;
  * @see TagUtils for the empty tag  
  * 
  */
+@Getter
+@Setter
 public class Tag implements Comparable<Tag>, Serializable {
 	private static final long serialVersionUID = 1634496749338156864L;
 
@@ -80,6 +87,11 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 * The stemmed version of the tag's name.
 	 */
 	private String stem;
+
+	/**
+	 * The optional description of this tag.
+	 */
+	private String description;
 
 	/**
 	 * Indicating how often this tag is used in the complete system.
@@ -142,6 +154,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 		this.setGlobalcount(tag.getGlobalcount());
 		this.setUsercount(tag.getUsercount());
 		this.setStem(tag.getStem());
+		this.setDescription(tag.getDescription());
 		this.setId(tag.getId());
 		/*
 		 * copy sub tags
@@ -172,13 +185,6 @@ public class Tag implements Comparable<Tag>, Serializable {
 	}
 
 	/**
-	 * @param posts
-	 */
-	public void setPosts(final List<Post<? extends Resource>> posts) {
-		this.posts = posts;
-	}
-
-	/**
 	 * @return subTags
 	 */
 	public List<Tag> getSubTags() {
@@ -199,13 +205,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 		
 		this.subTags.add(subTag);
 	}	
-	
-	/**
-	 * @param subTags
-	 */
-	public void setSubTags(final List<Tag> subTags) {
-		this.subTags = subTags;
-	}
+
 
 	/**
 	 * adds a superTag to the current tag
@@ -227,83 +227,6 @@ public class Tag implements Comparable<Tag>, Serializable {
 			this.superTags = new LinkedList<>();
 		}
 		return this.superTags;
-	}
-
-	/**
-	 * @param superTags
-	 */
-	public void setSuperTags(final List<Tag> superTags) {
-		this.superTags = superTags;
-	}
-
-	/**
-	 * @return usercount
-	 */
-	public int getUsercount() {
-		return this.usercount;
-	}
-
-	/**
-	 * @param usercount
-	 */
-	public void setUsercount(final int usercount) {
-		this.usercount = usercount;
-	}
-
-	/**
-	 * @return id
-	 */
-	public int getId() {
-		return this.id;
-	}
-
-	/**
-	 * @param id
-	 */
-	public void setId(final int id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return count
-	 */
-	public int getGlobalcount() {
-		return this.globalcount;
-	}
-
-	/**
-	 * @param count
-	 */
-	public void setGlobalcount(final int count) {
-		this.globalcount = count;
-	}
-
-	/**
-	 * @return name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @param name
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return stem
-	 */
-	public String getStem() {
-		return this.stem;
-	}
-
-	/**
-	 * @param stem
-	 */
-	public void setStem(final String stem) {
-		this.stem = stem;
 	}
 
 	@Override

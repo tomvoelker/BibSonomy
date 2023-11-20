@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +29,14 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author dzo
  */
+@Getter
+@Setter
 public class Review extends DiscussionItem {
 	
 	/**
@@ -52,32 +60,5 @@ public class Review extends DiscussionItem {
 	private double rating;
 	
 	private String text;
-	
-	/**
-	 * @return the rating
-	 */
-	public double getRating() {
-		return this.rating;
-	}
 
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(final double rating) {
-		this.rating = rating;
-	}
-	
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(final String text) {
-		this.text = text;
-	}
-
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
-	}
 }

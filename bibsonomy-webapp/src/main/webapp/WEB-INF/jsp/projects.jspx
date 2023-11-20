@@ -4,12 +4,14 @@
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:lists="urn:jsptagdir:/WEB-INF/tags/layout/parts/lists"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:project="urn:jsptagdir:/WEB-INF/tags/project">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
@@ -18,7 +20,7 @@
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.projects" command="${command}"
-					   pageTitle="${pageTitle}" activeTab="projects">
+					   pageTitle="${pageTitle}" activeTab="projects" noSidebar="${true}">
 		<!--+
 			| heading
 			+-->
@@ -30,68 +32,88 @@
 		 	| content
 		 	+-->
 		<jsp:attribute name="content">
-			<div class="row">
-				<div class="col-md-12">
-					<parts:searchHeader headerMessageKey="projects.header" searchPlaceholderKey="projects.search" requPathAndQuery="${requPathAndQuery}" command="${command}" />
+			<parts:searchHeader headerMessageKey="projects.header" searchPlaceholderKey="projects.search"
+								requPathAndQuery="${requPathAndQuery}" command="${command}"/>
+
+			<c:set var="projectListCommand" value="${command.projects}"/>
+			<c:set var="totalNumberOfProjects" value="${projectListCommand.totalCount}"/>
+
+			<div id="projects" class="list-result">
+				<div class="row">
+					<div class="col-md-4 vcenter">
+						<spring:eval var="projectStatusValues" expression="T(org.bibsonomy.model.enums.ProjectStatus).values()"/>
+						<fmt:message key="project.filter.status"/>:
+						<div class="btn-group" role="group" aria-label="...">
+							<c:set var="selectedProjectStatus" value="${command.projectStatus}"/>
+							<c:set var="noProjectStatusFilter" value="${empty selectedProjectStatus}"/>
+							<a href="${mtl:setParam(requPathAndQuery, 'projectStatus', '')}"
+							   class="btn btn-sm ${noProjectStatusFilter ? 'btn-primary' : 'btn-default'}"><fmt:message
+									key="project.filter.status.all"/></a>
+							<c:forEach var="projectStatus" items="${projectStatusValues}">
+								<c:set var="isCurrentProjectStatus" value="${selectedProjectStatus eq projectStatus}"/>
+								<a href="${mtl:setParam(requPathAndQuery, 'projectStatus', projectStatus)}"
+								   class="btn btn-sm ${isCurrentProjectStatus ? 'btn-primary' : 'btn-default' }">
+									<fmt:message key="project.filter.status.${projectStatus}"/>
+								</a>
+							</c:forEach>
+						</div>
+					</div>
+					<div class="col-md-4 vcenter"><!-- keep me --></div>
+					<div class="col-md-4 text-right vcenter">
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<fontawesome:icon icon="sort-amount-asc" fixedWidth="${true}"/>
+								<fmt:message key="post.meta.sort.criterion"/><c:out value=": "/>
+								<fmt:message key="project.sortOrder.${command.projectSortKey}"/>
+								<c:out value=" "/>
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<spring:eval expression="T(org.bibsonomy.model.enums.ProjectSortKey).values()"
+											 var="sortKeys"/>
+								<c:forEach var="sortKey" items="${sortKeys}">
+									<c:set var="keySet" value="${command.projectSortKey eq sortKey}"/>
+									<li class="${keySet ? 'disabled' : ''}">
+										<c:set var="projectUrl" value="${mtl:setParam(requPathAndQuery, 'projectSortKey', sortKey)}"/>
+										<a href="${projectUrl}">
+											<c:if test="${keySet}">
+												<fontawesome:icon icon="check" fixedWidth="${true}" />
+											</c:if>
+											<fmt:message key="project.sortOrder.${sortKey}"/>
+										</a>
+									</li>
+								</c:forEach>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
-			<c:set var="projectListCommand" value="${command.projects}" />
-			<c:set var="totalNumberOfProjects" value="${projectListCommand.totalCount}" />
-			<div class="row">
-				<div class="col-md-6 vcenter">
-					<spring:eval var="projectStatusValues" expression="T(org.bibsonomy.model.enums.ProjectStatus).values()"/>
-					<fmt:message key="project.filter.status"/>:
-					<div class="btn-group" role="group" aria-label="...">
-						<!-- FIXME i18n -->
-						<c:set var="selectedProjectStatus" value="${command.projectStatus}"/>
-						<c:set var="noProjectStatusFilter" value="${empty selectedProjectStatus}"/>
-  						<a href="${mtl:setParam(requPathAndQuery, 'projectStatus', '')}"
-						   class="btn btn-sm ${noProjectStatusFilter ? 'btn-primary' : 'btn-default'}"><fmt:message key="project.filter.status.all" /></a>
-						<c:forEach var="projectStatus" items="${projectStatusValues}">
-							<c:set var="isCurrentProjectStatus" value="${selectedProjectStatus eq projectStatus}"/>
-							<a href="${mtl:setParam(requPathAndQuery, 'projectStatus', projectStatus)}"
-							   class="btn btn-sm ${isCurrentProjectStatus ? 'btn-primary' : 'btn-default' }">
-								<fmt:message key="project.filter.status.${projectStatus}" />
-							</a>
+
+				<!--+
+					| Projects overview
+					+-->
+				<c:set var="list" value="${projectListCommand.list}"/>
+				<c:set var="listLength" value="${fn:length(list)}"/>
+				<c:set var="columns" value="3"/>
+				<c:forEach var="i" begin="0" end="${listLength - 1}" step="${columns}">
+					<div class="row">
+						<c:forEach var="offset" begin="0" end="${columns - 1}">
+							<c:set var="position" value="${i + offset}"/>
+							<c:if test="${position lt listLength}">
+								<lists:projectResultEntity columnSize="${12/columns}" project="${list[position]}"/>
+							</c:if>
 						</c:forEach>
 					</div>
-				</div>
-				<div class="col-md-3 vcenter">
-					<lists:listResultInfo listCommand="${projectListCommand}" messageKey="projects.results.description" />
-				</div>
-				<div class="col-md-3 text-right vcenter">
-					<div class="btn-group">
-						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-								aria-haspopup="true"
-								aria-expanded="false">
-							<fontawesome:icon icon="sort-amount-asc" spaceAfter="5"/>
-							<fmt:message key="post.meta.sort.criterion"/><c:out value=": "/>
-							<fmt:message key="project.sortOrder.${command.projectOrder}" />
-							<c:out value=" " />
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<spring:eval expression="T(org.bibsonomy.model.enums.ProjectOrder).values()" var="orderValues" />
-							<c:forEach var="orderValue" items="${orderValues}">
-								<c:set var="orderSet" value="${command.projectOrder eq orderValue}" />
-								<li class="${orderSet ? 'disabled' : ''}">
-									<c:set var="projectUrl" value="${mtl:setParam(requPathAndQuery, 'projectOrder', orderValue)}" />
-									<a href="${projectUrl}">
-										<c:if test="${orderSet}">
-											<fontawesome:icon icon="check" spaceAfter="5" size="xs" />
-										</c:if>
-										<fmt:message key="project.sortOrder.${orderValue}" />
-									</a>
-								</li>
-							</c:forEach>
-						</ul>
+				</c:forEach>
+
+				<div id="projects-result-footer" class="row list-result-footer">
+					<!-- show projects pagination -->
+					<div class="col-md-4">
+						<rc:nextprev listView="${projectListCommand}" listViewStartParamName="projects.start"/>
 					</div>
-				</div>
-			</div>
-			<hr class="option-result-divider"/>
-            <div class="row" >
-				<div class="col-md-12">
-					<project:listview projectListCommand="${projectListCommand}" />
+					<!-- show result infos -->
+					<div class="col-md-4 vcenter">
+						<lists:listResultInfo listCommand="${projectListCommand}" messageKey="projects.results.description"/>
+					</div>
 				</div>
 			</div>
 		</jsp:attribute>

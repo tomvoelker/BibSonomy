@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 
@@ -34,6 +39,8 @@ import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
  * 
  * @author dbenz
  */
+@Getter
+@Setter
 public class RankingCommand {
 	
 	/** 
@@ -56,48 +63,6 @@ public class RankingCommand {
 	 * whether to normalize the ranking or not
 	 */
 	private boolean normalize = false;
-	
-	/**
-	 * @return the period
-	 */
-	public Integer getPeriod() {
-		return this.period;
-	}
-
-	/**
-	 * @param period the period to set
-	 */
-	public void setPeriod(Integer period) {
-		this.period = period;
-	}
-
-	/**
-	 * @return the periodStart
-	 */
-	public Integer getPeriodStart() {
-		return this.periodStart;
-	}
-
-	/**
-	 * @param periodStart the periodStart to set
-	 */
-	public void setPeriodStart(Integer periodStart) {
-		this.periodStart = periodStart;
-	}
-
-	/**
-	 * @return the periodEnd
-	 */
-	public Integer getPeriodEnd() {
-		return this.periodEnd;
-	}
-
-	/**
-	 * @param periodEnd the periodEnd to set
-	 */
-	public void setPeriodEnd(Integer periodEnd) {
-		this.periodEnd = periodEnd;
-	}
 
 	/**
 	 * @return the name of the {@link #method} (lower case)
@@ -123,20 +88,6 @@ public class RankingCommand {
 				this.method = newMethod;
 			}
 		}
-	}
-	
-	/**
-	 * @return the normalize
-	 */
-	public boolean getNormalize() {
-		return this.normalize;
-	}
-	
-	/**
-	 * @param normalize the normalize to set
-	 */
-	public void setNormalize(boolean normalize) {
-		this.normalize = normalize;
 	}
 
 	/**

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +29,14 @@
  */
 package org.bibsonomy.scraper.url.kde.osti;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -33,60 +44,47 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-
 /**
  * @author Mohammed Abed
  */
-public class OstiScraper extends GenericBibTeXURLScraper {
+public class OstiScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "U.S. Departement of energy - Office of Scientific and technical information";
 	private static final String SITE_URL = "http://osti.gov";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
-	private static final Pattern PATTERN_GETTING_DOWNLOAD_PATH = Pattern.compile("(.*/\\d+)");
+	private static final Pattern PATTERN_BIBTEX_ON_PAGE = Pattern.compile("<code id=\"biblio-cite-bib-code\">([\\s\\S]*)</code>");
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "osti.gov"), AbstractUrlScraper.EMPTY_PATTERN));
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#retrieveCookiesFromSite()
-	 */
+
 	@Override
-	protected boolean retrieveCookiesFromSite() {
-		return true;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		final Matcher m = PATTERN_GETTING_DOWNLOAD_PATH.matcher(url.toString());
-		if (m.find()) {
-			return m.group(1) + "/cite/bibtex";
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
+		try {
+			URL url = scrapingContext.getUrl();
+			String html = WebUtils.getContentAsString(url);
+			if (!present(html)){
+				throw new ScrapingException("can't get html of " + url);
+			}
+
+			String bibtex;
+			Matcher m_bibtex = PATTERN_BIBTEX_ON_PAGE.matcher(html);
+			if (m_bibtex.find()) {
+				bibtex = m_bibtex.group(1);
+			}else {
+				throw new ScrapingException("can't get bibtex from " + url);
+			}
+
+			scrapingContext.setBibtexResult(fixBibtex(bibtex));
+			return true;
+
+		} catch (IOException e) {
+			throw new ScrapingFailureException(e);
 		}
-		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return removeHTML(bibtex);
+	private String fixBibtex(String bibtex){
+		return bibtex.trim().replaceAll("<br/>", "").replaceAll("= ,", "= {},");
 	}
-	
-	/*
-	 * clean the bibtex from html code
-	 */
-	private static String removeHTML(String bibtex) {
-		String bibtexResult = bibtex.replace("  <div class=\"csl-entry\"> ", "");
-		bibtexResult.replace("</div>", "");
-		return bibtexResult;
-	}
+
 	
 	@Override
 	public String getSupportedSiteName() {
@@ -107,4 +105,6 @@ public class OstiScraper extends GenericBibTeXURLScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
 	}
+
+
 }

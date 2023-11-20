@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +37,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -49,9 +52,9 @@ public class DOIScraperTest {
 	
 	@Test
 	public void testScraper1() throws ScrapingException, MalformedURLException {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://dx.doi.org/10.1007/11922162"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://dx.doi.org/10.1007/11922162"));
 		assertFalse(SCRAPER.scrape(sc));
-		assertEquals("http://link.springer.com/book/10.1007/11922162", sc.getUrl().toString());
+		assertEquals("https://link.springer.com/book/10.1007/11922162", sc.getUrl().toString());
 	}
 
 	
@@ -61,7 +64,7 @@ public class DOIScraperTest {
 		sc.setSelectedText("10.1145/160688.160713");
 		
 		assertFalse(SCRAPER.scrape(sc));
-		assertEquals("http://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
+		assertEquals("https://dl.acm.org/doi/10.1145/160688.160713", sc.getUrl().toString());
 	}
 	
 }

@@ -25,7 +25,9 @@
 	
 	<sidebar:sidebarItem textKey="${textKey}">
 		<jsp:attribute name="content">
-			<tags:cloud requPath="${requPath}" cmd="${cmd}" tagboxMinfreqStyle="${tagboxMinfreqStyle}" showTooltips="${showTooltips}" tagSizeMode="${tagSizeMode}" scope="${scope}"/>
+			<div class="sidebar_collapse_content">
+				<tags:cloud requPath="${requPath}" cmd="${cmd}" tagboxMinfreqStyle="${tagboxMinfreqStyle}" showTooltips="${showTooltips}" tagSizeMode="${tagSizeMode}" scope="${scope}"/>
+			</div>
 		</jsp:attribute>
 	</sidebar:sidebarItem>
 </jsp:root>

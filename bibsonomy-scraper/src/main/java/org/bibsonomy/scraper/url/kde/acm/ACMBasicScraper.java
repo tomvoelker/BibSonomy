@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +36,10 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import org.apache.commons.logging.Log;
@@ -81,6 +86,7 @@ public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements 
 	);
 
 	private final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
+	private final static Pattern ACM_DIGITAL_LIBRARY_URL_PATTERN = Pattern.compile("<a href=\"(.*?)\".*>ACM Digital Library</a>");
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
@@ -88,8 +94,22 @@ public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements 
 	}
 
 	@Override
-	protected List<NameValuePair> getDownloadData(URL url, String cookies) {
-		final String doi = DOIUtils.extractDOI(url.getPath());
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
+		String doi = DOIUtils.extractDOI(url.getPath());
+
+		if (!present(doi)){
+			try {
+				String pageContent = WebUtils.getContentAsString(url);
+				Matcher m_ACMLibrary = ACM_DIGITAL_LIBRARY_URL_PATTERN.matcher(pageContent);
+				if (!m_ACMLibrary.find()){
+					throw new ScrapingException("couldn't find ACM Digital Library Url on page");
+				}
+				URL acmLibraryUrl = WebUtils.getRedirectUrl(new URL(m_ACMLibrary.group(1)));
+				doi =  DOIUtils.extractDOI(acmLibraryUrl.getPath());
+			} catch (IOException e) {
+				throw new ScrapingException(e);
+			}
+		}
 
 		return Arrays.asList(
 						new BasicNameValuePair("dois", doi),
@@ -107,13 +127,16 @@ public class ACMBasicScraper extends AbstractGenericFormatURLScraper implements 
 	protected String convert(final String downloadResult) {
 		// this is a json containing the csl style and also the items to render,
 		// so extract the csl entries from the json response
-		final JSONObject json = (JSONObject) JSONSerializer.toJSON(downloadResult);
-		final JSONObject cslEntries = json.getJSONArray("items").getJSONObject(0);
-		final Optional<Object> firstKey = cslEntries.keySet().stream().findFirst();
-		if (firstKey.isPresent()) {
-			final Object key = firstKey.get();
-			final JSONObject cslEntry = cslEntries.getJSONObject(key.toString());
-			return this.cslToBibtexConverter.toBibtex(cslEntry);
+		final JSON parsedJson = JSONSerializer.toJSON(downloadResult);
+		if (parsedJson instanceof JSONObject) {
+			final JSONObject json = (JSONObject) parsedJson;
+			final JSONObject cslEntries = json.getJSONArray("items").getJSONObject(0);
+			final Optional<Object> firstKey = cslEntries.keySet().stream().findFirst();
+			if (firstKey.isPresent()) {
+				final Object key = firstKey.get();
+				final JSONObject cslEntry = cslEntries.getJSONObject(key.toString());
+				return this.cslToBibtexConverter.toBibtex(cslEntry);
+			}
 		}
 		return null;
 	}

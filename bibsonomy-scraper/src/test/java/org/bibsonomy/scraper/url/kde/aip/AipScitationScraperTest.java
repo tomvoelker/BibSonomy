@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.aip;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AipScitationScraperTest {
+	String resultDirectory = "aip/";
 	
 	/**
 	 * starts URL test with id url_8
@@ -46,7 +50,7 @@ public class AipScitationScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "https://aip.scitation.org/doi/abs/10.1063/1.3680558";
-		final String resultFile = "AipScitationScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "AipScitationScraperUnitURLTest1.bib";
 		assertScraperResult(url, AipScitationScraper.class, resultFile);
 	}
 
@@ -56,7 +60,7 @@ public class AipScitationScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "https://aip.scitation.org/doi/full/10.1063/1.4820139";
-		final String resultFile = "AipScitationScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "AipScitationScraperUnitURLTest2.bib";
 		assertScraperResult(url, AipScitationScraper.class, resultFile);
 	}
 	
@@ -66,7 +70,7 @@ public class AipScitationScraperTest {
 	@Test
 	public void url3TestRun() {
 		final String url = "https://asa.scitation.org/doi/abs/10.1121/1.2144160";
-		final String resultFile = "AipScitationScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "AipScitationScraperUnitURLTest3.bib";
 		assertScraperResult(url, AipScitationScraper.class, resultFile);
 	}
 

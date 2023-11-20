@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,11 +38,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.scraper.converter.OrcidToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -48,6 +53,10 @@ import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,11 +65,11 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author rja
  */
+@Setter
 public class PublicationImporter {
 	private static final Log log = LogFactory.getLog(PublicationImporter.class);
 	
-	private static final ListExtensionChecker EXTENSION_CHECKER_BIBTEX_ENDNOTE = new ListExtensionChecker(FileLogic.BIBTEX_ENDNOTE_EXTENSIONS);
-
+	private static final ListExtensionChecker PUBLICATION_IMPORT_EXTENSION_CHECKER = new ListExtensionChecker(FileLogic.ACCEPTED_PUBLICATION_EXTENSIONS);
 	
 	private FileLogic fileLogic;
 	
@@ -73,7 +82,13 @@ public class PublicationImporter {
 	 * converter from Ris to BibTeX
 	 */
 	private RisToBibtexConverter risToBibtexConverter;
-	
+
+	/**
+	 * converter from ORCID export to BibTeX
+	 */
+	private boolean orcidImportEnabled;
+	private OrcidToBibtexConverter orcidToBibtexConverter;
+
 	
 	/**
 	 * Handles an uploaded file and returns its contents - if necessary 
@@ -110,7 +125,7 @@ public class PublicationImporter {
 				return null;
 			}
 			
-			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), EXTENSION_CHECKER_BIBTEX_ENDNOTE);
+			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), PUBLICATION_IMPORT_EXTENSION_CHECKER);
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileLogic.BIBTEX_EXTENSION))) {
@@ -143,7 +158,7 @@ public class PublicationImporter {
 			/*
 			 * FIXME add also extensions form DOCUMENT_EXTENSION to the message? 
 			 */
-			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileLogic.BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
+			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileLogic.ACCEPTED_PUBLICATION_EXTENSIONS, ", ")}, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
@@ -156,6 +171,32 @@ public class PublicationImporter {
 			}
 		}
 		return null;
+	}
+
+	public String handleBulkSnippet(final PostPublicationCommand command, final Errors errors) {
+		final String bulkSnippet = command.getBulkSnippet();
+		JSONParser jsonParser = new JSONParser();
+		try {
+			JSONObject obj = (JSONObject) jsonParser.parse(bulkSnippet);
+			if (orcidImportEnabled && obj.containsKey("orcid")) {
+				return handleOrcidImport((JSONArray) obj.get("orcid"));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public String handleOrcidImport(final JSONArray citations) {
+		StringBuilder builder = new StringBuilder();
+
+		citations.forEach(item -> {
+			JSONObject citationObj = (JSONObject) item;
+			builder.append(orcidToBibtexConverter.toBibtex(citationObj));
+			builder.append("\n");
+		});
+
+		return builder.toString();
 	}
 	
 	/**
@@ -185,26 +226,5 @@ public class PublicationImporter {
 		} catch (final IOException e) {
 			throw new ConversionException("Could not convert from Ris to BibTeX.");
 		}
-	}
-
-	/**
-	 * @param endnoteToBibtexConverter the endnoteToBibtexConverter to set
-	 */
-	public void setEndnoteToBibtexConverter(final EndnoteToBibtexConverter endnoteToBibtexConverter) {
-		this.endnoteToBibtexConverter = endnoteToBibtexConverter;
-	}
-	
-	/**
-	 * @param risToBibtexConverter the risToBibtexConverter to set
-	 */
-	public void setRisToBibtexConverter(final RisToBibtexConverter risToBibtexConverter) {
-		this.risToBibtexConverter = risToBibtexConverter;
-	}
-
-	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
 	}
 }

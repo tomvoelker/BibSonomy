@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.lccnloc;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,13 +40,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class LccnLocScraperTest {
+	String resultDirectory = "lccnloc/";
 	
 	/**
 	 * starts URL test with id url_360
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://lccn.loc.gov/2005929872", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest.bib");
+		final String url = "https://lccn.loc.gov/2005929872";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest1.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,7 +57,9 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("https://lccn.loc.gov/2005929872/dc", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest.bib");
+		final String url = "https://lccn.loc.gov/2005929872/dc";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest1.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -59,7 +67,9 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		assertScraperResult("https://lccn.loc.gov/95790943", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest2.bib");
+		final String url = "https://lccn.loc.gov/95790943";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest2.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 	
 	/**
@@ -67,14 +77,19 @@ public class LccnLocScraperTest {
 	 */
 	@Test
 	public void url4TestRun() {
-		assertScraperResult("https://lccn.loc.gov/77368709/dc", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest3.bib");
+		final String url = "https://lccn.loc.gov/77368709/dc";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest3.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_364
 	 */
+	//Protected by Cloudflare
 	@Test
 	public void url5TestRun() {
-		assertScraperResult("https://catalog.loc.gov/vwebv/holdingsInfo?searchId=6242&recCount=25&recPointer=1&bibId=1781294", LccnLocScraper.class, "LccnLocScraperScraperUnitURLTest4.bib");
+		final String url = "https://catalog.loc.gov/vwebv/holdingsInfo?searchId=6242&recCount=25&recPointer=1&bibId=1781294";
+		final String resultFile = resultDirectory + "LccnLocScraperScraperUnitURLTest4.bib";
+		assertScraperResult(url, LccnLocScraper.class, resultFile);
 	}
 }

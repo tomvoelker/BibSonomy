@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +37,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -46,13 +49,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class WorldCatScraperTest {
+	String resultDirectory = "worldcat/";
 	
 	/**
 	 * starts URL test with id url_59
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://www.worldcat.org/oclc/37212333", WorldCatScraper.class, "WorldCatScraperUnitURLTest1.bib");
+		final String url = "http://www.worldcat.org/oclc/37212333";
+		final String resultFile = resultDirectory + "WorldCatScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, WorldCatScraper.class, resultFile);
 	}
 
 	/**
@@ -60,7 +66,9 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://www.worldcat.org/oclc/85511690", WorldCatScraper.class, "WorldCatScraperUnitURLTest2.bib");
+		final String url = "http://www.worldcat.org/oclc/85511690";
+		final String resultFile = resultDirectory + "WorldCatScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, WorldCatScraper.class, resultFile);
 	}
 	
 	/**
@@ -68,7 +76,9 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertScraperResult("http://www.worldcat.org/oclc/163641505", WorldCatScraper.class, "WorldCatScraperUnitURLTest3.bib");
+		final String url = "http://www.worldcat.org/oclc/163641505";
+		final String resultFile = resultDirectory + "WorldCatScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, WorldCatScraper.class, resultFile);
 	}
 	
 	/**
@@ -76,7 +86,9 @@ public class WorldCatScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertScraperResult("http://www.worldcat.org/oclc/254138269", WorldCatScraper.class, "WorldCatScraperUnitURLTest4.bib");
+		final String url = "http://www.worldcat.org/oclc/254138269";
+		final String resultFile = resultDirectory + "WorldCatScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, WorldCatScraper.class, resultFile);
 	}
 	
 	/**

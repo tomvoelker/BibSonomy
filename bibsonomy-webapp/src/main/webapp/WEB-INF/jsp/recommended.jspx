@@ -33,7 +33,9 @@
 			<ul>
 				<li>
 					<sidebar:sidebarHeader textKey="tags.of_recommendations" />
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
+					<div class="sidebar_collapse_content">
+						<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
+					</div>
 				</li>
 			</ul>
 		</jsp:attribute>

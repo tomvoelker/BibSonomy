@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +29,11 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
@@ -35,75 +43,15 @@ import java.util.Date;
  * 
  * @author Christian Schenk
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BibTexExtra implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4004329258093393977L;
 	private URL url;
 	private String text;
 	private Date date;
 
-	/**
-	 * default constructor
-	 */
-	public BibTexExtra() {
-		// noop
-	}
-
-	/**
-	 * Constructor setting all three fields.
-	 * @param url
-	 * @param text
-	 * @param date
-	 */
-	public BibTexExtra(URL url, String text, Date date) {
-		super();
-		this.url = url;
-		this.text = text;
-		this.date = date;
-	}
-
-	/**
-	 * @return date
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return text
-	 */
-	public String getText() {
-		return this.text;
-	}
-
-	/**
-	 * @param text
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	/**
-	 * @return url
-	 */
-	public URL getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setUrl(URL url) {
-		this.url = url;
-	}
 }

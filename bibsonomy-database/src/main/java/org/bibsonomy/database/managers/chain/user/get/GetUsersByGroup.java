@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,9 +52,8 @@ public class GetUsersByGroup extends UserChainElement {
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
 		final List<User> userList = new LinkedList<>();
-		Group group = this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session);
-		// return empty user list if organization is requested and found group is not an organization
-		if (GroupingEntity.ORGANIZATION.equals(param.getGrouping()) && !group.isOrganization()) return userList;
+		final Group group = this.groupDb.getGroup(param.getUserName(), param.getRequestedGroupName(), false, false, session);
+
 		for (final GroupMembership ms : group.getMemberships()) {
 			userList.add(ms.getUser());
 		}

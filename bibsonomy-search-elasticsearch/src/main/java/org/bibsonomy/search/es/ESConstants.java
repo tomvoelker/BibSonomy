@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -182,6 +185,8 @@ public final class ESConstants {
 		String FIELDS = "fields";
 		/** relation field */
 		String RELATION_FIELD = "relations";
+		/** type boolean */
+		String BOOLEAN_TYPE = "boolean";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -251,6 +256,8 @@ public final class ESConstants {
 		public static final String DESCRIPTION = "description";
 		/** Ids of the associated authors, editors, supervisors, etc */
 		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
+		/** the approved status (only for community posts/gold standards) */
+		String APPROVED = "approved";
 
 		public interface Resource {
 			/** the title of the resource */
@@ -274,6 +281,8 @@ public final class ESConstants {
 			String ALL_AUTHORS = "author";
 			/** field that contains all editors */
 			String ALL_EDITORS = "editor";
+			/** field that contains all person ids */
+			String ALL_PERSONS = "person";
 
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
@@ -343,6 +352,7 @@ public final class ESConstants {
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
 			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE, PROJECT, ABTEILUNG, ORCID);
+
 			/** the document */
 			interface Document {
 				String NAME = "name";

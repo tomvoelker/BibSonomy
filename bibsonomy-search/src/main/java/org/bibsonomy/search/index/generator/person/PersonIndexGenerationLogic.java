@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +33,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.search.index.database.person.PersonDatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 import java.util.List;
 

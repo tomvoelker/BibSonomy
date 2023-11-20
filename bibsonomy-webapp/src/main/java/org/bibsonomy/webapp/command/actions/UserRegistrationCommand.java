@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,8 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
@@ -36,10 +41,11 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author rja
  */
+@Getter
+@Setter
 public class UserRegistrationCommand extends BaseCommand implements Serializable, CaptchaCommand {
 	private static final long serialVersionUID = 1371638749968299277L;
-	
-	
+
 	/**
 	 * Holds the details of the user which wants to register (like name, email, password)
 	 */
@@ -67,20 +73,7 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	 */
 	private boolean acceptPrivacy;
 
-	/** 
-	 * @return The user which tries to register.
-	 */
-	public User getRegisterUser() {
-		return this.registerUser;
-	}
 
-	/**
-	 * @param registerUser - the user which tries to register.
-	 */
-	public void setRegisterUser(final User registerUser) {
-		this.registerUser = registerUser;
-	}
-	
 	/**
 	 * @return the captchaHTML
 	 */
@@ -127,34 +120,6 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	@Override
 	public void setRecaptcha_response_field(final String recaptchaResponseField) {
 		this.recaptcha_response_field = recaptchaResponseField;
-	}
-
-	/**
-	 * @return the passwordCheck
-	 */
-	public String getPasswordCheck() {
-		return this.passwordCheck;
-	}
-
-	/**
-	 * @param passwordCheck the passwordCheck to set
-	 */
-	public void setPasswordCheck(final String passwordCheck) {
-		this.passwordCheck = passwordCheck;
-	}
-	
-	/**
-	 * @return the acceptPrivacy
-	 */
-	public boolean isAcceptPrivacy() {
-		return this.acceptPrivacy;
-	}
-
-	/**
-	 * @param acceptPrivacy the acceptPrivacy to set
-	 */
-	public void setAcceptPrivacy(final boolean acceptPrivacy) {
-		this.acceptPrivacy = acceptPrivacy;
 	}
 
 }

@@ -95,12 +95,12 @@
 	</bean>
 
 	<bean id="communityIndexUpdateLogicPublication" class="org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic">
-		<constructor-arg ref="goldStandardPublicationClass" />
+		<constructor-arg ref="publicationClass" />
 		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
 	</bean>
 
 	<bean id="communityIndexUpdateLogicBookmark" class="org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic">
-		<constructor-arg ref="goldStandardBookmarkClass" />
+		<constructor-arg ref="bookmarkClass" />
 		<property name="sessionFactory" ref="communityPostUpdateSessionFactory" />
 	</bean>
 

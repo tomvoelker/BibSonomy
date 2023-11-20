@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +29,16 @@
  */
 package org.bibsonomy.model.sync;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 /**
  * @author wla
  */
+@Getter
+@Setter
 public abstract class SynchronizationResource {
 
 	/**
@@ -45,48 +53,6 @@ public abstract class SynchronizationResource {
 	 * @return true if resources are same
 	 */
 	public abstract boolean isSame(SynchronizationResource resource);
-
-	/**
-	 * @param createDate the create date and time of this resource to set
-	 */
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-	/**
-	 * @return the create date of this resource to set
-	 */
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	/**
-	 * @param changeDate the date and time of the last change of this resource to set
-	 */
-	public void setChangeDate(Date changeDate) {
-		this.changeDate = changeDate;
-	}
-
-	/**
-	 * @return date and time of the last change of this resource
-	 */
-	public Date getChangeDate() {
-		return changeDate;
-	}
-
-	/**
-	 * @param action the synchronization state to set
-	 */
-	public void setAction(SynchronizationAction action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the state 
-	 */
-	public SynchronizationAction getAction() {
-		return action;
-	}
 
 	@Override
 	public String toString() {

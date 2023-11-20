@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +31,9 @@ package org.bibsonomy.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -156,6 +161,14 @@ public class UrlUtilsTest {
 		assertEquals("test%20test", UrlUtils.encodePathSegment("test test"));
 		assertEquals("%c3%a4%c3%bc%c3%b6", UrlUtils.encodePathSegment("äüö"));
 		assertEquals("test+test", UrlUtils.encodePathSegment("test+test"));
+	}
+
+	@Test
+	public void testIsUrl() {
+		assertTrue(UrlUtils.isUrl("https://bibsonomy.org"));
+		assertTrue(UrlUtils.isUrl("https://www.bibsonomy.org"));
+		assertTrue(UrlUtils.isUrl("https://www.bibsonomy.org?test=parameter"));
+		assertFalse(UrlUtils.isUrl("bibsonomy"));
 	}
 
 }

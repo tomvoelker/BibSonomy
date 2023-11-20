@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.iwap;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,14 +40,34 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class IWAPonlineScraperTest {
+	String resultDirectory = "iwap/";
 
-	/**
-	 * starts URL test with id url_100
-	 */
+
 	@Test
 	public void url1TestRun(){
-		final String url = "http://jwh.iwaponline.com/content/1/3/101";
-		final String resultFile = "IWAPonlineScraperUnitURLTest.bib";
+		final String url = "https://iwaponline.com/jwh/article/1/3/101/1793/The-effect-of-container-biofilm-on-the";
+		final String resultFile = resultDirectory + "IWAPonlineScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, IWAPonlineScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://iwaponline.com/jwh/article/19/5/872/84208/Identifying-challenges-in-drinking-water-supplies";
+		final String resultFile = resultDirectory + "IWAPonlineScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, IWAPonlineScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://iwaponline.com/jwh/article/doi/10.2166/wh.2021.171/84531/Short-term-exposure-to-benzalkonium-chloride-in";
+		final String resultFile = resultDirectory + "IWAPonlineScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, IWAPonlineScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://iwaponline.com/jwh/article/doi/10.2166/wh.2021.140/84676/Determinants-of-hand-hygiene-practices-in-India";
+		final String resultFile = resultDirectory + "IWAPonlineScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, IWAPonlineScraper.class, resultFile);
 	}
 	

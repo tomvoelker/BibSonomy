@@ -1,0 +1,97 @@
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+          xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
+
+    <jsp:directive.attribute name="requestedName" type="java.lang.String" required="true" description="The requested name"/>
+    <jsp:directive.attribute name="entityType" type="java.lang.String" required="true" description="The requested entity type"/>
+
+    <jsp:directive.attribute name="headerMessage" type="java.lang.String" required="false" description="The header message"/>
+    <jsp:directive.attribute name="descriptionMessage" type="java.lang.String" required="false" description="The description message"/>
+
+    <jsp:directive.attribute name="filterOptions" fragment="true" required="false"/>
+
+    <div class="explore-content">
+        <div class="row">
+            <div class="col-md-12">
+                <h1><c:out value="${headerMessage}"/></h1>
+                <input type="hidden" id="requestedName" value="${requestedName}" />
+                <input type="hidden" id="entityType" value="${entityType}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p><c:out value="${descriptionMessage}"/></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        <parts:extendedSearch headerMessage="" searchPlaceholderKey="publications.search"
+                                              formAction="" formInputValue="${command.search}"
+                                              enableReset="${true}" alwaysShow="${true}"
+                                              toggleFiltersOption="${true}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="list-headline">
+                            <div class="btn-group dropdown-align-right all-resources-menu">
+                                <rc:actions resourceType="bibtex"
+                                            sortPage="pubdate"
+                                            sortPageOrder="desc"
+                                            entriesPerPage="20"
+                                            showBookmark="${false}"
+                                            showPublication="${true}"
+                                            showInboxActions="${false}"
+                                            isClipboard="${false}"
+                                            disableFiltering="${true}"
+                                            ignoreSortLinks="${true}"
+                                            overridePath="/group/${groupName}"/>
+                            </div>
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <parts:spinner/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="explorePublications"><!-- keep me --></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 sidebar">
+                <div class="explore-filter-header">
+                    <!--<h3><fmt:message key="explore.filter.header"/></h3>-->
+                    <a href="#" onclick="resetFilterSelection()"><fmt:message key="explore.filter.reset"/></a>
+                </div>
+
+                <jsp:invoke fragment="filterOptions"/>
+
+                <c:if test="${command.filterMap.containsKey('entrytype')}">
+                    <sidebar:searchFilterList filterField="entrytype"
+                                              filterEntries="${command.filterMap.get('entrytype')}"
+                                              headerMessageKey="explore.filter.entrytype.header"
+                                              headerMessageIcon="book" buttonClass="filter-entry-counter"/>
+                </c:if>
+                <c:if test="${command.filterMap.containsKey('year')}">
+                    <sidebar:searchFilterList filterField="year"
+                                              filterEntries="${command.filterMap.get('year')}"
+                                              headerMessageKey="explore.filter.pubyear.header"
+                                              headerMessageIcon="calendar-alt"
+                                              buttonClass="filter-entry-counter" showMore="${true}"/>
+                </c:if>
+            </div>
+        </div>
+    </div>
+</jsp:root>

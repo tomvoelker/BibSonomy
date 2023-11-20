@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +33,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.SyncService;
 
@@ -37,6 +42,8 @@ import org.bibsonomy.model.sync.SyncService;
 /**
  * @author wla
  */
+@Getter
+@Setter
 public class AjaxSynchronizationCommand extends AjaxCommand {
 
 	private URI serviceName;
@@ -44,59 +51,4 @@ public class AjaxSynchronizationCommand extends AjaxCommand {
 	private List<SyncService> syncClients;
 	private Date syncDate;
 
-	/**
-	 * @param serviceName the serviceName to set
-	 */
-	public void setServiceName(final URI serviceName) {
-		this.serviceName = serviceName;
-	}
-
-	/**
-	 * @return the serviceName
-	 */
-	public URI getServiceName() {
-		return serviceName;
-	}
-
-	/**
-	 * @param syncServer the syncServer to set
-	 */
-	public void setSyncServer(final List<SyncService> syncServer) {
-		this.syncServer = syncServer;
-	}
-
-	/**
-	 * @return the syncServer
-	 */
-	public List<SyncService> getSyncServer() {
-		return syncServer;
-	}
-
-	/**
-	 * @return the syncClients
-	 */
-	public List<SyncService> getSyncClients() {
-		return this.syncClients;
-	}
-
-	/**
-	 * @param syncClients the syncClients to set
-	 */
-	public void setSyncClients(final List<SyncService> syncClients) {
-		this.syncClients = syncClients;
-	}
-
-	/**
-	 * @param syncDate the syncDate to set
-	 */
-	public void setSyncDate(final Date syncDate) {
-		this.syncDate = syncDate;
-	}
-
-	/**
-	 * @return the syncDate
-	 */
-	public Date getSyncDate() {
-		return syncDate;
-	}
 }

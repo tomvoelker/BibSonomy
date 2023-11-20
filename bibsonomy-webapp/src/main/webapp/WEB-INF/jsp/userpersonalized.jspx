@@ -84,7 +84,9 @@
 							<user:username username="${command.requestedUser}" />
 						</fmt:param>
 					</fmt:message>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagSizeMode="home" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" suppressTitle="${true}"/>
+					<div class="sidebar_collapse_content">
+						<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagSizeMode="home" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" suppressTitle="${true}"/>
+					</div>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 			

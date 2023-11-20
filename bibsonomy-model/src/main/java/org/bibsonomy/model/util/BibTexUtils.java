@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,11 +58,13 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.tex.TexDecode;
@@ -260,13 +265,13 @@ public class BibTexUtils {
 	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
 	 */
 	public static final String PREPRINT = "preprint";
-	
+
 	/**
 	 * the common entrytypes of a BibTeX
 	 */
-	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, DATASET, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
-		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
-		PREPRINT, COLLECTION
+	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, COLLECTION, CONFERENCE, DATASET, ELECTRONIC,
+			INBOOK, INCOLLECTION, INPROCEEDINGS, MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS,
+			PREPRINT, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED
 	};
 
 	/*
@@ -867,7 +872,7 @@ public class BibTexUtils {
 	 */
 	public static void sortBibTexList(final List<? extends Post<? extends BibTex>> bibtexList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		if (present(bibtexList) && bibtexList.size() > 1) {
-			Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
+			bibtexList.sort(new BibTexPostComparator(sortKeys, sortOrders));
 		}
 	}
 
@@ -877,7 +882,7 @@ public class BibTexUtils {
 	 * @param bibtexList
 	 */
 	public static void removeDuplicates(final List<Post<BibTex>> bibtexList) {
-		final Set<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
+		final Set<Post<BibTex>> temp = new TreeSet<>(new BibTexPostInterhashComparator());
 		temp.addAll(bibtexList);
 		// FIXME: a bit cumbersome at this point - but we need to work on the bibtexList
 		bibtexList.clear();
@@ -1200,5 +1205,19 @@ public class BibTexUtils {
 		}
 		
 		return "";
+	}
+
+	public static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
+		if (!present(post)) {
+			return null;
+		}
+
+		final Post<BibTex> gold = new Post<>();
+
+		final GoldStandardPublication goldP = new GoldStandardPublication();
+		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
+		gold.setResource(goldP);
+
+		return gold;
 	}
 }

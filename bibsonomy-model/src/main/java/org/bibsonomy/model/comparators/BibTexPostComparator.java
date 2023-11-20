@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +29,13 @@
  */
 package org.bibsonomy.model.comparators;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -34,13 +44,6 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Comparator used to sort bibtex posts
@@ -293,21 +296,35 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		}
 	}
 
+	/**
+	 * Compares the publication date of the given BibTeXs.
+	 * First builds the publication dates in the format YYYYMMDD and then numerically compares them
+	 * Only compares month and day if both of the BibTeX entries contains them.
+	 *
+	 * @param bib1 first BibTeX
+	 * @param bib2 second BibTeX
+	 * @param order desc or asc sort order
+	 * @return an integer representing the sorted order between both publication dates.
+	 * @throws SortKeyIsEqualException
+	 */
 	private int comparePubDate(final BibTex bib1, final BibTex bib2, final SortOrder order) throws SortKeyIsEqualException {
-		String pubDate1 = bib1.getYear();
-		String pubDate2 = bib2.getYear();
+		StringBuilder sbPubDate1 = new StringBuilder(bib1.getYear());
+		StringBuilder sbPubDate2 = new StringBuilder(bib2.getYear());
 
 		// add months if present on both resources
 		if (present(bib1.getMonth()) && present(bib2.getMonth())) {
-			pubDate1 += BibTexUtils.getMonthAsNumber(bib1.getMonth());
-			pubDate2 += BibTexUtils.getMonthAsNumber(bib2.getMonth());
+			sbPubDate1.append(BibTexUtils.getMonthAsNumber(bib1.getMonth()));
+			sbPubDate2.append(BibTexUtils.getMonthAsNumber(bib2.getMonth()));
 
 			// try to add day, if month is set
 			if (present(bib1.getDay()) && present(bib2.getDay())) {
-				pubDate1 += bib1.getDay();
-				pubDate2 += bib2.getDay();
+				sbPubDate1.append(bib1.getDay());
+				sbPubDate2.append(bib2.getDay());
 			}
 		}
+
+		String pubDate1 = sbPubDate1.toString();
+		String pubDate2 = sbPubDate2.toString();
 		try {
 			return this.compare(Integer.parseInt(pubDate1), Integer.parseInt(pubDate2), order);
 		} catch (final NumberFormatException ex) {

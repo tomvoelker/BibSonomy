@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,8 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.LinkedList;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.TabsCommand;
@@ -37,6 +42,8 @@ import org.bibsonomy.webapp.command.TabsCommand;
  * 
  * @author Stefan Stützer
  */
+@Getter
+@Setter
 public class AdminViewCommand extends TabsCommand<User> {
 
 	/*
@@ -102,71 +109,14 @@ public class AdminViewCommand extends TabsCommand<User> {
 		infos = new LinkedList<String>();
 	}
 
-
-	public AdminSettingsCommand getSettingsCommand() {
-		return this.settingsCommand;
-	}
-
-	public void setSettingsCommand(AdminSettingsCommand settingsCommand) {
-		this.settingsCommand = settingsCommand;
-	}	
-
-	public AdminStatisticsCommand getStatisticsCommand() {
-		return this.statisticsCommand;
-	}
-
-	public void setStatisticsCommand(AdminStatisticsCommand statisticsCommand) {
-		this.statisticsCommand = statisticsCommand;
-	}
-
 	public void setClassifierSetting(final ClassifierSettings setting, final String value) {
 		settingsCommand.setAdminSetting(setting, value);
 	}
 
-	public Integer[] getInterval() {
-		return this.interval;
-	}
-
-	public void setInterval(final Integer[] interval) {
-		this.interval = interval;
-	}
-
 	public String getAclUserInfo() {
-
 		return this.aclUserInfo;
 	}
 
-	public void setAclUserInfo(String aclUserInfo) {
-		this.aclUserInfo = aclUserInfo;
-	}
-
-	public Integer getLimit() {
-		return this.limit;
-	}
-
-	public void setLimit(Integer limit) {
-		this.limit = limit;
-	}
-
-	public User getUser() {
-		return this.user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public String getAction() {
-		return this.action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	public LinkedList<String> getInfos() {
-		return this.infos;
-	}
 
 	public void addInfo(String info) {
 		this.infos.add(info);

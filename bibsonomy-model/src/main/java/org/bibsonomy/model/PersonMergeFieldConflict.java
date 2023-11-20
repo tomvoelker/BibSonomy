@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +29,16 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A PersonMergeFieldConflict contains the field that is raising the conflict and the values of the persons that might be the same
  *
  * @author jhi
  */
+@Getter
+@Setter
 public class PersonMergeFieldConflict {
 	
 	private String fieldName;
@@ -49,46 +57,5 @@ public class PersonMergeFieldConflict {
 		this.person1Value = person1Value;
 		this.person2Value = person2Value;
 	}
-	
-	/**
-	 * @return the fieldName
-	 */
-	public String getFieldName() {
-		return this.fieldName;
-	}
 
-	/**
-	 * @param fieldName the fieldName to set
-	 */
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
-	/**
-	 * @return the person1Value
-	 */
-	public String getPerson1Value() {
-		return this.person1Value;
-	}
-
-	/**
-	 * @param person1Value the person1Value to set
-	 */
-	public void setPerson1Value(String person1Value) {
-		this.person1Value = person1Value;
-	}
-
-	/**
-	 * @return the person2Value
-	 */
-	public String getPerson2Value() {
-		return this.person2Value;
-	}
-
-	/**
-	 * @param person2Value the person2Value to set
-	 */
-	public void setPerson2Value(String person2Value) {
-		this.person2Value = person2Value;
-	}
 }

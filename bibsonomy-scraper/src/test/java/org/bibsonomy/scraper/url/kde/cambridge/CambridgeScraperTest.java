@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.cambridge;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CambridgeScraperTest {
+	String resultDirectory = "cambridge/";
 
 	/**
 	 * starts URL test with id url_73
@@ -45,7 +49,7 @@ public class CambridgeScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "https://www.cambridge.org/core/journals/central-european-history/article/max-rubner-and-the-biopolitics-of-rational-nutrition/8A076B9FF653BF6A34C870B7718AFAD5";
-		final String resultFile = "CambridgeScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "CambridgeScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, CambridgeScraper.class, resultFile);
 	}
 	
@@ -55,7 +59,7 @@ public class CambridgeScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/separatedflow-model-for-collapsibletube-oscillations/F8B8F4ABDC08F5B156B6C574F9DF4C01";
-		final String resultFile = "CambridgeScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "CambridgeScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, CambridgeScraper.class, resultFile);
 	}
 }

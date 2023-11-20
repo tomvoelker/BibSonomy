@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,7 +67,6 @@ import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.PostQuery;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
-import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
@@ -277,11 +279,12 @@ public class RestLogic extends AbstractLogicInterface {
 		restQuery.setResourceType(query.getResourceClass());
 		restQuery.setTags(query.getTags());
 		restQuery.setSearch(query.getSearch());
-		restQuery.setSortCriteriums(query.getSortCriteria());
+		restQuery.setSortCriteria(query.getSortCriteria());
 		restQuery.setUserName(this.getAuthenticatedUser().getName());
+		restQuery.setSearchType(query.getScope());
 		return (List) execute(restQuery);
 	}
-
+	
 	@Override
 	public Tag getTagDetails(final String tagName) {
 		return execute(new GetTagDetailsQuery(tagName));
@@ -615,7 +618,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public void updatePerson(Person person, PersonUpdateOperation operation) {
+	public void updatePerson(Person person, PersonOperation operation) {
 		execute(new UpdatePersonQuery(person, operation));
 	}
 

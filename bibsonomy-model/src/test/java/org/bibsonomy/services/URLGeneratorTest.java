@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +33,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -41,8 +43,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.junit.Test;
-
-import java.awt.print.Book;
 
 /**
  * @author rja
@@ -415,8 +415,11 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
-		String expected = projectHome + "settings/group/franzosengruppe";
-		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
+		String expectedUrl = projectHome + "settings/group/franzosengruppe";
+		assertEquals(expectedUrl, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
+
+		String expectedUrlWithTab = projectHome + "settings/group/franzosengruppe?selTab=1";
+		assertEquals(expectedUrlWithTab, ug.getGroupSettingsUrlByGroupName("franzosengruppe", 1));
 	}
 
 	@Test
@@ -466,4 +469,30 @@ public class URLGeneratorTest {
 		assertEquals(projectHome + "help_en/Login#OpenId", ug.getHelpPage("Login#OpenId", "en"));
 	}
 
+	/**
+	 * tests {@link URLGenerator#getExploreUrlByGroup(String)}
+	 */
+	@Test
+	public void testGetExploreUrlByGroup() {
+		final String expected = projectHome + "explore/group/kde";
+		assertEquals(expected, ug.getExploreUrlByGroup("kde"));
+	}
+
+	/**
+	 * tests {@link URLGenerator#getCVUrlByGroup(String)}
+	 */
+	@Test
+	public void testGetCVUrlByGroup() {
+		final String expected = projectHome + "cv/group/kde";
+		assertEquals(expected, ug.getCVUrlByGroup("kde"));
+	}
+
+	/**
+	 * tests {@link URLGenerator#getCVUrlByUser(String)}
+	 */
+	@Test
+	public void testGetCVUrlByUser() {
+		final String expected = projectHome + "cv/user/jaeschke";
+		assertEquals(expected, ug.getCVUrlByUser("jaeschke"));
+	}
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,10 +29,13 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.JobResult;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -44,6 +50,8 @@ import org.bibsonomy.webapp.command.PostCommand;
  * @param <RESOURCE>
  *            The type of resource this command handles.
  */
+@Getter
+@Setter
 public class EditPostCommand<RESOURCE extends Resource> extends PostCommand implements GroupingCommand, CaptchaCommand {
 	/**
 	 * The tags of the copied post.
@@ -66,6 +74,10 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 * If the user wants to copy a post from another user, this field is used.
 	 * NOTE: the name must be "hash" since this was the case in the old system.
 	 * There might exist web pages which use parameter name!
+	 *
+	 * The intra hash of the post which should be copied. Must be used
+	 *  together with the name of the user.
+	 *
 	 */
 	private String hash;
 
@@ -89,7 +101,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private List<String> groups;
 
-	private List<String> relevantGroups;
+	private List<String> relevantForGroups = new ArrayList<>();
+
+	private List<String> sendToGroups = new ArrayList<>();
+
+	private String presetTagsForGroups;
 
 	private SortedSet<RecommendedTag> recommendedTags;
 
@@ -102,6 +118,9 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	/**
 	 * stores an id, e.g. for mapping recommendations to posts
+	 * the post id is used to uniquely identify a post until it is stored in the
+	 * database. The recommender service needs this to assign recommenders to
+	 * posting processes.
 	 */
 	private int postID;
 
@@ -132,53 +151,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private List<String> differentEntryKeys;
 
 	private User groupUser;
+	private List<Tag> presetTagsOfGroupUser;
 
 	private List<JobResult> jobResults;
 	private String redirectUrl;
 
-	/**
-	 * @return saveAndRate
-	 */
-	public String getSaveAndRate() {
-		return this.saveAndRate;
-	}
-
-	/**
-	 * @param saveAndRate
-	 */
-	public void setSaveAndRate(final String saveAndRate) {
-		this.saveAndRate = saveAndRate;
-	}
-
-	/**
-	 * @return the post
-	 */
-	public Post<RESOURCE> getPost() {
-		return this.post;
-	}
-
-	/**
-	 * @param post
-	 *            the post to set
-	 */
-	public void setPost(final Post<RESOURCE> post) {
-		this.post = post;
-	}
-
-	/**
-	 * @return the tags
-	 */
-	public String getTags() {
-		return this.tags;
-	}
-
-	/**
-	 * @param tags
-	 *            the tags to set
-	 */
-	public void setTags(final String tags) {
-		this.tags = tags;
-	}
 
 	/**
 	 * @return the groups
@@ -198,51 +175,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	}
 
 	/**
-	 * @return the relevantGroups
-	 */
-	public List<String> getRelevantGroups() {
-		return this.relevantGroups;
-	}
-
-	/**
-	 * @param relevantGroups
-	 *            the relevantGroups to set
-	 */
-	public void setRelevantGroups(final List<String> relevantGroups) {
-		this.relevantGroups = relevantGroups;
-	}
-
-	/**
-	 * @return the recommendedTags
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags() {
-		return this.recommendedTags;
-	}
-
-	/**
-	 * @param recommendedTags
-	 *            the recommendedTags to set
-	 */
-	public void setRecommendedTags(final SortedSet<RecommendedTag> recommendedTags) {
-		this.recommendedTags = recommendedTags;
-	}
-
-	/**
-	 * @return the relevantTagSets
-	 */
-	public Map<String, Map<String, List<String>>> getRelevantTagSets() {
-		return this.relevantTagSets;
-	}
-
-	/**
-	 * @param relevantTagSets
-	 *            the relevantTagSets to set
-	 */
-	public void setRelevantTagSets(final Map<String, Map<String, List<String>>> relevantTagSets) {
-		this.relevantTagSets = relevantTagSets;
-	}
-
-	/**
 	 * Sets the tags from the copied post. Needed for the (old) "copy" links.
 	 *
 	 * @param tags
@@ -251,21 +183,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		for (final String tagname : tags.split("\\s")) {
 			this.copytags.add(new Tag(tagname));
 		}
-	}
-
-	/**
-	 * @return the copytags
-	 */
-	public List<Tag> getCopytags() {
-		return this.copytags;
-	}
-
-	/**
-	 * @param copytags
-	 *            the copytags to set
-	 */
-	public void setCopytags(final List<Tag> copytags) {
-		this.copytags = copytags;
 	}
 
 	/**
@@ -283,132 +200,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	@Override
 	public void setAbstractGrouping(final String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
-	}
-
-	/**
-	 * @return the abstractGrouping
-	 */
-	public String getFriendsOrGroups() {
-		return friendsOrGroups;
-	}
-
-	/**
-	 * @param friendsOrGroups
-	 */
-	public void setFriendsOrGroups(String friendsOrGroups) {
-		this.friendsOrGroups=friendsOrGroups;
-	}
-	
-	/**
-	 * @return the diffPost
-	 */
-	public Post<RESOURCE> getDiffPost() {
-		return this.diffPost;
-	}
-
-	/**
-	 * @param diffPost
-	 *            the diffPost to set
-	 */
-	public void setDiffPost(final Post<RESOURCE> diffPost) {
-		this.diffPost = diffPost;
-	}
-
-	/**
-	 * @return the intraHashToUpdate
-	 */
-	public String getIntraHashToUpdate() {
-		return this.intraHashToUpdate;
-	}
-
-	/**
-	 * @param intraHashToUpdate
-	 *            the intraHashToUpdate to set
-	 */
-	public void setIntraHashToUpdate(final String intraHashToUpdate) {
-		this.intraHashToUpdate = intraHashToUpdate;
-	}
-
-	/**
-	 * @return the acceptComma
-	 */
-	public boolean isAcceptComma() {
-		return this.acceptComma;
-	}
-
-	/**
-	 * @param acceptComma
-	 *            the acceptComma to set
-	 */
-	public void setAcceptComma(final boolean acceptComma) {
-		this.acceptComma = acceptComma;
-	}
-
-	/**
-	 * @return the containsComma
-	 */
-	public boolean getContainsComma() {
-		return this.containsComma;
-	}
-
-	/**
-	 * @param containsComma
-	 *            the containsComma to set
-	 */
-	public void setContainsComma(final boolean containsComma) {
-		this.containsComma = containsComma;
-	}
-
-	/**
-	 * The post id is used to uniquely identify a post until it is stored in the
-	 * database. The recommender service needs this to assign recommenders to
-	 * posting processes.
-	 *
-	 * @param postID
-	 */
-	public void setPostID(final int postID) {
-		this.postID = postID;
-	}
-
-	/**
-	 * @see #setPostID(int)
-	 * @return the postID used by the recommenders
-	 */
-	public int getPostID() {
-		return this.postID;
-	}
-
-	/**
-	 * @return The intra hash of the post which should be copied. Must be used
-	 *         together with the name of the user.
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * Sets the intra hash of the post which should be copied. Must be used
-	 * together with the name of the user.
-	 *
-	 * @param hash
-	 */
-	public void setHash(final String hash) {
-		this.hash = hash;
-	}
-
-	/**
-	 * @return The name of the user whose post should be copied.
-	 */
-	public String getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user
-	 *            The name of the user whose post should be copied.
-	 */
-	public void setUser(final String user) {
-		this.user = user;
 	}
 
 	/**
@@ -462,116 +253,4 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 		this.captchaHTML = captchaHTML;
 	}
 
-	/**
-	 * @return the editBeforeSaving
-	 */
-	public boolean isEditBeforeSaving() {
-		return this.editBeforeSaving;
-	}
-
-	/**
-	 * @param editBeforeSaving
-	 *            the editBeforeSaving to set
-	 */
-	public void setEditBeforeSaving(final boolean editBeforeSaving) {
-		this.editBeforeSaving = editBeforeSaving;
-	}
-
-	/**
-	 * @param fileName
-	 *            The names of the documents uploaded during editing a post.
-	 */
-	public void setFileName(final List<String> fileName) {
-		this.fileName = fileName;
-	}
-
-	/**
-	 * @return the fileName
-	 */
-	public List<String> getFileName() {
-		return this.fileName;
-	}
-
-	/**
-	 * @return the differentEntryKeys
-	 */
-	public List<String> getDifferentEntryKeys() {
-		return this.differentEntryKeys;
-	}
-
-	/**
-	 * @param differentEntryKeys the differentEntryKeys to set
-	 */
-	public void setDifferentEntryKeys(final List<String> differentEntryKeys) {
-		this.differentEntryKeys = differentEntryKeys;
-	}
-
-	/**
-	 * @return the compareVersion
-	 */
-	public int getCompareVersion() {
-		return this.compareVersion;
-	}
-
-	/**
-	 * @param compareVersion the compareVersion to set
-	 */
-	public void setCompareVersion(final int compareVersion) {
-		this.compareVersion = compareVersion;
-	}
-	/**
-	 * @return the approved
-	 */
-	public boolean isApproved() {
-		return this.approved;
-	}
-
-	/**
-	 * @param approved the approved to set
-	 */
-	public void setApproved(final boolean approved) {
-		this.approved = approved;
-	}
-
-	/**
-	 * @return the groupUser
-	 */
-	public User getGroupUser() {
-		return this.groupUser;
-	}
-
-	/**
-	 * @param groupUser the groupUser to set
-	 */
-	public void setGroupUser(final User groupUser) {
-		this.groupUser = groupUser;
-	}
-
-	/**
-	 * @return
-	 */
-	public List<JobResult> getJobResults() {
-		return jobResults;
-	}
-
-	/**
-	 * @param jobResults
-	 */
-	public void setJobResults(List<JobResult> jobResults) {
-		this.jobResults = jobResults;
-	}
-
-	/**
-	 * @return the redirectUrl
-	 */
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	/**
-	 * @param redirectUrl the redirectUrl to set
-	 */
-	public void setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
-	}
 }

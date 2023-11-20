@@ -27,4 +27,3 @@
 	<sqlMap resource="generation/communitypost/CommunityPostGeneration.xml" />
 
 </sqlMapConfig>
-

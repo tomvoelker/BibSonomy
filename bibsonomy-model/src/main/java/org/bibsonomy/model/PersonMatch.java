@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,22 +29,22 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
  *
  * @author jhi
  */
+@Getter
+@Setter
 public class PersonMatch implements Serializable {
 	private static final long serialVersionUID = -470932185819510145L;
-
-	private static final Log log = LogFactory.getLog(PersonMatch.class);
 
 	public static final int MAX_NUMBER_OF_DENIES = 5;
 	
@@ -53,66 +56,6 @@ public class PersonMatch implements Serializable {
 	private List<Post> person1Posts;
 	private List<Post> person2Posts;
 	
-	/**
-	 * @return the matchID
-	 */
-	public int getMatchID() {
-		return this.matchID;
-	}
-	/**
-	 * @param matchID the matchID to set
-	 */
-	public void setMatchID(int matchID) {
-		this.matchID = matchID;
-	}
-	/**
-	 * @return the person1
-	 */
-	public Person getPerson1() {
-		return this.person1;
-	}
-	/**
-	 * @param person1 the person1 to set
-	 */
-	public void setPerson1(Person person1) {
-		this.person1 = person1;
-	}
-	/**
-	 * @return the person2
-	 */
-	public Person getPerson2() {
-		return this.person2;
-	}
-	/**
-	 * @param person2 the person2 to set
-	 */
-	public void setPerson2(Person person2) {
-		this.person2 = person2;
-	}
-	/**
-	 * @return the deleted
-	 */
-	public int getState() {
-		return this.state;
-	}
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(int state) {
-		this.state = state;
-	}
-	/**
-	 * @return the userDenies
-	 */
-	public List<String> getUserDenies() {
-		return this.userDenies;
-	}
-	/**
-	 * @param userDenies the userDenies to set
-	 */
-	public void setUserDenies(List<String> userDenies) {
-		this.userDenies = userDenies;
-	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -126,33 +69,6 @@ public class PersonMatch implements Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(person1, person2);
-	}
-
-	/**
-	 * @return the person1Posts
-	 */
-	public List<Post> getPerson1Posts() {
-		return this.person1Posts;
-	}
-
-	/**
-	 * @param person1Posts the person1Posts to set
-	 */
-	public void setPerson1Posts(List<Post> person1Posts) {
-		this.person1Posts = person1Posts;
-	}
-	/**
-	 * @return the person2Posts
-	 */
-	public List<Post> getPerson2Posts() {
-		return this.person2Posts;
-	}
-
-	/**
-	 * @param person2Posts the person2Posts to set
-	 */
-	public void setPerson2Posts(List<Post> person2Posts) {
-		this.person2Posts = person2Posts;
 	}
 
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,6 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -43,6 +48,8 @@ import org.bibsonomy.model.user.settings.LayoutSettings;
  * Holds settings for a user.
  * 
  */
+@Getter
+@Setter
 public class UserSettings implements Serializable {
 	private static final long serialVersionUID = 501200873739971813L;
 
@@ -141,68 +148,18 @@ public class UserSettings implements Serializable {
 	 * User wants maxCount (true) or maxFreq (false)
 	 */
 	private boolean isMaxCount = true;
-	
-
-	/**
-	 * @return tagboxStyle
-	 */
-	public int getTagboxStyle() {
-		return this.tagboxStyle;
-	}
-
-	/**
-	 * @param tagboxStyle
-	 */
-	public void setTagboxStyle(final int tagboxStyle) {
-		this.tagboxStyle = tagboxStyle;
-	}
-
-	/**
-	 * @return tagboxSort
-	 */
-	public int getTagboxSort() {
-		return this.tagboxSort;
-	}
-
-	/**
-	 * @param tagboxSort
-	 */
-	public void setTagboxSort(final int tagboxSort) {
-		this.tagboxSort = tagboxSort;
-	}
-
-	/**
-	 * @return tagboxMinfreq
-	 */
-	public int getTagboxMinfreq() {
-		return this.tagboxMinfreq;
-	}
-
-	/**
-	 * @param tagboxMinfreq
-	 */
-	public void setTagboxMinfreq(final int tagboxMinfreq) {
-		this.tagboxMinfreq = tagboxMinfreq;
-	}
-
-	/**
-	 * @param tagboxMaxCount
-	 */
-	public void setTagboxMaxCount(final int tagboxMaxCount) {
-		this.tagboxMaxCount = tagboxMaxCount;
-	}
-	
-	/**
-	 * @return tagboxMaxCount
-	 */
-	public int getTagboxMaxCount() {
-		return tagboxMaxCount;
-	}
 
 	/**
 	 * @return isMaxCount
 	 */
 	public boolean getIsMaxCount() {
+		return isMaxCount;
+	}
+
+	/**
+	 * @return isMaxCount
+	 */
+	public boolean isMaxCount() {
 		return isMaxCount;
 	}
 
@@ -214,188 +171,10 @@ public class UserSettings implements Serializable {
 	}
 
 	/**
-	 * @return tagboxTooltip
+	 * @param isMaxCount
 	 */
-	public int getTagboxTooltip() {
-		return this.tagboxTooltip;
-	}
-
-	/**
-	 * @param tagboxTooltip
-	 */
-	public void setTagboxTooltip(final int tagboxTooltip) {
-		this.tagboxTooltip = tagboxTooltip;
-	}
-
-	/**
-	 * @return listItemcount
-	 */
-	public int getListItemcount() {
-		return this.listItemcount;
-	}
-
-	/**
-	 * @param listItemcount
-	 */
-	public void setListItemcount(final int listItemcount) {
-		this.listItemcount = listItemcount;
-	}
-
-	/**
-	 * @return the default language
-	 */
-	public String getDefaultLanguage() {
-		return this.defaultLanguage;
-	}
-
-	/**
-	 * @param defaultLanguage the default language
-	 */
-	public void setDefaultLanguage(final String defaultLanguage) {
-		this.defaultLanguage = defaultLanguage;
-	}
-
-	/**
-	 * @return style for person's page posts
-	 */
-	public PersonPostsStyle getPersonPostsStyle() {
-		return personPostsStyle;
-	}
-
-	/**
-	 * @param personPostsStyle style for person's page posts
-	 */
-	public void setPersonPostsStyle(PersonPostsStyle personPostsStyle) {
-		this.personPostsStyle = personPostsStyle;
-	}
-
-	/**
-	 * @return layout for person's page posts
-	 */
-	public String getPersonPostsLayout() {
-		return personPostsLayout;
-	}
-
-
-	/**
-	 * @param personPostsLayout layout for person's page posts
-	 */
-	public void setPersonPostsLayout(String personPostsLayout) {
-		this.personPostsLayout = personPostsLayout;
-	}
-
-	/**
-	 * @param logLevel the logLevel to set
-	 */
-	public void setLogLevel(final int logLevel) {
-		this.logLevel = logLevel;
-	}
-	
-	/**
-	 * @return the logLevel
-	 */
-	public int getLogLevel() {
-		return this.logLevel;
-	}
-
-	/**
-	 * gets currents confirmation status
-	 * @return boolean 
-	 */
-	public boolean isConfirmDelete() {
-		return this.confirmDelete;
-	}
-
-	/**
-	 * sets the current confirmations status
-	 * @param confirmDelete
-	 */
-	public void setConfirmDelete(final boolean confirmDelete) {
-		this.confirmDelete = confirmDelete;
-	}	
-	
-	/**
-	 * retrieves the current confirmation status
-	 * @return boolean
-	 */
-	public boolean getConfirmDelete() {
-		return this.confirmDelete;
-	}
-
-	/**
-	 * @param profilePrivlevel the profilePrivlevel to set
-	 */
-	public void setProfilePrivlevel(final ProfilePrivlevel profilePrivlevel) {
-		this.profilePrivlevel = profilePrivlevel;
-	}
-
-	/**
-	 * @return the profilePrivlevel
-	 */
-	public ProfilePrivlevel getProfilePrivlevel() {
-		return profilePrivlevel;
-	}
-	/**
-	 * @return the showBookmark
-	 */
-	public boolean isShowBookmark() {
-		return this.showBookmark;
-	}
-
-	/**
-	 * @param showBookmark the showBookmark to set
-	 */
-	public void setShowBookmark(final boolean showBookmark) {
-		this.showBookmark = showBookmark;
-	}
-
-	/**
-	 * @return the showPublication
-	 */
-	public boolean isShowBibtex() {
-		return this.showBibtex;
-	}
-
-	/**
-	 * @param showPublication the showPublication to set
-	 */
-	public void setShowBibtex(final boolean showPublication) {
-		this.showBibtex = showPublication;
-	}
-
-	/**
-	 * @return the timeZone
-	 */
-	public TimeZone getTimeZone() {
-		return this.timeZone;
-	}
-
-	/**
-	 * @return the layoutSettings
-	 */
-	public LayoutSettings getLayoutSettings() {
-		return this.layoutSettings;
-	}
-
-	/**
-	 * @param layoutSettings the layoutSettings to set
-	 */
-	public void setLayoutSettings(final LayoutSettings layoutSettings) {
-		this.layoutSettings = layoutSettings;
-	}
-
-	/**
-	 * @return the favourite_layouts
-	 */
-	public List<FavouriteLayout> getFavouriteLayouts() {
-		return this.favouriteLayouts;
-	}
-
-	/**
-	 * @param favouriteLayouts the favourite_layouts to set
-	 */
-	public void setFavouriteLayouts(final List<FavouriteLayout> favouriteLayouts) {
-		this.favouriteLayouts = favouriteLayouts;
+	public void setMaxCount(final boolean isMaxCount) {
+		this.isMaxCount = isMaxCount;
 	}
 
 }

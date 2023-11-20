@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,8 @@ package org.bibsonomy.webapp.command;
 
 import java.net.URL;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
@@ -40,13 +45,16 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  *
  * @author niebler
  */
+@Setter
+@Getter
 public class GroupSettingsPageCommand extends TabsCommand<Object> {
 
 	// tabs
-	public final static int GROUP_SETTINGS = 0;
+	public final static int GROUP_SETTINGS_IDX = 0;
 	public final static int MEMBER_LIST_IDX = 1;
-	public final static int DELETE_GROUP = 3;
-	public final static int CV_IDX = 2;
+	public final static int TAG_LIST_IDX = 2;
+	public final static int CV_IDX = 3;
+	public final static int DELETE_GROUP_IDX = 4;
 
 	// general attributes
 	private Group group;
@@ -72,7 +80,11 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// TODO: boolean type
 	private int sharedDocuments;
 	private boolean allowJoin;
-	
+
+	// preset tags
+	private String presetTagName;
+	private String presetTagDescription;
+
 	// specific settings for the group user
 	private CommonsMultipartFile file;
 
@@ -108,211 +120,4 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 		this.setSelTab(null);
 	}
 
-	public boolean isUserSharedDocuments() {
-		return userSharedDocuments;
-	}
-
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
-	}
-
-	public GroupRole getGroupRole() {
-		return groupRole;
-	}
-
-	public void setGroupRole(GroupRole groupRole) {
-		this.groupRole = groupRole;
-	}
-
-	public Group getGroup() {
-		return group;
-	}
-
-	public void setGroup(Group group) {
-		this.group = group;
-	}
-
-	public User getLoggedinUser() {
-		return loggedinUser;
-	}
-
-	public void setLoggedinUser(User loggedinUser) {
-		this.loggedinUser = loggedinUser;
-	}
-
-	public String getRequestedGroup() {
-		return requestedGroup;
-	}
-
-	public void setRequestedGroup(String requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
-
-	public int getPrivlevel() {
-		return privlevel;
-	}
-
-	public void setPrivlevel(int privlevel) {
-		this.privlevel = privlevel;
-	}
-
-	public int getSharedDocuments() {
-		return sharedDocuments;
-	}
-
-	public void setSharedDocuments(int sharedDocuments) {
-		this.sharedDocuments = sharedDocuments;
-	}
-	
-	public boolean getAllowJoin() {
-		return this.allowJoin;
-	}
-
-	public void setAllowJoin(boolean allowJoin) {
-		this.allowJoin = allowJoin;
-	}
-
-	public GroupMembership getGroupMembership() {
-		return groupMembership;
-	}
-
-	public void setGroupMembership(GroupMembership groupMembership) {
-		this.groupMembership = groupMembership;
-	}
-
-	public String getWikiText() {
-		return wikiText;
-	}
-
-	public void setWikiText(String wikiText) {
-		this.wikiText = wikiText;
-	}
-
-	public String getRenderedWikiText() {
-		return renderedWikiText;
-	}
-
-	public void setRenderedWikiText(String renderedWikiText) {
-		this.renderedWikiText = renderedWikiText;
-	}
-
-	public CommonsMultipartFile getFile() {
-		return file;
-	}
-
-	public void setFile(CommonsMultipartFile file) {
-		this.file = file;
-	}
-
-	public GroupUpdateOperation getOperation() {
-		return operation;
-	}
-
-	public void setOperation(GroupUpdateOperation operation) {
-		this.operation = operation;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public String getRealname() {
-		return realname;
-	}
-
-	public void setRealname(String realname) {
-		this.realname = realname;
-	}
-
-	public URL getHomepage() {
-		return homepage;
-	}
-
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getGroupname() {
-		return groupname;
-	}
-
-	public void setGroupname(String groupname) {
-		this.groupname = groupname;
-	}
-	
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
-
-	public void setErrorMessage(String errormessage) {
-		this.errorMessage = errormessage;
-	}
-	
-	public String getDelete() {
-		return this.delete;
-	}
-
-	public void setDelete(String delete) {
-		this.delete = delete;
-	}
-
-	/**
-	 * Returns picture file to upload.
-	 * @return picture file as MultipartFile
-	 */
-	public MultipartFile getPictureFile() {
-		return this.pictureFile;
-	}
-
-	/**
-	 * Sets picture file to upload.
-	 * @param pictureFile : picture file as MultipartFile
-	 */
-	public void setPictureFile(MultipartFile pictureFile) {
-		this.pictureFile = pictureFile;
-	}
-
-	/**
-	 * Checks whether a prior uploaded picture file shall be deleted.
-	 * @return flag as boolean
-	 */
-	public boolean isDeletePicture() {
-		return this.deletePicture;
-	}
-	
-	/**
-	 * Checks whether a prior uploaded picture file shall be deleted.
-	 * @return flag as boolean
-	 */
-	public boolean getDeletePicture() {
-		return this.deletePicture;
-	}
-
-	/**
-	 * Sets whether a prior uploaded picture file shall be deleted.
-	 * @param deletePicture flag as boolean
-	 */
-	public void setDeletePicture(boolean deletePicture) {
-		this.deletePicture = deletePicture;
-	}
 }

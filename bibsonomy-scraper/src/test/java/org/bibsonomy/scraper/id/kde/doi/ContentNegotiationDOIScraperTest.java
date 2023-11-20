@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +34,7 @@ import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import java.io.IOException;
 
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,6 +43,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ContentNegotiationDOIScraperTest {
+	String resultDirectory = "cndoi/";
 	
 	/**
 	 * tests the function of the ContentNegotiationDOIScraper for DOI URLs
@@ -49,7 +53,7 @@ public class ContentNegotiationDOIScraperTest {
 	@Test
 	public void testCNDOIScraper1() throws ScrapingException, IOException {
 		final String url = "http://dx.doi.org/10.1108/07378831211213265";
-		final String resultFile = "ContentNegotiationDOIScraper1.bib";
+		final String resultFile = resultDirectory + "ContentNegotiationDOIScraper1.bib";
 		assertScraperResult(url, null, ContentNegotiationDOIScraper.class, resultFile);
 	}
 
@@ -61,7 +65,7 @@ public class ContentNegotiationDOIScraperTest {
 	@Test
 	public void testCNDOIScraper2() throws ScrapingException, IOException {
 		final String url = "http://www.example.com";
-		final String resultFile = "ContentNegotiationDOIScraper1.bib";
+		final String resultFile = resultDirectory + "ContentNegotiationDOIScraper1.bib";
 		final String selection = "DOI:    10.1108/07378831211213265";
 		assertScraperResult(url, selection, ContentNegotiationDOIScraper.class, resultFile);
 	}

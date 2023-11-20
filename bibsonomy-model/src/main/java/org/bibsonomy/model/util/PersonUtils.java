@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,15 +31,19 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.util.StringUtils;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.extra.AdditionalKey;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * util methods for {@link Person}
@@ -44,7 +51,6 @@ import java.util.List;
  * @author dzo
  */
 public final class PersonUtils {
-	private PersonUtils() {}
 	
 	/**
 	 * generates the base of person identifier
@@ -210,5 +216,110 @@ public final class PersonUtils {
 			return PersonResourceRelationType.EDITOR;
 		}
 		return null;
+	}
+
+	/**
+	 * Get the person's additional key specified by the key name
+	 *
+	 * @param person	the person to get additional key of
+	 * @param keyName	the key name
+	 * @return the additional key as an object, null if not found
+	 */
+	public static AdditionalKey getAdditionalKey(final Person person, final String keyName) {
+		for (AdditionalKey additionalKey : person.getAdditionalKeys()) {
+			if (additionalKey.getKeyName().equalsIgnoreCase(keyName)) {
+				return additionalKey;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Add a new additional key to the person with key name and value
+	 *
+	 * @param person	the person add a key to
+	 * @param keyName	the key name
+	 * @param keyValue	the key value
+	 * @return true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public static boolean addAdditionalKey(final Person person, final String keyName, final String keyValue) {
+		AdditionalKey additionalKey = new AdditionalKey(keyName, keyValue);
+		return addAdditionalKey(person, additionalKey);
+	}
+
+	/**
+	 * Add a new additional key to the person with an additional key object
+	 * @param person			the person to add a key to
+	 * @param additionalKey		the additional key object
+	 * @return true, if added or exact same key was already present, false if key couldn't be added
+	 */
+	public static boolean addAdditionalKey(final Person person, final AdditionalKey additionalKey) {
+		AdditionalKey foundKey = getAdditionalKey(person, additionalKey.getKeyName());
+
+		if (present(foundKey)) {
+			// Return true, if exact same key was already present
+			// Return false, if key name with different value was found
+			return foundKey.getKeyValue().equals(additionalKey.getKeyName());
+		} else {
+			// Adding key
+			person.getAdditionalKeys().add(additionalKey);
+			return true;
+		}
+	}
+
+	/**
+	 * Remove an additional key from the person specified by the key name
+	 *
+	 * @param person	the person to remove a key from
+	 * @param keyName	the key name
+	 * @return true, if removing it was successful or key wasn't present. false otherwise
+	 */
+	public static boolean removeAdditionalKey(Person person, final String keyName) {
+		AdditionalKey foundKey = getAdditionalKey(person, keyName);
+		if (present(foundKey)) {
+			person.getAdditionalKeys().remove(foundKey);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Update an additional key of the person specified by the key name
+	 *
+	 * @param person	the person to update
+	 * @param keyName	the key name
+	 * @param keyValue	the new key value
+	 * @return			true, if additional key was updated. False, if key wasn't found to update
+	 */
+	public static boolean updateAdditionalKey(final Person person, final String keyName, final String keyValue) {
+		AdditionalKey foundKey = getAdditionalKey(person, keyName);
+		if (present(foundKey)) {
+			foundKey.setKeyValue(keyValue);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Converts a list of goldstandard publication posts to their resource person relation equivalant.
+	 *
+	 * @param posts		the list of goldstandard publication posts
+	 * @param person	the person related to all the posts
+	 * @return			the list of resource person relations
+	 */
+	public static List<ResourcePersonRelation> convertToRelations(final List<Post<GoldStandardPublication>> posts, final Person person) {
+		List<ResourcePersonRelation> relations = new ArrayList<>();
+
+		for (Post<GoldStandardPublication> post : posts) {
+			for (ResourcePersonRelation relation : post.getResourcePersonRelations()) {
+				if (relation.getPerson().getPersonId().equals(person.getPersonId())) {
+					relation.setPost(post);
+					relations.add(relation);
+					break;
+				}
+			}
+		}
+
+		return relations;
 	}
 }

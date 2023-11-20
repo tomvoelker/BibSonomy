@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,11 +31,14 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.Privlevel;
@@ -41,6 +47,8 @@ import org.bibsonomy.model.cris.Linkable;
 /**
  * A group groups users.
  */
+@Getter
+@Setter
 public class Group implements Linkable, Serializable {
 	private static final long serialVersionUID = -4364391580208670647L;
 
@@ -100,7 +108,13 @@ public class Group implements Linkable, Serializable {
 	 * to his post. A tagset has the following form: Map<SetName,Tags>.
 	 */
 	private List<TagSet> tagSets;
-	
+
+	/**
+	 * List of preset tags to regulate posts,
+	 * that have been added to the group via the ForGroup function when posting or editing a post.
+	 */
+	private List<Tag> presetTags;
+
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
 
@@ -119,7 +133,7 @@ public class Group implements Linkable, Serializable {
 	/** a list of all subgroups. */
 	private List<Group> subgroups;
 
-	/** flag that signals if this group is an organization. */
+	/** flag that signals if this group is an organization. <code>true</code> iff this group is an organization */
 	private boolean organization;
 
 	/** the id of the group in an external source (e.g. the database of the university) */
@@ -129,7 +143,7 @@ public class Group implements Linkable, Serializable {
 	 * default constructor
 	 */
 	public Group() {
-		// noop
+		//noop
 	}
 
 	/**
@@ -165,66 +179,6 @@ public class Group implements Linkable, Serializable {
 	}
 
 	/**
-	 * Gets this groups parent group if it is set.
-	 *
-	 * @return the parent group if set, <code>null</code> otherwise.
-	 */
-	public Group getParent() {
-		return parent;
-	}
-
-	/**
-	 * Sets this groups parent group.
-	 *
-	 * @param parent the parent group.
-	 */
-	public void setParent(Group parent) {
-		this.parent = parent;
-	}
-
-	/**
-	 * @return groupId
-	 */
-	public int getGroupId() {
-		return this.groupId;
-	}
-
-	/**
-	 * @param groupId
-	 */
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
-
-	/**
-	 * @return description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @param description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @return name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @param name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return posts
 	 */
 	public List<Post<? extends Resource>> getPosts() {
@@ -234,178 +188,12 @@ public class Group implements Linkable, Serializable {
 		return this.posts;
 	}
 
-	/**
-	 * @param posts
-	 */
-	public void setPosts(List<Post<? extends Resource>> posts) {
-		this.posts = posts;
-	}
-
-	/**
-	 * @return privlevel
-	 */
-	public Privlevel getPrivlevel() {
-		return this.privlevel;
-	}
-
-	/**
-	 * @param privlevel
-	 */
-	public void setPrivlevel(Privlevel privlevel) {
-		this.privlevel = privlevel;
-	}
-
-	/**
-	 * If <code>true</code>, other group members can access documents
-	 * attached to BibTeX posts, if the post is viewable for the group or
-	 * public.
-	 * 
-	 * @return The truth value regarding shared documents for this group.
-	 */
-	public boolean isSharedDocuments() {
-		return this.sharedDocuments;
-	}
-
-	/**
-	 * @param sharedDocuments
-	 */
-	public void setSharedDocuments(boolean sharedDocuments) {
-		this.sharedDocuments = sharedDocuments;
-	}
-	
-	/**
-	 * If <code>true</code>, other users can send join requests to the group
-	 * 
-	 * @return The truth value regarding the permission to receive join requests
-	 */
-	public boolean isAllowJoin() {
-		return this.allowJoin;
-	}
-
-	/**
-	 * @param allowJoin
-	 */
-	public void setAllowJoin(boolean allowJoin) {
-		this.allowJoin = allowJoin;
-	}
-
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof Group)) {
 			return false;
 		}
 		return equals((Group) obj);
-	}
-	
-	/**
-	 * @return The tag sets associated with this group. See {@link #setTagSets(List)}.
-	 */
-	public List<TagSet> getTagSets() {
-		return this.tagSets;
-	}
-
-	/** Sets the tag sets for this group.
-	 * Tag sets allow group admins to specify pre-defined tags which
-	 * the users can/should use when marking a post as "relevant for" this group. 
-	 * 
-	 * @param tagSets
-	 */
-	public void setTagSets(List<TagSet> tagSets) {
-		this.tagSets = tagSets;
-	}
-
-	/** Get the real (long) name of this group.
-	 * 
-	 * @return The real (long) name of this group.
-	 */
-	public String getRealname() {
-		return this.realname;
-	}
-
-	/** Set the real (long) name of this group.
-	 * @param realname
-	 */
-	public void setRealname(String realname) {
-		this.realname = realname;
-	}
-
-	/**
-	 * @return The homepage of this group
-	 */
-	public URL getHomepage() {
-		return this.homepage;
-	}
-
-	/** Set the homepage of this group.
-	 * @param homepage
-	 */
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
-	}
-
-	/**
-	 * @return the publicationReportingSettings
-	 */
-	public GroupPublicationReportingSettings getPublicationReportingSettings() {
-		return this.publicationReportingSettings;
-	}
-
-	/**
-	 * @param publicationReportingSettings the publicationReportingSettings to set
-	 */
-	public void setPublicationReportingSettings(GroupPublicationReportingSettings publicationReportingSettings) {
-		this.publicationReportingSettings = publicationReportingSettings;
-	}
-
-	/**
-	 * Gets all direct subgroups for this group.
-	 *
-	 * @return a list of all subgroups for this group.
-	 */
-	public List<Group> getSubgroups() {
-		return subgroups;
-	}
-
-
-	/**
-	 * Sets the subgroups for this group.
-	 *
-	 * @param subgroups a list with subgroups (groups that have this object as a parent).
-	 */
-	public void setSubgroups(List<Group> subgroups) {
-		this.subgroups = subgroups;
-	}
-
-	/**
-	 * signals whether the group should be treated as an organization.
-	 *
-	 * @return <code>true</code> iff this group is an organization
-	 */
-	public boolean isOrganization() {
-		return organization;
-	}
-
-	/**
-	 * Sets the organization flag.
-	 *
-	 * @param organization <code>true</code> iff this group is an organization
-	 */
-	public void setOrganization(boolean organization) {
-		this.organization = organization;
-	}
-
-	/**
-	 * @return the internalId
-	 */
-	public String getInternalId() {
-		return internalId;
-	}
-
-	/**
-	 * @param internalId the internalId to set
-	 */
-	public void setInternalId(String internalId) {
-		this.internalId = internalId;
 	}
 
 	@Override
@@ -482,21 +270,7 @@ public class Group implements Linkable, Serializable {
 		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
 	}
-	
-	/**
-	 * @return the groupRequest
-	 */
-	public GroupRequest getGroupRequest() {
-		return this.groupRequest;
-	}
 
-	/**
-	 * @param groupRequest the groupRequest to set
-	 */
-	public void setGroupRequest(GroupRequest groupRequest) {
-		this.groupRequest = groupRequest;
-	}
-	
 	/**
 	 * @return the memberships
 	 */
@@ -507,13 +281,6 @@ public class Group implements Linkable, Serializable {
 		return this.memberships;
 	}
 
-	/**
-	 * @param memberships the memberships to set
-	 */
-	public void setMemberships(List<GroupMembership> memberships) {
-		this.memberships = memberships;
-	}
-
 	public List<GroupMembership> getPendingMemberships() {
 		if (this.pendingMemberships == null)
 			this.pendingMemberships = new LinkedList<>();
@@ -521,10 +288,7 @@ public class Group implements Linkable, Serializable {
 		return pendingMemberships;
 	}
 
-	public void setPendingMemberships(List<GroupMembership> pendingMemberships) {
-		this.pendingMemberships = pendingMemberships;
-	}
-	
+
 	// TODO: move to utils class, remove all dependencies
 	public GroupMembership getGroupMembershipForUser(String username) {
 		for (GroupMembership g : this.getMemberships()) {
@@ -550,13 +314,6 @@ public class Group implements Linkable, Serializable {
 			this.groupLevelPermissions = new HashSet<>();
 		}
 		return this.groupLevelPermissions;
-	}
-	
-	/**
-	 * @param groupLevelPermissions the groupLevelPermissions to set
-	 */
-	public void setGroupLevelPermissions(Set<GroupLevelPermission> groupLevelPermissions) {
-		this.groupLevelPermissions = groupLevelPermissions;
 	}
 
 	/**

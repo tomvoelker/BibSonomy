@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +29,7 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -35,8 +38,6 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.persons.DeletePersonResourceRelationStrategy;
 import org.bibsonomy.rest.strategy.persons.GetListOfPersonsStrategy;
-import org.bibsonomy.rest.strategy.persons.GetPersonByAdditionalKeyStrategy;
-import org.bibsonomy.rest.strategy.persons.GetPersonPostsByAdditionalKeyStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonPostsStrategy;
 import org.bibsonomy.rest.strategy.persons.GetPersonStrategy;
 import org.bibsonomy.rest.strategy.persons.GetResourcePersonRelationsStrategy;
@@ -60,8 +61,6 @@ public class PersonsHandler implements ContextHandler {
 		final int numTokensLeft = urlTokens.countRemainingTokens();
 		final String personId;
 		final String req;
-		final String keyName;
-		final String keyValue;
 
 		switch (numTokensLeft) {
 			// /persons
@@ -77,31 +76,18 @@ public class PersonsHandler implements ContextHandler {
 				if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
 					return createPersonPostsStrategy(context, httpMethod, personId);
 				}
-				if (RESTConfig.RELATION_PARAM.equalsIgnoreCase(req)) {
+				if (RESTConfig.RELATIONS_SUB_PATH.equalsIgnoreCase(req)) {
 					return createPersonRelationStrategy(context, httpMethod, personId);
 				}
 				if (RESTConfig.PERSONS_MERGE_URL.equalsIgnoreCase(req)) {
 					return createPersonMergeStrategy(context, httpMethod, personId);
-				}
-
-				// /persons/[key]/[value]
-				keyName = personId;
-				keyValue = req;
-				return createPersonStrategy(context, httpMethod, keyName, keyValue);
-			// /persons/[key]/[value]/posts
-			case 3:
-				keyName = urlTokens.next();
-				keyValue = urlTokens.next();
-				req = urlTokens.next();
-				if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
-					return createPersonPostsStrategy(context, httpMethod, keyName, keyValue);
 				}
 				break;
 			// /persons/[personID]/relations/[interhash]/[type]/[index]
 			case 5:
 				personId = urlTokens.next();
 				final String relationsPath = urlTokens.next();
-				if (RESTConfig.RELATION_PARAM.equals(relationsPath)) {
+				if (RESTConfig.RELATIONS_SUB_PATH.equals(relationsPath)) {
 					final String interHash = urlTokens.next();
 					final String type = urlTokens.next();
 					final String index = urlTokens.next();
@@ -150,28 +136,11 @@ public class PersonsHandler implements ContextHandler {
 			case GET:
 				return new GetPersonStrategy(context, personId);
 			case PUT:
-				final PersonUpdateOperation operation = PersonUpdateOperation.valueOf(
+				final PersonOperation operation = PersonOperation.valueOf(
 						context.getStringAttribute("operation", "update_all").toUpperCase());
 				return new UpdatePersonStrategy(context, personId, operation);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "Person");
-		}
-	}
-
-	/**
-	 *
-	 * @param context
-	 * @param httpMethod
-	 * @param keyName
-	 * @param keyValue
-	 * @return
-	 */
-	private Strategy createPersonStrategy(Context context, HttpMethod httpMethod, String keyName, String keyValue) {
-		switch (httpMethod) {
-			case GET:
-				return new GetPersonByAdditionalKeyStrategy(context, keyName, keyValue);
-			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonByKeyValue");
 		}
 	}
 
@@ -203,8 +172,7 @@ public class PersonsHandler implements ContextHandler {
 	private Strategy createPersonMergeStrategy(Context context, HttpMethod httpMethod, String personId) {
 		switch (httpMethod) {
 			case POST:
-				return new PostPersonMergeStrategy(context, personId,
-								context.getStringAttribute("source", ""));
+				return new PostPersonMergeStrategy(context, personId, context.getStringAttribute("source", ""));
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonMerge");
 		}
@@ -223,23 +191,6 @@ public class PersonsHandler implements ContextHandler {
 				return new GetPersonPostsStrategy(context, personId);
 			default:
 				throw new UnsupportedHttpMethodException(httpMethod, "PersonPosts");
-		}
-	}
-
-	/**
-	 *
-	 * @param context
-	 * @param httpMethod
-	 * @param keyName
-	 * @param keyValue
-	 * @return
-	 */
-	private Strategy createPersonPostsStrategy(Context context, HttpMethod httpMethod, String keyName, String keyValue) {
-		switch (httpMethod) {
-			case GET:
-				return new GetPersonPostsByAdditionalKeyStrategy(context, keyName, keyValue);
-			default:
-				throw new UnsupportedHttpMethodException(httpMethod, "PersonPostsByKeyValue");
 		}
 	}
 

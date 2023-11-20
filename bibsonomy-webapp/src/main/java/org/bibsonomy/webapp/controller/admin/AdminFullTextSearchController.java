@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
@@ -40,6 +44,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.search.es.help.HelpSearchManager;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
@@ -59,10 +64,13 @@ import org.springframework.security.access.AccessDeniedException;
  * @author jensi
  * @author dzo
  */
+@Setter
 public class AdminFullTextSearchController implements MinimalisticController<AdminFullTextSearchCommand> {
 	private static final Log log = LogFactory.getLog(AdminFullTextSearchController.class);
 
 	private Map<Class<?>, SearchIndexManager> managers;
+
+	private HelpSearchManager helpSearchManager;
 	
 	@Override
 	public View workOn(final AdminFullTextSearchCommand command) {
@@ -120,7 +128,8 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 			final List<SearchIndexInfo> information = manager.getIndexInformations();
 			infoMap.put(managementEntry.getKey().getSimpleName(), information);
 		}
-		
+		// infoMap.put("Help", helpSearchManager.getIndexInformations());
+
 		return Views.ADMIN_FULL_TEXT_SEARCH;
 	}
 
@@ -142,10 +151,4 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		return new AdminFullTextSearchCommand();
 	}
 
-	/**
-	 * @param managers the managers to set
-	 */
-	public void setManagers(Map<Class<?>, SearchIndexManager> managers) {
-		this.managers = managers;
-	}
 }

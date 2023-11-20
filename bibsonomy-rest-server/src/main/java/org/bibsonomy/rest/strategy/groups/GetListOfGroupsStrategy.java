@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +29,14 @@
  */
 package org.bibsonomy.rest.strategy.groups;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -41,13 +47,20 @@ import org.bibsonomy.util.UrlBuilder;
  */
 public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>> {
 	private final String internalId;
-	
+	private final boolean organization;
+
 	/**
 	 * @param context
 	 */
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
-		internalId = context.getStringAttribute("internalId", null);
+		this.internalId = context.getStringAttribute("internalId", null);
+		final String organizationFilter = context.getStringAttribute(RESTConfig.ORGANIZATION_PARAM, null);
+		if (present(organizationFilter)) {
+			this.organization = Boolean.parseBoolean(organizationFilter);
+		} else {
+			this.organization = false; // no filter set groups can be also organizations
+		}
 	}
 
 	@Override
@@ -57,14 +70,18 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 
 	@Override
 	protected UrlBuilder getLinkPrefix() {
-		return this.getUrlRenderer().getUrlBuilderForGroups();
+		return this.getUrlRenderer().getUrlBuilderForGroups().addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(this.organization));
 	}
 
 	@Override
 	protected List<Group> getList() {
 		final ViewModel view = this.getView();
-		final GroupQuery groupQuery = GroupQuery.builder().start(view.getStartValue()).end(view.getEndValue()).
-						pending(false).externalId(this.internalId).build();
+		final GroupQuery groupQuery = GroupQuery.builder()
+						.start(view.getStartValue())
+						.end(view.getEndValue())
+						.pending(false)
+						.organization(this.organization)
+						.externalId(this.internalId).build();
 		return this.getLogic().getGroups(groupQuery);
 	}
 

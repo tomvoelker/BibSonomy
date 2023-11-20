@@ -45,7 +45,7 @@
 					
 					<!-- show the menu items -->
 					<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_01 ${inboxClass}" title="${titleInbox}">
-						<a href="/inbox"><!-- empty -->
+						<a href="${relativeUrlGenerator.getUrlWithPath('inbox')}"><!-- empty -->
 							<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
 								<div class="sidebarnavi_info"><c:out value="${command.context.loginUser.inbox.numPosts}"/></div>
 							</c:if>
@@ -53,7 +53,7 @@
 					</li>
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_02">
-						<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
+						<a href="${relativeUrlGenerator.getUrlWithPath('clipboard')}" title="${titleClipboard}"><!-- empty -->
 							<div id="pickctr" class="sidebarnavi_info"><!-- maybe empty -->
 								<c:if test="${command.context.loginUser.clipboard.numPosts gt 0}">
 									<c:out value="${command.context.loginUser.clipboard.numPosts}"/>
@@ -63,13 +63,13 @@
 					</li>
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_03">
-						<a href="/spheres" title="${titleSpheres}"><!-- empty --></a>
+						<a href="${relativeUrlGenerator.getUrlWithPath('spheres')}" title="${titleSpheres}"><!-- empty --></a>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_04" title="${titleDiscussed}">
-						<a href="/editTags" title="${editTagsTitle}"><!-- empty --></a>
+						<a href="${relativeUrlGenerator.getUrlWithPath('editTags')}" title="${editTagsTitle}"><!-- empty --></a>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_05" title="${titleCV}">
-						<a href="/settings" title="${titleSettings}"><!-- empty --></a>
+						<a href="${relativeUrlGenerator.getSettingsUrl()}" title="${titleSettings}"><!-- empty --></a>
 					</li>
 				</c:when>
 				<c:otherwise>
@@ -97,8 +97,7 @@
 				<a href="${properties['project.blog']}" title="${titleBlog}"><!-- empty --></a>
 			</li>
 			<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_07">
-				<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-				<a href="${helpLangUrl}" title="${titleHelp}"><!-- empty --></a>
+				<a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}" title="${titleHelp}"><!-- empty --></a>
 			</li>
 		</ul>
 	</div>

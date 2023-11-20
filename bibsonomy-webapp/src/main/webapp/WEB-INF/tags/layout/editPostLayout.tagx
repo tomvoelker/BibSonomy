@@ -41,28 +41,36 @@
 		<jsp:attribute name="tagsAndGroups">
 			<!-- tags -->
 			<post:tagfield groupPost="${postOwner.name eq command.context.loginUser.name}" containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-			
-			<!-- groups -->
+
+			<!-- post visibility -->
 			<a name="groups"><!--  --></a>
 			<bsform:fieldset legendKey="post.resource.groups.describe">
 				<jsp:attribute name="content">
 					<post:groupBox groups="${postOwner.groups}" labelColSpan="3"/>
 				</jsp:attribute>
 			</bsform:fieldset>
-			
-			<c:if test="${not empty postOwner.groups}">
+
+			<!-- group options -->
+			<c:set var="isGroupPost" value="${not empty postOwner and postOwner ne command.context.loginUser}" />
+			<c:if test="${not empty postOwner.groups and not isGroupPost}">
+				<c:set var="groups" value="${mtl:filterGroups(postOwner.groups, false)}" />
 				<a name="group-options"><!-- keep me --></a>
 				<bsform:fieldset legendKey="post.resource.groups.options">
 					<jsp:attribute name="content">
-						<post:relevantForBox groups="${postOwner.groups}" />
+						<!-- sent to -->
+						<post:sendToGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
+						<!-- relevant for -->
+						<c:if test="${properties['group.relevantFor.enabled']}">
+							<post:relevantForGroupBox groups="${groups}" labelColSpan="3" inputColSpan="9"/>
+						</c:if>
 						<!-- tag sets -->
-						<post:tagSets groups="${postOwner.groups}" />
+						<post:tagSets groups="${groups}" />
 					</jsp:attribute>
 				</bsform:fieldset>
 			</c:if>
 		</jsp:attribute>
 		<jsp:attribute name="groupsandfriends">
-		<!-- groupsandfriends -->
+			<!-- groupsandfriends -->
 			<a name="groups"><!--  --></a>
 			<bsform:fieldset legendKey="post.resource.groupsandfriends">
 				<jsp:attribute name="content">
@@ -70,5 +78,6 @@
 				</jsp:attribute>
 			</bsform:fieldset>
 		</jsp:attribute>
+
 	</layout:editGoldStandardPostLayout>
 </jsp:root>

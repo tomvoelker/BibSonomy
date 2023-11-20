@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,20 +40,19 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.generic.GenericEndnoteURLScraper;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
  */
-public class HindawiScraper extends GenericEndnoteURLScraper implements ReferencesScraper, CitedbyScraper{
+public class HindawiScraper extends GenericRISURLScraper implements ReferencesScraper, CitedbyScraper{
 	private static final Log log = LogFactory.getLog(HindawiScraper.class);
 	
 	private static final String SITE_NAME = "Hindawi Publishing Corporation";
@@ -58,14 +60,13 @@ public class HindawiScraper extends GenericEndnoteURLScraper implements Referenc
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final String ENDNOTE_URL = "http://files.hindawi.com/journals/";
+	private static final String RIS_URL = "http://hindawi.com/journals/";
 	private static final Pattern ID_PATTERN = Pattern.compile(".*/journals/(.*\\d+)");
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"citation_abstract\" content=\"(.*)\"/>");
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<h4>Linked References</h4>\\s+<ol>\\s+(.*)</ol>");
 	
 	private static final int ID_GROUP = 1;
-	
-	
+
+
 	/**
 	 * extracts publication id from url
 	 * 
@@ -79,18 +80,7 @@ public class HindawiScraper extends GenericEndnoteURLScraper implements Referenc
 		}
 		return null;
 	}
-	
-	private static String abstractParser(URL url){
-		try{
-			Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(url));
-			if(m.find()) {
-				return m.group(1);
-			}
-		} catch (Exception e) {
-			log.error("error getting abstract for " + url, e);
-		}
-		return null;
-	}
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -112,14 +102,6 @@ public class HindawiScraper extends GenericEndnoteURLScraper implements Referenc
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.PostprocessingGenericURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext sc, String result) {
-		return BibTexUtils.addFieldIfNotContained(result,"abstract",abstractParser(sc.getUrl()));
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
@@ -128,7 +110,12 @@ public class HindawiScraper extends GenericEndnoteURLScraper implements Referenc
 		if (!present(id)) {
 			throw new ScrapingFailureException("can't extract publication id for " + url);
 		}
-		return ENDNOTE_URL + id + ".enw";
+		return RIS_URL + id + ".ris";
+	}
+
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replaceAll("<.+?>", "");
 	}
 
 	/* (non-Javadoc)

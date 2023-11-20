@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
@@ -36,6 +42,8 @@ import java.util.Date;
  * 
  * @author Jens Illig
  */
+@Getter
+@Setter
 public class PersonName implements Serializable {
 	private static final long serialVersionUID = 4365762117878931642L;
 
@@ -43,7 +51,9 @@ public class PersonName implements Serializable {
 	public static final String LAST_FIRST_DELIMITER = ",";
 
 	private int personNameChangeId;
+	/** firstname(s) of the person */
 	private String firstName;
+	/** lastname(s) of the person */
 	private String lastName;
 	private String personId;
 	private boolean isMain;
@@ -75,34 +85,7 @@ public class PersonName implements Serializable {
 		this.setLastName(lastName);  
 	}
 	
-	/**
-	 * @return the firstname(s) of the person
-	 */
-	public String getFirstName() {
-		return this.firstName;
-	}
 
-	/**
-	 * @return the lastname(s) of the person
-	 */
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	/**
-	 * @param firstName
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
-	 * @param lastName
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	
 	@Override
 	public String toString() {
 		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? " " + this.firstName : "");
@@ -147,78 +130,6 @@ public class PersonName implements Serializable {
 			return this.lastName.hashCode();
 		}
 		return super.hashCode();
-	}
-
-	/**
-	 * @return the id
-	 */
-	public int getPersonNameChangeId() {
-		return this.personNameChangeId;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setPersonNameChangeId(int id) {
-		this.personNameChangeId = id;
-	}
-
-	/**
-	 * @return the personId
-	 */
-	public String getPersonId() {
-		return this.personId;
-	}
-
-	/**
-	 * @param personId the personId to set
-	 */
-	public void setPersonId(String personId) {
-		this.personId = personId;
-	}
-
-	/**
-	 * @return the isMain
-	 */
-	public boolean isMain() {
-		return this.isMain;
-	}
-
-	/**
-	 * @param isMain the isMain to set
-	 */
-	public void setMain(boolean isMain) {
-		this.isMain = isMain;
-	}
-	
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	public String getChangedBy() {
-		return this.changedBy;
-	}
-
-	public void setChangedBy(String changedBy) {
-		this.changedBy = changedBy;
-	}
-
-	public Date getChangedAt() {
-		return this.changedAt;
-	}
-
-	public void setChangedAt(Date changedAt) {
-		this.changedAt = changedAt;
 	}
 
 }

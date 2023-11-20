@@ -5,7 +5,7 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="headerMessage" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="searchPlaceholderKey" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
@@ -13,8 +13,8 @@
     <jsp:directive.attribute name="enableReset" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="toggleFiltersOption" type="java.lang.Boolean" required="false"/>
 
-    <c:set var="entrytypes" value="article,book,booklet,collection,conference,dataset,electronic,inbook,incollection,inproceedings,manual,masterthesis,misc,patent,periodical,phdthesis,preamble,presentation,proceedings,standard,techreport,unpublished"/>
-    <c:set var="searchfields" value="title,author,editor,user,group,additionalKey,publisher,institution,organization,school,doi,isbn,issn,journal,series,edition,volume,language"/>
+    <c:set var="entrytypes" value="${properties['extendedSearch.entrytypes']}"/>
+    <c:set var="searchfields" value="${properties['extendedSearch.searchFields']}"/>
 
     <c:if test="${not alwaysShow}">
         <c:set var="hideExtSearch" value="display: none;"/>
@@ -25,10 +25,13 @@
     <fmt:message var="yearPlaceholder" key="search.extended.year.placeholder"/>
     <fmt:message var="yearLabel" key="search.extended.year"/>
 
-    <div id="extendedSearch" class="jumbotron search" style="${hideExtSearch}">
+    <div id="extendedSearch" class="jumbotron search " style="${hideExtSearch}">
         <div class="row">
             <div class="col-md-10">
-                <h2><fmt:message key="${headerMessageKey}"/></h2>
+                <!-- keep me -->
+                <c:if test="${not empty headerMessage}">
+                    <h2>${headerMessage}</h2>
+                </c:if>
             </div>
             <div class="col-md-2" style="padding-top: 20px;">
                 <c:if test="${not alwaysShow}">
@@ -61,7 +64,7 @@
         </div>
 
         <c:if test="${toggleFiltersOption}">
-            <div class="row" style="text-align: right;">
+            <div id="extendedFiltersToggle" class="row" style="text-align: right;">
                 <div class="col-md-12">
                     <a href="#" id="expandFilterLink" onclick="toggleFilters()"><fmt:message key="search.extended.header" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></a>
                     <a href="#" id="hideFilterLink" style="display: none;" onclick="toggleFilters()"><fmt:message key="search.extended.hide" /> <fontawesome:icon icon="angle-double-up" fixedWidth="${true}"/></a>
@@ -81,7 +84,7 @@
             </c:if>
             <div class="form-group row">
                 <!-- search attribute field -->
-                <div id="inputGroupField" class="col-md-8">
+                <div class="col-md-8">
                     <div class="input-group">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -89,10 +92,12 @@
                                     <fmt:message key="search.extended.field"/>
                                 </span> <span class="caret"><!-- keep me  --></span>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul id="dropdownSelectionField" class="dropdown-menu">
                                 <c:forEach var="field" items="${fn:split(searchfields, ',')}">
-                                    <li><a onclick="return switchSelection('Field', '${field}', this)"
-                                           class="dropdown-item"><fmt:message key="search.extended.field.${field}"/></a>
+                                    <li data-field="${field}">
+                                        <a onclick="return switchSelection('Field', '${field}', this)" class="dropdown-item">
+                                            <fmt:message key="search.extended.field.${field}"/>
+                                        </a>
                                     </li>
                                 </c:forEach>
                             </ul>
@@ -101,39 +106,8 @@
                     </div>
                 </div>
 
-                <!-- year -->
-                <div id="inputGroupYear" class="col-md-4">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <fmt:message key="search.extended.year"/>:
-                        </div>
-                        <input type="text" class="form-control" id="filterValueYear" placeholder="${yearPlaceholder}" aria-label="${yearLabel}"/>
-                        <span class="input-group-btn">
-                            <fmt:message var="yearRange" key="search.extended.range"/>
-                            <button class="btn btn-default" type="button" title="${yearRange}" onclick="expandYearRange()"><fontawesome:icon icon="plus"/></button>
-                        </span>
-                    </div>
-                </div>
-                <div id="inputGroupFromYear" class="col-md-3 hidden">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <fmt:message key="search.extended.from"/>:
-                        </div>
-                        <input type="text" class="form-control" id="filterValueFromYear" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
-                    </div>
-                </div>
-                <div id="inputGroupToYear" class="col-md-3 hidden">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <fmt:message key="search.extended.to"/>:
-                        </div>
-                        <input type="text" class="form-control" id="filterValueToYear" placeholder="${yearLabel}" aria-label="${yearLabel}"/>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
                 <!-- entrytypes -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="btn-group btn-block">
                         <button class="btn btn-default btn-block dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -141,14 +115,46 @@
                             <fmt:message key="search.extended.entrytype"/>
                         </span> <span class="caret"><!-- keepme --></span>
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul id="dropdownSelectionEntrytype" class="dropdown-menu">
                             <c:forEach var="entrytype" items="${fn:split(entrytypes, ',')}" varStatus="status">
-                                <li><a onclick="return switchSelection('Entrytype', '${entrytype}', this)"
-                                       class="dropdown-item"><fmt:message key="search.extended.entrytype.${entrytype}"/></a>
+                                <fmt:message key="post.resource.entrytype.${entrytype}.title" var="entrytypeMessage" />
+                                <c:if test="${fn:startsWith(entrytypeMessage, '???')}">
+                                    <c:set var="entrytypeMessage" value="${entrytype}" />
+                                </c:if>
+                                <li data-entrytype="${entrytype}" data-entrytype-title="${entrytypeMessage}">
+                                    <a onclick="return switchSelection('Entrytype', '${entrytype}', this)" class="dropdown-item">
+                                        <c:out value="${entrytypeMessage}"/>
+                                    </a>
                                 </li>
                             </c:forEach>
                         </ul>
                     </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <!-- year -->
+                <div id="inputGroupYear" class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <fmt:message key="search.extended.year"/>
+                        </div>
+                        <input type="text" class="form-control" id="filterValueYear" placeholder="${yearPlaceholder}" aria-label="${yearLabel}"/>
+                    </div>
+                </div>
+
+                <div id="inputGroupYearRange" class="col-md-4 hidden">
+                    <div class="input-group">
+                        <div class="input-group-addon"><fmt:message key="search.extended.year.range"/></div>
+                        <fmt:message var="fromLabel" key="search.extended.from"/>
+                        <input type="text" class="form-control" id="filterValueFromYear" placeholder="${fromLabel}" aria-label="${fromLabel}" maxlength="4"/>
+                        <div class="input-group-addon" style="padding:6px;">–</div>
+                        <fmt:message var="toLabel" key="search.extended.to"/>
+                        <input type="text" class="form-control" id="filterValueToYear" placeholder="${toLabel}" aria-label="${toLabel}" maxlength="4"/>
+                    </div>
+                </div>
+
+                <div class="col-md-3" style="padding:8px 0;">
+                    <a id="toggleYearRange" href="#" onclick="toggleYearRange()"><fmt:message key="search.extended.year.range.placeholder"/></a>
                 </div>
 
                 <!-- and/or operator for search syntax -->
@@ -169,7 +175,7 @@
                 </div>
 
                 <!-- add filter button -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <button type="button" class="btn btn-primary btn-block" onclick="addFilter()">
                         <fmt:message key="search.extended.add"/>
                     </button>

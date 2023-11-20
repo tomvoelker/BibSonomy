@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,6 +42,7 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
 import org.bibsonomy.services.searcher.PostSearchQuery;
 import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -50,7 +54,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.ExistsQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -129,56 +132,58 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends Elasticsea
 		if (!present(sortCriteria)) {
 			return sortParameters;
 		}
-		for (final SortCriteria sortCrit : sortCriteria) {
-			final SortOrder esSortOrder = SortOrder.fromString(sortCrit.getSortOrder().toString());
-			final SortKey sortKey = sortCrit.getSortKey();
+		for (final SortCriteria criteria : sortCriteria) {
+			SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(criteria.getSortOrder());
+			final SortKey sortKey = criteria.getSortKey();
 			switch (sortKey) {
 				// ignore these Order type since result of no sort parameters
 				case RANK:
+				case FOLKRANK:
+				case POPULAR:
 				case NONE:
 					break;
 				// Order type with cleaned up index attribute
 				case TITLE:
-					sortParameters.add(new Pair<>(Fields.Sort.TITLE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.TITLE, sortOrder));
 					break;
 				case BOOKTITLE:
-					sortParameters.add(new Pair<>(Fields.Sort.BOOKTITLE, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.BOOKTITLE, sortOrder));
 					break;
 				case JOURNAL:
-					sortParameters.add(new Pair<>(Fields.Sort.JOURNAL, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.JOURNAL, sortOrder));
 					break;
 				case SERIES:
-					sortParameters.add(new Pair<>(Fields.Sort.SERIES, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.SERIES, sortOrder));
 					break;
 				case PUBLISHER:
-					sortParameters.add(new Pair<>(Fields.Sort.PUBLISHER, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.PUBLISHER, sortOrder));
 					break;
 				case AUTHOR:
-					sortParameters.add(new Pair<>(Fields.Sort.AUTHOR, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.AUTHOR, sortOrder));
 					break;
 				case EDITOR:
-					sortParameters.add(new Pair<>(Fields.Sort.EDITOR, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.EDITOR, sortOrder));
 					break;
 				case SCHOOL:
-					sortParameters.add(new Pair<>(Fields.Sort.SCHOOL, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.SCHOOL, sortOrder));
 					break;
 				case INSTITUTION:
-					sortParameters.add(new Pair<>(Fields.Sort.INSTITUTION, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.INSTITUTION, sortOrder));
 					break;
 				case ORGANIZATION:
-					sortParameters.add(new Pair<>(Fields.Sort.ORGANIZATION, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Sort.ORGANIZATION, sortOrder));
 					break;
 				case YEAR:
-					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Publication.YEAR, sortOrder));
 					break;
 				case PUBDATE:
-					sortParameters.add(new Pair<>(Fields.Publication.YEAR, esSortOrder));
-					sortParameters.add(new Pair<>(Fields.Publication.MONTH, esSortOrder));
-					sortParameters.add(new Pair<>(Fields.Publication.DAY, esSortOrder));
+					sortParameters.add(new Pair<>(Fields.Publication.YEAR, sortOrder));
+					sortParameters.add(new Pair<>(Fields.Publication.MONTH, sortOrder));
+					sortParameters.add(new Pair<>(Fields.Publication.DAY, sortOrder));
 					break;
 				// more complex order types possible here
 				default:
-					sortParameters.add(new Pair<>(sortKey.toString().toLowerCase(), esSortOrder));
+					sortParameters.add(new Pair<>(sortKey.toString().toLowerCase(), sortOrder));
 					break;
 			}
 		}

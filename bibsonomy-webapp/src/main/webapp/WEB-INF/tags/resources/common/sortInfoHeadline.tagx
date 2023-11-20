@@ -14,10 +14,10 @@
     <!-- display sorting info to swap queryscope only when not using 'date' criteria -->
     <c:if test="${not empty sortPage and sortPage ne 'date'}">
         <span>
-            <a class="sort-info" style="position:relative; top: -1px">
+            <a id="sortInfoPopover" class="popover-click" style="position:relative; top: -1px">
                 <fontawesome:icon icon="info-circle"/>
             </a>
-            <div class="sort-info-content hidden">
+            <div id="sortInfoContent" class="hidden">
                 <c:set var="resourceUseIndex" value="${resourceType}.useIndex"/>
                 <c:choose>
                     <c:when test="${useIndex}">

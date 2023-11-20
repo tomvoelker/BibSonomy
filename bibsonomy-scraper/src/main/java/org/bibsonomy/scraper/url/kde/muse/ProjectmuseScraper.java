@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,10 +65,10 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern ENDNOTE_PATTERN = Pattern.compile("<h2>Endnote<\\/h2>\\s*<p>(.*?)<\\/p>", Pattern.DOTALL); 
+	private static final Pattern ENDNOTE_PATTERN = Pattern.compile("<h2>Endnote</h2>.*?<p>(.*?)</p>", Pattern.DOTALL);
 	private static final Pattern ID_PATTERN = Pattern.compile("([^/]+$)");
-	private static final Pattern TYPE_PATTERN = Pattern.compile(SITE_URL + "(.*)/.*");
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"citation_abstract\" content=\"<p>(.*?)<\\/p>\">", Pattern.DOTALL);
+	private static final Pattern TYPE_PATTERN = Pattern.compile( HOST + "/(.*)/.*");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstract\">.*?<p>.*?<p>(.*?)</p>", Pattern.DOTALL);
 	
 	
 	@Override
@@ -139,7 +142,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
 		try {
 			final Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			
+
 			StringBuffer matches = new StringBuffer();
 			while (m.find()) {
 				matches.append(m.group() + "\n");

@@ -50,11 +50,11 @@
         FROM projects
         <include refid="projectStatusFilter" />
           ORDER BY
-            <isEqual property="projectOrder" compareValue="START_DATE">
+            <isEqual property="projectSortKey" compareValue="START_DATE">
                 start_date <include refid="sortOrder" />, title
             </isEqual>
 
-            <isEqual property="projectOrder" compareValue="TITLE">
+            <isEqual property="projectSortKey" compareValue="TITLE">
                 title <include refid="sortOrder" />
             </isEqual>
         LIMIT #limit# OFFSET #offset#

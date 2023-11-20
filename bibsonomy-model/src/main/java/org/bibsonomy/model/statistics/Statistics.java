@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +29,16 @@
  */
 package org.bibsonomy.model.statistics;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Statistics about certain elements of the model, e.g., posts of a user.
  * 
  * @author rja
  */
+@Getter
+@Setter
 public class Statistics {
 
 	private int count = 0;
@@ -56,103 +64,5 @@ public class Statistics {
 		this.count = count;
 	}
 
-	
-
-	/**
-	 * get count value
-	 * @return count value
-	 */
-	public int getCount() {
-		return this.count;
-	}
-
-	/**
-	 * set count value
-	 * @param count
-	 */
-	public void setCount(int count) {
-		this.count = count;
-	}
-
-	/**
-	 * get minimum value
-	 * @return minimum value
-	 */
-	public double getMin() {
-		return this.min;
-	}
-
-	/**
-	 * set minimum value
-	 * @param min
-	 */
-	public void setMin(double min) {
-		this.min = min;
-	}
-
-	/**
-	 * get maximum value
-	 * @return maximum value
-	 */
-	public double getMax() {
-		return this.max;
-	}
-
-	/**
-	 * set maximum value
-	 * @param max
-	 */
-	public void setMax(double max) {
-		this.max = max;
-	}
-
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(double rating) {
-		this.rating = rating;
-	}
-
-
-	/**
-	 * @return the rating
-	 */
-	public double getRating() {
-		return rating;
-	}
-
-
-	/**
-	 * @param percentage the rating to set
-	 */
-	public void setPercentage(double percentage) {
-		this.percentage = percentage;
-	}
-
-	
-	/**
-	 * @return the percentage
-	 */
-	public double getPercentage() {
-		return percentage;
-	}
-
-
-	/**
-	 * get average value
-	 * @return average value
-	 */
-	public double getAverage() {
-		return this.average;
-	}
-
-	
-	/**
-	 * set average value
-	 * @param average
-	 */
-	public void setAverage(double average) {
-		this.average = average;
-	}
 	
 }

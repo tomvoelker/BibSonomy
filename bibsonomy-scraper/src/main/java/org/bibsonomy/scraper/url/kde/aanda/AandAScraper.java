@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +30,6 @@
 package org.bibsonomy.scraper.url.kde.aanda;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
@@ -48,29 +43,36 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Christian Kramer
  */
 public class AandAScraper extends AbstractUrlScraper implements ReferencesScraper {
-	
+
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_URL = "https://www.aanda.org/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
-	
+
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
 	private static final String downloadUrl = SITE_URL + "component/makeref/?task=output&type=bibtex&doi=";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
 					new Pair<>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN)
 	);
-	
-	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)</div>");
+
+	private static final Pattern pat_references = Pattern.compile("(?s)<ol class=\"references\">(.*)</ol>");
 	private static final Pattern pat_references_1 = Pattern.compile("(?s)<HR><b>References(.*)</UL>");
 	private static final Pattern pat_link_ref = Pattern.compile("href=\"(.*?)\"");
-	
+
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		
+
 		try {
 			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL		
 			final String doi = extractDOI(XmlUtils.getDOM(sc.getPageContent()));
@@ -92,20 +94,20 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Extracts the DOI out of the page source.
 	 * Structure is as follows:
-	 * 
+	 *
 	 *  <tr>
 	 *		<td class="gen">DOI</td>
 	 *	    <td></td>
 	 *	    <td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
 	 *	</tr>
-	 * 
+	 *
 	 *  <tr>
 	 *		<th>DOI</th>
 	 *		<td></td>
@@ -141,7 +143,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	public String getInfo() {
 		return INFO;
 	}
-	
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -173,7 +175,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-			
+
 		return false;
 	}
 }

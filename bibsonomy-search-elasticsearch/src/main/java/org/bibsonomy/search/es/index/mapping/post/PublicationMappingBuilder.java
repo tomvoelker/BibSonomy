@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -71,6 +74,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 					.endObject()
 					.startObject(Fields.Publication.PERSON_ID)
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.array(ESConstants.IndexSettings.COPY_TO, Fields.Publication.ALL_PERSONS)
 					.endObject()
 					.startObject(Fields.Publication.PERSON_COLLEGE)
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
@@ -142,6 +146,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 					.endObject()
 					.startObject(Fields.Publication.PERSON_ID)
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
+						.array(ESConstants.IndexSettings.COPY_TO, Fields.Publication.ALL_PERSONS)
 					.endObject()
 					.startObject(Fields.Publication.PERSON_COLLEGE)
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
@@ -291,6 +296,9 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 						.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.KEYWORD_TYPE)
 					.endObject()
 				.endObject()
+			.endObject()
+			.startObject(Fields.APPROVED)
+				.field(ESConstants.IndexSettings.TYPE_FIELD, ESConstants.IndexSettings.BOOLEAN_TYPE)
 			.endObject();
 			// special misc fields
 			for (final String specialMiscField : Fields.Publication.SPECIAL_MISC_FIELDS) {

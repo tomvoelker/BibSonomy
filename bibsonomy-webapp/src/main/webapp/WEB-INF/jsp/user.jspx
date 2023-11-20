@@ -129,7 +129,7 @@
 			
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
 
-            <!-- Claimed person -->
+            <!-- claimed person -->
             <c:if test="${not empty command.claimedPerson}">
 				<sidebar:sidebarItem textKey="settings.sidebar.claimedPerson">
 					<jsp:attribute name="content">

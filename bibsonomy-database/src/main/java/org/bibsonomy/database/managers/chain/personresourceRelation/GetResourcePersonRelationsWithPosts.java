@@ -1,3 +1,32 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers.chain.personresourceRelation;
 
 
@@ -23,28 +52,20 @@ public class GetResourcePersonRelationsWithPosts extends ResourcePersonRelationC
 	 *
 	 * @param personDatabaseManager an instance.
 	 */
-	public GetResourcePersonRelationsWithPosts(PersonDatabaseManager personDatabaseManager) {
+	public GetResourcePersonRelationsWithPosts(final PersonDatabaseManager personDatabaseManager) {
 		super(personDatabaseManager);
 	}
 
 	@Override
-	protected List<ResourcePersonRelation> handle(QueryAdapter<ResourcePersonRelationQuery> adapter, DBSession session) {
+	protected List<ResourcePersonRelation> handle(final QueryAdapter<ResourcePersonRelationQuery> adapter, final DBSession session) {
 		final ResourcePersonRelationQuery query = adapter.getQuery();
 
 		final int offset = BasicQueryUtils.calcOffset(query);
 		final int limit = BasicQueryUtils.calcLimit(query);
 		final List<ResourcePersonRelation> relations = this.getPersonDatabaseManager().getResourcePersonRelationsWithPosts(query.getPersonId(), limit, offset, session);
 
-		// FIXME use a join to retrieve the necessary information
 		if (query.isWithPersonsOfPosts()) {
-			for (final ResourcePersonRelation resourcePersonRelation : relations) {
-				final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
-
-				final List<ResourcePersonRelation> relsOfPub = this.getPersonDatabaseManager()
-								.getResourcePersonRelationsWithPersonsByInterhash(interHash, session);
-
-				resourcePersonRelation.getPost().setResourcePersonRelations(relsOfPub);
-			}
+			this.getPersonDatabaseManager().loadAllRelationsInPosts(relations, session);
 		}
 
 		return relations;

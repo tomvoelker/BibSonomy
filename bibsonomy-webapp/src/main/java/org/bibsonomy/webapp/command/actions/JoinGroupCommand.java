@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,12 +29,16 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
 /**
  * @author schwass
  */
+@Getter
+@Setter
 public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
@@ -68,7 +75,7 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	private String deniedUser;
 	
 	/**
-	 * true if the request comes form join group page
+	 * true if the request come from join group page, false if user will see the join group page
 	 */
 	private boolean joinRequest;
 
@@ -126,85 +133,6 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	@Override
 	public String getCaptchaHTML() {
 		return captchaHTML;
-	}
-
-	/**
-	 * @param reason
-	 */
-	public void setReason(final String reason) {
-		this.reason = reason;
-	}
-
-	/**
-	 * @return reason
-	 */
-	public String getReason() {
-		return reason;
-	}
-
-	/**
-	 * @param group
-	 */
-	public void setGroup(final String group) {
-		this.group = group;
-	}
-	
-	/**
-	 * @return userSharedDocuments
-	 */
-	public boolean isUserSharedDocuments() {
-		return this.userSharedDocuments;
-	}
-
-	/**
-	 * @param userSharedDocuments
-	 */
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
-	}
-
-	/**
-	 * @return group
-	 */
-	public String getGroup() {
-		return group;
-	}
-
-	/**
-	 * @param deniedUser
-	 */
-	public void setDeniedUser(final String deniedUser) {
-		this.deniedUser = deniedUser;
-	}
-
-	/**
-	 * @return denied user
-	 */
-	public String getDeniedUser() {
-		return deniedUser;
-	}
-
-	/**
-	 * @return the reasonMaxLen
-	 */
-	public int getReasonMaxLen() {
-		return reasonMaxLen;
-	}
-
-
-	/**
-	 * @return true if the request come from join group page, false if user will see the join group page
-	 */
-	public boolean isJoinRequest() {
-		return joinRequest;
-	}
-
-
-	/**
-	 * @param joinRequest the joinRequest to set
-	 */
-	public void setJoinRequest(boolean joinRequest) {
-		this.joinRequest = joinRequest;
 	}
 
 }

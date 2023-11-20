@@ -2,10 +2,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
+	xmlns:spring="http://www.springframework.org/tags">
 	
 	<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
 	
@@ -14,43 +12,58 @@
 
 	<script type="text/javascript">
 		$( document ).ready(function() {
-			var $comboBox =  $("#selectAllStyles").select2();
+			var $comboBox =  $("#selectAllStyles").select2({
+                // sorter: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+                sorter: function (data) {
+                    return data.sort(function (a, b) {
+                        return a.text.localeCompare(b.text);
+                    });
+                }
+            });
 		});
 	</script>
 	<select id="selectAllStyles" data-placeholder="${placeholderText}" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
 		<option><!-- keep me! --></option>
-		<c:forEach var="mapEntry" items="${command.layoutMap}">
-			<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
-				<c:choose>
-					<!-- 
-					| JabRef layouts
-					 -->
-					<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
-						<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
-						<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-					</c:when>
-					<!-- 
-					| Standard layouts
-					 -->
-					<c:otherwise>
-						<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
-						<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-					</c:otherwise>
-				</c:choose>
+
+		<!--
+		| Favourite layouts
+		 -->
+		<c:forEach var="citation" items="${command.context.loginUser.settings.favouriteLayouts}">
+
+			<c:if test="${citation.source eq 'JABREF'}">
+				<c:url var="url" value="/layout/${citation.displayName}/${pathAndQueryString}" />
+				<option value="${fn:escapeXml(url)}"><c:out value="${citation.displayName}"/></option>
 			</c:if>
+
+			<c:if test="${citation.source eq 'SIMPLE'}">
+				<c:if test="${citation.style=='BIBTEX'}">
+					<c:url var="url" value="/bib/${citation.style}/${pathAndQueryString}" />
+					<option value="${fn:escapeXml(url)}"><c:out value="${citation.displayName}"/></option>
+				</c:if>
+
+				<c:if test="${citation.style=='ENDNOTE'}">
+					<c:url var="url" value="/layout/endnote/${pathAndQueryString}" />
+					<option value="${fn:escapeXml(url)}"><c:out value="${citation.displayName}"/></option>
+				</c:if>
+			</c:if>
+
+			<c:if test="${citation.source eq 'CSL'}">
+				<option value='/csl-layout/${citation.style}/${pathAndQueryString}'><c:out value="${citation.displayName}"/></option>
+			</c:if>
+
 		</c:forEach>
+
+		<c:forEach var="customLayout" items="${command.customCslLayoutMap}">
+			<option value='/csl-layout/${fn:substringBefore(customLayout.value.id,".csl")}/${pathAndQueryString}'><c:out value="${customLayout.value.displayName}"/></option>
+		</c:forEach>
+
 		<!-- 
 		| CSL layouts
 		 -->
 		<c:forEach var="mapEntry" items="${command.cslLayoutMap}">
-			<option value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'><c:out value="${mapEntry.value.displayName}"/></option>	
+			<option value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'><c:out value="${mapEntry.value.displayName}"/></option>
 		</c:forEach>
-		
-		
-		<c:if test="/layout/custom/${pathAndQueryString}">
-			<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
-			<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-		</c:if>
+
 		<c:forEach var="mapEntry" items="${command.layoutMap}">
 			<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
 				<c:choose>

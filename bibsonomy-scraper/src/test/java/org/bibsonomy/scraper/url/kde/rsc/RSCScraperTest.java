@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.rsc;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,20 +40,25 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class RSCScraperTest {
+	String resultDirectory = "rsc/";
 
 	/**
 	 * starts URL test with id url_223
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c", RSCScraper.class, "RSCScraperUnitTest1.bib");
+		final String url = "http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c";
+		final String resultFile = resultDirectory + "RSCScraperUnitTest1.bib";
+		assertScraperResult(url, RSCScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_247
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&utm_content=Google+Reader", RSCScraper.class, "RSCScraperUnitTest2.bib");
+		final String url = "http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&utm_content=Google+Reader";
+		final String resultFile = resultDirectory + "RSCScraperUnitTest2.bib";
+		assertScraperResult(url, RSCScraper.class, resultFile);
 	}
 
 }

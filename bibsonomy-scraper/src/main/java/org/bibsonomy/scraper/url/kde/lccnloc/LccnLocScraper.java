@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +47,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author Mohammed Abed
  */
+//catalog.loc.gov is protected by cloudflare
 public class LccnLocScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Library of Congress";
@@ -61,6 +65,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
 
 		try {
 			/*
@@ -72,7 +77,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 				if(m.find()) {
 					final String xml = WebUtils.getContentAsString(new URL(m.group(1) + "/dc"));
 					String bibtexResult = RIS2BIB.toBibtex(xml);
-					bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", m.group(1).toString());
+					bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", m.group(1).toString());
 					scrapingContext.setBibtexResult(bibtexResult);
 					return true;
 				}
@@ -83,7 +88,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			else if (scrapingContext.getUrl().toString().endsWith("/dc")) {
 				final String xml = WebUtils.getContentAsString(scrapingContext.getUrl());
 				String bibtexResult = RIS2BIB.toBibtex(xml);
-				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", scrapingContext.getUrl().toString().replaceFirst("/dc", ""));
+				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", scrapingContext.getUrl().toString().replaceFirst("/dc", ""));
 				scrapingContext.setBibtexResult(bibtexResult);
 				return true;
 			}
@@ -93,7 +98,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			else if (!scrapingContext.getUrl().toString().endsWith("/dc")){
 				final String xml = WebUtils.getContentAsString(new URL(scrapingContext.getUrl().toString() + "/dc"));
 				String bibtexResult = RIS2BIB.toBibtex(xml);
-				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "site-url", scrapingContext.getUrl().toString());
+				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", scrapingContext.getUrl().toString());
 				scrapingContext.setBibtexResult(bibtexResult);
 				return true;
 			}

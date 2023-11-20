@@ -1,6 +1,40 @@
+/**
+ * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.search.es.search.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.bibsonomy.common.Pair;
@@ -10,7 +44,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.PersonOrder;
+import org.bibsonomy.model.enums.PersonSortKey;
 import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
@@ -28,17 +62,13 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * elasticsearch implementation of the {@link PersonSearch} interface
@@ -135,31 +165,42 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 		final BoolQueryBuilder filterQuery = this.buildFilterQuery(query);
 		if (present(personQuery)) {
-			/*
-			 * maybe some of tokens of the query contain the title of a publication of the author
-			 */
-			final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
-			resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-							.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
-							.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
-							.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
-							.tieBreaker(0.8f)
-							.boost(4);
-			final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
+			// Build the main search query
+			final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
 
+			// If quotes are used for an exact search, the query uses a query string. Otherwise uses multi match for more fuzziness
+			if (personQuery.chars().filter(ch -> ch == '"').count() > 0) {
+				final QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery(personQuery)
+						.defaultOperator(Operator.AND);
+				// set the type to phrase prefix match
+				queryStringQueryBuilder.analyzeWildcard(true).tieBreaker(1f);
+
+				mainSearchQuery.should(queryStringQueryBuilder);
+			} else {
+				/*
+				 * maybe some of tokens of the query contain the title of a publication of the author
+				 */
+				final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
+				resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+						.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
+						.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
+						.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
+						.tieBreaker(0.8f)
+						.boost(4);
+
+				final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
+				mainSearchQuery.should(childSearchQuery);
+
+				final QueryBuilder nameQuery = this.getNameQuery(query);
+				mainSearchQuery.should(nameQuery);
+			}
+
+			// Inner hits query for relations
 			final HasChildQueryBuilder childQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, QueryBuilders.matchAllQuery(), ScoreMode.None);
 			final InnerHitBuilder innerHit = new InnerHitBuilder();
 			childQuery.innerHit(innerHit);
 
-			final QueryBuilder nameQuery = this.getNameQuery(query);
-
-			/*
-			 * build the search query
-			 */
-			final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
-			mainSearchQuery.should(nameQuery);
-			mainSearchQuery.should(childSearchQuery);
-
+			// Add to main query
 			mainQuery.must(mainSearchQuery);
 			mainQuery.should(childQuery);
 		}
@@ -189,7 +230,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, PersonFields.MAIN_NAME_PREFIX));
 		}
 
@@ -222,7 +263,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
-		final PersonOrder order = query.getOrder();
+		final PersonSortKey order = query.getOrder();
 		if (present(order)) {
 			switch (order) {
 				case RANK:

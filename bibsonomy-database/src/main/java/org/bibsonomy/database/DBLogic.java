@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,6 +32,20 @@ package org.bibsonomy.database;
 import static org.bibsonomy.util.ValidationUtils.assertNotNull;
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.auth.util.SimpleAuthUtils;
@@ -46,7 +63,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
@@ -169,22 +186,8 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.Sets;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.ValidationUtils;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * Database Implementation of the LogicInterface
@@ -764,10 +767,7 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
 			// TODO maybe clean up, firstSortKey only there to not change the buildParam signature
-			SortKey firstSortKey = null;
-			if (present(sortCriteria)) {
-				firstSortKey = sortCriteria.get(0).getSortKey();
-			}
+			final SortKey firstSortKey = SortUtils.getFirstSortKey(sortCriteria);
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, resourceType, queryScope, grouping, groupingName, tags, hash, firstSortKey, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the sort order
@@ -842,7 +842,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ObjectMovedException, ObjectNotFoundException {
-		try (DBSession session = this.openSession()) {
+		try (final DBSession session = this.openSession()) {
 			return this.getPostDetails(resourceHash, userName, session);
 		}
 	}
@@ -953,13 +953,21 @@ public class DBLogic implements LogicInterface {
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
+
+			// set group tagsets
 			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+
+			// set preset tags
+			myGroup.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
+
+			// set pending memberships
 			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
 				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 				if (present(pendingMembershipsGroup)) {
 					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
 				}
 			}
+
 			return myGroup;
 		}
 	}
@@ -1375,6 +1383,7 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, hasAdminPrivileges, session);
+			group.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1542,6 +1551,34 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
+				break;
+			case DELETE_PRESET_TAG:
+			case UPDATE_PRESET_TAG:
+				if(!this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR)) {
+					throw new AccessDeniedException("You are not allowed to edit preset tags.");
+				}
+
+				final List<Tag> oldPresetTags = group.getPresetTags();
+				final List<Tag> newPresetTags = paramGroup.getPresetTags();
+				final Map<String, Tag> oldPresetTagMap = GroupUtils.buildPresetTagMap(oldPresetTags);
+				final Map<String, Tag> newPresetTagMap = GroupUtils.buildPresetTagMap(newPresetTags);
+
+				// add new preset tags
+				for (final Tag newTag : newPresetTags) {
+					String newTagName = newTag.getName();
+					// check if tag is actually new or has a changed description
+					if (!oldPresetTagMap.containsKey(newTagName) ||
+							!oldPresetTagMap.get(newTagName).getDescription().equals(newTag.getDescription())) {
+						this.groupDBManager.createOrUpdatePresetTag(group, newTag, session);
+					}
+				}
+
+				// delete preset tags
+				for (final Tag oldTag : oldPresetTags) {
+					if (!newPresetTagMap.containsKey(oldTag.getName())) {
+						this.groupDBManager.removePresetTag(group, oldTag, session);
+					}
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
@@ -3289,7 +3326,7 @@ public class DBLogic implements LogicInterface {
 	 * @param operation		the desired update operation
 	 */
 	@Override
-	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
+	public void updatePerson(final Person person, final PersonOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
 
 		// at least the person id must be set (to know which person should be updated)
@@ -3324,50 +3361,35 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
 			}
 
-			/*
-			 * check for email, homepage - can only be edited if the loggedin user claimed
-			 * the person (but admins can edit infos anyway)
-			 */
-			if (!personClaimed && Sets.asSet(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-			}
-
 			// TODO: this should be done in the manager
 			person.setChangeDate(new Date());
 			person.setChangedBy(this.loginUser.getName());
 
 			switch (operation) {
-				case UPDATE_ORCID: 
-					this.personDBManager.updateOrcid(person, session);
-					break;
-				case UPDATE_RESEARCHERID:
-					this.personDBManager.updateResearcherid(person, session);
-					break;
-				case UPDATE_ACADEMIC_DEGREE:
-					this.personDBManager.updateAcademicDegree(person, session);
-					break;
-				case UPDATE_NAMES:
-					this.updatePersonNames(person, session);
-					break;
-				case UPDATE_COLLEGE:
-					this.personDBManager.updateCollege(person, session);
-					break;
-				case UPDATE_EMAIL:
-					this.personDBManager.updateEmail(person, session);
-					break;
-				case UPDATE_HOMEPAGE:
-					this.personDBManager.updateHomepage(person, session);
-					break;
-				case LINK_USER:
-					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
-					// first unlink with the old person
-					this.personDBManager.unlinkUser(claimedUser, session);
-					this.personDBManager.updateUserLink(person, session);
-					break;
 				case UPDATE_ALL:
 					this.personDBManager.updatePerson(person, session);
 					// TODO: why is this not called in the manager?
 					this.updatePersonNames(person, session);
+					break;
+				case UPDATE_DETAILS:
+					this.personDBManager.updatePerson(person, session);
+					break;
+				case UPDATE_NAMES:
+					this.updatePersonNames(person, session);
+					break;
+				case UPDATE_ADDITIONAL_KEYS:
+					// TODO (kch) refactor updating additional keys
+					break;
+				case LINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// first unlink with the old user
+					this.personDBManager.unlinkUser(claimedUser, session);
+					this.personDBManager.updateUserLink(person, session);
+					break;
+				case UNLINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// unlink with the user
+					this.personDBManager.unlinkUser(claimedUser, session);
 					break;
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");
@@ -3471,33 +3493,6 @@ public class DBLogic implements LogicInterface {
 	public Person getPersonByAdditionalKey(final String key, final String value) {
 		try (final DBSession session = this.openSession()) {
 			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
-	 */
-	@Override
-	public void removePersonName(final Integer personChangeId) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.removePersonName(personChangeId, this.loginUser, session);
-		}
-	}
-
-	@Override
-	public void createPersonName(final PersonName personName) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.createPersonName(personName, session);
-		}
-	}
-
-	@Override
-	public void unlinkUser(final String username) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.unlinkUser(username, session);
 		}
 	}
 
@@ -3693,12 +3688,24 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(MetaDataQuery<R> query) {
-		return this.getMetaDataProvider(query).getMetaData(query);
+	public <R> R getMetaData(final User loggedInUser, final MetaDataQuery<R> query) {
+		return this.getMetaDataProvider(query).getMetaData(loggedInUser, query);
 	}
 
 	private <R> MetaDataProvider<R> getMetaDataProvider(MetaDataQuery<R> query) {
 		return (MetaDataProvider<R>) this.metaDataProvidersMap.get(query.getClass());
+	}
+
+	/**
+	 *
+	 * @param personID
+	 * @return the match with given personID
+	 */
+	@Override
+	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
+		try (final DBSession session = this.openSession()) {
+			return personDBManager.getPhdAdvisorRecForPerson(personID, session);
+		}
 	}
 
 	/**
@@ -3748,17 +3755,5 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void setLoginUser(User loginUser) {
 		this.loginUser = loginUser;
-	}
-
-	/**
-	 *
-	 * @param personID
-	 * @return the match with given personID
-	 */
-	@Override
-	public List<PhDRecommendation> getPhdAdvisorRecForPerson(String personID) {
-		try (final DBSession session = this.openSession()) {
-			return personDBManager.getPhdAdvisorRecForPerson(personID, session);
-		}
 	}
 }

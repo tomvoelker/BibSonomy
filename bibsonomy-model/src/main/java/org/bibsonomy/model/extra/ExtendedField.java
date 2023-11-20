@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,10 +29,13 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
-/**
- */
+@Getter
+@Setter
 public class ExtendedField {
 
 	private Date created;
@@ -38,59 +44,4 @@ public class ExtendedField {
 	private String key;
 	private String value;
 
-	/**
-	 * @return created
-	 */
-	public Date getCreated() {
-		return this.created;
-	}
-
-	/**
-	 * @param created
-	 */
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	/**
-	 * @return lastModified
-	 */
-	public Date getLastModified() {
-		return this.lastModified;
-	}
-
-	/**
-	 * @param lastModified
-	 */
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
-	}
-
-	/**
-	 * @return key
-	 */
-	public String getKey() {
-		return this.key;
-	}
-
-	/**
-	 * @param key
-	 */
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	/**
-	 * @return value
-	 */
-	public String getValue() {
-		return this.value;
-	}
-
-	/**
-	 * @param value
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
 }

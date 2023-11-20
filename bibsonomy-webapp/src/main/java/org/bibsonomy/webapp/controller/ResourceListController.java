@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +28,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.webapp.controller;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,15 +70,6 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.command.TagCloudCommand;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * controller for retrieving multiple windowed lists with resources. 
@@ -155,7 +158,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			/*
 			 * check user's settings
 			 */
-			if (this.userSettings.getIsMaxCount()) {
+			if (this.userSettings.isMaxCount()) {
 				tagSortKey = SortKey.FREQUENCY;
 				tagMax = Math.min(max, this.userSettings.getTagboxMaxCount());
 			} else {
@@ -281,7 +284,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		}
 		
 		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage()) ||
-				! ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
+				!ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}

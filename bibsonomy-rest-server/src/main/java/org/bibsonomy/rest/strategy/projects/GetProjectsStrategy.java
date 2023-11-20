@@ -1,3 +1,32 @@
+/**
+ * BibSonomy-Rest-Server - The REST-server.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.rest.strategy.projects;
 
 import org.bibsonomy.model.cris.Project;
@@ -18,7 +47,11 @@ import java.util.List;
 public class GetProjectsStrategy extends AbstractGetListStrategy<List<Project>> {
 	private final String internalId;
 
-	public GetProjectsStrategy(Context context) {
+	/**
+	 * default constructor
+	 * @param context
+	 */
+	public GetProjectsStrategy(final Context context) {
 		super(context);
 		internalId = context.getStringAttribute("internalId", null);
 	}
@@ -29,7 +62,7 @@ public class GetProjectsStrategy extends AbstractGetListStrategy<List<Project>> 
 	}
 
 	@Override
-	protected void render(Writer writer, List<Project> resultList) {
+	protected void render(final Writer writer, final List<Project> resultList) {
 		this.getRenderer().serializeProjects(writer, resultList, this.getView());
 	}
 

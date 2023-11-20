@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,45 +29,20 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 
 /**
  * @author philipp
  */
+@Getter
+@Setter
 public class ExtendedFieldList {
     
     private String key;
     
     private ArrayList<String> valueList = new ArrayList<String>();
 
-	/**
-	 * @param key the key to set
-	 */
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	/**
-	 * @return the key
-	 */
-	public String getKey() {
-		return key;
-	}
-	
-	/**
-	 * @param valueList 
-	 */
-	public void setValueList(ArrayList<String> valueList) {
-		this.valueList = valueList;
-	}
-
-	/**
-	 * @return the valueList
-	 */
-	public ArrayList<String> getValueList() {
-		return valueList;
-	}
-    
-    
-    
 }

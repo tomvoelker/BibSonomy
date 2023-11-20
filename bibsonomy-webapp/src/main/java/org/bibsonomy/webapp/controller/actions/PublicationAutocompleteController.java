@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +32,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -49,8 +53,11 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
+import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
+import org.bibsonomy.scraper.url.kde.arxiv.ArxivUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.util.SortUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.PublicationAutocompleteCommand;
@@ -88,15 +95,21 @@ public class PublicationAutocompleteController implements MinimalisticController
 		final List<Post<BibTex>> allPosts = new LinkedList<>();
 		final String isbn = ISBNUtils.extractISBN(rawSearch);
 		final String doi = DOIUtils.extractDOI(rawSearch);
+		final String arxiv = ArxivUtils.extractStrictArxivIdentifier(rawSearch);
 
-		// handle isbn and doi and get the publication from the source
+		// handle isbn, doi and arxiv number and get the publication from the source
 		if (present(isbn)) {
 			final Post<BibTex> post = callScraper(new ISBNScraper(), isbn);
 			if (present(post)) {
 				allPosts.add(post);
 			}
-		} else if (present(doi)) {
+		} else if (present(doi) || UrlUtils.isUrl(rawSearch)) {
 			final Post<BibTex> post = callScraper(this.scrapers, doi);
+			if (present(post)) {
+				allPosts.add(post);
+			}
+		} else if (present(arxiv)) {
+			final Post<BibTex> post = callScraper(new ArxivScraper(), arxiv);
 			if (present(post)) {
 				allPosts.add(post);
 			}
@@ -149,7 +162,8 @@ public class PublicationAutocompleteController implements MinimalisticController
 	 */
 	private static Post<BibTex> callScraper(final Scraper scraper, final String text) {
 		try {
-			final ScrapingContext context = new ScrapingContext(null, text);
+			final URL url = UrlUtils.isUrl(text) ? new URL(text) : null;
+			final ScrapingContext context = new ScrapingContext(url, text);
 			final boolean scrape = scraper.scrape(context);
 			if (scrape) {
 				final String result = context.getBibtexResult();

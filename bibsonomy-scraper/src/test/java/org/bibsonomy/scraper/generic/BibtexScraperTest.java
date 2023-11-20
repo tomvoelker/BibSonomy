@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BibtexScraperTest {
+	String resultDirectory = "bibtex/";
 	
 	/**
 	 * starts URL test with id url_115
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://en.wikipedia.org/wiki/BibTeX", BibtexScraper.class, "BibtexScraperUnitURLTest1.bib");
+		final String url = "https://en.wikipedia.org/wiki/BibTeX";
+		final String resultFile = resultDirectory + "BibtexScraperUnitURLTest1.bib";
+		assertScraperResult(url, BibtexScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,7 +59,9 @@ public class BibtexScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("https://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter", BibtexScraper.class, "BibtexScraperUnitURLTest2.bib");
+		final String url = "https://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter";
+		final String resultFile = resultDirectory + "BibtexScraperUnitURLTest2.bib";
+		assertScraperResult(url, BibtexScraper.class, resultFile);
 	}
 	
 }

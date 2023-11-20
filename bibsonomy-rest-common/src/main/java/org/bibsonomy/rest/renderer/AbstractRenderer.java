@@ -1,32 +1,61 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
- * <p>
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
- * <p>
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.rest.renderer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.Reader;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
@@ -126,32 +155,11 @@ import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.Reader;
-import java.io.Writer;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 /**
+ * Abstract renderer
+ *
+ * TODO: add more documentation
+ *
  * @author dzo
  */
 public abstract class AbstractRenderer implements Renderer {
@@ -350,8 +358,9 @@ public abstract class AbstractRenderer implements Renderer {
 
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
 		// set user
-		final String userName = (present(post.getUser())) ? post.getUser().getName() : "";
-		if (present(post.getUser())) {
+		final User user = post.getUser();
+		final String userName = (present(user)) ? user.getName() : "";
+		if (present(userName)) {
 			final UserType xmlUser = new UserType();
 			xmlUser.setName(userName);
 			xmlUser.setHref(this.urlRenderer.createHrefForUser(userName));
@@ -374,6 +383,7 @@ public abstract class AbstractRenderer implements Renderer {
 			for (final Tag t : tags) {
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
+				xmlTag.setDescription(t.getDescription());
 				xmlTag.setHref(this.urlRenderer.createHrefForTag(t.getName()));
 				xmlPost.getTag().add(xmlTag);
 			}
@@ -444,7 +454,7 @@ public abstract class AbstractRenderer implements Renderer {
 		if (resource instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
 			final BookmarkType xmlBookmark = new BookmarkType();
-			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
+			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(user.getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
 			xmlBookmark.setIntrahash(bookmark.getIntraHash());
 			xmlBookmark.setTitle(bookmark.getTitle());
@@ -875,6 +885,7 @@ public abstract class AbstractRenderer implements Renderer {
 	private TagType createXmlTag(final Tag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
 		xmlTag.setName(tag.getName());
+		xmlTag.setDescription(tag.getDescription());
 		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
 		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
@@ -964,6 +975,9 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(xmlGroup::setDescription, group::getDescription);
 		setValue(xmlGroup::setRealname, group::getRealname);
 		setValue(xmlGroup::setHomepage, group::getHomepage, URL::toString);
+		if (present(group.getPresetTags())) {
+			setCollectionValue(xmlGroup.getPresetTags(), group.getPresetTags(), this::createXmlTag);
+		}
 		setValue(xmlGroup::setInternalId, group::getInternalId);
 		setValue(xmlGroup::setParent, group::getParent, this::createXmlGroup);
 		setValue(xmlGroup::setHref, group::getName, urlRenderer::createHrefForGroup);
@@ -1430,7 +1444,9 @@ public abstract class AbstractRenderer implements Renderer {
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroups() != null) {
-			return xmlDoc.getGroups().getGroup().stream().map(this::createGroup).collect(Collectors.toList());
+			return xmlDoc.getGroups().getGroup().stream()
+							.map(this::createGroup)
+							.collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1439,7 +1455,7 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public List<Post<? extends Resource>> parsePostList(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
+	public List<Post<? extends Resource>> parsePostList(final Reader reader, final DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<Post<? extends Resource>> posts = new LinkedList<>();
@@ -1464,7 +1480,9 @@ public abstract class AbstractRenderer implements Renderer {
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
-			return xmlDoc.getTags().getTag().stream().map(this::createTag).collect(Collectors.toList());
+			return xmlDoc.getTags().getTag().stream()
+							.map(this::createTag)
+							.collect(Collectors.toList());
 		}
 		if (xmlDoc.getError() != null) {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
@@ -1650,6 +1668,10 @@ public abstract class AbstractRenderer implements Renderer {
 		setValue(group::setDescription, xmlGroup::getDescription);
 		setValue(group::setRealname, xmlGroup::getRealname);
 		setValue(group::setHomepage, xmlGroup::getHomepage, AbstractRenderer::createURL);
+		if (present(xmlGroup.getPresetTags())) {
+			group.setPresetTags(xmlGroup.getPresetTags().stream().map(this::createTag)
+					.collect(Collectors.toList()));
+		}
 		setCollectionValue(group.getMemberships(), xmlGroup.getUser(), u -> createGroupMembership(createUser(u)));
 		setValue(group::setOrganization, xmlGroup::getOrganization, Boolean::parseBoolean);
 		setValue(group::setInternalId, xmlGroup::getInternalId);
@@ -1695,11 +1717,10 @@ public abstract class AbstractRenderer implements Renderer {
 
 		final Tag tag = new Tag();
 		tag.setName(xmlTag.getName());
-		// TODO tag count  häh?
+		tag.setDescription(xmlTag.getDescription());
 		if (xmlTag.getGlobalcount() != null) {
 			tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
 		}
-		// TODO tag count  häh?
 		if (xmlTag.getUsercount() != null) {
 			tag.setUsercount(xmlTag.getUsercount().intValue());
 		}
@@ -1732,7 +1753,7 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @return the converted post
 	 * @throws PersonListParserException
 	 */
-	public Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
+	private Post<Resource> createCommunityPost(final PostType xmlPost) throws PersonListParserException {
 		this.xmlModelValidator.checkStandardPost(xmlPost);
 
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
@@ -1760,6 +1781,16 @@ public abstract class AbstractRenderer implements Renderer {
 	 * @throws PersonListParserException
 	 */
 	protected Post<Resource> createPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
+		final boolean isCommunityPost = this.isCommunityPost(xmlPost);
+
+		if (isCommunityPost) {
+			return this.createCommunityPost(xmlPost);
+		}
+
+		return this.createNormalPost(xmlPost, uploadedFileAccessor);
+	}
+
+	protected Post<Resource> createNormalPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
 		this.xmlModelValidator.checkPost(xmlPost);
 
 		// create post, user and date
@@ -1771,6 +1802,7 @@ public abstract class AbstractRenderer implements Renderer {
 
 			final Tag tag = new Tag();
 			tag.setName(xmlTag.getName());
+			tag.setDescription(xmlTag.getDescription());
 			post.getTags().add(tag);
 		}
 
@@ -1848,6 +1880,10 @@ public abstract class AbstractRenderer implements Renderer {
 		return post;
 	}
 
+	private boolean isCommunityPost(final PostType xmlPost) {
+		return present(xmlPost.getGoldStandardPublication()); // TODO: add goldstandard bookmark
+	}
+
 	/**
 	 * @param xmlPost
 	 * @return
@@ -1855,12 +1891,12 @@ public abstract class AbstractRenderer implements Renderer {
 	private Post<Resource> createPostWithUserAndDate(final PostType xmlPost) {
 		final Post<Resource> post = new Post<>();
 		post.setDescription(xmlPost.getDescription());
+		post.setDate(createDate(xmlPost.getPostingdate()));
+		post.setChangeDate(createDate(xmlPost.getChangedate()));
 
 		// user
 		final User user = this.createUser(xmlPost);
 		post.setUser(user);
-		post.setDate(createDate(xmlPost.getPostingdate()));
-		post.setChangeDate(createDate(xmlPost.getChangedate()));
 		return post;
 	}
 

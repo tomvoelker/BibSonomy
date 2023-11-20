@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,8 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
@@ -36,6 +41,8 @@ import org.bibsonomy.model.Post;
  * 
  * @author fba
  */
+@Getter
+@Setter
 public class GeneralAjaxCommand extends AjaxCommand<String> {
 	/**
 	 * page title
@@ -82,90 +89,6 @@ public class GeneralAjaxCommand extends AjaxCommand<String> {
 	@Override
 	public void setPageTitle(final String pageTitle) {
 		this.pageTitle = pageTitle;
-	}
-
-	/**
-	 * @return the pageURL
-	 */
-	public String getPageURL() {
-		return this.pageURL;
-	}
-
-	/**
-	 * @param pageURL the pageURL to set
-	 */
-	public void setPageURL(final String pageURL) {
-		this.pageURL = pageURL;
-	}
-
-	/**
-	 * @return the pageDescription
-	 */
-	public String getPageDescription() {
-		return this.pageDescription;
-	}
-
-	/**
-	 * @param pageDescription the pageDescription to set
-	 */
-	public void setPageDescription(final String pageDescription) {
-		this.pageDescription = pageDescription;
-	}
-
-	/**
-	 * @return the pageKeywords
-	 */
-	public String getPageKeywords() {
-		return this.pageKeywords;
-	}
-
-	/**
-	 * @param pageKeywords the pageKeywords to set
-	 */
-	public void setPageKeywords(final String pageKeywords) {
-		this.pageKeywords = pageKeywords;
-	}
-
-	/**
-	 * @return the q
-	 */
-	public String getQ() {
-		return this.q;
-	}
-
-	/**
-	 * @param q the q to set
-	 */
-	public void setQ(final String q) {
-		this.q = q;
-	}
-
-	/**
-	 * @return the requestedUser
-	 */
-	public String getRequestedUser() {
-		return this.requestedUser;
-	}
-
-	/**
-	 * @param requestedUser the requestedUser to set
-	 */
-	public void setRequestedUser(final String requestedUser) {
-		this.requestedUser = requestedUser;
-	}
-
-	/**
-	 * @return the bibtexPosts
-	 */
-	public List<Post<BibTex>> getBibtexPosts() {
-		return this.bibtexPosts;
-	}
-
-	/**
-	 * @param bibtexPosts the bibtexPosts to set
-	 */
-	public void setBibtexPosts(final List<Post<BibTex>> bibtexPosts) {
-		this.bibtexPosts = bibtexPosts;
 	}
 
 }

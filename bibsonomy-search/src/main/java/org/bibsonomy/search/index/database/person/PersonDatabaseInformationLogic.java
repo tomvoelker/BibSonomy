@@ -1,3 +1,32 @@
+/**
+ * BibSonomy Search - Helper classes for search modules.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.search.index.database.person;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -5,36 +34,36 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+import org.bibsonomy.search.model.SearchIndexDualState;
+import org.bibsonomy.search.model.SearchIndexState;
 
 import java.util.Date;
 
 /**
- * implementation to get dbstate for {@link org.bibsonomy.model.Person} index updates
+ * implementation to get the sync target for {@link org.bibsonomy.model.Person} index updates
  *
  * @author dzo
  */
-public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<SearchIndexDualSyncState> {
+public class PersonDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<SearchIndexDualState> {
 
 	@Override
-	public SearchIndexDualSyncState getDbState() {
+	public SearchIndexDualState getDbState() {
 		try (final DBSession session = this.openSession()) {
-			final DefaultSearchIndexSyncState searchIndexSyncState = new DefaultSearchIndexSyncState();
+			final SearchIndexState searchIndexState = new SearchIndexState();
 			final Integer personChangeId = this.queryForObject("getLastPersonChangeId", Integer.class, session);
-			searchIndexSyncState.setLastPostContentId(personChangeId);
+			searchIndexState.setEntityId(personChangeId);
 			Date logDate = this.queryForObject("getLastPersonChangeLogDate", Date.class, session);
 			// if there is no log entry return the current date time as last log date
 			if (!present(logDate)) {
 				logDate = new Date();
 			}
-			searchIndexSyncState.setLast_log_date(logDate);
+			searchIndexState.setEntityLogDate(logDate);
 
-			// both persons and person resource relations are using the same database id
-			final SearchIndexDualSyncState state = new SearchIndexDualSyncState();
-			state.setFirstState(searchIndexSyncState);
-			state.setSecondState(searchIndexSyncState);
-			return state;
+			final SearchIndexDualState dualState = new SearchIndexDualState();
+			dualState.setFirstState(searchIndexState);
+			dualState.setSecondState(searchIndexState);
+
+			return dualState;
 		}
 	}
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,11 +29,11 @@
  */
 package org.bibsonomy.rest;
 
+import java.util.List;
 
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
-
-import java.util.List;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -53,14 +56,9 @@ public class ViewModel {
 	private int endValue;
 
 	/**
-	 * List of sorting key attribute
+	 * a list of sort criteria
 	 */
-	private List<SortKey> sortKeys;
-
-	/**
-	 * List of sorting order
-	 */
-	private List<SortOrder> sortOrders;
+	private List<SortCriteria> sortCriteria;
 
 	/**
 	 * @return Returns the urlToNextResources.
@@ -107,19 +105,17 @@ public class ViewModel {
 		this.startValue = startValue;
 	}
 
-	public List<SortKey> getSortKeys() {
-		return sortKeys;
+	/**
+	 * @return the sortCriteria
+	 */
+	public List<SortCriteria> getSortCriteria() {
+		return sortCriteria;
 	}
 
-	public void setSortKeys(List<SortKey> sortKeys) {
-		this.sortKeys = sortKeys;
-	}
-
-	public List<SortOrder> getSortOrders() {
-		return sortOrders;
-	}
-
-	public void setSortOrders(List<SortOrder> sortOrders) {
-		this.sortOrders = sortOrders;
+	/**
+	 * @param sortCriteria the sortCriteria to set
+	 */
+	public void setSortCriteria(List<SortCriteria> sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 }

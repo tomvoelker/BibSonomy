@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -205,7 +208,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 
 			if (present(newPostInDB)) {
-				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
+				log.debug("gold standard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(PostUtils.getKeyForCommunityPost(post), errorMessage);
 				session.commitTransaction();
@@ -241,7 +244,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		insert.setRequestedContentId(post.getContentId().intValue());
 		insert.setUserName(present(post.getUser()) ? post.getUser().getName() : "");
 		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
-		insert.setApproved(post.getApproved());
+		insert.setApproved(post.isApproved());
 
 		return insert;
 	}
@@ -295,7 +298,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 
 			if (present(newPostInDB) && !oldHash.equals(resourceHash)) {
-				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
+				log.debug("gold standard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(resourceHash, errorMessage);
 
@@ -331,7 +334,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return this.deletePost(resourceHash, loggedinUser, false, session);
 	}
 
-	protected boolean deletePost(final String resourceHash, User loggedinUser, final boolean update, final DBSession session) {
+	protected boolean deletePost(final String resourceHash, final User loggedinUser, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
@@ -489,13 +492,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 */
 	public void setChain(Chain<List<Post<R>>, QueryAdapter<PostQuery<R>>> chain) {
 		this.chain = chain;
-	}
-
-	/**
-	 * @return the statisticsChain
-	 */
-	public Chain<Statistics, QueryAdapter<PostQuery<R>>> getStatisticsChain() {
-		return statisticsChain;
 	}
 
 	/**

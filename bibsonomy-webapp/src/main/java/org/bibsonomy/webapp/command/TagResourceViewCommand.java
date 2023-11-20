@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -41,11 +46,11 @@ import java.util.StringTokenizer;
  * 
  * @author Michael Wagner
  */
+@Getter
+@Setter
 public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	
-	/**
-	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  
-	 */
+	/** the selected search type such as 'group', 'search', 'sharedResourceSearch' */
 	private QueryScope scope = QueryScope.LOCAL;
 	
 	/** tags to search for */
@@ -75,13 +80,28 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/** related users - needed for FolkRank */
 	private RelatedUserCommand relatedUserCommand = new RelatedUserCommand();
 
+	/** number of loginUser's posts for the requestedTags */
 	private int postCountForTagsForLoginUser = 0;
+
+	/** number of requestedUser's posts for the requestedTags */
 	private int postCountForTagsForRequestedUser = 0;
+
+	/** number of requestedGroup's posts for the requestedTags */
 	private int postCountForTagsForGroup = 0;
+
+	/**  number of all posts for the requestedTags */
 	private int postCountForTagsForAll = 0;
+
+	/** conceptsOfLoginUser (a list of tags) */
 	private List<Tag> conceptsOfLoginUser = new ArrayList<Tag>();
+
+	/** conceptsOfRequestedUser (a list of tags) */
 	private List<Tag> conceptsOfRequestedUser = new ArrayList<Tag>();
+
+	/** conceptsOfGroup (a list of tags) */
 	private List<Tag> conceptsOfGroup = new ArrayList<Tag>();
+
+	/** conceptsOfAll (a list of tags) */
 	private List<Tag> conceptsOfAll = new ArrayList<Tag>();
 	
 	/**
@@ -99,14 +119,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 		}
 		return this.requestedTagsList;
 	}
-	
-	/**
-	 * @return requested tags as string
-	 */
-	public String getRequestedTags() {
-		return this.requestedTags;
-	}
-	
+
 	/**
 	 * sets the requested tags
 	 * @param requestedTags 
@@ -116,215 +129,4 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 		this.requestedTags = requestedTags;
 	}
 
-	/**
-	 * @return command with related tags
-	 */
-	public RelatedTagCommand getRelatedTagCommand() {
-		return this.relatedTagCommand;
-	}
-	
-	/**
-	 * @return the relatedUserCommand
-	 */
-	public RelatedUserCommand getRelatedUserCommand() {
-		return this.relatedUserCommand;
-	}
-	
-	/**
-	 * @param relatedUserCommand
-	 */
-	public void setRelatedUserCommand(final RelatedUserCommand relatedUserCommand) {
-		this.relatedUserCommand = relatedUserCommand;
-	}
-
-	/**
-	 * @param relatedTagCommand command with related tags
-	 */
-	public void setRelatedTagCommand(final RelatedTagCommand relatedTagCommand) {
-		this.relatedTagCommand = relatedTagCommand;
-	}
-
-	/**
-	 * @return sortKey
-	 */
-	public SortKey getSortKey() {
-		return sortKey;
-	}
-
-	/**
-	 * @param sortKey	the sort key to set
-	 */
-	public void setSortKey(SortKey sortKey) {
-		this.sortKey = sortKey;
-	}
-
-	/**
-	 * Get list of sort criteria
-	 * @return sortCriteria
-	 */
-	public List<SortCriteria> getSortCriteria() {
-		return sortCriteria;
-	}
-
-	/**
-	 * @param sortCriteria	set the list of sort criteria
-	 */
-	public void setSortCriteria(List<SortCriteria> sortCriteria) {
-		this.sortCriteria = sortCriteria;
-	}
-
-	/**
-	 * @return the similarTags
-	 */
-	public RelatedTagCommand getSimilarTags() {
-		return this.similarTags;
-	}
-
-	/**
-	 * @param similarTags the similarTags to set
-	 */
-	public void setSimilarTags(final RelatedTagCommand similarTags) {
-		this.similarTags = similarTags;
-	}
-	
-	
-	/**
-	 * @param postCount
-	 */
-	public void setPostCountForTagsForLoginUser(final int postCount) {
-		this.postCountForTagsForLoginUser = postCount;
-	}
-
-	/**
-	 * @return  number of loginUser's posts for the requestedTags
-	 */
-	public int getPostCountForTagsForLoginUser() {
-		return postCountForTagsForLoginUser;
-	}
-	
-	/**
-	 * @param postCount
-	 */
-	public void setPostCountForTagsForRequestedUser(final int postCount) {
-		this.postCountForTagsForRequestedUser = postCount;
-	}
-
-	/**
-	 * @return number of requestedUser's posts for the requestedTags
-	 */
-	public int getPostCountForTagsForRequestedUser() {
-		return postCountForTagsForRequestedUser;
-	}
-	
-	/**
-	 * @param postCount
-	 */
-	public void setPostCountForTagsForGroup(final int postCount) {
-		this.postCountForTagsForGroup = postCount;
-	}
-
-	/**
-	 * @return number of requestedGroup's posts for the requestedTags
-	 */
-	public int getPostCountForTagsForGroup() {
-		return postCountForTagsForGroup;
-	}
-	
-	/**
-	 * @param postCount
-	 */
-	public void setPostCountForTagsForAll(final int postCount) {
-		this.postCountForTagsForAll = postCount;
-	}
-
-	/**
-	 * @return number of all posts for the requestedTags
-	 */
-	public int getPostCountForTagsForAll() {
-		return postCountForTagsForAll;
-	}
-	
-	/**
-	 * @param conceptsOfLoginUser
-	 */
-	public void setConceptsOfLoginUser(final List<Tag> conceptsOfLoginUser) {
-		this.conceptsOfLoginUser = conceptsOfLoginUser;
-	}
-
-	/**
-	 * @return conceptsOfLoginUser (a list of tags)
-	 */
-	public List<Tag> getConceptsOfLoginUser() {
-		return conceptsOfLoginUser;
-	}
-	
-	/**
-	 * @param conceptsOfRequestedUser
-	 */
-	public void setConceptsOfRequestedUser(final List<Tag> conceptsOfRequestedUser) {
-		this.conceptsOfRequestedUser = conceptsOfRequestedUser;
-	}
-
-	/**
-	 * @return conceptsOfRequestedUser (a list of tags)
-	 */
-	public List<Tag> getConceptsOfRequestedUser() {
-		return conceptsOfRequestedUser;
-	}
-	
-	/**
-	 * @param conceptsOfGroup
-	 */
-	public void setConceptsOfGroup(final List<Tag> conceptsOfGroup) {
-		this.conceptsOfGroup = conceptsOfGroup;
-	}
-
-	/**
-	 * @return conceptsOfGroup (a list of tags)
-	 */
-	public List<Tag> getConceptsOfGroup() {
-		return conceptsOfGroup;
-	}
-	
-	/**
-	 * @param conceptsOfAll
-	 */
-	public void setConceptsOfAll(final List<Tag> conceptsOfAll) {
-		this.conceptsOfAll = conceptsOfAll;
-	}
-
-	/**
-	 * @return conceptsOfAll (a list of tags)
-	 */
-	public List<Tag> getConceptsOfAll() {
-		return conceptsOfAll;
-	}
-
-	/**
-	 * @return the numberOfNormalTags
-	 */
-	public int getNumberOfNormalTags() {
-		return this.numberOfNormalTags;
-	}
-
-	/**
-	 * @param numberOfNormalTags the numberOfNormalTags to set
-	 */
-	public void setNumberOfNormalTags(int numberOfNormalTags) {
-		this.numberOfNormalTags = numberOfNormalTags;
-	}
-
-	/**
-	 * @return the selected search type such as 'group', 'search', 'sharedResourceSearch'
-	 */
-	public QueryScope getScope() {
-		return this.scope;
-	}
-
-	/**
-	 * @param scope the selected search type such as 'group', 'search', 'sharedResourceSearch'
-	 */
-	public void setScope(QueryScope scope) {
-		this.scope = scope;
-	}
 }

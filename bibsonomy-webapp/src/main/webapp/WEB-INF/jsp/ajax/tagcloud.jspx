@@ -9,8 +9,9 @@
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
     xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
-	
-	<tags:cloud requPath="${requPath}" tagSizeMode="user" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" showPlain="true"/>
-	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<div class="sidebar_collapse_content">
+		<tags:cloud requPath="${requPath}" tagSizeMode="user" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" showPlain="true"/>
+	</div>
 </jsp:root>

@@ -1,0 +1,34 @@
+<jsp:root version="2.0"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:modals="urn:jsptagdir:/WEB-INF/tags/person/modals"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+
+	<modals:addThesis command="${command}"/>
+	<!-- Add supervised thesis modal dialog -->
+	<modals:addSupervisedThesis command="${command}"/>
+	<!-- Add role modal dialog -->
+	<modals:addRole command="${command}"/>
+	<!-- Delete role modal dialog -->
+	<modals:deleteRole command="${command}"/>
+
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.ownPubTab" /></strong></a></li>
+		<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong><fmt:message key="person.show.rolePubTab" /></strong></a></li>
+	</ul>
+
+	<div class="tab-content pub-person-tab-content" >
+		<!-- Own Thesis tab content-->
+		<div id="ownThesis" class="tab-pane active">
+			<per:thesis command="${command}" thesis="${command.thesis}" isOwnThesis="${true}"/>
+		</div>
+
+		<!-- Related Thesis tab content -->
+		<div id="relatedThesis" class="tab-pane">
+			<per:thesis command="${command}" thesis="${command.advisedThesis}" isOwnThesis="${false}" />
+		</div>
+	</div>
+
+</jsp:root>

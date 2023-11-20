@@ -29,19 +29,6 @@
 		AND person_additional_keys.key_value = #keyValue#
 	</select>
 
-	<select id="getAdditionalKeyByPerson" resultMap="PersonCommon.additionalKey" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
-		SELECT key_name, key_value
-		FROM person_additional_keys
-		WHERE person_id = #personId#
-		AND key_name = #keyName#
-	</select>
-
-	<select id="getAdditionalKeysByPerson" resultMap="PersonCommon.additionalKey" parameterClass="string">
-		SELECT key_name, key_value
-		FROM person_additional_keys
-		WHERE person_id = #personId#
-	</select>
-
 	<insert id="insertPerson" parameterClass="person">
 		INSERT INTO person (<include refid="commonPersonColumnsPlain"/>)
 			VALUES (<include refid="insertPersonAttributes"/>)
@@ -73,6 +60,12 @@
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
 		SELECT <include refid="commonPersonNameColumns"/>
 		FROM person_name
+		WHERE person_id = #personId#
+	</select>
+
+	<select id="getAdditionalKeys" resultMap="PersonCommon.additionalKey" parameterClass="string">
+		SELECT <include refid="commonPersonAdditionalKeysColumns"/>
+		FROM person_additional_keys
 		WHERE person_id = #personId#
 	</select>
 
@@ -237,6 +230,19 @@
 		</isNotNull>
 		<!-- (AD) check is used to support full retrievals. Since the parameter object already ensures that
 		     limit and offset are both set or absent it is sufficient to check one parameter.-->
+	</select>
+
+	<select id="getThesisRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="org.bibsonomy.database.params.relations.GetPersonRelations">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		<include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+		<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE pub_person.person_id = #personId#
+		AND LOWER(b.entrytype) LIKE LOWER('%thesis%')
+		<isNotNull property="offset">
+			LIMIT #limit# OFFSET #offset#
+		</isNotNull>
 	</select>
 
 	<select id="countComunityBibTexRelationsForPerson" resultClass="int" parameterClass="bibtexParam">

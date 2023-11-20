@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,11 +29,16 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Bean for Concept Sites
  * 
  * @author Michael Wagner
  */
+@Getter
+@Setter
 public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the user whose resources are requested */
@@ -50,40 +58,5 @@ public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	public String getRequestedUser() {
 		return this.requestedUser;
 	}
-
-	/**
-	 * @param requestedUser the name of the user whose resources are requested
-	 */
-	@Override
-	public void setRequestedUser(String requestedUser) {
-		this.requestedUser = requestedUser;
-	}
 	
-	/**	
-	 * @return the name of the group that resources are requested
-	 */
-	public String getRequestedGroup() {
-		return this.requestedGroup;
-	}
-
-	/**
-	 * @param requestedGroup the group
-	 */
-	public void setRequestedGroup(String requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
-
-	/**
-	 * @return the concepts
-	 */
-	public ConceptsCommand getConcepts() {
-		return this.concepts;
-	}
-
-	/**
-	 * @param concepts
-	 */
-	public void setConcepts(ConceptsCommand concepts) {
-		this.concepts = concepts;
-	}	
 }

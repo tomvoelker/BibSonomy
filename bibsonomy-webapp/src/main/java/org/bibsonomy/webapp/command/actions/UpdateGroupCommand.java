@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,9 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 import java.net.URL;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -36,6 +42,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Command for the /updateGroup page
  * @author niebler
  */
+@Getter
+@Setter
 public class UpdateGroupCommand extends BaseCommand implements Serializable {
 	
 	// TODO: Find out why on earth spring needs this and remove it again!
@@ -52,83 +60,4 @@ public class UpdateGroupCommand extends BaseCommand implements Serializable {
 	private URL homepage;
 	private String description;
 
-	public Group getGroup() {
-		return group;
-	}
-
-	public void setGroup(Group group) {
-		this.group = group;
-	}
-
-	public String getGroupname() {
-		return groupname;
-	}
-
-	public void setGroupname(String groupName) {
-		this.groupname = groupName;
-	}
-
-	public GroupUpdateOperation getOperation() {
-		return operation;
-	}
-
-	public void setOperation(GroupUpdateOperation operation) {
-		this.operation = operation;
-	}
-
-	public int getPrivlevel() {
-		return privlevel;
-	}
-
-	public void setPrivlevel(int privlevel) {
-		this.privlevel = privlevel;
-	}
-
-	public int getSharedDocuments() {
-		return sharedDocuments;
-	}
-
-	public void setSharedDocuments(int sharedDocuments) {
-		this.sharedDocuments = sharedDocuments;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getRequestedGroup() {
-		return requestedGroup;
-	}
-
-	public void setRequestedGroup(String requestedGroup) {
-		this.requestedGroup = requestedGroup;
-	}
-
-	public String getRealname() {
-		return realname;
-	}
-
-	public void setRealname(String realname) {
-		this.realname = realname;
-	}
-
-	public URL getHomepage() {
-		return homepage;
-	}
-
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 }

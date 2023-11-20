@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -371,7 +374,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			return true;
 		} else {
 			// additionally check if the user is a member of one of the parent groups.
-			List<Integer> parentGroupIds = this.groupDb.getParentGroupsWhereUserIsMember(groupName, userName, session);
+			final List<Integer> parentGroupIds = this.groupDb.getParentGroupsWhereUserIsMember(groupName, userName, session);
 			return parentGroupIds.size() > 0;
 		}
 	}
@@ -503,7 +506,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		for (final Group group : loginUser.getGroups()) {
 			if (group.getName().equals(groupName)) {
-				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true).getGroupRole();
+				final GroupMembership groupMembershipForUser = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true);
+				if (!present(groupMembershipForUser)) {
+					/*
+					 * FIXME: this is caused by the transitive group membership of the user in the parent groups she
+					 * is a member of, please discuss: Should we use the lowest group role possible as the group role of the user?
+					 */
+					return false;
+				}
+				final GroupRole actualRole = groupMembershipForUser.getGroupRole();
 				if (present(actualRole)) {
 					return actualRole.hasRole(minimumRole);
 				}
@@ -577,7 +588,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureApprovalStatusAllowed(final Post<? extends Resource> post, final User loginUser) {
-		if (post.getApproved() && !this.ensureApprovePermission(loginUser)) {
+		if (post.isApproved() && !this.ensureApprovePermission(loginUser)) {
 			throw new AccessDeniedException();
 		}
 	}

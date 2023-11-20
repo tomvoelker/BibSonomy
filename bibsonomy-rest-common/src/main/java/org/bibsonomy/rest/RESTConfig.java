@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,13 +36,13 @@ import java.util.Date;
 
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
-
 /**
  * DO NOT CHANGE any constant values after a release
  *
  * @author dzo
  */
 public final class RESTConfig {
+
 	private RESTConfig() {
 		// noop
 	}
@@ -50,13 +53,15 @@ public final class RESTConfig {
 
 	public static final String POSTS_ADDED_SUB_PATH = "added";
 
+	public static final String RELATIONS_SUB_PATH = "relations";
+
+	public static final String POSTS_PERSON_SUB_PATH = "person";
+
 	public static final String POSTS_ADDED_URL = POSTS_URL + "/" + POSTS_ADDED_SUB_PATH;
 
 	public static final String POSTS_POPULAR_SUB_PATH = "popular";
 
 	public static final String PERIOD_INDEX = "periodIndex";
-
-	public static final String POSTS_POPULAR_URL = POSTS_URL + "/" + POSTS_POPULAR_SUB_PATH;
 
 	public static final String COMMUNITY_SUB_PATH = "community";
 
@@ -68,9 +73,7 @@ public final class RESTConfig {
 
 	public static final String TAGS_URL = "tags";
 
-	public static final String RELATION_PARAM = "relations";
-
-	public static final String REFERENCES_SUB_PATH = "references";
+	public static final String RELATION_PARAM = "relation";
 
 	public static final String RELATION_REFERENCE = GoldStandardRelation.REFERENCE.toString().toLowerCase();
 
@@ -82,11 +85,9 @@ public final class RESTConfig {
 
 	public static final String PROJECTS_URL = "projects";
 
-	public static final String ORGANIZATIONS_URL = "organizations";
-
 	public static final String CRIS_LINKS_URL = "cris_links";
 
-    public static final String PERSONS_MERGE_URL = "merge";
+	public static final String PERSONS_MERGE_URL = "merge";
 
 	public static final String DOCUMENTS_SUB_PATH = "documents";
 
@@ -109,6 +110,8 @@ public final class RESTConfig {
 	public static final String SORT_ORDER_PARAM = "sortorder";
 
 	public static final String CONCEPT_STATUS_PARAM = "status";
+
+	public static final String ORGANIZATION_PARAM = "organization";
 
 	public static final String SEARCH_PARAM = "search";
 
@@ -135,6 +138,15 @@ public final class RESTConfig {
 	public static final String CLIPBOARD_SUBSTRING = "clipboard";
 
 	public static final String CLIPBOARD_CLEAR = "clear";
+
+	/** the query name for a person id */
+	public static final String PERSON_ID_PARAM = "personId";
+
+	/** the query param name for an additional key for persons */
+	public static final String PERSON_ADDITIONAL_KEY_PARAM = "additionalKey";
+
+	/** the separator used to separate key and value */
+	public static final String PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR = "=";
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"

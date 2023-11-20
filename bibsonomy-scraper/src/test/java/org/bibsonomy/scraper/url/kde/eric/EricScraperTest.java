@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.eric;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,13 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class EricScraperTest {
+	String resultDirectory = "eric/";
 	
 	/**
 	 * starts URL test with id url_99
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&ERICExtSearch_SearchValue_0=star&searchtype=keyword&ERICExtSearch_SearchType_0=kw&_pageLabel=RecordDetails&objectId=0900019b802f2e44&accno=EJ786532&_nfls=false", EricScraper.class, "EricScraperUnitURLTest1.bib");
+		final String url = "https://eric.ed.gov/?q=EJ786532&id=EJ786532";
+		final String resultFile = resultDirectory + "EricScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, EricScraper.class, resultFile);
 	}
 	
 	/**
@@ -53,7 +59,9 @@ public class EricScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://eric.ed.gov/ERICWebPortal/custom/portlets/recordDetails/detailmini.jsp?_nfpb=true&_&ERICExtSearch_SearchValue_0=EJ523959&ERICExtSearch_SearchType_0=no&accno=EJ523959", EricScraper.class, "EricScraperUnitURLTest2.bib");
+		final String url = "https://eric.ed.gov/?id=EJ523959";
+		final String resultFile = resultDirectory + "EricScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, EricScraper.class, resultFile);
 	}
 
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,8 +46,6 @@ import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
  */
 public class UpdateUserPersonSettingsController extends SettingsPageController {
 	private static final Log log = LogFactory.getLog(UpdateUserPersonSettingsController.class);
-
-	private int maxQuerySize;
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {
@@ -86,13 +87,6 @@ public class UpdateUserPersonSettingsController extends SettingsPageController {
 		userSettings.setPersonPostsLayout(commandSettings.getPersonPostsLayout());
 		final String updatedUser = logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.debug("person settings of user " + updatedUser + " has been changed successfully");
-	}
-
-	/**
-	 * @param maxQuerySize the maxQuerySize to set
-	 */
-	public void setMaxQuerySize(int maxQuerySize) {
-		this.maxQuerySize = maxQuerySize;
 	}
 
 }

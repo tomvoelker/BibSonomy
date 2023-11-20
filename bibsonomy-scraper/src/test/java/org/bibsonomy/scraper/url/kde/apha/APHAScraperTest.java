@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.apha;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,6 +40,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class APHAScraperTest {
+	String resultDirectory = "apha/";
 
 	/**
 	 * starts URL test with id url_288 for the host ajph.aphapublications.org/
@@ -44,7 +48,7 @@ public class APHAScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.160184";
-		final String resultFile = "APHAScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "APHAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 	
@@ -54,9 +58,8 @@ public class APHAScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.181958";
-		final String resultFile = "APHAScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "APHAScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
-
 
 }

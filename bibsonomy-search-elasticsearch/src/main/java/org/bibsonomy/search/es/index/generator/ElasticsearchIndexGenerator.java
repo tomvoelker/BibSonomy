@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,13 +40,14 @@ import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.generator.IndexGenerationLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexState;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +59,7 @@ import java.util.Map;
  *
  * @author dzo
  */
-public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
+public class ElasticsearchIndexGenerator<T, S extends SearchIndexState> {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 
 	private final ESClient client;
@@ -77,7 +81,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 
 	@FunctionalInterface
 	protected interface Generator<E> {
-		List<E> getEntites(int lastContenId, int limit);
+		List<E> getEntities(int lastContenId, int limit);
 	}
 
 	/**
@@ -155,7 +159,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
 		}
 
-		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.GENERATING));
 	}
 
 	protected int retrieveNumberOfEntities() {
@@ -176,14 +180,16 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		// initialize variables
 		// FIXME: introduce a index state for each entity
 		final S newState = this.databaseInformationLogic.getDbState();
+		newState.setIndexId(indexName);
 		newState.setMappingVersion(BasicUtils.VERSION);
+		newState.setUpdatedAt(new Date());
 
 		this.insertDataIntoIndex(indexName);
 		this.writeMetaInfoToIndex(indexName, newState);
 	}
 
 	protected void insertDataIntoIndex(String indexName) {
-		this.insertDataIntoIndex(indexName, (lastContenId, limit) -> ElasticsearchIndexGenerator.this.generationLogic.getEntities(lastContenId, limit), this.entityInformationProvider, new IndexVoter<>());
+		this.insertDataIntoIndex(indexName, ElasticsearchIndexGenerator.this.generationLogic::getEntities, this.entityInformationProvider, new IndexVoter<>());
 	}
 
 	protected final <E> void insertDataIntoIndex(String indexName, Generator<E> generator, EntityInformationProvider<E> entityInformationProvider, final IndexVoter<E> indexVoter) {
@@ -198,7 +204,7 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 		int entityListSize;
 		final Map<String, IndexData> docsToWrite = new HashMap<>();
 		do {
-			entityList = generator.getEntites(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
+			entityList = generator.getEntities(lastContenId, SearchDBInterface.SQL_BLOCKSIZE);
 			entityListSize = entityList.size();
 			skip += entityListSize;
 			LOG.info("Read " + skip + " entries.");
@@ -263,30 +269,22 @@ public class ElasticsearchIndexGenerator<T, S extends SearchIndexSyncState> {
 	 * methods removes the index state generating and adds the index state alias standby to the generated index
 	 */
 	private void indexCreated(final String indexName) {
-		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.GENERATING));
-		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexState.STANDBY));
+		this.client.deleteAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.GENERATING));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, SearchIndexStatus.STANDBY));
 	}
 
-	/**
-	 * @return the progress
-	 */
-	public double getProgress() {
-		if (this.numberOfEntities == 0) {
-			return 0;
-		}
-		return this.writtenEntities / (double) this.numberOfEntities;
-	}
-
-	/**
-	 * @return the generating
-	 */
 	public boolean isGenerating() {
 		return generating;
 	}
 
-	/**
-	 * @return the indexName
-	 */
+	public int getNumberOfEntities() {
+		return numberOfEntities;
+	}
+
+	public int getWrittenEntities() {
+		return writtenEntities;
+	}
+
 	public String getIndexName() {
 		return indexName;
 	}

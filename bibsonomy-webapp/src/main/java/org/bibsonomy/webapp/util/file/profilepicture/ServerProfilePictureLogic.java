@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -48,7 +51,6 @@ import org.bibsonomy.util.file.profilepicture.PictureScaler;
 public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	private final String path;
 	private String defaultFileName;
-	private boolean hasDefaultProfilePicture;
 	
 	private TempFileLogic tempFileLogic;
 	private final ExtensionChecker extensionChecker = new ListExtensionChecker(PICTURE_EXTENSIONS);
@@ -95,13 +97,7 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 
 	@Override
 	public boolean hasProfilePicture(final String username) {
-		File profilePicture;
-		if (this.hasDefaultProfilePicture) {
-			profilePicture = getProfilePictureForUser(username);
-		} else {
-			profilePicture = new File(getPicturePath(username));
-		}
-
+		File profilePicture = new File(getPicturePath(username));
 		return profilePicture.exists();
 	}
 
@@ -158,10 +154,6 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	 */
 	public void setDefaultFileName(String defaultFileName) {
 		this.defaultFileName = defaultFileName;
-	}
-
-	public void setHasDefaultProfilePicture(boolean hasDefaultProfilePicture) {
-		this.hasDefaultProfilePicture = hasDefaultProfilePicture;
 	}
 
 	/**

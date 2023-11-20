@@ -147,7 +147,7 @@
 	</util:list>
 	
 	<!--+ 
-	    | strategy for filter primary recommender if it delivered results, else filter fallback
+	    | strategy for select primary recommender if it delivered results, else select fallback
 	    +-->
 	 
 	<bean id="dummyBookmarkRecommender" class="org.bibsonomy.recommender.item.simple.DummyItemRecommender">
@@ -198,7 +198,7 @@
 	</bean>
 	
 	<!--+ 
-	    | strategy for filter primary recommender if it delivered results, else filter fallback
+	    | strategy for select primary recommender if it delivered results, else select fallback
 	    +-->
 	
 	

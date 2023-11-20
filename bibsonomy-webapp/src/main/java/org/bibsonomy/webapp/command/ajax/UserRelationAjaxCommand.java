@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,12 +31,16 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.UserRelation;
 
 
 /**
  * @author Christian Kramer, Folke Mitzlaff
  */
+@Getter
+@Setter
 public class UserRelationAjaxCommand extends AjaxCommand<String> {
 	/**
 	 * name of the requested user
@@ -47,46 +54,4 @@ public class UserRelationAjaxCommand extends AjaxCommand<String> {
 	 */
 	private List<String> relationTags;
 
-	/**
-	 * 
-	 * @return requested username
-	 */
-	public String getRequestedUserName() {
-		return this.requestedUserName;
-	}
-
-	/**
-	 * @param userName
-	 */
-	public void setRequestedUserName(String userName) {
-		this.requestedUserName = userName;
-	}
-
-	/**
-	 * @param relationTags
-	 */
-	public void setRelationTags(List<String> relationTags) {
-		this.relationTags = relationTags;
-	}
-
-	/**
-	 * @return relation tags
-	 */
-	public List<String> getRelationTags() {
-		return relationTags;
-	}
-
-	/**
-	 * @return the userRelation
-	 */
-	public UserRelation getUserRelation() {
-		return this.userRelation;
-	}
-
-	/**
-	 * @param userRelation the userRelation to set
-	 */
-	public void setUserRelation(UserRelation userRelation) {
-		this.userRelation = userRelation;
-	}
 }

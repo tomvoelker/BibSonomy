@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,39 +29,82 @@
  */
 package org.bibsonomy.scraper.url.kde.ams;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import static org.bibsonomy.util.ValidationUtils.present;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Scraper for ams.allenpress.com
  * @author tst
  */
-public class AmsScraper extends LiteratumScraper implements CitedbyScraper, ReferencesScraper {
+//TODO: create a Generic Scraper for AmsScraper and AKJournalsScraper
+public class AmsScraper extends AbstractUrlScraper implements CitedbyScraper, ReferencesScraper {
 	private static final Log log = LogFactory.getLog(AmsScraper.class);
 	
 	private static final String SITE_NAME = "American Meteorological Society";
 	private static final String SITE_HOST = "journals.ametsoc.org";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 
 	private static final Pattern CITEDBY = Pattern.compile("(?s)<a name=\"citedBySection\"></a><h2>Cited by</h2>(.*)<!-- /fulltext content --></div>");
 	private static final Pattern REFERENCERS = Pattern.compile("(?s)<table border=\"0\" class=\"references\">(.*)</table><!-- /fulltext content --></div>");
-	
+
+	private static final String DOWNLOAD_URL = "https://journals.ametsoc.org/rest/citation/export";
+	private static final Pattern JSON_DOCUMENT_URI_PATTERN = Pattern.compile("(/journals.*)");
+	private static final RisToBibtexConverter RTBC = new RisToBibtexConverter();
+
+	@Override
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
+
+		try {
+			URL url = scrapingContext.getUrl();
+			// documentUri ist a part of the path of the url and is needed for the json
+			String documentUri;
+			Matcher m_documentUri = JSON_DOCUMENT_URI_PATTERN.matcher(url.getPath());
+			if (m_documentUri.find()){
+				documentUri = m_documentUri.group(1);
+			}else {
+				throw new ScrapingException("can't find documentUri in " + url.getPath());
+			}
+			// creating a post-request with the json as body. post returns the bibtex
+			HttpPost post = new HttpPost(DOWNLOAD_URL);
+			post.setHeader("Content-Type", "application/json");
+			String jsonForPost = "{\"format\":\"ris\",\"citationExports\":[{\"documentUri\":\""+ documentUri + "\",\"citationId\":null}]}";
+			post.setEntity(new StringEntity(jsonForPost));
+			String ris = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			if (!present(ris)){
+				throw new ScrapingException("can't get bibtex from " + DOWNLOAD_URL);
+			}
+			String bibtex = RTBC.toBibtex(ris);
+			scrapingContext.setBibtexResult(bibtex);
+			return true;
+		} catch (final IOException | HttpException e) {
+			throw new ScrapingFailureException(e);
+		}
+	}
+
 	@Override
 	public String getInfo() {
 		return SITE_INFO;

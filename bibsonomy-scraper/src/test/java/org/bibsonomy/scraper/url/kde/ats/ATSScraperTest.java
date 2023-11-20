@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,6 +47,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ATSScraperTest {
+	String resultDirectory = "ats/";
 
 	/**
 	 * starts URL test with id url_212
@@ -51,7 +55,7 @@ public class ATSScraperTest {
 	@Test
 	public void urlTest1Run() {
 		final String url = "http://www.atsjournals.org/doi/abs/10.1513/pats.201101-004MW";
-		final String resultFile = "ATSScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ATSScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, ATSScraper.class, resultFile);
 	}
 	/**
@@ -60,7 +64,7 @@ public class ATSScraperTest {
 	@Test
 	public void urlTest2Run() {
 		final String url = "http://www.atsjournals.org/doi/abs/10.1164/rccm.201106-1094OC";
-		final String resultFile = "ATSScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "ATSScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, ATSScraper.class, resultFile);
 	}
 	/**
@@ -69,7 +73,7 @@ public class ATSScraperTest {
 	@Test
 	public void urlTest3Run() {
 		final String url = "http://www.atsjournals.org/doi/abs/10.1165/rcmb.2011-0134OC";
-		final String resultFile = "ATSScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "ATSScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, ATSScraper.class, resultFile);
 	}
 	

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +31,8 @@ package org.bibsonomy.model;
 
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
@@ -35,6 +40,8 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  *
  * @author Chris
  */
+@Getter
+@Setter
 // TODO rename to PersonResourceRelation
 public abstract class ResourcePersonRelationBase {
 	private int personRelChangeId;
@@ -46,62 +53,5 @@ public abstract class ResourcePersonRelationBase {
 
 	/** the position in the resource's list of authors / editors / ... */
 	private int personIndex;
-	
-	/**
-	 * @return the id
-	 */
-	public int getPersonRelChangeId() {
-		return this.personRelChangeId;
-	}
-	/**
-	 * @param id the id to set
-	 */
-	public void setPersonRelChangeId(int id) {
-		this.personRelChangeId = id;
-	}
 
-	/**
-	 * @return the qualifying
-	 */
-	public int getQualifying() {
-		return this.qualifying;
-	}
-	/**
-	 * @param qualifying the qualifying to set
-	 */
-	public void setQualifying(int qualifying) {
-		this.qualifying = qualifying;
-	}
-
-	/**
-	 * @return the authorIndex
-	 */
-	public int getPersonIndex() {
-		return this.personIndex;
-	}
-	/**
-	 * @param authorIndex the authorIndex to set
-	 */
-	public void setPersonIndex(int authorIndex) {
-		this.personIndex = authorIndex;
-	}
-	public PersonResourceRelationType getRelationType() {
-		return this.relationType;
-	}
-	public void setRelationType(PersonResourceRelationType relationType) {
-		this.relationType = relationType;
-	}
-	public String getChangedBy() {
-		return this.changedBy;
-	}
-	public void setChangedBy(String createdByUserName) {
-		this.changedBy = createdByUserName;
-	}
-	public Date getChangedAt() {
-		return this.changedAt;
-	}
-	public void setChangedAt(Date changedAt) {
-		this.changedAt = changedAt;
-	}
-	
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.usenix;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,13 +42,17 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class UsenixScraperTest {
+	String resultDirectory = "usenix/";
 
+	//legacy pages
 	/**
 	 * starts URL test with id url_74
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://www.usenix.org/events/lisa2001/tech/apthorpe.html", UsenixScraper.class, "UsenixScraperUnitURLTest1.bib");
+		final String url = "http://www.usenix.org/events/lisa2001/tech/apthorpe.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 
 	/**
@@ -53,7 +60,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://usenix.org/events/usenix07/tech/kotla.html", UsenixScraper.class, "UsenixScraperUnitURLTest2.bib");
+		final String url = "http://usenix.org/events/usenix07/tech/kotla.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 	
 	/**
@@ -61,7 +70,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url3TestRun() {
-		assertScraperResult("http://usenix.org/events/sec07/tech/drimer.html", UsenixScraper.class, "UsenixScraperUnitURLTest3.bib");
+		final String url = "http://usenix.org/events/sec07/tech/drimer.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 
 	/**
@@ -69,7 +80,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url4TestRun() {
-		assertScraperResult("http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html", UsenixScraper.class, "UsenixScraperUnitURLTest4.bib");
+		final String url = "http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 
 	/**
@@ -78,7 +91,9 @@ public class UsenixScraperTest {
 	@Test
 	@Ignore
 	public void url5TestRun() {
-		assertScraperResult("http://www.usenix.org/publications/library/proceedings/coots98/krishnaswamy.html", UsenixScraper.class, "UsenixScraperUnitURLTest5.bib");
+		final String url = "http://www.usenix.org/publications/library/proceedings/coots98/krishnaswamy.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 	
 	/**
@@ -86,7 +101,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url6TestRun() {
-		assertScraperResult("http://www.usenix.org/publications/library/proceedings/usenix98/sullivan.html", UsenixScraper.class, "UsenixScraperUnitURLTest6.bib");
+		final String url = "http://www.usenix.org/publications/library/proceedings/usenix98/sullivan.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest6.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 	
 	/**
@@ -94,7 +111,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url7TestRun() {
-		assertScraperResult("http://usenix.org/events/usenix06/tech/liu.html", UsenixScraper.class, "UsenixScraperUnitURLTest7.bib");
+		final String url = "http://usenix.org/events/usenix06/tech/liu.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest7.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 
 	/**
@@ -102,7 +121,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url8TestRun() {
-		assertScraperResult("http://usenix.org/publications/library/proceedings/ec96/geer.html", UsenixScraper.class, "UsenixScraperUnitURLTest8.bib");
+		final String url = "http://usenix.org/publications/library/proceedings/ec96/geer.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest8.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 
 	/**
@@ -110,7 +131,9 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url9TestRun() {
-		assertScraperResult("http://usenix.org/publications/library/proceedings/mob95/raja.html", UsenixScraper.class, "UsenixScraperUnitURLTest9.bib");
+		final String url = "http://usenix.org/publications/library/proceedings/mob95/raja.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest9.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
 
 	/**
@@ -118,7 +141,23 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url10TestRun(){
-		assertScraperResult("http://usenix.org/publications/library/proceedings/sd96/wilkes.html", UsenixScraper.class, "UsenixScraperUnitURLTest10.bib");
+		final String url = "http://usenix.org/publications/library/proceedings/sd96/wilkes.html";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest10.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
 	}
-	
+	//non legacy pages
+	@Test
+	public void url11TestRun(){
+		final String url = "https://www.usenix.org/conference/usenixsecurity19/presentation/lee";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest11.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
+	}
+
+	@Test
+	public void url12TestRun(){
+		final String url = "https://www.usenix.org/jesa/0101/hembroff";
+		final String resultFile = resultDirectory + "UsenixScraperUnitURLTest12.bib";
+		assertScraperResult(url, null, UsenixScraper.class, resultFile);
+	}
+
 }

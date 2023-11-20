@@ -24,6 +24,7 @@
 	
 	<resultMap id="lazyLoadingPerson" class="person" extends="abstractPerson">
 		<result property="names"            column="person_id"           javaType="java.util.ArrayList" select="getNames" />
+		<result property="additionalKeys"   column="person_id"           javaType="java.util.LinkedList" select="getAdditionalKeys" />
 	</resultMap>
 	
 	<resultMap id="personWithNamesPrefilled" class="person" extends="abstractPerson">
@@ -52,7 +53,7 @@
 		<result property="lastName"        column="last_name"         javaType="java.lang.String" />
 	</resultMap>
 
-	<resultMap id="abstractResourcePersonRelation" class="resourcePersonRelation">
+	<resultMap id="abstractResourcePersonRelation" class="personResourceRelation">
 		<result property="personRelChangeId" column="r_person_change_id" javaType="int" />
 		<result property="qualifying"        column="qualifying"       javaType="int" />
 		<result property="relationType"      column="relator_code"     javaType="personResourceRelationType" />
@@ -61,7 +62,7 @@
 		<result property="personIndex"       column="person_index"     javaType="int" />
 	</resultMap>
 	
-	<resultMap id="lazyLoadingResourcePersonRelation" class="resourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+	<resultMap id="lazyLoadingResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            column="simhash1"        javaType="bibtex"       select="getPosts"/>
 	</resultMap>
@@ -75,12 +76,12 @@
 		<result property="postInterhash"   column="simhash1"        javaType="java.lang.String" />
 	</resultMap>
 	
-	<resultMap id="preFilledResourcePersonRelation" class="resourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+	<resultMap id="preFilledResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            resultMap="BibTexCommon.bibtexPost" />
 	</resultMap>
 	
-	<resultMap id="preFilledCommunityResourcePersonRelation" class="resourcePersonRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
+	<resultMap id="preFilledCommunityResourcePersonRelation" class="personResourceRelation" groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType="person"       select="getPersonById" />
 		<result property="post"            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>

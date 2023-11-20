@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -94,6 +97,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 
 		return result;
 	}
+
 	private FileContentExtractorService fileContentExtractorService;
 
 	/**
@@ -425,8 +429,17 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				convertedPerson.put(Fields.Publication.PERSON_COLLEGE, claimedPerson.getCollege());
 			}
 
-			serializedPersonNames.add(convertedPerson);
+			// TODO FIXME ATTENTION!!!!! THIS IS TEMPORARY!!!
+			// PLEASE REFACTOR ACCORDINGLY IN THE FUTURE
+			// this "fix" has been introduced, to circumvent ES errors with publications
+			// that have a lot of authors (+400)
+			// all authors after the 400th are now simply cut off, except if they are already linked
+			if (index < 400 || personIndexRelationMap.containsKey(key)) {
+				serializedPersonNames.add(convertedPerson);
+			}
+
 			index++;
+
 		}
 
 		return serializedPersonNames;
@@ -445,15 +458,10 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 */
 	@Override
 	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
-		// TODO: TODODZO
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
-
-		// TODO: remove TODODZO
-		// final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
-		// this.updateDocumentWithPersonRelation(jsonDocument, rels);
 	}
 
-	/** TODO: TODODZO remove!
+	/** TODO: remove!
 	 * @param jsonDocument
 	 * @param rels
    */

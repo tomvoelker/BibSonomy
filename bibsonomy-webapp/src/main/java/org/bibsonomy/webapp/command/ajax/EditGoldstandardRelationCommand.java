@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,11 +32,15 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
  * @author lka
  */
+@Getter
+@Setter
 public class EditGoldstandardRelationCommand extends AjaxCommand {
 	private String hash;
 	private Set<String> references;
@@ -45,21 +52,7 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 		this.references = new HashSet<String>();
 	}
 	
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-	
-	/**
-	 * @return the hash
-	 */
-	public String getHash() {
-		return hash;
-	}
-	
-	/**
+		/**
 	 * @param relation the relation to set
 	 */
 	public void setRelation(String relation) {
@@ -81,24 +74,5 @@ public class EditGoldstandardRelationCommand extends AjaxCommand {
 			}
 		}
 	}
-	/**
-	 * @return the relation
-	 */
-	public GoldStandardRelation getRelation() {
-		return relation;
-	}
 
-	/**
-	 * @param references the references to set
-	 */
-	public void setReferences(Set<String> references) {
-		this.references = references;
-	}
-
-	/**
-	 * @return the references
-	 */
-	public Set<String> getReferences() {
-		return references;
-	}
 }

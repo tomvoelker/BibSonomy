@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.cyberleninka;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,12 +40,29 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CyberleninkaScraperTest {
+	String resultDirectory = "cyberleninka/";
 
 	/**
 	 * starts URL test with id url_368
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii", CyberleninkaScraper.class, "CyberleninkaScraperUnitURLTest1.bib");
+		final String url = "http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii";
+		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://cyberleninka.ru/article/n/osnovnye-elementy-otsenki-veb-saytov-gostinits-sravnitelnyy-analiz-na-primere-gostinits-g-moskvy";
+		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://cyberleninka.ru/article/n/uchrezhdenie-politseyskih-dolzhnostey-na-obschestvennye-i-chastnye-sredstva-v-organah-politsii-zapadnoy-sibiri-v-1905-1917-godah";
+		final String resultFile = resultDirectory + "CyberleninkaScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, CyberleninkaScraper.class, resultFile);
 	}
 }

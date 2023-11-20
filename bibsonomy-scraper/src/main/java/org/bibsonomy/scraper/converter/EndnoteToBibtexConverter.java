@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,10 +64,19 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 	 */
 	private static Map<String,String> endnoteToBibtexFieldMap     = new HashMap<String,String>();
 
-	/*
-	 * TODO explain pattern: We should clearly state which kind of Endnote is handled by this Converter
+	/**
+	 * The Regex is Multiline meaning it starts at each start of a line.
+	 * Should the start of the line be "%", any not whitespace char and one or more whitespaces,
+	 * then it matches. For the rest of the pattern the single line mode is used. Single Line let's "." also match "\n".
+	 * Everything will be matched until a line starts with "%" and any non whitespace char, or it meets the end of the file.
 	 */
-	private static final Pattern LINE_PATTERN       = Pattern.compile("(?s)((%\\S)\\s+(([^%]|%\\s)*))");
+	private static final Pattern LINE_PATTERN       = Pattern.compile("((^%\\S)\\s+(?s)(.*?)(?=^%\\S|\\Z))", Pattern.MULTILINE);
+	/**
+	 * start of String has to be "%" , non whitespace char and a whitespace char.
+	 * It should work fine  on user input, but can be tricked by constructing strings, which start with this pattern, but are not EndNote.
+	 */
+	private static final Pattern ENDNOTE_START_PATTERN = Pattern.compile("^%\\S\\s");
+
 
 
 
@@ -132,26 +144,6 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 	public String processEntry(String entry) {
 
 		final SortedMap<String,String> map = new TreeMap<>();
-
-		/*
-		 * Handle abstract first
-		 * = bug fix with large abstract (abstract might consist of more than one line)
-		 */
-		String abstractEntry = null;
-		int startAbstract = entry.indexOf("%X");
-		if(startAbstract != -1){
-
-			String entryToAbstract = entry.substring(0, startAbstract);
-			int endAbstract = entry.indexOf("\n", startAbstract)+1;
-			abstractEntry = entry.substring(startAbstract+3, endAbstract-1);
-			String entryAfterAbstract = entry.substring(endAbstract);
-
-			// build new entry without abstract
-			entry = entryToAbstract + entryAfterAbstract;
-		}
-		if (abstractEntry != null) {
-			map.put("abstract", abstractEntry);
-		}
 		/*
 		 * Go through all other fields
 		 */
@@ -168,7 +160,7 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 				if (tempData == null) {
 					continue;
 				}
-				final String tempLine = eachLineMatcher.group(0).trim();
+				final String tempLine = eachLineMatcher.group(1).trim();
 				// the type of this lines field
 				final String endnoteType = eachLineMatcher.group(2).trim();
 
@@ -359,7 +351,7 @@ public class EndnoteToBibtexConverter implements BibtexConverter {
 	 * @return true if snippet is endnote
 	 */
 	public static boolean canHandle(final String snippet) {
-		final Matcher _eachLineMatcher = LINE_PATTERN.matcher(snippet.trim());
+		final Matcher _eachLineMatcher = ENDNOTE_START_PATTERN.matcher(snippet.trim());
 		return _eachLineMatcher.find();	// true if the first line looks like endnote with "%"
 	}
 

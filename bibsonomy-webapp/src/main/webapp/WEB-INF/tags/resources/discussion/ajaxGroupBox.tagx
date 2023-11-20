@@ -23,13 +23,13 @@
     
         Shows form fields to choose group(s) the post should be viewable for.
         Consists of three radio buttons: public, private, other
-        and a filter box which contains the group "friends" plus other possible groups.
+        and a select box which contains the group "friends" plus other possible groups.
     	(for ajax views = without command path binding)
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="selectedGroups" type="java.util.Set" required="false"/>
-	
+
 	<c:set var="isPublic" value="${mtl:contains(selectedGroups, publicGroup)}" />
 	<c:set var="isPrivate" value="${mtl:contains(selectedGroups, privateGroup)}" />
 	<c:set var="isFriend" value="${mtl:contains(selectedGroups, friendsGroup)}" />
@@ -43,7 +43,7 @@
 				<label>
 					<c:choose>
 						<c:when test="${fn:length(selectedGroups) == 0 or isPublic}">
-							<input name="abstractGrouping" value="public" tabindex="2" type="radio"  checked="checked" />
+							<input name="abstractGrouping" value="public" tabindex="2" type="radio" checked="checked" />
 						</c:when>
 						<c:otherwise>
 							<input name="abstractGrouping" value="public" tabindex="2" type="radio" />
@@ -85,7 +85,7 @@
 		</div>
 		
 		<div class="col-sm-8">
-		    <!-- filter box for "other" groups -->
+		    <!-- select box for "other" groups -->
 		    <!-- TODO: allow multiple groups ( multiple="multiples") -->
 			<select name="groups" size="4" class="form-control otherGroupsBox" tabindex="2" disabled = "disabled">
 			<c:set var="friendsLabel" value="friends" /> <!-- TODO: i18n? -->

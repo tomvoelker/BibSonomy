@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +31,7 @@ package org.bibsonomy.util;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,8 +44,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.exceptions.InvalidModelException;
 
 /**
  * Some methods for handling strings.
@@ -375,7 +377,7 @@ public class StringUtils {
 
 		// check input, init LinkedHashMap
 		// LinkedHashMap has consistent iteration order
-		final Map<String, String> keyValPairs = new LinkedHashMap<String, String>();
+		final Map<String, String> keyValPairs = new LinkedHashMap<>();
 
 		if (!present(input)) {
 			return keyValPairs;
@@ -2588,5 +2590,97 @@ public class StringUtils {
 		}
 		return cropToLength(str, 19) + "X";
 	}
+
+	/**
+	 * If the map already has a entry with the key the value will be appended, else a new entry will be created
+	 * @param tokens Map with String values
+	 * @param key key of the map-entry
+	 * @param value value of the map-entry
+	 * @param delimiter the delimiter between the already existing value and the new
+	 */
+	public static void appendIfPresent(Map<String, String> tokens, String key, String value, String delimiter){
+		if (tokens.containsKey(key)) {
+			tokens.put(key, tokens.get(key) + delimiter + value);
+		} else {
+			tokens.put(key, value);
+		}
+	}
+
+	public static String cyrillicToLatin(String message){
+		HashMap<String, String> translationTable = new HashMap<>();
+		translationTable.put("а", "a");
+		translationTable.put("б", "b");
+		translationTable.put("в", "v");
+		translationTable.put("г", "g");
+		translationTable.put("д", "d");
+		translationTable.put("е", "e");
+		translationTable.put("ё", "e");
+		translationTable.put("ж", "zh");
+		translationTable.put("з", "z");
+		translationTable.put("и", "i");
+		translationTable.put("й", "y");
+		translationTable.put("к", "k");
+		translationTable.put("л", "l");
+		translationTable.put("м", "m");
+		translationTable.put("н", "n");
+		translationTable.put("о", "o");
+		translationTable.put("п", "p");
+		translationTable.put("р", "r");
+		translationTable.put("с", "s");
+		translationTable.put("т", "t");
+		translationTable.put("y", "u");
+		translationTable.put("ф", "f");
+		translationTable.put("х", "h");
+		translationTable.put("ц", "ts");
+		translationTable.put("ч", "ch");
+		translationTable.put("ш", "sh");
+		translationTable.put("щ", "sch");
+		translationTable.put("ъ", "");
+		translationTable.put("ы", "i");
+		translationTable.put("ь", "");
+		translationTable.put("э", "e");
+		translationTable.put("ю", "ju");
+		translationTable.put("я", "ja");
+		translationTable.put("А", "A");
+		translationTable.put("Б", "B");
+		translationTable.put("Г", "G");
+		translationTable.put("Д", "D");
+		translationTable.put("Ё", "E");
+		translationTable.put("Ж", "Zh");
+		translationTable.put("З", "Z");
+		translationTable.put("И", "I");
+		translationTable.put("Й", "Y");
+		translationTable.put("Л", "L");
+		translationTable.put("Н", "N");
+		translationTable.put("О", "O");
+		translationTable.put("П", "P");
+		translationTable.put("Р", "R");
+		translationTable.put("С", "S");
+		translationTable.put("Т", "T");
+		translationTable.put("У", "U");
+		translationTable.put("Ф", "F");
+		translationTable.put("Х", "H");
+		translationTable.put("Ц", "Ts");
+		translationTable.put("Ч", "Ch");
+		translationTable.put("Ш", "Sh");
+		translationTable.put("Щ", "Sch");
+		translationTable.put("Ъ", "");
+		translationTable.put("Ы", "I");
+		translationTable.put("Ь", "");
+		translationTable.put("Ю", "Ju");
+		translationTable.put("Я", "Ja");
+		translationTable.put("М", "M");
+		translationTable.put("К", "K");
+
+		StringBuilder translatedMessage = new StringBuilder();
+		for (int i = 0; i < message.length(); i++) {
+			String charAt = translationTable.getOrDefault(String.valueOf(message.charAt(i)), String.valueOf(message.charAt(i)));
+			translatedMessage.append(charAt);
+
+		}
+		return translatedMessage.toString();
+	}
+
+
 }
 

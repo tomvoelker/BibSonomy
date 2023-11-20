@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +29,23 @@
  */
 package org.bibsonomy.scraper.url.kde.emerald;
 
-import java.util.ArrayList;
+import static org.bibsonomy.util.ValidationUtils.present;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.generic.LiteratumScraper;
 
 /**
  * This scraper supports download links from emeraldinsight.com
@@ -47,29 +57,20 @@ import org.bibsonomy.scraper.generic.LiteratumScraper;
  * 
  * @author Mohammed Abed
  */
-public class EmeraldScraper extends LiteratumScraper {
+public class EmeraldScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "Emerald Publishing";
-	private static final String SITE_HOST = "emeraldinsight.com";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_HOST = "emerald.com";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+
 
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	private static final String DOWNLOAD_URL = "https://www.emerald.com/insight/api/citations/format/ris";
+
+	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
+
 	@Override
-	protected List<NameValuePair> getPostContent(String doi) {
-		final ArrayList<NameValuePair> postData = new ArrayList<NameValuePair>(3);
-		postData.add(new BasicNameValuePair("include", "abs"));
-		postData.add(new BasicNameValuePair("format", "bibtex"));
-		postData.add(new BasicNameValuePair("direct", "on"));
-		postData.add(new BasicNameValuePair("doi", doi));
-		return postData;
-	}
-	
-	@Override
-	protected boolean requiresCookie() {
-		return true;
-	}
-		@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
@@ -87,6 +88,38 @@ public class EmeraldScraper extends LiteratumScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
+	}
+
+	@Override
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
+		try {
+			URL url = WebUtils.getRedirectUrl(scrapingContext.getUrl());
+			if (!present(url)){
+				url = scrapingContext.getUrl();
+			}
+
+			String doi = DOIUtils.getDoiFromURL(url);
+			if (!present(doi)){
+				throw new ScrapingException("can't get doi from " + url);
+			}
+			doi = doi.replaceAll("/[a-z]*/[a-z]*$", "");
+
+			HttpPost post = new HttpPost(DOWNLOAD_URL);
+			post.setHeader("Content-Type", "application/json; charset=UTF-8");
+			StringEntity postBody = new StringEntity("{\"dois\":[\""+doi+"\"]}");
+			post.setEntity(postBody);
+			String ris = WebUtils.getContentAsString(WebUtils.getHttpClient(), post);
+			if (!present(ris)){
+				throw new ScrapingException("can't get ris from" + DOWNLOAD_URL + " with doi " + doi);
+			}
+
+			String bibtex = RIS2BIB.toBibtex(ris);
+			scrapingContext.setBibtexResult(bibtex);
+			return true;
+		} catch (HttpException | IOException e) {
+			throw new ScrapingException(e);
+		}
 	}
 
 }

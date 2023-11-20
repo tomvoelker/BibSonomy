@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +29,9 @@
  */
 package org.bibsonomy.model.statistics;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 
@@ -33,20 +39,10 @@ import java.util.List;
  * @author sven
  */
 
+@Getter
+@Setter
 public class StatisticsValues extends Statistics {
+
 	private List<Statistics> values;
 
-	/**
-	 * @return the list of values
-	 */
-	public List<Statistics> getValues() {
-		return this.values;
-	}
-
-	/**
-	 * @param values the list of values to set
-	 */
-	public void setValues(List<Statistics> values) {
-		this.values = values;
-	}
 }

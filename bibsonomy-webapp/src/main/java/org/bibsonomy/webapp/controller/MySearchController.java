@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +30,13 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
@@ -41,12 +51,6 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * This controller retrieve all publication informations of a currently logged in
@@ -101,9 +105,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		 */
 		final ListCommand<Post<BibTex>> bibtex = command.getBibtex();
 
-		final SortedSet<String> titles = new TreeSet<String>();
-		final SortedSet<String> authors = new TreeSet<String>();
-		final SortedSet<String> tags = new TreeSet<String>();
+		final SortedSet<String> titles = new TreeSet<>();
+		final SortedSet<String> authors = new TreeSet<>();
+		final SortedSet<String> tags = new TreeSet<>();
 
 		/*
 		 * read title, author and tag information form bibtex
@@ -130,9 +134,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			}
 		}
 
-		command.setTitles(new LinkedList<String>(titles));
-		command.setAuthors(new LinkedList<String>(authors));
-		command.setTags(new LinkedList<String>(tags));
+		command.setTitles(new LinkedList<>(titles));
+		command.setAuthors(new LinkedList<>(authors));
+		command.setTags(new LinkedList<>(tags));
 
 		buildRelationTables(bibtex, command);
 
@@ -183,7 +187,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			// tag --> title relation
 			for (final Tag tag : tags) {
 				if (tagTitle[tagList.indexOf(tag.getName())] == null) {
-					SortedSet<Integer> v = new TreeSet<Integer>();
+					SortedSet<Integer> v = new TreeSet<>();
 					v.add(titleList.indexOf(title));
 					tagTitle[tagList.indexOf(tag.getName())] = v;
 				} else {
@@ -193,7 +197,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 			// author --> title relation
 			final List<PersonName> author = publication.getAuthor();
-			final List<PersonName> persons = new LinkedList<PersonName>();
+			final List<PersonName> persons = new LinkedList<>();
 			if (present(author)) {
 				persons.addAll(author);
 			}
@@ -203,7 +207,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			for (final PersonName name : persons) {
 				final int indexOfAuthor = authorList.indexOf(name.getLastName()); // FIXME: indexOf is inefficient!
 				if (authorTitle[indexOfAuthor] == null) { 
-					final SortedSet<Integer> v = new TreeSet<Integer>();
+					final SortedSet<Integer> v = new TreeSet<>();
 					v.add(titleList.indexOf(title));
 					authorTitle[indexOfAuthor] = v;
 				} else {
@@ -214,7 +218,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			// tag --> author relation
 			for (final Tag tag : tags) {
 				if (tagAuthor[tagList.indexOf(tag.getName())] == null) {
-					final SortedSet<Integer> v = new TreeSet<Integer>();
+					final SortedSet<Integer> v = new TreeSet<>();
 					for (final PersonName name : persons) {
 						v.add(authorList.indexOf(name.getLastName()));
 					}
@@ -228,7 +232,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 			// title --> author relation
 			if (titleAuthor[titleList.indexOf(title)] == null) {
-				SortedSet<Integer> v = new TreeSet<Integer>();
+				SortedSet<Integer> v = new TreeSet<>();
 				for (final PersonName name : persons) {
 					v.add(authorList.indexOf(name.getLastName()));
 				}

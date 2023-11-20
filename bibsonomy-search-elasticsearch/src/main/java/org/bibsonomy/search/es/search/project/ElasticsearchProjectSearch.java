@@ -1,3 +1,32 @@
+/**
+ * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.search.es.search.project;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -10,13 +39,13 @@ import org.bibsonomy.auth.util.SimpleAuthUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectOrder;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.query.ProjectQuery;
 import org.bibsonomy.model.statistics.Statistics;
@@ -26,7 +55,7 @@ import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -47,7 +76,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexSyncState, Boolean> implements ProjectSearch {
+public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexState, Boolean> implements ProjectSearch {
 
 	private static final String DISTINCT_TERMS_AGGREGATION_ID = "distinct_terms";
 	private static final Map<String, String> FIELD_MAPPER = new HashMap<>();
@@ -64,7 +93,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	 * @param converter
 	 * @param infoLogic
 	 */
-	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexSyncState> manager, final Converter<Project, Map<String, Object>, Boolean> converter, final SearchInfoLogic infoLogic) {
+	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexState> manager, final Converter<Project, Map<String, Object>, Boolean> converter, final SearchInfoLogic infoLogic) {
 		super(manager, converter);
 		this.infoLogic = infoLogic;
 	}
@@ -92,10 +121,10 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final ProjectQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final ProjectOrder order = query.getOrder();
-		switch (order) {
+		final ProjectSortKey sortKey = query.getSortKey();
+		switch (sortKey) {
 			case TITLE: return Collections.singletonList(new Pair<>(ESConstants.getRawField(ProjectFields.TITLE), sortOrderQuery));
 			case START_DATE: return Collections.singletonList(new Pair<>(ProjectFields.START_DATE, sortOrderQuery));
 		}
@@ -172,7 +201,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_PREFIX));
 		}
 

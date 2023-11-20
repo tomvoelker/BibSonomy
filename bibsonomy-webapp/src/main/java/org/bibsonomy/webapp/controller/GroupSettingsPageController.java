@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,7 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -42,7 +46,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
@@ -52,10 +55,13 @@ import org.springframework.security.access.AccessDeniedException;
  * 
  * @author niebler
  */
+@Setter
 public class GroupSettingsPageController implements MinimalisticController<GroupSettingsPageCommand> {
 	protected LogicInterface logic;
 	
 	private CVWikiModel wikiRenderer;
+
+	private boolean presetTagsEnabled;
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
@@ -110,13 +116,16 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			// initiate wiki
 			this.initiateGroupCV(groupUser, group, command);
 			
-			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
+			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS_IDX, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
+			if (presetTagsEnabled) {
+				command.addTab(GroupSettingsPageCommand.TAG_LIST_IDX, "settings.group.presetTags");
+			}
 			command.addTab(GroupSettingsPageCommand.CV_IDX, "navi.cvedit");
-			command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband");
+			command.addTab(GroupSettingsPageCommand.DELETE_GROUP_IDX, "settings.group.disband");
 			
 			if (!selectedByUser) {
-				command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS);
+				command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
 			}
 			break;
 		case MODERATOR:
@@ -155,22 +164,6 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 
 		command.setWikiText(wikiText);
-	}
-	
-	/**
-	 * @param logic the logic to set
-	 */
-	public void setLogic(final LogicInterface logic) {
-		this.logic = logic;
-	}
-	
-	/**
-	 * @param wikiRenderer
-	 *            the wikiRenderer to set
-	 */
-	@Required
-	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
-		this.wikiRenderer = wikiRenderer;
 	}
 	
 }

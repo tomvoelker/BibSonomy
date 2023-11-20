@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,23 +29,23 @@
  */
 package org.bibsonomy.scraper.url.kde.wormbase;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Scraper for http://www.wormbase.org
@@ -56,7 +59,7 @@ public class WormbaseScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "wormbase.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern pattern = Pattern.compile("name=([^;]*);");
+	private static final Pattern NAME_PATTERN = Pattern.compile("(WBPaper[0-9]*)");
 
 	private static final String DOWNLOAD_URL = "http://www.textpresso.org/cgi-bin/wb/exportendnote?mode=singleentry&lit=C.%20elegans&id=";
 
@@ -68,38 +71,92 @@ public class WormbaseScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		try {
+			// get id
+			final Matcher matcherName = NAME_PATTERN.matcher(sc.getUrl().toString());
+			if(matcherName.find()) {
+				final String name = matcherName.group(1);
+				String jsonUrl = "https://wormbase.org/rest/widget/paper/" + name + "/overview?download=1&content-type=application/json";
+				JSONObject json = JSONObject.fromObject(WebUtils.getContentAsString(jsonUrl)).getJSONObject("fields");
+				HashMap<String, String> bibtexFields = new HashMap<>();
 
+				bibtexFields.put("year", json.getJSONObject("year").getString("data"));
+				bibtexFields.put("title", json.getJSONObject("title").getString("data"));
+				bibtexFields.put("abstract", json.getJSONObject("abstract").getString("data"));
+				bibtexFields.put("publisher", json.getJSONObject("publisher").getString("data"));
+				bibtexFields.put("editor", extractEditorListFromJson(json.getJSONObject("editors").get("data")));
+				bibtexFields.put("pages", json.getJSONObject("pages").getString("data"));
+				bibtexFields.put("journal", json.getJSONObject("journal").getString("data"));
+				bibtexFields.put("author", extractAuthorListFromJson(json.getJSONObject("authors").get("data")));
+				bibtexFields.put("doi", json.getJSONObject("doi").getString("data"));
+				bibtexFields.put("volume", json.getJSONObject("volume").getString("data"));
+				bibtexFields.put("url", sc.getUrl().toString());
 
-		// get id
-		final Matcher matcherName = pattern.matcher(sc.getUrl().toString());
-		if(matcherName.find()) {
-			final String name = matcherName.group(1);
+				ArrayList<String> keysToRemove = new ArrayList<>();
+				for (String key : bibtexFields.keySet()) {
+					if (bibtexFields.get(key)==null||bibtexFields.get(key).equals("null")){
+						keysToRemove.add(key);
+					}
+				}
+				//removing all invalid entries
+				for (String keyToRemove : keysToRemove) {
+					bibtexFields.remove(keyToRemove);
+				}
 
-			// get endnote
-			try {
-				final String endnote = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + name));
+				String bibtexKey = json.getJSONObject("name").getJSONObject("data").getString("id");
 
-				// convert bibtex
-				final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-				String bibtex = converter.processEntry(endnote);
+				String entryType = "misc";
+				String publicationType = json.getJSONObject("publication_type").getJSONArray("data").getString(0).trim().toLowerCase(Locale.ROOT);
+				if (publicationType.contains("article")){
+					entryType = BibTexUtils.ARTICLE;
+				}else if (publicationType.contains("book")){
+					entryType = BibTexUtils.BOOK;
+				}
 
-				if(bibtex != null){
-					// append url
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-					
-					// add downloaded bibtex to result 
-					sc.setBibtexResult(bibtex);
-					return true;
-				}else
-					throw new ScrapingFailureException("generating bibtex failed");
-
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
+				String bibtex = "@" + entryType + "{" + bibtexKey + ",\n" + BibTexUtils.serializeMapToBibTeX(bibtexFields) + "\n}";
+				sc.setBibtexResult(bibtex);
+				return true;
 			}
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		}
 
-		}else
-			throw new PageNotSupportedException("no paper ID available");
+		return false;
+
 	}
+
+	private static String extractAuthorListFromJson(Object personsObject){
+		String personsString = null;
+		if (!personsObject.equals("null")){
+			JSONArray personsJsonArray = JSONArray.fromObject(personsObject);
+			for (int i = 0; i < personsJsonArray.size(); i++) {
+				String person = personsJsonArray.getJSONObject(i).getString("label");
+				if (personsString==null){
+					personsString = person;
+				}else {
+					personsString += " and " + person;
+				}
+			}
+		}
+		return personsString;
+	}
+
+	private static String extractEditorListFromJson(Object personsObject){
+		String personsString = null;
+		if (!personsObject.equals("null")){
+			JSONArray personsJsonArray = JSONArray.fromObject(personsObject);
+			for (int i = 0; i < personsJsonArray.size(); i++) {
+				String person = personsJsonArray.getString(i);
+				if (personsString==null){
+					personsString = person;
+				}else {
+					personsString += " and " + person;
+				}
+			}
+		}
+		return personsString;
+	}
+
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,12 +32,16 @@ package org.bibsonomy.webapp.command.actions;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author mwa
  */
+@Getter
+@Setter
 public class ImportCommand extends BaseCommand {
 	
 	/** when true, duplicate entries will be overwritten **/
@@ -47,7 +54,8 @@ public class ImportCommand extends BaseCommand {
 	
 	/** 
 	 * login credentials for service from which
-	 * bookmarks are imported 
+	 * bookmarks are imported
+	 * required for importing resources form a remote service
 	 **/
 	private String importUsername;
 	private String importPassword;
@@ -71,179 +79,5 @@ public class ImportCommand extends BaseCommand {
 	/** for delicious import only, import bookmarks or bundles? **/
 	// TODO: introduce an enum class
 	private String importData;
-	
-	/**
-	 * @return true if duplicate entries shall be overwritten
-	 */
-	public boolean isOverwrite() {
-		return this.overwrite;
-	}
-	
-	/**
-	 * @param overwrite
-	 */
-	public void setOverwrite(final boolean overwrite) {
-		this.overwrite = overwrite;
-	}
-	
-	/**
-	 * @return the actual import-type
-	 */
-	public String getImportType() {
-		return this.importType;
-	}
-	
-	/**
-	 * @param importType
-	 */
-	public void setImportType(final String importType) {
-		this.importType = importType;
-	}
 
-	/**
-	 * @return the userName, required for importing resources form a remote service
-	 */
-	public String getImportUsername() {
-		return this.importUsername;
-	}
-	
-	/**
-	 * @param userName
-	 */
-	public void setImportUsername(final String userName) {
-		this.importUsername = userName;
-	}
-	
-	/**
-	 * @return the user's password
-	 */
-	public String getImportPassword() {
-		return this.importPassword;
-	}
-	
-	/**
-	 * @param passWord
-	 */
-	public void setImportPassword(final String passWord) {
-		this.importPassword = passWord;
-	}
-	
-	/**
-	 * 
-	 * @return a Map containing the URLs of all created bookmarks
-	 */
-	public Map<String, String> getNewBookmarks() {
-		return this.newBookmarks;
-	}
-	
-	/**
-	 * 
-	 * @param newBookmarks
-	 */
-	public void setNewBookmarks(final Map<String, String> newBookmarks) {
-		this.newBookmarks = newBookmarks;
-	}
-	
-	/**
-	 * 
-	 * @return a Map containing the URLs of all updated bookmarks
-	 */
-	public Map<String, String> getUpdatedBookmarks() {
-		return this.updatedBookmarks;
-	}
-	
-	/**
-	 * 
-	 * @param updatedBookmarks
-	 */
-	public void setUpdatedBookmarks(final Map<String, String> updatedBookmarks) {
-		this.updatedBookmarks = updatedBookmarks;
-	}
-	
-	/**
-	 * 
-	 * @return a Map containing the URLs of all non created bookmarks
-	 */
-	public Map<String, String> getNonCreatedBookmarks() {
-		return this.nonCreatedBookmarks;
-	}
-	
-	/**
-	 * 
-	 * @param nonCreatedBookmarkEntries
-	 */
-	public void setNonCreatedBookmarks(final Map<String, String> nonCreatedBookmarkEntries) {
-		this.nonCreatedBookmarks = nonCreatedBookmarkEntries;
-	}
-	
-	/**
-	 * @return the group
-	 */
-	public String getGroup() {
-		return this.group;
-	}
-	
-	/**
-	 * @param group the group to set
-	 */
-	public void setGroup(final String group) {
-		this.group = group;
-	}
-	
-	/**
-	 * @return the file
-	 */
-	public MultipartFile getFile() {
-		return this.file;
-	}
-	
-	/**
-	 * @param file the file to set
-	 */
-	public void setFile(final MultipartFile file) {
-		this.file = file;
-	}
-	
-	/**
-	 * @return the totalCount
-	 */
-	public int getTotalCount() {
-		return this.totalCount;
-	}
-
-	/**
-	 * @param totalCount the totalCount to set
-	 */
-	public void setTotalCount(final int totalCount) {
-		this.totalCount = totalCount;
-	}
-	
-	/**
-	 * @return the storedConcepts
-	 */
-	public List<String> getStoredConcepts() {
-		return this.storedConcepts;
-	}
-
-	/**
-	 * @param storedConcepts the storedConcepts to set
-	 */
-	public void setStoredConcepts(final List<String> storedConcepts) {
-		this.storedConcepts = storedConcepts;
-	}
-
-	/**
-	 * @return the importData
-	 */
-	public String getImportData() {
-		return this.importData;
-	}
-
-	/**
-	 * @param importData the importData to set
-	 */
-	public void setImportData(final String importData) {
-		this.importData = importData;
-	}
-		
 }

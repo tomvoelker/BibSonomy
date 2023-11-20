@@ -210,9 +210,9 @@
 		"frameColor":"df430d"
 	},
 	{
-		"instanceName":"Uni Würzburg",
+		"instanceName":"Uni Würzburg WueResearch",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
-		"instanceUrl":"https:\/\/puma.uni-wuerzburg.de\/",
+		"instanceUrl":"https:\/\/wueresearch.uni-wuerzburg.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
 		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
 		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
@@ -225,9 +225,9 @@
 		"frameColor":"005eaa"
 	},
 	{
-		"instanceName":"Uni Würzburg FIS Test",
+		"instanceName":"Uni Würzburg WueResearch Testsystem",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
-		"instanceUrl":"https:\/\/puma.rz.uni-wuerzburg.de\/",
+		"instanceUrl":"https:\/\/wueresearch-test.uni-wuerzburg.de\/",
 		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
 		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
 		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",

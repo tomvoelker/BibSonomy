@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,8 +36,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.JobResult;
-import org.bibsonomy.common.SortCriteria;
-import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -103,7 +104,6 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -551,9 +551,10 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(GroupQuery query) {
+	public List<Group> getGroups(final GroupQuery query) {
 		final List<Group> expectedList = new ArrayList<>();
-		expectedList.add(ModelUtils.getGroup());
+		final Group group1 = ModelUtils.getGroup();
+		expectedList.add(group1);
 		expectedList.get(0).setName("Group1");
 		expectedList.get(0).setGroupId(42);
 		/*
@@ -572,7 +573,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		EasyMock.expect(this.serverLogic.getGroups(PropertyEqualityArgumentMatcher.eq(query))).andReturn(expectedList);
 		EasyMock.replay(this.serverLogic);
 		final List<Group> returnedGroups = this.clientLogic.getGroups(query);
-		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.id"));
+		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId|.*\\.id|.*\\.organization"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 		return returnedGroups;

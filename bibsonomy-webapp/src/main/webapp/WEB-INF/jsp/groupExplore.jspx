@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+          xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+		  xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+>
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <c:set var="group" value="${command.group}" />
+	<c:set var="groupName" value="${group.name}" />
+	<c:set var="groupTitleName" value="${groupName}" />
+	<c:if test="${not empty group.realname}" >
+		<c:set var="groupTitleName" value="${group.realname}" />
+	</c:if>
+
+    <c:set var="pageTitle" value="Explore ${groupName}" />
+    <c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+
+    <layout:paneLayout pageTitle="${pageTitle}"
+                       command="${command}"
+                       requPath="${requPath}"
+					   noSidebar="${true}"
+                       showPageOptions="${true}">
+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/extendedSearch.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/explorePosts.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/explorePage.js"><!-- keep me --></script>
+		</jsp:attribute>
+
+        <jsp:attribute name="heading">
+			<!-- nothing to display -->
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:groupcrumb requestedGroup="${groupName}" active="true"/>
+					<nav:crumb name="Explore" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+        <jsp:attribute name="content">
+			<fmt:message var="headerMessage" key="explore.header">
+				<fmt:param value="${fn:escapeXml(groupTitleName)}" />
+			</fmt:message>
+
+			<resources:explorePosts requestedName="${groupName}" entityType="group" headerMessage="${headerMessage}" descriptionMessage="${group.description}">
+                <jsp:attribute name="filterOptions">
+                    <c:if test="${groupName eq properties['group.explore.nav.id']}">
+						<sidebar:searchFilterList filterField="tags"
+												  headerMessageKey="explore.filter.tags.header"
+												  headerMessageIcon="tags" hide="${true}"/>
+						<div id="filter-list-custom" class="filter-list hidden" data-field="tags">
+							<sidebar:sidebarHeader textKey="explore.filter.custom.header" iconKey="sitemap"/>
+							<fmt:message var="customFilterPlaceholder" key="explore.filter.search.placeholder"/>
+							<input id="searchCustomFilters" class="form-control" type="text"
+								   placeholder="${customFilterPlaceholder}"
+								   aria-label="${customFilterPlaceholder}" onkeyup="searchCustomFilters()"/>
+							<div id="filter-entries-custom" class="filter-entries search-filter-selection">
+								<!-- keep me -->
+							</div>
+						</div>
+					</c:if>
+					<c:if test="${properties['group.presetTags.enabled'] and command.filterMap.containsKey('preset')}">
+						<sidebar:searchFilterList filterField="tags"
+												  filterEntries="${command.filterMap.get('preset')}"
+												  hideCounts="${true}"
+												  headerMessageKey="explore.filter.tags.header"
+												  headerMessageIcon="tags" buttonClass="filter-entry-counter"/>
+					</c:if>
+                </jsp:attribute>
+            </resources:explorePosts>
+		</jsp:attribute>
+    </layout:paneLayout>
+</jsp:root>

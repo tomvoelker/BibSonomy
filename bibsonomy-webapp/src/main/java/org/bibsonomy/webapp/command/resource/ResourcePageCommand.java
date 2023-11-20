@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +32,8 @@ package org.bibsonomy.webapp.command.resource;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -41,6 +46,8 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  *
  * @param <R> the resource
  */
+@Setter
+@Getter
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
 
@@ -61,121 +68,4 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	
 	private String requestedTitle;
 
-	/**
-	 * @return the intraHash of a post
-	 */
-	@Deprecated
-	public String getIntraHash() {
-		return this.intraHash;
-	}
-
-	/**
-	 * set the intraHash of a post
-	 * 
-	 * @param intraHash
-	 */
-	@Deprecated
-	public void setIntraHash(final String intraHash) {
-		this.intraHash = intraHash;
-	}
-
-	/**
-	 * @return the owner of the post
-	 */
-	public String getPostOwner() {
-		return this.postOwner;
-	}
-
-	/**
-	 * set the owner of a post
-	 * 
-	 * @param postOwner
-	 */
-	public void setPostOwner(final String postOwner) {
-		this.postOwner = postOwner;
-	}
-
-	/**
-	 * @return the requestedHash
-	 */
-	public String getRequestedHash() {
-		return this.requestedHash;
-	}
-
-	/**
-	 * @param requestedHash the requestedHash to set
-	 */
-	public void setRequestedHash(final String requestedHash) {
-		this.requestedHash = requestedHash;
-	}
-
-	/**
-	 * @return the postOfLoggedInUser
-	 */
-	public Post<R> getPostOfLoggedInUser() {
-		return this.postOfLoggedInUser;
-	}
-
-	/**
-	 * @param postOfLoggedInUser the postOfLoggedInUser to set
-	 */
-	public void setPostOfLoggedInUser(Post<R> postOfLoggedInUser) {
-		this.postOfLoggedInUser = postOfLoggedInUser;
-	}
-
-	/**
-	 * @return the discussionItems
-	 */
-	public List<DiscussionItem> getDiscussionItems() {
-		return this.discussionItems;
-	}
-
-	/**
-	 * @param discussionItems the discussionItems to set
-	 */
-	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
-		this.discussionItems = discussionItems;
-	}
-
-	/**
-	 * @return the copyUsersMap
-	 */
-	public Map<String, List<String>> getCopyUsersMap() {
-		return this.copyUsersMap;
-	}
-
-	/**
-	 * @param copyUsersMap the copyUsersMap to set
-	 */
-	public void setCopyUsersMap(final Map<String, List<String>> copyUsersMap) {
-		this.copyUsersMap = copyUsersMap;
-	}
-
-	/**
-	 * @return the resourceClass
-	 */
-	public Class<R> getResourceClass() {
-		return this.resourceClass;
-	}
-
-	/**
-	 * @param resourceClass the resourceClass to set
-	 */
-	public void setResourceClass(final Class<R> resourceClass) {
-		this.resourceClass = resourceClass;
-	}
-
-	/**
-	 * @return the requestedTitle
-	 */
-	public String getRequestedTitle() {
-		return this.requestedTitle;
-	}
-
-	/**
-	 * @param requestedTitle the requestedTitle to set
-	 */
-	public void setRequestedTitle(String requestedTitle) {
-		this.requestedTitle = requestedTitle;
-	}
 }

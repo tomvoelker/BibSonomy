@@ -53,49 +53,50 @@
 
 			<div class="row">
 				<div class="col-md-12">
-					<ul class="nav nav-pills">
-						<li class="${subPage eq 'INFO' ? 'active': ''}">
-							<a href="${relativeUrlGenerator.getOrganizationUrlByName(orgaName)}">
-								<fontawesome:icon icon="info" spaceAfter="5"/>
-								<fmt:message key="organization.description" />
-							</a>
-						</li>
+					<c:set var="peopleCount" value="${command.persons.totalCount}" />
+					<c:set var="publicationCount" value="${command.publications.totalCount}" />
+					<c:set var="projectCount" value="${command.projects.totalCount}" />
 
-						<c:set var="peopleCount" value="${command.persons.totalCount}" />
-						<c:if test="${peopleCount gt 0}">
-							<li class="${subPage eq 'PERSONS' ? 'active': ''}">
-								<a href="${relativeUrlGenerator.getOrganizationPersonsUrlByName(orgaName)}">
-									<fontawesome:icon icon="users" spaceAfter="5" />
-									<fmt:message key="persons" />
-									<span title="total: ${peopleCount} people" class="badge">${peopleCount}</span>
+					<c:if test="${peopleCount gt 0 or publicationCount gt 0 or (projectCount gt 0 and showProjectsLinks)}">
+						<ul class="nav nav-pills">
+							<li class="${subPage eq 'INFO' ? 'active': ''}">
+								<a href="${relativeUrlGenerator.getOrganizationUrlByName(orgaName)}">
+									<fontawesome:icon icon="info" spaceAfter="5"/>
+									<fmt:message key="organization.description" />
 								</a>
 							</li>
-						</c:if>
-						<c:set var="publicationCount" value="${command.publications.totalCount}" />
-						<c:if test="${publicationCount gt 0}">
-							<li class="${subPage eq 'PUBLICATIONS' ? 'active': ''}">
+							<c:if test="${peopleCount gt 0}">
+								<li class="${subPage eq 'PERSONS' ? 'active': ''}">
+									<a href="${relativeUrlGenerator.getOrganizationPersonsUrlByName(orgaName)}">
+										<fontawesome:icon icon="users" spaceAfter="5" />
+										<fmt:message key="persons" />
+										<span title="total: ${peopleCount} people" class="badge">${peopleCount}</span>
+									</a>
+								</li>
+							</c:if>
+							<c:if test="${publicationCount gt 0}">
+								<li class="${subPage eq 'PUBLICATIONS' ? 'active': ''}">
 
-								<a href="${relativeUrlGenerator.getOrganizationPublicationsUrlByName(orgaName)}">
-									<fontawesome:icon icon="book" spaceAfter="5" />
-									<fmt:message key="publications" />
-									<span class="badge" title="total:  ${publicationCount} publications">
-										${publicationCount}
-									</span>
-								</a>
-							</li>
-						</c:if>
-						<c:set var="projectCount" value="${command.projects.totalCount}" />
-						<c:if test="${projectCount gt 0 and showProjectsLinks}">
-							<li class="${subPage eq 'PROJECTS' ? 'active': ''}">
-								<a href="${relativeUrlGenerator.getOrganizationProjectsUrlByName(orgaName)}">
-									<fontawesome:icon icon="project-diagram" spaceAfter="5" />
-									<fmt:message key="navi.projects" />
-									<span class="badge" title="total:  ${projectCount} projects">${projectCount}</span>
-								</a>
-							</li>
-						</c:if>
-					</ul>
-
+									<a href="${relativeUrlGenerator.getOrganizationPublicationsUrlByName(orgaName)}">
+										<fontawesome:icon icon="book" spaceAfter="5" />
+										<fmt:message key="publications" />
+										<span class="badge" title="total:  ${publicationCount} publications">
+											${publicationCount}
+										</span>
+									</a>
+								</li>
+							</c:if>
+							<c:if test="${projectCount gt 0 and showProjectsLinks}">
+								<li class="${subPage eq 'PROJECTS' ? 'active': ''}">
+									<a href="${relativeUrlGenerator.getOrganizationProjectsUrlByName(orgaName)}">
+										<fontawesome:icon icon="project-diagram" spaceAfter="5" />
+										<fmt:message key="navi.projects" />
+										<span class="badge" title="total:  ${projectCount} projects">${projectCount}</span>
+									</a>
+								</li>
+							</c:if>
+						</ul>
+					</c:if>
 				</div>
 			</div>
 
@@ -151,7 +152,7 @@
 				</c:if>
 				<c:if test="${subPage eq 'PUBLICATIONS'}">
 					<div id="organization-publications">
-						<div  class="col-md-10 publication-list">
+						<div  class="col-md-10 publication-list list-inherit-height">
 							<div id="publications_0" class="publicationsContainer standard">
 							<resources:bibtexs listView="${command.publications}"
 											   loginUserName="${command.context.loginUser.name}"

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,26 +40,46 @@ public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFil
 
 	/** allowed browser bookmark export extensions */
 	public static final Collection<String> BROWSER_IMPORT_EXTENSIONS = Arrays.asList("html", "htm");
+
 	/**
 	 * all extensions allowed for document upload
 	 * pdf, ps, djv, djvu, txt extensions
 	 */
 	public static final Collection<String> DOCUMENT_EXTENSIONS = Arrays.asList(
-		"pdf", "ps", 
-		"djv", "djvu", 
+		"pdf", "ps",
+		"djv", "djvu",
 		"txt", "tex",
-		"doc", "docx", "ppt", "pptx", "xls", "xlsx", 
+		"doc", "docx", "ppt", "pptx", "xls", "xlsx",
 		"ods", "odt", "odp",
 		"jpg", "jpeg", "tif", "tiff", "png",
 		"htm", "html",
 		"epub"
 		);
+
 	/**
 	 * the extension of a BibTeX file
 	 */
 	public static final String BIBTEX_EXTENSION = "bib";
+
 	/**
-	 * bibtex, endnote extension
+	 * the extension of an endnote file
 	 */
-	public static final Collection<String> BIBTEX_ENDNOTE_EXTENSIONS = Arrays.asList(BIBTEX_EXTENSION, "endnote", "ris");
+	public static final String ENDNOTE_EXTENSION = "endnote";
+
+	/**
+	 * the extension of a RIS file
+	 */
+	public static final String RIS_EXTENSION = "ris";
+
+	/**
+	 * the extension of a JSON file
+	 */
+	public static final String JSON_EXTENSION = "json";
+
+	/**
+	 * Accepted file extension for publications import: BibTeX, EndNote, RIS
+	 */
+	public static final Collection<String> ACCEPTED_PUBLICATION_EXTENSIONS = Arrays.asList(
+			BIBTEX_EXTENSION, ENDNOTE_EXTENSION, RIS_EXTENSION
+    );
 }

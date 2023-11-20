@@ -1,0 +1,73 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+
+	<!-- FIXME: rename file to simple relation view -->
+	<jsp:directive.attribute name="relation" type="org.bibsonomy.model.ResourcePersonRelation" required="true"/>
+	<jsp:directive.attribute name="showButtons" type="java.lang.Boolean" required="false" description="displays the accept/decline button bar"/>
+    <jsp:directive.attribute name="addPub" type="java.lang.Boolean" required="false" description="If true, user can add the publication. If false, user can delete it. Dependand from buttons."/>
+	<jsp:directive.attribute name="personId" type="java.lang.String" required="false" description="ID of the person"/>
+	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
+
+	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false" description="ID of the person"/>
+
+	<c:set var="post" value="${relation.post}"/>
+
+	<c:if test="${empty personId}">
+		<c:set var="personId" value="${relation.person.personId}" />
+	</c:if>
+
+	<c:set var="loggedInUser" value="${command.context.loginUser}" />
+
+	<per:simplePublicationView post="${post}"
+							   showButtons="${showButtons}"
+							   onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
+							   referer="${relativeUrlGenerator.getPersonUrl(personId)}"
+							   enforceCommunityPost="${true}">
+		<jsp:attribute name="buttons">
+			<c:choose>
+				<c:when test="${addPub}">
+					<button type="button" class="btn btn-default btn-xs add-button"
+							data-interhash="${post.resource.interHash}"
+							data-index="${relation.personIndex}"
+							data-type="${relation.relationType}">
+						<fontawesome:icon icon="check"/>
+					</button>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${loggedInUser.claimedPerson.personId eq personId or loggedInUser.role eq 'ADMIN'}">
+						<button type="button"
+								onclick="initDeleteRelationButtons(this)"
+								class="btn btn-default btn-xs delete-button"
+								data-interhash="${post.resource.interHash}"
+								data-personindex="${relation.personIndex}"
+								data-relationtype="${relation.relationType}">
+							<fontawesome:icon icon="trash"/>
+						</button>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+
+			<c:if test="${properties['report.person.duplicate.publications'] and
+							not empty properties['project.reportMail'] and
+							not empty reportFunction}">
+				<button type="button"
+						class="btn btn-default btn-xs report-button"
+						onclick="${reportFunction}"
+						data-person="${personId}"
+						data-title="${post.resource.title}"
+						data-interhash="${post.resource.interHash}" >
+					<fontawesome:icon icon="flag"/>
+				</button>
+			</c:if>
+		</jsp:attribute>
+	</per:simplePublicationView>
+</jsp:root>

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.pubmed;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,25 +42,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class PubMedScraperTest {
-	
+	String resultDirectory = "pubmed/";
+
 	/**
 	 * starts URL test
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=ShowDetailView&TermToSearch=17623893&ordinalpos=1&itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum";
-		final String resultFile = "PubMedScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, PubMedScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test
-	 */
-	@Test
-	public void url2TestRun(){
-		final String url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&id=17623893&mode=medline";
-		final String resultFile = "PubMedScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, PubMedScraper.class, resultFile);
+		final String url = "https://pubmed.ncbi.nlm.nih.gov/17623893/";
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest1.bib";
+		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 
 	/**
@@ -65,30 +59,28 @@ public class PubMedScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		final String url = "http://www.ncbi.nlm.nih.gov/pubmed/18506939?ordinalpos=2&itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum";
-		final String resultFile = "PubMedScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, PubMedScraper.class, resultFile);
+		final String url = "https://pubmed.ncbi.nlm.nih.gov/18506939/";
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest3.bib";
+		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 
 	/**
 	 * starts URL test
-	 *
-	 * domain does not exist anymore
 	 */
 	@Test
 	public void url4TestRun(){
 		final String url = "https://europepmc.org/article/MED/19426458";
-		final String resultFile = "PubMedScraperUnitURLTest4.bib";
-		assertScraperResult(url, null, PubMedScraper.class, resultFile);
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest4.bib";
+		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test
 	 */
 	@Test
-	public void url6TestRun(){
+	public void url5TestRun(){
 		final String url = "https://www.ncbi.nlm.nih.gov/pubmed/29552975";
-		final String resultFile = "PubMedScraperUnitURLTest5.bib";
-		assertScraperResult(url, null, PubMedScraper.class, resultFile);
+		final String resultFile = resultDirectory + "PubMedScraperUnitURLTest5.bib";
+		assertScraperResult(url, PubMedScraper.class, resultFile);
 	}
 }

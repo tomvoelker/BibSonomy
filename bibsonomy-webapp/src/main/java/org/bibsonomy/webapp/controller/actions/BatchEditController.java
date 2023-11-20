@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -110,12 +113,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	/*
 	 * TODO: use enum for this
 	 */
-	private static final Integer IGNORE_ACTION = Integer.valueOf(0);
-	private static final Integer ADD_TAGS_TO_ALL_POSTS_ACTION = Integer.valueOf(1);
-	private static final Integer UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = Integer.valueOf(2);
-	private static final Integer NORMALIZE_ACTION = Integer.valueOf(3);
-	private static final Integer DELETE_ACTION = Integer.valueOf(4);
-	private static final Integer UPDATE_VIEWABLE_ACTION = Integer.valueOf(5);
+	private static final Integer IGNORE_ACTION = 0;
+	private static final Integer ADD_TAGS_TO_ALL_POSTS_ACTION = 1;
+	private static final Integer UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION = 2;
+	private static final Integer NORMALIZE_ACTION = 3;
+	private static final Integer DELETE_ACTION = 4;
+	private static final Integer UPDATE_VIEWABLE_ACTION = 5;
 
 	/**
 	 *
@@ -152,11 +155,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	}
 
 	/**
-	 * This controller is called in two cases:
-	 * 1. DirectEdit: When user clicks the gear button and selects 'edit own
-	 * entries'
-	 * 2. Import: When user imports several bibTexes through: Add post-> post
-	 * publication->BibTeX/EndNote snippet
+	 * This controller was originally written for two cases: DirectEdit and IndirectEdit-Mode.
 	 *
 	 * Differences:
 	 * In direct edit, user each time can apply one edit option to the posts. So
@@ -165,6 +164,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * In indirect edit, choosing several edit options at the same time is also
 	 * possible. So we have only one list (postsToCombiUpdate) of posts and a
 	 * complete update will be performed on the post.
+	 *
+	 * Since the batchEdit page has been rewritten to support multiple Changes at once, currently only IndirectEdit-Mode is in use.
+	 *
+	 * The controller is called in two cases:
+	 * 1. When user clicks the gear button and selects 'edit own entries'
+	 * 2. When user imports several bibTexes through: Add post-> post publication->BibTeX/EndNote snippet
 	 */
 	@Override
 	public View workOn(final BatchEditCommand command) {
@@ -291,12 +296,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * create lists for the different types of actions
 		 */
-		final List<String> postsToDelete = new LinkedList<String>();
-		final List<Post<?>> postsToUpdateTags = new LinkedList<Post<?>>();
-		final List<Post<?>> postsToNormalize = new LinkedList<Post<?>>();
-		final List<Post<?>> postsToUpdateViewable = new LinkedList<Post<?>>();
+		final List<String> postsToDelete = new LinkedList<>();
+		final List<Post<?>> postsToUpdateTags = new LinkedList<>();
+		final List<Post<?>> postsToNormalize = new LinkedList<>();
+		final List<Post<?>> postsToUpdateViewable = new LinkedList<>();
 		// several updates actions at the same time
-		final List<Post<?>> postsToCombiUpdate = new LinkedList<Post<?>>();
+		final List<Post<?>> postsToCombiUpdate = new LinkedList<>();
 		/*
 		 * All updated posts will get the same date.
 		 */
@@ -329,7 +334,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * STEP 1: Check if post should be deleted or ignored.
 			 */
-			if (action.contains(DELETE_ACTION)) {
+			if (action.contains(DELETE_ACTION) && (directEdit || markedPost.getValue().isDelete())) {
 				postsToDelete.add(PostUtils.getKeyForPost(intraHash, postOwner));
 				continue;
 			}
@@ -358,7 +363,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 */
 			post.setDate(now);
 
-			if (action.contains(NORMALIZE_ACTION)) {
+			if (action.contains(NORMALIZE_ACTION) && (directEdit || markedPost.getValue().isNormalize())) {
 				if (!BibTex.class.isAssignableFrom(resourceClass)) {
 					throw new IllegalArgumentException("BibTex Key can only be normalized for publications");
 				}
@@ -412,7 +417,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 				}
 			}
-			if (action.contains(UPDATE_VIEWABLE_ACTION)) {
+			if (action.contains(UPDATE_VIEWABLE_ACTION) && (directEdit || markedPost.getValue().isUpdateVisibility())) {
 				/*
 				 * set visibility of this post for the groups,
 				 * the user specified
@@ -455,7 +460,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * after update/store contains all posts with errors, to show them to
 		 * the user for correction
 		 */
-		final List<Post<? extends Resource>> postsWithErrors = new LinkedList<Post<? extends Resource>>();
+		final List<Post<? extends Resource>> postsWithErrors = new LinkedList<>();
 		if (postsArePublications) {
 			command.setBibtex(new ListCommand<Post<BibTex>>(command, (List) postsWithErrors));
 		} else {
@@ -504,18 +509,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/* *******************************************************
 		 * SIXTH: return to view
-		 * ******************************************************
-		 */
-		/*
-		 * handle AJAX requests
-		 */
+		 * *******************************************************/
+
+		// handle AJAX requests
 		if ("ajax".equals(command.getFormat())) {
 			return Views.AJAX_EDITTAGS;
 		}
 
-		/*
-		 * return to batch edit view on errors
-		 */
+		// return to batch edit view on errors
 		if (this.errors.hasErrors()) {
 			if (postsArePublications) {
 				return Views.BATCHEDITBIB;
@@ -523,11 +524,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			return Views.BATCHEDITURL;
 		}
 
-		/*
-		 * return to either the user page or current page(batchedit)
-		 */
+		// return to either the user page or current page(batchedit)
+		if (!directEdit) {
+			command.setReferer(null);
+		}
+		
 		return this.getFinalRedirect(command.getReferer(), loginUserName);
-
 	}
 
 	/**
@@ -537,7 +539,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	private static Set<Tag> getTagsCopy(final Set<Tag> tags) {
-		final Set<Tag> tagsCopy = new TreeSet<Tag>();
+		final Set<Tag> tagsCopy = new TreeSet<>();
 		for (final Tag tag : tags) {
 			tagsCopy.add(new Tag(tag));
 		}
@@ -713,9 +715,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								 * since those tags probably caused the error
 								 */
 								post.setTags(updatedPost.getTags());
-							} catch (final ObjectNotFoundException ex1) {
-								// ignore
-							} catch (final ObjectMovedException ex1) {
+							} catch (final ObjectNotFoundException | ObjectMovedException ex1) {
 								// ignore
 							}
 						}
@@ -742,7 +742,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
-		final Map<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
+		final Map<String, Post<? extends Resource>> postMap = new HashMap<>();
 		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
 		if (!updatePosts && present(postsFromSession)) {
 			/*

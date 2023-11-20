@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,37 +29,16 @@
  */
 package org.bibsonomy.webapp.command.actions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author jensi
  */
+@Getter
+@Setter
 public class PublicationRendererCommand extends PostPublicationCommand {
 	private MultipartFile pica;
 	private MultipartFile marc;
-	/**
-	 * @return the pica
-	 */
-	public MultipartFile getPica() {
-		return this.pica;
-	}
-	/**
-	 * @param pica the pica to set
-	 */
-	public void setPica(MultipartFile pica) {
-		this.pica = pica;
-	}
-	/**
-	 * @return the marc
-	 */
-	public MultipartFile getMarc() {
-		return this.marc;
-	}
-	/**
-	 * @param marc the marc to set
-	 */
-	public void setMarc(MultipartFile marc) {
-		this.marc = marc;
-	}
-	
 }

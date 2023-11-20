@@ -59,7 +59,8 @@
 	<layout:layout pageTitle="${title}" 
 		requPath="${requPath}"
 		loginUser="${command.context.loginUser}"
-		noSidebar="${true}">
+		noSidebar="${true}"
+		noContentPadding="${true}">
 		
 		<!--+
 			+ page heading
@@ -77,13 +78,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
-			<nav:breadcrumbs>
-				<jsp:attribute name="crumbs">
-					<fmt:message key="actions.communityPost" var="communityPost"/>
-					<nav:crumb name="${communityPost}" />
-					<nav:crumb name="${mtl:shorten(title, 150)}" active="true" />
-				</jsp:attribute>
-			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<!--+

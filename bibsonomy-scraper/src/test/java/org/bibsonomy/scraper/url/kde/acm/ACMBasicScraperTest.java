@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -46,6 +49,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ACMBasicScraperTest {
+	String resultDirectory = "acm/";
 	
 	/**
 	 * starts URL test with id url_1
@@ -53,7 +57,7 @@ public class ACMBasicScraperTest {
 	@Test
 	public void urlTestRun1(){
 		final String url = "https://dl.acm.org/doi/10.1145/1015330.1015428";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest1.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 
@@ -61,9 +65,9 @@ public class ACMBasicScraperTest {
 	 * tests the scraper for an article
 	 */
 	@Test
-	public void testArticleScraping() {
+	public void urlTestRun2() {
 		final String url = "https://dl.acm.org/doi/10.1137/S009753979528175X";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest2.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
@@ -73,7 +77,7 @@ public class ACMBasicScraperTest {
 	@Test
 	public void urlTestRun3(){
 		final String url = "https://dl.acm.org/doi/10.1145/1105664.1105676";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest3.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
@@ -83,7 +87,7 @@ public class ACMBasicScraperTest {
 	@Test
 	public void urlTestRun4(){
 		final String url = "https://dl.acm.org/doi/book/10.5555/553876";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest4.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest4.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
@@ -93,14 +97,14 @@ public class ACMBasicScraperTest {
 	@Test
 	public void urlTestRun5(){
 		final String url = "https://dl.acm.org/doi/10.1145/359842.359859";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest5.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest5.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
 	@Test
 	public void urlTestRun6(){
 		final String url = "https://dl.acm.org/doi/10.1145/1082036.1082037";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest6.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest6.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	/**
@@ -109,7 +113,7 @@ public class ACMBasicScraperTest {
 	@Test
 	public void urlTestRun7(){
 		final String url = "https://dl.acm.org/doi/10.1145/1571941.1571977";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest7.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest7.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	
@@ -117,9 +121,9 @@ public class ACMBasicScraperTest {
 	 * CACM
 	 */
 	@Test
-	public void urlTestRun9(){
+	public void urlTestRun8(){
 		final String url = "https://cacm.acm.org/magazines/2015/8/189841-understanding-the-u-s-domestic-computer-science-phd-pipeline/fulltext";
-		final String resultFile = "acm/ACMBasicScraperUnitURLTest9.bib";
+		final String resultFile = resultDirectory + "ACMBasicScraperUnitURLTest8.bib";
 		assertScraperResult(url, ACMBasicScraper.class, resultFile);
 	}
 	

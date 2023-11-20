@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,31 +29,25 @@
  */
 package org.bibsonomy.scraper.url.kde.iwap;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Scraper for papers from http://www.iwaponline.com
  * @author tst
  */
-public class IWAPonlineScraper extends GenericBibTeXURLScraper {
-	private static final Log log = LogFactory.getLog(IWAPonlineScraper.class);
+public class IWAPonlineScraper extends CitationManager2Scraper {
 	
 	private static final String SITE_NAME = "IWA Publishing";
 
-	private static final String SITE_URL = "http://www.iwaponline.com";
+	private static final String SITE_URL = "https://iwaponline.com";
 
 	private static final String INFO = "This Scraper supports papers from " + href(SITE_URL, SITE_NAME) +".";
 
@@ -61,25 +58,12 @@ public class IWAPonlineScraper extends GenericBibTeXURLScraper {
 					new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN)
 	);
 
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
-	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("(?i)ABSTRACT.*\\s+<P>(.*)\\s+</P>");
 
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	private static String abstractPrser(URL url){
-		try {
-			final Matcher m = PATTERN_ABSTRACT.matcher(WebUtils.getContentAsString(url));
-			if(m.find()) {
-				return m.group(1);
-			}
-		} catch(Exception e) {
-			log.error("error while getting abstract for " + url, e);
-		}
-		return null;
-	}
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -95,20 +79,4 @@ public class IWAPonlineScraper extends GenericBibTeXURLScraper {
 		return SITE_URL;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
-	 */
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		try {
-			final String content = WebUtils.getContentAsString(url, cookies);
-			final Matcher m = BIBTEX_PATTERN.matcher(content);
-			if (m.find()) {
-				return "http://" + url.getHost() + m.group(1);
-			}
-		} catch (final IOException e) {
-			throw new ScrapingException(e);
-		}
-		return null;
-	}
 }

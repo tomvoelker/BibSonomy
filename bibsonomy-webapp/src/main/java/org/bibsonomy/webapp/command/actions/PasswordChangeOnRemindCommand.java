@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,16 +31,16 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author daill
  */
+@Getter
+@Setter
 public class PasswordChangeOnRemindCommand extends BaseCommand implements Serializable{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8544593363734488269L;
 	/**
 	 * the username with the ative temporary password
@@ -57,55 +60,5 @@ public class PasswordChangeOnRemindCommand extends BaseCommand implements Serial
 	 * the reminder hash sent to the user (containing his encryped password)
 	 */
 	private String reminderHash;
-	
-	
-	
-	// **********************************************************
-	// getter / setter
-	// **********************************************************	
-	
-	/**
-	 * @return String
-	 */
-	public String getUserName() {
-		return this.userName;
-	}
-	/**
-	 * @param userName
-	 */
-	public void setUserName(final String userName) {
-		this.userName = userName;
-	}
-	/**
-	 * @return String
-	 */
-	public String getNewPassword() {
-		return this.newPassword;
-	}
-	/**
-	 * @param newPassword
-	 */
-	public void setNewPassword(final String newPassword) {
-		this.newPassword = newPassword;
-	}
-	/**
-	 * @return String
-	 */
-	public String getPasswordCheck() {
-		return this.passwordCheck;
-	}
-	/**
-	 * @param passwordCheck
-	 */
-	public void setPasswordCheck(final String passwordCheck) {
-		this.passwordCheck = passwordCheck;
-	}
-	public void setReminderHash(String reminderHash) {
-		this.reminderHash = reminderHash;
-	}
-	public String getReminderHash() {
-		return reminderHash;
-	}	
 
-	
 }

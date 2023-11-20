@@ -37,7 +37,7 @@
 				+-->
 			
 			<!-- URL -->
-			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true}">
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="https://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true}">
 				<jsp:attribute name="appendix">
 					<!-- publication found -->
 					<div class="hide">

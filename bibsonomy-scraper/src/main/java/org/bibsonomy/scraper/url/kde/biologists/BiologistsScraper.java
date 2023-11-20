@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,46 +29,29 @@
  */
 package org.bibsonomy.scraper.url.kde.biologists;
 
-import java.io.IOException;
-import java.net.URL;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
  */
-public class BiologistsScraper extends GenericBibTeXURLScraper {
+public class BiologistsScraper extends CitationManager2Scraper {
 	
-	private static final String SITE_NAME = "Development";
-	private static final String SITE_URL = "http://dev.biologists.org";
+	private static final String SITE_NAME = "The Company of Biologists";
+	private static final String SITE_URL = "https://journals.biologists.com/";
+	private static final String SITE_HOST = "journals.biologists.com";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<li class=\"bibtext first\"><a href=\"([^\"]++)\"");
-	
 	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "dev.biologists.org"), Pattern.compile("/content" + ".*")));
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jcs.biologists.org"), Pattern.compile("/content" + ".*")));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		final Matcher m = DOWNLOAD_LINK_PATTERN.matcher(WebUtils.getContentAsString(url));
-		if (m.find()) {
-			final String bibTexId = m.group(1);
-			return "http://" + url.getHost() + bibTexId;
-		}
-		
-		return null;
-	}
-	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;

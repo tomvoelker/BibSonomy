@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,10 +30,14 @@
 package org.bibsonomy.webapp.command.actions;
 
 
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author philipp
  */
+@Getter
+@Setter
 public class EditTagsCommand {
 	
 	// TODO: Set<Tag>
@@ -40,47 +47,5 @@ public class EditTagsCommand {
 	private String addTags = "";
 	
 	private boolean updateRelations = false;
-
-	/**
-	 * @param delTags the delTags to set
-	 */
-	public void setDelTags(final String delTags) {
-		this.delTags = delTags;
-	}
-
-	/**
-	 * @return the delTags
-	 */
-	public String getDelTags() {
-		return this.delTags;
-	}
-
-	/**
-	 * @param addTags the addTags to set
-	 */
-	public void setAddTags(final String addTags) {
-		this.addTags = addTags;
-	}
-
-	/**
-	 * @return the addTags
-	 */
-	public String getAddTags() {
-		return this.addTags;
-	}
-
-	/**
-	 * @param updateRelations the updateRelations to set
-	 */
-	public void setUpdateRelations(final boolean updateRelations) {
-		this.updateRelations = updateRelations;
-	}
-
-	/**
-	 * @return the updateRelations
-	 */
-	public boolean isUpdateRelations() {
-		return this.updateRelations;
-	}
 
 }

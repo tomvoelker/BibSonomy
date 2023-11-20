@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,50 +29,31 @@
  */
 package org.bibsonomy.scraper.url.kde.anthrosource;
 
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-
 /**
  * @author wbi
  */
-public class AnthroSourceScraper extends AbstractUrlScraper {
-	
+public class AnthroSourceScraper extends LiteratumScraper {
+
 	private static final String SITE_NAME = "AnthroSource";
-
-	private static final String SITE_URL = "http://www.anthrosource.net/";
-
-	private Log log = LogFactory.getLog(AnthroSourceScraper.class);
-
+	private static final String SITE_URL = "https://anthrosource.onlinelibrary.wiley.com/";
+	private static final String AS_HOST  = "anthrosource.onlinelibrary.wiley.com";
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String AS_HOST  = "anthrosource.net";
-	private static final String AS_ABSTRACT_PATH = "/doi/abs/";
-	private static final String AS_BIBTEX_PATH = "/action/showCitFormats";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
-		final Pattern hostPattern = Pattern.compile(".*" + AS_HOST);
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(AS_ABSTRACT_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(AS_BIBTEX_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AS_HOST), EMPTY_PATTERN));
 	}
 	
 	public String getInfo() {
 		return info;
-	}
-
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		log.debug("Observed Scraper called: AnthroSourceScraper is called with " + sc.getUrl().toString());
-		
-		return false;
 	}
 
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {

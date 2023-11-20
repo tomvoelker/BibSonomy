@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,9 +37,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.MailUtils;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
@@ -78,9 +80,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		Post<BibTex> post = null;
 		try {
 			post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
-		} catch (final ObjectNotFoundException ex) {
-			// ignore
-		} catch (final ObjectMovedException ex) {
+		} catch (final ObjectNotFoundException | ObjectMovedException ex) {
 			// ignore
 		}
 
@@ -88,30 +88,29 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			return null;
 		}
 
-		return convertToGoldStandard(post);
+		return BibTexUtils.convertToGoldStandard(post);
+	}
+
+	private String getRedirectUrl(final Post<BibTex> post, final Post<BibTex> oldPost, final String referer) {
+		// check if the
+		if (present(referer)) {
+			if (present(oldPost) && referer.matches(".*/bibtex/.+") && !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
+				return this.urlGenerator.getPostUrl(post);
+			}
+
+			return referer;
+		}
+
+		return this.urlGenerator.getPostUrl(post);
 	}
 
 	@Override
-	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer, boolean update) {
-		final String redirectUrl = present(referer) ? referer : this.urlGenerator.getResourceUrl(post.getResource());
+	protected View finalRedirect(final String userName, final Post<BibTex> post, final Post<BibTex> oldPost, final String referer, boolean update) {
+		final String redirectUrl = this.getRedirectUrl(post, oldPost, referer);
 
 		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");
 		return view;
-	}
-
-	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
-		if (!present(post)) {
-			return null;
-		}
-
-		final Post<BibTex> gold = new Post<>();
-
-		final GoldStandardPublication goldP = new GoldStandardPublication();
-		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
-		gold.setResource(goldP);
-
-		return gold;
 	}
 
 	/*

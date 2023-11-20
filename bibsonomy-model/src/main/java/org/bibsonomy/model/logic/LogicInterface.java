@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -359,6 +362,8 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#DELETE_GROUP_REQUEST}</dt><dd>Deletes the pending group.</dd>
+	 * <dt>{@link GroupUpdateOperation#UPDATE_PRESET_TAG}</dt><dd>Adds or updates a preset tag.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE_PRESET_TAG}</dt><dd>Deletes a preset tag.</dd>
 	 * </dl>
 	 *
 	 *
@@ -753,9 +758,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * returns the meta data the query requests
+	 * @param loggedInUser the logged in user
 	 * @param query
 	 * @param <R>
 	 * @return
 	 */
-	<R> R getMetaData(MetaDataQuery<R> query);
+	<R> R getMetaData(final User loggedInUser, final MetaDataQuery<R> query);
 }

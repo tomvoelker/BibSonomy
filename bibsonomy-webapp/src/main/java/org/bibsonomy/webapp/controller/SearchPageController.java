@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,9 +40,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SearchViewCommand;
@@ -146,21 +147,6 @@ public class SearchPageController extends SingleResourceListController implement
 				this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, queryScope,
 								null, command.getSortCriteria(), command.getStartDate(), command.getEndDate(),
 								command.getListCommand(resourceType).getEntriesPerPage());
-
-				// remove duplicates depending on command settings
-				if (resourceType == BibTex.class) {
-					switch (command.getDuplicates()) {
-						case MERGED:
-							BibTexUtils.mergeDuplicates(command.getBibtex().getList());
-							break;
-						case NO:
-							BibTexUtils.removeDuplicates(command.getBibtex().getList());
-							break;
-						case YES:
-						default:
-							break;
-					}
-				}
 			}
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {

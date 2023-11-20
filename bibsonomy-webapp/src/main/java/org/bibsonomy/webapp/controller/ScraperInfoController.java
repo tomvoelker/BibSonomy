@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,14 +29,15 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import java.util.Collection;
-
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.webapp.command.ScraperInfoCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * controller for the scraper info page
@@ -46,10 +50,13 @@ public class ScraperInfoController implements MinimalisticController<ScraperInfo
 	/*
 	 * TODO: inject the scraper list using Spring
 	 */
-	private static final Collection<Scraper> scraperList = new KDEScraperFactory().getScraper().getScraper();
+	private static final Collection<Scraper> scraperList = new KDEScraperFactory().getScraper().getScraper().stream()
+			.filter(scraper -> scraperHasRequiredDisplayInfos(scraper))
+			.collect(Collectors.toList());
 	
 	@Override
 	public View workOn(final ScraperInfoCommand command) {
+
 		command.setScraperList(scraperList);
 		return Views.SCRAPER_INFO;			
 	}
@@ -57,6 +64,17 @@ public class ScraperInfoController implements MinimalisticController<ScraperInfo
 	@Override
 	public ScraperInfoCommand instantiateCommand() {
 		return new ScraperInfoCommand();
+	}
+
+	// temporary quick fix for the /scraperinfo page - rework scraper package/interface in the future
+	private static boolean scraperHasRequiredDisplayInfos(Scraper scraper) {
+		try {
+			scraper.getClass().getDeclaredMethod("getSupportedSiteName");
+			scraper.getClass().getDeclaredMethod("getSupportedSiteURL");
+		} catch (NoSuchMethodException e) {
+			return false;
+		}
+		return true;
 	}
 
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -54,6 +57,7 @@ import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.information.utils.JobInformationUtils;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.executable.ForGroupTag;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
@@ -89,12 +93,12 @@ import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
 import recommender.core.RecommendationService;
 import recommender.core.database.RecommenderStatisticsManager;
 
@@ -135,7 +139,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * initialize lists
 		 */
 		GroupingCommandUtils.initGroupingCommand(command);
-		command.setRelevantGroups(new ArrayList<>());
+		command.setRelevantForGroups(new ArrayList<>());
 		command.setRelevantTagSets(new HashMap<>());
 		command.setRecommendedTags(new TreeSet<>());
 		command.setCopytags(new ArrayList<>());
@@ -188,7 +192,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final User loginUser = context.getLoginUser();
 		if (present(command.getGroupUser())) {
-			command.setGroupUser(this.logic.getUserDetails(command.getGroupUser().getName()));
+			final String groupName = command.getGroupUser().getName();
+			command.setGroupUser(this.logic.getUserDetails(groupName));
+			final Group groupUserAsGroup = this.logic.getGroupDetails(groupName, false);
+			command.setPresetTagsOfGroupUser(groupUserAsGroup.getPresetTags());
 		}
 
 		/*
@@ -196,6 +203,17 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * classes can now execute their workOn code
 		 */
 		this.workOnCommand(command, loginUser);
+
+		/*
+		 * If the subclass tried to scrape a URL and failed, redirect to the post Publication Site
+		 * (see Issue #2914)
+		 */
+		if(this instanceof AbstractEditPublicationController && this.errors.hasErrors()){
+			final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes("/postPublication#bibtexPost");
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+			redirectView.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "error.scrape.redirect");
+			return redirectView;
+		}
 
 		/*
 		 * If the user is a spammer, we check the captcha
@@ -240,8 +258,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
-		 * set user, init post groups, relevant for tags (FIXME: candidate for
-		 * system tags) and recommender
+		 * set user, init post groups, group system tags and recommender
 		 */
 		this.initPost(command, post, postOwner);
 
@@ -441,10 +458,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		final String postOwnerName = postOwner.getName();
 
-		// editing of a group post - check if the user is in the group and has an appropriate role
+		// editing of a group post
 		if (present(command.getGroupUser())) {
 			final Group group = this.logic.getGroupDetails(command.getGroupUser().getName(), false);
 			if (present(group)) {
+				// check if the user is in the group and has an appropriate role
 				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUserName);
 				if (!(present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR)))) {
 					throw new AccessDeniedException("You have no rights to update this post");
@@ -453,15 +471,16 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
+		 * get the old post from the database
+		 */
+		final Post<RESOURCE> dbPost = this.getPostDetails(intraHashToUpdate, postOwnerName);
+
+		/*
 		 * we're editing an existing post
 		 */
 		if (!context.isValidCkey()) {
 			log.debug("no valid ckey found -> assuming first call, populating form");
-			/*
-			 * ckey is invalid, so this is probably the first call --> get post
-			 * from DB
-			 */
-			final Post<RESOURCE> dbPost = this.getPostDetails(intraHashToUpdate, postOwnerName);
+
 			if (dbPost == null) {
 				/*
 				 * invalid intra hash: post could not be found
@@ -508,6 +527,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			return this.getEditPostView(command, postOwner);
 		}
+
 		log.debug("ckey given, so parse tags, validate post, update post");
 		/*
 		 * ckey is given, so user is already editing the post -> parse tags
@@ -520,8 +540,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * post has changed -> check, if new post has already been posted
 			 */
-			final Post<RESOURCE> dbPost = this.getPostDetails(post.getResource().getIntraHash(), postOwnerName);
-			if (dbPost != null) {
+			final Post<RESOURCE> newPostInDB = this.getPostDetails(post.getResource().getIntraHash(), postOwnerName);
+			if (newPostInDB != null) {
 				log.debug("user already owns this post ... handling update");
 				/*
 				 * post exists -> warn user
@@ -542,7 +562,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		post.getResource().setIntraHash(command.getIntraHashToUpdate());
 
-		;
 		try {
 			/*
 			 * update post in DB
@@ -566,7 +585,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			/*
 			 * send final redirect
 			 */
-			return this.finalRedirect(command, post, updateResults, postOwnerName, true);
+			return this.finalRedirect(command, post, dbPost, updateResults, postOwnerName, true);
 		} catch (final DatabaseException ex) {
 			return this.handleDatabaseException(command, postOwner, post, ex, "update");
 		}
@@ -589,7 +608,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			post.setDescription(newPost.getDescription());
 			break;
 		case "approved":
-			post.setApproved(newPost.getApproved());
+			post.setApproved(newPost.isApproved());
 			break;
 		case "groups":
 			post.setGroups(newPost.getGroups());
@@ -597,7 +616,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
-		if (newPost.getApproved()) {
+		if (newPost.isApproved()) {
 			post.setApproved(true);
 		}
 	}
@@ -696,6 +715,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 * the post which should not be overwritten
 			 */
 			post.getTags().addAll(TagUtils.parse(command.getTags()));
+			/*
+			 * add all group preset tags
+			 */
+			post.getTags().addAll(TagUtils.parse(command.getPresetTagsForGroups()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
 			this.errors.rejectValue(TAGS_KEY, "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
@@ -765,17 +788,27 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * that URL (for whatever reason), we redirect to the user's page.
 	 * @param userName  the logged in user?
 	 * @param post    the saved post
+	 * @param oldPost the old post in the database (null if a post is created)
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
 	 * @param update
 	 * @return the redirect view
 	 */
-	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer, boolean update) {
+	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final Post<RESOURCE> oldPost, final String referer, boolean update) {
+		/*
+		 * check if hash has change and the referer is a publication page
+		 * -> redirect to the publication page with the new hash
+		 */
+		if (present(oldPost)) {
+			// FIXME: move url checking to urlgenerator or another central place
+			if (present(referer) && (referer.matches(".*/bibtex/.+") || referer.matches(".*/url/.+")) && !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
+				return new ExtendedRedirectView(this.urlGenerator.getPostUrl(post));
+			}
+		}
+
 		/*
 		 * If there is no referer URL given, or if we come from a
 		 * postBookmark/postPublication page, redirect to the user's home page.
-		 * FIXME: if we are coming from /bibtex/HASH* or /url/HASH* and the hash
-		 * has changed, we should redirect to the corresponding new page
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			// if the userName/postOwner is a group user, we redirect to the
@@ -883,7 +916,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			this.createOrUpdateSuccess(command, loginUser, post);
 
-			return this.finalRedirect(command, post, results, loginUserName, false);
+			return this.finalRedirect(command, post, null, results, loginUserName, false);
 		} catch (final DatabaseException de) {
 			return this.handleDatabaseException(command, loginUser, post, de, "create");
 		}
@@ -893,7 +926,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		return jobResults.stream().map(JobResult::getInfo).anyMatch(list -> JobInformationUtils.containsInformationType(list, PersonResourceLinkInformationAdded.class));
 	}
 
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, List<JobResult> jobResults, final String postOwnerName, boolean update) {
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final Post<RESOURCE> oldPost, final List<JobResult> jobResults, final String postOwnerName, boolean update) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
@@ -908,10 +941,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
-		 * If the user added an own publications with myown tag and the logic has auto linked persons with the post,
-		 * he should be redirected to his overview page
+		 * If the user added an own publication with myown tag and the logic has auto linked persons with the post,
+		 * he should be redirected to an overview page showing all autolinks
 		 */
-		final View redirectView = this.finalRedirect(postOwnerName, post, command.getReferer(), update);
+		final View redirectView = this.finalRedirect(postOwnerName, post, oldPost, command.getReferer(), update);
 		if (hasAutoLinkingInformation(jobResults)) {
 			command.setJobResults(jobResults);
 			command.setRedirectUrl(redirectView.getName());
@@ -974,9 +1007,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * after initializing the relevantFor groups, because there the
 		 * relevantFor tags are removed from the post)
 		 */
-		command.setTags(TagUtils.toTagString(post.getTags(), " "));
+		final Set<Tag> tags = post.getTags();
+		GroupUtils.removePresetTags(tags);
+		command.setTags(TagUtils.toTagString(tags, " "));
 
-		if (post.getApproved()) {
+		if (post.isApproved()) {
 			command.setApproved(true);
 		}
 
@@ -991,16 +1026,16 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param tags
 	 */
 	private void initCommandRelevantForGroups(final EditPostCommand<RESOURCE> command, final Set<Tag> tags) {
-		if (!present(command.getRelevantGroups())) {
-			command.setRelevantGroups(new ArrayList<>());
+		if (!present(command.getRelevantForGroups())) {
+			command.setRelevantForGroups(new ArrayList<>());
 		}
-		final List<String> relevantGroups = command.getRelevantGroups();
+		final List<String> relevantForGroups = command.getRelevantForGroups();
 
 		final Iterator<Tag> iterator = tags.iterator();
 		while (iterator.hasNext()) {
 			final String name = iterator.next().getName();
 			if (SystemTagsUtil.isSystemTag(name, RelevantForSystemTag.NAME)) {
-				relevantGroups.add(SystemTagsUtil.extractArgument(name));
+				relevantForGroups.add(SystemTagsUtil.extractArgument(name));
 				/*
 				 * removing the tag from the post such that it is not shown in
 				 * the tag input form
@@ -1011,12 +1046,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	}
 
 	/**
-	 * Adds the relevant groups from the command as system tags to the post.
+	 * Adds system tags for groups to the post.
+	 * Currently, supports: Relevant for and sent to group tags.
 	 *
 	 * @param command
 	 * @param post
 	 */
-	private void initRelevantForTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	private void initForGroupTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		final User postOwner;
 		if (present(command.getGroupUser())) {
 			postOwner = command.getGroupUser();
@@ -1026,21 +1062,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		final Set<Tag> tags = post.getTags();
 		final List<Group> groups = postOwner.getGroups();
-		final List<String> relevantGroups = command.getRelevantGroups();
-		/*
-		 * null check neccessary, because Spring sets the list to null, when no
-		 * group has been selected. :-(
-		 */
-		if (relevantGroups != null) {
-			for (final String relevantGroup : relevantGroups) {
-				/*
-				 * ignore groups the user is not a member of
-				 */
-				if (groups.contains(new Group(relevantGroup))) {
-					tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantGroup)));
-				} else {
-					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
-				}
+
+		for (final String relevantForGroup : command.getRelevantForGroups()) {
+			/*
+			 * ignore groups the user is not a member of
+			 */
+			if (groups.contains(new Group(relevantForGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(RelevantForSystemTag.NAME, relevantForGroup)));
+			} else {
+				log.info("ignored relevantfor: group '" + relevantForGroup + "' because user is not member of it");
+			}
+		}
+
+		for (final String sendToGroup : command.getSendToGroups()) {
+			/*
+			 * ignore groups the user is not a member of
+			 */
+			if (groups.contains(new Group(sendToGroup))) {
+				tags.add(new Tag(SystemTagsUtil.buildSystemTagString(ForGroupTag.NAME, sendToGroup)));
+			} else {
+				log.info("ignored for: group '" + sendToGroup + "' because user is not member of it");
 			}
 		}
 	}
@@ -1063,9 +1104,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		GroupingCommandUtils.initGroups(command, post.getGroups());
 		/*
-		 * initialize relevantFor-tags FIXME: candidate for system tags
+		 * initialize system tags for groups:
+		 * relevantfor:-tags and for:-tags
 		 */
-		this.initRelevantForTags(command, post);
+		this.initForGroupTags(command, post);
 		/*
 		 * For each post process an unique identifier is generated. This is used
 		 * for mapping posts to recommendations.

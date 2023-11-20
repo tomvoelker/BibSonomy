@@ -1,3 +1,32 @@
+/**
+ * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.search.es.search;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -11,10 +40,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.query.BasicQuery;
 import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.search.es.index.converter.person.PersonFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.*;
@@ -28,7 +56,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S extends SearchIndexSyncState, O> {
+public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S extends SearchIndexState, O> {
 
 	protected final ElasticsearchManager<T, S> manager;
 	private final Converter<T, Map<String, Object>, O> converter;
@@ -51,7 +79,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 				return results;
 			}
 			
-			final List<Pair<String, SortOrder>> sortOrder = this.getSortOrder(query);
+			final List<Pair<String, SortOrder>> sortCriteria = this.getSortCriteria(query);
 
 			/*
 			 * there is a limit in the es search how many entries we can skip (max result window)
@@ -71,7 +99,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query, maxResultWindow);
-			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
+			final SearchHits hits = this.manager.search(queryBuilder, sortCriteria, offset, limit, null, null);
 
 			if (hits == null) {
 				return results;
@@ -102,7 +130,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		}, statistics);
 	}
 
-	protected List<Pair<String, SortOrder>> getSortOrder(final Q query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final Q query) {
 		return null;
 	}
 

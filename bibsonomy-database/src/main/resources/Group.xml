@@ -166,6 +166,24 @@
 		WHERE set_name = #setName# AND `group` = #groupId#
 	</delete>
 
+	<select id="getPresetTagsForGroup" resultMap="GroupCommon.presetTags" parameterClass="string">
+		SELECT tag_name, description
+		FROM group_preset_tags
+		WHERE group_name = #groupname#
+	</select>
+
+	<insert id="insertOrUpdatePresetTag" parameterClass="org.bibsonomy.database.params.group.GroupPresetTagParam">
+		INSERT INTO group_preset_tags (<include refid="commonPresetTagsColumns"/>)
+		VALUES (#tagName#, #groupName#, #groupId#, #tagDescription#)
+		ON DUPLICATE KEY UPDATE description = #tagDescription#
+	</insert>
+
+	<delete id="deletePresetTag" parameterClass="org.bibsonomy.database.params.group.GroupPresetTagParam">
+		DELETE FROM group_preset_tags
+		WHERE tag_name = #tagName#
+		AND `group` = #groupId#
+	</delete>
+
 	<insert id="activateGroup" parameterClass="string">
 		INSERT INTO groupids (group_name, `group`, `parent`, privlevel, allow_join, sharedDocuments, shortDescription, organization, internal_id)
 		SELECT group_name, `group`, `parent`, privlevel, sharedDocuments, allow_join, shortDescription, organization, internal_id
@@ -304,11 +322,11 @@
 	<select id="getSubgroupsTransitively" resultMap="GroupCommon.group_extended_with_parent" parameterClass="list">
 		SELECT <include refid="basicColumns" />, u.user_realname, u.user_homepage, <include refid="parentColumns" />
 			FROM group_hierarchy gh
-			LEFT JOIN groupids i ON (gh.child_group_id = i.group)
+			LEFT JOIN groupids i ON (gh.parent_group_id = i.group)
 			LEFT JOIN user u ON (u.user_name = i.group_name)
 			LEFT JOIN groupids pt ON (i.parent = pt.group)
 			LEFT JOIN user upt ON (upt.user_name = pt.group_name)
-		WHERE gh.parent_group_id IN
+		WHERE gh.child_group_id IN
 		<iterate open="(" close=")" conjunction=",">
 			#[]#
 		</iterate>

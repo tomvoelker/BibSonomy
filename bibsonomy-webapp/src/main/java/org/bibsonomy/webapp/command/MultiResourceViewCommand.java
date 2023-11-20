@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +32,8 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -41,6 +46,8 @@ import org.bibsonomy.model.Resource;
  * With this command we are able to receive multiple lists of posts for a resource. 
  * 
  */
+@Getter
+@Setter
 public class MultiResourceViewCommand extends ResourceViewCommand {
 
 	/** a list of bibtex lists **/
@@ -85,45 +92,4 @@ public class MultiResourceViewCommand extends ResourceViewCommand {
 		throw new UnsupportedResourceTypeException(resourceType.getName());
 	}
 
-	/**
-	 * @return the listsBibTeXDescription
-	 */
-	public List<String> getListsBibTeXDescription() {
-		return this.listsBibTeXDescription;
-	}
-
-	/**
-	 * @param listsBibTeXDescription the listsBibTeXDescription to set
-	 */
-	public void setListsBibTeXDescription(List<String> listsBibTeXDescription) {
-		this.listsBibTeXDescription = listsBibTeXDescription;
-	}
-
-	/**
-	 * @return the listsBookmarkDescription
-	 */
-	public List<String> getListsBookmarkDescription() {
-		return this.listsBookmarkDescription;
-	}
-
-	/**
-	 * @param listsBookmarkDescription the listsBookmarkDescription to set
-	 */
-	public void setListsBookmarkDescription(List<String> listsBookmarkDescription) {
-		this.listsBookmarkDescription = listsBookmarkDescription;
-	}
-
-	/**
-	 * @return the listsBibTeX
-	 */
-	public List<ListCommand<Post<BibTex>>> getListsBibTeX() {
-		return this.listsBibTeX;
-	}
-
-	/**
-	 * @return the listsBookmark
-	 */
-	public List<ListCommand<Post<Bookmark>>> getListsBookmark() {
-		return this.listsBookmark;
-	}	
 }

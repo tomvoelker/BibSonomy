@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -43,7 +45,6 @@ import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -104,13 +105,13 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, command.getSearch(), command.getScope(), command.getFilter(), command.getSortCriteria(), command.getStartDate(), command.getEndDate(), entriesPerPage);
 
 			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) {
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, command.getSearch(), null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			}
 		}
 

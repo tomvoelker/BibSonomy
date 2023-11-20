@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2021 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,11 +27,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.database;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -51,8 +51,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public class InformationLogic implements InformationLogicInterface {
 
-    private static final Log log = LogFactory.getLog(InformationLogic.class);
-
     private User loginUser;
     private DBSessionFactory dbSessionFactory;
 
@@ -73,7 +71,7 @@ public class InformationLogic implements InformationLogicInterface {
      * @return
      */
     @Override
-    public User getUserDetails(String userName) {
+    public User getUserDetails(final String userName) {
         try (final DBSession session = this.openSession()) {
             /*
              * We don't use userName but user.getName() in the remaining part of
@@ -109,7 +107,7 @@ public class InformationLogic implements InformationLogicInterface {
      * @return
      */
     @Override
-    public Group getGroupDetails(String groupName, boolean pending) {
+    public Group getGroupDetails(final String groupName, final boolean pending) {
         try (final DBSession session = this.openSession()) {
 
             final Group myGroup = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, true, true, session);
@@ -132,14 +130,14 @@ public class InformationLogic implements InformationLogicInterface {
     /**
      * @param dbSessionFactory the dbSessionFactory to set
      */
-    public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+    public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
         this.dbSessionFactory = dbSessionFactory;
     }
 
     /**
      * @param userName set the username of the admin user
      */
-    public void setUserName(String userName) {
+    public void setUserName(final String userName) {
         // create admin user to have access admin-only information such as settings of users
         this.loginUser = new User(userName);
         this.loginUser.setRole(Role.ADMIN);

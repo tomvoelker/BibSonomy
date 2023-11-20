@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,6 +39,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.metadata.PostMetaData;
 
@@ -45,6 +50,8 @@ import org.bibsonomy.model.metadata.PostMetaData;
  * @param <R>
  *            resource type
  */
+@Getter
+@Setter
 public class Post<R extends Resource> implements Serializable, Linkable {
 
 	/**
@@ -198,35 +205,7 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 		this.metaData = post.getMetaData();
 		this.repositorys = post.getRepositorys();
 		this.copyFrom = post.getCopyFrom();
-		this.approved = post.getApproved();
-	}
-	
-	/**
-	 * @return the repositories
-	 */
-	public List<Repository> getRepositorys() {
-		return this.repositorys;
-	}
-
-	/**
-	 * @param repositorys the repositories to set
-	 */
-	public void setRepositorys(final List<Repository> repositorys) {
-		this.repositorys = repositorys;
-	}
-
-	/**
-	 * @return contentId
-	 */
-	public Integer getContentId() {
-		return this.contentId;
-	}
-
-	/**
-	 * @param contentId the contentId to set
-	 */
-	public void setContentId(final Integer contentId) {
-		this.contentId = contentId;
+		this.approved = post.isApproved();
 	}
 
 	/**
@@ -239,54 +218,6 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 		return this.groups;
 	}
 
-	/**
-	 * @param groups the groups to set
-	 */
-	public void setGroups(final Set<Group> groups) {
-		this.groups = groups;
-	}
-
-	/**
-	 * @param changeDate the changeDate to set
-	 */
-	public void setChangeDate(final Date changeDate) {
-		this.changeDate = changeDate;
-	}
-
-	/**
-	 * @return the changeDate
-	 */
-	public Date getChangeDate() {
-		return this.changeDate;
-	}
-
-	/**
-	 * @return date of posting
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(final Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return resource
-	 */
-	public R getResource() {
-		return this.resource;
-	}
-
-	/**
-	 * @param resource
-	 */
-	public void setResource(final R resource) {
-		this.resource = resource;
-	}
 
 	/**
 	 * @return tags
@@ -300,41 +231,6 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 			this.tags = new LinkedHashSet<>();
 		}
 		return this.tags;
-	}
-
-	/**
-	 * @param tags
-	 */
-	public void setTags(final Set<Tag> tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @return user
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user
-	 */
-	public void setUser(final User user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the users
-	 */
-	public List<User> getUsers() {
-		return users;
-	}
-
-	/**
-	 * @param users the users to set
-	 */
-	public void setUsers(List<User> users) {
-		this.users = users;
 	}
 
 	/**
@@ -361,124 +257,11 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 		this.groups.add(new Group(groupName));
 	}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Get copyFrom of this post
-	 * 
-	 * @return copyFrom
-	 */
-	public String getCopyFrom() {
-		return this.copyFrom;
-	}
-
-	/**
-	 * @param copyFrom the copyFrom to set
-	 */
-	public void setCopyFrom(final String copyFrom) {
-		this.copyFrom = copyFrom;
-	}
-
-	/**
-	 * Set a ranking value
-	 * 
-	 * @param ranking
-	 * 			the ranking to set
-	 */
-	public void setRanking(final double ranking) {
-		this.ranking = ranking;
-	}
-
-	/**
-	 * Retrieve the ranking of this post
-	 * 
-	 * @return a double representing the ranking of this post
-	 */
-	public double getRanking() {
-		return this.ranking;
-	}
-
-	/**
-	 * Returns if this post is an inbox post or not
-	 * 
-	 * @return boolean
-	 */
-	public boolean isInboxPost() {
-		return this.isInboxPost;
-	}
-
-	/**
-	 * Set if this post is an inbox post or not
-	 * 
-	 * @param isInboxPost
-	 */
-	public void setInboxPost(final boolean isInboxPost) {
-		this.isInboxPost = isInboxPost;
-	}
-	/**
-	 * Returns if this post is picked or not
-	 * 
-	 * @return boolean
-	 */
-	public boolean isPicked() {
-		return this.picked;
-	}
-
-	/**
-	 * Set if this post is picked or not
-	 * 
-	 * @param picked
-	 */
-	public void setPicked(final boolean picked) {
-		this.picked = picked;
-	}
-	
-	/**
-	 * @return the metaData
-	 */
-	public List<PostMetaData> getMetaData() {
-		return this.metaData;
-	}
-
-	/**
-	 * @param metaData the metaData to set
-	 */
-	public void setMetaData(final List<PostMetaData> metaData) {
-		this.metaData = metaData;
-	}
-
 	@Override
 	public String toString() {
 		return "\n" + (this.user == null ? "" : this.user.getName()) + "\n\ttagged\n\t\t" + this.resource + "\n\twith\n" + this.tags;
 	}
 
-	/**
-	 * @param hiddenSystemTags
-	 */
-	public void setHiddenSystemTags(final Set<Tag> hiddenSystemTags) {
-		this.hiddenSystemTags = hiddenSystemTags;
-	}
-
-	/**
-	 * @return the hidden system Tags of this post
-	 */
-	public Set<Tag> getHiddenSystemTags() {
-		return this.hiddenSystemTags;
-	}
-	
 	/**
 	 * Add a SystemTag (Tag) to the HiddenSystemTag list
 	 * 
@@ -492,20 +275,6 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 	}
 
 	/**
-	 * @param visibleTags
-	 */
-	public void setVisibleTags(final Set<Tag> visibleTags) {
-		this.visibleTags = visibleTags;
-	}
-
-	/**
-	 * @return the visible tags
-	 */
-	public Set<Tag> getVisibleTags() {
-		return this.visibleTags;
-	}
-	
-	/**
 	 * @param tag
 	 */
 	public void addVisibleTag(final Tag tag) {
@@ -513,48 +282,6 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 			this.visibleTags = new HashSet<>();
 		}
 		this.visibleTags.add(tag);
-	}
-
-	/**
-	 * @return the approved
-	 */
-	public boolean getApproved() {
-		return this.approved;
-	}
-
-	/**
-	 * @param approved the approved to set
-	 */
-	public void setApproved(boolean approved) {
-		this.approved = approved;
-	}
-
-	/**
-	 * @return the resourcePersonRelations
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations() {
-		return this.resourcePersonRelations;
-	}
-
-	/**
-	 * @param resourcePersonRelations the resourcePersonRelations to set
-	 */
-	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
-		this.resourcePersonRelations = resourcePersonRelations;
-	}
-	
-	/**
-	 * @return the systemUrl
-	 */
-	public String getSystemUrl() {
-		return this.systemUrl;
-	}
-
-	/**
-	 * @param systemUrl the systemUrl to set
-	 */
-	public void setSystemUrl(String systemUrl) {
-		this.systemUrl = systemUrl;
 	}
 
 	@Override

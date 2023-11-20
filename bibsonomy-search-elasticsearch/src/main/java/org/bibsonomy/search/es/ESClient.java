@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,7 +41,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.client.UpdateData;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.settings.Settings;
@@ -115,7 +118,7 @@ public interface ESClient {
 	 * @param syncStateForIndexName the index name of the index
 	 * @return
 	 */
-	<S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter);
+	<S extends SearchIndexState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter);
 	
 	/**
 	 * @param indexName the name of the index
@@ -234,10 +237,11 @@ public interface ESClient {
 	boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete);
 
 	/**
-	 * checks if the client can connect to the es instance
-	 * @return
+	 * Check, if the client is successfully connected to an elasticsearch instance
+	 *
+	 * @return true, if valid elasticsearch connection
 	 */
-	boolean isValidConnection();
+	boolean isConnected();
 
 	/**
 	 * gets the index settings for the specified index

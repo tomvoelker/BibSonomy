@@ -8,7 +8,8 @@
 	xmlns:groupsettings="urn:jsptagdir:/WEB-INF/tags/groupsettings"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -27,7 +28,7 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
-			<script type="text/javascript" src="${resdir}/javascript/settings.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/groupSettings.js"><!-- keep me --></script>
 			
 			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-table.js"><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/bootstrap-table.css" />
@@ -56,13 +57,23 @@
 			<!-- display potential errors -->
 			<errors:global />
 			
-			<groupsettings:profile command="${command}" />
-			
-			<groupsettings:cv command="${command}" />
-			
-			<groupsettings:userlists group="${group}" />
-			
-			<groupsettings:delete group="${group}" />
+			<groupsettings:profile command="${command}" group="${group}" />
+
+			<groupsettings:userlists command="${command}" group="${group}" />
+
+			<c:if test="${properties['group.presetTags.enabled']}">
+				<groupsettings:presetTags command="${command}" group="${group}" />
+			</c:if>
+
+			<groupsettings:cv command="${command}" group="${group}" />
+
+			<groupsettings:delete command="${command}" group="${group}" />
+		</jsp:attribute>
+
+		<jsp:attribute name="sidebar">
+			<c:if test="${not empty group.name}">
+				<sidebar:groupDetailsItem group="${group}"/>
+			</c:if>
 		</jsp:attribute>
 
 	</layout:tabLayout>

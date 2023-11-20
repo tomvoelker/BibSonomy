@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.igiglobal;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,13 +40,38 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class IGIGlobalScraperTest {
+	String resultDirectory = "igiglobal/";
 	/**
 	 * starts URL test with id url_265
 	 */
 	@Test
-	public void urlTestRun() {
-		final String url = "http://www.igi-global.com/article/linked-data-story-far/37496";
-		final String resultFile = "IGIGlobalScraperUnitURLTest.bib";
+	public void url1TestRun() {
+		final String url = "https://www.igi-global.com/article/linked-data-story-far/37496";
+		final String resultFile = resultDirectory + "IGIGlobalScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url2TestRun() {
+		final String url = "http://www.igi-global.com/chapter/exploring-the-self-efficacy-building-practice-of-teaching-real-world-entrepreneurial-leadership-skills-on-the-graduate-level/270802";
+		final String resultFile = resultDirectory + "IGIGlobalScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url3TestRun() {
+		final String url = "https://www.igi-global.com/book/handbook-research-digital-transformation-industry/265448";
+		final String resultFile = resultDirectory + "IGIGlobalScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url4TestRun() {
+		final String url = "https://www.igi-global.com/journal/journal-database-management/1072";
+		final String resultFile = resultDirectory + "IGIGlobalScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
+	}
+	@Test
+	public void url5TestRun() {
+		final String url = "https://www.igi-global.com/gateway/chapter/60047";
+		final String resultFile = resultDirectory + "IGIGlobalScraperUnitURLTest5.bib";
 		assertScraperResult(url, null, IGIGlobalScraper.class, resultFile);
 	}
 }

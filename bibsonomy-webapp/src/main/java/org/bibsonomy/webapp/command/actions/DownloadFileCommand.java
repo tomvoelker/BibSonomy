@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +31,8 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -36,6 +41,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Command class for the download or deleted File operation
  * @author cvo
  */
+@Getter
+@Setter
 public class DownloadFileCommand extends BaseCommand implements Serializable, DownloadCommand {
 	private static final long serialVersionUID = 5650155398969930691L;
 
@@ -89,44 +96,12 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 		return this.contentType;
 	}
 
-	
-	/**
-	 * @param contentType
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
 	/**
 	 * @return path to the file
 	 */
 	@Override
 	public String getPathToFile() {
 		return this.pathToFile;
-	}
-
-	/**
-	 * 
-	 * @param pathToFile
-	 */
-	public void setPathToFile(String pathToFile) {
-		this.pathToFile = pathToFile;
-	}
-
-	/**
-	 * 
-	 * @return user who request the file
-	 */
-	public String getRequestedUser() {
-		return this.requestedUser;
-	}
-
-	/**
-	 * 
-	 * @param requestedUser
-	 */
-	public void setRequestedUser(String requestedUser) {
-		this.requestedUser = requestedUser;
 	}
 
 	/**
@@ -138,59 +113,4 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 		return this.filename;
 	}
 
-	/**
-	 * 
-	 * @param filename
-	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
-	/**
-	 * 
-	 * @return intrahash of the file
-	 */
-	public String getIntrahash() {
-		return this.intrahash;
-	}
-
-	/**
-	 * 
-	 * @param intrahash
-	 */
-	public void setIntrahash(String intrahash) {
-		this.intrahash = intrahash;
-	}
-
-	public PreviewSize getPreview() {
-		return this.preview;
-	}
-
-	public void setPreview(PreviewSize preview) {
-		this.preview = preview;
-	}
-
-	/**
-	 * @return the qrcode
-	 */
-	public boolean isQrcode() {
-		return this.qrcode;
-	}
-	
-	/**
-	 * @param qrcode the qrcode to set
-	 */
-	public void setQrcode(boolean qrcode) {
-		this.qrcode = qrcode;
-	}
-
-
-	public Class<? extends Resource> getResourcetype() {
-		return resourcetype;
-	}
-
-
-	public void setResourcetype(Class<? extends Resource> resourcetype) {
-		this.resourcetype = resourcetype;
-	}	
 }

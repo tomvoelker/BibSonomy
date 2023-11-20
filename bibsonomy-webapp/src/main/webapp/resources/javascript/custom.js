@@ -231,6 +231,7 @@ $(function() {
 		delimiter : ' '
 	});
 
+	var savedTags = false;
 	$('.edit-tags-form').submit(function(e) {
 		e.preventDefault();
 		var submitButton = $(this).find('button[type=submit]');
@@ -249,6 +250,7 @@ $(function() {
 			type : 'POST',
 			data : data
 		}).done(function(result) {
+			savedTags = true;
 			// remove old tags and old system tags
 			$('#list-item-' + resourceHash + ' .ptags span.label').remove();
 			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.systemtags li').remove();
@@ -285,6 +287,32 @@ $(function() {
 		});
 		
 		return false;
+	});
+
+	//resets the tags to the state they were in when the modal was opened, in case the changes were not saved
+	$('.tags-edit-link').on('click', function () {
+		var modalId = $(this).data('target');
+		var oldTags = $(modalId).find('input.edit-tagsinput').tagsinput('items').slice();
+		$(modalId).on('hidden.bs.modal', function () {
+			if (!savedTags) {
+				var tagField = $(this).find('input.edit-tagsinput');
+				var allTags = $(tagField).tagsinput('items');
+				// remove tags
+				$(allTags).each(function (i, tag) {
+					if ($.inArray(tag, oldTags) == -1) {
+						$(tagField).tagsinput('remove', tag, false);
+					}
+				});
+				// reset tags
+				$(oldTags).each(function (i, tag) {
+					if ($.inArray(tag, allTags) == -1) {
+						$(tagField).tagsinput('add', tag, false);
+					}
+				});
+			}
+			$(this).off('hidden.bs.modal');
+			savedTags = false;
+		});
 	});
 
 	$('.rename-tags-btn').click(function() {
@@ -354,32 +382,6 @@ $(function() {
 	})
 });
 
-
-// remove all added tags on modal dismiss
-$(document).ready(function() {
-	$('.tags-edit-link').on('click', function () {
-		var modalId = $(this).data('target'); 
-		$(modalId).on('hidden.bs.modal', function() {
-			var tagField = $(this).find('input.edit-tagsinput');
-			var allTags = $(tagField).tagsinput('items');
-			var oldTags = $(tagField).attr('value').split(' ');
-			// remove tags
-			$(allTags).each(function(i, tag) {
-				if ($.inArray(tag, oldTags) == -1) {
-					$(tagField).tagsinput('remove', tag, false);
-				}
-			});
-			// reset tags
-			$(oldTags).each(function(i, tag) {
-				if ($.inArray(tag, allTags) == -1) {
-					$(tagField).tagsinput('add', tag, false);
-				}
-			});			
-			$(this).off('hidden.bs.modal');
-		});
-	});
-});
-
 function sidebarAdjusts() {
 	if ($('#sidebar').prev().hasClass('content')) {
 
@@ -392,7 +394,6 @@ function sidebarAdjusts() {
 		}
 	}
 }
-
 
 function viewForTag(tag, label) {
 	var item = $('<span class="label label-tag"></span>');

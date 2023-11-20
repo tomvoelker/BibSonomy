@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,28 +30,17 @@
 package org.bibsonomy.webapp.command;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * command for providing the search string
  * 
  * @author Beate Krause
  */
+@Setter
+@Getter
 public class SearchViewCommand extends TagResourceViewCommand {
-	
 	/** String to search for */
 	private String requestedSearch = "";
-
-	/**
-	 * sets the requested search string
-	 * @param requestedSearch
-	 */
-	public void setRequestedSearch(final String requestedSearch) {
-		this.requestedSearch = requestedSearch; 
-	}
-		
-	/**
-	 * @return the requested search string
-	 */
-	public String getRequestedSearch() {
-		return requestedSearch;
-	}
 }

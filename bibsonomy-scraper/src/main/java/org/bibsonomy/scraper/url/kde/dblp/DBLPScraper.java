@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,18 +57,17 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
 	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
-	private static final Pattern ALTERNATIVES = Pattern.compile("/rec/(bibtex|xml|rdf|ris|html|bib1|bib2)/(.+)(\\.xml|\\.rdf|\\.ris|\\.bib)?");
 	private static final String DBLP_HOST1= "dblp.uni-trier.de";
-	private static final String DBLP_HOST2  = "search.mpi-inf.mpg.de";
+	private static final String DBLP_HOST2  = "dblp2.uni-trier.de";
 	private static final String DBLP_HOST3 = "dblp.dagstuhl.de";
 	private static final String DBLP_HOST4 = "dblp.org";
-	private static final String DBLP_PATH2  = "/dblp/";
+	private static final String DBLP_PATH = "/rec/.*";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
-		new Pair<>(Pattern.compile(".*" + DBLP_HOST1) , ALTERNATIVES),
-		new Pair<>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")),
-		new Pair<>(Pattern.compile(".*" + DBLP_HOST3) , ALTERNATIVES),
-		new Pair<>(Pattern.compile(".*" + DBLP_HOST4) , ALTERNATIVES)
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST1) , Pattern.compile(DBLP_PATH)),
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH)),
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST3) , Pattern.compile(DBLP_PATH)),
+		new Pair<>(Pattern.compile(".*" + DBLP_HOST4) , Pattern.compile(DBLP_PATH))
 	);
 	
 	@Override
@@ -98,50 +100,14 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		/*
-		 * FIXME: can't we extract the id of the publication from the url
-		 * and then build the download url?
-		 */
-		String newURL = url.toString();
-		String extesnion = getExtension(newURL);
-		String path = getPath(newURL);
-		if (extesnion != null) {
-			newURL = newURL.replace("." + extesnion, ".bib");
-			return newURL.replace("/" + extesnion, "/bib");
-		}
-		else if (path != null) {
-			return newURL.replace("/" + path, "/bib") + ".bib";
-		}
-		else {
-			return newURL;
-		}
+		String bibtexPath = url.getPath()
+						.replaceAll("(?=.)([A-z]+?)$", "bib")
+						.replaceAll("(?<=rec/)(ris|rdf)", "bib")
+						.replaceAll("bib2", "bib");
+		return "https://" + url.getHost() + bibtexPath;
 	}
 	
-	// FIXME: what about bib1, bib2?
-	private String getPath(String url) {
-		if (url.contains("/html")) {
-			return "html";
-		}
-		else if (url.contains("/bibtex"))
-			return "bibtex";
-		else
-			return null;
-	}
-	
-	
-	private String getExtension(String url) {
-		if (url.contains(".xml")) {
-			return "xml";
-		}
-		else if (url.contains(".rdf")) {
-			return "rdf";
-		}
-		else if (url.contains(".ris")) {
-			return "ris";
-		}
-		else
-			return null;
-	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
 	 */

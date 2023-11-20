@@ -10,7 +10,7 @@
 	<div class="col-md-4">
 		<div class="media">
 			<div class="media-left">
-				<c:if test="${not empty person.user and gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(person.user, command.context.loginUser)}">
+				<c:if test="${properties['profile.picture.default'] or (not empty person.user and gravatarStdPictureHandlerFactory.hasVisibleProfilePicture(person.user, command.context.loginUser))}">
 					<img class="media-object img-thumbnail" src="${relativeUrlGenerator.getUserPictureUrlByUsername(person.user)}"/>
 				</c:if>
 			</div>

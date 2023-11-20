@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.cell;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class CellScraperTest {
+	String resultDirectory = "cell/";
 	
 	/**
 	 * starts URL test with id url_144
@@ -45,7 +49,7 @@ public class CellScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.cell.com/cell/abstract/S0092-8674(09)00271-2";
-		final String resultFile = "CellScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "CellScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, CellScraper.class, resultFile);
 		
 	}
@@ -56,7 +60,14 @@ public class CellScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://www.cell.com/biophysj/abstract/S0006-3495(09)00310-5";
-		final String resultFile = "CellScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "CellScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, CellScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://www.cell.com/biophysj/pdf/S0006-3495(96)79549-8.pdf";
+		final String resultFile = resultDirectory + "CellScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, CellScraper.class, resultFile);
 	}
 

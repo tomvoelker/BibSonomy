@@ -1,36 +1,40 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
- * <p>
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- * University of Kassel, Germany
- * http://www.kde.cs.uni-kassel.de/
- * Data Mining and Information Retrieval Group,
- * University of Würzburg, Germany
- * http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- * L3S Research Center,
- * Leibniz University Hannover, Germany
- * http://www.l3s.de/
- * <p>
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
 import org.bibsonomy.common.enums.Prefix;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.logic.querybuilder.BasicQueryBuilder;
 
@@ -41,15 +45,16 @@ import java.util.Date;
  *
  * @author dzo
  */
+@Getter
 public class ProjectQuery extends BasicQuery {
 
 	private final Prefix prefix;
 	/**
-	 * the order of the projects
+	 * the sort key of the projects
 	 */
-	private final ProjectOrder order;
+	private final ProjectSortKey sortKey;
 	/**
-	 * the sort order of the order
+	 * the sort order of the projects
 	 */
 	private final SortOrder sortOrder;
 	/**
@@ -70,7 +75,7 @@ public class ProjectQuery extends BasicQuery {
 	/**
 	 * the constructor
 	 *
-	 * @param order
+	 * @param sortKey
 	 * @param sortOrder
 	 * @param projectStatus
 	 * @param type
@@ -82,10 +87,9 @@ public class ProjectQuery extends BasicQuery {
 	 * @param person
 	 * @param organization
 	 */
-	protected ProjectQuery(final String search, final Prefix prefix, final ProjectOrder order, SortOrder sortOrder,
-												 ProjectStatus projectStatus, String type, String sponsor,
-												 int start, int end, String externalId, Date startDate, Date endDate,
-												 Person person, Group organization) {
+	protected ProjectQuery(final String search, final Prefix prefix, final ProjectSortKey sortKey, SortOrder sortOrder,
+						   ProjectStatus projectStatus, String type, String sponsor, int start, int end,
+						   String externalId, Date startDate, Date endDate, Person person, Group organization) {
 		this.person = person;
 		this.organization = organization;
 		this.setSearch(search);
@@ -95,7 +99,7 @@ public class ProjectQuery extends BasicQuery {
 		this.prefix = prefix;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.order = order;
+		this.sortKey = sortKey;
 		this.sortOrder = sortOrder;
 		this.projectStatus = projectStatus;
 		this.type = type;
@@ -110,79 +114,14 @@ public class ProjectQuery extends BasicQuery {
 		return new ProjectQueryBuilder();
 	}
 
-	public String getSponsor() {
-		return sponsor;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
 	/**
-	 * @return the order
+	 *
 	 */
-	public ProjectOrder getOrder() {
-		return order;
-	}
-
-	/**
-	 * @return the sortOrder
-	 */
-	public SortOrder getSortOrder() {
-		return sortOrder;
-	}
-
-	/**
-	 * @return the projectStatus
-	 */
-	public ProjectStatus getProjectStatus() {
-		return projectStatus;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public Prefix getPrefix() {
-		return prefix;
-	}
-
-	/**
-	 * @return the internalId
-	 */
-	public String getInternalId() {
-		return internalId;
-	}
-
-	/**
-	 * @return the organization
-	 */
-	public Group getOrganization() {
-		return organization;
-	}
-
-	/**
-	 * @return the person
-	 */
-	public Person getPerson() {
-		return person;
-	}
-
 	public static class ProjectQueryBuilder extends BasicQueryBuilder<ProjectQueryBuilder> {
 		/**
-		 * the order of the projects, default {@link ProjectOrder#TITLE}
+		 * the order of the projects, default {@link ProjectSortKey#TITLE}
 		 */
-		private ProjectOrder order = ProjectOrder.TITLE;
+		private ProjectSortKey sortKey = ProjectSortKey.TITLE;
 
 		/**
 		 * the sort order of the order
@@ -270,13 +209,13 @@ public class ProjectQuery extends BasicQuery {
 		}
 
 		/**
-		 * sets the order
+		 * sets the sort key
 		 *
-		 * @param order
+		 * @param sortKey
 		 * @return
 		 */
-		public ProjectQueryBuilder order(final ProjectOrder order) {
-			this.order = order;
+		public ProjectQueryBuilder sortKey(final ProjectSortKey sortKey) {
+			this.sortKey = sortKey;
 			return this;
 		}
 
@@ -331,7 +270,7 @@ public class ProjectQuery extends BasicQuery {
 		 * @return the project query
 		 */
 		public ProjectQuery build() {
-			return new ProjectQuery(this.search, this.prefix, this.order, this.sortOrder, this.projectStatus,
+			return new ProjectQuery(this.search, this.prefix, this.sortKey, this.sortOrder, this.projectStatus,
 							this.type, this.sponsor, this.start, this.end, this.internalId, startDate, endDate, person, organization);
 		}
 	}

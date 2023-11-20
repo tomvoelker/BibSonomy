@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,65 +31,31 @@ package org.bibsonomy.webapp.command;
 
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.model.Layout;
 
 /**
  * @author daill, lsc
  */
+@Setter
+@Getter
 public class ExportPageCommand extends ResourceViewCommand {
 
 	private Map<String, Layout> layoutMap;
 	private Map<String, CSLStyle> cslLayoutMap;
-	
+	private Map<String, CSLStyle> customCslLayoutMap;
+
 	/**
 	 * default constructor
 	 */
 	public ExportPageCommand() {
 		this.layoutMap = new TreeMap<>();
 		this.cslLayoutMap = new TreeMap<>();
+		this.customCslLayoutMap = new TreeMap<>();
 	}
 
-	/**
-	 * @return layout map
-	 */
-	public Map<String, Layout> getLayoutMap() {
-		return this.layoutMap;
-	}
-	
-	/**
-	 * adds all maps to the the layout map
-	 * @param map
-	 */
-	public void addLayoutMap(final Map<String, ? extends Layout> map) {
-		for (Entry<String, ? extends Layout> entry : map.entrySet()){
-			this.layoutMap.put(entry.getValue().getDisplayName(), entry.getValue());
-		}
-		//this.layoutMap.putAll(map);
-	}
-	
-	/**
-	 * adds a layout to the layout map
-	 * @param l 
-	 */
-	public void addLayout(Layout l) {
-		this.layoutMap.put(l.getDisplayName(), l);
-	}
-
-	/**
-	 * @return the cslLayoutMap
-	 */
-	public Map<String, CSLStyle> getCslLayoutMap() {
-		return this.cslLayoutMap;
-	}
-	
-	/**
-	 * @param map
-	 */
-	public void setCslLayoutMap(final Map<String, CSLStyle> map) {
-		this.cslLayoutMap = map;
-	}	
 }

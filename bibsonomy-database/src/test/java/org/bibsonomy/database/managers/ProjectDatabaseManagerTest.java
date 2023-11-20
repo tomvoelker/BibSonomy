@@ -1,3 +1,32 @@
+/**
+ * BibSonomy-Database - Database for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.database.managers;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -15,7 +44,7 @@ import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.cris.Project;
-import org.bibsonomy.model.enums.ProjectOrder;
+import org.bibsonomy.model.enums.ProjectSortKey;
 import org.bibsonomy.model.enums.ProjectStatus;
 import org.bibsonomy.model.statistics.Statistics;
 import org.joda.time.DateTime;
@@ -61,24 +90,24 @@ public class ProjectDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void testGetAllProjects() {
-		final List<Project> allProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 0, this.dbSession);
+		final List<Project> allProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.TITLE, SortOrder.ASC, 1, 0, this.dbSession);
 		assertEquals(1, allProjects.size());
 
 		final Project firstProject = allProjects.iterator().next();
 		assertEquals("posts", firstProject.getExternalId());
 
 		// test order
-		final List<Project> allProjectsOrderedByStartDate = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.START_DATE, SortOrder.DESC, 1, 0, this.dbSession);
+		final List<Project> allProjectsOrderedByStartDate = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.START_DATE, SortOrder.DESC, 1, 0, this.dbSession);
 		final Project firstProjectByDate = allProjectsOrderedByStartDate.iterator().next();
 		assertEquals("posts_ii", firstProjectByDate.getExternalId());
 
-		final List<Project> allOtherProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 1, this.dbSession);
+		final List<Project> allOtherProjects = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.TITLE, SortOrder.ASC, 1, 1, this.dbSession);
 		assertEquals(1, allOtherProjects.size());
 
 		final Project secondProject = allOtherProjects.iterator().next();
 		assertEquals("posts_ii", secondProject.getExternalId());
 
-		final List<Project> allOtherProjects2 = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectOrder.TITLE, SortOrder.ASC, 1, 2, this.dbSession);
+		final List<Project> allOtherProjects2 = PROJECT_DATABASE_MANAGER.getAllProjects(null, ProjectSortKey.TITLE, SortOrder.ASC, 1, 2, this.dbSession);
 		assertEquals(0, allOtherProjects2.size());
 	}
 

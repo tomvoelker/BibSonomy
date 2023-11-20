@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,12 +29,16 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.Role;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  * 
  */
+@Getter
+@Setter
 public class EvaluatorUser extends User {
 	private static final long serialVersionUID = 222500173040042092L;
 
@@ -61,31 +68,4 @@ public class EvaluatorUser extends User {
 		super.setRole(Role.ADMIN); // TODO: check, if this has any bad implications!
 	}
 
-	/**
-	 * @return the evaluator
-	 */
-	public String getEvaluator() {
-		return this.evaluator;
-	}
-
-	/**
-	 * @param evaluator the evaluator to set
-	 */
-	public void setEvaluator(String evaluator) {
-		this.evaluator = evaluator;
-	}
-
-	/**
-	 * @return the evalDate
-	 */
-	public String getEvalDate() {
-		return this.evalDate;
-	}
-
-	/**
-	 * @param evalDate the evalDate to set
-	 */
-	public void setEvalDate(String evalDate) {
-		this.evalDate = evalDate;
-	}
 }

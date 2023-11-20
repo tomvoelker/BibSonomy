@@ -11,12 +11,12 @@
 
 	<!-- for post indices -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-post-context.xml" />
+	<!-- for group indices -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-group-context.xml" />
 	<!-- for person indices -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-person-context.xml" />
 	<!-- for project indices -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-project-context.xml" />
-	<!-- for group indices -->
-	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-group-context.xml" />
 
 	<!-- we use a rest client -->
 	<bean id="elasticsearchClient" class="org.bibsonomy.search.es.util.spring.ElasticsearchRESTClientFactoryBean">
@@ -27,26 +27,26 @@
 		<constructor-arg ref="elasticsearchClient" />
 	</bean>
 
-	<bean id="isValidESConnection" class="java.lang.Boolean">
-		<constructor-arg value="#{esClient.isValidConnection()}" />
+	<bean id="isIndexEnabled" class="java.lang.Boolean">
+		<constructor-arg value="#{esClient.isConnected()}" />
 	</bean>
 
-	<bean id="isIndexingUpdateEnabled" class="java.lang.Boolean">
+	<bean id="isIndexUpdateEnabled" class="java.lang.Boolean">
 		<constructor-arg value="${search.update.enabled}" />
 	</bean>
 
 	<bean id="systemURI" class="java.net.URI">
-		<constructor-arg value="${search.es.systemId}" />
+		<constructor-arg value="${search.es.systemURI}" />
 	</bean>
 
-	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.DefaultSearchIndexSyncStateConverter" />
-	<bean id="dualSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexDualSyncStateConverter" />
+	<bean id="postSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexStateConverter" />
+	<bean id="dualSyncStateConverter" class="org.bibsonomy.search.es.index.converter.util.SearchIndexDualStateConverter" />
 
 	<bean id="elasticsearchAbstractIndexManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" abstract="true" destroy-method="shutdown">
-		<constructor-arg ref="systemURI" />
-		<constructor-arg value="#{!isValidESConnection}" />
-		<constructor-arg value="#{isIndexingUpdateEnabled and isValidESConnection}" />
-		<constructor-arg ref="esClient" />
+		<constructor-arg name="systemURI" ref="systemURI" />
+		<constructor-arg name="client" ref="esClient" />
+		<constructor-arg name="indexEnabled" value="#{isIndexEnabled}" />
+		<constructor-arg name="updateEnabled" value="#{isIndexEnabled and isIndexUpdateEnabled}" />
 	</bean>
 
 	<util:map id="elasticsearchManagers">
@@ -54,8 +54,8 @@
 		<entry key-ref="publicationClass" value-ref="elasticsearchPublicationManager" />
 		<entry key-ref="goldStandardBookmarkClass" value-ref="elasticsearchCommunityBookmarkManager" />
 		<entry key-ref="goldStandardPublicationClass" value-ref="elasticsearchCommunityPublicationManager" />
+		<entry key-ref="groupClass" value-ref="elasticsearchGroupManager" />
 		<entry key-ref="personClass" value-ref="elasticsearchPersonManager" />
 		<entry key-ref="projectClass" value-ref="elasticsearchProjectManager" />
-		<entry key-ref="groupClass" value-ref="elasticsearchGroupManager" />
 	</util:map>
 </beans>

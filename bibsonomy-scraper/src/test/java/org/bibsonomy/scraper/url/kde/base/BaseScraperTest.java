@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.base;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BaseScraperTest {
+	String resultDirectory = "base/";
 
 	/**
 	 * Test for URL 1
@@ -46,7 +50,8 @@ public class BaseScraperTest {
 	@Test
 	public void testUrl1() {
 		final String url = "https://www.base-search.net/Record/a3643e97bbaec922cff6ff853dff6bb1f442ac60c14352064504b2a58c2eb24f/";
-		assertScraperResult(url, null, BaseScraper.class, "BaseScraperUnitURLTest1.bib");
+		final String resultFile = resultDirectory + "BaseScraperUnitURLTest1.bib";
+		assertScraperResult(url, BaseScraper.class, resultFile);
 	}
 
 	/**
@@ -54,8 +59,9 @@ public class BaseScraperTest {
 	 */
 	@Test
 	public void testUrl2() {
-		final String url = "https://www.base-search.net/Record/a68b394bd5b038827fb2c3e4c9b0ebf9a818bcbb61eaacee1159d116a7047224//";
-		assertScraperResult(url, null, BaseScraper.class, "BaseScraperUnitURLTest2.bib");
+		final String url = "https://www.base-search.net/Record/a68b394bd5b038827fb2c3e4c9b0ebf9a818bcbb61eaacee1159d116a7047224/";
+		final String resultFile = resultDirectory + "BaseScraperUnitURLTest2.bib";
+		assertScraperResult(url, BaseScraper.class, resultFile);
 	}
 
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ * University of Würzburg, Germany
+ * https://www.informatik.uni-wuerzburg.de/datascience/home/
+ * Information Processing and Analytics Group,
+ * Humboldt-Universität zu Berlin, Germany
+ * https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ * Knowledge & Data Engineering Group,
+ * University of Kassel, Germany
+ * https://www.kde.cs.uni-kassel.de/
+ * L3S Research Center,
+ * Leibniz University Hannover, Germany
+ * https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,89 +40,89 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * interface encapsulating database access for {@link ResourceSearch}
  * implementations
- * 
+ *
  * @author fei
- * 
+ *
  * @param <R> resource type
  */
-public interface SearchDBInterface<R extends Resource> extends DatabaseInformationLogic<DefaultSearchIndexSyncState> {
-	
-	/** the max entries to fetch from the database into memory */
-	public static final int SQL_BLOCKSIZE = 100;
+public interface SearchDBInterface<R extends Resource> extends DatabaseInformationLogic<SearchIndexState> {
 
-	/** 
-	 * @param userName
-	 * @param limit
-	 * @param offset
-	 * @return all posts for given user
-	 */
-	public List<Post<R>> getPostsForUser(final String userName, final int limit, final int offset);
-	
-	/**
-	 * get list of content ids to delete from index with fromDate<date<=date
-	 * 
-	 * @param lastLogDate
-	 * @return list of content ids to delete from index with fromDate<date<=date
-	 */
-	public List<Integer> getContentIdsToDelete(Date lastLogDate);
-	
-	/**
-	 * @param lastTasId
-	 * @param limit 
-	 * @param offset 
-	 * @return new posts to insert in the index
-	 */
-	public List<Post<R>> getNewPosts(int lastTasId, int limit, int offset);
-	
-	/**
-	 * @param fromDate
-	 * @param toDate
-	 * @return get list of all user spam flags since last index update  
-	 */
-	public List<User> getPredictionForTimeRange(Date fromDate, Date toDate);
-	
-	//------------------------------------------------------------------------
-	// methods for building the index
-	// TODO: maybe we should introduce a special class hierarchy
-	//------------------------------------------------------------------------
+    /** the max entries to fetch from the database into memory */
+    public static final int SQL_BLOCKSIZE = 100;
 
-	/**
-	 * @param fromPersonChangeId
-	 * @param toPersonChangeIdExclusive
-	 * @return
-	 */
-	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive);
+    /**
+     * @param userName
+     * @param limit
+     * @param offset
+     * @return all posts for given user
+     */
+    public List<Post<R>> getPostsForUser(final String userName, final int limit, final int offset);
 
-	/**
-	 * @param firstChangeId
-	 * @param toPersonChangeIdExclusive
-	 * @return
-	 */
-	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
+    /**
+     * get list of content ids to delete from index with fromDate<date<=date
+     *
+     * @param lastLogDate
+     * @return list of content ids to delete from index with fromDate<date<=date
+     */
+    public List<Integer> getContentIdsToDelete(Date lastLogDate);
 
-	/**
-	 * @param firstChangeId
-	 * @param toPersonChangeIdExclusive 
-	 * @return
-	 */
-	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
+    /**
+     * @param lastTasId
+     * @param limit
+     * @param offset
+     * @return new posts to insert in the index
+     */
+    public List<Post<R>> getNewPosts(int lastTasId, int limit, int offset);
 
-	/**
-	 * @param interHash
-	 * @return
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash);
+    /**
+     * @param fromDate
+     * @param toDate
+     * @return get list of all user spam flags since last index update
+     */
+    public List<User> getPredictionForTimeRange(Date fromDate, Date toDate);
 
-	/**
-	 * @param lastDocumentDate
-	 * @param targetDocumentDate
-	 * @return a list of posts to update
-	 */
-	public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate);
+    //------------------------------------------------------------------------
+    // methods for building the index
+    // TODO: maybe we should introduce a special class hierarchy
+    //------------------------------------------------------------------------
+
+    /**
+     * @param fromPersonChangeId
+     * @param toPersonChangeIdExclusive
+     * @return
+     */
+    public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive);
+
+    /**
+     * @param firstChangeId
+     * @param toPersonChangeIdExclusive
+     * @return
+     */
+    public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
+
+    /**
+     * @param firstChangeId
+     * @param toPersonChangeIdExclusive
+     * @return
+     */
+    public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
+
+    /**
+     * @param interHash
+     * @return
+     */
+    public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash);
+
+    /**
+     * @param lastDocumentDate
+     * @param targetDocumentDate
+     * @return a list of posts to update
+     */
+    public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate);
 }

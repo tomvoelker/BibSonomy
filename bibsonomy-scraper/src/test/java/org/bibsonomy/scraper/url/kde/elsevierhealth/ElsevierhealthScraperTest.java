@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.elsevierhealth;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ElsevierhealthScraperTest {
+	String resultDirectory = "elsevierhealth/";
 	
 	/**
 	 * starts URL test with id url_168
@@ -46,7 +50,7 @@ public class ElsevierhealthScraperTest {
 	@Test
 	public void urlTestRun1(){
 		final String url = "http://www.us.elsevierhealth.com/product.jsp?lid=2&iid=0&sid=0&isbn=9780323055666";
-		final String resultFile = "ElsevierhealthScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ElsevierhealthScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, ElsevierhealthScraper.class, resultFile);
 	}
 	

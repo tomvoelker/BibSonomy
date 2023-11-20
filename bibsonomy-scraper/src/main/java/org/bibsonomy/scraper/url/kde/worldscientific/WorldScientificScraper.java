@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,12 +55,12 @@ public class WorldScientificScraper extends LiteratumScraper implements CitedbyS
 
 	private static final String SITE_NAME = "World Scientific";
 	private static final String SITE_HOST = "worldscientific.com";
-	private static final String SITE_URL  = "http://" + SITE_HOST + "/";
+	private static final String SITE_URL  = "https://" + SITE_HOST + "/";
 	private static final String SITE_INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<b>References:</b><ul>(.*)</ul>");
-	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<div class=\"citedByEntry\">(.*)<!-- /fulltext content --></div>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<ul class=\"rlist separator\">(.*?)</ul>");
+	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<ul class=\"rlist temis-related__list\">(.*?)</ul>");
 
 	@Override
 	public String getSupportedSiteName() {

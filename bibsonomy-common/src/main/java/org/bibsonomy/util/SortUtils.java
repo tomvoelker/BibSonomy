@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +28,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.util;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -75,17 +80,26 @@ public class SortUtils {
 	 */
 	public static List<SortOrder> parseSortOrders(final String sortOrders) {
 		final List<SortOrder> parsedSortOrders = new LinkedList<>();
-		if (sortOrders == null) {
+		if (!present(sortOrders)) {
 			return parsedSortOrders;
 		}
-		for (String sortOrder : sortOrders.split("\\" + SORT_ORDER_DELIMITER)) {
+		for (final String sortOrder : sortOrders.split("\\" + SORT_ORDER_DELIMITER)) {
 			parsedSortOrders.add(EnumUtils.searchEnumByName(SortOrder.values(), sortOrder));
 		}
 		return parsedSortOrders;
 	}
 
-	public static List<SortCriteria> generateSortCriteriums(List<SortKey> sortKeys, List<SortOrder> sortOrders) {
-		List<SortCriteria> sortCriteria = new LinkedList<>();
+	/**
+	 * Generate a list of sort criteria from two separate sort key and order lists.
+	 * If there are less sort orders than the keys, the order for the remaining keys will be set
+	 * to the first order in the list.
+	 *
+	 * @param sortKeys
+	 * @param sortOrders
+	 * @return
+	 */
+	public static List<SortCriteria> generateSortCriteria(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
+		final List<SortCriteria> sortCriteria = new LinkedList<>();
 		// Check, if any sort keys given
 		if (sortKeys.isEmpty()) {
 			return sortCriteria;
@@ -98,10 +112,9 @@ public class SortUtils {
 			while (sortKeysIt.hasNext() && sortOrderIt.hasNext()) {
 				sortCriteria.add(new SortCriteria(sortKeysIt.next(), sortOrderIt.next()));
 			}
-
 		} else {
 			// Not enough sort orders, take first sort order for all keys
-			SortOrder sortOrder = sortOrders.get(0);
+			final SortOrder sortOrder = sortOrders.get(0);
 			for (SortKey sortKey : sortKeys) {
 				sortCriteria.add(new SortCriteria(sortKey, sortOrder));
 			}
@@ -109,20 +122,52 @@ public class SortUtils {
 		return sortCriteria;
 	}
 
-	public static String getSortKeys(List<SortCriteria> sortCriteria) {
-		final List<String> sortKeys = new LinkedList<>();
+	/**
+	 * util method to extract all sort keys form the sort criteria list
+	 * @param sortCriteria
+	 * @return
+	 */
+	public static List<SortKey> getSortKeys(final List<SortCriteria> sortCriteria) {
+		final List<SortKey> sortKeys = new LinkedList<>();
 		for (final SortCriteria criteria : sortCriteria) {
-			sortKeys.add(criteria.getSortKey().toString());
+			sortKeys.add(criteria.getSortKey());
 		}
-		return StringUtils.implodeStringArray(sortKeys.toArray(), SORT_KEY_DELIMITER);
+		return sortKeys;
 	}
 
-	public static String getSortOrders(List<SortCriteria> sortCriteria) {
-		final List<String> sortOrders = new LinkedList<>();
+	/**
+	 * Util method to extract just the sort key of every sort criteria in the provided list.
+	 * Used to build parameter values for URLs
+	 *
+	 * @param sortCriteria
+	 * @return list of sort keys separated by delimiter
+	 */
+	public static String getSortKeysAsString(final List<SortCriteria> sortCriteria) {
+		return StringUtils.implodeStringCollection(getSortKeys(sortCriteria), SORT_KEY_DELIMITER);
+	}
+
+	/**
+	 * util method to extract all sort orders from a list of sort criteria
+	 * @param sortCriteria the list of sort criteria
+	 * @return the sort orders
+	 */
+	public static List<SortOrder> getSortOrders(final List<SortCriteria> sortCriteria) {
+		final List<SortOrder> sortOrders = new LinkedList<>();
 		for (final SortCriteria criteria : sortCriteria) {
-			sortOrders.add(criteria.getSortOrder().toString());
+			sortOrders.add(criteria.getSortOrder());
 		}
-		return StringUtils.implodeStringArray(sortOrders.toArray(), SORT_ORDER_DELIMITER);
+		return sortOrders;
+	}
+
+	/**
+	 * Util method to extract just the sort order of every sort criteria in the provided list.
+	 * Used to build parameter values for URLs
+	 *
+	 * @param sortCriteria
+	 * @return list of sort order separated by delimiter
+	 */
+	public static String getSortOrdersAsString(final List<SortCriteria> sortCriteria) {
+		return StringUtils.implodeStringCollection(getSortOrders(sortCriteria), SORT_ORDER_DELIMITER);
 	}
 
 	/**
@@ -143,11 +188,15 @@ public class SortUtils {
 		return singletonSortCriteria(key, SortOrder.DESC);
 	}
 
+	/**
+	 * returns the first sort key if there are keys present else null
+	 * @param sortCriteria
+	 * @return the first sort key or null
+	 */
 	public static SortKey getFirstSortKey(List<SortCriteria> sortCriteria) {
 		if (ValidationUtils.present(sortCriteria)) {
 			return sortCriteria.get(0).getSortKey();
 		}
 		return null;
 	}
-
 }

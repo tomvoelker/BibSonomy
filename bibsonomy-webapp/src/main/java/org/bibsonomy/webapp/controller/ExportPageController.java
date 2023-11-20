@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,11 +30,18 @@
 package org.bibsonomy.webapp.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
+import org.bibsonomy.layout.standard.StandardLayout;
 import org.bibsonomy.layout.standard.StandardLayouts;
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -67,7 +77,6 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public View workOn(final ExportPageCommand command) {
-		command.addLayoutMap(this.layoutRenderer.getLayouts());
 
 		// no standard exports in the json export!
 		if ("json".equals(command.getFormat())) {
@@ -78,23 +87,36 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		}
 
 		final RequestWrapperContext context = command.getContext();
+		final Map<String, Layout> layoutMap = new TreeMap<>(this.layoutRenderer.getLayouts());
+		final Map<String, StandardLayout> layouts = this.layouts.getLayoutMap();
+		layoutMap.putAll(layouts);
+
 		if (context.isUserLoggedIn()) {
 			try {
-				command.addLayout(this.layoutRenderer.getLayout(LayoutRenderer.CUSTOM_LAYOUT, context.getLoginUser().getName()));
+				final Layout layout = this.layoutRenderer.getLayout(LayoutRenderer.CUSTOM_LAYOUT, context.getLoginUser().getName());
+				layoutMap.put(layout.getDisplayName(), layout);
 			} catch (final LayoutRenderingException | IOException e) {
 				// ignore because reasons 
 			}
+
+			// also load user custom layouts
+			command.setCustomCslLayoutMap(convertCSLStylesToMap(this.cslFilesManager.loadUserLayouts(context.getLoginUser().getName())));
 		}
 
-		command.addLayoutMap(this.layouts.getLayoutMap());
-		command.setCslLayoutMap(cslFilesManager.getCslFiles());
+		command.setCslLayoutMap(this.cslFilesManager.getCslFiles());
+		command.setLayoutMap(layoutMap);
 
-		if (command.getFormatEmbedded()) {
+		if (command.isFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
 		}
 
 		return Views.EXPORT;
 	}
+
+	public static Map<String, CSLStyle> convertCSLStylesToMap(final List<CSLStyle> layouts) {
+		return layouts.stream().collect(Collectors.toMap(CSLStyle::getDisplayName, item -> item));
+	}
+
 
 	/**
 	 * @param layoutRenderer
@@ -117,4 +139,5 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
 		this.cslFilesManager = cslFilesManager;
 	}
+
 }

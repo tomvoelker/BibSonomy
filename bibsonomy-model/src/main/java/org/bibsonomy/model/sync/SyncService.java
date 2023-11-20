@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,11 +34,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.Resource;
 
 /** 
  * @author wla, vhem
  */
+@Getter
+@Setter
 public class SyncService {
 	
 	private String name;
@@ -52,192 +59,11 @@ public class SyncService {
 	private boolean alreadySyncedOnce = false;
 	private String userName;
 	
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the clientUser
-	 */
-	public Properties getServerUser() {
-		return this.user;
-	}
-	
-	/**
-	 * @param serverUser the clientUser to set
-	 */
-	public void setServerUser(final Properties serverUser) {
-		this.user = serverUser;
-	}
-
-	/**
-	 * @return the service
-	 */
-	public URI getService() {
-		return this.service;
-	}
-	
-	/**
-	 * @param service the service to set
-	 */
-	public void setService(final URI service) {
-		this.service = service;
-	}
-	
-	/**
-	 * @return the secureAPI
-	 */
-	public URI getSecureAPI() {
-		return secureAPI;
-	}
-	
-	/**
-	 * @param secureAPI the secureAPI to set
-	 */
-	public void setSecureAPI(final URI secureAPI) {
-		this.secureAPI = secureAPI;
-	}
-	
-	/**
-	 * @return the lastSyncData
-	 */
-	public List<SynchronizationData> getLastSyncData() {
-		return lastSyncData;
-	}
-	
-	/**
-	 * 
-	 * @param lastSyncData the lastSyncData to set
-	 */
-	public void setLastSyncData(final List<SynchronizationData> lastSyncData) {
-		this.lastSyncData = lastSyncData;
-	}
-	
-	/**
-	 * @param resourceType the resourceType to set
-	 */
-	public void setResourceType(final Class<? extends Resource> resourceType) {
-		this.resourceType = resourceType;
-	}
-	
-	/**
-	 * @return the resourceType
-	 */
-	public Class<? extends Resource> getResourceType() {
-		return resourceType;
-	}
-	
-	/**
-	 * @param direction the direction to set
-	 */
-	public void setDirection(final SynchronizationDirection direction) {
-		this.direction = direction;
-	}
-	
-	/**
-	 * @return the direction
-	 */
-	public SynchronizationDirection getDirection() {
-		return direction;
-	}
-	
-	/**
-	 * @param strategy the strategy to set
-	 */
-	public void setStrategy(final ConflictResolutionStrategy strategy) {
-		this.strategy = strategy;
-	}
-	
-	/**
-	 * @return the strategy
-	 */
-	public ConflictResolutionStrategy getStrategy() {
-		return strategy;
-	}
 	
 	@Override
 	public String toString() {
 		return service != null ? service.toString() : null;
-	}
-	
-	/**
-	 * @param plan the plan to set
-	 */
-	public void setPlan(final Map<Class<? extends Resource>, Map<String, String>> plan) {
-		this.plan = plan;
-	}
-	
-	/**
-	 * @return the plan
-	 */
-	public Map<Class<? extends Resource>, Map<String, String>> getPlan() {
-		return plan;
-	}
-	
-	/**
-	 * @return the sslDn
-	 */
-	public String getSslDn() {
-		return sslDn;
-	}
-	
-	/**
-	 * @param sslDn the sslDn to set
-	 */
-	public void setSslDn(final String sslDn) {
-		this.sslDn = sslDn;
-	}
-	
-	/**
-	 * @return the autosync
-	 */
-	public boolean isAutosync() {
-		return autosync;
-	}
-
-	/**
-	 * @param autosync the autosync to set
-	 */
-	public void setAutosync(boolean autosync) {
-		this.autosync = autosync;
-	}
-
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
-
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	/**
-	 * @return the alreadySyncedOnce
-	 */
-	public boolean isAlreadySyncedOnce() {
-		return this.alreadySyncedOnce;
-	}
-
-	/**
-	 * @param alreadySyncedOnce the alreadySyncedOnce to set
-	 */
-	public void setAlreadySyncedOnce(boolean alreadySyncedOnce) {
-		this.alreadySyncedOnce = alreadySyncedOnce;
 	}
 
 	/* (non-Javadoc)
@@ -274,5 +100,19 @@ public class SyncService {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @return the clientUser
+	 */
+	public Properties getServerUser() {
+		return this.user;
+	}
+
+	/**
+	 * @param serverUser the clientUser to set
+	 */
+	public void setServerUser(final Properties serverUser) {
+		this.user = serverUser;
 	}
 }

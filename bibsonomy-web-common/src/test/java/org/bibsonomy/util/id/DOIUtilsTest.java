@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +52,7 @@ public class DOIUtilsTest {
 
 	private static final Random rand = new Random();
 
-	private static final String bibtexWithDoi = "@article{Pevzner02,\n" + 
+	private static final String bibtexWithDoi = "@article{Pevzner02,\n" +
 	"address = {Cambridge, MA, USA},\n" +
 	"author = {Lev Pevzner and Marti A. Hearst},\n" +
 	"interHash = {707f8d31137f6d39edd1d54664351d0d},\n" +
@@ -63,10 +66,10 @@ public class DOIUtilsTest {
 	"volume = {28},\n" +
 	"year = {2002},\n" +
 	"issn = {0891-2017},\n" +
-	"doi = {http://dx.doi.org/10.1162/089120102317341756},\n" + 
+	"doi = {http://dx.doi.org/10.1162/089120102317341756},\n" +
 	"}";
-	
-	private static final String bibtexWithCleanDoi = "@article{Pevzner02,\n" + 
+
+	private static final String bibtexWithCleanDoi = "@article{Pevzner02,\n" +
 	"address = {Cambridge, MA, USA},\n" +
 	"author = {Lev Pevzner and Marti A. Hearst},\n" +
 	"interHash = {707f8d31137f6d39edd1d54664351d0d},\n" +
@@ -80,21 +83,21 @@ public class DOIUtilsTest {
 	"volume = {28},\n" +
 	"year = {2002},\n" +
 	"issn = {0891-2017},\n" +
-	"doi = {10.1162/089120102317341756},\n" + 
+	"doi = {10.1162/089120102317341756},\n" +
 	"}";
-	
+
 	private static final String httpDoi = "http://dx.doi.org/10.1162/089120102317341756";
-	
+
 	private static final String urlWithDoi = "url={http://dx.doi.org/10.1007/11762256_31},";
-	
+
 	private static final String bibtexLineWithDoi = "doi={http://dx.doi.org/10.1007/11762256_31},";
 	private static final String cleanBibtexLineWithDoi = "doi={10.1007/11762256_31},";
 
-	
+
 	private static final String bibtexDoi = "10.1162/089120102317341756";
 
-	private static final String[] dois = new String[] 
-	                                                {
+	private static final String[] dois = new String[] {
+		"10.1016/j.cemconres.2003.10.011",
 		"10.1016/j.cemconres.2003.10.011",
 		"doi:10.1016/j.cemconres.2003.10.011",
 		"10.1023/A:1009769707641",
@@ -104,10 +107,9 @@ public class DOIUtilsTest {
 		"doi:10.1109/ISSTA.2002.1048560",
 		"DOI: 10.1016/j.spl.2008.05.017",
 		"10.1145/160688.160713"
-	                                                };
+	};
 
-	private static final String[] nonDois = new String[] 
-	                                                   {
+	private static final String[] nonDois = new String[] {
 		" 10.1016/j.cemconres.2003.10.011 ",
 		"10.1016/j.cemconres.2003.10.011\"",
 		"10.1016/j.cemconres.2003.10.011'",
@@ -116,7 +118,7 @@ public class DOIUtilsTest {
 		"ysdfklaskld",
 		"10.1016/j.cemconres.2003.10.011 asef",
 		"\n10.1016/j.cemconres.2003.10.}011"
-	                                                   };
+	};
 
 	private static final String[] fuzzyStarts = new String[] {
 		"  ",
@@ -163,16 +165,16 @@ public class DOIUtilsTest {
 
 
 	private String fuzzifyDoiOnlyDOI(final String doi) {
-		return 
-		fuzzyDoiOnlyStarts[rand.nextInt(fuzzyDoiOnlyStarts.length)] + 
-		doi + 
+		return
+		fuzzyDoiOnlyStarts[rand.nextInt(fuzzyDoiOnlyStarts.length)] +
+		doi +
 		fuzzyDoiOnlyEndings[rand.nextInt(fuzzyDoiOnlyEndings.length)];
 	}
 
 	private String fuzzifyDOI(final String doi) {
-		return 
-		fuzzyStarts[rand.nextInt(fuzzyStarts.length)] + 
-		doi + 
+		return
+		fuzzyStarts[rand.nextInt(fuzzyStarts.length)] +
+		doi +
 		fuzzyEndings[rand.nextInt(fuzzyEndings.length)];
 	}
 
@@ -181,7 +183,7 @@ public class DOIUtilsTest {
 		if (matcher.find()) {
 			return matcher.group(1);
 		}
-		
+
 		return doi;
 	}
 
@@ -231,7 +233,7 @@ public class DOIUtilsTest {
 			assertFalse(DOIUtils.isDOI(fuzzifyDOI(doi)));
 		}
 	}
-	
+
 	@Test
 	public void testCleanDOI() {
 		for (final String s : dois) {
@@ -246,49 +248,51 @@ public class DOIUtilsTest {
 		assertEquals(urlWithDoi, DOIUtils.cleanDOI(urlWithDoi));
 		assertEquals(cleanBibtexLineWithDoi, DOIUtils.cleanDOI(bibtexLineWithDoi));
 	}
-	
+
 	@Test
 	public void testExtract2() throws Exception {
 		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi = {doi:10.1109/ISSTA.2002.1048560}"));
 		assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("doi={http://dx.doi.org/10.1007/11762256_31}"));
 		assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("http://dx.doi.org/10.1007/11762256_31"));
 		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi:10.1109/ISSTA.2002.1048560"));
-		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("10.1109/ISSTA.2002.1048560"));		
-	}
-
+		assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("10.1109/ISSTA.2002.1048560"));
+        assertEquals("10.1007%2f11762256_31", DOIUtils.extractDOI("https://dx.doi.org/10.1007%2f11762256_31"));
+        assertEquals("10.1109%2fISSTA.2002.1048560", DOIUtils.extractDOI("doi:10.1109%2fISSTA.2002.1048560"));
+        assertEquals("10.1109%2fISSTA.2002.1048560", DOIUtils.extractDOI("10.1109%2fISSTA.2002.1048560"));
+    }
 
 	/**
 	 * test getting URL
 	 * FIXME: Thomas, kannst Du bitte mal schauen, was hier schiefläuft? Ist ja total seltsam ...
-	 * 
+	 *
 	 * Im Browser komme ich bei Aufruf von
-	 * 
+	 *
 	 * http://dx.doi.org/10.1007/11922162
-	 * 
-	 * auf 
-	 * 
+	 *
+	 * auf
+	 *
 	 * http://www.springerlink.com/content/w425794t7433/
-	 * 
-	 * raus. Aber {@link WebUtils#getRedirectUrl(URL)} kommt auf 
-	 * 
+	 *
+	 * raus. Aber {@link WebUtils#getRedirectUrl(URL)} kommt auf
+	 *
 	 * http://www.springerlink.com/link.asp?id=w425794t7433
-	 * 
-	 * raus. Auch wenn ich 
-	 * 
+	 *
+	 * raus. Auch wenn ich
+	 *
 	 * http://www.springerlink.com/index/10.1007/11922162
-	 * 
-	 * (das ist die alte URL aus dem Test hier) eingebe, komme ich auf 
+	 *
+	 * (das ist die alte URL aus dem Test hier) eingebe, komme ich auf
 	 * der ersten URL raus. D.h., irgendwie scheint Springer da je nach
 	 * Cookie-Handling, Referer, oder nach Browser woanders hinzuleiten. :-(
-	 * 
-	 *   
+	 *
+	 *
 	 */
 	@Test
 	@Ignore
 	public void getUrlForDoiTest(){
 		assertEquals("http://www.springerlink.com/link.asp?id=w425794t7433", DOIUtils.getUrlForDoi("10.1007/11922162").toString());
 	}
-	
+
 	@Test
 	public void testGetDoiFromURL() throws MalformedURLException {
 		URL testURL;
@@ -297,7 +301,7 @@ public class DOIUtilsTest {
 		String doi = DOIUtils.getDoiFromURL(testURL);
 		assertEquals("10.1177/0165551512438353", doi);
 	}
-	
+
 	@Test
 	@Ignore // remote test
 	public void testWebPage() throws IOException {

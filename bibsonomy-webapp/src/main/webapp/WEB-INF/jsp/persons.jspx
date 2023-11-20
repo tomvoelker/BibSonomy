@@ -10,6 +10,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
+	<c:set var="genealogyEnabled" value="${properties['genealogy.activated'] eq 'true'}" />
+	<c:set var="showGenealogy" value="${not crisSystem and genealogyEnabled}" />
+
 	<c:choose>
 		<c:when test="${not crisSystem}">
 			<fmt:message key="persons.intro.head.title" var="personIntroTitle">
@@ -24,7 +27,7 @@
 	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
-			<c:if test="${not crisSystem}">
+			<c:if test="${showGenealogy}">
 				<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
 			</c:if>
 		</jsp:attribute>
@@ -35,15 +38,14 @@
 
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/person/personAutocomplete.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/person/autocompleteSearchPerson.js"><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			<c:choose>
-				<c:when test="${not crisSystem}">
-					<persons:bmbfPersons title="${personIntroTitle}" command="${command}" />
+				<c:when test="${showGenealogy}">
+					<persons:personsGenealogy title="${personIntroTitle}" command="${command}" />
 				</c:when>
 				<c:otherwise>
 					<persons:personsOverview command="${command}" />

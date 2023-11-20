@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,23 +29,26 @@
  */
 package org.bibsonomy.scraper.url.kde.degruyter;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
-
 /**
  * @author Haile
  */
-public class DeGruyterScraper extends GenericRISURLScraper {
+public class DeGruyterScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "De Gruyter";
-	private static final String SITE_URL = "http://www.degruyter.com/";
+	private static final String SITE_URL = "https://www.degruyter.com/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(
@@ -51,7 +57,12 @@ public class DeGruyterScraper extends GenericRISURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		return "http://" + url.getHost() +  url.getPath().replace("/", "$002f").replace("$002fview$002f", "/dg/cite:exportcitation/ris?t:ac=$002f");
+		URL redirectedUrl = WebUtils.getRedirectUrl(url);
+		if (!present(redirectedUrl)){
+			redirectedUrl = url;
+		}
+		URL downloadUrl = new URL(redirectedUrl.getProtocol(), redirectedUrl.getHost(), redirectedUrl.getPath().replaceAll("/html|\\.xml", "/machineReadableCitation/BibTeX"));
+		return downloadUrl.toExternalForm();
 	}
 
 	@Override
@@ -72,5 +83,10 @@ public class DeGruyterScraper extends GenericRISURLScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
+	}
+
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replaceAll(",\\nlastchecked = \\{[^}]*}", "");
 	}
 }

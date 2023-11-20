@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.googlepatent;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,12 +40,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class GooglePatentScraperTest {
+	String resultDirectory = "googlepatent/";
 	/**
 	 * starts URL test with id url_336
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://www.google.com/patents/DE102009031804A1?cl=de", GooglePatentScraper.class, "GooglePatentScraperUnitURLTest1.bib");
+		final String url = "http://www.google.com/patents/DE102009031804A1?cl=de";
+		final String resultFile = resultDirectory + "GooglePatentScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, GooglePatentScraper.class, resultFile);
 	}
 	
 	/**
@@ -50,6 +56,15 @@ public class GooglePatentScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://www.google.com/patents/DE102009031804A1?cl=en&hl=de", GooglePatentScraper.class, "GooglePatentScraperUnitURLTest2.bib");
+		final String url = "http://www.google.com/patents/DE102009031804A1?cl=en&hl=de";
+		final String resultFile = resultDirectory + "GooglePatentScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, GooglePatentScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://patents.google.com/patent/DE102009031804A1/en";
+		final String resultFile = resultDirectory + "GooglePatentScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, GooglePatentScraper.class, resultFile);
 	}
 }

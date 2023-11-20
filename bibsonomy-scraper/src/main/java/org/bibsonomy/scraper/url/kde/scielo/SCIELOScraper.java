@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
@@ -43,24 +47,42 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 public class SCIELOScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "SciELO Scientific Electronic Library Online";
-	private static final String SITE_URL = "http://www.scielo.br/";
+	/*
+	 * scielo contains many subdomains. They can all be found on http://www.scielo.org/.
+	 * Most subdomains have a bibtex for their articles, but others like scielo.org and scielo.br must be scraped with the HighwirePressScraper.
+	 */
+	private static final String SITE_URL = "http://www.scielo.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final String SCIELO_HOST = "scielo.br";
-	private static final String SCIELO_MAX_HOST = "scielo.org.mx";
-	private static final Pattern URL_PATTERN = Pattern.compile("(.*)pid=(.*)$");
+
+	private static final Pattern URL_PATTERN = Pattern.compile("pid=(.*?)(?:&|\\Z)");
 	private static final String DOWNLOADLINK = "/scielo.php?download&format=BibTex&pid=";
-	private static final String HTTP = "http://";
-	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	private static final Pattern KEY_PATTERN = Pattern.compile("@[A-z]+\\{(.*?),");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SCIELO_HOST), Pattern.compile("/scielo.php")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SCIELO_MAX_HOST), Pattern.compile("/scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.org.bo"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.org.ar"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.cl"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.sa.cr"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.sld.cu"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.senescyt.gob.ec"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.org.mx"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.iics.una.py"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.org.pe"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.pt"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.org.za"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.isciii.es"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.edu.uy"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "ve.scielo.org"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "cienciaecultura.bvs.br"), Pattern.compile("scielo.php")));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "scielo.edu.uy"), Pattern.compile("scielo.php")));
+
 	}
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = URL_PATTERN.matcher(url.toString());
 		if (m.find()) {
-			return HTTP + url.getHost() + DOWNLOADLINK + m.group(2);
+			return "http://" + url.getHost() + DOWNLOADLINK + m.group(1);
 		}
 		return null;
 	}
@@ -82,6 +104,18 @@ public class SCIELOScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
+		return PATTERNS;
+	}
+
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		String fixedBibtex = bibtex;
+		Matcher m_keyFix = KEY_PATTERN.matcher(fixedBibtex);
+		if (m_keyFix.find()){
+			String bibtexKey = m_keyFix.group(1);
+			String fixedBibtexKey = bibtexKey.replace(" ", "_");
+			fixedBibtex = fixedBibtex.replace(bibtexKey, fixedBibtexKey);
+		}
+		return fixedBibtex;
 	}
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,7 +50,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	/** identifier for the custom layout */
 	public static final String CUSTOM_LAYOUT = "custom";
 
-	/** Returns the requested layout. A layout may be user-specific, thus the name 
+	/**
+	 * Returns the requested layout. A layout may be user-specific, thus the name
 	 * of the login user must be given. 
 	 *  
 	 * @param layoutName
@@ -59,7 +63,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 */
 	public LAYOUT getLayout(final String layoutName, final String loginUserName) throws LayoutRenderingException, IOException;
 
-	/** Renders the given layout to the outputStream.
+	/**
+	 * Renders the given layout to the outputStream.
 	 * 
 	 * @param layout
 	 * @param posts
@@ -72,7 +77,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 */
 	public StringBuffer renderLayout(final LAYOUT layout, final  List<? extends Post<? extends Resource>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException;
 
-	/** Checks, if the renderer supports the given resource type.
+	/**
+	 * Checks, if the renderer supports the given resource type.
 	 * 
 	 * XXX: this could also be layout-dependent, i.e., we should not ask the
 	 * renderer, but the layout ...
@@ -84,7 +90,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	
 	/**
 	 * TODO: should be a list?
-	 * @return all layyouts supported by this LayoutRenderer 
+	 * @return all layouts supported by this LayoutRenderer
 	 */
 	public Map<String, LAYOUT> getLayouts();
 }

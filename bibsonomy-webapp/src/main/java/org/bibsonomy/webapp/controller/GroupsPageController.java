@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,17 +29,18 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.enums.GroupOrder;
+import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Controller for group overview:
@@ -47,6 +51,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public class GroupsPageController extends SingleResourceListController implements MinimalisticController<GroupsListCommand> {
 
+	private String defaultRealnameSearch;
+
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
@@ -54,23 +60,51 @@ public class GroupsPageController extends SingleResourceListController implement
 	public View workOn(final GroupsListCommand command) {
 		final String format = command.getFormat();
 		final ListCommand<Group> groupListCommand = command.getGroups();
+		groupListCommand.setEntriesPerPage(30);
+
+		final boolean isOrganizationPage = command.isOrganizations();
+
+		String userName = null;
+		if (command.isMemberOfOnly() && command.getContext().isUserLoggedIn()) {
+			// Restrict query to user's group/organization
+			userName = command.getContext().getLoginUser().getName();
+		}
+
 		/*
 		 * get requested groups
 		 */
 		final String search = command.getSearch();
 		final boolean searchPresent = present(search);
-		final GroupOrder order = searchPresent ? GroupOrder.RANK : GroupOrder.GROUP_REALNAME;
+		final boolean prefixPresent = present(command.getPrefix());
+		final GroupSortKey sortKey = searchPresent ? GroupSortKey.RANK : GroupSortKey.GROUP_SORTNAME;
 		final SortOrder sortOrder = searchPresent ? SortOrder.DESC : SortOrder.ASC;
-		final GroupQuery groupQuery = GroupQuery.builder()
-						.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
-						.pending(false)
-						.organization(command.getOrganizations())
-						.prefix(command.getPrefix())
-						.search(search)
-						.prefixMatch(true)
-						.order(order)
-						.sortOrder(sortOrder).build();
-		groupListCommand.setList(this.logic.getGroups(groupQuery));
+
+		// default realname search case for organizations
+		final boolean useDefaultRealnameSearch = isOrganizationPage && !searchPresent && !prefixPresent && !command.isMemberOfOnly() && groupListCommand.getStart() == 0;
+		if (useDefaultRealnameSearch && present(defaultRealnameSearch)) {
+			ResultList<Group> groups = new ResultList<>();
+			for (String groupName : defaultRealnameSearch.split(",")) {
+				Group groupDetails = this.logic.getGroupDetails(groupName, false);
+				if (present(groupDetails)) {
+					groups.add(groupDetails);
+				}
+			}
+			groups.setTotalCount(groups.size());
+			groupListCommand.setList(groups);
+		} else {
+			final GroupQuery groupQuery = GroupQuery.builder()
+					.search(search)
+					.prefixMatch(true)
+					.prefix(command.getPrefix())
+					.userName(userName)
+					.sortKey(sortKey)
+					.sortOrder(sortOrder)
+					.pending(false)
+					.organization(isOrganizationPage)
+					.entriesStartingAt(groupListCommand.getEntriesPerPage(), groupListCommand.getStart())
+					.build();
+			groupListCommand.setList(this.logic.getGroups(groupQuery));
+		}
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
@@ -87,5 +121,9 @@ public class GroupsPageController extends SingleResourceListController implement
 	@Override
 	public GroupsListCommand instantiateCommand() {
 		return new GroupsListCommand();
+	}
+
+	public void setDefaultRealnameSearch(String defaultRealnameSearch) {
+		this.defaultRealnameSearch = defaultRealnameSearch;
 	}
 }

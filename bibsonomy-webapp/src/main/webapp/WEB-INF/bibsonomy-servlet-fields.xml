@@ -40,6 +40,7 @@
 		-->
 		<value>*.entriesPerPage</value>
 		<value>*.start</value>
+		<value>*.useIndex</value><!-- for checking, if using a search index -->
 		<value>startDate</value>
 		<value>endDate</value>
 		<!-- further general parameters for resource view pages -->
@@ -49,9 +50,9 @@
 		<value>resourcetype</value>
 		<value>tagstype</value>
 		<value>userRelation</value>
+		<value>search</value>
 		<value>sortPage</value>
 		<value>sortPageOrder</value>
-		<value>*.useIndex</value><!-- for checking, if using a search index -->
 		<value>duplicates</value>
 		<value>restrictToTags</value>
 		<value>callback</value><!-- for JSONP -->

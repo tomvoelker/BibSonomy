@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,35 +30,33 @@
 package org.bibsonomy.scraper.url.kde.apa;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
+ * tests for the {@link APAScraper}
  */
 @Category(RemoteTest.class)
 public class APAScraperTest {
+	String resultDirectory = "apa/";
 
 	/**
 	 * starts URL test with id url_244
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://psycnet.apa.org/journals/bul/119/2/254/";
-		final String resultFile = "APAScraperUnitURLTest1.bib";
-		assertScraperResult(url, null, APAScraper.class, resultFile);
+		final String url = "https://psycnet.apa.org/record/1996-02773-003";
+		final String resultFile = resultDirectory + "APAScraperUnitURLTest1.bib";
+		assertScraperResult(url, APAScraper.class, resultFile);
 	}
 
-	/**
-	 * starts URL test with id url_245
-	 */
+
 	@Test
 	public void url2TestRun(){
-		final String url = "http://psycnet.apa.org/index.cfm?fa=buy.optionToBuy&amp;id=1996-02773-003";
-		final String resultFile = "APAScraperUnitURLTest2.bib";
-		assertScraperResult(url, null, APAScraper.class, resultFile);
+		final String url = "https://psycnet.apa.org/record/1992-37683-001";
+		final String resultFile = resultDirectory + "APAScraperUnitURLTest2.bib";
+		assertScraperResult(url, APAScraper.class, resultFile);
 	}
-	
+
 }

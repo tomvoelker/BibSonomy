@@ -3,15 +3,18 @@
 
     BibSonomy-Webapp - The web application for BibSonomy.
 
-    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
-                                  University of Kassel, Germany
-                                  http://www.kde.cs.uni-kassel.de/
-                              Data Mining and Information Retrieval Group,
+    Copyright (C) 2006 - 2021 Data Science Chair,
                                   University of Würzburg, Germany
-                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+                                  https://www.informatik.uni-wuerzburg.de/datascience/home/
+                              Information Processing and Analytics Group,
+                                  Humboldt-Universität zu Berlin, Germany
+                                  https://www.ibi.hu-berlin.de/en/research/Information-processing/
+                              Knowledge & Data Engineering Group,
+                                  University of Kassel, Germany
+                                  https://www.kde.cs.uni-kassel.de/
                               L3S Research Center,
                                   Leibniz University Hannover, Germany
-                                  http://www.l3s.de/
+                                  https://www.l3s.de/
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -54,7 +57,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by our webresource-maven-plugin
 						are overwritten by this plugin -->
-					<!-- <warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes> -->
+					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -173,6 +176,9 @@
 				<configuration>
 					<messageSources>
 						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/custom/messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/themes/bibsonomy_messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/themes/puma_messages</messageSource>
 					</messageSources>
 					<locales>
 						<locale>en</locale>
@@ -742,9 +748,8 @@
 			<artifactId>bibsonomy-exporter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.undercouch</groupId>
-			<artifactId>citeproc-java</artifactId>
-			<version>2.0.0</version>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>

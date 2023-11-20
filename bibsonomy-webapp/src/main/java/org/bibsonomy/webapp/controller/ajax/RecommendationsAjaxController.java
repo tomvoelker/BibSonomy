@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -158,7 +161,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 * initialize lists
 		 * FIXME: is it really neccessary to initialize ALL those lists? Which are really needed?
 		 */
-		command.setRelevantGroups(new ArrayList<String>());
+		command.setRelevantForGroups(new ArrayList<String>());
 		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
 		command.setRecommendedTags(new TreeSet<RecommendedTag>());
 		command.setCopytags(new ArrayList<Tag>());

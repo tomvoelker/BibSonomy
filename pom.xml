@@ -3,15 +3,18 @@
 
     BibSonomy - A blue social bookmark and publication sharing system.
 
-    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
-                                  University of Kassel, Germany
-                                  http://www.kde.cs.uni-kassel.de/
-                              Data Mining and Information Retrieval Group,
+    Copyright (C) 2006 - 2021 Data Science Chair,
                                   University of Würzburg, Germany
-                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+                                  https://www.informatik.uni-wuerzburg.de/datascience/home/
+                              Information Processing and Analytics Group,
+                                  Humboldt-Universität zu Berlin, Germany
+                                  https://www.ibi.hu-berlin.de/en/research/Information-processing/
+                              Knowledge & Data Engineering Group,
+                                  University of Kassel, Germany
+                                  https://www.kde.cs.uni-kassel.de/
                               L3S Research Center,
                                   Leibniz University Hannover, Germany
-                                  http://www.l3s.de/
+                                  https://www.l3s.de/
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -373,7 +376,7 @@
 				<configuration>
 					<header>src/etc/header.txt</header>
 					<properties>
-						<year>${project.inceptionYear} - 2016</year>
+						<year>${project.inceptionYear} - 2021</year>
 						<description>
 							${project.name} - ${project.description}
 						</description>
@@ -420,7 +423,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13.2</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -789,6 +792,11 @@
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
 				<version>2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.22</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

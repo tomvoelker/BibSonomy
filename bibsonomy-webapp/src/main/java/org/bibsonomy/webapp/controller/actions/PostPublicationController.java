@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -67,6 +70,8 @@ import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.command.ErrorInfo;
+import org.bibsonomy.webapp.command.ErrorInfo.ErrorType;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -76,6 +81,7 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeEx
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
 import org.bibsonomy.webapp.validation.PublicationValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ValidationUtils;
 
 import bibtex.parser.ParseException;
@@ -87,6 +93,7 @@ import com.itextpdf.text.pdf.PdfReader;
  * @author ema
  * @author rja
  */
+// TODO suggest refactoring into different controllers
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
@@ -100,6 +107,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * Extracts the line number from the parser error messages.
 	 */
 	private static final Pattern LINE_NUMBER_PATTERN = Pattern.compile("([0-9]+)");
+	private static final String NO_ERRORS_INFO_KEY = "no errors";
 
 	private PublicationImporter publicationImporter;
 	private FileLogic fileLogic;
@@ -165,6 +173,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final boolean hasUrl = present(url);
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
+		final boolean hasBulkSnippet = present(command.getBulkSnippet());
+
 		/*
 		 * The ckey must be provided when a file is uploaded or a selection is 
 		 * provided, as then data might be automatically stored (and potentially
@@ -224,6 +234,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors
 			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
+		} else if (hasBulkSnippet) {
+			/*
+			 * The user uploads a bulk snippet
+			 */
+			log.debug("user uploads a bulk snippet");
+			snippet = this.publicationImporter.handleBulkSnippet(command, this.errors);
 		} else if (hasUrl) {
 			log.debug("user has provided a url");
 
@@ -418,9 +434,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * We try to store only posts that have no validation errors.
 		 * The following function, add error(s) to the erroneous posts.
 		 */
-
-		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(), command.isOverwrite());
-
+		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
+		
+		/*
+		 * get the groupedErrorList for a sorted output in the edit batch
+		 */
+		final List<ErrorInfo> groupedErrorList = this.getGroupedErrorList(posts, command);
+		command.setGroupedErrorList(groupedErrorList);	
+			
 		if (log.isDebugEnabled()) {
 			log.debug("will try to store " + postsToStore.size() + " of " + (posts != null ? Integer.toString(posts.size()) : "null") + " posts in database");
 		}
@@ -441,7 +462,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * the publications are saved in the database
 			 */
-			this.storePosts(postsToStore, command.getOverwrite());
+			this.storePosts(postsToStore, command.isOverwrite());
 			command.setUpdateExistingPost(true);
 		}
 
@@ -645,7 +666,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * Posts that have errors will be rejected in any case.
 	 *
 	 * FIXME: the error handling here is almost identical to that
-	 * in {@link BatchEditController#storePosts}
+	 * in {@link BatchEditController#storePosts(List, Class, Map, List, boolean, String)}
 	 *
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if
@@ -748,7 +769,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 * same as the i-th position in the original list! ->use
 					 * mapping
 					 */
-					final int i = postsToStore.get(post).intValue();
+					final int i = postsToStore.get(post);
 					log.debug("checking post no. " + i + " with intra hash " + intraHash);
 					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
 					if (present(postErrorMessages)) {
@@ -759,6 +780,87 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 		}
 	}
+	
+	/**
+	 * create a list of ErrorInfos with the different errorFields and 
+	 * assigns the positions of the posts.
+	 * Sort the list afterwards.
+	 * @param posts
+	 * @param command
+	 * @return
+	 */
+	private List<ErrorInfo> getGroupedErrorList(final List<Post<BibTex>> posts, final PostPublicationCommand command) {
+		/*
+		 * list of entries of class ErrorInfo
+		 */
+		final Map<String, ErrorInfo> groupedPostsMap = new HashMap<>();
+
+		/*
+		 * check each post for errors
+		 */
+		for (int i = 0; i < posts.size(); i++) {
+			/*
+			 * if the post has missing field errors, create an error field of the post
+			 * with all missing fields here we group posts with identical missing fields
+			 * (e.g. year, title vs only year)
+			 */
+			final List<FieldError> fieldErrors = this.errors.getFieldErrors("bibtex.list[" + i + "]*");
+			final List<String> fieldsWithErrors = new LinkedList<>();
+			if (present(fieldErrors)) {
+				for (final FieldError fieldError : fieldErrors) {
+					String fieldErrorKey = fieldError.getField();
+					fieldErrorKey = fieldErrorKey.substring(fieldErrorKey.lastIndexOf(".") + 1);
+					fieldsWithErrors.add(fieldErrorKey);
+				}
+
+				final String fieldsCombinedErrorString = StringUtils.implodeStringCollection(fieldsWithErrors, ", ");
+
+				/*
+				 * adds a new ErrorInfo entry to the list or adds the position if an ErrorInfo with the errorField already exists
+				 */
+				if (groupedPostsMap.containsKey(fieldsCombinedErrorString)) {
+					final ErrorInfo errorInfo = groupedPostsMap.get(fieldsCombinedErrorString);
+					errorInfo.addPosition(i);
+				} else {
+					final ErrorInfo errorInfo = new ErrorInfo(fieldsCombinedErrorString, i, ErrorType.FIELD_ERROR);
+					groupedPostsMap.put(fieldsCombinedErrorString, errorInfo);
+				}
+			}
+
+			/*
+			 * know check for other errors already present in the command
+			 */
+			final List<ErrorMessage> postsErrorList = command.getPostsErrorList().get(posts.get(i).getResource().getIntraHash());
+			if (present(postsErrorList)) {
+				for (final ErrorMessage errorMessage : postsErrorList) {
+					final String errorMessageString = errorMessage.getClass().getSimpleName();
+
+					if (groupedPostsMap.containsKey(errorMessageString)) {
+						final ErrorInfo errorInfo = groupedPostsMap.get(errorMessageString);
+						errorInfo.addPosition(i);
+					} else {
+						final ErrorInfo duplicateErrorInfo = new ErrorInfo(errorMessageString, i, ErrorType.POST_ERROR);
+						groupedPostsMap.put(errorMessageString, duplicateErrorInfo);
+					}
+				}
+			}
+			// if there are no errors add the post to the no errors group
+			if (!present(postsErrorList) && !present(fieldErrors)) {
+				if (groupedPostsMap.containsKey(NO_ERRORS_INFO_KEY)) {
+					final ErrorInfo errorInfo = groupedPostsMap.get(NO_ERRORS_INFO_KEY);
+					errorInfo.addPosition(i);
+				} else {
+					final ErrorInfo nonErrorInfo = new ErrorInfo(NO_ERRORS_INFO_KEY, i, ErrorType.NO_ERROR);
+					groupedPostsMap.put(NO_ERRORS_INFO_KEY, nonErrorInfo);
+				}
+			}
+		}
+
+		final List<ErrorInfo> groupedPosts = new LinkedList<>(groupedPostsMap.values());
+		Collections.sort(groupedPosts);
+		return groupedPosts;
+	}
+
 
 	@Override
 	protected PostPublicationCommand instantiateEditPostCommand() {

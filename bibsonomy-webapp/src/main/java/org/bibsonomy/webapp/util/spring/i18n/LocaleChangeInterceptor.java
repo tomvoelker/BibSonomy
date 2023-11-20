@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,16 +29,16 @@
  */
 package org.bibsonomy.webapp.util.spring.i18n;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * To fix feature request SPR-9456
@@ -58,7 +61,7 @@ public class LocaleChangeInterceptor extends org.springframework.web.servlet.i18
 			if (newLocale != null) {
 				// check, if selected new locale is supported, otherwise use default locale
 				if (!this.supportedLocales.contains(newLocale)) {
-					newLocale = defaultLocale;
+					newLocale = this.defaultLocale;
 				}
 
 				LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -76,6 +79,9 @@ public class LocaleChangeInterceptor extends org.springframework.web.servlet.i18
 		return true;
 	}
 
+	/**
+	 * @param defaultLocale the defaultLocale to set
+	 */
 	public void setDefaultLocale(String defaultLocale) {
 		this.defaultLocale = defaultLocale;
 	}

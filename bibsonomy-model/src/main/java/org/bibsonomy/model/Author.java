@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +29,14 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Christian Claus
  */
+@Getter
+@Setter
 public class Author {
 
 	private String authorId = null;
@@ -36,75 +44,5 @@ public class Author {
 	private String middle = null;
 	private String lastName = null;
 	private int ctr = 0;
-
-	/**
-	 * @return the authorId
-	 */
-	public String getAuthorId() {
-		return this.authorId;
-	}
-
-	/**
-	 * @param authorId the authorId to set
-	 */
-	public void setAuthorId(String authorId) {
-		this.authorId = authorId;
-	}
-
-	/**
-	 * @return the firstName
-	 */
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	/**
-	 * @param firstName the first name to set
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
-	 * @return middle name
-	 */
-	public String getMiddle() {
-		return this.middle;
-	}
-
-	/**
-	 * @param middle the middle name to set
-	 */
-	public void setMiddle(String middle) {
-		this.middle = middle;
-	}
-
-	/**
-	 * @return the lastName
-	 */
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	/**
-	 * @param lastName the last name to set
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	/**
-	 * @return the ctr
-	 */
-	public int getCtr() {
-		return this.ctr;
-	}
-
-	/**
-	 * @param ctr the ctr to set
-	 */
-	public void setCtr(int ctr) {
-		this.ctr = ctr;
-	}
-
+	
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +29,8 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupRole;
 
 import java.util.Date;
@@ -36,6 +41,8 @@ import java.util.Date;
  * 
  * @author niebler
  */
+@Getter
+@Setter
 public class GroupMembership {
 	
 	private User user;
@@ -62,62 +69,6 @@ public class GroupMembership {
 		this.userSharedDocuments = userSharedDocuments;
 	}
 
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the groupRole
-	 */
-	public GroupRole getGroupRole() {
-		return this.groupRole;
-	}
-
-	/**
-	 * @param groupRole the groupRole to set
-	 */
-	public void setGroupRole(GroupRole groupRole) {
-		this.groupRole = groupRole;
-	}
-
-	/**
-	 * @return the userSharedDocuments
-	 */
-	public boolean isUserSharedDocuments() {
-		return this.userSharedDocuments;
-	}
-
-	/**
-	 * @param userSharedDocuments the userSharedDocuments to set
-	 */
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
-	}
-	
-	/**
-	 * @return the joinDate
-	 */
-	public Date getJoinDate() {
-		return this.joinDate;
-	}
-
-	/**
-	 * @param joinDate the joinDate to set
-	 */
-	public void setJoinDate(Date joinDate) {
-		this.joinDate = joinDate;
-	}
-	
 	/**
 	 * toString. User GroupRole userSharedDocuments
 	 * @return string

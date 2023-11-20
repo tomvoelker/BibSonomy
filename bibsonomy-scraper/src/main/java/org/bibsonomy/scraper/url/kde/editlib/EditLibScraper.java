@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +30,9 @@
 package org.bibsonomy.scraper.url.kde.editlib;
 
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
@@ -39,20 +43,25 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author wbi
  */
 public class EditLibScraper extends GenericBibTeXURLScraper {
+	private static final String EDITLIB_OLD_HOST  = "editlib.org";
+	private static final String EDITLIB_HOST  = "learntechlib.org";
+	private static final String EDITLIB_PATH  = "/index.cfm";
 
-	private static final String SITE_NAME = "Ed/ITLib";
-	private static final String EDITLIB_HOST_NAME  = "http://www.editlib.org";
-	private static final String SITE_URL = EDITLIB_HOST_NAME+"/";
+	private static final String SITE_NAME = "LearnTechLib";
+	private static final String SITE_URL = "https://" + EDITLIB_HOST + "/";
 
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final String EDITLIB_HOST  = "editlib.org";
-	private static final String EDITLIB_PATH  = "/index.cfm";
-	private static final String EDITLIB_ABSTRACT_PATH = "/index.cfm?fuseaction=Reader.ViewAbstract&paper_id=";
-	private static final String EDITLIB_BIBTEX_PATH = "/index.cfm?fuseaction=Reader.ChooseCitationFormat&paper_id=";
-	private static final String EDITLIB_BIBTEX_DOWNLOAD_PATH = "/index.cfm/files/citation_{id}.bib?fuseaction=Reader.ExportAbstract&citationformat=BibTex&paper_id=";
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<>();
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EDITLIB_HOST), Pattern.compile(EDITLIB_PATH + ".*")));
+	static{
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EDITLIB_HOST), Pattern.compile(EDITLIB_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EDITLIB_OLD_HOST), Pattern.compile(EDITLIB_PATH + ".*")));
+	}
+
+	private static final Pattern PAPER_ID_PATTERN = Pattern.compile("paper_id=(\\d+)");
+	private static final String DOWNLOAD_URL = "https://www.learntechlib.org/?fuseaction=Reader.ExportAbstract&citationformat=BibTex&paper_id=";
+
 	
 	@Override
 	public String getInfo() {
@@ -75,16 +84,10 @@ public class EditLibScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		String id = null;
-		String sturl = url.toString();
-		if(sturl.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {
-			id = sturl.substring(sturl.indexOf(EDITLIB_ABSTRACT_PATH) + EDITLIB_ABSTRACT_PATH.length());
-			return EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id;
+		Matcher m_paperId = PAPER_ID_PATTERN.matcher(url.toString());
+		if (!m_paperId.find()){
+			throw new ScrapingException("paper-id not found");
 		}
-		if(sturl.toString().startsWith(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_PATH)) {
-			id = sturl.substring(sturl.indexOf(EDITLIB_BIBTEX_PATH) + EDITLIB_BIBTEX_PATH.length());
-			return EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id;
-		}
-		return null;
+		return DOWNLOAD_URL + m_paperId.group(1);
 	}
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +32,8 @@ package org.bibsonomy.webapp.command.admin;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.ClassifierAlgorithm;
 import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -39,6 +44,8 @@ import org.bibsonomy.common.enums.ClassifierSettings;
  * @author Stefan Stützer
  * @author Beate Krause
  */
+@Getter
+@Setter
 public class AdminSettingsCommand {
 
 	/** Day or night mode of classifier */
@@ -121,116 +128,5 @@ public class AdminSettingsCommand {
 		}
 		
 	}
-	
-	/**
-	 * @return the mode
-	 */
-	public String getMode() {
-		return this.mode;
-	}
 
-	/**
-	 * @return the algorithm
-	 */
-	public String getAlgorithm() {
-		return this.algorithm;
-	}
-
-	/**
-	 * @return the trainingPeriod
-	 */
-	public String getTrainingPeriod() {
-		return this.trainingPeriod;
-	}
-
-	/**
-	 * @param trainingPeriod the trainingPeriod to set
-	 */
-	public void setTrainingPeriod(String trainingPeriod) {
-		this.trainingPeriod = trainingPeriod;
-	}
-
-	/**
-	 * @return the algorithmOptions
-	 */
-	public Map<String, String> getAlgorithmOptions() {
-		return this.algorithmOptions;
-	}
-
-	/**
-	 * @param algorithmOptions the algorithmOptions to set
-	 */
-	public void setAlgorithmOptions(Map<String, String> algorithmOptions) {
-		this.algorithmOptions = algorithmOptions;
-	}
-
-	/**
-	 * @return the modeOptions
-	 */
-	public Map<String, String> getModeOptions() {
-		return this.modeOptions;
-	}
-
-	/**
-	 * @param modeOptions the modeOptions to set
-	 */
-	public void setModeOptions(Map<String, String> modeOptions) {
-		this.modeOptions = modeOptions;
-	}
-
-	/**
-	 * @return the classificationCosts
-	 */
-	public String getClassificationCosts() {
-		return this.classificationCosts;
-	}
-
-	/**
-	 * @param classificationCosts the classificationCosts to set
-	 */
-	public void setClassificationCosts(String classificationCosts) {
-		this.classificationCosts = classificationCosts;
-	}
-
-	/**
-	 * @return the whitelistExp
-	 */
-	public String getWhitelistExp() {
-		return this.whitelistExp;
-	}
-
-	/**
-	 * @param whitelistExp the whitelistExp to set
-	 */
-	public void setWhitelistExp(String whitelistExp) {
-		this.whitelistExp = whitelistExp;
-	}
-
-	/**
-	 * @return the classifyPeriod
-	 */
-	public String getClassifyPeriod() {
-		return this.classifyPeriod;
-	}
-
-	/**
-	 * @param classifyPeriod the classifyPeriod to set
-	 */
-	public void setClassifyPeriod(String classifyPeriod) {
-		this.classifyPeriod = classifyPeriod;
-	}
-
-	/**
-	 * @return the probabilityLimit
-	 */
-	public String getProbabilityLimit() {
-		return this.probabilityLimit;
-	}
-
-	/**
-	 * @param probabilityLimit the probabilityLimit to set
-	 */
-	public void setProbabilityLimit(String probabilityLimit) {
-		this.probabilityLimit = probabilityLimit;
-	}
 }

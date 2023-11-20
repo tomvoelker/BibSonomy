@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,9 +31,6 @@ package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Locale;
-import java.util.Properties;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -38,7 +38,10 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Locale;
+import java.util.Properties;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
@@ -52,6 +55,7 @@ import org.springframework.context.MessageSource;
 /**
  * @author rja
  */
+@Setter
 public class MailUtils {
 	private static final Log log = LogFactory.getLog(MailUtils.class);
 	
@@ -61,12 +65,27 @@ public class MailUtils {
 	/*
 	 * The following constants are configured
 	 */
+
+	/** The name of the project. */
 	private String projectName;
+
+	/** The base URL of the project. */
 	private String projectHome;
+
+	/** A URL to the blog of the project. */
 	private String projectBlog;
+
+	/** The email address users can use to contact the project admins. */
 	private String projectEmail;
+
+	/**  The From: address of registration mails. */
 	private String projectRegistrationFromAddress;
+
+	/** The From: address of join group request mails. */
 	private String projectJoinGroupRequestFromAddress;
+
+	/** The configured mail address for error reporting */
+	private String projectReportEmail;
 	
 	private MessageSource messageSource;
 	
@@ -161,7 +180,7 @@ public class MailUtils {
 			UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(), // 5
 			this.projectName.toLowerCase(), // 6
 			this.projectEmail, // 7
-			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, Integer.valueOf(1)), // 8
+			this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, 1), // 8
 			this.projectBlog // 9
 		};
 		
@@ -408,10 +427,47 @@ public class MailUtils {
 			final String messageSubject = messageSource.getMessage("grouprequest.mail.subject", messagesParameters, locale);
 			
 			// TODO: currently using projectEmail, maybe we want a special mail address?
-			this.sendHTMLMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectJoinGroupRequestFromAddress);
+			this.sendHTMLMail(new String[] { this.projectEmail }, messageSubject, messageBody, this.projectEmail);
 		} catch (final MessagingException e) {
 			log.fatal("Could not send group request mail: " + e.getMessage());
 		}
+	}
+
+	public boolean sendReportMail(final String subjectKey, final String bodyKey, final Object[] subjectParameters, final Object[] bodyParameters, final Locale locale) {
+		if (present(this.projectReportEmail)) {
+			try {
+				final String messageSubject = messageSource.getMessage(subjectKey, subjectParameters, locale);
+				final String messageBody = messageSource.getMessage(bodyKey, bodyParameters, locale);
+
+				this.sendHTMLMail(new String[]{this.projectReportEmail}, messageSubject, messageBody, this.projectReportEmail);
+			} catch (final MessagingException e) {
+				log.fatal("Could not send report mail: " + e.getMessage());
+				return false;
+			}
+
+			return true;
+		} else {
+			log.warn("Could not send report mail due to the project's report e-mail address has not been set.");
+			return false;
+		}
+	}
+
+	public boolean sendUnableToMatchRelationMail(final String title, final String interhash, final String personId, final String receivermail) {
+		try {
+			final String postUrl = absoluteURLGenerator.getPublicationUrlByInterHash(interhash);
+			final Object[] messagesParameters = { postUrl, title, personId };
+
+			final Locale locale = Locale.ENGLISH;
+			final String messageSubject = messageSource.getMessage("database.exception.systemTag.addRelation.subject", null, locale);
+			final String messageBody = messageSource.getMessage("database.exception.systemTag.addRelation.body", messagesParameters, locale);
+
+			this.sendHTMLMail(new String[]{receivermail}, messageSubject, messageBody, receivermail);
+		} catch (final MessagingException e) {
+			log.fatal("Could not send mail to report matching failed: " + e.getMessage());
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -473,82 +529,12 @@ public class MailUtils {
 	}
 
 	/**
-	 * The name of the project.
-	 * 
-	 * @param projectName
-	 */
-	public void setProjectName(final String projectName) {
-		this.projectName = projectName;
-	}
-
-	/**
-	 * The base URL of the project.
-	 * 
-	 * @param projectHome
-	 */
-	public void setProjectHome(final String projectHome) {
-		this.projectHome = projectHome;
-	}
-
-	/** 
-	 * A URL to the blog of the project.
-	 * 
-	 * @param projectBlog
-	 */
-	public void setProjectBlog(final String projectBlog) {
-		this.projectBlog = projectBlog;
-	}
-
-	/**
-	 * The email address users can use to contact the project admins. 
-	 * 
-	 * @param projectEmail
-	 */
-	public void setProjectEmail(final String projectEmail) {
-		this.projectEmail = projectEmail;
-	}
-
-	/**
-	 * The From: address of registration mails. 
-	 * 
-	 * @param projectRegistrationFromAddress
-	 */
-	public void setProjectRegistrationFromAddress(final String projectRegistrationFromAddress) {
-		this.projectRegistrationFromAddress = projectRegistrationFromAddress;
-	}
-
-	/**
-	 * The From: address of join group request mails. 
-	 * 
-	 * @param projectJoinGroupRequestFromAddress
-	 */
-	public void setProjectJoinGroupRequestFromAddress(final String projectJoinGroupRequestFromAddress) {
-		this.projectJoinGroupRequestFromAddress = projectJoinGroupRequestFromAddress;
-	}
-
-	/**
 	 * A host which accepts SMTP requests and should be used for sending mails.
 	 * 
 	 * @param mailHost
 	 */
 	public void setMailHost(final String mailHost) {
 		props.put("mail.smtp.host", mailHost);
-	}
-
-	/** A message source to format mail messages.
-	 * @param messageSource
-	 */
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	/**
-	 * must be a absolute not relative url generator
-	 * 
-	 * @param absoluteURLGenerator the absoluteURLGenerator to set
-	 */
-	public void setAbsoluteURLGenerator(URLGenerator absoluteURLGenerator) {
-		this.absoluteURLGenerator = absoluteURLGenerator;
 	}
 
 }

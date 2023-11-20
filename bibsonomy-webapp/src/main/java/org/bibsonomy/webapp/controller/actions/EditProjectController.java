@@ -1,3 +1,32 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -55,7 +84,7 @@ public class EditProjectController implements MinimalisticController<EditProject
 		// was the edit form called for the first time?
 		final boolean firstCall = context.isFirstCall();
 
-		// TODO: restirct access to admins?
+		// TODO: restrict access to admins?
 		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
@@ -129,12 +158,11 @@ public class EditProjectController implements MinimalisticController<EditProject
 	}
 
 	// FIXME: move this to a utils class!
-	private void handleErrors(JobResult result) {
+	private void handleErrors(final JobResult result) {
 		if (Status.OK.equals(result.getStatus())) {
 			// everything is fine; no errors; action finished without error
 			return;
 		}
-
 		for (final ErrorMessage e : result.getErrors()) {
 			if (e instanceof MissingFieldErrorMessage) {
 				final MissingFieldErrorMessage missingFieldErrorMessage = (MissingFieldErrorMessage) e;

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +29,11 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Writer;
+import java.util.List;
+
+import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -34,12 +42,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.UrlBuilder;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Writer;
-import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Jens Illig
@@ -56,18 +58,15 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 		this.view = new ViewModel();
 		this.view.setStartValue(context.getIntAttribute(RESTConfig.START_PARAM, 0));
 		this.view.setEndValue(context.getIntAttribute(RESTConfig.END_PARAM, 20));
-		
+
+		// parse sort criteria information from the param
 		try {
 			final String sortKeysAsString = context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null);
 			final String sortOrdersAsString = context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null);
-			if (present(sortKeysAsString)) {
-				List<SortKey> sortKeys = SortUtils.parseSortKeys(sortKeysAsString);
-				this.view.setSortKeys(sortKeys);
-			}
-			if (present(sortOrdersAsString)) {
-				List<SortOrder> sortOrders = SortUtils.parseSortOrders(sortOrdersAsString);
-				this.view.setSortOrders(sortOrders);
-			}
+			final List<SortKey> sortKeys = SortUtils.parseSortKeys(sortKeysAsString);
+			final List<SortOrder> sortOrders = SortUtils.parseSortOrders(sortOrdersAsString);
+			final List<SortCriteria> sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);
+			this.view.setSortCriteria(sortCriteria);
 		} catch (final IllegalArgumentException e) {
 			// the client send a wrong query param throw correct exception
 			throw new BadRequestOrResponseException(e);

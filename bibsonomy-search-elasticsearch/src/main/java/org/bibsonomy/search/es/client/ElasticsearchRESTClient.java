@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +36,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.DocWriteResponse;
@@ -170,7 +173,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	public boolean insertNewDocuments(String indexName, Map<String, IndexData> jsonDocuments) {
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
-			// convert each document to a indexrequest object and add all to the request
+			// convert each document to an index request object and add all to the request
 			final Stream<IndexRequest> indexRequests = jsonDocuments.entrySet().stream().map(entity -> buildIndexRequest(indexName,entity.getKey(), entity.getValue()));
 
 			indexRequests.forEach(bulkRequest::add);
@@ -194,7 +197,7 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public <S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
+	public <S extends SearchIndexState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter) {
 		return this.secureCall(() -> {
 			final GetRequest getRequest = new GetRequest();
 			getRequest.id(syncStateForIndexName);
@@ -380,6 +383,7 @@ public class ElasticsearchRESTClient implements ESClient {
 				this.bulkDeleteHits(indexName, type, firstHits.getHits());
 			}
 
+			// Likely to delete the scrolls/bulks after the initial scroll ID of the first request
 			final SearchScrollRequest searchScrollRequest = new SearchScrollRequest(scrollId);
 			searchScrollRequest.scroll(TimeValue.timeValueMinutes(3L));
 
@@ -393,11 +397,12 @@ public class ElasticsearchRESTClient implements ESClient {
 				this.bulkDeleteHits(indexName, type, hits);
 			}
 
+			// https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-clear-scroll.html
 			final ClearScrollRequest request = new ClearScrollRequest();
 			request.addScrollId(scrollId);
 			this.client.clearScroll(request, this.buildRequestOptions());
 			return null;
-		}, null, "error deleting documents form index " + indexName);
+		}, null, "error deleting documents from index " + indexName);
 	}
 
 	private void bulkDeleteHits(String indexName, String type, SearchHit[] hits) throws IOException {
@@ -420,12 +425,14 @@ public class ElasticsearchRESTClient implements ESClient {
 			return true;
 		}
 
-		LOG.debug("deleting the following documents " + documentsToDelete.stream().map(DeleteData::getId).collect(Collectors.joining(", ")) + " from index " + indexName);
+		LOG.debug("deleting the following documents " + documentsToDelete.stream()
+				.map(DeleteData::getId).collect(Collectors.joining(", ")) + " from index " + indexName);
 
 		return this.secureCall(() -> {
 			final BulkRequest bulkRequest = new BulkRequest();
 
-			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream().map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
+			final Stream<DeleteRequest> deleteRequestsStream = documentsToDelete.stream()
+					.map(deleteData -> new DeleteRequest().id(deleteData.getId()).type(deleteData.getType()).routing(deleteData.getRouting()).index(indexName));
 			deleteRequestsStream.forEach(bulkRequest::add);
 
 			final BulkResponse bulkResponse = this.client.bulk(bulkRequest, this.buildRequestOptions());
@@ -451,11 +458,11 @@ public class ElasticsearchRESTClient implements ESClient {
 	}
 
 	@Override
-	public boolean isValidConnection() {
+	public boolean isConnected() {
 		try {
 			return this.client.ping(this.buildRequestOptions());
 		} catch (final Exception e) {
-			LOG.error("disabling index", e);
+			LOG.error("Connection to an elasticsearch instance could not be established. Please check the connection or properties.", e);
 		}
 
 		return false;

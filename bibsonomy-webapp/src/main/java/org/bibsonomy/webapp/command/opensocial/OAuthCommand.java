@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +29,8 @@
  */
 package org.bibsonomy.webapp.command.opensocial;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.oauth.OAuthConsumer;
 
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
@@ -36,6 +41,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
 /**
  * @author fei
  */
+@Setter
+@Getter
 public class OAuthCommand extends BaseCommand {
 	public enum AuthorizeAction { Authorize, Deny };
 
@@ -63,86 +70,6 @@ public class OAuthCommand extends BaseCommand {
 	
 	public KeyType[] getKeyTypes() {
 		return KeyType.values();
-	}
-
-	public void setResponseString(String responseString) {
-		this.responseString = responseString;
-	}
-
-	public String getResponseString() {
-		return responseString;
-	}
-
-	public void setAuthorizeAction(String authorizeAction) {
-		this.authorizeAction = authorizeAction;
-	}
-
-	public String getAuthorizeAction() {
-		return authorizeAction;
-	}
-
-	public void setConsumer(OAuthConsumer consumer) {
-		this.consumer = consumer;
-	}
-
-	public OAuthConsumer getConsumer() {
-		return consumer;
-	}
-
-	public void setAppTitle(String appTitle) {
-		this.appTitle = appTitle;
-	}
-
-	public String getAppTitle() {
-		return appTitle;
-	}
-
-	public void setAppDescription(String appDescription) {
-		this.appDescription = appDescription;
-	}
-
-	public String getAppDescription() {
-		return appDescription;
-	}
-
-	public void setAppIcon(String appIcon) {
-		this.appIcon = appIcon;
-	}
-
-	public String getAppIcon() {
-		return appIcon;
-	}
-
-	public void setAppThumbnail(String appThumbnail) {
-		this.appThumbnail = appThumbnail;
-	}
-
-	public String getAppThumbnail() {
-		return appThumbnail;
-	}
-
-	public void setEntry(OAuthEntry entry) {
-		this.entry = entry;
-	}
-
-	public OAuthEntry getEntry() {
-		return entry;
-	}
-
-	public void setCallBackUrl(String callBackUrl) {
-		this.callBackUrl = callBackUrl;
-	}
-
-	public String getCallBackUrl() {
-		return callBackUrl;
-	}
-
-	public void setConsumerInfo(OAuthConsumerInfo consumerInfo) {
-		this.consumerInfo = consumerInfo;
-	}
-
-	public OAuthConsumerInfo getConsumerInfo() {
-		return consumerInfo;
 	}
 
 }

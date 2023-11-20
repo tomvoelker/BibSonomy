@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +30,7 @@
 package org.bibsonomy.scraper.url.kde.jmlr;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,13 +40,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JMLRScraperTest {
+	String resultDirectory = "jmlr/";
 	
 	/**
 	 * starts URL test with id url_101
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://jmlr.csail.mit.edu/papers/v4/petridis03a.html", JMLRScraper.class, "JMLRScraperUnitURLTest1.bib");
+		final String url = "http://jmlr.csail.mit.edu/papers/v4/petridis03a.html";
+		final String resultFile = resultDirectory + "JMLRScraperUnitURLTest1.bib";
+		assertScraperResult(url, JMLRScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,7 +57,9 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://jmlr.csail.mit.edu/papers/v9/henrich08a.html", JMLRScraper.class, "JMLRScraperUnitURLTest2.bib");
+		final String url = "http://jmlr.csail.mit.edu/papers/v9/henrich08a.html";
+		final String resultFile = resultDirectory + "JMLRScraperUnitURLTest2.bib";
+		assertScraperResult(url, JMLRScraper.class, resultFile);
 	}
 	
 	/**
@@ -59,7 +67,9 @@ public class JMLRScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertScraperResult("http://jmlr.csail.mit.edu/papers/v8/list07a.html", JMLRScraper.class, "JMLRScraperUnitURLTest3.bib");
+		final String url = "http://jmlr.csail.mit.edu/papers/v8/list07a.html";
+		final String resultFile = resultDirectory + "JMLRScraperUnitURLTest3.bib";
+		assertScraperResult(url, JMLRScraper.class, resultFile);
 	}
 	
 }

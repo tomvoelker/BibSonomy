@@ -28,7 +28,7 @@
 			</label>
 			<div class="col-sm-10">
 				<div class="row">
-						<div class="col-sm-6">
+					<div class="col-sm-9">
 						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
 					</div>
 				</div>
@@ -37,12 +37,12 @@
 		
 		<bsform:fieldset legendKey="post_bibtex.upload.options" collapsible="${true}">
 			<jsp:attribute name="content">
-				<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
+				<div class="hidden"><bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" checked="checked" /></div>
 				<bsform:checkbox inputColSpan="10" path="overwrite" labelKey="import.overwrite2" helpKey="import.overwritten"/>
-				
+
 				<!--+
 					|
-					| Dirty hack because spring form's option tag cannot find their parent filter field, when invokes in jsp fragment.
+					| Dirty hack because spring form's option tag cannot find their parent select field, when invokes in jsp fragment.
 					| 
 					+-->
 				<c:set var="labels">' ' (<fmt:message key="delimiters.whitespace"/>)|, (<fmt:message key="delimiters.comma"/>)|; (<fmt:message key="delimiters.semicolon"/>)</c:set>

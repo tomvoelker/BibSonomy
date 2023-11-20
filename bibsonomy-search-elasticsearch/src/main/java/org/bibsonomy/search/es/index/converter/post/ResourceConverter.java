@@ -1,15 +1,18 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -79,7 +82,7 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		post.setChangeDate(ElasticsearchUtils.parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
 		final boolean loadDocuments = allowedUsersForDoc.contains(userName);
-		fillUser(post, userName);
+		post.setUser(new User(userName));
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
@@ -105,14 +108,6 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 		this.convertResourceInternal(post, source, loadDocuments);
 		
 		return post;
-	}
-
-	/**
-	 * @param post
-	 * @param userName
-	 */
-	protected void fillUser(final Post<R> post, final String userName) {
-		post.setUser(new User(userName));
 	}
 	
 	/**
@@ -191,6 +186,8 @@ public abstract class ResourceConverter<R extends Resource> implements Converter
 			final List<String> userNames = users.stream().map(User::getName).collect(Collectors.toList());
 			jsonDocument.put(Fields.ALL_USERS, userNames);
 		}
+
+		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 
 		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
 		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI.toString());

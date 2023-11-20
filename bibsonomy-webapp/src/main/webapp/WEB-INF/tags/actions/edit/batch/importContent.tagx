@@ -1,0 +1,199 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+>
+
+	<!--
+		This page is called when publications are batch imported and the edit page is shown.
+		It is strongly related to the content.tagx page, with the main difference being the list provided, so compatibility with that page must be ensured.
+		 -->
+
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="updateExistingPost" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="resourcetype" type="java.lang.String" required="true"
+							 description="The type of resource that are edited (bookmark or bibtex)."/>
+	<jsp:directive.attribute name="directEdit" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="groupedErrorList" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="postsErrorMessages" type="java.util.Map" required="false"
+							 description="In indirect mode, each intrahash(post) is associated with a list of errors"/>
+	<jsp:directive.attribute name="hasErrors" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hasValidData" type="java.lang.Boolean" required="false"/>
+
+
+	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true"
+							 description="A one line description of a post"/>
+
+	<script type="text/javascript" src="${resdir}/javascript/batchEdit.js"><!-- keep me --></script>
+
+	<!--=======================-->
+	<!-- VARIABLEN DEKLARATION -->
+	<!--=======================-->
+
+	<c:if test="${empty updateExistingPost}">
+		<c:set var="updateExistingPost" value="true"/>
+	</c:if>
+	<!-- OVERWRITE DUPLICATES -->
+	<c:if test="${empty overwrite}">
+		<c:set var="overwrite" value="false"/>
+	</c:if>
+
+	<c:if test="${empty hasErrors}">
+		<input type="hidden" name="hasErrors" value="false"/>
+	</c:if>
+
+	<c:if test="${empty hasValidData}">
+		<input type="hidden" name="hasValidData" value="true"/>
+	</c:if>
+
+	<!--=======================-->
+	<!-- VARIABLEN DEKLARATION -->
+	<!--=======================-->
+
+	<jsp:directive.variable name-given="post" scope="NESTED"/>
+	<form id="batchedit" action="/batchEdit" class="form-horizontal" method="post">
+		<!-- the following variables are defined to communicate with .js file -->
+		<input type="hidden" name="action"/>
+		<input type="hidden" name="updateExistingPost" value="${updateExistingPost}"/>
+		<input type="hidden" name="overwrite" value="${overwrite}"/>
+		<input type="hidden" name="directEdit" value="${directEdit}"/>
+		<input type="hidden" name="isImport" value="${true}"/>
+		<input type="hidden" name="resourcetype" value="${resourcetype}"/>
+		<input type="hidden" name="ckey" value="${ckey}" />
+		<input type="hidden" name="referer"	value="${fn:escapeXml(command.referer)}" />
+
+		<c:choose>
+			<c:when test="${hasValidData}">
+				<c:choose>
+					<c:when test="${updateExistingPost}">
+						<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+							<fmt:message key="batchedit.hint.savedEdit"/>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+							<fmt:message key="batchedit.hint.notSavedEdit"/>
+						</div>
+					</c:otherwise>
+				</c:choose>
+				<batch:batchOptions isImport="${true}" resourcetype="${resourcetype}"/>
+				<br/>
+			</c:when>
+			<c:otherwise>
+				<div class="alert alert-warning" style="margin-bottom:0px;" role="alert">
+					<fmt:message key="batchedit.hint.noData"/>
+				</div>
+			</c:otherwise>
+		</c:choose>
+
+		<!-- If there is no post to edit -->
+		<c:if test="${empty listView.list}">
+			<div class="alert alert-info col-sm-10" style="margin-bottom:0px;" role="alert"><fmt:message
+					key="batchedit.noPost.message"/></div>
+		</c:if>
+		<!--  else.. -->
+		<c:if test="${not empty listView.list}">
+			<c:forEach var="errorInfo" items="${groupedErrorList}">
+				<c:choose>
+					<c:when test="${errorInfo.errorType eq 'NO_ERROR'}">
+						<table class="table table-striped" style="width: 100%; table-layout: fixed;">
+							<thead>
+							<tr>
+								<th style="width: auto; min-width: 40%">
+									<fmt:message key="batchedit.yourPosts"/>
+								</th>
+								<th id="yourTags" style="width: auto; min-width: 30%">
+										<span style="padding-left: 12px; padding-right: 14px">
+											<input type="checkbox" id="selectAllTags" value="true" checked="checked"
+												   title="select all"/>
+										</span>
+									<fmt:message key="batchedit.yourTags"/>
+								</th>
+								<th style="text-align: center; width: 10%; word-wrap: break-word;">
+									<fmt:message key="batchedit.normalize"/>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<c:forEach var="position" items="${errorInfo.positions}">
+								<c:set var="post" value="${listView.list[position]}"/>
+								<batch:batchEditTableEntry
+										post="${post}"
+										isImport="${true}"
+										postListIndex="${position}"
+										resourcetype="${resourcetype}"
+										disableLinks="${true}">
+										<jsp:attribute name="shortPostDescription">
+											<jsp:invoke fragment="shortPostDescription" />
+										</jsp:attribute>
+								</batch:batchEditTableEntry>
+							</c:forEach>
+							</tbody>
+						</table>
+					</c:when>
+					<c:when test="${errorInfo.errorType eq 'FIELD_ERROR'}">
+						<h2><fmt:message key="batchedit.fielderror"/></h2>
+						<!-- get the first error message (must be the same for the group -->
+						<c:set var="message" value=""/>
+						<spring:bind path="command.${resourcetype}.list[${errorInfo.positions[0]}].resource.*">
+							<c:set var="errorMessages" value="${status.errorMessages}"/>
+
+							<c:forEach var="errorMessage" items="${errorMessages}" varStatus="stat">
+								<c:set var="message" value="${stat.first ? '' : message} "/>
+								<c:if test="${fn:length(errorMessages) > 1}">
+									<c:set var="message" value="${message}${stat.count}. "/>
+								</c:if>
+								<c:set var="message" value="${message}${errorMessage}"/>
+							</c:forEach>
+						</spring:bind>
+						<div class="alert alert-danger">
+							<c:out value="${message.substring(0, fn:length(message) - 1)}"/>
+						</div>
+						<c:forEach var="position" items="${errorInfo.positions}">
+							<c:set var="post" value="${listView.list[position]}"/>
+							<div style="pointer-events: none;">
+								<jsp:invoke fragment="shortPostDescription"/>
+							</div>
+						</c:forEach>
+					</c:when>
+					<c:when test="${errorInfo.errorType eq 'POST_ERROR'}">
+						<h2>
+							<fmt:message key="batchedit.error.${fn:toLowerCase(errorInfo.errorField)}"/>
+						</h2>
+						<spring:bind path="command.${resourcetype}.list[${errorInfo.positions[0]}].resource">
+							<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
+								<c:set var="tooltip_msg"
+									   value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}"/>
+							</c:forEach>
+						</spring:bind>
+
+						<c:forEach var="position" items="${errorInfo.positions}">
+							<c:set var="post" value="${listView.list[position]}"/>
+							<!-- We want all links, except those from existing publications, to be unclickable (as they only lead to 404 error pages)-->
+							<c:choose>
+								<c:when test="${fn:toLowerCase(errorInfo.errorField) == 'duplicateposterrormessage'}">
+									<c:set var="pointerEvent" value=""/>
+								</c:when>
+								<c:otherwise>
+									<c:set var="pointerEvent" value="pointer-events: none;"/>
+								</c:otherwise>
+							</c:choose>
+							<div style="${pointerEvent}">
+								<jsp:invoke fragment="shortPostDescription"/>
+							</div>
+						</c:forEach>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+		</c:if>
+
+	</form>
+</jsp:root>

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.degruyter;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,14 +40,33 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class DeGruyterScraperTest {
+	String resultDirectory = "degruyter/";
 	
 	@Test
 	public void urlTest1() {
-		assertScraperResult("https://www.degruyter.com/view/product/429811?rskey=eDUde3&result=1", DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest3.bib");
+		final String url = "https://www.degruyter.com/document/doi/10.1515/9783110364842/html";
+		final String resultFile = resultDirectory + "DeGruyterScraperUnitURLTest1.bib";
+		assertScraperResult(url, DeGruyterScraper.class, resultFile);
 	}
 	
 	@Test
 	public void urlTest2() {
-		assertScraperResult("http://www.degruyter.com/view/j/itit.2014.56.issue-5/itit-2014-1048/itit-2014-1048.xml", DeGruyterScraper.class, "degruyter/DeGruyterScraperUnitURLTest2.bib");
+		final String url = "https://www.degruyter.com/view/j/itit.2014.56.issue-5/itit-2014-1048/itit-2014-1048.xml";
+		final String resultFile = resultDirectory + "DeGruyterScraperUnitURLTest2.bib";
+		assertScraperResult(url, DeGruyterScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest3() {
+		final String url = "https://www.degruyter.com/document/doi/10.1515/9783110914672/html";
+		final String resultFile = resultDirectory + "DeGruyterScraperUnitURLTest3.bib";
+		assertScraperResult(url, DeGruyterScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest4() {
+		final String url = "https://www.degruyter.com/document/doi/10.1515/9783110355284/html";
+		final String resultFile = resultDirectory + "DeGruyterScraperUnitURLTest4.bib";
+		assertScraperResult(url, DeGruyterScraper.class, resultFile);
 	}
 }

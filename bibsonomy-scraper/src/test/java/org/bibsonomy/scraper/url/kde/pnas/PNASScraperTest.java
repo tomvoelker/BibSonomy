@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -46,13 +49,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class PNASScraperTest {
+	String resultDirectory = "pnas/";
 
 	/**
 	 * starts URL test with id url_190
 	 */
 	@Test
 	public void urlTest1Run() {
-		assertScraperResult("https://www.pnas.org/content/106/52/22480.abstract", PNASScraper.class, "PNASScraperUnitURLTest1.bib");
+		final String url = "https://www.pnas.org/doi/abs/10.1073/pnas.0911503106";
+		final String resultFile = resultDirectory + "PNASScraperUnitURLTest1.bib";
+		assertScraperResult(url, PNASScraper.class, resultFile);
 	}
 
 	/**
@@ -60,7 +66,9 @@ public class PNASScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		assertScraperResult("https://www.pnas.org/content/101/22/8281.abstract", PNASScraper.class, "PNASScraperUnitURLTest2.bib");
+		final String url = "https://www.pnas.org/doi/abs/10.1073/pnas.0402292101";
+		final String resultFile = resultDirectory + "PNASScraperUnitURLTest2.bib";
+		assertScraperResult(url, PNASScraper.class, resultFile);
 	}
 	
 	@Test

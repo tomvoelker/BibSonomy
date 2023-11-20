@@ -235,6 +235,12 @@
 	</function>
 
 	<function>
+		<name>isUrl</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String isUrl(java.lang.String)</function-signature>
+	</function>
+
+	<function>
 		<name>setParam</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String setParam(java.lang.String, java.lang.String, java.lang.String)</function-signature>
@@ -382,12 +388,6 @@
 	</function>
 
 	<function>
-		<name>getErrorHint</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String getErrorHint(java.lang.String)</function-signature>
-	</function>
-
-	<function>
 		<name>removeInvalidXmlChars</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.lang.String removeInvalidXmlChars(java.lang.String)</function-signature>
@@ -463,5 +463,23 @@
 		<name>isSameHost</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>boolean isSameHost(java.lang.String, java.lang.String)</function-signature>
+	</function>
+
+	<function>
+		<name>filterGroups</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.List filterGroups(java.util.List, boolean)</function-signature>
+	</function>
+
+	<function>
+		<name>containsSentTag</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>boolean containsSentTag(java.util.Set, java.lang.String)</function-signature>
+	</function>
+
+	<function>
+		<name>selectedGroups</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Set selectedGroups(java.lang.String,java.util.List)</function-signature>
 	</function>
 </taglib>

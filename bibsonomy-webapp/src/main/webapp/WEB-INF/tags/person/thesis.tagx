@@ -22,7 +22,7 @@
     <c:choose>
         <c:when test="${fn:length(thesis) gt 0}">
             <c:forEach var="relation" items="${thesis}">
-                <per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+                <per:pubWithRoles post="${relation.post}" loginUser="${command.context.loginUser}" />
                 <div class="personThesisSeperator"><!-- KEEP ME --></div>
             </c:forEach>
         </c:when>

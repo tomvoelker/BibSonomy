@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,11 +29,15 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 
 /**
  * @author philipp
  */
+@Setter
+@Getter
 public class CvPageViewCommand extends ResourceViewCommand {
 	private String wikiText;
 	private String renderedWikiText;
@@ -54,61 +61,12 @@ public class CvPageViewCommand extends ResourceViewCommand {
 		this.wikiText = wikiText.trim();
 	}
 
-	/**
-	 * @return the renderedWikiText
-	 */
-	public String getRenderedWikiText() {
-		return this.renderedWikiText;
-	}
-
-	/**
-	 * @param renderedWikiText the renderedWikiText to set
-	 */
-	public void setRenderedWikiText(final String renderedWikiText) {
-		this.renderedWikiText = renderedWikiText;
-	}
-
-	/**
-	 * @return the isGroup
-	 */
 	public boolean getIsGroup() {
 		return this.isGroup;
 	}
 
-	/**
-	 * @param isGroup the isGroup to set
-	 */
-	public void setIsGroup(final boolean isGroup) {
+	public void setIsGroup(boolean isGroup) {
 		this.isGroup = isGroup;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(final User user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the requestedType
-	 */
-	public String getRequestedType() {
-		return this.requestedType;
-	}
-
-	/**
-	 * @param requestedType
-	 *            the requestedType to set
-	 */
-	public void setRequestedType(final String requestedType) {
-		this.requestedType = requestedType;
 	}
 
 }

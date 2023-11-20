@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.wileyintersience;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,15 +43,20 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class WileyIntersienceScraperTest {
+	String resultDirectory = "wileyintersience/";
 
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest1.bib");
+		final String url = "https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/jemt.10338";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest1.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 	}
 
 	@Test
 	public void url2TestRun(){
-		assertScraperResult("http://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest2.bib");
+		final String url = "https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3384";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest2.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 	}
 	
 	/**
@@ -56,7 +64,10 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		assertScraperResult("http://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2575.2007.00275.x", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest3.bib");
+		final String url = "https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2575.2007.00275.x";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest3.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+
 	}
 	
 	/**
@@ -64,15 +75,66 @@ public class WileyIntersienceScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		assertScraperResult("https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest4.bib");
-	}	
+		final String url = "https://onlinelibrary.wiley.com/doi/abs/10.1002/1521-4095%28200011%2912%3A22%3C1655%3A%3AAID-ADMA1655%3E3.0.CO%3B2-2";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest4.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
 	
 	/**
 	 * starts URL test with id url_189
 	 */
 	@Test
 	public void url5TestRun(){
-		assertScraperResult("https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071", WileyIntersienceScraper.class, "WileyIntersienceScraperUnitURLTest5.bib");
+		final String url = "https://agupubs.onlinelibrary.wiley.com/doi/book/10.1029/AR071";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest5.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
 
-	}	
+	}
+
+	@Test
+	public void url6TestRun(){
+		final String url = "https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2018GL079362";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest6.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+
+	}
+
+	@Test
+	public void url7TestRun(){
+		final String url = "https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1740-9713.2018.01209.x";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest7.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+
+	}
+
+	/**
+	 * starts URL test with id url_224
+	 */
+	@Test
+	public void url8TestRun() {
+		final String url = "https://faseb.onlinelibrary.wiley.com/doi/10.1096/fj.12-211441";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest8.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_225
+	 */
+	@Test
+	public void url9TestRun() {
+		final String url = "https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.12-0802ufm";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest9.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_227
+	 */
+	@Test
+	public void url10TestRun() {
+		final String url = "https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.01-0431rev";
+		final String resultFile = resultDirectory + "WileyIntersienceScraperUnitURLTest10.bib";
+		assertScraperResult(url, WileyIntersienceScraper.class, resultFile);
+	}
+
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.nasaads;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -39,14 +41,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NasaAdsScraperTest {
-	
+	String resultDirectory = "nasaads/";
+
 	/**
 	 * starts URL test with id url_22
 	 */
 	@Test
-	public void url1TestRun(){
+	public void url1Test1Run(){
 		final String url = "http://adsabs.harvard.edu/abs/1992AJ....104..340L";
-		final String resultFile = "NasaAdsScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "NasaAdsScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, NasaAdsScraper.class, resultFile);
 	}
 
@@ -54,10 +57,17 @@ public class NasaAdsScraperTest {
 	 * starts URL test with id url_23
 	 */
 	@Test
-	public void url2TestRun(){
+	public void url1Test2Run(){
 		final String url = "http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=1992AJ....104..340L&data_type=BIBTEX&db_key=AST&nocookieset=1";
-		final String resultFile = "NasaAdsScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "NasaAdsScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, NasaAdsScraper.class, resultFile);
 	}
-	
+
+	@Test
+	public void url2Test1Run(){
+		final String url = "https://ui.adsabs.harvard.edu/abs/2017sgvi.confE..25L/abstract";
+		final String resultFile = resultDirectory + "NasaAdsScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NasaAdsScraper.class, resultFile);
+	}
+
 }

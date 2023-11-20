@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +29,8 @@
  */
 package org.bibsonomy.scraper.url.kde.librarything;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,6 +45,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -75,6 +81,8 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 	private static final Pattern LIBRARYTHING_PATTERN_WORK_ISBN_10 = Pattern.compile("<td class=\"left\">ISBN-10</td><td class=\"bookNonEditField\">([^<]*)</td>");
 
 	private static final Pattern LIBRARYTHING_PATTERN_WORK_ISBN_13 = Pattern.compile("<td class=\"left\">ISBN-13</td><td class=\"bookNonEditField\">([^<]*)</td>");
+
+	private static final Pattern ISBN_PATTERN = Pattern.compile("<meta property=\"books:isbn\" content=\"(\\d*)\"\\s*/>");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*librarything\\..*"), AbstractUrlScraper.EMPTY_PATTERN));
 
@@ -195,6 +203,15 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 					else
 						misc = misc + ", " + "isbn={" + isbnMatcher.group(1) + "}";
 				}
+			}
+			//fallback, if the bibtex from libarything is not complete
+			Matcher m_isbn = ISBN_PATTERN.matcher(content);
+			if (m_isbn.find()&&(!present(title)||!present(author))){
+				ISBNScraper isbnScraper = new ISBNScraper();
+				ScrapingContext isbnSc = new ScrapingContext(null, m_isbn.group(1));
+				isbnScraper.scrape(isbnSc);
+				sc.setBibtexResult(isbnSc.getBibtexResult());
+				return true;
 			}
 
 			final StringBuilder resultBibtex = new StringBuilder();

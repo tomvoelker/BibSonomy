@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,26 +30,29 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.webapp.controller.ExportPageController.convertCSLStylesToMap;
 
+import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.layout.csl.CSLStyle;
+import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
-import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.Wiki;
+import org.bibsonomy.layout.standard.StandardLayout;
+import org.bibsonomy.layout.standard.StandardLayouts;
+import org.bibsonomy.model.*;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.sync.SyncService;
@@ -54,13 +60,10 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
-import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestAware;
-import org.bibsonomy.webapp.util.RequestLogic;
-import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.*;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
@@ -70,6 +73,7 @@ import org.springframework.validation.Errors;
 /**
  * @author Steffen
  */
+@Setter
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(SettingsPageController.class);
 
@@ -81,8 +85,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected RequestLogic requestLogic;
 	protected CSLFilesManager cslFilesManager;
 	protected URLGenerator urlGenerator;
-	private boolean crisEnabled;
-	
+
+	private LayoutRenderer<AbstractJabRefLayout> layoutRenderer;
+	private StandardLayouts layouts;
+
 	/**
 	 * The List is used in a hack to protect certain oAuth Tokens from
 	 * deletions. Particularly, the oAuth-Tokens in PUMA are created
@@ -110,11 +116,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
 
-		// set crisEnabled status
-		command.setCrisEnabled(crisEnabled);
-
 		// used to set the user specific value of maxCount/minFreq
-		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
+		command.setChangeTo((loginUser.getSettings().isMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 
 		// check whether the user is a group
 		// TODO: unused ?
@@ -143,8 +146,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * Get pending requested groups
 		 */
-		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE).
-						userName(loggedInUserName).pending(true).build();
+		final GroupQuery groupQuery = GroupQuery.builder().end(Integer.MAX_VALUE)
+				.userName(loggedInUserName).pending(true).build();
 		command.setPendingRequestedgroups(this.logic.getGroups(groupQuery));
 
 		/*
@@ -163,6 +166,29 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.workOnCVTab(command);
 			this.workOnOAuthTab(command);
 		}
+
+		/*
+		 * Settings tab
+		 */
+		final RequestWrapperContext context = command.getContext();
+		final Map<String, Layout> layoutMap = new TreeMap<>(this.layoutRenderer.getLayouts());
+		final Map<String, StandardLayout> layouts = this.layouts.getLayoutMap();
+		layoutMap.putAll(layouts);
+
+		if (context.isUserLoggedIn()) {
+			try {
+				final Layout layout = this.layoutRenderer.getLayout(LayoutRenderer.CUSTOM_LAYOUT, context.getLoginUser().getName());
+				layoutMap.put(layout.getDisplayName(), layout);
+			} catch (final LayoutRenderingException | IOException e) {
+				// ignore because reasons
+			}
+
+			// also load user custom layouts
+			command.setCustomCslLayoutMap(convertCSLStylesToMap(this.cslFilesManager.loadUserLayouts(context.getLoginUser().getName())));
+		}
+
+		command.setCslLayoutMap(this.cslFilesManager.getCslFiles());
+		command.setLayoutMap(layoutMap);
 		
 		return Views.SETTINGSPAGE;
 	}
@@ -414,40 +440,4 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.wikiRenderer = wikiRenderer;
 	}
 
-	/**
-	 * @param oauthLogic
-	 *            the oauthLogic to set
-	 */
-	public void setOauthLogic(final OAuthLogic oauthLogic) {
-		this.oauthLogic = oauthLogic;
-	}
-
-	/**
-	 * @param invisibleOAuthConsumers
-	 */
-	public void setInvisibleOAuthConsumers(final List<String> invisibleOAuthConsumers) {
-		this.invisibleOAuthConsumers = invisibleOAuthConsumers;
-	}
-
-	/**
-	 * @param urlGenerator the urlGenerator to set
-	 */
-	public void setUrlGenerator(URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
-
-	/**
-	 * @param cslFilesManager the cslFilesManager to set
-	 */
-	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
-		this.cslFilesManager = cslFilesManager;		
-	}
-
-	public boolean isCrisEnabled() {
-		return crisEnabled;
-	}
-
-	public void setCrisEnabled(boolean crisEnabled) {
-		this.crisEnabled = crisEnabled;
-	}
 }

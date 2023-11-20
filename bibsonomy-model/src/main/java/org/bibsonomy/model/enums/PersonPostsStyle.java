@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2021 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,36 +27,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.bibsonomy.model.enums;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * FIXME: rename! has nothing to do with the style of the site,
+ * only the source what publications are display on the person page
+ *
+ * @author kchoong
+ */
 public enum PersonPostsStyle {
     GOLDSTANDARD(0),
     MYOWN(1);
 
     private final int value;
-    private static Map<Integer, PersonPostsStyle> map;
 
-    private PersonPostsStyle(int value) {
+    PersonPostsStyle(int value) {
         this.value = value;
     }
 
-    static {
-        map = new HashMap<>();
-        for (PersonPostsStyle style : PersonPostsStyle.values()) {
-            map.put(style.value, style);
+    /**
+     * @param pageType the pageType
+     * @return
+     */
+    public static PersonPostsStyle valueOf(final int pageType) {
+        for (final PersonPostsStyle personPostsStyle : PersonPostsStyle.values()) {
+            if (personPostsStyle.getValue() == pageType) {
+                return personPostsStyle;
+            }
         }
+        throw new IllegalArgumentException("no person posts style with id " + pageType);
     }
 
-    public static PersonPostsStyle valueOf(int pageType) {
-        return map.get(pageType);
-    }
-
+    /**
+     * @return the value
+     */
     public int getValue() {
         return value;
     }
-
 }

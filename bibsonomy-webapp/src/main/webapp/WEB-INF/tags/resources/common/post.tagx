@@ -8,6 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
@@ -20,6 +21,8 @@
 	<jsp:directive.attribute name="hideMetaData" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hidePostMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hidePostRating" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="headlineInBody" type="java.lang.Boolean" required="false" />
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
@@ -28,6 +31,10 @@
 
 	<c:if test="${empty hideMetaData}">
 		<c:set var="hideMetaData" value="${false}" />
+	</c:if>
+
+	<c:if test="${empty headlineInBody}">
+		<c:set var="headlineInBody" value="${false}" />
 	</c:if>
 
 	<c:if test="${empty hideCounts}">
@@ -77,16 +84,18 @@
 	<!-- FIXME: replace 2 with constant! -->
 	<li data-intrahash="2${post.resource.intraHash}" itemtype="${itemtype}" itemscope="itemscope" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
-		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
-			<div>
-			<div class="clearline">&#160;</div>
-			<c:if test="${not hideCounts}">
-				<rc:otherpeople post="${post}" />
-			</c:if>
-			<span class="ptitle"><jsp:invoke fragment="title"/></span>
-			<div class="clearline">&#160;</div>
-			</div>
-		</h4>
+		<c:if test="${!headlineInBody}">
+			<h4 class="media-heading" data-ident="${post.resource.intraHash}">
+				<div>
+				<div class="clearline">&#160;</div>
+				<c:if test="${not hideCounts}">
+					<rc:otherpeople post="${post}" />
+				</c:if>
+				<span class="ptitle"><jsp:invoke fragment="title"/></span>
+				<div class="clearline">&#160;</div>
+				</div>
+			</h4>
+		</c:if>
 		<c:if test="${not hideMetaData}">
 			<div class="hidden-xs hidden-md media-left thumbnail-container">
 
@@ -121,6 +130,19 @@
 			</div>
 		</c:if>
 		<div class="media-body">
+			<c:if test="${headlineInBody}">
+				<h4 class="media-heading" data-ident="${post.resource.intraHash}">
+					<div>
+						<div class="clearline">&#160;</div>
+						<c:if test="${not hideCounts}">
+							<rc:otherpeople post="${post}" />
+						</c:if>
+						<span class="ptitle"><jsp:invoke fragment="title"/></span>
+						<div class="clearline">&#160;</div>
+					</div>
+				</h4>
+			</c:if>
+
 			<div class="pdesc ellipsis">
 				<div class="ellipsis-content"><jsp:invoke fragment="desc"/></div>
 			</div>
@@ -132,13 +154,12 @@
 			<c:if test="${not empty post.tags}">
 				<div class="ptags">
 					<!-- Edit tags link -->
-					<!-- TODO: Enable tag edits for group admins/mods -->
 					<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser and not isRemotePost }">
 						<fmt:message key="navi.editTags" var="editTags" />
 						<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
 						&amp;nbsp;
 					</c:if>
-	<span class="all-tags-button label label-tag pull-right hidden">
+					<span class="all-tags-button label label-tag pull-right hidden">
 					<a href="#" class="tag-popover">
 						<fmt:message key="post.actions.showAllTags" />
 					</a>
@@ -153,18 +174,36 @@
 				</span>				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 				</div>
 			</c:if>
-			<div class="pull-left">
-				<discussion:rating post="${post}" />
-			</div>
+
+			<c:set var="bibliographyUser" value="${properties['bibliography.bibliographyUser']}" />
+			<c:choose>
+				<c:when test="${not empty bibliographyUser}">
+					<c:if test="${mtl:containsSentTag(post.tags, bibliographyUser)}">
+						<div class="post-bibliography-sent pull-left">
+							<fmt:message key="post.bibliography.sent.title" var="sentTitle"/>
+							<span data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(sentTitle)}">
+								<fontawesome:icon icon="check-circle" />
+							</span>
+						</div>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${not hidePostRating}">
+						<div class="post-rating pull-left">
+							<discussion:rating post="${post}" />
+						</div>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+
 			<c:if test="${not hidePostMenu}">
-				<div class="pull-right">
+				<div class="post-buttons pull-right">
 					<jsp:invoke fragment="actions"/>
 				</div>
 			</c:if>
 			<div class="clearfix">&#160;</div>
 			
 			<!-- EDIT TAGS MODAL POPUP-->
-			<!-- TODO: Enable tag edits for group admins/mods -->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser}">
 				
 				<fmt:message key="tag.addTag" var="addTag" />

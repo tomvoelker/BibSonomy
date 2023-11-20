@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,14 +29,12 @@
  */
 package org.bibsonomy.model.logic;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonPostsStyle;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.PersonQuery;
@@ -63,6 +64,7 @@ public interface PersonLogicInterface {
 	 * @param keyValue
 	 * @return
 	 */
+	@Deprecated // FIXME: use getPersons method, the key value type is not unique for one person in general
 	Person getPersonByAdditionalKey(final String keyName, final String keyValue);
 
 	/**
@@ -77,7 +79,7 @@ public interface PersonLogicInterface {
 	 * @param person		the person to update
 	 * @param operation		the desired update operation
 	 */
-	void updatePerson(final Person person, final PersonUpdateOperation operation);
+	void updatePerson(final Person person, final PersonOperation operation);
 
 	/**
 	 * stores the specified person relation
@@ -97,21 +99,6 @@ public interface PersonLogicInterface {
 	void removeResourceRelation(final String personId, final String interHash, final int index, final PersonResourceRelationType type);
 
 	/**
-	 * @param withPersonId
-	 */
-	@Deprecated // use update person
-	void createPersonName(PersonName withPersonId);
-
-	/**
-	 * FIXME: remove database id
-	 *
-	 * removes a person name from a specific person
-	 * @param personNameId
-	 */
-	@Deprecated // use update person
-	void removePersonName(final Integer personNameId);
-
-	/**
 	 * retrieves persons
 	 * @param query the query specifying what person should be returned
 	 * @return the persons
@@ -126,12 +113,6 @@ public interface PersonLogicInterface {
 	 * @return a list of resource - person relations.
 	 */
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
-
-	/**
-	 * @param username
-	 */
-	@Deprecated // FIXME: add to update person logic
-	void unlinkUser(String username);
 
 	/**
 	 * TODO: add documentation

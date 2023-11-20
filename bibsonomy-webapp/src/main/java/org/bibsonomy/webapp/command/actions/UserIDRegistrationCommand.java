@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,12 +31,16 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author Stefan Stützer
  */
+@Getter
+@Setter
 public class UserIDRegistrationCommand extends BaseCommand implements Serializable {
 	
 	/** serial uid */
@@ -48,40 +55,11 @@ public class UserIDRegistrationCommand extends BaseCommand implements Serializab
 	 * Registration step
 	 */
 	private int step = 1;
-	
+
+	/** True if the user wants to stay logged in. */
 	private boolean rememberMe;
 
 	private boolean forceRemoteUserIdAsUsername;
-	
-	/**
-	 * @return register user
-	 */
-	public User getRegisterUser() {
-		return this.registerUser;
-	}
-	
-	/**
-	 * Sets register user 
-	 * @param registerUser
-	 */
-	public void setRegisterUser(User registerUser) {
-		this.registerUser = registerUser;
-	}
-	
-	/**
-	 * @return registration step
-	 */
-	public int getStep() {
-		return this.step;
-	}
-	
-	/**
-	 * Sets registration step
-	 * @param step
-	 */
-	public void setStep(int step) {
-		this.step = step;
-	}
 
 	/**
 	 * @return If the user wants to stay logged in. 
@@ -90,24 +68,4 @@ public class UserIDRegistrationCommand extends BaseCommand implements Serializab
 		return this.rememberMe;
 	}
 
-	/**
-	 * @param rememberMe
-	 */
-	public void setRememberMe(boolean rememberMe) {
-		this.rememberMe = rememberMe;
-	}
-
-	/**
-	 * @return the forceRemoteUserIdAsUsername
-	 */
-	public boolean isForceRemoteUserIdAsUsername() {
-		return forceRemoteUserIdAsUsername;
-	}
-
-	/**
-	 * @param forceRemoteUserIdAsUsername the forceRemoteUserIdAsUsername to set
-	 */
-	public void setForceRemoteUserIdAsUsername(boolean forceRemoteUserIdAsUsername) {
-		this.forceRemoteUserIdAsUsername = forceRemoteUserIdAsUsername;
-	}
 }

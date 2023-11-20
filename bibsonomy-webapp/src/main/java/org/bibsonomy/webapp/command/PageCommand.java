@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,61 +29,23 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * bean for a page in a multipaged listview context
  * 
  * @author Jens Illig
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PageCommand {
+	/** index of this page (normally displayed in the view and therefore starting with 1). May be null if unknown */
 	private Integer number;
+	/** index of the first entity in the sublist on this page (starting with 0) */
 	private int start;
-	
-	/**
-	 * default bean constructor
-	 */
-	public PageCommand() {
-	}
-	
-	/**
-	 * @param number index of this page (normally displayed in the view and
-	 *        therefore starting with 1) 
-	 * @param start index of the first entity in the sublist on this page
-	 *        (starting with 0)
-	 */
-	public PageCommand(final Integer number, final int start) {
-		this.number = number;
-		this.start = start;
-	}
-	
-	/**
-	 * @return index of this page (normally displayed in the view and
-	 *         therefore starting with 1). May be null if unknown
-	 */
-	public Integer getNumber() {
-		return this.number;
-	}
-	
-	/**
-	 * @param number index of this page (normally displayed in the view and
-	 *        therefore starting with 1). May be null if unknown
-	 */
-	public void setNumber(final Integer number) {
-		this.number = number;
-	}
-	
-	/**
-	 * @return index of the first entity in the sublist on this page
-	 *         (starting with 0)
-	 */
-	public int getStart() {
-		return this.start;
-	}
-	
-	/**
-	 * @param start index of the first entity in the sublist on this page
-	 *              (starting with 0)
-	 */
-	public void setStart(final int start) {
-		this.start = start;
-	}
 }

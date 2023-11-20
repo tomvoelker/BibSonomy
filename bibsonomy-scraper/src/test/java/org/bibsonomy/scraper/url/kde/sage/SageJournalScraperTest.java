@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.sage;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,19 +40,20 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class SageJournalScraperTest {
+	String resultDirectory = "sage/";
 
 	/**
 	 * starts URL test with id url_219
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://jis.sagepub.com/content/38/3/297.abstract", SageJournalScraper.class, "SagepubUnitURLTest1.bib");
+		assertScraperResult("https://journals.sagepub.com/doi/abs/10.1177/0165551512438353", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest1.bib");
 	}
 	/**
 	 * starts URL test with id url_242
 	 */
 	@Test
 	public void url2TestRun() {
-		assertScraperResult("http://cdp.sagepub.com/content/12/4/105.short", SageJournalScraper.class, "SagepubUnitURLTest2.bib");
+		assertScraperResult("https://journals.sagepub.com/doi/abs/10.1111/1467-8721.01242", SageJournalScraper.class, resultDirectory + "SagepubUnitURLTest2.bib");
 	}
 }

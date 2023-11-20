@@ -68,8 +68,8 @@
 							</form:select>
 						</div>
 					</div>
-
-					<c:if test="${command.crisEnabled}">
+					<c:set var="crisSystem" value="${properties['system.cris'] eq 'true'}" />
+					<c:if test="${crisSystem}">
 					<!-- SELECT PERSON'S POSTS LAYOUT -->
 					<div class="form-group clearfix">
 						<form:label cssClass="col-sm-3 control-label" path="user.settings.personPostsLayout">

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.model.Resource;
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.BaseCommand;
 
@@ -41,6 +45,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author Sven Stefani
  * @author bsc
  */
+@Getter
+@Setter
 public class AdminFullTextSearchCommand extends BaseCommand {
 	
 	/**
@@ -68,53 +74,5 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	private String entity;
 	
 	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
-	
-	/**
-	 * @return the action
-	 */
-	public AdminFullTextAction getAction() {
-		return this.action;
-	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return this.id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * @param action the action to set
-	 */
-	public void setAction(final AdminFullTextAction action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the entity
-	 */
-	public String getEntity() {
-		return entity;
-	}
-
-	/**
-	 * @param entity the entity to set
-	 */
-	public void setEntity(String entity) {
-		this.entity = entity;
-	}
-
-	/**
-	 * @return the searchIndexInfo
-	 */
-	public Map<String, List<SearchIndexInfo>> getSearchIndexInfo() {
-		return this.searchIndexInfo;
-	}
 }

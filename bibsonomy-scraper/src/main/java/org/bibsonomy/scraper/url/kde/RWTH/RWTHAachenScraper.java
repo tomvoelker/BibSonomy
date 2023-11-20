@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,11 +64,14 @@ public class RWTHAachenScraper extends AbstractUrlScraper {
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
 		try {
 			final String content = WebUtils.getContentAsString(sc.getUrl() + DOWNLOAD_BIBTEX_FORMAT);
 			final Matcher m = PATTERN_TO_PICK_BIBTEX_FROM_PAGE_CONTENT.matcher(content);
 			if (m.find()) {
-				final String bibtexresult = m.group(1);
+				String bibtexresult = m.group(1);
+				//removes the Warning that it is UTF-8 encoded
+				bibtexresult = bibtexresult.replaceAll("(?s)^.*?(?=@)","");
 				sc.setBibtexResult(bibtexresult);
 				return true;
 			}

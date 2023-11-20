@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,10 +50,10 @@ import org.bibsonomy.util.WebUtils;
 public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 	private static final Log log = LogFactory.getLog(FRONTIERSINScraper.class);
 
-	private static final String SITE_NAME = "Cold Spting Harbor Perspetives in Biology";
-	private static final String SITE_URL = "http://cshperspectives.cshlp.org/";
+	private static final String SITE_NAME = "frontiers in Physiology";
+	private static final String SITE_URL = "https://www.frontiersin.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final String FRONTIERSIN_HOST = "journal.frontiersin.org";
+	private static final String FRONTIERSIN_HOST = "frontiersin.org";
 	private static final Pattern PATTERN_FOR_BIBTEX_URL = Pattern.compile("<a data-test-id=\"article-bibtex\" href=\"(.*?)\"");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(
@@ -67,7 +70,7 @@ public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 				return downloadURL.replaceAll("amp;", "");
 			}
 		} catch (final IOException e) {
-			log.warn("page conteent could not be found", e);
+			log.warn("page content could not be found", e);
 		}
 		return null;
 	}

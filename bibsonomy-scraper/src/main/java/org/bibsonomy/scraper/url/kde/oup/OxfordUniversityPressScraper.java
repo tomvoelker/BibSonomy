@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +29,15 @@
  */
 package org.bibsonomy.scraper.url.kde.oup;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+import org.bibsonomy.util.WebUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * Scraper for Oxford University Press (Oxford Academic)
@@ -43,17 +45,21 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author rja
  *
  */
-public class OxfordUniversityPressScraper extends GenericBibTeXURLScraper {
+public class OxfordUniversityPressScraper extends CitationManager2Scraper {
 
 	private static final String HOST = "academic.oup.com";
 
 	private static final String SITE_NAME = "Oxford Academic";
 	private static final String SITE_URL = "https://" + HOST + "/";
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME) + ".";
-	private static final String PATH = "/rev/article";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH + ".*")));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), EMPTY_PATTERN));
 
+
+	@Override
+	protected String getCookies(URL url) throws IOException {
+		return WebUtils.getCookies(new URL("https://academic.oup.com/rev"));
+	}
 
 	@Override
 	public String getInfo() {
@@ -75,19 +81,4 @@ public class OxfordUniversityPressScraper extends GenericBibTeXURLScraper {
 		return SITE_URL;
 	}
 
-	@Override
-	public String getDownloadURL(final URL url, final String cookies) throws ScrapingException {
-		final String path = url.getPath();
-		if (present(path)) {
-			final String[] pathParts = path.split("/");
-			final String id = pathParts[Math.min(pathParts.length - 1, 6)];
-			return SITE_URL + "/Citation/Download?resourceId=" + id + "&resourceType=3&citationFormat=2";
-		}
-		return null;
-	}
-
-	@Override
-	protected boolean retrieveCookiesFromSite() {
-		return true;
-	}
 }

@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +29,6 @@
  */
 package org.bibsonomy.scraper.url.kde.pubmed;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,25 +37,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.client.HttpClient;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
  *
  * @author Christian Kramer
  *
  */
-public class PubMedScraper extends AbstractUrlScraper {
+public class PubMedScraper extends GenericRISURLScraper {
 	private static final String SITE_NAME = "PubMed";
-	private static final String SITE_URL = "http://www.ncbi.nlm.nih.gov/";
+	private static final String SITE_URL = "https://www.ncbi.nlm.nih.gov/";
 	private static final String INFO = "This scraper parses a publication page of citations from "
 			+ href(SITE_URL, SITE_NAME)+".";
 
@@ -62,101 +58,29 @@ public class PubMedScraper extends AbstractUrlScraper {
 	private static final String UK_PUBMED_CENTRAL_HOST = "ukpmc.ac.uk";
 	private static final String EUROPE_PUBMED_CENTRAL_HOST = "europepmc.org";
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<>();
 
-	private static final Pattern RISLINKPATTERN = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)");
-	private static final Pattern PMIDQUERYPATTERN = Pattern.compile("\\d+");
-	private static final Pattern PMIDPATTERN = Pattern.compile("PMID\\:\\D*(\\d+)");
-
-	private static final Pattern PATTERN_PMID = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
-	private static final Pattern PATTERN_URL = Pattern.compile("url = \".*\"");
-	private static final Pattern PATTERN_URL1 = Pattern.compile("(?im)^.+db=PubMed.+$");
+	private static final Pattern PMID_FROM_URL = Pattern.compile("\\d+");
 
 	static {
-		PATTERNS.add(new Pair<>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*pubmed." + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<>(Pattern.compile(".*" + HOST), Pattern.compile("pubmed")));
 		PATTERNS.add(new Pair<>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		PATTERNS.add(new Pair<>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		PATTERNS.add(new Pair<>(Pattern.compile(".*" + EUROPE_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
-	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
-
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-
-		// save the original URL
-		final String url = sc.getUrl().toExternalForm();
-
-		String pubmedId = null;
-		String bibtex = null;
-		try {
-			final Matcher mu = PATTERN_URL1.matcher(url);
-			if (mu.find()) {
-				final Matcher ma = PMIDQUERYPATTERN.matcher(sc.getUrl().getQuery());
-				// if the PMID is existent then extract it
-				if (ma.find()) {
-					pubmedId = ma.group();
-				}
-
-				// try to scrape with new URL-Pattern
-				// avoid crashes
-			} else {
-				final HttpClient client = WebUtils.getHttpClient();
-
-				// try to find link for RIS export
-				final String pageContent = WebUtils.getContentAsString(client, url, null, null, null);
-
-				final Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
-				if (risLinkMatcher.find()) {
-					final String risUrl = url + "/" + risLinkMatcher.group(1);
-					bibtex = RIS2BIB.toBibtex(WebUtils.getContentAsString(client, risUrl, null, null, null));
-				} else {
-
-					final Matcher ma = PMIDPATTERN.matcher(pageContent);
-
-					// if the PMID is existent then get the bibtex from hubmed
-					if (ma.find()) {
-						pubmedId = ma.group(1);
-					} else {
-						final Matcher ma1 = PATTERN_PMID.matcher(pageContent);
-						if (ma1.find()) {
-							pubmedId = ma1.group(1);
-						}
-					}
-				}
-			}
-			/*
-			 * FIXME: this results in a
-			 * Exception in thread "main" java.net.SocketTimeoutException: Read timed out
-			 *
-			 * However, during debugging it sometimes works ... seems to be a timing issue
-			 * (or a server fooling us).
-			 */
-			if (ValidationUtils.present(pubmedId)) {
-				bibtex = WebUtils.getContentAsString(new URL("http://www.hubmed.org/export/bibtex.cgi?uids=" + pubmedId));
-			}
-
-
-
-			if (present(bibtex)) {
-				// replace the broken URL through the original URL
-				final Matcher ma = PATTERN_URL.matcher(bibtex);
-				if (ma.find()) {
-					// escape dollar signs
-					bibtex = ma.replaceFirst("url = \"" + url.replace("$", "\\$") + "\"");
-				}
-
-				sc.setBibtexResult(bibtex);
-				return true;
-			}
-			throw new ScrapingFailureException("getting bibtex failed");
-
-		} catch (IOException e) {
-			throw new InternalFailureException(e);
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		final String path = url.getPath();
+		final Matcher ma = PMID_FROM_URL.matcher(path);
+		if (ma.find()) {
+			final String pubmedId = ma.group();
+			return "https://api.ncbi.nlm.nih.gov/lit/ctxp/v1/pubmed/?format=ris&id=" + pubmedId;
 		}
-	}
 
+		return null;
+	}
 
 	@Override
 	public String getInfo() {

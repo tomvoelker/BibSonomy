@@ -1,15 +1,18 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
+ * Copyright (C) 2006 - 2021 Data Science Chair,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *                               https://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,13 +31,13 @@ package org.bibsonomy.webapp.util.picture;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.filesystem.FileLogic;
-
-import java.util.List;
 
 /**
  * simple picture handler factory
@@ -44,15 +47,12 @@ import java.util.List;
 public class StandardPictureHandlerFactory implements PictureHandlerFactory {
 
 	/*
-	 * The reason for using the admin Logic is that for
+	 * The reason for using the admin logic is that for
 	 * gravatar we need the email-address (or more precisely its hash) of the
 	 * requested user. Since the mail address is private, only admins and the
 	 * respective owner may see it.
 	 *
 	 * Using the admin logic here is unfortunate.
-	 *
-	 * a) when the admin logic is used this should be marked clearly by naming
-	 * it admin logic
 	 *
 	 * b) the use of the admin logic can be avoided by sorting out the problem
 	 * at hand in the database module.
@@ -97,16 +97,19 @@ public class StandardPictureHandlerFactory implements PictureHandlerFactory {
 	}
 
 	@Override
-	public boolean hasVisibleProfilePicture(String requestedUserName, User loggedinUser) {
+	public boolean hasVisibleProfilePicture(final String requestedUserName, final User loggedinUser) {
 		final User requestedUser = this.adminLogic.getUserDetails(requestedUserName);
+		// first check if the logged in user can see the profile picture of the requested user
 		if (!this.isVisibleForLoggedInUser(requestedUser, loggedinUser)) {
 			return false;
 		}
 
+		// if the picture is external the user can see it
 		if (requestedUser.isUseExternalPicture()) {
 			return true;
 		}
 
+		// check if the requested user has uploaded a profile picture
 		return this.fileLogic.hasProfilePicture(requestedUserName);
 	}
 
