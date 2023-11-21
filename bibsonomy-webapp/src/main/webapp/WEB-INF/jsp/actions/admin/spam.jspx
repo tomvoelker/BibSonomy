@@ -407,7 +407,7 @@
 						<tr>
 							<td>mode:</td>
 							<td>
-								<form:select path="settingsCommand.modeOptions" id="mode" size="1"
+								<form:select path="settingsCommand.mode" id="mode" size="1"
 											multiple="false">
 								<c:forEach var="entry" items="${settingsCommand.modeOptions}">
 									<form:option id="${entry.value}" value="${entry.value}"
