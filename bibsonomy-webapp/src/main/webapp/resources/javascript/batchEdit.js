@@ -170,11 +170,14 @@ $(document).ready(function () {
     });
 
     $('#batchedit').submit(function () {
-        //We check all posts, since the controller currently only processes checked posts due to the legacy version of this page still used by the batch edit page
+        //We check all editable posts, since the controller currently only processes checked posts due to the legacy version of this page still used by the batch edit page
         $(tagCheckBoxSelector).each(function () {
-            $(this).prop('checked', true);
-            $(this).prop('disabled', false);
-            $('input[name=' + $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
+            // Check if the current post is editable
+            var isEditable = $('input[name=' + $(this).prop('name').replace('checked', 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() !== 'true';
+            if (isEditable){
+                $(this).prop('checked', true).prop('disabled', false);
+                $('input[name=' + $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
+            }
         });
 
         $('input[name=action]').val(action);
