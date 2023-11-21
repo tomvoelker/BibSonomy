@@ -157,8 +157,8 @@ $(document).ready(function () {
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
-    $('.addTagsButton').click(function () {
-        addTags($('#tagsInput').val());
+    $('.removeTagsButton').click(function () {
+        removeTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
