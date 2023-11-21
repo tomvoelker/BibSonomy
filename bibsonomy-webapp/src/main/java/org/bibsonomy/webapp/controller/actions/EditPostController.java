@@ -71,6 +71,7 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
@@ -125,7 +126,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected URLGenerator urlGenerator;
 
 	private int maxQuerySize;
-	
+
 	/**
 	 * Returns an instance of the command the controller handles.
 	 *
@@ -333,10 +334,10 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		do {
 			final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 			postQueryBuilder.setGrouping(GroupingEntity.INBOX)
-					.setGroupingName(loginUserName)
-					.setScope(QueryScope.LOCAL)
-					.setHash(hash)
-					.entriesStartingAt(this.maxQuerySize, startCount);
+			.setGroupingName(loginUserName)
+			.setScope(QueryScope.LOCAL)
+			.setHash(hash)
+			.entriesStartingAt(this.maxQuerySize, startCount);
 			tmp = this.logic.getPosts(postQueryBuilder.createPostQuery((Class<RESOURCE>) this.instantiateResource().getClass()));
 			dbPosts.addAll(tmp);
 			startCount += this.maxQuerySize;
@@ -436,7 +437,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected String getHttpsReferrer(final COMMAND command) {
 		return null;
 	}
-	
+
 	/**
 	 * TODO: this could be configured using Spring!
 	 * @return the view to show
@@ -501,11 +502,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
 				postQueryBuilder.setGrouping(GroupingEntity.USER)
-						.setGroupingName(this.getGrouping(postOwner))
-						.setHash(intraHashToUpdate)
-						.setScope(QueryScope.LOCAL)
-						.setFilters(Sets.asSet(FilterEntity.HISTORY))
-						.entriesStartingAt(compareVersion + 1, compareVersion);
+				.setGroupingName(this.getGrouping(postOwner))
+				.setHash(intraHashToUpdate)
+				.setScope(QueryScope.LOCAL)
+				.setFilters(Sets.asSet(FilterEntity.HISTORY))
+				.entriesStartingAt(compareVersion + 1, compareVersion);
 				@SuppressWarnings("unchecked")
 				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(postQueryBuilder.createPostQuery(dbPost.getResource().getClass())).get(0);
 
@@ -817,8 +818,24 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			}
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
+		return new ExtendedRedirectView(getRedirectUrl(post, referer));
+	}
 
-		return new ExtendedRedirectView(referer);
+	/*
+	 * With HTTPS the referrer is no longer useful, since it does not contain
+	 * the full path. Thus, we better redirect to the post's URL.
+	 */
+	private String getRedirectUrl(final Post<RESOURCE> post, final String referer) {
+		final String url = ResourceUtils.getLinkAddress(post);
+		/*
+		 * For HTTPS use the URL instead of the referer, when the referer
+		 * is a prefix of the URL.
+		 */
+		if (referer.toLowerCase().startsWith("https") && present(url) && url.startsWith(referer)) {
+			// FIXME: maybe we should avoid redirecting to PDFs?
+			return url;
+		}
+		return referer;
 	}
 
 	private View handleCreatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
@@ -1119,26 +1136,26 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * is resource already owned by the user?
 		 */
-		final Post<RESOURCE> dbPost = this.getPostDetails(resource.getIntraHash(), loginUserName);
+		 final Post<RESOURCE> dbPost = this.getPostDetails(resource.getIntraHash(), loginUserName);
 
-		if (dbPost != null) {
-			log.debug("set diff post");
-			/*
-			 * already posted; warn user
-			 */
-			this.setDuplicateErrorMessage(dbPost, this.errors);
+		 if (dbPost != null) {
+			 log.debug("set diff post");
+			 /*
+			  * already posted; warn user
+			  */
+			 this.setDuplicateErrorMessage(dbPost, this.errors);
 
-			// set intraHash, diff post and set dbPost as post of command
-			command.setIntraHashToUpdate(resource.getIntraHash());
+			 // set intraHash, diff post and set dbPost as post of command
+			 command.setIntraHashToUpdate(resource.getIntraHash());
 
-			command.setDiffPost(post);
+			 command.setDiffPost(post);
 
-			this.populateCommandWithPost(command, dbPost);
+			 this.populateCommandWithPost(command, dbPost);
 
-			return true;
-		}
+			 return true;
+		 }
 
-		return false;
+		 return false;
 	}
 
 	/**
