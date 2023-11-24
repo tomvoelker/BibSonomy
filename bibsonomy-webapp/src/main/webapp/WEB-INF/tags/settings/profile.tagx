@@ -59,7 +59,8 @@
 						
 						<!-- REAL NAME -->
 						<bsform:input path="user.realname" labelColSpan="3" inputColSpan="9" />
-						
+
+						<!-- TODO: We should probably just remove this section.-->
 						<!-- GENDER -->
 						<div class="form-group clearfix">
 							<form:label cssClass="col-sm-3 control-label" path="user.gender"><fmt:message key="user.gender"/></form:label>
