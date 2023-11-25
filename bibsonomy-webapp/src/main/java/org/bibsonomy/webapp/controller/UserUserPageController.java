@@ -79,7 +79,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		// if we're in the personalized view, we have to retrieve all posts first & then 
 		// re-rank them 
 		final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
-		command.setSortPage("ranking");
+		command.setSortPage("rank");
 		command.setSortPageOrder("desc");
 
 		// fetch all tags of logged-in user
