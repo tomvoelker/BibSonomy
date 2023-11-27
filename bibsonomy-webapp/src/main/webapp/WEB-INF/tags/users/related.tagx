@@ -16,7 +16,7 @@
 	<c:set var="userRank" value="${0}"/>
 
 	<ul class="tagcloud sidebar_collapse_content">
-		<c:set var="userURLGenerator" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null)}" />
+		<c:set var="userURLGenerator" value="${urlGeneratorFactory.createURLGeneratorForSystem(null)}" />
 		<c:forEach var="user" items="${cmd.relatedUsers}">
 		
 			<!-- increment ranking counter -->
