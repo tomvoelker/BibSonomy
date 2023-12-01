@@ -32,6 +32,8 @@ package org.bibsonomy.search.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * infos about a search index
  *
@@ -60,5 +62,23 @@ public class SearchIndexInfo {
 		}
 
 		return (double) this.writtenDocuments / this.allDocuments;
+	}
+
+	public Date getGenerationEstimate() {
+		if (this.allDocuments == 0 || this.writtenDocuments == 0) {
+			// Catch dividing by zero and no Progress
+			return null;
+		}
+
+		// Extract the timestamp from the id
+		String[] parts = this.id.split("-");
+		long startTime = Long.parseLong(parts[parts.length - 1]); // Last part is the timestamp
+
+		long currentTime = System.currentTimeMillis();
+		long timeElapsed = currentTime - startTime; // Time elapsed since start in milliseconds
+
+		double timePerDocument = (double) timeElapsed / this.writtenDocuments;
+		long timeRemaining = (long) (timePerDocument * (this.allDocuments - this.writtenDocuments));
+		return new Date(currentTime + timeRemaining);
 	}
 }

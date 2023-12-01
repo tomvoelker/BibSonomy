@@ -111,6 +111,14 @@
                             <c:if test="${not empty searchIndexInfo.allDocuments and searchIndexInfo.allDocuments != 0}">
                                 <strong><fmt:message key="admin.search.info.progress"/></strong>
                                 <c:out value=" ${searchIndexInfo.writtenDocuments}/${searchIndexInfo.allDocuments}" />
+                                <c:if test="${not empty searchIndexInfo.generationEstimate}">
+                                    <p><strong><fmt:message key="admin.search.info.timeEstimate" /></strong>
+                                        <span>
+                                            <fmt:formatDate type="both" pattern=" EEE, dd.MM.yyyy, HH:mm:ss"
+                                                            value="${searchIndexInfo.generationEstimate}"/>
+                                        </span>
+                                    </p>
+                                </c:if>
                             </c:if>
                         </div>
                     </c:otherwise>
