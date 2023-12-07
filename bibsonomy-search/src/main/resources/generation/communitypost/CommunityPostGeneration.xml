@@ -56,7 +56,7 @@
 		FROM
 		(
 			SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearchWithApproved"/>, b.change_date, b.group
-			FROM bibtex b
+			FROM bibtex b FORCE INDEX (content_id_group_idx) 
 			LEFT JOIN gold_standard gb USING (simhash1) <!-- to exclude publications that have already a community post --> <!-- dzo: delete line for slow generation fix -->
 			WHERE gb.title IS NULL <!-- dzo: delete line for slow generation fix -->
 			AND b.group = 0 <!-- only public posts -->
