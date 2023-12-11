@@ -182,7 +182,7 @@
 							<jsp:attribute name="alertBody">
 								<div>
 									<fmt:message key="disambiguation.notFound">
-										<fmt:param value="${title}" /> <!-- FIXME this is XSSable. Falls das die richtige Stelle ist passier sowas (hier) noch öfters -->
+										<fmt:param value="${fn:escapeXml(title)}" /> <!-- FIXME this is XSSable. Falls das die richtige Stelle ist passier sowas (hier) noch öfters -->
 									</fmt:message>
 								</div>
 							</jsp:attribute>
@@ -191,7 +191,7 @@
 							<jsp:attribute name="content">
 								<span class="authorName">
 									<fmt:message key="disambiguation.newPerson">
-										<fmt:param value="${title}" />
+										<fmt:param value="${fn:escapeXml(title)}" />
 									</fmt:message>
 								</span>
 							</jsp:attribute>
@@ -212,7 +212,7 @@
 			<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
 				<bsold:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
 					<jsp:attribute name="modalBody">
-						<p><fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${title}"/></fmt:message></p>
+						<p><fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${fn:escapeXml(title)}"/></fmt:message></p>
 
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#newPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.newPerson"/></a></li>
