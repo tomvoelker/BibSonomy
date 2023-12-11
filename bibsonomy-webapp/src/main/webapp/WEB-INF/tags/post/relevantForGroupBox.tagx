@@ -29,11 +29,11 @@
 				<c:forEach items="${groups}" var="group">
 					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
 					<option data-content="${displayName}" value="${group.name}">
-						${displayName}
+						<c:out value="${displayName}"/>
 					</option>
 				</c:forEach>
 			</select>
-				
+
 	       	<p class="help-block"><fmt:message key="post.resource.relevant"/></p>
 		</div>
 	</div>
