@@ -1,0 +1,1 @@
+CREATE INDEX `content_id` ON `gold_standard` (`content_id`);  # helps for elasticsearch index generation
