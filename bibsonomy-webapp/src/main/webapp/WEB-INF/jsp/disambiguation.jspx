@@ -168,7 +168,9 @@
 								<h4 class="list-group-item-heading">
 									<div class="list-group-item">
 										<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">
-											<span class="authorName">${textOtherPerson}</span>
+											<span class="authorName">
+												<c:out value="${textOtherPerson}"/>
+											</span>
 										</a>
 									</div>
 								</h4>
@@ -180,7 +182,7 @@
 							<jsp:attribute name="alertBody">
 								<div>
 									<fmt:message key="disambiguation.notFound">
-										<fmt:param value="${title}" />
+										<fmt:param value="${title}" /> <!-- FIXME this is XSSable. Falls das die richtige Stelle ist passier sowas (hier) noch öfters -->
 									</fmt:message>
 								</div>
 							</jsp:attribute>

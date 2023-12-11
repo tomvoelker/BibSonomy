@@ -34,12 +34,12 @@
 					<c:choose>
 						<c:when test="${selectedGroups.contains(group.name)}">
 							<option data-content="${displayName}" value="${group.name}" selected="selected">
-								${displayName}
+								<c:out value="${displayName}"/>
 							</option>
 						</c:when>
 						<c:otherwise>
 							<option data-content="${displayName}" value="${group.name}">
-								${displayName}
+								<c:out value="${displayName}"/>
 							</option>
 						</c:otherwise>
 					</c:choose>
