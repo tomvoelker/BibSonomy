@@ -1,10 +1,3 @@
-/**
- * IMPORTANT: Variables are only to be overwritten in custom PUMA instances
- */
-var removedEntrytypes = [];
-var extraEntrytypes = [];
-
-// TODO create JS constant file for all overwrites, include editPublications
 $(function () {
     var entrytypeSelect = $('#post\\.resource\\.entrytype');
     var entrytypeHelp = $('#entrytypeHelp .help-description-list');

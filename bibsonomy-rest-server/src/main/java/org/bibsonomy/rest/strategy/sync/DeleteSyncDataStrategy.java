@@ -29,14 +29,16 @@
  */
 package org.bibsonomy.rest.strategy.sync;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -64,15 +66,15 @@ public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 
 	@Override
 	protected boolean delete() {
+		final LogicInterface logic = this.getLogic();
+		// we allow null dates; they are used to delete ALL entries
+		final Date parsedDate = (this.date == null ? null : RESTUtils.parseDateString(this.date, RESTConfig.DEFAULT_DATETIME_FORMAT));
 
-		try {
-			final LogicInterface logic = this.getLogic();
-			// we allow null dates; they are used to delete ALL entries
-			final Date parsedDate = (this.date == null ? null : RESTConfig.parseDate(this.date));
-			logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, parsedDate);
-			return true;
-		} catch (ParseException ex) {
+		if (!present(parsedDate)) {
 			throw new BadRequestOrResponseException("the given date '" + this.date + "' could not be parsed.");
 		}
+
+		logic.deleteSyncData(logic.getAuthenticatedUser().getName(), this.serviceURI, this.resourceType, parsedDate);
+		return true;
 	}
 }

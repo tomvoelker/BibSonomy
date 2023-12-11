@@ -32,6 +32,7 @@ package org.bibsonomy.webapp.controller.reporting;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.reporting.PersonReportingCommand;
 import org.bibsonomy.webapp.util.View;
@@ -56,15 +57,17 @@ public class PersonReportingPageController extends AbstractReportingPageControll
 
 	@Override
 	protected void workOn(PersonReportingCommand command, Person person, Group organization) {
-		PersonQuery query = new PersonQuery(command.getQuery());
-		query.setOrganization(organization);
 		final ListCommand<Person> personListCommand = command.getPersons();
-		final int start = personListCommand.getStart();
-		query.setStart(start);
-		query.setCollege(this.college);
-		query.setEnd(start + personListCommand.getEntriesPerPage());
-		query.setUsePrefixMatch(true);
-		personListCommand.setList(this.logic.getPersons(query));
+
+		final PersonQueryBuilder queryBuilder = new PersonQueryBuilder()
+				.search(command.getQuery())
+				.byOrganization(organization)
+				.byCollege(this.college)
+				.start(personListCommand.getStart())
+				.end(personListCommand.getStart() + personListCommand.getEntriesPerPage())
+				.prefixMatch(true);
+
+		personListCommand.setList(this.logic.getPersons(queryBuilder.build()));
 	}
 
 	@Override

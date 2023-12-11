@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -54,7 +55,10 @@ public class GetPersonsQuery extends AbstractQuery<List<Person>> {
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final String url = this.getUrlRenderer().createUrlBuilderForPersons(this.personQuery.getUserName()).asString();
+		final String url = this.getUrlRenderer().createUrlBuilderForPersons()
+				.addParameter(RESTConfig.USER_PARAM, this.personQuery.getUserName())
+				.asString();
+
 		this.downloadedDocument = performGetRequest(url);
 	}
 

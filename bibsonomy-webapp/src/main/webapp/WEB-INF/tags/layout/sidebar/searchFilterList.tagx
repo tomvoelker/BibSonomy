@@ -10,6 +10,7 @@
     <jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="headerMessageIcon" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="expandingAt" type="java.lang.Integer" required="false"/>
+    <jsp:directive.attribute name="filterName" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterField" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="filterEntries" type="java.util.List" required="false"/>
     <jsp:directive.attribute name="filterUrl" type="java.lang.String" required="false" />
@@ -17,15 +18,19 @@
     <jsp:directive.attribute name="hideCounts" type="java.lang.Boolean" required="false" />
     <jsp:directive.attribute name="buttonClass" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="showMore" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="additionalListCss" type="java.lang.String" required="false" />
+
+    <jsp:directive.attribute name="listSearch" fragment="true" required="false" description="Fragment to insert a way to filter the filter list."/>
 
     <c:if test="${hide}">
         <c:set var="hidden" value="hidden" />
     </c:if>
 
-    <div id="filter-list-${filterField}" class="filter-list  ${hidden}" data-field="${filterField}">
+    <div id="filter-list-${filterName}" class="filter-list  ${hidden}" data-field="${filterField}">
         <sidebar:sidebarItem textKey="${headerMessageKey}" faIcon="${headerMessageIcon}">
             <jsp:attribute name="content">
-                <div id="filter-entries-${filterField}" class="filter-entries">
+                <jsp:invoke fragment="listSearch"/>
+                <div id="filter-entries-${filterName}" class="filter-entries ${additionalListCss}">
                     <c:if test="${not empty filterEntries}">
                         <c:forEach var="entry" items="${filterEntries}" varStatus="status">
                             <c:set var="label" value="${entry.name}" />
@@ -54,7 +59,7 @@
                     </c:if>
                 </div>
                 <c:if test="${showMore}">
-                    <span class="show-more-link" id="filter-more-${filterField}"><fmt:message key="explore.show.more" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></span>
+                    <span class="show-more-link" id="filter-more-${filterName}"><fmt:message key="explore.show.more" /> <fontawesome:icon icon="angle-double-down" fixedWidth="${true}"/></span>
                 </c:if>
             </jsp:attribute>
         </sidebar:sidebarItem>

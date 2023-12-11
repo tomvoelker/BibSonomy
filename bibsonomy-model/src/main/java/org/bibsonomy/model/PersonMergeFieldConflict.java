@@ -42,20 +42,20 @@ import lombok.Setter;
 public class PersonMergeFieldConflict {
 	
 	private String fieldName;
-	private String person1Value;
-	private String person2Value;
+	private String targetValue;
+	private String sourceValue;
 	
 	/**
 	 * A PersonMergeFieldConflict contains the field that is raising the conflict and the values of the persons that might be the same
 	 * 
 	 * @param fieldName
-	 * @param person1Value
-	 * @param person2Value
+	 * @param targetValue
+	 * @param sourceValue
 	 */
-	public PersonMergeFieldConflict(String fieldName, String person1Value, String person2Value){
+	public PersonMergeFieldConflict(String fieldName, String targetValue, String sourceValue){
 		this.fieldName = fieldName;
-		this.person1Value = person1Value;
-		this.person2Value = person2Value;
+		this.targetValue = targetValue;
+		this.sourceValue = sourceValue;
 	}
 
 }

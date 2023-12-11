@@ -34,6 +34,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.query.ProjectQuery;
+import org.bibsonomy.model.logic.querybuilder.ProjectQueryBuilder;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.cris.ProjectsPageCommand;
@@ -52,44 +53,44 @@ import java.util.List;
  */
 public class ProjectsPageController implements MinimalisticController<ProjectsPageCommand> {
 
-	private LogicInterface logic;
+    private LogicInterface logic;
 
-	@Override
-	public ProjectsPageCommand instantiateCommand() {
-		return new ProjectsPageCommand();
-	}
+    @Override
+    public ProjectsPageCommand instantiateCommand() {
+        return new ProjectsPageCommand();
+    }
 
-	@Override
-	public View workOn(final ProjectsPageCommand command) {
-		final ListCommand<Project> projectListCommand = command.getProjects();
+    @Override
+    public View workOn(final ProjectsPageCommand command) {
+        final ListCommand<Project> projectListCommand = command.getProjects();
 
-		// build the query based on the commands
-		final ProjectQuery.ProjectQueryBuilder builder = ProjectQuery.createBuilder();
-		builder.projectStatus(command.getProjectStatus())
-						.entriesStartingAt(projectListCommand.getEntriesPerPage(), projectListCommand.getStart())
-						.search(command.getSearch())
-						.prefixMatch(true)
-						.prefix(command.getPrefix())
-						.sortKey(command.getProjectSortKey())
-						.sortOrder(command.getSortOrder());
+        // build the query based on the commands
+        final ProjectQueryBuilder builder = new ProjectQueryBuilder()
+                .projectStatus(command.getProjectStatus())
+                .entriesStartingAt(projectListCommand.getEntriesPerPage(), projectListCommand.getStart())
+                .search(command.getSearch())
+                .prefixMatch(true)
+                .prefix(command.getPrefix())
+                .sortKey(command.getProjectSortKey())
+                .sortOrder(command.getSortOrder());
 
-		// query the logic for matching projects
-		final ProjectQuery projectQuery = builder.build();
-		final List<Project> projects = this.logic.getProjects(projectQuery);
-		projectListCommand.setList(projects);
+        // query the logic for matching projects
+        final ProjectQuery projectQuery = builder.build();
+        final List<Project> projects = this.logic.getProjects(projectQuery);
+        projectListCommand.setList(projects);
 
-		if (!present(projectListCommand.getTotalCountAsInteger())) {
-			final Statistics stats = this.logic.getStatistics(projectQuery);
-			projectListCommand.setTotalCount(stats.getCount());
-		}
+        if (!present(projectListCommand.getTotalCountAsInteger())) {
+            final Statistics stats = this.logic.getStatistics(projectQuery);
+            projectListCommand.setTotalCount(stats.getCount());
+        }
 
-		return Views.PROJECT_PAGE;
-	}
+        return Views.PROJECT_PAGE;
+    }
 
-	/**
-	 * @param logic the logic to set
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
+    /**
+     * @param logic the logic to set
+     */
+    public void setLogic(LogicInterface logic) {
+        this.logic = logic;
+    }
 }

@@ -39,6 +39,8 @@ import java.util.Objects;
 /**
  * A PersonMatch object contains the id's of two persons which might be equal and a flag if they are equal
  *
+ * Merge relations, names and attributes FROM source INTO target. Leaving target as the merged result.
+ *
  * @author jhi
  */
 @Getter
@@ -48,13 +50,13 @@ public class PersonMatch implements Serializable {
 
 	public static final int MAX_NUMBER_OF_DENIES = 5;
 	
-	private Person person1;
-	private Person person2;
-	private int state; //0 open, 1 denied, 2 already merged
+	private Person targetPerson;
+	private Person sourcePerson;
+	private int state; // 0 open, 1 denied, 2 already merged
 	private int matchID;
 	private List<String> userDenies;
-	private List<Post> person1Posts;
-	private List<Post> person2Posts;
+	private List<Post<? extends Resource>> targetPosts;
+	private List<Post<? extends Resource>> sourcePosts;
 	
 
 	@Override
@@ -62,13 +64,13 @@ public class PersonMatch implements Serializable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		PersonMatch that = (PersonMatch) o;
-		return Objects.equals(person1, that.person1) && Objects.equals(person2, that.person2) ||
-				Objects.equals(person1, that.person2) && Objects.equals(person2, that.person1);
+		return Objects.equals(targetPerson, that.targetPerson) && Objects.equals(sourcePerson, that.sourcePerson) ||
+				Objects.equals(targetPerson, that.sourcePerson) && Objects.equals(sourcePerson, that.targetPerson);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(person1, person2);
+		return Objects.hash(targetPerson, sourcePerson);
 	}
 
 }

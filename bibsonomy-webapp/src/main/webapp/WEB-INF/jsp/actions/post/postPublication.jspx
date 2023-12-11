@@ -11,8 +11,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
-	xmlns:system="urn:jsptagdir:/WEB-INF/tags/system"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors">
+	xmlns:system="urn:jsptagdir:/WEB-INF/tags/system">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
@@ -28,7 +27,8 @@
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
-			
+
+			<script type="text/javascript" src="${resdir}/javascript/configuration.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
@@ -41,7 +41,6 @@
 					<div class="content-header">
 						<h1><fmt:message key="navi.postPublication"/></h1>
 					</div>
-					<errors:global />
 					
 					<div class="row">
 						<div class="col-sm-12">

@@ -70,6 +70,11 @@ $(document).ready(function () {
             toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector) === 0);
             updateBadges();
         });
+
+        // Entries selection
+        $("#batchEditEntriesSelection").change(function(){
+            window.location.href = $(this).find(":selected").val();
+        });
     }
 
     if (!isImport) {
@@ -151,12 +156,14 @@ $(document).ready(function () {
         });
     }
 
-    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction)
+    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction);
+
     $('.addTagsButton').click(function () {
         addTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
+
     $('.removeTagsButton').click(function () {
         removeTags($('#tagsInput').val());
         $('#tagsInput').val("");

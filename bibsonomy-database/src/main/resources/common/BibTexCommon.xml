@@ -54,8 +54,8 @@
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
 	</resultMap>
 	
-	<resultMap id="bibtexPostWithRepositorys" class="post" extends="bibtexPost" >
-		<result property="repositorys"	resultMap="RepositoryCommon.repository"/>
+	<resultMap id="bibtexPostWithRepositories" class="post" extends="bibtexPost" >
+		<result property="repositories"	resultMap="RepositoryCommon.repository"/>
 	</resultMap>
 
 	<resultMap id="bibtexPostWithPickStatus" class="post" extends="bibtexPost">

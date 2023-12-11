@@ -8,7 +8,6 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
@@ -43,9 +42,6 @@
 					</bs:alert>
 				</c:if>
 			</mtl:exists>
-
-			<!-- show global error messages -->
-			<errors:global />
 
 			<c:if test="${not empty command.message}">
 				<bs:alert style="danger">

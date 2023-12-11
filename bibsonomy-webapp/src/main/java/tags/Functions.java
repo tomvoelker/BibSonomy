@@ -37,6 +37,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -50,6 +51,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.sksamuel.diffpatch.DiffMatchPatch;
+import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,9 +94,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.pegdown.PegDownProcessor;
-
-import com.sksamuel.diffpatch.DiffMatchPatch;
-import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -897,6 +897,20 @@ public class Functions {
     }
 
     /**
+     * Splits a string into a collection of substrings.
+     *
+     * @param input
+     * @param delimiters
+     * @return collection of substrings
+     */
+    public static Collection<?> split(final String input, final String delimiters) {
+        if (present(input) && delimiters != null) {
+            return Arrays.asList(input.split(delimiters));
+        }
+        return new ArrayList<>();
+    }
+
+    /**
      * Checks if the given collection contains the given object.
      *
      * @param collection
@@ -904,7 +918,7 @@ public class Functions {
      * @return <code>true</code>, iff object is contained in set.
      */
     public static boolean contains(final Collection<?> collection, final Object object) {
-        return (collection != null) && collection.contains(object);
+        return present(collection) && collection.contains(object);
     }
 
     /**
@@ -1085,5 +1099,12 @@ public class Functions {
     public static boolean containsSentTag(Set<Tag> tags, String user) {
         String sentTag = "sent:" + user;
         return TagUtils.containsTag(tags, sentTag);
+    }
+
+    public static String join(List<String> list, String separator) {
+        if (present(list)) {
+            return String.join(separator, list);
+        }
+        return "";
     }
 }

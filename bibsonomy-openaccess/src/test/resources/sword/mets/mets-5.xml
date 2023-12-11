@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mets:mets ID="sort-mets_mets" OBJID="sword-mets" LABEL="METS/MODS SWORD Item" PROFILE="METS/MODS SIP Profile 1.0" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods.xsd" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:mets="http://www.loc.gov/METS/" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <mets:metsHdr CREATEDATE="2023-11-10T16:49:26.609+01:00">
+        <mets:agent ROLE="CUSTODIAN" TYPE="ORGANIZATION">
+            <mets:name>PUMA</mets:name>
+        </mets:agent>
+    </mets:metsHdr>
+    <mets:dmdSec ID="sword-mets-dmd-1" GROUPID="sword-mets-dmd-1_group-1">
+        <mets:mdWrap LABEL="SWAP Metadata" MDTYPE="MODS" MIMETYPE="text/xml">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:typeOfResource>text</mods:typeOfResource>
+                    <mods:genre>article</mods:genre>
+                    <mods:titleInfo>
+                        <mods:title>Monitoring Intracellular Metabolite Dynamics in Saccharomyces cerevisiae during Industrially Relevant Famine Stimuli</mods:title>
+                    </mods:titleInfo>
+                    <mods:relatedItem xlink:type="host">
+                        <mods:titleInfo>
+                            <mods:title>Metabolites</mods:title>
+                        </mods:titleInfo>
+                        <mods:part>
+                            <mods:detail type="volume">
+                                <mods:number>12</mods:number>
+                            </mods:detail>
+                            <mods:detail type="issue">
+                                <mods:number>3</mods:number>
+                            </mods:detail>
+                        </mods:part>
+                    </mods:relatedItem>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Minden</mods:namePart>
+                        <mods:namePart type="given">Steven</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Aniolek</mods:namePart>
+                        <mods:namePart type="given">Maria</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Sarkizi Shams Hajian</mods:namePart>
+                        <mods:namePart type="given">Christopher</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Teleki</mods:namePart>
+                        <mods:namePart type="given">Attila</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Zerrer</mods:namePart>
+                        <mods:namePart type="given">Tobias</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Delvigne</mods:namePart>
+                        <mods:namePart type="given">Frank</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">van Gulik</mods:namePart>
+                        <mods:namePart type="given">Walter</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Deshmukh</mods:namePart>
+                        <mods:namePart type="given">Amit</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Noorman</mods:namePart>
+                        <mods:namePart type="given">Henk</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Takors</mods:namePart>
+                        <mods:namePart type="given">Ralf</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:abstract>Carbon limitation is a common feeding strategy in bioprocesses to enable an efficient microbiological conversion of a substrate to a product. However, industrial settings inherently promote mixing insufficiencies, creating zones of famine conditions. Cells frequently traveling through such regions repeatedly experience substrate shortages and respond individually but often with a deteriorated production performance. A priori knowledge of the expected strain performance would enable targeted strain, process, and bioreactor engineering for minimizing performance loss. Today, computational fluid dynamics (CFD) coupled to data-driven kinetic models are a promising route for the in silico investigation of the impact of the dynamic environment in the large-scale bioreactor on microbial performance. However, profound wet-lab datasets are needed to cover relevant perturbations on realistic time scales. As a pioneering study, we quantified intracellular metabolome dynamics of Saccharomyces cerevisiae following an industrially relevant famine perturbation. Stimulus-response experiments were operated as chemostats with an intermittent feed and high-frequency sampling. Our results reveal that even mild glucose gradients in the range of 100 $\mu$mol{\textperiodcentered}L−1 impose significant perturbations in adapted and non-adapted yeast cells, altering energy and redox homeostasis. Apparently, yeast sacrifices catabolic reduction charges for the sake of anabolic persistence under acute carbon starvation conditions. After repeated exposure to famine conditions, adapted cells show 2.7{\%} increased maintenance demands.      </mods:abstract>
+                    <mods:originInfo>
+                        <mods:publisher>MDPI</mods:publisher>
+                        <mods:dateIssued encoding="iso8601">2022-3-18</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:identifier type="doi">10.3390/metabo12030263</mods:identifier>
+                    <mods:language>
+                        <mods:languageTerm authority="rfc3066" type="code">en</mods:languageTerm>
+                    </mods:language>
+                    <mods:accessCondition/>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp ID="sword-mets-fgrp-1" USE="CONTENT">
+            <mets:file ID="sword-mets-file-0" GROUPID="sword-mets-fgid-0" MIMETYPE="application/pdf" CHECKSUM="TEST_MD5_HASH" CHECKSUMTYPE="MD5">
+                <mets:FLocat LOCTYPE="URL" xlink:href="testdocument-5.pdf"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap ID="sword-mets-struct-1" TYPE="LOGICAL" LABEL="structure">
+        <mets:div ID="sword-mets-div-0" DMDID="sword-mets-dmd-1" TYPE="SWORD Object">
+            <mets:div ID="sword-mets-div-1" TYPE="File">
+                <mets:fptr FILEID="sword-mets-file-0"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

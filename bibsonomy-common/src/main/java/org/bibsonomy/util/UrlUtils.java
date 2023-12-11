@@ -470,15 +470,10 @@ public class UrlUtils {
 	}
 
 	/**
-	 * Normalizes the URL by trimming whitespace and appending "http://", if it
-	 * is not present.
-	 * 
-	 * FIXME: the URL is converted to lower case - this might break some URLs.
-	 * 
+	 * Normalizes the URL by trimming whitespace and appending "https://", if it is not present.
 	 * This is mainly for normalizing the OpenID of a user for matching.
 	 * 
-	 * @param url
-	 *            - the URL that shall be normalized.
+	 * @param url 	the URL that shall be normalized.
 	 * @return normalized URL
 	 */
 	public static String normalizeURL(String url) {

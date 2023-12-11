@@ -96,8 +96,8 @@ public class MergePersonController extends AbstractEditPersonController {
         for (PersonMergeFieldConflict conflict : PersonMatchUtils.getPersonMergeConflicts(personMatch)) {
             final JSONObject jsonConflict = new JSONObject();
             jsonConflict.put("field", conflict.getFieldName());
-            jsonConflict.put("person1Value", conflict.getPerson1Value());
-            jsonConflict.put("person2Value", conflict.getPerson2Value());
+            jsonConflict.put("person1Value", conflict.getTargetValue());
+            jsonConflict.put("person2Value", conflict.getSourceValue());
             array.add(jsonConflict);
         }
         command.setResponseString(array.toJSONString());

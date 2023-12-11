@@ -46,6 +46,6 @@ public class ObjectNotFoundException extends RuntimeException {
 	 *            the {@link #getMessage()} method.
 	 */
 	public ObjectNotFoundException(final String id) {
-		super("The requested object (with ID " + id + ") was not found. \nMaybe it has been deleted or its ID has changed, because it has been modfied via the webinterface or another application.");
+		super("The requested object (with ID " + id + ") was not found. \nMaybe it has been deleted or its ID has changed, because it has been modified via the webinterface or another application.");
 	}
 }

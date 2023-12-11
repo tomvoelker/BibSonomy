@@ -43,22 +43,20 @@
 	<bean id="pumaUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
-				<entry key="/ajax/checkOpenAccess">
+				<entry key="/ajax/openaccess/status">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="openAccessController" />
 						<property name="allowedFields">
 							<list>
-								<value>publisher</value>
-								<value>jTitle</value>
-								<value>qType</value>
 								<value>action</value>
+								<value>intrahash</value>
 								<value>interhash</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/classificatePublication">
-					<bean id="publicationClassificationControllerBean" parent="controllerBase">
+				<entry key="/ajax/openaccess/classifyPublication">
+					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="publicationClassificationController" />
 						<property name="allowedFields">
 							<list>
@@ -72,13 +70,19 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/swordService">
-					<bean id="swordServiceControllerBean" parent="controllerBase">
+				<entry key="/ajax/openaccess/swordService">
+					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="swordServiceController" />
 						<property name="allowedFields">
 							<list>
-								<value>resourceHash</value>
-<!--								<value>id</value>-->
+								<value>intrahash</value>
+								<value>interhash</value>
+								<value>pumaData.institution</value>
+								<value>pumaData.referee1</value>
+								<value>pumaData.referee2</value>
+								<value>pumaData.examOralDate</value>
+								<value>pumaData.sponsor</value>
+								<value>pumaData.additionalTitle</value>
 							</list>
 						</property>
 					</bean>
@@ -92,44 +96,38 @@
 		| PUMA-specific beans
 		|
 	 	+-->
+	<bean id="disseminController" class="de.unikassel.puma.webapp.controller.ajax.DisseminController" scope="request" parent="ajaxController"/>
+
 	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController">
+		<property name="disseminController" ref="disseminController"/>
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
-		
-	</bean>	
-	
+	</bean>
+
 	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
 		<property name="swordService" ref="swordService"/>	
-		<property name="messageSource" ref="messageSource"/>
 		<property name="mode" value="${publication.reporting.mode}" />
+		<property name="messageSource" ref="messageSource"/>
 	</bean>
 	
 	<bean id="publicationClassificationController" class="de.unikassel.puma.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
 		<property name="classificator" ref="classificator"/>
 	</bean>
+
 	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificator" scope="singleton" />
 
-	<!--+ 
-		|
-		| PUMA-specific beans that must also be provided for BibSonomy (using
-		| NullFactoryBeanin bibsonomy2-servlet-bibsonomy.xml).
-		|
-	 	+-->
-	<bean id="swordConfig" class="de.unikassel.puma.openaccess.sword.SwordConfig">
-		<property name="dirTemp" value="${sword.dirTemp}"/>
-		<property name="httpServer" value="${sword.httpServer}"/>
-		<property name="httpPort" value="${sword.httpPort}"/>
-		<property name="httpUserAgent" value="${sword.httpUserAgent}"/>
-		<property name="authUsername" value="${sword.authUsername}"/>
-		<property name="authPassword" value="${sword.authPassword}"/>
-		<property name="httpServicedocumentUrl" value="${sword.httpServicedocumentUrl}"/>
-		<property name="httpDepositUrl" value="${sword.httpDepositUrl}"/>
-	</bean>
 	
 	<bean id="apiLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractLogicInterfaceFactory" />
 
 	<bean id="realSwordService" class="de.unikassel.puma.openaccess.sword.SwordService">
-		<property name="repositoryConfig" ref="swordConfig"/>
-		<property name="projectDocumentPath" value="${project.document.path}"/>
+		<property name="swordServer" value="${sword.server}"/>
+		<property name="swordPort" value="${sword.port}"/>
+		<property name="swordUserAgent" value="${sword.userAgent}"/>
+		<property name="swordUsername" value="${sword.username}"/>
+		<property name="swordPassword" value="${sword.password}"/>
+		<property name="swordDocumentUrl" value="${sword.documentUrl}"/>
+		<property name="swordDepositUrl" value="${sword.depositUrl}"/>
+		<property name="tempPath" value="${sword.tempPath}"/>
+		<property name="documentPath" value="${project.document.path}"/>
 		<property name="urlRenderer" ref="restUrlRenderer"/>
 		<property name="logicInterfaceFactory" ref="apiLogicFactory" />
 	</bean>

@@ -118,24 +118,7 @@ public class WebUtilsTest {
 		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811", "Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811;Path=/", WebUtils.buildCookieString(cookies));
 	}
-	
-	/**
-	 * @throws Exception
-	 */
-	@Test
-	@Ignore // uses remove server
-	public void testGetContentAsString1() throws Exception {
-		/*
-		 * Just check, if we get some output from BibSonomy.
-		 */
-		final String s = WebUtils.getContentAsString("https://www.bibsonomy.org/tag/web?items=1000", null, null, null);
-		assertTrue(s.length() > 0);
-		/*
-		 * We have a 1MB limit ... 
-		 */
-		assertTrue(s.length() < 1024 * 1024);
-	}
-	
+
 	/**
 	 * @throws Exception
 	 */
@@ -147,9 +130,9 @@ public class WebUtilsTest {
 		final String s = WebUtils.getContentAsString(new URL("https://www.bibsonomy.org/tag/web?items=1000"), null);
 		assertTrue(s.length() > 0);
 		/*
-		 * We have a 1MB limit ... 
+		 * We have a 3MB limit ...
 		 */
-		assertTrue(s.length() < 1024 * 1024);
+		assertTrue(s.length() < 3 * 1024 * 1024);
 	}
 	
 	

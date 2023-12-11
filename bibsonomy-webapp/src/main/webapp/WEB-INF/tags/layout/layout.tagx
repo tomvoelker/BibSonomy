@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
@@ -26,23 +27,11 @@
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
-	
-	<jsp:directive.attribute name="noContentPadding" type="java.lang.Boolean" required="false"/>
-	
+
 	<jsp:directive.attribute name="sidebarId" type="java.lang.String" required="false"/>
 	<c:if test="${empty sidebarId}">
 		<c:set var="sidebarId" value="sidebar" />
 	</c:if>
-	
-	<c:choose>
-		<c:when test="${noContentPadding}">
-			<c:set var="containerPadding" value="no-padding" />
-		</c:when>
-		<c:otherwise>
-		<c:set var="containerPadding" value="" />
-		</c:otherwise>
-	</c:choose>
-
 
 	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
 	<!--+
@@ -62,6 +51,39 @@
 			personalized="${personalized}"
 			/>
 			<body data-spy="scroll" data-target="#sidebar-nav">
+
+				<c:choose>
+					<c:when test="${pageContext.response.locale eq 'en'}">
+						<c:set var="alertMessage" value="${properties['project.header.alert.message.en']}" />
+					</c:when>
+					<c:when test="${pageContext.response.locale eq 'de'}">
+						<c:set var="alertMessage" value="${properties['project.header.alert.message.de']}" />
+					</c:when>
+					<c:otherwise></c:otherwise>
+				</c:choose>
+
+				<c:choose>
+					<c:when test="${properties['project.header.alert.type'] eq 'alert'}">
+						<div class="alert alert-danger alert-dismissible text-center" style="padding: 7px;"  role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:when test="${properties['project.header.alert.type'] eq 'warning'}">
+						<div class="alert alert-warning alert-dismissible text-center" style="padding: 7px;" role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:when test="${properties['project.header.alert.type'] eq 'info'}">
+						<div class="alert alert-info alert-dismissible text-center" style="padding: 7px;" role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:otherwise></c:otherwise>
+				</c:choose>
+
 				<div class="container header">
 					<div id="page-header" class="bib-header">
 						<div class="row">
@@ -99,10 +121,11 @@
 
 				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 
-				<div class="container main ${containerPadding}">
+				<div class="container main">
 					<c:choose>
 						<c:when test="${noSidebar}">
 							<!-- without sidebar -->
+							<errors:global/>
 							<parts:successMessage />
 							<!-- Breadcrumbs -->
 							<c:if test="${not empty breadcrumbs}">
@@ -129,6 +152,7 @@
 											</jsp:attribute>
 										</bs:alert>
 									</c:if>
+									<errors:global/>
 									<parts:successMessage />
 
 									<!-- Breadcrumbs -->
@@ -137,7 +161,6 @@
 									</c:if>
 									<div class="wrapper">
 										<div id="intro">
-
 											<jsp:invoke fragment="contentIntro"/>
 										</div>
 										<jsp:invoke fragment="content"/>

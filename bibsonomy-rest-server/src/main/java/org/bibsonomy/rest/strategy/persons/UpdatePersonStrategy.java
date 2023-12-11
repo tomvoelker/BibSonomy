@@ -35,6 +35,7 @@ import java.io.Writer;
 
 import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -50,8 +51,11 @@ public class UpdatePersonStrategy extends AbstractUpdateStrategy {
 	/**
 	 * @param context
 	 */
-	public UpdatePersonStrategy(final Context context, final String personId, final PersonOperation operation) {
+	public UpdatePersonStrategy(final Context context, final PersonOperation operation) {
 		super(context);
+		this.personId = context.getStringAttribute(RESTConfig.PERSON_ID_PARAM, null);
+		this.operation = operation;
+
 		if (!present(personId)) {
 			throw new IllegalArgumentException("No personId present.");
 		}
@@ -59,8 +63,6 @@ public class UpdatePersonStrategy extends AbstractUpdateStrategy {
 		if (!present(operation)) {
 			throw new IllegalArgumentException("No PersonUpdateOperation specified.");
 		}
-		this.personId = personId;
-		this.operation = operation;
 	}
 
 	@Override

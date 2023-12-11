@@ -1845,8 +1845,8 @@ CREATE TABLE `log_postchange` (
 
 CREATE TABLE `person_match`(
   `match_id` int(10) unsigned NOT NULL unique auto_increment,
-  `person1_id` varchar(64) NOT NULL,
-  `person2_id` varchar(64) NOT NULL,
+  `target_person_id` varchar(64) NOT NULL,
+  `source_person_id` varchar(64) NOT NULL,
   `state` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 if merge is denied, 2 if they are merged',
    PRIMARY KEY  (`match_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

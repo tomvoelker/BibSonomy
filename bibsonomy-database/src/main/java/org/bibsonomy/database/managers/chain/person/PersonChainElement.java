@@ -43,7 +43,7 @@ import org.bibsonomy.model.logic.query.PersonQuery;
  * @author dzo
  */
 public abstract class PersonChainElement extends ChainElement<List<Person>, QueryAdapter<PersonQuery>> {
-	private final PersonDatabaseManager personDatabaseManager;
+	protected final PersonDatabaseManager personDatabaseManager;
 
 	/**
 	 * default constructor
@@ -51,12 +51,5 @@ public abstract class PersonChainElement extends ChainElement<List<Person>, Quer
 	 */
 	public PersonChainElement(final PersonDatabaseManager personDatabaseManager) {
 		this.personDatabaseManager = personDatabaseManager;
-	}
-
-	/**
-	 * @return the personDatabaseManager
-	 */
-	public PersonDatabaseManager getPersonDatabaseManager() {
-		return personDatabaseManager;
 	}
 }

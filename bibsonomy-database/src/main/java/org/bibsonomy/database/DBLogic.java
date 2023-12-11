@@ -75,6 +75,7 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -157,7 +158,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -181,6 +182,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -1823,6 +1825,53 @@ public class DBLogic implements LogicInterface {
 		return manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
 	}
 
+	/**
+	 * Approve and update the goldstandard of the given post.
+	 * If the goldstandard does not exist yet, it will be created and approved.
+	 */
+	@Override
+	public List<JobResult> approvePost(final Post<BibTex> post, final String username) {
+		final List<JobResult> results = new LinkedList<>();
+
+		if (!present(post)) {
+			return results;
+		}
+
+		final String postInterHash = post.getResource().getInterHash();
+
+		// Convert the user post to a goldstandard post
+		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
+		if (present(gsPost)) {
+			gsPost.setApproved(true);
+			gsPost.setCopyFrom(username);
+		} else {
+			// Failed to convert, unable to approve it and return false
+			results.add(JobResult.buildFailure(Collections.singletonList(new ErrorMessage("Could not convert to goldstandard post", postInterHash))));
+			return results;
+		}
+
+		// Check, if a goldstandard already exists of this publication
+		Post<? extends Resource> existingPost = this.getPostDetails(post.getResource().getInterHash(), "");
+
+		// Create or update the approved goldstandard
+		try {
+			if (present(existingPost)) {
+				// goldstandard already exists and needs to be updated
+				gsPost.getResource().setIntraHash(gsPost.getResource().getInterHash());
+				results.addAll(this.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL));
+			} else {
+				// goldstandard doesn't exist and needs to be created
+				results.addAll(this.createPosts(Collections.singletonList(gsPost)));
+			}
+			results.add(JobResult.buildSuccess(postInterHash));
+		} catch (final DatabaseException de) {
+			results.add(JobResult.buildFailure(Collections.singletonList(new ErrorMessage("Could not approve the goldstandard post", postInterHash))));
+			return results;
+		}
+
+		return results;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -3250,9 +3299,9 @@ public class DBLogic implements LogicInterface {
 		final ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQueryBuilder()
 						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
 						.byRelationType(resourcePersonRelation.getRelationType())
-						.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex()));
+						.byAuthorIndex(resourcePersonRelation.getPersonIndex());
 		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder.build());
-		if (existingRelations.size() > 0) {
+		if (!existingRelations.isEmpty()) {
 			final ResourcePersonRelation existingRelation = existingRelations.get(0);
 			throw new ResourcePersonAlreadyAssignedException(existingRelation);
 		}
@@ -3468,31 +3517,24 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		// TODO: implement a chain
-
 		try (final DBSession session = this.openSession()) {
-			Person person;
-			if (PersonIdType.PERSON_ID == idType) {
-				person = this.personDBManager.getPersonById(id, session);
-			} else if (PersonIdType.DNB_ID == idType) {
-				person = this.personDBManager.getPersonByDnbId(id, session);
-				// } else if (PersonIdType.ORCID == idType) {
-				//	TODO: implement
-			} else if (PersonIdType.USER == idType) {
-				person = this.personDBManager.getPersonByUser(id, session);
-			} else {
-				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
+			Person person = null;
+			switch (idType) {
+				case PERSON_ID:
+					person = this.personDBManager.getPersonById(id, session);
+					break;
+				case USER:
+					person = this.personDBManager.getPersonByUser(id, session);
+					break;
+				case DNB_ID:
+					person = this.personDBManager.getPersonByDnbId(id, session);
+				case ORCID:
+					// TODO
+					break;
+				default:
+					break;
 			}
 			return person;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
-	 */
-	@Override
-	public Person getPersonByAdditionalKey(final String key, final String value) {
-		try (final DBSession session = this.openSession()) {
-			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
 		}
 	}
 
@@ -3518,8 +3560,8 @@ public class DBLogic implements LogicInterface {
 			}
 			relations = new LinkedList<>(byInterHash.values());
 		}
-		final PersonResourceRelationOrder order = query.getOrder();
-		if (order == PersonResourceRelationOrder.PublicationYear) {
+		final PersonResourceRelationSortKey sortKey = query.getSortKey();
+		if (sortKey == PersonResourceRelationSortKey.PublicationYear) {
 			relations.sort((o1, o2) -> {
 				try {
 					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
@@ -3532,13 +3574,15 @@ public class DBLogic implements LogicInterface {
 				}
 				return System.identityHashCode(o1) - System.identityHashCode(o2);
 			});
-		} else if (order != null) {
+		} else if (sortKey != null) {
 			throw new UnsupportedOperationException();
 		}
 		return relations;
 	}
 
 	/**
+	 * Get the merge matches for a person by the person ID.
+	 * The ID can be either the source or the target ID.
 	 * 
 	 * @param personID
 	 * @return a list of all matches for a person

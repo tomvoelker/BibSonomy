@@ -21,12 +21,12 @@
 		WHERE person.user_name = #user#
 	</select>
 
-	<select id="getPersonByAdditionalKey" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+	<select id="getPersonsByAdditionalKey" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="org.bibsonomy.database.params.PersonParam">
 		SELECT <include refid="commonPersonColumns"/>
 		FROM person_additional_keys
 		JOIN person USING(person_id)
-		WHERE person_additional_keys.key_name = #keyName#
-		AND person_additional_keys.key_value = #keyValue#
+		WHERE person_additional_keys.key_name = #additionalKeyName#
+		AND person_additional_keys.key_value = #additionalKeyValue#
 	</select>
 
 	<insert id="insertPerson" parameterClass="person">
@@ -51,10 +51,10 @@
   		</selectKey>
 	</insert>
 
-	<insert id="insertAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+	<insert id="insertAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.PersonParam">
 		INSERT INTO person_additional_keys (<include refid="commonPersonAdditionalKeysColumns"/>)
-		VALUES (#personId#, #keyName#, #keyValue#)
-		ON DUPLICATE KEY UPDATE key_value = #keyValue#
+		VALUES (#personId#, #additionalKeyName#, #additionalKeyValue#)
+		ON DUPLICATE KEY UPDATE key_value = #additionalKeyValue#
 	</insert>
 
 	<select id="getNames" resultMap="PersonCommon.personName" parameterClass="string">
@@ -129,11 +129,11 @@
 		WHERE person_name.person_change_id = #personNameChangeId#
 	</update>
 
-	<update id="updateAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+	<update id="updateAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.PersonParam">
 		UPDATE person_additional_keys
-		SET key_value = #keyValue#
+		SET key_value = #additionalKeyValue#
 		WHERE person_id = #personId#
-		AND key_name = #keyName#
+		AND key_name = #additionalKeyName#
 	</update>
 
 	<delete id="removeResourceRelation" parameterClass="int">
@@ -146,10 +146,10 @@
 		WHERE person_change_id = #personNameId#
 	</delete>
 
-	<delete id="deleteAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.person.PersonAdditionalKeyParam">
+	<delete id="deleteAdditionalKeyForPerson" parameterClass="org.bibsonomy.database.params.PersonParam">
 		DELETE FROM person_additional_keys
 		WHERE person_id = #personId#
-		AND key_name = #keyName#
+		AND key_name = #additionalKeyName#
 	</delete>
 
 	<delete id="deletePersonNamesByPersonId" parameterClass="string">
@@ -199,7 +199,6 @@
 		WHERE
 			pub_person.person_id = #personRelation.person.personId#
 	</select>
-	
 
 	<select id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
 		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
@@ -253,7 +252,7 @@
 	</select>
 
 	<select id="getMatches" resultMap="PersonCommon.personMatch">
-		SELECT match_id, person1_id, person2_id, state
+		SELECT match_id, target_person_id, source_person_id, state
 		FROM person_match
 		WHERE state = 0
 	</select>
@@ -268,15 +267,15 @@
 	</select>
 
 	<select id="getMatchbyID" parameterClass="int" resultMap="PersonCommon.personMatch">
-		SELECT match_id, person1_id, person2_id, state
+		SELECT match_id, target_person_id, source_person_id, state
 		FROM person_match
 		WHERE match_id = #matchID#
 	</select>
 	
 	<select id="getMatchesFor" parameterClass="string" resultMap="PersonCommon.personMatch">
-		SELECT match_id, person1_id, person2_id, state
+		SELECT match_id, target_person_id, source_person_id, state
 		FROM person_match
-		WHERE (person1_id = #personid# OR person2_id = #personid#)
+		WHERE (target_person_id = #personid# OR source_person_id = #personid#)
 		AND state = 0
 	</select>
 	
@@ -292,7 +291,7 @@
 	
 	<delete id="removeReflexivPersonMatches">
 		DELETE FROM person_match
-		WHERE person1_id = person2_id
+		WHERE target_person_id = source_person_id
 	</delete>
 	
 	<delete id="removePersonMatch" parameterClass="int">
@@ -308,8 +307,8 @@
 	
 	<update id="updatePersonMatchAfterMerge" parameterClass="personMatch">
 		UPDATE person_match
-		SET person1_id = IF(person1_id = #person2.personId#, #person1.personId#, person1_id),
-			person2_id = IF(person2_id = #person2.personId#, #person1.personId#, person2_id)
+		SET target_person_id = IF(target_person_id = #sourcePerson.personId#, #targetPerson.personId#, target_person_id),
+			source_person_id = IF(source_person_id = #sourcePerson.personId#, #targetPerson.personId#, source_person_id)
 		WHERE match_id != #matchID# and state != 2
 	</update>
 	
@@ -322,8 +321,8 @@
 	<select id="getSimilarMatchesForMatch" parameterClass="personMatch" resultMap="PersonCommon.personMatch">
 		SELECT *
 		FROM person_match
-		WHERE (person1_id = #person1.personId# AND person2_id = #person2.personId#)
-		OR (person1_id = #person2.personId# AND person2_id = #person1.personId#)
+		WHERE (target_person_id = #targetPerson.personId# AND source_person_id = #sourcePerson.personId#)
+		OR (target_person_id = #sourcePerson.personId# AND source_person_id = #targetPerson.personId#)
 	</select>
 
 	<select id="getHabilForPerson" parameterClass="string" resultMap="GoldStandardPublicationCommon.goldStandardPost">
@@ -353,9 +352,9 @@
 	</select>
 
 	<select id="getPersonForward" resultClass='string' parameterClass='string'>
-		SELECT person1_id
+		SELECT target_person_id
 		FROM person_match
-		WHERE person2_id = #personId#
+		WHERE source_person_id = #personId#
 		AND state = 2
 	</select>
 
@@ -376,7 +375,7 @@
 		order by confidence desc
 	</select>
 
-	<select id="getPersonsByOrganization" parameterClass="org.bibsonomy.database.params.person.GetPersonByOrganizationParam" resultMap="PersonCommon.personWithNamesPrefilled">
+	<select id="getPersonsByOrganization" parameterClass="org.bibsonomy.database.params.PersonParam" resultMap="PersonCommon.personWithNamesPrefilled">
 		SELECT <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
 		FROM person
 		JOIN person_name ON (person.person_id = person_name.person_id)
@@ -401,4 +400,13 @@
 		AND c.target_type = 2
 	</select>
 
+	<select id="getResourcePersonRelationAfterChangeDate" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT <include refid="allGoldStandardPublicationAttributesAnonymWithPostAttributes" />,
+		<include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM gold_standard b
+		<include refid="reviewRatingsJoinPublication" />
+		JOIN pub_person USING(simhash1)
+		WHERE pub_person.log_changed_at >= #changeDate#
+		ORDER BY pub_person.person_id, pub_person.log_changed_at
+	</select>
 </sqlMap>

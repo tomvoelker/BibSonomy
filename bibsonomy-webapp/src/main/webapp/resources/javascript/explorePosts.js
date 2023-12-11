@@ -22,7 +22,11 @@ function getFilterQuery(filterList) {
     var matchValues = selectedFilters.join(' OR ');
 
     if (matchValues) {
-        return field + ':(' + matchValues + ')';
+        if (field) {
+            return field + ':(' + matchValues + ')';
+        } else {
+            return '(' + matchValues + ')';
+        }
     }
 
     return '';
@@ -65,14 +69,15 @@ function validateYearFilters() {
 /**
  * Create a button HTML-Element for a filter.
  *
- * @param tag
- * @param label
+ * @param value tag or search value for the filter
+ * @param label shown label for the filter button
+ * @param title description title for the filter button
  * @returns {string}
  */
-function createFilterButton(tag, label) {
+function createFilterButton(value, label, title) {
     var element = '<button class="btn btn-default btn-block filter-entry" ' +
-        'title="' + label + '" ' +
-        'data-value="' + tag + '">' +
+        'title="' + title + '" ' +
+        'data-value="' + value + '">' +
         label + '</button>';
 
     return element;

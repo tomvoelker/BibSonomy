@@ -2,11 +2,15 @@
 		  xmlns:c="http://java.sun.com/jsp/jstl/core"
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true"/>
 	<jsp:directive.attribute name="publications" type="java.util.List" required="false"/>
 	<jsp:directive.attribute name="relations" type="java.util.List" required="false"/>
+	<jsp:directive.attribute name="disableEdit" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="isSimilarAuthors" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="onlyLinkAuthorsWithPersons" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="reportFunction" type="java.lang.String" required="false"/>
@@ -29,6 +33,7 @@
 					<c:forEach var="publication" items="${publications}">
 						<per:simplePublicationView post="${publication}"
 												   showButtons="${true}"
+												   disableEdit="${disableEdit}"
 												   onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
 												   referer="${referer}" />
 					</c:forEach>
@@ -37,12 +42,14 @@
 			<c:when test="${fn:length(relations) gt 0}">
 				<ul class="posts relations">
 					<c:forEach var="relation" items="${relations}">
+						<c:set var="post" value="${relation.post}"/>
+
 						<per:simpleRelationView relation="${relation}"
 												showButtons="${true}"
+												disableEdit="${disableEdit}"
 												personId="${personId}"
 												addPub="${isSimilarAuthors}"
-												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"
-												reportFunction="${reportFunction}"/>
+												onlyLinkAuthorsWithPersons="${onlyLinkAuthorsWithPersons}"/>
 					</c:forEach>
 				</ul>
 			</c:when>
