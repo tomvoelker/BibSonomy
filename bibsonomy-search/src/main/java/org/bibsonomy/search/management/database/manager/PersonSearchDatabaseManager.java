@@ -36,7 +36,6 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.ResourcePersonRelationLogStub;
 
 /**
  * TODO: add documentation to this class
@@ -44,11 +43,6 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
  * @author jensi
  */
 public class PersonSearchDatabaseManager extends AbstractDatabaseManager {
-
-	public List<ResourcePersonRelationLogStub> getPubPersonChangesByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive, DBSession databaseSession) {
-		final Pair<Long, Long> range = new Pair<>(fromPersonChangeId, toPersonChangeIdExclusive);
-		return this.queryForList("getPubPersonChangesByChangeIdRange", range, ResourcePersonRelationLogStub.class, databaseSession);
-	}
 
 	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive, DBSession databaseSession) {
 		final Pair<Long, Long> range = new Pair<>(firstChangeId, toPersonChangeIdExclusive);
@@ -59,4 +53,5 @@ public class PersonSearchDatabaseManager extends AbstractDatabaseManager {
 		final Pair<Long, Long> range = new Pair<>(firstChangeId, toPersonChangeIdExclusive);
 		return this.queryForList("getPersonByChangeIdRange", range, Person.class, databaseSession);
 	}
+
 }

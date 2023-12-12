@@ -49,6 +49,8 @@ public class SearchIndexState {
 	public static final String FIELD_INDEX_ID = "index_id";
 	public static final String FIELD_MAPPING_VERSION = "mapping_version";
 	public static final String FIELD_UPDATED_AT = "updated_at";
+	public static final String FIELD_BUILD_DATE = "build_date";
+	public static final String FIELD_BUILD_TIME = "build_time";
 	public static final String FIELD_ENTITY_ID = "entity_id";
 	public static final String FIELD_ENTITY_LOG_DATE = "entity_log_date";
 	public static final String FIELD_COMMUNITY_ENTITY_ID = "community_entity_id";
@@ -72,6 +74,11 @@ public class SearchIndexState {
 	private String mappingVersion;
 	/** Timestamp when the index was last updated at */
 	private Date updatedAt;
+	/** Timestamp when the index was originally build */
+	private Date buildDate;
+	/** Build time for the initial generation of this index (in minutes) */
+	private Integer buildTime;
+	/** List of errors for the search index */
 	private List<SearchIndexError> errors;
 
 	/** Last entity ID and change log date in DB from previous index update */
@@ -113,6 +120,8 @@ public class SearchIndexState {
 		this.indexId = state.indexId;
 		this.mappingVersion = state.mappingVersion;
 		this.updatedAt = state.updatedAt;
+		this.buildDate = state.buildDate;
+		this.buildTime = state.buildTime;
 		this.errors = state.errors;
 
 		this.entityId = state.entityId;

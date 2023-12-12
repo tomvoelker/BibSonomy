@@ -28,7 +28,7 @@ function openEditRecommender(type) {
 	$("#editRecoTitle").text($("#editRecoTitle").text().replace(/Recommender/g, type + " Recommender"));
 	$("#editRecoTitle").text($("#editRecoTitle").text().replace(/recommender/g, type.toLowerCase() + " recommender"));
 	$("#editRecommenderForm").prop("action",
-			"/admin/recommender?action=edit" + type + "Recommender");
+			"/admin/recommenders?action=edit" + type + "Recommender");
 	$("#recommenderEditDiv").show();
 
 }

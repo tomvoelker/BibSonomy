@@ -29,26 +29,25 @@
  */
 package de.unikassel.puma.webapp.command.ajax;
 
+import de.unikassel.puma.openaccess.sword.PumaData;
+import lombok.Getter;
+import lombok.Setter;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
 /**
  * @author philipp
  */
+@Getter
+@Setter
 public class SwordServiceCommand extends AjaxCommand {
 
-	private String resourceHash;
+	private String username;
 
-	/**
-	 * @return the resourceHash
-	 */
-	public String getResourceHash() {
-		return this.resourceHash;
-	}
+	private String intrahash;
 
-	/**
-	 * @param resourceHash the resourceHash to set
-	 */
-	public void setResourceHash(final String resourceHash) {
-		this.resourceHash = resourceHash;
-	}	
+	private String interhash;
+
+	private PumaData<BibTex> pumaData;
+
 }

@@ -85,69 +85,50 @@ public class PublicationClassificationController extends AjaxController implemen
 		final String action = command.getAction();
 		
 		if (present(action)) {
-			if (GET_AVAILABLE_CLASSIFICATIONS.equals(action)) {
-				final JSONArray jsonArray = new JSONArray();
-				jsonArray.addAll(this.classificator.getAvailableClassifications());
-				json.put("available", jsonArray);
-			} else if (SAVE_CLASSIFICATION_ITEM.equals(action)) {
-				// save classification data to database
-				// implement return value to verify storing of classification 
-				this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());				
-				this.logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
+			switch (action) {
+				case GET_AVAILABLE_CLASSIFICATIONS:
+					final JSONArray jsonArray = new JSONArray();
+					jsonArray.addAll(this.classificator.getAvailableClassifications());
+					json.put("available", jsonArray);
+					break;
+				case SAVE_CLASSIFICATION_ITEM:
+					// save classification data to database
+					// implement return value to verify storing of classification
+					this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
+					this.logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
 
-				// TODO: why are we here returning "Hello world "?
-				json.put("saveTEST", "Hello World"+command.getHash()+" / "+command.getKey()+" = "+command.getValue());
-			} else if(SAVE_ADDITIONAL_METADATA.equals(action)) {
-				final JSONObject jsonData = (JSONObject) JSONSerializer.toJSON(command.getValue());
+					// TODO: why are we here returning "Hello world "?
+					json.put("saveTEST", "Hello World" + command.getHash() + " / " + command.getKey() + " = " + command.getValue());
+					break;
+				case REMOVE_CLASSIFICATION_ITEM:
+					// delete extended fields
+					this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
 
-				// save classification data to database
-				for (final String key : SwordService.AF_FIELD_NAMES) {
-					// implement return value to verify storing of classification 
-					this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), key, null);				
-					this.logic.createExtendedField(BibTex.class, loginUserName, command.getHash(), key, jsonData.getString(key));
-				}
+					// TODO: why are we here returning "Hallo Welt "?
+					json.put("removeTEST", "Hallo Welt " + command.getHash() + " / " + command.getKey());
+					break;
+				case GET_POST_CLASSIFICATION_LIST: {
+					// get extended fields
+					final Map<String, List<String>> classificationMap = this.logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
 
-				// TODO: why are we here returning "Hello world "?
-				json.put("saveTEST", "Hello World" + command.getHash() + " / " + command.getKey() + " = " + command.getValue());
-			} else if(GET_ADDITIONAL_METADATA.equals(action)) {
-				// get extended fields
-				final Map<String, List<String>> classificationMap = this.logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
-
-				// build json output  
-				final Set<Classification> availableClassifications = this.classificator.getAvailableClassifications();
-				L: for (final Entry<String, List<String>> entry : classificationMap.entrySet()) {
-					for(final Classification c : availableClassifications) {
-						if(c.getName().equals(entry.getKey()))
-							continue L;
+					// build json output
+					final Set<Classification> availableClassifications = this.classificator.getAvailableClassifications();
+					final Set<String> availableClassificationsNames = new HashSet<String>();
+					for (final Classification cfn : availableClassifications) {
+						availableClassificationsNames.add(cfn.getName());
 					}
-					json.put(entry.getKey(), entry.getValue());
-					
-				}
-			} else if (REMOVE_CLASSIFICATION_ITEM.equals(action)) {
-				// delete extended fields
-				this.logic.deleteExtendedField(BibTex.class, loginUserName, command.getHash(), command.getKey(), command.getValue());
-
-				// TODO: why are we here returning "Hallo Welt "?
-				json.put("removeTEST", "Hallo Welt " + command.getHash() + " / " + command.getKey());
-			} else if (GET_POST_CLASSIFICATION_LIST.equals(action)) {
-				// get extended fields
-				final Map<String, List<String>> classificationMap = this.logic.getExtendedFields(BibTex.class, loginUserName, command.getHash(), null);
-
-				// build json output  
-				final Set<Classification> availableClassifications = this.classificator.getAvailableClassifications();
-				final Set<String> availableClassificationsNames = new HashSet<String>();
-				for (final Classification cfn : availableClassifications) {
-					availableClassificationsNames.add(cfn.getName());
-				} 
-				for (final Entry<String, List<String>> classificationEntry : classificationMap.entrySet()) {
-					if ( availableClassificationsNames.contains(classificationEntry.getKey())) {
-						json.put(classificationEntry.getKey(), classificationEntry.getValue());
+					for (final Entry<String, List<String>> classificationEntry : classificationMap.entrySet()) {
+						if (availableClassificationsNames.contains(classificationEntry.getKey())) {
+							json.put(classificationEntry.getKey(), classificationEntry.getValue());
+						}
 					}
+					break;
 				}
-			} else if (GET_CLASSIFICATION_DESCRIPTION.equals(action)) {
-				json.put("name", command.getKey());
-				json.put("value", command.getValue());
-				json.put("description", this.classificator.getDescription(command.getKey(), command.getValue()));
+				case GET_CLASSIFICATION_DESCRIPTION:
+					json.put("name", command.getKey());
+					json.put("value", command.getValue());
+					json.put("description", this.classificator.getDescription(command.getKey(), command.getValue()));
+					break;
 			}
 		} else {
 			final JSONArray jsonArray = new JSONArray();

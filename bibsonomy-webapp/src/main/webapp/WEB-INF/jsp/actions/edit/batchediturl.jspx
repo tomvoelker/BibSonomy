@@ -24,8 +24,13 @@
 		<c:set var="overwrite" value="${command.overwrite}" />
 	</mtl:exists>
 
-    <batch:skeleton listView="${command.bookmark}" resourceType="bookmark" listViewStartParamName="bookmark.start" otherPostsUrlPrefix="/bookmark" updateExistingPost="${updateExistingPost}" overwrite="${overwrite}">
-      <jsp:attribute name="shortPostDescription"><bm:shortDescription post="${post}"/></jsp:attribute>
-    </batch:skeleton>
+    <batch:batchEditSkeleton listView="${command.bookmark}"
+							 resourceType="bookmark"
+							 listViewStartParamName="bookmark.start"
+							 otherPostsUrlPrefix="/bookmark"
+							 updateExistingPost="${updateExistingPost}"
+							 overwrite="${overwrite}">
+		<jsp:attribute name="shortPostDescription"><bm:shortDescription post="${post}"/></jsp:attribute>
+    </batch:batchEditSkeleton>
 
 </jsp:root>

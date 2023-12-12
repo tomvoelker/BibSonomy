@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mets:mets ID="sort-mets_mets" OBJID="sword-mets" LABEL="METS/MODS SWORD Item" PROFILE="METS/MODS SIP Profile 1.0" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods.xsd" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:mets="http://www.loc.gov/METS/" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <mets:metsHdr CREATEDATE="2023-11-10T16:49:12.436+01:00">
+        <mets:agent ROLE="CUSTODIAN" TYPE="ORGANIZATION">
+            <mets:name>PUMA</mets:name>
+        </mets:agent>
+    </mets:metsHdr>
+    <mets:dmdSec ID="sword-mets-dmd-1" GROUPID="sword-mets-dmd-1_group-1">
+        <mets:mdWrap LABEL="SWAP Metadata" MDTYPE="MODS" MIMETYPE="text/xml">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:typeOfResource>text</mods:typeOfResource>
+                    <mods:genre>article</mods:genre>
+                    <mods:titleInfo>
+                        <mods:title>Ernst Lubitsch and EFA</mods:title>
+                    </mods:titleInfo>
+                    <mods:relatedItem xlink:type="host">
+                        <mods:titleInfo>
+                            <mods:title>Film History: An International Journal</mods:title>
+                        </mods:titleInfo>
+                        <mods:part>
+                            <mods:detail type="volume">
+                                <mods:number>21</mods:number>
+                            </mods:detail>
+                        </mods:part>
+                    </mods:relatedItem>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Drössler</mods:namePart>
+                        <mods:namePart type="given">Stefan</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:originInfo>
+                        <mods:dateIssued encoding="iso8601">2009-09</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:identifier type="doi">10.1353/fih.0.0061</mods:identifier>
+                    <mods:accessCondition/>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp ID="sword-mets-fgrp-1" USE="CONTENT">
+            <mets:file ID="sword-mets-file-0" GROUPID="sword-mets-fgid-0" MIMETYPE="application/pdf" CHECKSUM="TEST_MD5_HASH" CHECKSUMTYPE="MD5">
+                <mets:FLocat LOCTYPE="URL" xlink:href="testdocument-3.pdf"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap ID="sword-mets-struct-1" TYPE="LOGICAL" LABEL="structure">
+        <mets:div ID="sword-mets-div-0" DMDID="sword-mets-dmd-1" TYPE="SWORD Object">
+            <mets:div ID="sword-mets-div-1" TYPE="File">
+                <mets:fptr FILEID="sword-mets-file-0"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

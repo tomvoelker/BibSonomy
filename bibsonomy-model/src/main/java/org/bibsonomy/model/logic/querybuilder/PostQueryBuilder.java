@@ -56,6 +56,8 @@ public class PostQueryBuilder extends BasicQueryBuilder<PostQueryBuilder> {
 	private Set<Filter> filters;
 	private Date startDate;
 	private Date endDate;
+	private Date beforeChangeDate;
+	private Date afterChangeDate;
 	private boolean onlyIncludeAuthorsWithoutPersonId;
 	private List<PersonName> personNames;
 	private String college;
@@ -73,6 +75,8 @@ public class PostQueryBuilder extends BasicQueryBuilder<PostQueryBuilder> {
 		postQuery.setFilters(filters);
 		postQuery.setStartDate(startDate);
 		postQuery.setEndDate(endDate);
+		postQuery.setBeforeChangeDate(beforeChangeDate);
+		postQuery.setAfterChangeDate(afterChangeDate);
 		postQuery.setPersonNames(personNames);
 		postQuery.setOnlyIncludeAuthorsWithoutPersonId(onlyIncludeAuthorsWithoutPersonId);
 		postQuery.setStart(start);
@@ -135,6 +139,16 @@ public class PostQueryBuilder extends BasicQueryBuilder<PostQueryBuilder> {
 
 	public PostQueryBuilder setEndDate(Date endDate) {
 		this.endDate = endDate;
+		return this;
+	}
+
+	public PostQueryBuilder setBeforeChangeDate(Date beforeChangeDate) {
+		this.beforeChangeDate = beforeChangeDate;
+		return this;
+	}
+
+	public PostQueryBuilder setAfterChangeDate(Date afterChangeDate) {
+		this.afterChangeDate = afterChangeDate;
 		return this;
 	}
 

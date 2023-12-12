@@ -60,6 +60,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -154,12 +155,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public Person getPersonByAdditionalKey(String key, String value) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	@Override
 	public List<Person> getPersons(PersonQuery query) {
 		this.doDefaultAction();
 		return null;
@@ -211,6 +206,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public List<JobResult> approvePost(Post<BibTex> post, String username) {
 		this.doDefaultAction();
 		return null;
 	}

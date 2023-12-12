@@ -818,7 +818,7 @@
 		VALUES (#intraHash#, #interHash#, #userName#, #repositoryName#)
 	</insert>
 	
-	<select id="selectBibtexWithRepositorys" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPostWithRepositorys">
+	<select id="selectBibtexWithRepositories" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPostWithRepositories">
 		SELECT <include refid="allBibtexAttributesWithSimHashes" />, <include refid="allRepositoryAttributes" />, 
 			t.change_date, t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />

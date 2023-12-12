@@ -17,11 +17,6 @@
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
 	
 	<c:set var="publication" value="${post.resource}"/>
-	
-	<c:set var="openAccessEnabled" value="${properties['publication.reporting.enabled'] eq 'true'}" />
-	<c:if test="${openAccessEnabled}">
-		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!--  --></script>
-	</c:if>
 
 	<div id="license">
 		<div id="license_header">

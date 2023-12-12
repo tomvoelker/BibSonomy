@@ -35,8 +35,10 @@ import static org.hamcrest.CoreMatchers.is;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.logic.query.PersonQuery;
+import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.junit.Test;
+import org.springframework.security.access.method.P;
 
 import java.util.List;
 
@@ -70,7 +72,9 @@ public class ElasticsearchPersonSearchITCase extends AbstractPersonSearchTest {
 	}
 
 	private void assertPersonSuggestion(final String query) {
-		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(new PersonQuery(query));
+		final PersonQuery personQuery = new PersonQueryBuilder().search(query).build();
+
+		final List<Person> personSuggestions = PERSON_SEARCH.getPersons(personQuery);
 		assertThat(personSuggestions.size(), is(1));
 
 		final Person person = personSuggestions.get(0);

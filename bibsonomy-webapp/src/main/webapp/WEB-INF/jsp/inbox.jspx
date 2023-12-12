@@ -16,8 +16,7 @@
 	<layout:resourceLayout pageTitle="${inboxPageTitle}" 
 			command="${command}" 
 			requPath="${requPath}"  
-			showPageOptions="${true}"
-			showInboxActions="${true}">
+			showPageOptions="${true}">
 			
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-confirmation.js"><!-- keep me --></script>

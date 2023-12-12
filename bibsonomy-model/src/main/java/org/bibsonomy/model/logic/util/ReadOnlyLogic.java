@@ -61,6 +61,7 @@ import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -175,6 +176,12 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
+		throwReadOnlyException();
+		return null;
+	}
+
+	@Override
+	public List<JobResult> approvePost(Post<BibTex> post, String username) {
 		throwReadOnlyException();
 		return null;
 	}
@@ -847,11 +854,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
 		return this.logicinterface.getPersonById(idType, id);
-	}
-
-	@Override
-	public Person getPersonByAdditionalKey(String keyName, String keyValue) {
-		return this.logicinterface.getPersonByAdditionalKey(keyName, keyValue);
 	}
 
 	@Override

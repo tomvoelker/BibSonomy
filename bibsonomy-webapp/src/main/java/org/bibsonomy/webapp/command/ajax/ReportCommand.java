@@ -15,6 +15,7 @@ public class ReportCommand extends AjaxCommand {
     private String title;
     private String interhash;
     private String intrahash;
+    private String message;
 
     // field for the reporter
     private String referer;

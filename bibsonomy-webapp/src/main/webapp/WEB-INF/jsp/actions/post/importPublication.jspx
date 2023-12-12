@@ -9,8 +9,7 @@
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors">
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
@@ -18,22 +17,20 @@
 	<c:set var="isadmin" value="${command.context.loginUser.role eq 'ADMIN'}" />
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
-		pageTitle="${pageTitle}" 
-		sidebar="${sidebar}"
+		pageTitle="${pageTitle}"
 		noSidebar="${true}"
 		requPath="${requPath}">
 		
 		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/configuration.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/extraEntrytypes.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			<div id="post-publication" class="row">
 				<div class="col-sm-12">
 					<h1 class="content-heading"><fmt:message key="publication.import.title"/></h1>
-					
-					<errors:global />
 					
 					<c:choose>
 						<c:when test="${not empty command.bibtex and not empty command.bibtex.list}">
@@ -96,7 +93,7 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<bs:didYouKnow command="${command}"></bs:didYouKnow>
+					<bs:didYouKnow command="${command}" />
 				</jsp:attribute>
 			</parts:infobox>
 		</jsp:attribute>

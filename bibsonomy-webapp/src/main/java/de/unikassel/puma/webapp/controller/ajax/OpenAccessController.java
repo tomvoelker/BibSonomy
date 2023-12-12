@@ -32,9 +32,10 @@ package de.unikassel.puma.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -42,6 +43,7 @@ import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.querybuilder.PostQueryBuilder;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -49,31 +51,25 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import de.unikassel.puma.openaccess.sherparomeo.SherpaRomeoImpl;
-import de.unikassel.puma.openaccess.sherparomeo.SherpaRomeoInterface;
 import de.unikassel.puma.webapp.command.ajax.OpenAccessCommand;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * @author clemens
  */
+@Getter
+@Setter
 public class OpenAccessController extends AjaxController implements MinimalisticController<OpenAccessCommand> {
 
 	private static final String GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";
-	private static final String SHERPAROMEO = "SHERPAROMEO";
+	private static final String DISSEMIN = "DISSEMIN";
 
-	private SherpaRomeoInterface sherpaLogic;
-	
+	private DisseminController disseminController;
 	private int maxQuerySize;
-	
-	@Override
-	public OpenAccessCommand instantiateCommand() {
-		return new OpenAccessCommand();
-	}
 
 	@Override
 	public View workOn(final OpenAccessCommand command) {
-		final JSONObject json = new JSONObject();
-
 		// check if user is logged in
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("error.method_not_allowed");
@@ -81,62 +77,51 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		
 		final String action = command.getAction();
 		if (present(action)) {
-			if (GET_SENT_REPOSITORIES.equals(action)) {
-				final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
-				postQueryBuilder.setGrouping(GroupingEntity.USER)
-						.setGroupingName(command.getContext().getLoginUser().getName())
-						.setScope(QueryScope.LOCAL)
-						.setFilters(Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY))
-						.entriesStartingAt(this.maxQuerySize, 0); // TODO: adapt limit to get all posts
-				final List<Post<BibTex>> posts = logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
+			switch (action) {
+				case GET_SENT_REPOSITORIES:
+					final JSONObject responseJson = new JSONObject();
+					final PostQueryBuilder postQueryBuilder = new PostQueryBuilder()
+							.setGrouping(GroupingEntity.USER)
+							.setGroupingName(command.getContext().getLoginUser().getName())
+							.setScope(QueryScope.LOCAL)
+							.setFilters(Sets.asSet(FilterEntity.POSTS_WITH_REPOSITORY))
+							.entriesStartingAt(this.maxQuerySize, 0); // TODO retrieve all posts
+					final List<Post<BibTex>> posts = logic.getPosts(postQueryBuilder.createPostQuery(BibTex.class));
 
-				// TODO: implement this
-				/*
-				 * Schleife Ã¼ber alle Posts
-				 * nimm Repository-Speicher-Datum und User
-				 * schreibe JSON-Output mit Datum und Flag ob selbst versendet oder durch wen anderes
-				 * 
-				 * Titel, Link mit intrahash, Datum
-				 */
-				final JSONObject jsonpost = new JSONObject();
-				for (final Post<BibTex> p : posts) {
-					final JSONObject jsonObject = new JSONObject();
-					final JSONArray jsonArray = new JSONArray();
-					jsonArray.addAll(p.getRepositorys());
-					jsonObject.put("repositories", jsonArray);
-					jsonObject.put("selfsent", (command.getContext().getLoginUser().getName().equals(p.getUser().getName())?1:0) );
-					jsonObject.put("intrahash", p.getResource().getIntraHash());
-					jsonpost.put(p.getResource().getIntraHash(), jsonObject);
-				}
-				
-				json.put("posts", jsonpost);
-				command.setResponseString(json.toString());
-				return Views.AJAX_JSON;
-			}
-			
-			if (SHERPAROMEO.equals(action)) {
-				// TODO: config via spring + singleton
-				this.sherpaLogic = new SherpaRomeoImpl();
-		
-				if (command.getPublisher() != null) {
-					command.setResponseString(this.sherpaLogic.getPolicyForPublisher(command.getPublisher(), command.getqType()));
-				}
-				if (command.getjTitle() != null) {
-					command.setResponseString(this.sherpaLogic.getPolicyForJournal(command.getjTitle(), command.getqType()));			
-				}
-		
-				return Views.AJAX_JSON;
+					/*
+					 * Iterate all retrieved posts and build a JSON document.
+					 * The JSON document contains information about the post's intrahash, the repository-sent-date and the sender.
+					 */
+					final JSONObject jsonPosts = new JSONObject();
+					for (final Post<BibTex> post : posts) {
+						final JSONObject postJson = new JSONObject();
+						final JSONArray repositoriesJson = new JSONArray();
+						repositoriesJson.addAll(post.getRepositories());
+						postJson.put("repositories", repositoriesJson);
+						postJson.put("sentBySelf", (command.getContext().getLoginUser().getName().equals(post.getUser().getName()) ? 1 : 0));
+						postJson.put("intrahash", post.getResource().getIntraHash());
+						jsonPosts.put(post.getResource().getIntraHash(), postJson);
+					}
+
+					responseJson.put("posts", jsonPosts);
+					command.setResponseString(responseJson.toString());
+					break;
+				case DISSEMIN:
+					Post<? extends Resource> post = logic.getPostDetails(command.getIntrahash(), command.getContext().getLoginUser().getName());
+					Map<String, String> policy = this.disseminController.getPolicyForPost((Post<? extends BibTex>) post);
+					command.setPolicy(policy);
+					return Views.AJAX_DISSEMIN;
+				default:
+					break;
 			}
 		}
-		
+
 		return Views.AJAX_JSON;
 	}
 
-	/**
-	 * @param maxQuerySize the maxQuerySize to set
-	 */
-	public void setMaxQuerySize(int maxQuerySize) {
-		this.maxQuerySize = maxQuerySize;
+	@Override
+	public OpenAccessCommand instantiateCommand() {
+		return new OpenAccessCommand();
 	}
 
 }

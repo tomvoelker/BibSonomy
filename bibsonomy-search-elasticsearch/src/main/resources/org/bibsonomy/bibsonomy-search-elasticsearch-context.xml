@@ -32,7 +32,7 @@
 	</bean>
 
 	<bean id="isIndexUpdateEnabled" class="java.lang.Boolean">
-		<constructor-arg value="${search.update.enabled}" />
+		<constructor-arg value="${search.es.update.enabled}" />
 	</bean>
 
 	<bean id="systemURI" class="java.net.URI">

@@ -45,7 +45,7 @@
 		<constructor-arg name="oneToManyEntityInformationProvider" ref="elasticsearchPersonEntityInformationProvider" />
 		<constructor-arg name="updateIndexLogic" ref="personAndPersonRelationUpdateLogic" />
 		<constructor-arg name="databaseInformationLogic" ref="personDatabaseInformationLogic" />
-		<constructor-arg name="regenerateEnabled" value="false" />
+		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.person}" />
 	</bean>
 
 </beans>

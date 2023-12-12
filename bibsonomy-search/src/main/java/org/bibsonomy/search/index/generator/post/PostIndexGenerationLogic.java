@@ -40,7 +40,6 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -82,10 +81,6 @@ public class PostIndexGenerationLogic<R extends Resource> extends AbstractDataba
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> queryForSearchPosts(final String query, final Object param, final DBSession session) {
 		final List<Post<R>> posts = (List<Post<R>>) this.queryForList(query, param, session);
-		// FIXME: remove ugly instance of check!
-		if (BibTex.class.isAssignableFrom(this.resourceClass)) {
-			setPersonRelations(posts, session);
-		}
 		return posts;
 	}
 
