@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mets:mets ID="sort-mets_mets" OBJID="sword-mets" LABEL="METS/MODS SWORD Item" PROFILE="METS/MODS SIP Profile 1.0" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods.xsd" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:mets="http://www.loc.gov/METS/" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <mets:metsHdr CREATEDATE="2023-11-10T16:48:38.217+01:00">
+        <mets:agent ROLE="CUSTODIAN" TYPE="ORGANIZATION">
+            <mets:name>PUMA</mets:name>
+        </mets:agent>
+    </mets:metsHdr>
+    <mets:dmdSec ID="sword-mets-dmd-1" GROUPID="sword-mets-dmd-1_group-1">
+        <mets:mdWrap LABEL="SWAP Metadata" MDTYPE="MODS" MIMETYPE="text/xml">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:typeOfResource>text</mods:typeOfResource>
+                    <mods:genre>article</mods:genre>
+                    <mods:titleInfo>
+                        <mods:title>Von Bottom up zu Top down. Umfrage: Forschende der Ingenieurwissenschaften erwarten klare Rahmenbedingungen von den Hochschulleitungen bei Open Access und Open Educational Resources </mods:title>
+                    </mods:titleInfo>
+                    <mods:relatedItem xlink:type="host">
+                        <mods:titleInfo>
+                            <mods:title>o-bib. Das offene Bibliotheksjournal / Herausgeber VDB</mods:title>
+                        </mods:titleInfo>
+                        <mods:part>
+                            <mods:detail type="volume">
+                                <mods:number>6</mods:number>
+                            </mods:detail>
+                            <mods:detail type="issue">
+                                <mods:number>2</mods:number>
+                            </mods:detail>
+                        </mods:part>
+                    </mods:relatedItem>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Elsner</mods:namePart>
+                        <mods:namePart type="given">Carsten</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Rosenke</mods:namePart>
+                        <mods:namePart type="given">Nicole</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Weber</mods:namePart>
+                        <mods:namePart type="given">Markus</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Hoppe</mods:namePart>
+                        <mods:namePart type="given">Christian</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Drößler</mods:namePart>
+                        <mods:namePart type="given">Stefan</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name xlink:type="personal">
+                        <mods:namePart type="family">Hermann</mods:namePart>
+                        <mods:namePart type="given">Sibylle</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm>author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:abstract>In den meisten Universitäten sind Dienste rund um das Open-Access-Publizieren inzwischen gut etabliert. Open Educational Resources spielen dagegen in vielen Fällen eine eher untergeordnete Rolle. Grundsätzlich ist zu beobachten, dass OA-Angebote in einzelnen Fachbereichen unterschiedlich wahrgenommen werden. Ingenieurwissenschaften sind durch ihre Anwendungsorientierung durch Industriekooperationen gut mit Geldmitteln ausgestattet und weniger auf öffentliche Drittmittel angewiesen, was ein Grund für den geringeren Umfang von OA-Publikationen sein kann. Gleichzeitig standen sie bisher nicht im Fokus der OA-Dienste. Im OpenIng-Projekt wurde aus diesem Grund eine Umfrage durchgeführt, um das Publikationsverhalten von Ingenieurinnen und Ingenieuren zu untersuchen. Nur so ist es möglich, bedarfsorientierte und zielgerichtete Dienste zu entwickeln. Die Umfrage hat gezeigt, dass bei der anvisierten Zielgruppe durchaus ein OA-Bewusstsein vorhanden ist, aber dieses nicht ausreicht, das Publikationsverhalten zu verändern. Ein Grund dafür sind unter anderem die unklaren Rahmenbedingungen, wann und wie OA veröffentlicht werden kann. Darüber hinaus wünschen sich die Ingenieurinnen und Ingenieure ein klares Mandat der Universitätsleitung für OA.</mods:abstract>
+                    <mods:originInfo>
+                        <mods:dateIssued encoding="iso8601">2019-07</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:identifier type="doi">10.5282/o-bib/2019H2S80-91</mods:identifier>
+                    <mods:accessCondition/>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp ID="sword-mets-fgrp-1" USE="CONTENT">
+            <mets:file ID="sword-mets-file-0" GROUPID="sword-mets-fgid-0" MIMETYPE="application/pdf" CHECKSUM="TEST_MD5_HASH" CHECKSUMTYPE="MD5">
+                <mets:FLocat LOCTYPE="URL" xlink:href="testdocument-1.pdf"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap ID="sword-mets-struct-1" TYPE="LOGICAL" LABEL="structure">
+        <mets:div ID="sword-mets-div-0" DMDID="sword-mets-dmd-1" TYPE="SWORD Object">
+            <mets:div ID="sword-mets-div-1" TYPE="File">
+                <mets:fptr FILEID="sword-mets-file-0"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

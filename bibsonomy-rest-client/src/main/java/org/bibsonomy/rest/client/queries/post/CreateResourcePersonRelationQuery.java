@@ -55,8 +55,7 @@ public class CreateResourcePersonRelationQuery extends AbstractQuery<String> {
         final StringWriter sw = new StringWriter(100);
         getRenderer().serializeResourcePersonRelation(sw, resourcePersonRelation, null);
         downloadedDocument = performRequest(HttpMethod.POST,
-                getUrlRenderer().createUrlBuilderForResourcePersonRelations(
-                        resourcePersonRelation.getPerson().getPersonId()).asString(),
+                getUrlRenderer().createUrlBuilderForPersonRelations(resourcePersonRelation.getPerson().getPersonId()).asString(),
                 StringUtils.toDefaultCharset(sw.toString()));
     }
 

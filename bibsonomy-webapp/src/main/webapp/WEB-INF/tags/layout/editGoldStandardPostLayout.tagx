@@ -10,7 +10,6 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -29,12 +28,14 @@
     <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
     <jsp:directive.attribute name="tags" fragment="true" required="false" />
-    <jsp:directive.attribute name="groups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
     <jsp:directive.attribute name="postOwner" type="org.bibsonomy.model.User" fragment="false" required="false" description="The owner of the current post" />
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
+
+	<c:set var="bibliographyUser" value="${properties['bibliography.bibliographyUser']}" />
+	<c:set var="showApprovalOptions" value="${not empty postApproval and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}" />
 
 	<layout:layout
 		loginUser="${command.context.loginUser}"
@@ -58,7 +59,17 @@
             <jsp:invoke fragment="headerExtResource"/>
             
             <script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
-            
+
+			<!-- script for custom entrytypes in PUMA instances -->
+			<c:if test="${resourceType eq 'Publication' or resourceType eq 'GoldStandardPublication'}">
+				<script type="text/javascript" src="${resdir}/javascript/configuration.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/customEntrytypes.js"><!-- keep me --></script>
+			</c:if>
+
+			<!-- plugin for multi select form -->
+			<script type='text/javascript' src='/resources/bootstrap/plugins/bootstrap-select/js/bootstrap-select.min.js'><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='/resources/bootstrap/plugins/bootstrap-select/css/bootstrap-select.min.css'/>
+
             <!--+
 				| JAVASCRIPT FOR TAG RECOMMENDATION
 				+-->
@@ -113,13 +124,9 @@
 							<h1 class="content-heading"><fmt:message key="post.resource.edit${resourceType}" /></h1>
 						</c:otherwise> 
 					</c:choose>
-					
-					<!--+ 
-						| show global errors / warnings
-						+ -->
-					<errors:global />
 
-					<c:if test="${not empty postOwner and postOwner ne command.context.loginUser}">
+					<c:set var="isGroupPost" value="${not empty postOwner and postOwner ne command.context.loginUser}" />
+					<c:if test="${isGroupPost}">
 						<div class="row">
 							<div class="alert alert-warning alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
@@ -153,6 +160,15 @@
 				 		<a name="generalInformation"><!--  --></a>
 				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
+							<jsp:attribute name="legendExt">
+								<fmt:message key="post.resource.fields.general.ext" var="generalInformationExt" />
+								<c:if test="${not empty generalInformationExt}">
+									<p class="help-block small">
+										<c:out value="${generalInformationExt}" escapeXml="${false}" />
+									</p>
+								</c:if>
+							</jsp:attribute>
+
 							<jsp:attribute name="content">
 								<jsp:invoke fragment="generalInformation"/>
 							</jsp:attribute>
@@ -169,9 +185,7 @@
 						<c:if test="${not empty detailedInformation}">
 							<jsp:invoke fragment="detailedInformation"/>
 						</c:if>
-						
-						
-							
+
 						<!--+
 							| a Captcha for our spammers ...
 							+-->
@@ -193,7 +207,7 @@
 						<!--+
 							| goldStandard post's approval  
 							+-->
-						<c:if test="${not empty postApproval and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}">
+						<c:if test="${showApprovalOptions}">
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>
 						
@@ -227,33 +241,26 @@
 									<fmt:message key="save" var="save" />
 									<fmt:message key="save.and.rate" var="saveAndRate" />
 									
-									
 									<div class="btn-toolbar cust-btn-toolbar">
 										<div class="btn-group">
-											<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="clear_tags();" tabindex="2"/>
+											<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="beforeSubmitForm();" tabindex="2"/>
 										</div>
 										<div class="btn-group">
-											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="clear_tags();" tabindex="2"/>
+											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="beforeSubmitForm();" tabindex="2"/>
 										</div>
-	
-										<c:if test="${not empty properties['bibliography.bibliographyUser']}">
-											<fmt:message key="save.and.send_to" var="saveAndSendTo">
-												<fmt:param value="${properties['bibliography.bibliographyUser']}"/>
+
+										<c:if test="${not empty bibliographyUser}">
+											<fmt:message key="save.and.sendToBibliography.hint" var="sendToBibliographyHint">
+												<fmt:param value="${bibliographyUser}"/>
 											</fmt:message>
 									
 											<div class="btn-group">
-												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendToBibliography('${properties['bibliography.bibliographyUser']}');" tabindex="2"/>
+												<bsform:button type="submit" id="save-send-post-button" size="defaultSize"
+															   name="saveAndSendTo" style="primary"
+															   valueKey="save.and.sendToBibliography" title="${sendToBibliographyHint}"
+															   onclick="addForFriendTag('${bibliographyUser}'); beforeSubmitForm();" tabindex="2"/>
 											</div>
 										</c:if>
-										<c:if test="${not empty groups}">
-											<fmt:message key="save.and.send_to" var="saveAndSendTo">
-												<fmt:param value="${groups}"/>
-											</fmt:message>
-									
-											<div class="btn-group">
-												<bsform:button type="submit" id="save-send-post-button" size="defaultSize" value="${saveAndSendTo}" name="saveAndSendTo" style="primary" onclick="sendGroupToBibliography('${groups}');" tabindex="2"/>
-											</div>
-										</c:if>			
 									</div>
 								</div>
 							</div>
@@ -295,17 +302,19 @@
 							<div class="btn-group">
 								<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');"><fmt:message key="save.and.rate" /></a>
 							</div>
-							
-							<c:if test="${not empty properties['bibliography.bibliographyUser']}">
-								<fmt:message key="save.and.send_to" var="saveAndSendTo">
-									<fmt:param value="${properties['bibliography.bibliographyUser']}"/>
+
+							<c:if test="${not empty bibliographyUser}">
+								<fmt:message key="save.and.sendToBibliography.hint" var="sendToBibliographyHint">
+									<fmt:param value="${bibliographyUser}"/>
 								</fmt:message>
-						
+
 								<div class="btn-group">
-									<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-send-post-button').trigger('click');">${saveAndSendTo}</a>
+									<a class="btn btn-primary btn-sm save-rate-post-item" title="${sendToBibliographyHint}"
+									   onclick="javascript: activateAffixEntry(this); $('#save-send-post-button').trigger('click');">
+										<fmt:message key="save.and.sendToBibliography"/>
+									</a>
 								</div>
 							</c:if>
-							
 						</div>
 					</div>
 				</div>

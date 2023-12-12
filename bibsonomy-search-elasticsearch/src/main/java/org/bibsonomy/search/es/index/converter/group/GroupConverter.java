@@ -64,6 +64,7 @@ public class GroupConverter implements Converter<Group, Map<String, Object>, Obj
 		final String realname = group.getRealname();
 		document.put(GroupFields.REALNAME, realname);
 		document.put(GroupFields.REALNAME_PREFIX, ElasticsearchIndexSearchUtils.getPrefixForString(present(realname) ? realname : name));
+		document.put(GroupFields.SORTNAME, present(realname) ? realname : name);
 
 		document.put(GroupFields.INTERNAL_ID, group.getInternalId());
 		document.put(GroupFields.ORGANIZATION, group.isOrganization());

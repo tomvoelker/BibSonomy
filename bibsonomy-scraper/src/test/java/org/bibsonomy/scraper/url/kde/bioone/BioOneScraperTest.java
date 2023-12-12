@@ -30,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.bioone;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,9 +39,33 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BioOneScraperTest {
+	String resultDirectory = "bioone/";
 
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("http://www.bioone.org/doi/abs/10.2113/gspalynol.32.1.1", BioOneScraper.class, "BioOneScraperScraperUnitURLTest1.bib");
+		final String url = "http://www.bioone.org/doi/abs/10.2113/gspalynol.32.1.1";
+		final String resultFile = resultDirectory + "BioOneScraperScraperUnitURLTest1.bib";
+		assertScraperResult(url, BioOneScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun() {
+		final String url = "https://bioone.org/journals/african-journal-of-wildlife-research/volume-51/issue-1/056.051.0136/Emerging-HumanCarnivore-Conflict-Following-Large-Carnivore-Reintroductions-Highlights-the-Need/10.3957/056.051.0136.short";
+		final String resultFile = resultDirectory + "BioOneScraperScraperUnitURLTest2.bib";
+		assertScraperResult(url, BioOneScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun() {
+		final String url = "https://bioone.org/journals/ambio-a-journal-of-the-human-environment/volume-31/issue-2/0044-7447-31.2.64/Reactive-Nitrogen-and-The-World-200-Years-of-Change/10.1579/0044-7447-31.2.64.short?tab=ArticleLinkCited";
+		final String resultFile = resultDirectory + "BioOneScraperScraperUnitURLTest3.bib";
+		assertScraperResult(url, BioOneScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun() {
+		final String url = "https://bioone.org/journals/canadian-journal-of-soil-science/volume-101/issue-1/cjss-2019-0136/Species-specific-responses-to-targeted-fertilizer-application-on-reconstructed-soils/10.1139/cjss-2019-0136.full?tab=ArticleLinkReference";
+		final String resultFile = resultDirectory + "BioOneScraperScraperUnitURLTest4.bib";
+		assertScraperResult(url, BioOneScraper.class, resultFile);
 	}
 }

@@ -41,7 +41,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.client.DeleteData;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.client.UpdateData;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.common.settings.Settings;
@@ -118,7 +118,7 @@ public interface ESClient {
 	 * @param syncStateForIndexName the index name of the index
 	 * @return
 	 */
-	<S extends SearchIndexSyncState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter);
+	<S extends SearchIndexState> S getSearchIndexStateForIndex(String indexName, String syncStateForIndexName, Converter<S, Map<String, Object>, Object> converter);
 	
 	/**
 	 * @param indexName the name of the index
@@ -237,10 +237,11 @@ public interface ESClient {
 	boolean deleteDocuments(String indexName, List<DeleteData> documentsToDelete);
 
 	/**
-	 * checks if the client can connect to the es instance
-	 * @return
+	 * Check, if the client is successfully connected to an elasticsearch instance
+	 *
+	 * @return true, if valid elasticsearch connection
 	 */
-	boolean isValidConnection();
+	boolean isConnected();
 
 	/**
 	 * gets the index settings for the specified index

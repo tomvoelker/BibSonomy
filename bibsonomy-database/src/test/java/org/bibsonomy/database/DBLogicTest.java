@@ -1187,7 +1187,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests the {@link PostUpdateOperation#UPDATE_REPOSITORY}	
+	 * tests the {@link PostUpdateOperation#UPDATE_REPOSITORIES}
 	 * @throws Exception 
 	 */
 	@Test
@@ -1204,24 +1204,24 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, createdPosts.size());
 		
 		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0).getId(), TEST_REQUEST_USER_NAME);
-		final List<Repository> repositorys = new ArrayList<>();
+		final List<Repository> repositories = new ArrayList<>();
 
 		Repository repo = new Repository();
 		repo.setId("TEST_REPOSITORY_1");
-		repositorys.add(repo );
-		createdPost.setRepositorys(repositorys );
+		repositories.add(repo );
+		createdPost.setRepositories(repositories );
 
-		List<JobResult> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		List<JobResult> updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORIES);
 		assertEquals(1, updatedPosts.size());
 
-		repositorys.clear();
+		repositories.clear();
 		
 		repo = new Repository();
 		repo.setId("TEST_REPOSITORY_2");
-		repositorys.add(repo );
-		createdPost.setRepositorys(repositorys );
+		repositories.add(repo );
+		createdPost.setRepositories(repositories );
 		
-		updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
+		updatedPosts = dbl.updatePosts(Collections.singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORIES);
 		assertEquals(1, updatedPosts.size());
 
 		final PostQueryBuilder postQueryBuilder = new PostQueryBuilder();
@@ -1236,13 +1236,13 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, posts.size());
 		
 		Post<BibTex> b = posts.get(0);
-		assertEquals(b.getRepositorys().size() , 2);
+		assertEquals(b.getRepositories().size() , 2);
 		
 		b = posts.get(1);
-		assertEquals(b.getRepositorys().size() , 1);
+		assertEquals(b.getRepositories().size() , 1);
 
 		b = posts.get(2);
-		assertEquals(b.getRepositorys().size() , 1);
+		assertEquals(b.getRepositories().size() , 1);
 	}
 
 	/**
@@ -1719,8 +1719,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void testGetAllGroups() {
 		LogicInterface logic = this.getDbLogic(DBLogicTest.TEST_USER_1);
 
-		final GroupQuery query = GroupQuery.builder().pending(false).userName(DBLogicTest.TEST_USER_1).
-						start(0).end(100).build();
+		final GroupQuery query = GroupQuery.builder().pending(false).start(0).end(100).build();
 		final List<Group> groups = logic.getGroups(query);
 
 		assertThat(groups.size(), equalTo(8));

@@ -8,7 +8,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:register="urn:jsptagdir:/WEB-INF/tags/actions/register"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
@@ -28,7 +27,7 @@
 				<div class="lead">
 					<p><fmt:message key="register.saml.step2.description"/></p>
 				</div>
-				<errors:global />
+
 				<bsform:fieldset legendKey="register.saml.required">
 					<jsp:attribute name="content">
 						<!--  SAML PROVIDER ID -->
@@ -57,11 +56,11 @@
 
 						<c:choose>
 							<c:when test="${command.forceRemoteUserIdAsUsername}">
-								<!-- LOCAL USER NAME / ALIAS -->
-								<bsform:input path="registerUser.name" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" noHelp="${true}" inputGroupSymbol="@" />
+								<input type="hidden" value="${command.registerUser.name}" name="registerUser.name" />
 							</c:when>
 							<c:otherwise>
-								<input type="hidden" value="${command.reqisterUser.name}" name="registerUser.name" />
+								<!-- LOCAL USER NAME / ALIAS -->
+								<bsform:input path="registerUser.name" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" noHelp="${true}" inputGroupSymbol="@" />
 							</c:otherwise>
 						</c:choose>
 						

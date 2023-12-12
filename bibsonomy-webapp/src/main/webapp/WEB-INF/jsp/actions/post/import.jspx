@@ -7,7 +7,6 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -22,8 +21,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<!-- display potential errors -->
-			<errors:global />
 			
 			<!-- in case of existing errors, look into the importType and redraw the 
 				 respective form 

@@ -152,7 +152,7 @@
 				</c:if>
 				<c:if test="${subPage eq 'PUBLICATIONS'}">
 					<div id="organization-publications">
-						<div  class="col-md-10 publication-list">
+						<div  class="col-md-10 publication-list list-inherit-height">
 							<div id="publications_0" class="publicationsContainer standard">
 							<resources:bibtexs listView="${command.publications}"
 											   loginUserName="${command.context.loginUser.name}"

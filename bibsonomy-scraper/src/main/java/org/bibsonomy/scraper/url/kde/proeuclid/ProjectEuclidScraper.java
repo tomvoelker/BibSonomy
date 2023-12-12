@@ -29,55 +29,27 @@
  */
 package org.bibsonomy.scraper.url.kde.proeuclid;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.CitationManager3Scraper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * scraper for the Astronomy and Astrophysics
  *
  * @author rja
  */
-public class ProjectEuclidScraper extends AbstractUrlScraper {
+public class ProjectEuclidScraper extends CitationManager3Scraper {
 
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_HOST = "projecteuclid.org";
 	private static final String SITE_URL = "https://" + SITE_HOST + "/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
-	private static final String DOWNLOAD_URL = SITE_URL + "export_citations";
-	private static final Pattern ID_PATTERN = Pattern.compile("/(.+)$");
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<>(Pattern.compile(".*"+ SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		final Matcher m = ID_PATTERN.matcher(scrapingContext.getUrl().getPath());
-		if (m.find()) {
-			try {
-				final String id = UrlUtils.safeURIEncode(m.group(1));
-				
-				final List<NameValuePair> postData = new ArrayList<>(2);
-				postData.add(new BasicNameValuePair("h", id));
-				postData.add(new BasicNameValuePair("format", "bibtex"));
-				scrapingContext.setBibtexResult(WebUtils.getContentAsString(DOWNLOAD_URL, null, postData, null));
-			} catch (final IOException e) {
-				throw new ScrapingException(e);
-			}
-		}
-		return false;
-	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -97,4 +69,5 @@ public class ProjectEuclidScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
 	}
+
 }

@@ -37,47 +37,58 @@ import org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.index.generator.OneToManyEntityInformationProvider;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
 import org.bibsonomy.search.index.update.OneToManyIndexUpdateLogic;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+import org.bibsonomy.search.model.SearchIndexDualState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 
 /**
- * a manager that can update a one to many index
+ * Elasticsearch manager for One-Many entity indices
  *
  * @author dzo
  * @param <T>
  * @param <M> the many type
  */
-public class ElasticsearchOneToManyManager<T, M> extends ElasticsearchManager<T, SearchIndexDualSyncState> {
+public class ElasticsearchOneToManyManager<T, M> extends ElasticsearchManager<T, SearchIndexDualState> {
 
 	private final OneToManyIndexUpdateLogic<T, M> updateIndexLogic;
-	private final DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexDualState> databaseInformationLogic;
 	private final OneToManyEntityInformationProvider<T, M> oneToManyEntityInformationProvider;
 
+
 	/**
-	 * constructor to build a new one to many manager
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param updateIndexLogic
 	 * @param databaseInformationLogic
 	 * @param oneToManyEntityInformationProvider
 	 */
-	public ElasticsearchOneToManyManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<T, SearchIndexDualSyncState> generator, Converter<SearchIndexDualSyncState, Map<String, Object>, Object> syncStateConverter, OneToManyIndexUpdateLogic<T, M> updateIndexLogic, DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic, OneToManyEntityInformationProvider<T, M> oneToManyEntityInformationProvider) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, oneToManyEntityInformationProvider);
+	public ElasticsearchOneToManyManager(URI systemURI,
+										 ESClient client,
+										 ElasticsearchIndexGenerator<T, SearchIndexDualState> generator,
+										 Converter<SearchIndexDualState, Map<String, Object>, Object> syncStateConverter,
+										 boolean indexEnabled,
+										 boolean updateEnabled,
+										 boolean regenerateEnabled,
+										 final OneToManyIndexUpdateLogic<T, M> updateIndexLogic,
+										 final DatabaseInformationLogic<SearchIndexDualState> databaseInformationLogic,
+										 final OneToManyEntityInformationProvider<T, M> oneToManyEntityInformationProvider) {
+		super(systemURI, client, generator, syncStateConverter, oneToManyEntityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled);
 		this.updateIndexLogic = updateIndexLogic;
 		this.databaseInformationLogic = databaseInformationLogic;
 		this.oneToManyEntityInformationProvider = oneToManyEntityInformationProvider;
 	}
 
 	@Override
-	protected void updateIndex(String indexName, SearchIndexDualSyncState oldState) {
-		final DefaultSearchIndexSyncState oldFirstState = oldState.getFirstState();
-		final DefaultSearchIndexSyncState oldSecondState = oldState.getSecondState();
-		final SearchIndexDualSyncState targetState = this.databaseInformationLogic.getDbState();
+	protected void updateIndex(String indexName, SearchIndexDualState oldState) {
+		final SearchIndexState oldFirstState = oldState.getFirstState();
+		final SearchIndexState oldSecondState = oldState.getSecondState();
+		final SearchIndexDualState targetState = this.databaseInformationLogic.getDbState();
 
 		this.updateEntity(indexName, oldFirstState, this.updateIndexLogic.getIndexUpdateLogic(), this.oneToManyEntityInformationProvider);
 

@@ -182,6 +182,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/orcid">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="orcidAjaxController"/>
+						<property name="allowedFields">
+							<list>
+								<value>orcidId</value>
+								<value>workId</value>
+								<value>workIds</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/ajax/usersearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userSearchController"/>
@@ -257,17 +269,112 @@
 				
 				<entry key="/ajax/person/publications">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="personPublicationAjaxController" />
+						<property name="controllerBeanName" value="personPublicationsAjaxController" />
 						<property name="allowedFields">
 							<list>
 								<value>requestedPersonId</value>
+								<value>search</value>
+								<value>sortPage</value>
+								<value>sortPageOrder</value>
 								<value>pageSize</value>
 								<value>page</value>
-								<value>size</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
+
+				<entry key="/ajax/person/theses">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personThesesAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/person/similar">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personSimilarAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/person/projects">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personProjectsAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/explore">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="exploreAjaxController" />
+						<property name="allowedFields">
+							<list>
+								<value>entityType</value>
+								<value>requestedName</value>
+								<value>search</value>
+								<value>sortPage</value>
+								<value>sortPageOrder</value>
+								<value>distinctCount</value>
+								<value>pageSize</value>
+								<value>page</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/report/brokenCitation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="brokenCitationReportController" />
+						<property name="allowedFields">
+							<list>
+								<value>styleName</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/report/person/publications/duplicate">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="duplicatePublicationReportController" />
+						<property name="allowedFields">
+							<list>
+								<value>personId</value>
+								<value>title</value>
+								<value>interhash</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/report/person/publications/custom">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="customPublicationReportController" />
+						<property name="allowedFields">
+							<list>
+								<value>personId</value>
+								<value>title</value>
+								<value>interhash</value>
+								<value>message</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
 			</map>
 		</property>
 	</bean>
@@ -348,12 +455,49 @@
 
 	<bean id="projectPersonLinkController" class="org.bibsonomy.webapp.controller.cris.ajax.ProjectPersonLinkAjaxController" scope="request" parent="ajaxController" />
 
-	<bean id="personPublicationAjaxController" class="org.bibsonomy.webapp.controller.ajax.PersonPublicationAjaxController" scope="request" parent="ajaxController">
-		<property name="adminLogic" ref="adminLogic" />
+	<bean id="personPublicationsAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonPublicationsAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
 		<property name="renderer" ref="CSLAdhocRenderer"/>
 		<property name="cslFilesManager" ref="CSLFilesManager"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
+		<property name="crisEnabled" value="${system.cris}" />
 	</bean>
 
-	
+	<bean id="personSimilarAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonSimilarAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
+	</bean>
+
+	<bean id="personProjectsAjaxController" class="org.bibsonomy.webapp.controller.ajax.person.PersonProjectsAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
+	</bean>
+
+	<bean id="exploreAjaxController" class="org.bibsonomy.webapp.controller.ajax.ExploreAjaxController" scope="request" parent="ajaxController">
+		<property name="logic" ref="adminLogic" />
+		<property name="mappers">
+			<map>
+				<entry key-ref="publicationClass">
+					<util:constant static-field="org.bibsonomy.model.BibTex.METHOD_REFERENCE" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="orcidAjaxController" class="org.bibsonomy.webapp.controller.ajax.OrcidAjaxController" parent="ajaxController" scope="request">
+		<property name="orcidImportEnabled" value="${import.orcid.enabled}"/>
+	</bean>
+
+	<bean id="reportAjaxController" class="org.bibsonomy.webapp.controller.ajax.report.AbstractReportController" abstract="true" parent="ajaxController">
+		<property name="mailUtils" ref="mailUtils" />
+		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
+	</bean>
+
+	<bean id="brokenCitationReportController" class="org.bibsonomy.webapp.controller.ajax.report.BrokenCitationReportController"
+		  scope="request" parent="reportAjaxController" />
+
+	<bean id="duplicatePublicationReportController" class="org.bibsonomy.webapp.controller.ajax.report.DuplicatePublicationReportController"
+		  scope="request" parent="reportAjaxController" />
+
+	<bean id="customPublicationReportController" class="org.bibsonomy.webapp.controller.ajax.report.CustomPublicationReportController"
+		  scope="request" parent="reportAjaxController" />
+
 </beans>

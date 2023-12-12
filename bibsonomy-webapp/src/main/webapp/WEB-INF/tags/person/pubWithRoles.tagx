@@ -4,31 +4,33 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:directive.attribute name="availableRoles" type="java.util.Collection" required="true"/>
-	
+
+	<spring:eval var="availableRoles" expression="T(org.bibsonomy.model.enums.PersonResourceRelationType).values()"/>
+
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 	
 	<div class="personThesisEntry row ${post.resource.interHash}_${post.resource.intraHash}">
 	
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<span class="ptitle"><bib:title post="${post}" /></span>
 			<div class="personPdesc pdesc ellipsis">
 				<div class="ellipsis-content"><bib:desc post="${post}" publication="${post.resource}"/></div>
 			</div>	
 		</div>
 		
-		<div class="col-md-6" style="border-left: 1px solid lightgrey">
+		<div class="col-md-4" style="border-left: 1px solid lightgrey">
 		
 			<!-- Doctorial advisor and first reviewer should always be visible -->
 			<ul class="list-unstyled">
 				<c:forEach var="role" items="${availableRoles}">
 					<!-- TODO: replace by proper handling -->				
 					<c:if test="${role == 'DOCTOR_VATER' or role == 'FIRST_REVIEWER'}">
-						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"></per:editRoles>	
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}" />
 					</c:if>
 				</c:forEach>
 			</ul>
@@ -38,7 +40,7 @@
 				<c:forEach var="role" items="${availableRoles}">
 					<!-- TODO: replace by proper handling -->				
 					<c:if test="${role != 'DOCTOR_VATER' and role != 'FIRST_REVIEWER'}">
-						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"></per:editRoles>	
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}" />
 					</c:if>
 				</c:forEach>
 			</ul>

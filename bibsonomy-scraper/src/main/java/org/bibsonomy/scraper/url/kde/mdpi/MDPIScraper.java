@@ -30,14 +30,6 @@
 package org.bibsonomy.scraper.url.kde.mdpi;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.NameValuePair;
@@ -47,15 +39,23 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.CitedbyScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * scraper for MDPI
  *
  * @author Haile
  */
-public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
+public class MDPIScraper extends GenericBibTeXURLScraper implements CitedbyScraper{
 	private static final Log log = LogFactory.getLog(MDPIScraper.class);
 
 	private static final String SITE_NAME = "MDPI - Open Access Publishing";
@@ -65,6 +65,8 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
 					new Pair<>(Pattern.compile(".*" + "mdpi.com"), AbstractUrlScraper.EMPTY_PATTERN)
 	);
+	private static final String DOWNLOAD_URL = "https://www.mdpi.com/export";
+
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<input type=\"hidden\" name=\"articles_ids\\[\\]\" value=\"(\\d+)\">");
 	private static final Pattern CITATION_PATTERN = Pattern.compile("<meta name=\"citation_doi\" content=\"(.*)\">");
 
@@ -118,40 +120,35 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
-	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-		try {
-			final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl());
-			final Matcher m = BIBTEX_PATTERN.matcher(pageContent);
-			if (m.find()) {
-				final String id = m.group(1);
-				final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
-
-				postData.add(new BasicNameValuePair("articles_ids[]=", id));
-				postData.add(new BasicNameValuePair("export_format_top", "bibtex"));
-				postData.add(new BasicNameValuePair("export_submit_top", ""));
-
-
-				final String bibtex =  WebUtils.getContentAsString(SITE_URL + "export", null, postData, null);
-				if (present(bibtex)) {
-					/*
-					 * "ARTICLE NUMBER" won't pass the parser but is actually just the page of the article
-					 */
-					scrapingContext.setBibtexResult(bibtex.replaceAll("ARTICLE NUMBER", "PAGES"));
-					return true;
-				}
-			}
-
-			throw new ScrapingFailureException("getting bibtex failed");
-		} catch (final IOException e) {
-			log.error("error while scraping " + scrapingContext.getUrl(), e);
-		}
-		return false;
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return DOWNLOAD_URL;
 	}
 
+	@Override
+	protected List<NameValuePair> getDownloadData(URL url, String cookies) throws ScrapingException {
+		try {
+			String pageContent = WebUtils.getContentAsString(url);
+			if (!present(pageContent)){
+				throw new ScrapingException("can't get page content of " + url);
+			}
+
+			String id;
+			final Matcher m_id = BIBTEX_PATTERN.matcher(pageContent);
+			final List<NameValuePair> postData = new ArrayList<NameValuePair>();
+			if (m_id.find()) {
+				id = m_id.group(1);
+			}else {
+				throw new ScrapingException("can't get article-id from " + url);
+			}
+
+			postData.add(new BasicNameValuePair("articles_ids[]=", id));
+			postData.add(new BasicNameValuePair("export_format_top", "bibtex"));
+
+			return postData;
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		}
+	}
 
 }

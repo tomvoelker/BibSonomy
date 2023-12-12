@@ -38,7 +38,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.ObjectUtils;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
@@ -61,11 +61,11 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected Post<BibTex> getPostDetails(final String intraHash, final String userName) {
+	protected Post<BibTex> getPostDetails(final String resourceHash, final String userName) {
 		/*
 		 * get goldstandard post; username must be empty!
 		 */
-		return super.getPostDetails(intraHash, "");
+		return super.getPostDetails(resourceHash, "");
 	}
 
 	@Override
@@ -87,13 +87,15 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 			return null;
 		}
 
-		return convertToGoldStandard(post);
+		return BibTexUtils.convertToGoldStandard(post);
 	}
 
 	private String getRedirectUrl(final Post<BibTex> post, final Post<BibTex> oldPost, final String referer) {
 		// check if the
 		if (present(referer)) {
-			if (present(oldPost) && referer.matches(".*/bibtex/.+") && !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
+			// if (present(oldPost) && referer.matches(".*/bibtex/.+") && !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
+			// redirect to new post if not same intrahash
+			if (!present(oldPost) || !oldPost.getResource().getIntraHash().equals(post.getResource().getIntraHash())) {
 				return this.urlGenerator.getPostUrl(post);
 			}
 
@@ -110,20 +112,6 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		view.addAttribute(ExtendedRedirectViewWithAttributes.SUCCESS_MESSAGE_KEY, "actions.communityPost." + (update ? "update" : "create") + ".success");
 		return view;
-	}
-
-	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
-		if (!present(post)) {
-			return null;
-		}
-
-		final Post<BibTex> gold = new Post<>();
-
-		final GoldStandardPublication goldP = new GoldStandardPublication();
-		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
-		gold.setResource(goldP);
-
-		return gold;
 	}
 
 	/*

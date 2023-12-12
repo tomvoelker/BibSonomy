@@ -35,23 +35,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.Prefix;
-import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GroupSortKey;
 import org.bibsonomy.model.logic.query.GroupQuery;
+import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.index.converter.group.GroupFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -59,7 +62,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group, GroupQuery, DefaultSearchIndexSyncState, Object> implements GroupSearch {
+public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group, GroupQuery, SearchIndexState, Object> implements GroupSearch {
 
 	/**
 	 * default constructor
@@ -67,7 +70,7 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 	 * @param manager the manager that is responsible for this search
 	 * @param converter the converter for converting elasticsearch documents to
 	 */
-	public ElasticsearchGroupSearch(final ElasticsearchManager<Group, DefaultSearchIndexSyncState> manager, final Converter<Group, Map<String, Object>, Object> converter) {
+	public ElasticsearchGroupSearch(final ElasticsearchManager<Group, SearchIndexState> manager, final Converter<Group, Map<String, Object>, Object> converter) {
 		super(manager, converter);
 	}
 
@@ -76,42 +79,70 @@ public class ElasticsearchGroupSearch extends AbstractElasticsearchSearch<Group,
 		return searchEntities(loggedinUser, query);
 	}
 
+
+
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final GroupQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final GroupQuery query) {
 		final SortOrder sortOrder = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final GroupSortKey order = query.getGroupOrder();
-		if (present(order)) {
-			switch (order) {
+		final GroupSortKey sortKey = query.getGroupSortKey();
+		if (present(sortKey)) {
+			switch (sortKey) {
 				case GROUP_NAME:
 					return Collections.singletonList(new Pair<>(GroupFields.NAME, sortOrder));
 				case GROUP_REALNAME:
 					// here we add the name as a second search order to handle groups without real names
 					return Arrays.asList(
-							new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder),
-							new Pair<>(GroupFields.NAME, sortOrder)
-							);
+						new Pair<>(GroupFields.NAME, sortOrder),
+						new Pair<>(ESConstants.getRawField(GroupFields.REALNAME), sortOrder)
+					);
+				case GROUP_SORTNAME:
+					return Collections.singletonList(new Pair<>(GroupFields.SORTNAME, sortOrder));
 				case RANK:
-					return null; // default order is rank
+					return null; // default sort key is rank
 			}
-			throw new IllegalArgumentException("order '" + order + "' not supported");
+			throw new IllegalArgumentException("Sort key '" + sortKey + "' not supported");
 		}
 
-		return super.getSortOrder(query);
+		return super.getSortCriteria(query);
 	}
 
 	@Override
 	protected BoolQueryBuilder buildFilterQuery(final User loggedinUser, final GroupQuery query) {
 		final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery();
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, GroupFields.REALNAME_PREFIX));
 		}
 
-		final Boolean organization = query.getOrganization();
-		if (present(organization)) {
-			filterQuery.must(QueryBuilders.termQuery(GroupFields.ORGANIZATION, organization));
-		}
+		final boolean organization = query.isOrganization();
+		filterQuery.must(QueryBuilders.termQuery(GroupFields.ORGANIZATION, organization));
 
 		return filterQuery;
+	}
+
+	@Override
+	protected BoolQueryBuilder buildMainQuery(User loggedinUser, GroupQuery query) {
+		final BoolQueryBuilder mainQueryBuilder = super.buildMainQuery(loggedinUser, query);
+		final Set<String> realnameSearch = query.getRealnameSearch();
+		if (present(realnameSearch)) {
+			final QueryStringQueryBuilder queryStringQueryBuilder = buildStringQueryForGroupRealnames(realnameSearch);
+			mainQueryBuilder.must(queryStringQueryBuilder);
+		}
+
+		return mainQueryBuilder;
+	}
+
+	/**
+	 *
+	 * @param realnameSearch
+	 * @return
+	 */
+	private static QueryStringQueryBuilder buildStringQueryForGroupRealnames(Set<String> realnameSearch) {
+		// TODO use match query
+		final String field = GroupFields.REALNAME + "." + ESConstants.RAW_SUFFIX;
+		final String fieldQuery = String.format("\"%s\"", String.join("\" OR \"", realnameSearch));
+		final QueryStringQueryBuilder builder = QueryBuilders.queryStringQuery(String.format("%s:%s", field, fieldQuery))
+				.defaultOperator(Operator.OR);
+		return builder;
 	}
 }

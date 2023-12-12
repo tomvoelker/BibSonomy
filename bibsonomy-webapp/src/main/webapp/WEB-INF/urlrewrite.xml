@@ -439,6 +439,14 @@
 		<to type="redirect" last="true">/user/$1</to>
 	</rule>
 
+	<!-- /explore/user/USER -->
+	<rule>
+		<name>/explore/user/USER</name>
+		<from>^/+explore/+user/+([^/]+)$</from>
+		<set type="parameter" name="requestedName">${unescapePath:$1}</set>
+		<to last="true">/explore/user</to>
+	</rule>
+
 	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
 	<rule>
 		<name>redirect /foaf/user/USER</name>
@@ -607,6 +615,14 @@
 		<from>^/+group/+([^/]+)$</from>
 		<set type="parameter" name="requestedGroup">${unescapePath:$1}</set>
 		<to last="true">/group</to>
+	</rule>
+
+	<!-- /explore/group/GROUP -->
+	<rule>
+		<name>/explore/group/GROUP</name>
+		<from>^/+explore/+group/+([^/]+)$</from>
+		<set type="parameter" name="requestedName">${unescapePath:$1}</set>
+		<to last="true">/explore/group</to>
 	</rule>
 
 	<!-- /settings/group/GROUP -->
@@ -1109,13 +1125,14 @@
 		<set type="parameter" name="helpPage">${unescapePath:$2}</set>
 		<to last="true">/help</to>
 	</rule>
-	
-	<!-- ############## old pages - can be removed when never accessed ############### -->
+
 	<rule><!-- /faq to /help/faq -->
 		<name>/faq</name>
 		<from>^/faq(.*)$</from>
 		<to type="permanent-redirect" last="true">/help/faq$1</to>
 	</rule>
+
+	<!-- ############## old pages - can be removed when never accessed ############### -->
 	
 	<!-- old editBookmark/Publication forms - used by the buttons! -->
 	<rule>
@@ -1152,5 +1169,22 @@
 		<name>/msofficexml</name>
 		<from>^/+msofficexml/(.*)$</from>
 		<to type="redirect" last="true">/layout/msofficexml/$1</to>
+	</rule>
+
+	<!-- Redirect old person API urls to new version -->
+	<rule>
+		<name>/api/persons/PERSON_ID</name>
+		<from>^/api/persons/(.*)/(posts|relations)$</from>
+		<set type="parameter" name="personId">${unescapePath:$1}</set>
+		<to last="true">/api/persons/$2</to>
+	</rule>
+	<rule>
+		<name>/api/persons/PERSON_ID/relationdelete</name>
+		<from>^/api/persons/(.*)/relations/(.*)/(.*)/(.*)$</from>
+		<set type="parameter" name="personId">${unescapePath:$1}</set>
+		<set type="parameter" name="interhash">${unescapePath:$2}</set>
+		<set type="parameter" name="relationType">${unescapePath:$3}</set>
+		<set type="parameter" name="relationIndex">${unescapePath:$4}</set>
+		<to last="true">/api/persons/relations</to>
 	</rule>
 </urlrewrite>

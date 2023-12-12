@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,8 @@ import java.util.Map;
  * 
  * @author:  rja
  */
+@Getter
+@Setter
 public abstract class Layout {
 
 	/**
@@ -66,38 +71,19 @@ public abstract class Layout {
 	 * The extension of the rendered file.
 	 */
 	protected String extension;
+
+	// TODO rename
 	/**
 	 * Favorite layouts get a top position in the list of export layouts 
 	 */
 	protected boolean isFavorite = false;
 	
-	/** 
+	/**
 	 * @param name the name of the layout
 	 */
 	public Layout(final String name) {
 		this.name = name;
 		this.description = new HashMap<>();
-	}
-	
-	/**
-	 * @return the displayName
-	 */
-	public String getDisplayName() {
-		return this.displayName;
-	}
-
-	/**
-	 * @param displayName the displayName to set
-	 */
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public Map<String, String> getDescription(){
-		return this.description;
 	}
 
 	/**
@@ -110,36 +96,15 @@ public abstract class Layout {
 		this.description.put(lang, description);
 	}
 
-	/**
-	 * @return the mimeType
-	 */
-	public String getMimeType() {
-		return this.mimeType;
-	}
-
-	/**
-	 * @param mimeType the mimeType to set
-	 */
-	public void setMimeType(String mimeType) {
-		this.mimeType = mimeType;
-	}
-
-	/**
-	 * @return the extension
-	 */
-	public String getExtension() {
-		return this.extension;
-	}
-
-	/**
-	 * @param extension the extension to set
-	 */
-	public void setExtension(String extension) {
-		this.extension = extension;
-	}
+	public abstract boolean hasEmbeddedLayout();
 	
+	@Override
+	public String toString() {
+		return name + "(" + displayName + ", '" + mimeType + ", " + extension + ")";
+	}
+
 	/**
-	 * @return is favorite 
+	 * @return is favorite
 	 */
 	public boolean getIsFavorite() {
 		return this.isFavorite;
@@ -151,41 +116,5 @@ public abstract class Layout {
 	public void setIsFavorite(boolean favorite) {
 		this.isFavorite = favorite;
 	}
-	
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Public layouts are announced on the layout overview pages (/export/). 
-	 * NOTE: Making a layout not public does <strong>not</strong> mean that
-	 * it can't be publicly used! Everybody who knows the URL prefix for the
-	 * layout can access it!
-	 * @return <true> iff the layout is public
-	 */
-	public boolean isPublicLayout() {
-		return publicLayout;
-	}
-
-	/**
-	 * Public layouts are announced on the layout overview pages (/export/). 
-	 * NOTE: Making a layout not public does <strong>not</strong> mean that
-	 * it can't be publicly used! Everybody who knows the URL prefix for the
-	 * layout can access it!
-	 * @param publicLayout
-	 */
-	public void setPublicLayout(boolean publicLayout) {
-		this.publicLayout = publicLayout;
-	}
-	
-	public abstract boolean hasEmbeddedLayout();
-	
-	@Override
-	public String toString() {
-		return name + "(" + displayName + ", '" + mimeType + ", " + extension + ")";
-	}
 }

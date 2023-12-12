@@ -67,7 +67,7 @@ public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 		param.setRefHash(interhash);
 		param.setUsername(loggedinUser.getName());
 
-		// delete the references, but before log it
+		// delete the references, but before log it (delete and log for both directions)
 		this.insert("logDeletedRelationsGoldStandardPublication", param, session);
 		this.insert("logDeletedGoldStandardPublicationRelations", param, session);
 		this.delete("deleteRelationsGoldStandardPublication", param, session);
@@ -108,7 +108,7 @@ public class GoldStandardPublicationPlugin extends AbstractDatabasePlugin {
 		BibTexParam param = new BibTexParam();
 		param.setHash(interhash);
 		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
-		// query for the post and their relations
+		// query for the post and their relationsonGoldStandardUpdate
 		Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getGoldStandardByHash", param, session);
 		List<ResourcePersonRelation> relations = this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 		if (present(relations)) {

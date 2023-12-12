@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.dblp;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,14 +42,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class DBLPScraperTest {
+	String resultDirectory = "dblp/";
 	
 	/**
 	 * starts URL test with id url_56
 	 */
 	@Test
-	public void urlTestRun(){
-		final String url = "https://dblp.uni-trier.de/rec/bibtex/journals/ws/JaschkeHSGS08";
-		final String resultFile = "DBLPScraperUnitTest.bib";
+	public void urlTest1Run(){
+		final String url = "https://dblp.uni-trier.de/rec/journals/ws/JaschkeHSGS08.html?view=bibtex";
+		final String resultFile = resultDirectory +  "DBLPScraperUnitTest1.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -57,9 +58,29 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_180
 	 */
 	@Test
-	public void urlTest1Run(){
-		final String url = "https://dblp.uni-trier.de/rec/bibtex/conf/semweb/ChoudhuryBP09";
-		final String resultFile = "DBLPScraperUnitTest1.bib";
+	public void url1Test2Run(){
+		final String url = "https://dblp.uni-trier.de/rec/conf/semweb/ChoudhuryBP09.html?view=bibtex";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest2.bib";
+		assertScraperResult(url, null, DBLPScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_316
+	 */
+	@Test
+	public void url2Test2Run(){
+		final String url = "https://dblp.uni-trier.de/rec/rdf/books/sp/stdesign14/AtzmuellerBHKM0SSS14.rdf";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest3.bib";
+		assertScraperResult(url, null, DBLPScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_317
+	 */
+	@Test
+	public void url3Test2Run(){
+		final String url = "https://dblp.uni-trier.de/rec/ris/books/sp/stdesign14/AtzmuellerBHKM0SSS14.ris";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest3.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -67,9 +88,9 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_314
 	 */
 	@Test
-	public void urlTest2Run(){
-		final String url = "https://dblp.uni-trier.de/rec/bibtex/books/sp/stdesign14/AtzmuellerBHKM0SSS14";
-		final String resultFile = "DBLPScraperUnitTest2.bib";
+	public void url1Test3Run(){
+		final String url = "https://dblp.uni-trier.de/rec/books/sp/stdesign14/AtzmuellerBHKM0SSS14.html?view=bibtex";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest3.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -77,59 +98,20 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_315
 	 */
 	@Test
-	public void urlTest3Run(){
-		final String url = "https://dblp.uni-trier.de/rec/xml/books/sp/stdesign14/AtzmuellerBHKM0SSS14.xml";
-		final String resultFile = "DBLPScraperUnitTest2.bib";
+	public void url2Test3Run(){
+		final String url = "https://dblp.uni-trier.de/rec/books/sp/stdesign14/AtzmuellerBHKM0SSS14.xml";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest3.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
-	
-	/**
-	 * starts URL test with id url_316
-	 */
-	@Test
-	public void urlTest4Run(){
-		final String url = "https://dblp.uni-trier.de/rec/rdf/books/sp/stdesign14/AtzmuellerBHKM0SSS14.rdf";
-		final String resultFile = "DBLPScraperUnitTest2.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_317
-	 */
-	@Test
-	public void urlTest5Run(){
-		final String url = "https://dblp.uni-trier.de/rec/ris/books/sp/stdesign14/AtzmuellerBHKM0SSS14.ris";
-		final String resultFile = "DBLPScraperUnitTest2.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_318
-	 */
-	@Test
-	public void urlTest6Run(){
-		final String url = "https://dblp.uni-trier.de/rec/bib1/conf/gi/HothoJSS06.bib";
-		final String resultFile = "DBLPScraperUnitTest3.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_319
-	 */
-	@Test
-	public void urlTest7Run(){
-		final String url = "https://dblp.uni-trier.de/rec/bib2/conf/gi/HothoJSS06.bib";
-		final String resultFile = "DBLPScraperUnitTest4.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
-	}
+
 	
 	/**
 	 * starts URL test with id url_320
 	 */
 	@Test
-	public void urlTest8Run(){
-		final String url = "https://dblp.uni-trier.de/rec/html/books/sp/stdesign14/AtzmuellerBHKM0SSS14";
-		final String resultFile = "DBLPScraperUnitTest2.bib";
+	public void url3Test3Run(){
+		final String url = "https://dblp.uni-trier.de/rec/books/sp/stdesign14/AtzmuellerBHKM0SSS14.html";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest3.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -137,9 +119,9 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_321
 	 */
 	@Test
-	public void urlTest9Run(){
-		final String url = "https://dblp.dagstuhl.de/rec/html/journals/logcom/BelohlavekV11";
-		final String resultFile = "DBLPScraperUnitTest5.bib";
+	public void url1Test4Run(){
+		final String url = "https://dblp.dagstuhl.de/rec/journals/logcom/BelohlavekV11.html";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest4.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -147,9 +129,9 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_322
 	 */
 	@Test
-	public void urlTest10Run(){
-		final String url = "https://dblp.dagstuhl.de/rec/bibtex/journals/logcom/BelohlavekV11";
-		final String resultFile = "DBLPScraperUnitTest5.bib";
+	public void url2Test4Run(){
+		final String url = "https://dblp.dagstuhl.de/rec/journals/logcom/BelohlavekV11.html?view=bibtex";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest4.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -157,39 +139,29 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_323
 	 */
 	@Test
-	public void urlTest11Run(){
-		final String url = "https://dblp.dagstuhl.de/rec/xml/journals/logcom/BelohlavekV11.xml";
-		final String resultFile = "DBLPScraperUnitTest5.bib";
+	public void url3Test4Run(){
+		final String url = "https://dblp.dagstuhl.de/rec/journals/logcom/BelohlavekV11.xml";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest4.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
-	
+
 	/**
-	 * starts URL test with id url_324
+	 * starts URL test with id url_319
 	 */
 	@Test
-	public void urlTest12Run(){
-		final String url = "https://dblp.dagstuhl.de/rec/ris/journals/logcom/BelohlavekV11.ris";
-		final String resultFile = "DBLPScraperUnitTest5.bib";
+	public void urlTest5Run(){
+		final String url = "https://dblp.uni-trier.de/rec/bib2/conf/gi/HothoJSS06.bib";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest5.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
-	
-	/**
-	 * starts URL test with id url_325
-	 */
-	@Test
-	public void urlTest13Run(){
-		final String url = "https://dblp.dagstuhl.de/rec/rdf/journals/logcom/BelohlavekV11.rdf";
-		final String resultFile = "DBLPScraperUnitTest5.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
-	}
-	
+
 	/**
 	 * starts URL test with id url_326
 	 */
 	@Test
-	public void urlTest14Run(){
-		final String url = "http://www.dblp.org/rec/html/conf/icassp/AlmeidaK14";
-		final String resultFile = "DBLPScraperUnitTest6.bib";
+	public void url1Test6Run(){
+		final String url = "https://dblp.org/rec/conf/icassp/AlmeidaK14.html";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest6.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -197,9 +169,9 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_327
 	 */
 	@Test
-	public void urlTest15Run(){
-		final String url = "https://www.dblp.org/rec/bibtex/conf/icassp/AlmeidaK14";
-		final String resultFile = "DBLPScraperUnitTest6.bib";
+	public void url2Test6Run(){
+		final String url = "https://dblp.org/rec/conf/icassp/AlmeidaK14.html?view=bibtex";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest6.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
 	
@@ -207,29 +179,26 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_328
 	 */
 	@Test
-	public void urlTest16Run(){
-		final String url = "https://www.dblp.org/rec/xml/conf/icassp/AlmeidaK14.xml";
-		final String resultFile = "DBLPScraperUnitTest6.bib";
+	public void url3Test6Run(){
+		final String url = "https://dblp.org/rec/conf/icassp/AlmeidaK14.xml";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest6.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
-	
+
 	/**
-	 * starts URL test with id url_329
+	 * starts URL test with id url_318
 	 */
 	@Test
-	public void urlTest17Run(){
-		final String url = "https://www.dblp.org/rec/ris/conf/icassp/AlmeidaK14.ris";
-		final String resultFile = "DBLPScraperUnitTest6.bib";
+	public void urlTest7Run(){
+		final String url = "https://dblp.uni-trier.de/rec/bib1/conf/gi/HothoJSS06.bib";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest7.bib";
 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
-	
-	/**
-	 * starts URL test with id url_330
-	 */
 	@Test
-	public void urlTest18Run(){
-		final String url = "https://www.dblp.org/rec/rdf/conf/icassp/AlmeidaK14.rdf";
-		final String resultFile = "DBLPScraperUnitTest6.bib";
-		assertScraperResult(url, null, DBLPScraper.class, resultFile);
+	public void urlTest8Run(){
+		final String url = "https://dblp.uni-trier.de/rec/conf/jeri/2019.html";
+		final String resultFile = resultDirectory + "DBLPScraperUnitTest8.bib";
+ 		assertScraperResult(url, null, DBLPScraper.class, resultFile);
 	}
+
 }

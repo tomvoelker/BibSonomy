@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Setter;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -75,13 +76,21 @@ import org.joda.time.format.DateTimeFormatter;
  *   User is member of given group 
  * @author fei
  */
+@Setter
 public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 
-	private static final String NAME = "for";
+	private static final String FROM_PREFIX = "from:";
+	private static final String HIDDEN_FROM_PREFIX = "sys:hidden:from:";
+
 	private static boolean toHide = true;
+	public static final String NAME = "for";
 
 	private DBLogicNoAuthInterfaceFactory logicInterfaceFactory = null;
 	private FileLogic fileLogic;
+
+	private boolean hideFromTag;
+	private boolean mergeEnabled;
+	private boolean userTagsEnabled;
 	
 	@Override
 	public ForGroupTag newInstance() {
@@ -96,20 +105,6 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	@Override
 	public boolean isToHide() {
 		return toHide;
-	}
-
-	/**
-	 * @param logicInterfaceFactory the logicInterfaceFactory to set
-	 */
-	public void setLogicInterfaceFactory(final DBLogicNoAuthInterfaceFactory logicInterfaceFactory) {
-		this.logicInterfaceFactory = logicInterfaceFactory;
-	}
-
-	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
 	}
 
 	@Override
@@ -246,7 +241,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
-		if (!present(groupDBLogic.getGroupDetails(groupName, false))) {
+		final Group group = groupDBLogic.getGroupDetails(groupName, false);
+		if (!present(group)) {
 			/*
 			 *  We decided to ignore errors in systemTags. Thus the user
 			 *  is free use any tag. XXX: The drawback: If it is the user's
@@ -255,14 +251,52 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			 */
 			return false; // this tag can not be used => abort
 		}
+
+		Post<? extends Resource> dbGroupPost = null;
 		try {
-			if (present(groupDBLogic.getPostDetails(intraHash, groupName) )) {
+			dbGroupPost = groupDBLogic.getPostDetails(intraHash, groupName);
+			if (!mergeEnabled && present(dbGroupPost)) {
+				// Remove preset tags for this group from original post
+				GroupUtils.removePresetTagsForGroup(group, userTags);
 				log.debug("Given post already owned by group. Skipping...");
 				return false;
 			}
 		} catch (final Exception ex) {
 			// ignore
 		}
+
+		final Set<Tag> groupTags = this.prepareGroupTags(group, userName, userTags);
+
+		try {
+			if (mergeEnabled && present(dbGroupPost)) {
+				groupTags.addAll(dbGroupPost.getTags());
+				dbGroupPost.setTags(groupTags);
+				groupDBLogic.updatePosts(Collections.singletonList(dbGroupPost), PostUpdateOperation.UPDATE_TAGS);
+			} else {
+				final Post<T> groupPost = prepareGroupPost(userPost, resource, groupName);
+				groupPost.setTags(groupTags);
+				groupDBLogic.createPosts(Collections.singletonList(groupPost));
+			}
+		} catch (final DatabaseException dbex) {
+			/*
+			 *  Add the DatabaseException of the copied post to the exception to the original one
+			 */
+			for (final String hash : dbex.getErrorMessages().keySet()) {
+				for (final ErrorMessage errorMessage : dbex.getErrorMessages(hash)) {
+					errorMessage.setDefaultMessage("This error occured while executing the for: tag: " + errorMessage.getDefaultMessage());
+					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
+					session.addError(PostUtils.getKeyForPost(userPost), errorMessage);
+					log.warn("Added SystemTagErrorMessage (for group: errors while storing group's post) for post " + intraHash);
+				}
+			}
+		}
+
+		log.debug("copied post was stored successfully");
+		return true;
+	}
+
+	private <T extends Resource> Post<T> prepareGroupPost(final Post<T> userPost, final T resource, String groupName) {
+
 		/*
 		 *  Permissions are granted and the group doesn't own the post yet
 		 *  => Copy the post and store it for the group
@@ -283,18 +317,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		groupPost.setDescription(userPost.getDescription());
 		groupPost.setDate(new Date());
 		groupPost.setUser(new User(groupName));
-		/* 
-		 * Copy Tags: 
-		 * remove all systemTags to avoid any side effects and contradictions 
-		 */
-		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
-		SystemTagsExtractor.removeAllExecutableSystemTags(groupTags);
-		/*
-		 * adding this tag also guarantees, that the new post will
-		 * have an empty tag set (which would be illegal)!
-		 */
-		groupTags.add(new Tag("from:" + userName));
-		groupPost.setTags(groupTags);
+
 		/*
 		 *  Copy Groups: the visibility of the postCopy is:
 		 *  original == public => copy = public
@@ -303,37 +326,47 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 */
 		if ((userPost.getGroups().size() == 1) && (userPost.getGroups().contains(GroupUtils.buildPublicGroup()))) {
 			// public is the only group (if visibility was public, there should be only one group)
-			groupPost.setGroups(new HashSet<Group>());
+			groupPost.setGroups(new HashSet<>());
 			groupPost.getGroups().add(GroupUtils.buildPublicGroup());
 		} else {
 			// visibility is different from public => post is only visible for dbGroup
 			groupPost.addGroup(groupName);
 		}
+
+		return groupPost;
+	}
+
+	private Set<Tag> prepareGroupTags(final Group group, final String userName, final Set<Tag> userTags) {
+		// Copy initial tags of the user post
+		Set<Tag> groupTags = new HashSet<>(userTags);
+
+		// Remove preset tags for this group from original post
+		GroupUtils.removePresetTagsForGroup(group, userTags);
+
+		// Remove all systemTags to avoid any side effects and contradictions
+		SystemTagsExtractor.removeAllExecutableSystemTags(groupTags);
+
+		// Add selected preset tags for this group
+		groupTags.addAll(GroupUtils.extractPresetTagsForGroup(group, groupTags));
+
+		// Remove selected preset tags for other groups
+		GroupUtils.removePresetTags(groupTags);
+
+		if (!this.userTagsEnabled) {
+			GroupUtils.removeNonPresetTags(groupTags, group.getPresetTags());
+		}
+
 		/*
-		 * groupPost is complete and can be stored for the group
+		 * adding this tag also guarantees, that the new post will
+		 * have an empty tag set (which would be illegal)!
 		 */
-		try {
-			groupDBLogic.createPosts(Collections.<Post<?>>singletonList(groupPost));
-		} catch (final DatabaseException dbex) {
-			/*
-			 *  Add the DatabaseException of the copied post to the Exception of the original one
-			 */
-			for (final String hash : dbex.getErrorMessages().keySet()) {
-				for (final ErrorMessage errorMessage : dbex.getErrorMessages(hash)) {
-					errorMessage.setDefaultMessage("This error occured while executing the for: tag: " + errorMessage.getDefaultMessage());
-					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
-					session.addError(PostUtils.getKeyForPost(userPost), errorMessage);
-					log.warn("Added SystemTagErrorMessage (for group: errors while storing group's post) for post " + intraHash);
-				}
-			}
+		if (this.hideFromTag) {
+			groupTags.add(new Tag(HIDDEN_FROM_PREFIX + userName));
+		} else {
+			groupTags.add(new Tag(FROM_PREFIX + userName));
 		}
-		
-		if (resource instanceof BibTex) {
-			final BibTex publication = (BibTex) resource;
-			publication.setDocuments(documents);
-		}
-		log.debug("copied post was stored successfully");
-		return true;
+
+		return groupTags;
 	}
 
 	protected LogicInterface getGroupDbLogic() {

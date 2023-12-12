@@ -32,6 +32,7 @@ package org.bibsonomy.database.plugin.plugins;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -167,6 +168,8 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 			resourcePersonRelation.setPost(post);
 			resourcePersonRelation.setRelationType(relationType);
 			resourcePersonRelation.setPersonIndex(foundPersons.iterator().next().intValue());
+			resourcePersonRelation.setChangedBy(loggedinUser.getName());
+			resourcePersonRelation.setChangedAt(new Date());
 
 			final boolean added = this.personDatabaseManager.addResourceRelation(resourcePersonRelation, loggedinUser, session);
 			if (added) {

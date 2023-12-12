@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
@@ -51,6 +53,8 @@ import org.bibsonomy.util.UrlUtils;
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  */
+@Getter
+@Setter
 public class User implements Serializable {
 	/*
 	 * XXX: When adding new fields make sure to integrate them into the updateUser method
@@ -289,73 +293,10 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email
-	 */
-	public void setEmail(final String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return homepage
-	 */
-	public URL getHomepage() {
-		return this.homepage;
-	}
-
-	/**
-	 * @param homepage
-	 */
-	public void setHomepage(final URL homepage) {
-		this.homepage = homepage;
-	}
-
-	/**
-	 * @return name
-	 */
-	public String getName() {
-		return this.name;	
-	}
-
-	/**
 	 * @param name
 	 */
 	public void setName(final String name) {
 		this.name = name == null ? null : name.toLowerCase();
-	}
-
-	/**
-	 * @return realname
-	 */
-	public String getRealname() {
-		return realname;
-	}
-
-	/**
-	 * @param realname
-	 */
-	public void setRealname(final String realname) {
-		this.realname = realname;
-	}
-
-	/**
-	 * @return registrationDate
-	 */
-	public Date getRegistrationDate() {
-		return registrationDate;
-	}
-
-	/**
-	 * @param registrationDate
-	 */
-	public void setRegistrationDate(final Date registrationDate) {
-		this.registrationDate = registrationDate;
 	}
 
 	/**
@@ -368,21 +309,10 @@ public class User implements Serializable {
 		return this.groups;
 	}
 
-	/**
-	 * @param groups
-	 */
-	public void setGroups(final List<Group> groups) {
-		this.groups = groups;
-	}
-
 	public List<Group> getPendingGroups() {
 		if (this.pendingGroups == null)
 			this.pendingGroups = new LinkedList<>();
 		return pendingGroups;
-	}
-
-	public void setPendingGroups(List<Group> pendingGroups) {
-		this.pendingGroups = pendingGroups;
 	}
 
 	/**
@@ -397,48 +327,6 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return password
-	 */
-	public String getPassword() {
-		return this.password;
-	}
-
-	/**
-	 * @param password
-	 */
-	public void setPassword(final String password) {
-		this.password = password;
-	}
-
-	/**
-	 * @return the passwordSalt
-	 */
-	public String getPasswordSalt() {
-		return this.passwordSalt;
-	}
-
-	/**
-	 * @param passwordSalt the passwordSalt to set
-	 */
-	public void setPasswordSalt(String passwordSalt) {
-		this.passwordSalt = passwordSalt;
-	}
-
-	/**
-	 * @return apiKey
-	 */
-	public String getApiKey() {
-		return this.apiKey;
-	}
-
-	/**
-	 * @param apiKey
-	 */
-	public void setApiKey(final String apiKey) {
-		this.apiKey = apiKey;
-	}
-
-	/**
 	 * @return settings
 	 */
 	public UserSettings getSettings() {
@@ -446,111 +334,6 @@ public class User implements Serializable {
 			this.settings = new UserSettings();
 		}
 		return this.settings;
-	}
-
-	/**
-	 * @param settings
-	 */
-	public void setSettings(final UserSettings settings) {
-		this.settings = settings;
-	}
-
-	/**
-	 * @return IPAddress
-	 */
-	public String getIPAddress() {
-		return this.IPAddress;
-	}
-
-	/**
-	 * @param IPAddress
-	 */
-	public void setIPAddress(final String IPAddress) {
-		this.IPAddress = IPAddress;
-	}
-
-	/**
-	 * @return birthday
-	 */
-	public Date getBirthday() {
-		return this.birthday;
-	}
-
-	/**
-	 * @param birthday
-	 */
-	public void setBirthday(final Date birthday) {
-		this.birthday = birthday;
-	}
-
-	/**
-	 * @return gender
-	 */
-	public String getGender() {
-		return this.gender;
-	}
-
-	/**
-	 * @param gender
-	 */
-	public void setGender(final String gender) {
-		this.gender = gender;
-	}
-
-	/**
-	 * @return profession
-	 */
-	public String getProfession() {
-		return this.profession;
-	}
-
-	/**
-	 * @param profession
-	 */
-	public void setProfession(final String profession) {
-		this.profession = profession;
-	}
-
-	/**
-	 * @return interests
-	 */
-	public String getInterests() {
-		return this.interests;
-	}
-
-	/**
-	 * @param interests
-	 */
-	public void setInterests(final String interests) {
-		this.interests = interests;
-	}
-
-	/**
-	 * @return hobbies
-	 */
-	public String getHobbies() {
-		return this.hobbies;
-	}
-
-	/**
-	 * @param hobbies
-	 */
-	public void setHobbies(final String hobbies) {
-		this.hobbies = hobbies;
-	}
-
-	/**
-	 * @return place
-	 */
-	public String getPlace() {
-		return this.place;
-	}
-
-	/**
-	 * @param place
-	 */
-	public void setPlace(final String place) {
-		this.place = place;
 	}
 
 	/**
@@ -584,71 +367,6 @@ public class User implements Serializable {
 		return this.spammer == null ? false : this.spammer.booleanValue();
 	}
 
-	/**
-	 * @param spammer
-	 */
-	public void setSpammer(final Boolean spammer) {
-		this.spammer = spammer;
-	}
-
-	/**
-	 * @return openURL
-	 */
-	public String getOpenURL() {
-		return this.openURL;
-	}
-
-	/**
-	 * @param openURL
-	 */
-	public void setOpenURL(final String openURL) {
-		this.openURL = openURL;
-	}
-	
-	/**
-	 * Checks if an external avatar service (e.g. Gravatar) shall be used
-	 * instead of an locally uploaded profile picture.<br/>
-	 * 
-	 * @return <code>true</code> iff external picture shall be used
-	 */
-	public boolean isUseExternalPicture() {
-		return useExternalPicture;
-	}
-	
-	/**
-	 * Sets if an external avatar service (e.g. Gravatar) shall be used
-	 * instead of an locally uploaded profile picture.
-	 * 
-	 * @param useExternal the useExternal to set
-	 */
-	public void setUseExternalPicture(final boolean useExternal) {
-		useExternalPicture = useExternal;
-	}
-	
-	/**
-	 * Returns user's locally uploaded profile picture file.<br/>
-	 * 
-	 * @return picture file as UploadedFile
-	 */
-	public UploadedFile getProfilePicture() {
-		return profilePicture;
-	}
-	
-	/**
-	 * Sets user's locally uploaded profile picture file.<br/>
-	 * 
-	 * @param pictureFile : picture file as UploadedFile
-	 */
-	public void setProfilePicture(final UploadedFile pictureFile) {
-		profilePicture = pictureFile;
-	}
-	
-	/**
-	 * @return openID
-	 */
-	public String getOpenID() {
-		return this.openID;
-	}
 
 	/**
 	 * @param openID
@@ -676,13 +394,6 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return ldap user id
-	 */
-	public String getLdapId() {
-		return ldapId;
-	}
-
-	/**
 	 * @return clipboard
 	 */
 	public Clipboard getClipboard() {
@@ -693,13 +404,6 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param clipboard
-	 */
-	public void setClipboard(final Clipboard clipboard) {
-		this.clipboard = clipboard;
-	}
-	
-	/**
 	 * @return inbox
 	 */
 	public Inbox getInbox() {
@@ -709,27 +413,6 @@ public class User implements Serializable {
 		return this.inbox;
 	}
 
-	/**
-	 * @param inbox
-	 */
-	public void setInbox(final Inbox inbox) {
-		this.inbox = inbox;
-	}
-	
-	/** 
-	 * @return activationCode
-	 */
-	public String getActivationCode() {
-		return this.activationCode;
-	}
-
-	/**
-	 * @param activationCode
-	 */
-	public void setActivationCode(final String activationCode) {
-		this.activationCode = activationCode;
-	}
-	
 	/**
 	 * @return a List of friends
 	 */
@@ -774,165 +457,6 @@ public class User implements Serializable {
 		this.getFriends();
 		this.friends.addAll(friends);
 	}
-	
-	
-	/**
-	 * @return The role of the user.
-	 */
-	public Role getRole() {
-		return this.role;
-	}
-
-	/**
-	 * @param role
-	 */
-	public void setRole(final Role role) {
-		this.role = role;
-	}
-
-	/**
-	 * @return Classification algorithm the user was classified with
-	 */
-	public String getAlgorithm() {
-		return this.algorithm;
-	}
-
-	/**
-	 * @param algorithm classification algorithm
-	 */
-	public void setAlgorithm(final String algorithm) {
-		this.algorithm = algorithm;
-	}
-
-	/**
-	 * @return prediction of classifier
-	 */
-	public Integer getPrediction() {
-		return this.prediction;
-	}
-
-	/**
-	 * @param prediction Prediction
-	 */
-	public void setPrediction(final Integer prediction) {
-		this.prediction = prediction;
-	}
-	
-	/**
-	 * @return confidence of classifier
-	 */
-	public Double getConfidence() {
-		return this.confidence;
-	}
-	
-	/**
-	 * @param confidence Confidence
-	 */
-	public void setConfidence(final Double confidence) {
-		this.confidence = confidence;
-	}
-
-	/**
-	 * @return if user is considered for classification
-	 */
-	public Integer getToClassify() {
-		return this.toClassify;
-	}
-
-	/**
-	 * @param toClassify if user should be classified
-	 */
-	public void setToClassify(final Integer toClassify) {
-		this.toClassify = toClassify;
-	}
-
-	/**
-	 * @return person who updates user dataset
-	 */
-	public String getUpdatedBy() {
-		return this.updatedBy;
-	}
-
-	/**
-	 * @param updatedBy person who updates user dataset
-	 */
-	public void setUpdatedBy(final String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	/**
-	 * @return Date of update
-	 */
-	public Date getUpdatedAt() {
-		return this.updatedAt;
-	}
-
-	/**
-	 * @param updatetAt date of update
-	 */
-	public void setUpdatedAt(final Date updatetAt) {
-		this.updatedAt = updatetAt;
-	}
-
-	/**
-	 * @return mode
-	 */
-	public String getMode() {
-		return this.mode;
-	}
-
-	/**
-	 * @param mode
-	 */
-	public void setMode(final String mode) {
-		this.mode = mode;
-	}
-
-	/**
-	 * @return The temporary password the user can request when asking for a password reminder.
-	 * @see #getReminderPasswordRequestDate()
-	 */
-	public String getReminderPassword() {
-		return this.reminderPassword;
-	}
-
-	/** Set the temporary password the user can request when asking for a password reminder.
-	 * @param reminderPassword
-	 * @see #getReminderPasswordRequestDate()
-	 */
-	public void setReminderPassword(final String reminderPassword) {
-		this.reminderPassword = reminderPassword;
-	}
-
-	/**
-	 * @return The time at which the user requested a password reminder.
-	 * @see #getReminderPassword()
-	 */
-	public Date getReminderPasswordRequestDate() {
-		return this.reminderPasswordRequestDate;
-	}
-
-	/** Set the time at which the user requested a password reminder.
-	 * @param reminderPasswordRequestDate
-	 * @see #setReminderPassword(String)
-	 */
-	public void setReminderPasswordRequestDate(final Date reminderPasswordRequestDate) {
-		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
-	}
-
-	/**
-	 * @return institution
-	 */
-	public String getInstitution() {
-		return this.institution;
-	}
-
-	/**
-	 * @param institution
-	 */
-	public void setInstitution(final String institution) {
-		this.institution = institution;
-	}
 
 	/**
 	 * @return posts
@@ -942,27 +466,6 @@ public class User implements Serializable {
 			this.posts = new LinkedList<>();
 		}
 		return this.posts;
-	}
-
-	/**
-	 * @param posts
-	 */
-	public void setPosts(final List<Post<? extends Resource>> posts) {
-		this.posts = posts;
-	}
-
-	/**
-	 * @param tags List of tags which were assigned to this user via a tagged relationship
-	 */
-	public void setTags(final List<Tag> tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @return List of tags which were assigned to this user via a tagged relationship 
-	 */
-	public List<Tag> getTags() {
-		return tags;
 	}
 
 	/**
@@ -988,21 +491,6 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return the groupRole
-	 */
-	public GroupRole getGroupRole() {
-		return this.groupRole;
-	}
-
-	/**
-	 * @param groupRole the groupRole to set
-	 */
-	public void setGroupRole(GroupRole groupRole) {
-		this.groupRole = groupRole;
-	}
-	
-
-	/**
 	 * Check if the user has the particular groupLevelPermission
 	 * @param groupLevelPermission
 	 * @return true if the user has the particular groupLevelPermission
@@ -1020,48 +508,6 @@ public class User implements Serializable {
 			groupLevelPermissions.addAll(group.getGroupLevelPermissions());
 		}
 		return groupLevelPermissions;
-	}
-
-	/**
-	 * @return the reportedSpammers
-	 */
-	public Set<User> getReportedSpammers() {
-		return this.reportedSpammers;
-	}
-
-	/**
-	 * @param reportedSpammers the reportedSpammers to set
-	 */
-	public void setReportedSpammers(Set<User> reportedSpammers) {
-		this.reportedSpammers = reportedSpammers;
-	}
-
-	/**
-	 * @return the logged interaction at registration form
-	 */
-	public String getRegistrationLog() {
-		return this.registrationLog;
-	}
-
-	/**
-	 * @param registrationLog the logged interaction at registration form to set
-	 */
-	public void setRegistrationLog(String registrationLog) {
-		this.registrationLog = registrationLog;
-	}
-
-	/**
-	 * @return the claimedPerson
-	 */
-	public Person getClaimedPerson() {
-		return claimedPerson;
-	}
-
-	/**
-	 * @param claimedPerson the claimedPerson to set
-	 */
-	public void setClaimedPerson(Person claimedPerson) {
-		this.claimedPerson = claimedPerson;
 	}
 
 	/**

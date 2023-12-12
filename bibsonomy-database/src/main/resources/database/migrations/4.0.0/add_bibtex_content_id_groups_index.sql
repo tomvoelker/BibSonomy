@@ -1,0 +1,1 @@
+CREATE INDEX `content_id_group_idx` ON `bibtex`(`content_id`, `group`); 

@@ -103,13 +103,18 @@ public class PublicationAutocompleteController implements MinimalisticController
 			if (present(post)) {
 				allPosts.add(post);
 			}
-		} else if (present(doi) || UrlUtils.isUrl(rawSearch)) {
+		} else if (present(doi)) {
 			final Post<BibTex> post = callScraper(this.scrapers, doi);
 			if (present(post)) {
 				allPosts.add(post);
 			}
 		} else if (present(arxiv)) {
 			final Post<BibTex> post = callScraper(new ArxivScraper(), arxiv);
+			if (present(post)) {
+				allPosts.add(post);
+			}
+		} else if (UrlUtils.isUrl(rawSearch)) {
+			final Post<BibTex> post = callScraper(this.scrapers, rawSearch);
 			if (present(post)) {
 				allPosts.add(post);
 			}

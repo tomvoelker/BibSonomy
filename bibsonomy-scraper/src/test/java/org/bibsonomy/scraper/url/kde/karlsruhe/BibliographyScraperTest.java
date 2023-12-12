@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.karlsruhe;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,13 +41,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class BibliographyScraperTest {
+	String resultDirectory = "karlsruhe/bibliography/";
 	
 	/**
 	 * starts URL test with id url_124
 	 */
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://liinwww.ira.uka.de/cgi-bin/bibshow?e=Uifpsz0iboecppl/qspc/fyqboefe}56124&r=bibtex&mode=intra", BibliographyScraper.class, "BibliographyScraperUnitURLTest.bib");
+		final String url = "https://liinwww.ira.uka.de/cgi-bin/bibshow?e=Uifpsz0iboecppl/qspc/fyqboefe%7d56124&r=bibtex&mode=intra";
+		final String resultFile = resultDirectory + "BibliographyScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BibliographyScraper.class, resultFile);
 	}
 
 }

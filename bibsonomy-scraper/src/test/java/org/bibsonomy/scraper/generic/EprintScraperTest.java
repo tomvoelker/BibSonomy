@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,13 +43,16 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class EprintScraperTest {
+	String resultDirectory = "eprint/";
 	
 	/**
 	 * starts URL test with id url_147
 	 */
 	@Test
 	public void url1TestRun1(){
-		assertScraperResult("http://orca.cf.ac.uk/5213/", EprintScraper.class, "EprintScraperUnitURLTest1.bib");
+		final String url = "http://orca.cf.ac.uk/5213/";
+		final String resultFile = resultDirectory + "EprintScraperUnitURLTest1.bib";
+		assertScraperResult(url, EprintScraper.class, resultFile);
 	}
 
 	/**
@@ -57,7 +60,9 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun2(){
-		assertScraperResult("http://eprints.bbk.ac.uk/442/", EprintScraper.class, "EprintScraperUnitURLTest2.bib");
+		final String url = "http://eprints.bbk.ac.uk/442/";
+		final String resultFile = resultDirectory + "EprintScraperUnitURLTest2.bib";
+		assertScraperResult(url, EprintScraper.class, resultFile);
 	}
 	
 	/**
@@ -65,7 +70,9 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun3(){
-		assertScraperResult("http://eprints.bbk.ac.uk/589/", EprintScraper.class, "EprintScraperUnitURLTest3.bib");
+		final String url = "http://eprints.bbk.ac.uk/589/";
+		final String resultFile = resultDirectory + "EprintScraperUnitURLTest3.bib";
+		assertScraperResult(url, EprintScraper.class, resultFile);
 	}
 	
 	/**
@@ -73,6 +80,8 @@ public class EprintScraperTest {
 	 */
 	@Test
 	public void url1TestRun4(){
-		assertScraperResult("http://orca.cf.ac.uk/2657//", EprintScraper.class, "EprintScraperUnitURLTest4.bib");
+		final String url = "http://orca.cf.ac.uk/2657/";
+		final String resultFile = resultDirectory + "EprintScraperUnitURLTest4.bib";
+		assertScraperResult(url, EprintScraper.class, resultFile);
 	}
 }

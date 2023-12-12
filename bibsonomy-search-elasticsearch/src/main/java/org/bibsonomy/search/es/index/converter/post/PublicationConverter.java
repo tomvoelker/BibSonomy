@@ -431,6 +431,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 
 			serializedPersonNames.add(convertedPerson);
 			index++;
+
 		}
 
 		return serializedPersonNames;
@@ -441,6 +442,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @return
 	 */
 	private static String convertToPersonIndex(List<PersonName> persons) {
+		/*
+		 * Some publications are having too many persons for a keyword type.
+		 * We limit the number of persons to 10, that will be used for sorting.
+		 * NOTE: This will not affect the actual document in the index, just the sorting.
+		 */
+		if (persons.size() > 10) {
+			return PersonNameUtils.serializePersonNames(persons.subList(0, 10), true, " ");
+		}
 		return PersonNameUtils.serializePersonNames(persons, true, " ");
 	}
 

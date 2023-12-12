@@ -31,14 +31,14 @@ package de.unikassel.puma.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -54,6 +54,7 @@ import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.json.simple.JSONObject;
 import org.springframework.context.MessageSource;
 
 import de.unikassel.puma.common.ReportingMode;
@@ -64,16 +65,13 @@ import de.unikassel.puma.webapp.command.ajax.SwordServiceCommand;
 /**
  * @author philipp
  */
+@Getter
+@Setter
 public class SwordServiceController extends AjaxController implements MinimalisticController<SwordServiceCommand> {
 	
 	private SwordService swordService;
-	private MessageSource messageSource;
 	private ReportingMode mode;
-
-	@Override
-	public SwordServiceCommand instantiateCommand() {
-		return new SwordServiceCommand();
-	}
+	private MessageSource messageSource;
 
 	@Override
 	public View workOn(final SwordServiceCommand command) {
@@ -90,48 +88,27 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		int statuscode = 1; // statuscode = 1: ok; = 0: error 
 
 		
-		final Post<BibTex> post = this.getPostToHash(command.getResourceHash(), user.getName());
+		final Post<BibTex> post = this.getPostToHash(command.getIntrahash(), user.getName());
 		
 		if (!present(post)) {
 			// TODO: do something
+			return Views.AJAX_JSON;
 		}
 		
 		// add some metadata to post
-		final PumaData<BibTex> pumaData = new PumaData<BibTex>();
+		final PumaData<BibTex> pumaData = command.getPumaData();
 		pumaData.setPost(post);
-		
-		// get additional metadata
-		final Map<String, List<String>> metadataMap = this.logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName(), post.getResource().getIntraHash(), null);
-		// TODO is use of PublicationClassificatorSingleton classification here possible?
-//		Set<String> availableClassifications = classificator.getInstance().getAvailableClassifications(); 
-		
-		for (final Entry<String, List<String>> item : metadataMap.entrySet()) {
-			final String firstValue = item.getValue().get(0);
-			final String key = item.getKey();
-			
-			if (SwordService.AF_INSTITUTION.equals(key)) pumaData.setExaminstitution(firstValue);
-			else if (SwordService.AF_PHDREFEREE.equals(key)) pumaData.addExamreferee(firstValue);
-			else if (SwordService.AF_PHDREFEREE2.equals(key)) pumaData.addExamreferee(firstValue);
-			else if (SwordService.AF_PHDORALEXAM.equals(key)) pumaData.setPhdoralexam(firstValue);
-			else if (SwordService.AF_SPONSOR.equals(key)) pumaData.addSponsor(firstValue);
-			else if (SwordService.AF_ADDITIONALTITLE.equals(key)) pumaData.addAdditionaltitle(firstValue);
-			else pumaData.addClassification(key, item.getValue());
-
-//			if (availableClassifications.contains(item.getKey())) {
-//				pumaData.addClassification(item.getKey(), item.getValue());
-//			}
-		}
 
 		try {
 			// TODO: do not throw an exception if transfer was ok
 			this.swordService.submitDocument(pumaData, user);
-		} catch (final SwordException ex) {
+		} catch (final SwordException | FileNotFoundException ex) {
 			
 			// send message of exception to webpage via ajax to give feedback of submission result
 			message = ex.getMessage();
 			
 			// errcode 2xx is ok / 200, 201, 202
-			if (message.substring(0, 20).equals("error.sword.errcode2")){
+			if (message.startsWith("error.sword.errcode2")){
 				// transmission complete and successful
 				statuscode = 1;
 				message = "error.sword.sentsuccessful";
@@ -144,13 +121,13 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		// log successful store to repository 
 		if (statuscode == 1) {
 			//final Post<?> createdPost = logic.getPostDetails(command.getResourceHash(), user.getName());
-			final List<Repository> repositorys = new ArrayList<Repository>();
+			final List<Repository> repositories = new ArrayList<Repository>();
 			final Repository repo = new Repository();
-			repo.setId("REPOSITORY");  // TODO: set ID to current repository - it should be possible in fututre to send a post to multiple/different repositories 
-			repositorys.add(repo);
-			post.setRepositorys(repositorys);
+			repo.setId("REPOSITORY");  // TODO: set ID to current repository - it should be possible in future to send a post to multiple/different repositories
+			repositories.add(repo);
+			post.setRepositories(repositories);
 	
-			this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_REPOSITORY);
+			this.logic.updatePosts(Collections.singletonList(post), PostUpdateOperation.UPDATE_REPOSITORIES);
 		}
 	
 		final JSONObject json = new JSONObject();
@@ -160,8 +137,6 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		
 		jsonResponse.put("statuscode", statuscode);
 		jsonResponse.put("message", message);
-		// TODO: get from somewhere localized messages to transmit via ajax
-		// localizedMessage = puma.repository.response.$message
 		jsonResponse.put("localizedMessage", this.messageSource.getMessage(message, null, locale));
 		json.put("response", jsonResponse);
 		
@@ -183,25 +158,11 @@ public class SwordServiceController extends AjaxController implements Minimalist
 			return getPostToHash(ex.getNewId(), userName);
 		}
 	}
-	
-	/**
-	 * @param messageSource the messageSource to set
-	 */
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
 
-	/**
-	 * @param swordService
-	 */
-	public void setSwordService(final SwordService swordService) {
-		this.swordService = swordService;
-	}
-
-	/**
-	 * @param mode the mode to set
-	 */
-	public void setMode(ReportingMode mode) {
-		this.mode = mode;
+	@Override
+	public SwordServiceCommand instantiateCommand() {
+		SwordServiceCommand command = new SwordServiceCommand();
+		command.setPumaData(new PumaData<>());
+		return command;
 	}
 }

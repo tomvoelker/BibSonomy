@@ -433,7 +433,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	 */
 	if(singleButton) {
 //		friendshipButton.parent().append(addContainerHTML);
-		$("#sidebox").append(addContainerHTML);
+		$("#sidebar").append(addContainerHTML);
 		pulsate();	
 		pulsateID = setInterval(pulsate,1999);
 		list 			= $("#sphereList");

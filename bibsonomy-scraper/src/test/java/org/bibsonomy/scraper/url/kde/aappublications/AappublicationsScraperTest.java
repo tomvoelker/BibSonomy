@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.aappublications;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,21 +40,21 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AappublicationsScraperTest {
+	String resultDirectory = "aappublications/";
 	/**
 	 * starts URL test with id url_356
 	 */
 	@Test
-	public void url11TestRun() {
-		/*
-		 * FIXME this throws a ParseException, other urls don't
-		 */
-		final String url = "http://pediatrics.aappublications.org/content/136/5/e1186";
-		final String resultFile = "aappublications/AappublicationsScraperUnitURLTest1.bib";
+	public void url1TestRun() {
+		final String url = "https://publications.aap.org/pediatrics/article-abstract/136/5/e1186/33840/Racial-and-Regional-Differences-in-Rates-of?redirectedFrom=fulltext";
+		final String resultFile = resultDirectory + "AappublicationsScraperUnitURLTest1.bib";
 		assertScraperResult(url, AappublicationsScraper.class, resultFile);
 	}
 
 	@Test
-	public void testNeoReviews() {
-		assertScraperResult("https://neoreviews.aappublications.org/content/22/6/e360", AappublicationsScraper.class, "aappublications/AappublicationsScraperUnitURLTest2.bib");
+	public void url2TestRun() {
+		final String url = "https://publications.aap.org/neoreviews/article-abstract/22/6/e360/180583/Powdered-to-Liquid-Human-Milk-Fortifiers-in-the?redirectedFrom=fulltext";
+		final String resultFile = resultDirectory +  "AappublicationsScraperUnitURLTest2.bib";
+		assertScraperResult(url, AappublicationsScraper.class, resultFile);
 	}
 }

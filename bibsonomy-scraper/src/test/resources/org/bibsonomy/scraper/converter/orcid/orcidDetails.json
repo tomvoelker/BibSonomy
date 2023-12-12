@@ -1,0 +1,122 @@
+{
+  "created-date": {
+    "value": 1592895517198
+  },
+  "last-modified-date": {
+    "value": 1592895517198
+  },
+  "source": {
+    "source-orcid": null,
+    "source-client-id": {
+      "uri": "https://orcid.org/client/0000-0002-5982-8983",
+      "path": "0000-0002-5982-8983",
+      "host": "orcid.org"
+    },
+    "source-name": {
+      "value": "Scopus - Elsevier"
+    },
+    "assertion-origin-orcid": {
+      "uri": "https://orcid.org/0000-0002-0570-7908",
+      "path": "0000-0002-0570-7908",
+      "host": "orcid.org"
+    },
+    "assertion-origin-client-id": null,
+    "assertion-origin-name": {
+      "value": "Gerd Stumme"
+    }
+  },
+  "put-code": 76089467,
+  "path": "/0000-0002-0570-7908/work/76089467",
+  "title": {
+    "title": {
+      "value": "Clones in graphs"
+    },
+    "subtitle": null,
+    "translated-title": null
+  },
+  "journal-title": {
+    "value": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+  },
+  "short-description": null,
+  "citation": null,
+  "type": "book",
+  "publication-date": {
+    "year": {
+      "value": "2018"
+    },
+    "month": null,
+    "day": null
+  },
+  "external-ids": {
+    "external-id": [
+      {
+        "external-id-type": "doi",
+        "external-id-value": "10.1007/978-3-030-01851-1_6",
+        "external-id-normalized": {
+          "value": "10.1007/978-3-030-01851-1_6",
+          "transient": true
+        },
+        "external-id-normalized-error": null,
+        "external-id-url": null,
+        "external-id-relationship": "self"
+      },
+      {
+        "external-id-type": "eid",
+        "external-id-value": "2-s2.0-85055869967",
+        "external-id-normalized": {
+          "value": "2-s2.0-85055869967",
+          "transient": true
+        },
+        "external-id-normalized-error": null,
+        "external-id-url": null,
+        "external-id-relationship": "self"
+      },
+      {
+        "external-id-type": "isbn",
+        "external-id-value": "16113349 03029743",
+        "external-id-normalized": null,
+        "external-id-normalized-error": {
+          "error-code": "8001",
+          "error-message": "Cannot normalize identifier value isbn:16113349 03029743",
+          "transient": true
+        },
+        "external-id-url": null,
+        "external-id-relationship": "part-of"
+      }
+    ]
+  },
+  "url": {
+    "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-85055869967&partnerID=MN8TOARS"
+  },
+  "contributors": {
+    "contributor": [
+      {
+        "contributor-orcid": null,
+        "credit-name": {
+          "value": "Doerfel, S."
+        },
+        "contributor-email": null,
+        "contributor-attributes": null
+      },
+      {
+        "contributor-orcid": null,
+        "credit-name": {
+          "value": "Hanika, T."
+        },
+        "contributor-email": null,
+        "contributor-attributes": null
+      },
+      {
+        "contributor-orcid": null,
+        "credit-name": {
+          "value": "Stumme, G."
+        },
+        "contributor-email": null,
+        "contributor-attributes": null
+      }
+    ]
+  },
+  "language-code": null,
+  "country": null,
+  "visibility": "public"
+}

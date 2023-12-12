@@ -10,7 +10,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
@@ -59,12 +58,6 @@
         </jsp:attribute>
         
 		<jsp:attribute name="content">
-
-              <!-- 
-                 | show global errors
-                 -->
-              <errors:global />
-
               <!-- 
                  | form starts here
                  -->
@@ -106,7 +99,7 @@
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 									<fmt:message key="save" var="save" />
 									<form:hidden path="intraHashToUpdate" />
-									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+									<input type="submit" value="${save}" onclick="clearTagInput();" tabindex="2"/>
 								</div>
                    	</fieldset>
                  </div>

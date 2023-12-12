@@ -6,6 +6,14 @@ const AND = 'AND';
 const OR = 'OR';
 const NOT = 'NOT';
 
+$(function () {
+    // sort entrytype dropdown
+    var entrytypeSelect = $('#dropdownSelectionEntrytype');
+    entrytypeSelect.html($(entrytypeSelect).children('li').sort(function(a, b) {
+        return $(a).data('entrytype-title').toLowerCase() < $(b).data('entrytype-title').toLowerCase() ? -1 : 1;
+    }));
+})
+
 function toggleFilters() {
     $('#extendedFilters').slideToggle();
     $('#expandFilterLink').toggle(0);
@@ -44,6 +52,15 @@ function switchSelection(type, value, selection) {
     const id = '#filterSelection' + type;
     var filterSelection = $(id);
     filterSelection.html('<span style="display:none;">' + value + '</span>' + selection.innerText);
+
+    // Switch placeholder text
+    var placeholder = getString('search.extended.field.placeholder');
+    var typePlaceholder = getString('search.extended.' + type.toLowerCase() + '.' + value + '.hint');
+    // Check, if available, otherwise stay at default
+    if (!typePlaceholder.startsWith("???")) {
+        placeholder = typePlaceholder;
+    }
+    $('#filterValue' + type).attr('placeholder', placeholder);
 }
 
 function addFilter() {
@@ -83,6 +100,8 @@ function addFilter() {
     input.val(query);
 }
 
+var escapedFields = ['title', 'author', 'editor', 'publisher', 'institution']
+
 function appendFilter(query, operator, key, value) {
 
     // check, if empty key or value
@@ -94,6 +113,10 @@ function appendFilter(query, operator, key, value) {
     const unselected = '<span class="unselected">';
     if (key.includes(unselected) || value.includes(unselected)) {
         return query;
+    }
+
+    if (escapedFields.includes(key)) {
+        value = '"' + value + '"';
     }
 
     const term = key + ':' + value;

@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,16 +48,28 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OSAScraperTest {
+	String resultDirectory = "osa/";
 	
 	/**
 	 * starts URL test with id url_93
 	 */
 	@Test
-	public void urlTestRun(){
+	public void urlTest1Run(){
 		final String url = "https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084";
-		final String resultFile = "OSAScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "OSAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, OSAScraper.class, resultFile);
 	}
+
+	@Test
+	public void urlTest2Run(){
+		final String url = "https://opg.optica.org/aop/fulltext.cfm?uri=aop-3-2-128&id=211561";
+		final String resultFile = resultDirectory + "OSAScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, OSAScraper.class, resultFile);
+	}
+
+
+
+
 	
 	@Ignore // because we need to login in the journal to be able to scrape the references
 	@Test

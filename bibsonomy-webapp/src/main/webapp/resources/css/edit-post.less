@@ -1,15 +1,53 @@
-#miscCheckboxDiv {
-	text-align: right;
-	input {
-		margin-right: 3px;
-    }
+#miscExpertMode {
+  display: none;
+  text-align: right;
+
+  input {
+    margin-right: 3px;
+  }
 }
 
-#add-field-container {
-	padding-left: 8px;
-	padding-right: 0px;
+#addMiscFieldButton {
+  display: none;
+  padding-left: 8px;
+  padding-right: 0;
 }
 
 .cust-btn-toolbar .btn-group {
-	margin: 0 0 5px 5px;
+  margin: 0 0 5px 5px;
+}
+
+.preset-tags-panel {
+  margin-bottom: 10px;
+
+  h4 {
+    margin: 0;
+  }
+
+  .preset-tag-form {
+    margin: 0;
+  }
+
+  .preset-tags-list {
+    padding-top: 5px;
+    margin: 0;
+
+    li {
+      background-color: @main-color;
+      color: #fff;
+      font-size: 14px;
+      line-height: 18px;
+      padding: 2px 3px;
+      margin: 3px 5px 2px 0;
+      border: 1px solid @main-color;
+      border-radius: 3px;
+      -moz-border-radius: 3px;
+      -webkit-border-radius: 3px;
+    }
+  }
+
+  .bootstrap-tagsinput {
+    min-width: 100%;
+    margin-bottom: 0;
+  }
 }

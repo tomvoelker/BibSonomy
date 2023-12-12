@@ -29,32 +29,41 @@
  */
 package org.bibsonomy.scraper.url.kde.aappublications;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.generic.CitationManager2Scraper;
+import org.bibsonomy.util.WebUtils;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.generic.BibTeXLinkOnPageScraper;
-
-import bibtex.parser.BibtexParser;
 
 /**
  * scraper for the
  * @author Mohammed Abed
  * @author dzo
  */
-public class AappublicationsScraper extends BibTeXLinkOnPageScraper {
+public class AappublicationsScraper extends CitationManager2Scraper {
 
 	private static final String SITE_NAME = "Journals of the American Academy of Pediatrics (AAP)";
-	private static final String SITE_HOST = "aappublications.org";
+	private static final String SITE_HOST = "publications.aap.org";
 	private static final String SITE_URL  = "https://" + SITE_HOST;
 	private static final String SITE_INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(
 					new Pair<>(Pattern.compile(".*" + SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN)
 	);
+
+	@Override
+	protected String getCookies(URL url) throws IOException {
+		HttpClient httpClient = WebUtils.getHttpClient(RequestConfig.custom().setRedirectsEnabled(false).build());
+		return WebUtils.getHeaders(httpClient, new HttpGet(url.toString()), "Set-Cookie");
+	}
 
 	@Override
 	public String getSupportedSiteName() {
@@ -74,26 +83,5 @@ public class AappublicationsScraper extends BibTeXLinkOnPageScraper {
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
-	}
-
-	
-	/**
-	 * The BibTeX returned contains an id with space, e.g., "@article {de St Mauricee1186" which
-	 * need to be fixed in order to be accepted by {@link BibtexParser}.
-	 * 
-	 * @param bibtex
-	 * @return
-	 */
-	protected static String fixSpaceInId(final String bibtex) {
-		final int index = bibtex.indexOf("\n");
-		return bibtex.substring(0, index).replaceAll(" ", "") + bibtex.substring(index);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return fixSpaceInId(bibtex);
 	}
 }

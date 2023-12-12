@@ -29,9 +29,14 @@
  */
 package org.bibsonomy.model.logic.query;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author ada
  */
+@Getter
+@Setter
 public abstract class BasicPaginatedQuery implements PaginatedQuery, Query {
 
     /**
@@ -62,31 +67,4 @@ public abstract class BasicPaginatedQuery implements PaginatedQuery, Query {
         this.end = end;
     }
 
-    /**
-     * @return the start
-     */
-    public int getStart() {
-        return start;
-    }
-
-    /**
-     * @param start the start to set
-     */
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    /**
-     * @return the end
-     */
-    public int getEnd() {
-        return end;
-    }
-
-    /**
-     * @param end the end to set
-     */
-    public void setEnd(int end) {
-        this.end = end;
-    }
 }

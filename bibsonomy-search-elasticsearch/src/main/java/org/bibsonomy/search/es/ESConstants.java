@@ -85,6 +85,13 @@ public final class ESConstants {
 	public static final String RAW_SUFFIX = "raw";
 
 	/**
+	 * max result window size
+	 *
+	 * TODO this is only a temporary solution, until search after has been implemented
+	 */
+	public static final int MAX_RESULT_WINDOW = 30000;
+
+	/**
 	 * returns the standard ngram field for the parent field
 	 * @param fieldName
 	 * @return the field name for the ngram subfield
@@ -163,6 +170,7 @@ public final class ESConstants {
 								.endObject()
 							.endObject()
 						.endObject()
+						.field("max_result_window", MAX_RESULT_WINDOW)
 					.endObject());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
@@ -185,6 +193,8 @@ public final class ESConstants {
 		String FIELDS = "fields";
 		/** relation field */
 		String RELATION_FIELD = "relations";
+		/** type boolean */
+		String BOOLEAN_TYPE = "boolean";
 		/** type text */
 		String TEXT_TYPE = "text";
 		/** type keyword used only for filtering */
@@ -254,6 +264,8 @@ public final class ESConstants {
 		public static final String DESCRIPTION = "description";
 		/** Ids of the associated authors, editors, supervisors, etc */
 		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
+		/** the approved status (only for community posts/gold standards) */
+		String APPROVED = "approved";
 
 		public interface Resource {
 			/** the title of the resource */
@@ -277,6 +289,8 @@ public final class ESConstants {
 			String ALL_AUTHORS = "author";
 			/** field that contains all editors */
 			String ALL_EDITORS = "editor";
+			/** field that contains all person ids */
+			String ALL_PERSONS = "person";
 
 			String AUTHORS = "authors";
 			String EDITORS = "editors";
@@ -346,6 +360,7 @@ public final class ESConstants {
 			String LANGUAGE = "language";
 			/** a list of special misc fields */
 			Set<String> SPECIAL_MISC_FIELDS = Sets.asSet(DOI, ISSN, ISBN, LANGUAGE, PROJECT, ABTEILUNG, ORCID);
+
 			/** the document */
 			interface Document {
 				String NAME = "name";

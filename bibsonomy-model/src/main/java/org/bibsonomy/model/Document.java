@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
@@ -38,6 +41,8 @@ import java.util.Date;
  * 
  * @author Christian Kramer
  */
+@Getter
+@Setter
 public class Document implements Serializable {
 	/**
 	 * 
@@ -66,55 +71,6 @@ public class Document implements Serializable {
 	private File file;
 
 	/**
-	 * @return the temp
-	 */
-	public boolean isTemp() {
-		return this.temp;
-	}
-
-	/**
-	 * @param temp the temp to set
-	 */
-	public void setTemp(boolean temp) {
-		this.temp = temp;
-	}
-
-	/**
-	 * @return md5hash
-	 */
-	public String getMd5hash() {
-		return this.md5hash;
-	}
-
-	/**
-	 * @param md5hash
-	 */
-	public void setMd5hash(String md5hash) {
-		this.md5hash = md5hash;
-	}
-
-	/**
-	 * @return fileName
-	 */
-	public String getFileName() {
-		return this.fileName;
-	}
-
-	/**
-	 * @param fileName
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	/**
-	 * @return userName
-	 */
-	public String getUserName() {
-		return this.userName;
-	}
-
-	/**
 	 * @param userName
 	 */
 	public void setUserName(String userName) {
@@ -125,48 +81,6 @@ public class Document implements Serializable {
 		}
 	}
 
-	/**
-	 * @return fileHash
-	 */
-	public String getFileHash() {
-		return this.fileHash;
-	}
-
-	/**
-	 * @param fileHash
-	 */
-	public void setFileHash(String fileHash) {
-		this.fileHash = fileHash;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return the file
-	 */
-	public File getFile() {
-		return this.file;
-	}
-
-	/**
-	 * @param file the file to set
-	 */
-	public void setFile(File file) {
-		this.file = file;
-	}
-	
 	@Override
 	public String toString() {
 		return fileName;

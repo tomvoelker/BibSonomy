@@ -1,0 +1,40 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<!--+
+		| shows a list of groups this post might be relevant for
+		+-->
+
+	<jsp:directive.attribute name="groups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
+
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+  
+	<div class="form-group">
+		<label class="col-sm-${labelColSpan} control-label">
+			<fmt:message key="post.resource.relevantfor" />
+		</label>
+	
+		<div class="col-sm-${inputColSpan}">
+			<!-- select box for "other" groups -->
+			<fmt:message var="selectPlaceholder" key="form.input.select"/>
+			<select id="relevantForGroupsSelect" name="relevantForGroups" class="selectpicker show-tick form-control"
+					title="${selectPlaceholder}" iconBase="fa" data-tickIcon="fa-check" multiple="multiple">
+				<c:forEach items="${groups}" var="group">
+					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
+					<option data-content="${displayName}" value="${group.name}">
+						<c:out value="${displayName}"/>
+					</option>
+				</c:forEach>
+			</select>
+
+	       	<p class="help-block"><fmt:message key="post.resource.relevant"/></p>
+		</div>
+	</div>
+</jsp:root>

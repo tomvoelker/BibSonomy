@@ -47,7 +47,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -61,13 +61,13 @@ import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -176,6 +176,12 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
+		throwReadOnlyException();
+		return null;
+	}
+
+	@Override
+	public List<JobResult> approvePost(Post<BibTex> post, String username) {
 		throwReadOnlyException();
 		return null;
 	}
@@ -838,15 +844,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person, org.bibsonomy.common.enums.PersonUpdateOperation)
 	 */
 	@Override
-	public void updatePerson(Person person, PersonUpdateOperation operation) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createPersonName(PersonName withPersonId) {
+	public void updatePerson(Person person, PersonOperation operation) {
 		throwReadOnlyException();
 	}
 
@@ -856,11 +854,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
 		return this.logicinterface.getPersonById(idType, id);
-	}
-
-	@Override
-	public Person getPersonByAdditionalKey(String keyName, String keyValue) {
-		return this.logicinterface.getPersonByAdditionalKey(keyName, keyValue);
 	}
 
 	@Override
@@ -877,26 +870,10 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
-	 */
-	@Override
-	public void removePersonName(Integer personNameId) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
 	 */
 	@Override
 	public void removeResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
-		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
-	 */
-	@Override
-	public void unlinkUser(String username) {
 		throwReadOnlyException();
 	}
 
@@ -947,8 +924,8 @@ public class ReadOnlyLogic implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(MetaDataQuery<R> query) {
-		return this.logicinterface.getMetaData(query);
+	public <R> R getMetaData(User loggedInUser, MetaDataQuery<R> query) {
+		return this.logicinterface.getMetaData(loggedInUser, query);
 	}
 
 	@Override

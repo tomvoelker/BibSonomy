@@ -58,11 +58,13 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.tex.TexDecode;
@@ -263,13 +265,13 @@ public class BibTexUtils {
 	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
 	 */
 	public static final String PREPRINT = "preprint";
-	
+
 	/**
 	 * the common entrytypes of a BibTeX
 	 */
-	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, DATASET, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
-		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
-		PREPRINT, COLLECTION
+	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, COLLECTION, CONFERENCE, DATASET, ELECTRONIC,
+			INBOOK, INCOLLECTION, INPROCEEDINGS, MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS,
+			PREPRINT, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED
 	};
 
 	/*
@@ -861,6 +863,17 @@ public class BibTexUtils {
 		return Integer.MAX_VALUE;
 	}
 
+	public static String getPublishedDate(BibTex bib) {
+		if (present(bib.getMonth())) {
+			String monthNum = BibTexUtils.getMonthAsNumber(bib.getMonth());
+			if (present(bib.getDay())) {
+				return String.format("%s-%s-%s", bib.getYear(), monthNum, bib.getDay());
+			}
+			return String.format("%s-%s", bib.getYear(), monthNum);
+		}
+		return String.format("%s", bib.getYear());
+	}
+
 	/**
 	 * Sort a list of bibtex posts (and eventually remove duplicates).
 	 * 
@@ -1203,5 +1216,19 @@ public class BibTexUtils {
 		}
 		
 		return "";
+	}
+
+	public static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
+		if (!present(post)) {
+			return null;
+		}
+
+		final Post<BibTex> gold = new Post<>();
+
+		final GoldStandardPublication goldP = new GoldStandardPublication();
+		ObjectUtils.copyPropertyValues(post.getResource(), goldP);
+		gold.setResource(goldP);
+
+		return gold;
 	}
 }

@@ -29,62 +29,35 @@
  */
 package org.bibsonomy.webapp.util;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Contains information about changed posts.
  *
  * @author niebler
  */
+@Getter
+@Setter
 public class PostChangeInfo {
-	private boolean checked;
 	
 	// FIXME: should be of type Set<Tag>
+	/** the old tags before the post changes */
 	private String oldTags;
 	// FIXME: should be of type Set<Tag>
+	/** the new tags after the post changes */
 	private String newTags;
 
-	/**
-	 * @return the marked
-	 */
-	public boolean isChecked() {
-		return this.checked;
-	}
+	/** flag, if posted has been checked/selected */
+	private boolean checked;
 
-	/**
-	 * @param marked
-	 *            the marked to set
-	 */
-	public void setChecked(final boolean checked) {
-		this.checked = checked;
-	}
+	/** flag, if the post should be normalized */
+	private boolean normalize;
 
-	/**
-	 * @return the oldTags
-	 */
-	public String getOldTags() {
-		return this.oldTags;
-	}
+	/** flag, if the visibility of the post should be updated */
+	private boolean updateVisibility;
 
-	/**
-	 * @param oldTags
-	 *            the oldTags to set
-	 */
-	public void setOldTags(final String oldTags) {
-		this.oldTags = oldTags;
-	}
-
-	/**
-	 * @return the newTags
-	 */
-	public String getNewTags() {
-		return this.newTags;
-	}
-
-	/**
-	 * @param newTags
-	 *            the newTags to set
-	 */
-	public void setNewTags(final String newTags) {
-		this.newTags = newTags;
-	}
+	/** flag, if the post should be deleted*/
+	private boolean delete;
 
 }

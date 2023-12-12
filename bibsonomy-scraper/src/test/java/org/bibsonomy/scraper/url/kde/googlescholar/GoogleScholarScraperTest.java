@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.googlescholar;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,12 +41,34 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class GoogleScholarScraperTest {
-	
-	/**
-	 * starts URL test with id url_138
-	 */
+	String resultDirectory = "googlescholar/";
+
 	@Test
 	public void urlTestRun1() {
-		assertScraperResult("https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1t5awvEAAAAJ&citation_for_view=1t5awvEAAAAJ:UeHWp8X0CEIC", GoogleScholarScraper.class, "GoogleScholarScraperUnitURLTest2.bib");
+		final String url = "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1t5awvEAAAAJ&citation_for_view=1t5awvEAAAAJ:R3hNpaxXUhUC";
+		final String resultFile = resultDirectory + "GoogleScholarScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, GoogleScholarScraper.class, resultFile);
+	}
+	
+
+	@Test
+	public void urlTestRun2() {
+		final String url = "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1t5awvEAAAAJ&citation_for_view=1t5awvEAAAAJ:UeHWp8X0CEIC";
+		final String resultFile = resultDirectory + "GoogleScholarScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, GoogleScholarScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTestRun3() {
+		final String url = "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=PH4mytYAAAAJ&citation_for_view=PH4mytYAAAAJ:W7OEmFMy1HYC";
+		final String resultFile = resultDirectory + "GoogleScholarScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, GoogleScholarScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTestRun4() {
+		final String url = "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=PH4mytYAAAAJ&citation_for_view=PH4mytYAAAAJ:IjCSPb-OGe4C";
+		final String resultFile = resultDirectory + "GoogleScholarScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, GoogleScholarScraper.class, resultFile);
 	}
 }

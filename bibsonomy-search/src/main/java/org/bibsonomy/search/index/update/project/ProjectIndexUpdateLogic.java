@@ -34,7 +34,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.index.utils.SearchParamUtils;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 import java.util.Date;
 import java.util.List;

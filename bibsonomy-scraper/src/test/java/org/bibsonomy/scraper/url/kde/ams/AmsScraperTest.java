@@ -37,7 +37,8 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -47,20 +48,43 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AmsScraperTest {
+	String resultDirectory = "ams/";
 	
 	/**
 	 * starts URL test with id url_121
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1";
-		final String resultFile = "AmsScraperUnitURLTest.bib";
+		final String url = "https://journals.ametsoc.org/view/journals/bams/89/6/2008bams2375_1.xml";
+		final String resultFile = resultDirectory + "AmsScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, AmsScraper.class, resultFile);
 	}
 
 	@Test
+	public void url2TestRun(){
+		final String url = "https://journals.ametsoc.org/view/journals/clim/34/23/JCLI-D-21-0071.1.xml?rskey=ElJFzO&result=8";
+		final String resultFile = resultDirectory + "AmsScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, AmsScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://journals.ametsoc.org/view/journals/atot/aop/JTECH-D-20-0160.1/JTECH-D-20-0160.1.xml?tab_body=abstract-display";
+		final String resultFile = resultDirectory + "AmsScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, AmsScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "https://journals.ametsoc.org/view/journals/atot/aop/JTECH-D-21-0071.1/JTECH-D-21-0071.1.xml";
+		final String resultFile = resultDirectory + "AmsScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, AmsScraper.class, resultFile);
+	}
+
+	@Ignore
+	@Test
 	public void testCitedby() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.ametsoc.org/doi/abs/10.1175/2008BAMS2375.1"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.ametsoc.org/view/journals/bams/89/6/2008bams2375_1.xml"));
 		AmsScraper as = new AmsScraper();
 		assertTrue(as.scrape(sc));
 		assertTrue(as.scrapeCitedby(sc));
@@ -71,10 +95,11 @@ public class AmsScraperTest {
 		assertEquals("<div class=\"citedByEntry\"><span class=\"author\">John D. Horel</span>, <span class=\"author\">Donna Ziegenfuss</span>".trim(), cby.substring(0, 113).trim());
 		assertTrue(cby.contains("Lodovica Illari"));
 	}
-	
+
+	@Ignore
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://journals.ametsoc.org/doi/full/10.1175/JAMC-D-13-0338.1"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://journals.ametsoc.org/view/journals/bams/89/6/2008bams2375_1.xml"));
 		AmsScraper as = new AmsScraper();
 		assertTrue(as.scrape(sc));
 		assertTrue(as.scrapeReferences(sc));

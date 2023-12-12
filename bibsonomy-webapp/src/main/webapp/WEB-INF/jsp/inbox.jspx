@@ -16,8 +16,7 @@
 	<layout:resourceLayout pageTitle="${inboxPageTitle}" 
 			command="${command}" 
 			requPath="${requPath}"  
-			showPageOptions="${true}"
-			showInboxActions="${true}">
+			showPageOptions="${true}">
 			
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-confirmation.js"><!-- keep me --></script>
@@ -54,7 +53,7 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<li style="text-align: center;" class="clear-inbox-confirmation-item">
+			<div style="text-align: center;" class="clear-inbox-confirmation-item">
 				<c:url var="message_remove" value="/removeMessage">
 					<c:param name="hash" value=""/>
 					<c:param name="user" value=""/>
@@ -78,7 +77,7 @@
 				>
 					<fmt:message key="inbox.actions.removeAllMessages" />
 				</a>
-			</li>
+			</div>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

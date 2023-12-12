@@ -2,25 +2,29 @@ var REVIEW_INFO_SELECTOR = '#review_info_rating';
 var MAX_DISCUSSION_ITEMS = 5;
 
 $(function() {
+	onPageLoad();
+});
+
+function onPageLoad(){
 	$('.group-selector .dropdown-menu a').click(function() {
 		var abstractGrouping = $(this).data('abstract-grouping');
 		var grouping = $(this).data('group');
 		var form = $(this).parents('form');
-		
+
 		form.find('input[name="abstractGrouping"]').attr('value', abstractGrouping);
 		form.find('input[name="groups"]').attr('value', grouping);
-		
+
 		var button = $(this).parents('.group-selector').find('button');
-		
+
 		button.find('.group').html($(this).html());
-		
+
 		$(this).parents('ul').find('li').removeClass('checked');
 		$(this).parent().addClass('checked');
-		
+
 		button.dropdown("toggle");
 		return false;
 	});
-	
+
 	$('.toggleReplies').click(function() {
 		var discussionContainer = $(this).parents('.media-body').first();
 		var subdiscussionList = discussionContainer.find('ul.subdiscussion').first();
@@ -32,7 +36,7 @@ $(function() {
 		}
 		return false;
 	});
-	
+
 	var discussionItems = $('.subdiscussion:first>li:not(.form)');
 	if (discussionItems.length > MAX_DISCUSSION_ITEMS) {
 		var items = $(discussionItems).slice(MAX_DISCUSSION_ITEMS - discussionItems.length);
@@ -56,16 +60,16 @@ $(function() {
 		$('.subdiscussion:first>li:last').after(listItem.append(link));
 		items.hide();
 	}
-	
+
 	$('.editLink').click(editDiscussionItem);
-	
+
 	$('.deleteLink').click(deleteDiscussionItem);
-	
+
 	$('.reply').click(showReplyForm);
-	
+
 	if ($('#discussion #ownReview').length > 0) {
 		$('#comment-review-info').hide();
-		
+
 		$('.createreview').hide();
 	} else {
 		$('.createcomment:first').hide();
@@ -78,7 +82,7 @@ $(function() {
 			$('.' + classToHide).hide();
 		});
 	}
-});
+}
 
 function setupActions(container, text, hash) {
 	container.find('.reply').click(showReplyForm);
@@ -155,9 +159,19 @@ function deleteDiscussionItem() {
 				
 				plotRatingDistribution();
 			}
+		},
+		error: function(jqXHR, data, errorThrown) {
+			//TODO: Can be deleted as soon as no 405 error is returned regularly during HTTP DELETE
+			$('#discussion').load(document.URL +  ' #discussion>*', function(){
+				onPageLoad();
+				plotRatingDistribution();
+				initStars();
+				$('.updatereview').hide()
+				$('.updatecomment').hide()
+			});
 		}
 	});
-	
+
 	return false;
 }
 

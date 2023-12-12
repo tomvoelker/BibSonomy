@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +45,8 @@ import java.util.List;
  *    type-safe generic methods than an enum).
  * 
  */
+@Getter
+@Setter
 public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * For persistence (Serializable) 
@@ -98,33 +103,6 @@ public abstract class Resource implements Serializable, Rateable {
 	 */
 	public abstract void recalculateHashes();
 
-	/**
-	 * @return interHash
-	 */
-	public String getInterHash() {
-		return this.interHash;
-	}
-
-	/**
-	 * @param interHash
-	 */
-	public void setInterHash(final String interHash) {
-		this.interHash = interHash;
-	}
-
-	/**
-	 * @return intraHash
-	 */
-	public String getIntraHash() {
-		return this.intraHash;
-	}
-
-	/**
-	 * @param intraHash
-	 */
-	public void setIntraHash(final String intraHash) {
-		this.intraHash = intraHash;
-	}
 
 	/**
 	 * @return posts
@@ -134,87 +112,6 @@ public abstract class Resource implements Serializable, Rateable {
 			this.posts = new LinkedList<Post<? extends Resource>>();
 		}
 		return this.posts;
-	}
-
-	/**
-	 * @param posts
-	 */
-	public void setPosts(final List<Post<? extends Resource>> posts) {
-		this.posts = posts;
-	}
-
-	/**
-	 * @return count
-	 */
-	public int getCount() {
-		return this.count;
-	}
-
-	/**
-	 * @param count
-	 */
-	public void setCount(final int count) {
-		this.count = count;
-	}
-
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**
-	 * @param title the title to set
-	 */
-	public void setTitle(final String title) {
-		this.title = title;
-	}
-	
-	/**
-	 * @return the rating
-	 */
-	@Override
-	public Double getRating() {
-		return this.rating;
-	}
-
-	/**
-	 * @param rating the rating to set
-	 */
-	@Override
-	public void setRating(final Double rating) {
-		this.rating = rating;
-	}
-	
-	/**
-	 * @return the numberOfRatings
-	 */
-	@Override
-	public Integer getNumberOfRatings() {
-		return this.numberOfRatings;
-	}
-
-	/**
-	 * @param numberOfRatings the numberOfRatings to set
-	 */
-	@Override
-	public void setNumberOfRatings(final Integer numberOfRatings) {
-		this.numberOfRatings = numberOfRatings;
-	}
-
-	/**
-	 * @return the discussionItems
-	 */
-	public List<DiscussionItem> getDiscussionItems() {
-		return this.discussionItems;
-	}
-
-	/**
-	 * @param discussionItems the discussionItems to set
-	 */
-	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
-		this.discussionItems = discussionItems;
 	}
 
 	@Override

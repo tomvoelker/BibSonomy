@@ -63,7 +63,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
@@ -75,6 +75,7 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
@@ -157,7 +158,7 @@ import org.bibsonomy.model.cris.Linkable;
 import org.bibsonomy.model.cris.Project;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -181,12 +182,12 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -954,13 +955,21 @@ public class DBLogic implements LogicInterface {
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
+
+			// set group tagsets
 			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+
+			// set preset tags
+			myGroup.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
+
+			// set pending memberships
 			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
 				final Group pendingMembershipsGroup = this.groupDBManager.getGroupWithPendingMemberships(groupName, session);
 				if (present(pendingMembershipsGroup)) {
 					myGroup.setPendingMemberships(pendingMembershipsGroup.getMemberships());
 				}
 			}
+
 			return myGroup;
 		}
 	}
@@ -1376,6 +1385,7 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroup(this.loginUser.getName(), groupName, false, hasAdminPrivileges, session);
+			group.setPresetTags(this.groupDBManager.getPresetTagsForGroup(groupName, session));
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1543,6 +1553,34 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
+				break;
+			case DELETE_PRESET_TAG:
+			case UPDATE_PRESET_TAG:
+				if(!this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR)) {
+					throw new AccessDeniedException("You are not allowed to edit preset tags.");
+				}
+
+				final List<Tag> oldPresetTags = group.getPresetTags();
+				final List<Tag> newPresetTags = paramGroup.getPresetTags();
+				final Map<String, Tag> oldPresetTagMap = GroupUtils.buildPresetTagMap(oldPresetTags);
+				final Map<String, Tag> newPresetTagMap = GroupUtils.buildPresetTagMap(newPresetTags);
+
+				// add new preset tags
+				for (final Tag newTag : newPresetTags) {
+					String newTagName = newTag.getName();
+					// check if tag is actually new or has a changed description
+					if (!oldPresetTagMap.containsKey(newTagName) ||
+							!oldPresetTagMap.get(newTagName).getDescription().equals(newTag.getDescription())) {
+						this.groupDBManager.createOrUpdatePresetTag(group, newTag, session);
+					}
+				}
+
+				// delete preset tags
+				for (final Tag oldTag : oldPresetTags) {
+					if (!newPresetTagMap.containsKey(oldTag.getName())) {
+						this.groupDBManager.removePresetTag(group, oldTag, session);
+					}
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
@@ -1785,6 +1823,53 @@ public class DBLogic implements LogicInterface {
 		 * successfully updated
 		 */
 		return manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
+	}
+
+	/**
+	 * Approve and update the goldstandard of the given post.
+	 * If the goldstandard does not exist yet, it will be created and approved.
+	 */
+	@Override
+	public List<JobResult> approvePost(final Post<BibTex> post, final String username) {
+		final List<JobResult> results = new LinkedList<>();
+
+		if (!present(post)) {
+			return results;
+		}
+
+		final String postInterHash = post.getResource().getInterHash();
+
+		// Convert the user post to a goldstandard post
+		Post<BibTex> gsPost = BibTexUtils.convertToGoldStandard(post);
+		if (present(gsPost)) {
+			gsPost.setApproved(true);
+			gsPost.setCopyFrom(username);
+		} else {
+			// Failed to convert, unable to approve it and return false
+			results.add(JobResult.buildFailure(Collections.singletonList(new ErrorMessage("Could not convert to goldstandard post", postInterHash))));
+			return results;
+		}
+
+		// Check, if a goldstandard already exists of this publication
+		Post<? extends Resource> existingPost = this.getPostDetails(post.getResource().getInterHash(), "");
+
+		// Create or update the approved goldstandard
+		try {
+			if (present(existingPost)) {
+				// goldstandard already exists and needs to be updated
+				gsPost.getResource().setIntraHash(gsPost.getResource().getInterHash());
+				results.addAll(this.updatePosts(Collections.singletonList(gsPost), PostUpdateOperation.UPDATE_ALL));
+			} else {
+				// goldstandard doesn't exist and needs to be created
+				results.addAll(this.createPosts(Collections.singletonList(gsPost)));
+			}
+			results.add(JobResult.buildSuccess(postInterHash));
+		} catch (final DatabaseException de) {
+			results.add(JobResult.buildFailure(Collections.singletonList(new ErrorMessage("Could not approve the goldstandard post", postInterHash))));
+			return results;
+		}
+
+		return results;
 	}
 
 	/*
@@ -3214,9 +3299,9 @@ public class DBLogic implements LogicInterface {
 		final ResourcePersonRelationQueryBuilder builder = new ResourcePersonRelationQueryBuilder()
 						.byInterhash(resourcePersonRelation.getPost().getResource().getInterHash())
 						.byRelationType(resourcePersonRelation.getRelationType())
-						.byAuthorIndex(Integer.valueOf(resourcePersonRelation.getPersonIndex()));
+						.byAuthorIndex(resourcePersonRelation.getPersonIndex());
 		final List<ResourcePersonRelation> existingRelations = this.getResourceRelations(builder.build());
-		if (existingRelations.size() > 0) {
+		if (!existingRelations.isEmpty()) {
 			final ResourcePersonRelation existingRelation = existingRelations.get(0);
 			throw new ResourcePersonAlreadyAssignedException(existingRelation);
 		}
@@ -3290,7 +3375,7 @@ public class DBLogic implements LogicInterface {
 	 * @param operation		the desired update operation
 	 */
 	@Override
-	public void updatePerson(final Person person, final PersonUpdateOperation operation) {
+	public void updatePerson(final Person person, final PersonOperation operation) {
 		this.ensureLoggedInAndNoSpammer();
 
 		// at least the person id must be set (to know which person should be updated)
@@ -3325,50 +3410,35 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
 			}
 
-			/*
-			 * check for email, homepage - can only be edited if the loggedin user claimed
-			 * the person (but admins can edit infos anyway)
-			 */
-			if (!personClaimed && Sets.asSet(PersonUpdateOperation.UPDATE_EMAIL, PersonUpdateOperation.UPDATE_HOMEPAGE).contains(operation)) {
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-			}
-
 			// TODO: this should be done in the manager
 			person.setChangeDate(new Date());
 			person.setChangedBy(this.loginUser.getName());
 
 			switch (operation) {
-				case UPDATE_ORCID: 
-					this.personDBManager.updateOrcid(person, session);
-					break;
-				case UPDATE_RESEARCHERID:
-					this.personDBManager.updateResearcherid(person, session);
-					break;
-				case UPDATE_ACADEMIC_DEGREE:
-					this.personDBManager.updateAcademicDegree(person, session);
-					break;
-				case UPDATE_NAMES:
-					this.updatePersonNames(person, session);
-					break;
-				case UPDATE_COLLEGE:
-					this.personDBManager.updateCollege(person, session);
-					break;
-				case UPDATE_EMAIL:
-					this.personDBManager.updateEmail(person, session);
-					break;
-				case UPDATE_HOMEPAGE:
-					this.personDBManager.updateHomepage(person, session);
-					break;
-				case LINK_USER:
-					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
-					// first unlink with the old person
-					this.personDBManager.unlinkUser(claimedUser, session);
-					this.personDBManager.updateUserLink(person, session);
-					break;
 				case UPDATE_ALL:
 					this.personDBManager.updatePerson(person, session);
 					// TODO: why is this not called in the manager?
 					this.updatePersonNames(person, session);
+					break;
+				case UPDATE_DETAILS:
+					this.personDBManager.updatePerson(person, session);
+					break;
+				case UPDATE_NAMES:
+					this.updatePersonNames(person, session);
+					break;
+				case UPDATE_ADDITIONAL_KEYS:
+					// TODO (kch) refactor updating additional keys
+					break;
+				case LINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// first unlink with the old user
+					this.personDBManager.unlinkUser(claimedUser, session);
+					this.personDBManager.updateUserLink(person, session);
+					break;
+				case UNLINK_USER:
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, claimedUser);
+					// unlink with the user
+					this.personDBManager.unlinkUser(claimedUser, session);
 					break;
 				default:
 					throw new UnsupportedOperationException("The requested method is not yet implemented.");
@@ -3447,58 +3517,24 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		// TODO: implement a chain
-
 		try (final DBSession session = this.openSession()) {
-			Person person;
-			if (PersonIdType.PERSON_ID == idType) {
-				person = this.personDBManager.getPersonById(id, session);
-			} else if (PersonIdType.DNB_ID == idType) {
-				person = this.personDBManager.getPersonByDnbId(id, session);
-				// } else if (PersonIdType.ORCID == idType) {
-				//	TODO: implement
-			} else if (PersonIdType.USER == idType) {
-				person = this.personDBManager.getPersonByUser(id, session);
-			} else {
-				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
+			Person person = null;
+			switch (idType) {
+				case PERSON_ID:
+					person = this.personDBManager.getPersonById(id, session);
+					break;
+				case USER:
+					person = this.personDBManager.getPersonByUser(id, session);
+					break;
+				case DNB_ID:
+					person = this.personDBManager.getPersonByDnbId(id, session);
+				case ORCID:
+					// TODO
+					break;
+				default:
+					break;
 			}
 			return person;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonByAdditionalKey(String, String)
-	 */
-	@Override
-	public Person getPersonByAdditionalKey(final String key, final String value) {
-		try (final DBSession session = this.openSession()) {
-			return this.personDBManager.getPersonByAdditionalKey(key, value, session);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
-	 */
-	@Override
-	public void removePersonName(final Integer personChangeId) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.removePersonName(personChangeId, this.loginUser, session);
-		}
-	}
-
-	@Override
-	public void createPersonName(final PersonName personName) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.createPersonName(personName, session);
-		}
-	}
-
-	@Override
-	public void unlinkUser(final String username) {
-		this.ensureLoggedInAndNoSpammer();
-		try (final DBSession session = this.openSession()) {
-			this.personDBManager.unlinkUser(username, session);
 		}
 	}
 
@@ -3524,8 +3560,8 @@ public class DBLogic implements LogicInterface {
 			}
 			relations = new LinkedList<>(byInterHash.values());
 		}
-		final PersonResourceRelationOrder order = query.getOrder();
-		if (order == PersonResourceRelationOrder.PublicationYear) {
+		final PersonResourceRelationSortKey sortKey = query.getSortKey();
+		if (sortKey == PersonResourceRelationSortKey.PublicationYear) {
 			relations.sort((o1, o2) -> {
 				try {
 					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
@@ -3538,13 +3574,15 @@ public class DBLogic implements LogicInterface {
 				}
 				return System.identityHashCode(o1) - System.identityHashCode(o2);
 			});
-		} else if (order != null) {
+		} else if (sortKey != null) {
 			throw new UnsupportedOperationException();
 		}
 		return relations;
 	}
 
 	/**
+	 * Get the merge matches for a person by the person ID.
+	 * The ID can be either the source or the target ID.
 	 * 
 	 * @param personID
 	 * @return a list of all matches for a person
@@ -3694,8 +3732,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(final MetaDataQuery<R> query) {
-		return this.getMetaDataProvider(query).getMetaData(query);
+	public <R> R getMetaData(final User loggedInUser, final MetaDataQuery<R> query) {
+		return this.getMetaDataProvider(query).getMetaData(loggedInUser, query);
 	}
 
 	private <R> MetaDataProvider<R> getMetaDataProvider(MetaDataQuery<R> query) {

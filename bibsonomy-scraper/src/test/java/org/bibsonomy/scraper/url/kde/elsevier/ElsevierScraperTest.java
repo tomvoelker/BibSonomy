@@ -30,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.elsevier;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,24 +39,38 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ElsevierScraperTest {
-	
-	/**
-	 * starts URL test with id url_365
-	 */
-	@Test
-	public void urlTestRun1() {
-		final String url = "https://www.elsevier.es/es-revista-journal-of-applied-research-and-81-articulo-extensions-to-k-medoids-with-balance-90391442";
-		final String resultFile = "ElsevierScraperUnitURLTest.bib";
-		assertScraperResult(url, ElsevierScraper.class, resultFile);
-	}
-	
+	String resultDirectory = "elsevier/";
+
 	/**
 	 * starts URL test with id url_366
 	 */
 	@Test
-	public void urlTestRun2() {
+	public void urlTestRun1() {
 		final String url = "https://www.elsevier.es/en-revista-allergologia-et-immunopathologia-105-articulo-identification-therapeutic-targets-for-childhood-S0301054615000580";
-		final String resultFile = "ElsevierScraper1UnitURLTest.bib";
+		final String resultFile = resultDirectory + "ElsevierScraperUnitURLTest1.bib";
+		assertScraperResult(url, ElsevierScraper.class, resultFile);
+	}
+	/**
+	 * starts URL test with id url_365
+	 */
+	@Test
+	public void urlTestRun2() {
+		final String url = "https://www.elsevier.es/en-revista-journal-applied-research-technology-jart-81-articulo-extensions-k-medoids-with-balance-restrictions-S1665642314716219";
+		final String resultFile = resultDirectory + "ElsevierScraperUnitURLTest2.bib";
+		assertScraperResult(url, ElsevierScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTestRun3() {
+		final String url = "https://www.elsevier.es/en-revista-international-journal-clinical-health-psychology-355-articulo-loneliness-predicts-suicidal-ideation-anxiety-S1697260020300764";
+		final String resultFile = resultDirectory + "ElsevierScraperUnitURLTest3.bib";
+		assertScraperResult(url, ElsevierScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTestRun4() {
+		final String url = "https://www.elsevier.es/en-revista-international-journal-clinical-health-psychology-355-articulo-impact-covid-19-on-psychological-wellbeing-S1697260021000338";
+		final String resultFile = resultDirectory + "ElsevierScraperUnitURLTest4.bib";
 		assertScraperResult(url, ElsevierScraper.class, resultFile);
 	}
 }

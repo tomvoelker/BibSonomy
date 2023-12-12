@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Resource;
 
@@ -41,6 +43,8 @@ import org.bibsonomy.model.Resource;
  *
  * @author jil
  */
+@Getter
+@AllArgsConstructor
 public enum PersonResourceRelationType {
 	
 	/** doctor vater */
@@ -73,17 +77,6 @@ public enum PersonResourceRelationType {
 		}
 	}
 
-	private PersonResourceRelationType(String relatorCode) {
-		this.relatorCode = relatorCode;
-	}
-	
-	/**
-	 * @return the relatorCode
-	 */
-	public String getRelatorCode() {
-		return this.relatorCode;
-	}
-	
 	/**
 	 * @param relatorCode
 	 * @return the {@link PersonResourceRelationType}
@@ -95,5 +88,4 @@ public enum PersonResourceRelationType {
 		}
 		return rVal;
 	}
-
 }

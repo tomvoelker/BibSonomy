@@ -4,87 +4,8 @@
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/relation';
 
-/**
- * Loads the select2 combobox layout selection
- * @param formatUrl
- * @param element
- * @returns
- */
-function loadLayoutSelect(formatUrl, element) {
-	$.ajax({
-		url: formatUrl, 
-		dataType: "html", 
-		success: function(data) {
-			$("#goldstandard-quick-cite-select").html(data).find("select").addClass("form-control input-sm");
-			$("#goldstandard-quick-cite").hide();
-			// hide the loader
-			$(".cust-loader").hide();
-			openSelect2(element);
-		}
-	});
-	return;
-}
-
-/**
- * Opens the select2 element
- * @param element
- * @returns
- */
-function openSelect2(element) {
-	if ($(element).next().find('#selectAllStyles').hasClass("select2-hidden-accessible")) {
-		$(element).next().find('#selectAllStyles').removeAttr("onchange")
-			.bind("change", function(){ ajaxLoadLayout(this.value); });
-		$(element).next().find('#selectAllStyles').select2('open');
-	}
-}
-
-function ajaxLoadLayout(link) {
-	link_parts = link.split("/");
-
-	switch (link_parts[1]) {
-		case "bib":
-			$("#sidebar-quick-cite-box-modal .modal-body").html($("#sidebar-quick-cite-box-bibtex").html());
-			$("#sidebar-quick-cite-box-modal").modal("show");
-			break;
-		case "csl":
-		case "layout":
-			if (link_parts[2] == "endnote") {
-				$("#sidebar-quick-cite-box-modal .modal-body").html($("#sidebar-quick-cite-box-endnote").html());
-				$("#sidebar-quick-cite-box-modal").modal("show");
-			} else {
-				self.location = link
-			}
-			break;
-		case "csl-layout":
-			// load CSL via AJAX
-			csl_style = link_parts[2];
-			csl_url = "/csl/bibtex/" + link_parts[4];
-			container = $("#sidebar-quick-cite-box-modal .modal-body");
-			container.empty();
-
-			$.ajax({
-				url: csl_url,
-				success: function(data) {
-					renderCSL(data, csl_style, container, false);
-					$("#sidebar-quick-cite-box-modal").modal("show");
-				}
-			});
-			break;
-		default:
-			alert("Error during CSL rendering;");
-	}
-}
 
 $(function() {
-
-	initNewClipboard("#sidebar-quick-cite-box-modal-clipboard-button", "#sidebar-quick-cite-box-modal .modal-body");
-
-	// remove the dummy element and replace it by select2 combobox layout selection
-	$("#goldstandard-quick-cite").focus(function() {
-		// show the loader
-		$(".cust-loader").show();
-		loadLayoutSelect($(this).data("formaturl"), this);
-	})
 
 	// init title autocomplete
 	var publicationSource = new Bloodhound({

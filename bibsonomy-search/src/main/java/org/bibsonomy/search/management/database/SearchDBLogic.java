@@ -39,11 +39,10 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.index.generator.post.PostIndexGenerationLogic;
 import org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager;
-import org.bibsonomy.search.management.database.params.SearchParam;
+import org.bibsonomy.search.model.SearchParam;
 
 /**
  * class for accessing the main database 
@@ -116,13 +115,6 @@ public class SearchDBLogic<R extends Resource> extends PostIndexGenerationLogic<
 
 		try (final DBSession session = this.openSession()) {
 			return this.queryForSearchPosts("get" + this.getResourceName() + "PostsForTimeRange", param, session);
-		}
-	}
-
-	@Override
-	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive) {
-		try (final DBSession session = this.openSession()) {
-			return personSearchDatabaseManager.getPubPersonChangesByChangeIdRange(fromPersonChangeId, toPersonChangeIdExclusive, session);
 		}
 	}
 

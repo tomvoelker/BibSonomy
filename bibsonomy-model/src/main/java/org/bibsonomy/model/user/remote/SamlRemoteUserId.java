@@ -29,11 +29,15 @@
  */
 package org.bibsonomy.model.user.remote;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.util.ObjectUtils;
 
 /**
  * @author jensi
  */
+@Getter
+@Setter
 public class SamlRemoteUserId implements RemoteUserId {
 	private static final long serialVersionUID = -4075334406626749850L;
 	private String identityProviderId;
@@ -55,13 +59,7 @@ public class SamlRemoteUserId implements RemoteUserId {
 		this.identityProviderId = indentityProviderId;
 		this.userId = userId;
 	}
-	
-	/**
-	 * @return the identityProvider
-	 */
-	public String getIdentityProviderId() {
-		return this.identityProviderId;
-	}
+
 	/**
 	 * @param identityProvider the identityProvider to set
 	 */
@@ -69,19 +67,7 @@ public class SamlRemoteUserId implements RemoteUserId {
 		this.ns = null;
 		this.identityProviderId = identityProvider;
 	}
-	/**
-	 * @return the userId
-	 */
-	public String getUserId() {
-		return this.userId;
-	}
-	/**
-	 * @param userId the userId to set
-	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {

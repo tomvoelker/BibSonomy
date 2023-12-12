@@ -36,16 +36,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
  */
-public class JStorScraper extends GenericBibTeXURLScraper {
+public class JStorScraper extends AbstractUrlScraper {
 
 	private static final String info = "This Scraper parses a publication from " + href("http://www.jstor.org/", "JSTOR");
 	private static final String SITE_NAME = "Jstor";
@@ -53,33 +55,39 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	private static final String JSTOR_HOST_NAME  = "http://www.jstor.org";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
 	private static final String DOWNLOAD_URL = JSTOR_HOST_NAME + "/citation/text/"; //http://www.jstor.org/citation/text/10.2307/4142852
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	private static final Pattern DOI = Pattern.compile("data-reveal-id=\"citation-tools\" .* data-doi=\"(.*?)\"");
-	
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<>();
+	private static final Pattern DOI = Pattern.compile("\"objectDOI\" : \"(.*?)\"");
+
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_STABLE_PATH + ".*")));
 	}
-	
-	@Override
-	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		final String doi = exportDOIFromSourceCode(url);
-		if (ValidationUtils.present(doi)) {
-			return DOWNLOAD_URL + doi;
-		}
-		return null;
-	}
 
-	private static String exportDOIFromSourceCode(URL url) throws ScrapingException {
+	@Override
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
 		try {
-			final Matcher m = DOI.matcher(WebUtils.getContentAsString(url));
-			if (m.find()) {
-				return m.group(1);
+			//we can access the main-page of jstor to get the cookies, if we don't retrieve the cookies first then the other urls return http-403
+			String cookies = WebUtils.getCookies( new URL("https://www.jstor.org/"));
+
+			HttpGet get = new HttpGet(sc.getUrl().toString());
+			get.setHeader("Cookie", cookies);
+			get.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36");
+			String pageContent = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+
+			final Matcher m_doi = DOI.matcher(pageContent);
+			if (!m_doi.find()) {
+				throw new ScrapingException("DOI not found");
 			}
-		} catch (final IOException e) {
-			throw new ScrapingException("DOI not found");
+
+			String downloadUrl = DOWNLOAD_URL + m_doi.group(1);
+			String bibtex = WebUtils.getContentAsString(downloadUrl).replaceAll("urldate = \\{.*?},\\n", "");
+
+			sc.setBibtexResult(bibtex);
+			return true;
+		} catch (IOException | HttpException e) {
+			throw new ScrapingException(e);
 		}
-		return null;
 	}
 
 	@Override

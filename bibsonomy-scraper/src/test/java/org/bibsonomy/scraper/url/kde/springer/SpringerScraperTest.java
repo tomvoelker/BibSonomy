@@ -30,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,34 +41,50 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class SpringerScraperTest {
-	
+	String resultDirectory = "springer/springer/";
+
 	/**
 	 * starts URL test with id url_58
 	 */
 	@Test
 	public void url1TestRun(){
 		final String url = "https://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2";
-		final String resultFile = "SpringerScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "SpringerScraperUnitURLTest1.bib";
 		assertScraperResult(url, SpringerScraper.class, resultFile);
 	}
-	
+
 	/**
 	 * starts URL test with id url_239
 	 */
 	@Test
-	public void url8TestRun() {
-		final String url = "https://link.springer.com/book/10.1007/978-0-387-85820-3";
-		final String resultFile = "SpringerLinkScraperUnitURLTest9.bib";
-		assertScraperResult(url, SpringerScraper.class, resultFile);
-	}
-	
-	/**
-	 * starts URL test with id url_239
-	 */
-	@Test
-	public void url9TestRun() {
+	public void url2TestRun() {
 		final String url = "https://link.springer.com/content/pdf/10.1007%2F978-3-319-29671-5_3.pdf";
-		final String resultFile = "SpringerLinkScraperUnitURLTest10.bib";
+		final String resultFile = resultDirectory + "SpringerScraperUnitURLTest2.bib";
 		assertScraperResult(url, SpringerScraper.class, resultFile);
 	}
+
+	/**
+	 * starts URL test with id url_239
+	 */
+	@Test
+	public void url3TestRun() {
+		final String url = "https://link.springer.com/book/10.1007/978-0-387-85820-3";
+		final String resultFile = resultDirectory + "SpringerScraperUnitURLTest3.bib";
+		assertScraperResult(url, SpringerScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun() {
+		final String url = "https://link.springer.com/book/10.1007%2F978-3-658-22345-8#about";
+		final String resultFile = resultDirectory + "SpringerScraperUnitURLTest4.bib";
+		assertScraperResult(url, SpringerScraper.class, resultFile);
+	}
+
+	@Test
+	public void url5TestRun() {
+		final String url = "https://www.springer.com/de/book/9783531199825#aboutBook";
+		final String resultFile = resultDirectory + "SpringerScraperUnitURLTest5.bib";
+		assertScraperResult(url, SpringerScraper.class, resultFile);
+	}
+
 }

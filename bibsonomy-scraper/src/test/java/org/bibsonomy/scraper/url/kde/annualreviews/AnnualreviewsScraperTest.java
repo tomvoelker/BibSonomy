@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.annualreviews;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class AnnualreviewsScraperTest {
+	String resultDirectory = "annualreviews/";
 	
 	/**
 	 * starts URL test with id url_106
@@ -48,7 +49,7 @@ public class AnnualreviewsScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.annualreviews.org/doi/abs/10.1146/annurev.bioeng.6.040803.140250";
-		final String resultFile = "AnnualreviewsScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "AnnualreviewsScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, AnnualreviewsScraper.class, resultFile);
 	}
 	
@@ -59,7 +60,7 @@ public class AnnualreviewsScraperTest {
 	@Test
 	public void url2TestRun(){
 		final String url = "http://www.annualreviews.org/action/showCitFormats?doi=10.1146/annurev.bioeng.6.040803.140250";
-		final String resultFile = "AnnualreviewsScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "AnnualreviewsScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, AnnualreviewsScraper.class, resultFile);
 	}
 	
@@ -70,7 +71,7 @@ public class AnnualreviewsScraperTest {
 	@Test
 	public void url3TestRun(){
 		final String url = "http://www.annualreviews.org/doi/full/10.1146/annurev-bioeng-071811-150124";
-		final String resultFile = "AnnualreviewsScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "AnnualreviewsScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, AnnualreviewsScraper.class, resultFile);
 	}
 	

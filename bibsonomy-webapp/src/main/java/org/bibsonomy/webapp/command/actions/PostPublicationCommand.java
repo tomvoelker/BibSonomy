@@ -32,10 +32,13 @@ package org.bibsonomy.webapp.command.actions;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
+import org.bibsonomy.webapp.command.ErrorInfo;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +49,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author ema
  */
+@Getter
+@Setter
 public class PostPublicationCommand extends EditPublicationCommand implements BibtexViewCommand, LayoutViewCommand {
 
 	/**
@@ -61,7 +66,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	/**
 	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
 	private Map<String, List<ErrorMessage>> postsErrorList;
-
+	
+	/**
+	 * list to group the posts by their error messages */
+	private List<ErrorInfo> groupedErrorList;
+	
 	/**
 	 * For multiple posts
 	 */
@@ -108,7 +117,16 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	 * The posts, that were updated during import.
 	 */
 	private Map<String,String> updatedPosts;
-	
+
+	/****************************
+	 * FOR EXTERNAL IMPORT
+	 ****************************/
+	private String externalId;
+
+	private List<String> workIds;
+
+	private String bulkSnippet;
+
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
@@ -120,107 +138,9 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 		this.whitespace = "_";
 	}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
 	@Override
 	public void setDescription(final String description) {
 		this.description = description;
-	}
-
-	/**
-	 * @return the file
-	 */
-	public MultipartFile getFile() {
-		return this.file;
-	}
-
-	/**
-	 * @param file the file to set
-	 */
-	public void setFile(MultipartFile file) {
-		this.file = file;
-	}
-	
-	/**
-	 * @return the whitespace
-	 */
-	public String getWhitespace() {
-		return this.whitespace;
-	}
-
-	/**
-	 * @param whitespace the whitespace to set
-	 */
-	public void setWhitespace(String whitespace) {
-		this.whitespace = whitespace;
-	}
-	
-	/**
-	 * @return the encoding
-	 */
-	public String getEncoding() {
-		return this.encoding;
-	}
-
-	/**
-	 * @param encoding the encoding to set
-	 */
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
-	
-	/**
-	 * @return the delimiter
-	 */
-	public String getDelimiter() {
-		return this.delimiter;
-	}
-
-	/**
-	 * @param delimiter the delimiter to set
-	 */
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}
-	
-	/**
-	 * @param editBeforeImport the editBeforeImport to set
-	 */
-	public void setEditBeforeImport(boolean editBeforeImport) {
-		this.editBeforeImport = editBeforeImport;
-	}
-
-	/**
-	 * @return the editBeforeImport
-	 */
-	public boolean isEditBeforeImport() {
-		return this.editBeforeImport;
-	}
-	
-	/**
-	 * @return @see {@link #isEditBeforeImport()}
-	 */
-	public boolean getEditBeforeImport() {
-		return this.editBeforeImport;
-	}
-
-	/**
-	 * @return the updatedPosts
-	 */
-	public Map<String, String> getUpdatedPosts() {
-		return this.updatedPosts;
-	}
-
-	/**
-	 * @param updatedPosts the updatedPosts to set
-	 */
-	public void setUpdatedPosts(Map<String, String> updatedPosts) {
-		this.updatedPosts = updatedPosts;
 	}
 
 	/**
@@ -236,68 +156,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Bi
 	 */
 	public void setBibtex(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
-	}
-	
-	/**
-	 * @return The list of publication posts.
-	 */
-	public ListCommand<Post<BibTex>> getPosts() {
-		return this.posts;
-	}
-
-	/**
-	 * @param bibtex
-	 */
-	public void setPosts(final ListCommand<Post<BibTex>> bibtex) {
-		this.posts = bibtex;
-	}
-
-	/**
-	 * @return the overwrite
-	 */
-	public boolean isOverwrite() {
-		return this.overwrite;
-	}
-	
-	/**
-	 * @return @see {@link #isOverwrite()}
-	 */
-	public boolean getOverwrite() {
-		return this.overwrite;
-	}
-
-	/**
-	 * @param overwrite the overwrite to set
-	 */
-	public void setOverwrite(boolean overwrite) {
-		this.overwrite = overwrite;
-	}
-	/**
-	 * @return the updateExistingPost
-	 */
-	public boolean isUpdateExistingPost() {
-		return this.updateExistingPost;
-	}
-
-	/**
-	 * @param updateExistingPost the updateExistingPost to set
-	 */
-	public void setUpdateExistingPost(boolean updateExistingPost) {
-		this.updateExistingPost = updateExistingPost;
-	}
-
-	/**
-	 * @return the postsErrorList
-	 */
-	public Map<String, List<ErrorMessage>> getPostsErrorList() {
-		return this.postsErrorList;
-	}
-
-	/**
-	 * @param postsErrorList the postsErrorList to set
-	 */
-	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
-		this.postsErrorList = postsErrorList;
 	}
 	
 }

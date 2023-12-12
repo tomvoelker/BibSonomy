@@ -33,6 +33,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -148,6 +149,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return (Post<R>) this.queryForObject("getGoldStandardByHash", param, session);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Post<R>> getGoldStandardPostsAfterChangeDate(final Date changeDate, final DBSession session) {
+		final P param = this.createNewParam();
+		param.setChangeDate(changeDate);
+		return (List<Post<R>>) this.queryForList("getGoldStandardsAfterChangeDate", param, session);
+	}
+
 	private P createResourceParam(final String resourceHash) {
 		final P param = this.createNewParam();
 		param.setHash(resourceHash);
@@ -208,7 +216,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 
 			if (present(newPostInDB)) {
-				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
+				log.debug("gold standard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(PostUtils.getKeyForCommunityPost(post), errorMessage);
 				session.commitTransaction();
@@ -244,7 +252,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		insert.setRequestedContentId(post.getContentId().intValue());
 		insert.setUserName(present(post.getUser()) ? post.getUser().getName() : "");
 		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
-		insert.setApproved(post.getApproved());
+		insert.setApproved(post.isApproved());
 
 		return insert;
 	}
@@ -298,7 +306,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 
 			if (present(newPostInDB) && !oldHash.equals(resourceHash)) {
-				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
+				log.debug("gold standard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(resourceHash, errorMessage);
 

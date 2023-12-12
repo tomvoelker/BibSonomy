@@ -71,8 +71,8 @@ public class PersonListToStringTest {
 		/*
 		 * List<Repository>
 		 */
-		final Method setRepositorys = Post.class.getMethod("setRepositorys",  List.class);
-		final TypeDescriptor wrongSourceTypeDescriptor = new TypeDescriptor(new MethodParameter(setRepositorys, 0));		
+		final Method setRepositories = Post.class.getMethod("setRepositories",  List.class);
+		final TypeDescriptor wrongSourceTypeDescriptor = new TypeDescriptor(new MethodParameter(setRepositories, 0));
 
 		/*
 		 * should NOT match on List<Repository> to String

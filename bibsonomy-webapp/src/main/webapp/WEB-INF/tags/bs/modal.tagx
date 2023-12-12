@@ -6,15 +6,20 @@
 		
 	<jsp:directive.tag description="Renders a modal popup with header, body and footer for bootstrap 3."/>
 	
-	<jsp:directive.attribute type="java.lang.String"  name="id" 		required="true" />
-	<jsp:directive.attribute type="java.lang.String"  name="modalTitle" required="true" />
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="modalTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="modalClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="large" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute fragment="true"	name="modalBody" 	required="true" />
 	<jsp:directive.attribute fragment="true"  	name="modalFooter" 	required="true" />
+
+	<c:if test="${large}">
+		<c:set var="size" value="modal-lg"/>
+	</c:if>
 	
-	
-	<div class="modal fade" id="${fn:escapeXml(id)}" tabindex="-1" role="dialog" aria-labelledby="${fn:escapeXml(id)}Label" aria-hidden="true">
-		<div class="modal-dialog">
+	<div class="modal fade ${modalClass}" id="${fn:escapeXml(id)}" tabindex="-1" role="dialog" aria-labelledby="${fn:escapeXml(id)}Label" aria-hidden="true">
+		<div class="modal-dialog ${size}">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>

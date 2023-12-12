@@ -50,10 +50,9 @@ import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.index.update.IndexUpdateLogic;
 import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.search.model.SearchIndexState;
+import org.bibsonomy.search.model.SearchIndexStatus;
 import org.bibsonomy.search.model.SearchIndexStatistics;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.Sets;
@@ -80,49 +79,59 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * manager that manages the indices for the specified type
+ * Elasticsearch manager, that manages the indices for the specified type.
+ *
  * @param <T>
  *
  * @author dzo
  */
-public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> implements SearchIndexManager {
+public abstract class ElasticsearchManager<T, S extends SearchIndexState> implements SearchIndexManager {
 	private static final Log LOG = LogFactory.getLog(ElasticsearchManager.class);
-
 
 	private final Semaphore updateLock = new Semaphore(1);
 	private final Semaphore generatorLock = new Semaphore(1);
-
-	private final boolean disabledIndexing;
-	private final boolean updateEnabled;
-
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-	private final ElasticsearchIndexGenerator<T, S> generator;
 
+	/** the URI for the elasticsearch */
+	protected final URI systemURI;
 	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
+	private final ElasticsearchIndexGenerator<T, S> generator;
 	protected final Converter<S, Map<String, Object>, Object> syncStateConverter;
-
 	protected final EntityInformationProvider<T> entityInformationProvider;
-	protected final URI systemId;
+
+	private final boolean indexEnabled;
+	private final boolean updateEnabled;
+	private final boolean regenerateEnabled;
 
 	/**
-	 * default constructor
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * Default constructor
+	 *
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 */
-	public ElasticsearchManager(final URI systemId, final boolean disabledIndexing, final boolean updateEnabled, final ESClient client, ElasticsearchIndexGenerator<T, S> generator, final Converter<S, Map<String, Object>, Object> syncStateConverter, final EntityInformationProvider<T> entityInformationProvider) {
-		this.disabledIndexing = disabledIndexing;
-		this.updateEnabled = updateEnabled;
-		this.generator = generator;
+	public ElasticsearchManager(final URI systemURI,
+								final ESClient client,
+								final ElasticsearchIndexGenerator<T, S> generator,
+								final Converter<S, Map<String, Object>, Object> syncStateConverter,
+								final EntityInformationProvider<T> entityInformationProvider,
+								final boolean indexEnabled,
+								final boolean updateEnabled,
+								final boolean regenerateEnabled) {
+		this.systemURI = systemURI;
 		this.client = client;
+		this.generator = generator;
 		this.syncStateConverter = syncStateConverter;
 		this.entityInformationProvider = entityInformationProvider;
-		this.systemId = systemId;
+		this.indexEnabled = indexEnabled;
+		this.updateEnabled = updateEnabled;
+		this.regenerateEnabled = regenerateEnabled;
 	}
 
 	/**
@@ -142,6 +151,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 				this.switchActiveAndInactiveIndex();
 			}
 
+			LOG.info("deleting index " + indexName);
 			this.client.deleteIndex(indexName);
 		} finally {
 			this.updateLock.release();
@@ -152,22 +162,22 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param state
 	 * @return
 	 */
-	protected String getAliasNameForState(final SearchIndexState state) {
-		return ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemId, state);
+	protected String getAliasNameForState(final SearchIndexStatus state) {
+		return ElasticsearchUtils.getLocalAliasForType(this.entityInformationProvider.getType(), this.systemURI, state);
 	}
 
 	/**
 	 * @return
 	 */
 	protected String getInactiveLocalAlias() {
-		return this.getAliasNameForState(SearchIndexState.INACTIVE);
+		return this.getAliasNameForState(SearchIndexStatus.INACTIVE);
 	}
 
 	/**
 	 * @return
 	 */
 	protected String getActiveLocalAlias() {
-		return this.getAliasNameForState(SearchIndexState.ACTIVE);
+		return this.getAliasNameForState(SearchIndexStatus.ACTIVE);
 	}
 
 	/**
@@ -213,7 +223,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
-			// set the preferedIndexToDelete to the inactive one iff no index specified
+			// set the preferredIndexToDelete to the inactive one iff no index specified
 			if (!present(indexToDelete)) {
 				indexToDelete = inactiveIndexName;
 			}
@@ -223,20 +233,20 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
 			// remove the standby alias
-			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexState.STANDBY)));
+			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexStatus.STANDBY)));
 			// only set the alias if the index should not be deleted
-			final boolean preferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
+			final boolean preferredDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
 				// remove active alias from the current active index
 				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
 				// we use the index as inactive index if we do not want to delete it
-				if (!preferedDeletedActiveIndex) {
+				if (!preferredDeletedActiveIndex) {
 					aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
 				}
 			}
 
 			// only remove the alias if the other index should be deleted
-			if (present(inactiveIndexName) && !preferedDeletedActiveIndex) {
+			if (present(inactiveIndexName) && !preferredDeletedActiveIndex) {
 				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
 			}
 
@@ -271,9 +281,10 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 				return;
 			}
 
-			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId);
+			final String systemSyncStateIndexName = ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI);
 
 			final S oldState = this.client.getSearchIndexStateForIndex(systemSyncStateIndexName, realIndexName, this.syncStateConverter);
+			// Update the inactive index and switch afterwards
 			this.updateIndex(realIndexName, oldState);
 			this.switchActiveAndInactiveIndex();
 		} catch (final IndexNotFoundException e) {
@@ -285,9 +296,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 
 	protected abstract void updateIndex(final String indexName, S oldState);
 
-	protected <E> void updateEntity(final String indexName, final DefaultSearchIndexSyncState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
-		final long lastContentId = oldState.getLastPostContentId();
-		final Date lastLogDate = oldState.getLast_log_date();
+	protected <E> void updateEntity(final String indexName, final SearchIndexState oldState, final IndexUpdateLogic<E> updateIndexLogic, final EntityInformationProvider<E> entityInformationProvider) {
+		final long lastContentId = oldState.getEntityId();
+		final Date lastLogDate = oldState.getEntityLogDate();
 		final String entityType = entityInformationProvider.getType();
 
 		/*
@@ -349,6 +360,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		/*
 		 * maybe we are updating an updated entity in es
 		 */
+		// TODO currently ignore return value
 		this.client.updateOrCreateDocuments(indexName, convertedEntities);
 		convertedEntities.clear();
 	}
@@ -375,8 +387,11 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		 * BasicUtils#VERSION maybe contain a new deployed version
 		 */
 		state.setMappingVersion(oldState.getMappingVersion());
+		state.setBuildDate(oldState.getBuildDate());
+		state.setBuildTime(oldState.getBuildTime());
+		state.setUpdatedAt(new Date());
 		indexData.setSource(this.syncStateConverter.convert(state));
-		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, indexData);
+		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, indexData);
 	}
 
 	/**
@@ -391,7 +406,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			final String localActiveAlias = this.getActiveLocalAlias();
 			final String localActiveIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			if (present(localActiveIndexName)) {
-				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveIndexName, SearchIndexState.ACTIVE, true);
+				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveIndexName, SearchIndexStatus.ACTIVE, true);
 				infos.add(searchIndexInfo);
 			}
 		} catch (final IndexNotFoundException e) {
@@ -403,7 +418,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String localInactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
 			if (present(localInactiveIndexName)) {
-				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localInactiveIndexName, SearchIndexState.INACTIVE, true);
+				final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localInactiveIndexName, SearchIndexStatus.INACTIVE, true);
 				infos.add(searchIndexInfo);
 			}
 		} catch (final IndexNotFoundException e) {
@@ -413,7 +428,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		// get infos about the standby indices
 		final List<String> indices = this.getAllStandByIndices();
 		for (final String indexName : indices) {
-			final SearchIndexInfo searchIndexInfoStandBy = getIndexInfoForIndex(indexName, SearchIndexState.STANDBY, true);
+			final SearchIndexInfo searchIndexInfoStandBy = getIndexInfoForIndex(indexName, SearchIndexStatus.STANDBY, true);
 			searchIndexInfoStandBy.setId(indexName);
 			infos.add(searchIndexInfoStandBy);
 		}
@@ -422,8 +437,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		if (this.generator.isGenerating()) {
 			try {
 				final SearchIndexInfo searchIndexInfoGeneratingIndex = new SearchIndexInfo();
-				searchIndexInfoGeneratingIndex.setState(SearchIndexState.GENERATING);
-				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.generator.getProgress());
+				searchIndexInfoGeneratingIndex.setStatus(SearchIndexStatus.GENERATING);
+				searchIndexInfoGeneratingIndex.setWrittenDocuments(this.generator.getWrittenEntities());
+				searchIndexInfoGeneratingIndex.setAllDocuments(this.generator.getNumberOfEntities());
 				searchIndexInfoGeneratingIndex.setId(this.generator.getIndexName());
 				infos.add(searchIndexInfoGeneratingIndex);
 			} catch (final IndexNotFoundException e) {
@@ -439,7 +455,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @return all standby index names
 	 */
 	private List<String> getAllStandByIndices() {
-		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexState.STANDBY));
+		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexStatus.STANDBY));
 	}
 
 	/**
@@ -448,13 +464,13 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 * @param loadSyncState
 	 * @return
 	 */
-	private SearchIndexInfo getIndexInfoForIndex(final String indexName, final SearchIndexState state, boolean loadSyncState) {
+	private SearchIndexInfo getIndexInfoForIndex(final String indexName, final SearchIndexStatus state, boolean loadSyncState) {
 		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
-		searchIndexInfo.setState(state);
+		searchIndexInfo.setStatus(state);
 		searchIndexInfo.setId(indexName);
 
 		if (loadSyncState) {
-			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemId), indexName, this.syncStateConverter));
+			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, this.syncStateConverter));
 		}
 
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();
@@ -479,8 +495,10 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 			throw new IndexAlreadyGeneratingException();
 		}
 
-		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexRegenerationTask<T> task = new ElasticSearchIndexRegenerationTask<>(this, this.generator, newIndexName, indexNameToReplace);
+
+		LOG.info("regenerating index: " + indexNameToReplace + "->" + newIndexName);
 		this.executeTask(async, task);
 	}
 
@@ -506,35 +524,41 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 	 */
 	@Override
 	public void regenerateAllIndices() {
-		if (this.disabledIndexing) {
+		if (!client.isConnected()) {
+			LOG.debug("skipping regenerating all indices, index connection invalid/connection lost");
 			return;
 		}
+
+		if (!this.regenerateEnabled) {
+			LOG.debug("skipping regenerating all indices, regenerating disabled");
+			return;
+		}
+
 		try {
-			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			if (present(activeIndex)) {
-				this.regenerateIndex(activeIndex, false);
+			// First we try to regenerate the inactive index
+			final String firstToRegenerate = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			// Then the active next
+			final String secondToRegenerate = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+
+			if (present(firstToRegenerate)) {
+				// If there is an inactive index, we regenerate it first and switch to it
+				this.regenerateIndex(firstToRegenerate, false);
 			} else {
+				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
-			final String currentActiveIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			final String currentInactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
 
-			final String secondIndexToRegenerate;
-			if (present(activeIndex) && !activeIndex.equals(currentActiveIndex)) {
-				secondIndexToRegenerate = currentActiveIndex;
+			if (present(secondToRegenerate)) {
+				// If there is an secondToRegenerate, we regenerate it and switch to it
+				this.regenerateIndex(secondToRegenerate, false);
 			} else {
-				secondIndexToRegenerate = currentInactiveIndex;
-			}
-
-			if (present(secondIndexToRegenerate)) {
-				this.regenerateIndex(secondIndexToRegenerate, false);
-			} else {
+				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
 		} catch (final IndexAlreadyGeneratingException e) {
 			LOG.error("error while regeneration all indices", e);
 		}
-	}
+    }
 
 	/**
 	 * generates a new index for the resource
@@ -554,8 +578,10 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
 		}
-		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemId, this.entityInformationProvider.getType());
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexGenerationTask<T> task = new ElasticSearchIndexGenerationTask<>(this, this.generator, newIndexName, activeIndexAfterGeneration);
+
+		LOG.info("generating new index " + newIndexName);
 		this.executeTask(async, task);
 	}
 
@@ -568,11 +594,11 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexSyncState> im
 		try {
 			final String activeAlias = this.getActiveLocalAlias();
 			final String inactiveAlias = this.getInactiveLocalAlias();
-			final String standbyAlias = this.getAliasNameForState(SearchIndexState.STANDBY);
+			final String standbyAlias = this.getAliasNameForState(SearchIndexStatus.STANDBY);
 
 			final List<String> indices = this.client.getIndexNamesForAlias(standbyAlias);
 			if (!present(indexName) || !indices.contains(indexName)) {
-				throw new IllegalStateException("index not in state " + SearchIndexState.STANDBY);
+				throw new IllegalStateException("index not in state " + SearchIndexStatus.STANDBY);
 			}
 
 			final String activeIndexName = this.client.getIndexNameForAlias(activeAlias);

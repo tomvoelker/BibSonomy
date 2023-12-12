@@ -29,78 +29,25 @@
  */
 package de.unikassel.puma.webapp.command.ajax;
 
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
 /**
  * @author clemens
  */
+@Getter
+@Setter
 public class OpenAccessCommand extends AjaxCommand<String> {
 
-	/**
-	 * publisher to check
-	 */
-	private String publisher;
-	private String jTitle;
-	private String qType;
-	private String interhash = "";	
+	private String username;
 
-	/**
-	 * @return publisher
-	 */
-	public String getPublisher() {
-		return this.publisher;
-	}
+	private String intrahash;
 
-	/**
-	 * @param publisher
-	 */
-	public void setPublisher(String publisher) {
-		this.publisher = publisher;
-	}
+	private String interhash;
 
-	/**
-	 * @return jTitle
-	 */
-	public String getjTitle() {
-		return this.jTitle;
-	}
+	private Map<String, String> policy;
 
-	/**
-	 * @param jTitle
-	 */
-	public void setjTitle(String jTitle) {
-		this.jTitle = jTitle;
-	}
-
-	/**
-	 * @return qType
-	 */
-	public String getqType() {
-		return this.qType;
-	}
-
-	/**
-	 * @param qType
-	 */
-	public void setqType(String qType) {
-		this.qType = qType;
-	} 	
-	
-	
-	/**
-	 * @param interhash 
-	 */
-	public void setInterhash(String interhash) {
-		this.interhash = interhash;
-	}
-
-	/**
-	 * @return the interhash
-	 */
-	public String getInterhash() {
-		return interhash;
-	}
-
-	
-	
 }

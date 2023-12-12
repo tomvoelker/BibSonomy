@@ -29,24 +29,22 @@
  */
 package org.bibsonomy.scraper.url.kde.iop;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import static org.bibsonomy.util.ValidationUtils.present;
+import org.apache.http.HttpException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -54,56 +52,71 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class IOPScraper extends AbstractUrlScraper {
-
 	/* URL parts */
-	private static final String IOP_URL_PATH_START = "/article";
-	private static final String IOP_EJ_URL_BASE    = "http://www.iop.org";
 	private static final String SITE_NAME = "IOP";
-	private static final String SITE_URL = IOP_EJ_URL_BASE + "/";
+	private static final String SITE_URL = "https://iopscience.iop.org";
 	private static final String INFO = "Scraper for electronic journals from " + href(SITE_URL, SITE_NAME);
-	private static final String IOP_HOST = "iop.org";
 	private static final String NEW_IOP_HOST = "iopscience.iop.org";
 
-	/*
-	 * needed regular expressions to extract the publication id from the url
-	 */
-	private static final Pattern PUBLICATION_ID_PATTERN = Pattern.compile("^.*?article\\/.*?\\/(.*?)($|\\/meta)");
-
 	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
-					new Pair<>(Pattern.compile(".*" + IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN),
-					new Pair<>(Pattern.compile(".*" + NEW_IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*"))
+			new Pair<>(Pattern.compile(".*" + NEW_IOP_HOST), Pattern.compile("/article" + ".*"))
+	);
+
+	private static final String DOWNLOAD_URL_PATH = "https://iopscience.iop.org/export?";
+
+	private static final List<String> USER_AGENTS = Arrays.asList(
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
+					"Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1",
+					"Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1"
 	);
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		final Matcher publicationIdMatcher = PUBLICATION_ID_PATTERN.matcher(sc.getUrl().toString());
-		if (publicationIdMatcher.find()) {
-			final String pubId = publicationIdMatcher.group(1);
-
-			final List<NameValuePair> postData = new ArrayList<NameValuePair>(4);
-			
-			postData.add(new BasicNameValuePair("articleId", pubId));
-			postData.add(new BasicNameValuePair("exportFormat", "iopexport_bib"));
-			postData.add(new BasicNameValuePair("exportType", "abs"));
-			postData.add(new BasicNameValuePair("navsubmit", "Export+abstract"));
-			try {
-				final String bibtex = WebUtils.getContentAsString("http://" + NEW_IOP_HOST + "/export", null, postData, null);
-				if (ValidationUtils.present(bibtex)) {
-					sc.setBibtexResult(bibtex.trim());
-					return true;
-				}
-			} catch (MalformedURLException ex) {
-				throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-			} catch (IOException ex) {
-				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe IOP is down.");
+	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
+		try {
+			final URL url = scrapingContext.getUrl();
+			// gets the parameters for the get Method from the url, which should be scraped
+			String doi = DOIUtils.getDoiFromURL(url);
+			if (!present(doi)){
+				throw new ScrapingException("doi not found in " + url);
 			}
+			// doi contains /meta if the url itself contains /meta
+			doi = doi.replaceAll("/meta", "");
+
+			final String downloadUrlParams = "doi=" + doi + "&type=article&exportFormat=iopexport_bib&exportType=abs&navsubmit=Export+abstract";
+			final String downloadUrl = DOWNLOAD_URL_PATH + downloadUrlParams;
+
+			HttpGet get = new HttpGet(downloadUrl);
+
+
+			//IOP blocks userAgents, which send to many reqeusts. So we first try out three different userAgents and if  non work we use a random value.
+			String bibtex = null;
+			for (String userAgent : USER_AGENTS) {
+				try {
+					get.setHeader("User-Agent", userAgent);
+					bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+					if (present(bibtex)){
+						break;
+					}
+				}catch (ClientProtocolException ignored){}
+			}
+			if (!present(bibtex)){
+				get.setHeader("User-Agent", String.valueOf(Math.random()));
+				bibtex = WebUtils.getContentAsString(WebUtils.getHttpClient(), get);
+			}
+			if (!present(bibtex)){
+				throw new ScrapingException("can't get bibtex from " + downloadUrl);
+			}
+
+			scrapingContext.setBibtexResult(bibtex);
+			return true;
+		} catch (HttpException | IOException e) {
+			throw new ScrapingException(e);
 		}
-		return false;
 	}
 
 	@Override
-	public String getInfo(){
+	public String getInfo() {
 		return INFO;
 	}
 

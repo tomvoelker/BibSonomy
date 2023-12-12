@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -47,6 +47,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ATSScraperTest {
+	String resultDirectory = "ats/";
 
 	/**
 	 * starts URL test with id url_212
@@ -54,7 +55,7 @@ public class ATSScraperTest {
 	@Test
 	public void urlTest1Run() {
 		final String url = "http://www.atsjournals.org/doi/abs/10.1513/pats.201101-004MW";
-		final String resultFile = "ATSScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ATSScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, ATSScraper.class, resultFile);
 	}
 	/**
@@ -63,7 +64,7 @@ public class ATSScraperTest {
 	@Test
 	public void urlTest2Run() {
 		final String url = "http://www.atsjournals.org/doi/abs/10.1164/rccm.201106-1094OC";
-		final String resultFile = "ATSScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "ATSScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, ATSScraper.class, resultFile);
 	}
 	/**
@@ -72,7 +73,7 @@ public class ATSScraperTest {
 	@Test
 	public void urlTest3Run() {
 		final String url = "http://www.atsjournals.org/doi/abs/10.1165/rcmb.2011-0134OC";
-		final String resultFile = "ATSScraperUnitURLTest3.bib";
+		final String resultFile = resultDirectory + "ATSScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, ATSScraper.class, resultFile);
 	}
 	

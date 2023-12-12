@@ -29,6 +29,7 @@
  */
 package org.bibsonomy.webapp.command.cris;
 
+import lombok.Getter;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.EntitySearchAndFilterCommand;
@@ -39,13 +40,16 @@ import org.bibsonomy.webapp.command.ListCommand;
  *
  * @author dzo
  */
+@Getter
 public class PublicationsPageCommand extends EntitySearchAndFilterCommand {
+
+	private final static int DEFAULT_ENTRIES_PER_PAGE = 20;
+	private final static String DEFAULT_SORT_PAGE = "pubdate";
+
 	private final ListCommand<Post<GoldStandardPublication>> publications = new ListCommand<>(this);
 
-	/**
-	 * @return the publications
-	 */
-	public ListCommand<Post<GoldStandardPublication>> getPublications() {
-		return publications;
+	public PublicationsPageCommand() {
+		this.publications.setEntriesPerPage(DEFAULT_ENTRIES_PER_PAGE);
+		this.setSortPage(DEFAULT_SORT_PAGE);
 	}
 }

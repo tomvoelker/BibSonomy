@@ -29,7 +29,10 @@
  */
 package org.bibsonomy.model.logic.querybuilder;
 
-import org.bibsonomy.model.enums.PersonResourceRelationOrder;
+import java.util.Date;
+
+import org.bibsonomy.common.enums.SortOrder;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 
@@ -42,50 +45,29 @@ import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
  */
 public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuilder<ResourcePersonRelationQueryBuilder> {
 
+	private String personId;
+	private String interhash;
+	private PersonResourceRelationType relationType;
+	private Integer authorIndex;
+	private Date beforeChangeDate;
+	private Date afterChangeDate;
+
 	private boolean withPersons;
 	private boolean withPosts;
 	private boolean withPersonsOfPosts;
-	private PersonResourceRelationType relationType;
-	private String interhash;
-	private Integer authorIndex;
-	private String personId;
-	private PersonResourceRelationOrder order;
+	private boolean onlyTheses;
 	private boolean groupByInterhash;
 
-	/**
-	 * @param withPersons whether to initialize the person references in the result objects
-	 * @return this builder
-	 */
-	public ResourcePersonRelationQueryBuilder withPersons(boolean withPersons) {
-		this.withPersons = withPersons;
-		return this;
-	}
-	
-	/**
-	 * @param withPosts whether to initialize the post references in the result objects
-	 * @return this builder
-	 */
-	public ResourcePersonRelationQueryBuilder withPosts(boolean withPosts) {
-		this.withPosts = withPosts;
-		return this;
-	}
-	
-	/**
-	 * @param withPersonsOfPosts whether to initialize the nested person relations of the resources of the post references in the result objects
-	 * @return this builder
-	 */
-	public ResourcePersonRelationQueryBuilder withPersonsOfPosts(boolean withPersonsOfPosts) {
-		this.withPersonsOfPosts = withPersonsOfPosts;
-		return this;
-	}
-	
-	public ResourcePersonRelationQueryBuilder byInterhash(String interhash) {
-		this.interhash = interhash;
-		return this;
-	}
-	
+	private PersonResourceRelationSortKey sortKey;
+	private SortOrder sortOrder;
+
 	public ResourcePersonRelationQueryBuilder byPersonId(String personId) {
 		this.personId = personId;
+		return this;
+	}
+
+	public ResourcePersonRelationQueryBuilder byInterhash(String interhash) {
+		this.interhash = interhash;
 		return this;
 	}
 	
@@ -98,24 +80,72 @@ public class ResourcePersonRelationQueryBuilder extends BasicPaginatedQueryBuild
 		this.authorIndex = authorIndex;
 		return this;
 	}
-	
-	public ResourcePersonRelationQueryBuilder orderBy(PersonResourceRelationOrder order) {
-		this.order = order;
+
+	public ResourcePersonRelationQueryBuilder beforeChangeDate(Date beforeChangeDate) {
+		this.beforeChangeDate = beforeChangeDate;
 		return this;
 	}
-	
+
+	public ResourcePersonRelationQueryBuilder afterChangeDate(Date afterChangeDate) {
+		this.afterChangeDate = afterChangeDate;
+		return this;
+	}
+
+	/**
+	 * @param withPersons whether to initialize the person references in the result objects
+	 * @return this builder
+	 */
+	public ResourcePersonRelationQueryBuilder withPersons(boolean withPersons) {
+		this.withPersons = withPersons;
+		return this;
+	}
+
+	/**
+	 * @param withPosts whether to initialize the post references in the result objects
+	 * @return this builder
+	 */
+	public ResourcePersonRelationQueryBuilder withPosts(boolean withPosts) {
+		this.withPosts = withPosts;
+		return this;
+	}
+
+	/**
+	 * @param withPersonsOfPosts whether to initialize the nested person relations of the resources of the post references in the result objects
+	 * @return this builder
+	 */
+	public ResourcePersonRelationQueryBuilder withPersonsOfPosts(boolean withPersonsOfPosts) {
+		this.withPersonsOfPosts = withPersonsOfPosts;
+		return this;
+	}
+
+	public ResourcePersonRelationQueryBuilder onlyTheses(boolean onlyTheses) {
+		this.onlyTheses = onlyTheses;
+		return this;
+	}
+
 	public ResourcePersonRelationQueryBuilder groupByInterhash(boolean groupByInterhash) {
 		this.groupByInterhash = groupByInterhash;
 		return this;
 	}
+	
+	public ResourcePersonRelationQueryBuilder sortBy(PersonResourceRelationSortKey sortKey) {
+		this.sortKey = sortKey;
+		return this;
+	}
+
+	public ResourcePersonRelationQueryBuilder orderBy(SortOrder sortOrder) {
+		this.sortOrder = sortOrder;
+		return this;
+	}
+
 
 	/**
 	 * builds the query
 	 * @return the query
 	 */
 	public ResourcePersonRelationQuery build() {
-		return new ResourcePersonRelationQuery(start, end, withPersons, withPosts, withPersonsOfPosts,
-						relationType, interhash, authorIndex, personId, order, groupByInterhash);
+		return new ResourcePersonRelationQuery(personId, interhash, relationType, authorIndex, beforeChangeDate, afterChangeDate, withPersons,
+				withPosts, withPersonsOfPosts, onlyTheses, groupByInterhash, sortKey, sortOrder, start, end);
 	}
 
 	@Override

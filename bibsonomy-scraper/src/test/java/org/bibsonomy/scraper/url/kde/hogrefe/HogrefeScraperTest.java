@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.hogrefe;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,14 +42,29 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class HogrefeScraperTest {
+	String resultDirectory = "hogrefe/";
 
 	/**
 	 * new URL
 	 */
 	@Test
-	public void url4TestRun(){
+	public void url1TestRun(){
 		final String url = "https://econtent.hogrefe.com/doi/abs/10.1027/1864-9335/a000179";
-		final String resultFile = "LiteratumScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "HogrefeScraperUnitURLTest1.bib";
+		assertScraperResult(url, HogrefeScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://econtent.hogrefe.com/doi/full/10.1027/1864-9335/a000179";
+		final String resultFile = resultDirectory + "HogrefeScraperUnitURLTest1.bib";
+		assertScraperResult(url, HogrefeScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://econtent.hogrefe.com/doi/10.1027/1864-9335/a000179";
+		final String resultFile = resultDirectory + "HogrefeScraperUnitURLTest1.bib";
 		assertScraperResult(url, HogrefeScraper.class, resultFile);
 	}
 

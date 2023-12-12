@@ -384,16 +384,6 @@ function add_hints() {
 }
 
 /**
- * Clears #inpf_tags if it's value is equal to the tag hint.
- * 
- * @return
- */
-function clear_tags() {
-	var tag = $("#inpf_tags");
-	if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
-}
-
-/**
  * 
  * toggle background color for required publication fields
  * 
@@ -853,17 +843,15 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 	var userInput		= null;	
 	var friends 		= null;
 	var groups 			= null;
-
 	
 	/*
-	 * only if sendAllowwed == true, get the friends of the user to recommend them in the case of "send:"
+	 * only if sendAllowed == true, get the friends of the user to recommend them in the case of "send:"
 	 */
 	if(sendAllowed) {
 		getFriends = function () {return friends;};
 		$.ajax({
 			url: '/json/friends?userRelation=FRIEND_OF',
-			async: false,
-			dataType: "jsonp",
+			dataType: "json",
 			success: function (data) {
 				friends = $.map( data.items, function( item ) {
 					return item.name;
@@ -874,6 +862,18 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 	
 	if (forAllowed) {
 		getGroups = function () {return groups;};
+		$.ajax({
+			url: '/json/groups',
+			dataType: "json",
+			data: {
+				"memberOfOnly": true
+			},
+			success: function (data) {
+				groups = $.map( data.items, function( item ) {
+					return item.name;
+				});
+			}
+		});
 	}
 		
 	var autocompleteObj = textfield.autocomplete({		
@@ -886,24 +886,24 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			/*
 			 * abort if the user types "send:" and sendAllowed is set to false.
 			 */
-			if (userInput.indexOf("send:") != -1 && !sendAllowed) {
+			if (userInput.indexOf("send:") !== -1 && !sendAllowed) {
 				return;
 			}
 			
 			/*
 			 * if the user typed nothing - do nothing 
 			 */
-			if (userInput.length != 0) {
+			if (userInput.length !== 0) {
 				$.ajax({
 					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(userInput),
-					dataType: "jsonp",
+					dataType: "json",
 					success: function( data ) {
 						/*
 						 * "send:" is part of the last array index - so show the friends of the loginUser
 						 * else
 						 * we recommend the tags
 						 */
-						if (userInput.indexOf("send:") != -1) {	
+						if (userInput.indexOf("send:") !== -1) {
 							//Get the user input of the user and slice it, so userInput doesn't contain "send:"
 							userInput = String(userInput).slice(5);
 							var regex = new RegExp(userInput);
@@ -913,12 +913,12 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								 * If the post is already sent to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
 								 * If the user input is "nra", recommend only users which username begins with "nra" 
 								 */
-								if(textfieldValue.indexOf(friend) == -1 &&
-										friend.search(regex) == 0) {
+								if(textfieldValue.indexOf(friend) === -1 &&
+										friend.search(regex) === 0) {
 									return { value: friend};
 								}
 							}));
-						} else if (userInput.indexOf("for:") != -1) {
+						} else if (userInput.indexOf("for:") !== -1) {
 							userInput = String(userInput).slice(4);
 							var regex = new RegExp(userInput);
 
@@ -927,17 +927,17 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								 * If the post is already sent to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
 								 * If the user input is "nra", recommend only users which username begins with "nra" 
 								 */
-								if(textfieldValue.indexOf(group) == -1 &&
-										group.search(regex) == 0) {
+								if(textfieldValue.indexOf(group) === -1 &&
+										group.search(regex) === 0) {
 									return { value: group};
 								}
 							}));
 						} else {
 							
 							var regex 			= new RegExp(userInput);
-							var recommendedTags = new Array();
-							var copiedTags 		= new Array();
-							ajaxTagArray		= new Array();
+							var recommendedTags = [];
+							var copiedTags 		= [];
+							ajaxTagArray		= [];
 							
 							/*
 							 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
@@ -949,20 +949,20 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
 								var tags = name.split(",");
 								
-								if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
-									if(name.indexOf(",")>-1)
+								if(textfieldValue.indexOf(name) === -1 && name.search(regex) === 0 ) {
+									if(name.indexOf(",") >- 1)
 										for(var i in tags) 
-											if(recommendedTags.indexOf(tags[i])==-1) recommendedTags.push(tags[i]);
+											if(recommendedTags.indexOf(tags[i]) === -1) recommendedTags.push(tags[i]);
 									else recommendedTags.push(name);
 								}
 							});
 
 							$("#copiedTags li, .tagbox li a").each(function(index, item) {
 								var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
-								if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
-									if(name.indexOf(",")>-1) 
+								if(textfieldValue.indexOf(name) === -1 && name.search(regex) === 0 ) {
+									if(name.indexOf(",") >- 1)
 										for(var i in tags) 
-											if(copiedTags.indexOf(tags[i])==-1) copiedTags.push(tags[i]);
+											if(copiedTags.indexOf(tags[i]) === -1) copiedTags.push(tags[i]);
 									else copiedTags.push(name);
 								}
 							});
@@ -979,18 +979,18 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								 * If the array of "copied post" and "recommendation" tags contains the actual tag name,
 								 * remove the tag name in the array "copied post", "recommendation" or both.
 								 */
-								if(recommendedTagsIndex != -1) {
+								if(recommendedTagsIndex !== -1) {
 									recommendedTags.splice(recommendedTagsIndex, 1);
 								}
 								
-								if(copiedTagsIndex != -1) {
+								if(copiedTagsIndex !== -1) {
 									copiedTags.splice(copiedTagsIndex, 1);
 								}
 								
 								/*
 								 * don't suggest tags, which are already included in the input field
 								 */
-								if(textfieldValue.indexOf(item.label) == -1) {
+								if(textfieldValue.indexOf(item.label) === -1) {
 									
 									/*
 									 * Store all tags with origin user to this array.
@@ -1010,7 +1010,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 							 * Suggest them by adding them to the tags map.
 							 */
 							recommendedTags.forEach(function(name) {
-								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
+								if( $.grep(tags, function(t){ return t.value === name; }).length === 0) {
 									tags.push({value: name, 
 											   label: name,
 											   count: Number.MAX_VALUE});
@@ -1018,7 +1018,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 							});
 
 							copiedTags.forEach(function(name) {
-								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
+								if( $.grep(tags, function(t){ return t.value === name; }).length === 0) {
 									tags.push({value: name, 
 											   label: name,
 											   count: Number.MAX_VALUE});
@@ -1054,7 +1054,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			 * Append for each tag the count of usage
 			 */
 			$.each(ui.content, function(index, value) {
-				if(value.count != Number.MAX_VALUE) {
+				if(value.count !== Number.MAX_VALUE) {
 					value.label = value.value + " (" + value.count + ")";
 				} else {
 					value.label = value.value;
@@ -1079,9 +1079,9 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 				 * Distinguish if the user has typed "send:" and want to get and set the recommended friends
 				 * or he wants only the normal tags set
 				 */
-				if(userInput.indexOf("send:") != -1) {
+				if(userInput.indexOf("send:") !== -1) {
 					textArea.val(substring + "send:" + text + " ");
-				} else if(userInput.indexOf("for:") != -1) {
+				} else if(userInput.indexOf("for:") !== -1) {
 					textArea.val(substring + "for:" + text + " ");
 				} else {
 					textArea.val(substring + text + " ");	
@@ -1122,9 +1122,9 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
         	 * or the user wants the tags. If the user used "send:", we don't want to suggest like "send:nraabe".
         	 * We want to suggest "nraabe" in the autocompletion list.
              */
-			if (userInput.indexOf("send:") != -1) {
+			if (userInput.indexOf("send:") !== -1) {
 				termHighlighted = String(userInput).slice(5);
-			} else if(userInput.indexOf("for:") != -1) {
+			} else if(userInput.indexOf("for:") !== -1) {
 				termHighlighted = String(userInput).slice(4);
 			} else {
 				termHighlighted = userInput;
@@ -1134,10 +1134,10 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			 * This part is only used, if we want to show the tag origin.
 			 * The functionality below gives us the tags with origin recommended and copy. 
 			 */
-			if(showOrigin) {
+			if (showOrigin) {
 	            var regex 		= new RegExp(userInput);
-				recommendedTags = new Array();
-				copiedTags 		= new Array();
+				recommendedTags = [];
+				copiedTags 		= [];
 				
 				/*
 				 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
@@ -1147,14 +1147,14 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 				 */
 				$("#recommendedTags li, .tagbox li a").each(function(index, item) {
 					var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
-					if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
+					if(textfieldValue.indexOf(name) === -1 && name.search(regex) === 0 ) {
 						recommendedTags.push(name);
 					}
 				});
 
 				$("#copiedTags li, .tagbox li a").each(function(index, item) {
 					var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
-					if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
+					if(textfieldValue.indexOf(name) === -1 && name.search(regex) === 0 ) {
 						copiedTags.push(name);
 					}
 				});
@@ -1183,9 +1183,9 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
                     
 					var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
                     
-        			if (userInput.indexOf("send:") != -1) {
+        			if (userInput.indexOf("send:") !== -1) {
         				me.append(sytledTerm).append(userInput.substring(5)); // 5 is used to slice "send:"
-        			} else if (userInput.indexOf("for:") != -1) {
+        			} else if (userInput.indexOf("for:") !== -1) {
         				me.append(sytledTerm).append(userInput.substring(4)); // 4 is used to slice "for:"
         			} else {
         				me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
@@ -1200,11 +1200,11 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 
         				var tagOrigin = "";
 
-            			if(ajaxTagArray.indexOf(me.text()) != -1) {
+            			if(ajaxTagArray.indexOf(me.text()) !== -1) {
             				tagOrigin = tagOrigin + getString("post.actions.edit.tags.myTags");
             			}
 
-            			if(recommendedTags.indexOf(me.text()) != -1) {
+            			if(recommendedTags.indexOf(me.text()) !== -1) {
             				if(tagOrigin.length > 0 ) {
             					tagOrigin = tagOrigin + ", " + getString("post.actions.edit.tags.recommended");
             				} else {
@@ -1213,19 +1213,18 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
             			}
 
             			
-            			if(copiedTags.indexOf(me.text()) != -1) {
+            			if(copiedTags.indexOf(me.text()) !== -1) {
             				if(tagOrigin.length > 0 ) {
             					tagOrigin = tagOrigin + ", " + getString("post.actions.edit.tags.copied");
             				} else {
             					tagOrigin = getString("post.actions.edit.tags.copied");
             				}
             			}
-            			
-        				var tagOriginSpan 		= document.createElement("span"); 
-        				tagOriginSpan.innerHTML = tagOrigin + " " + usageCounter;
-        				tagOriginSpan.className	= "ui-autocomplete-tagOrigin";
 
-        				me.append(tagOriginSpan);
+						var tagOriginSpan = document.createElement("span");
+						tagOriginSpan.innerHTML = tagOrigin + " " + usageCounter;
+						tagOriginSpan.className	= "ui-autocomplete-tagOrigin";
+						me.append(tagOriginSpan);
         			}
             });
 			
@@ -1238,7 +1237,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			        keyCode: event.keyCode
 			    });
 			    
-			    if (newEvent.keyCode == $.ui.keyCode.TAB) {
+			    if (newEvent.keyCode === $.ui.keyCode.TAB) {
 			        newEvent.keyCode = $.ui.keyCode.DOWN;
 			        $(this).trigger(newEvent);
 			        newEvent.keyCode = $.ui.keyCode.ENTER;
@@ -1259,7 +1258,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 	}
 	
 	autocompleteObj.autocomplete('enable');
-};
+}
 
 /**
  * Function to finish the tag autocompletion.
@@ -1268,7 +1267,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
  */
 function endTagAutocompletion (textfield) {
 	textfield.autocomplete('disable');
-};
+}
 
 
 /**

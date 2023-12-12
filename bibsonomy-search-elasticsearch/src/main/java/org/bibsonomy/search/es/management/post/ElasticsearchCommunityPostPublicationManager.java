@@ -45,8 +45,7 @@ import org.bibsonomy.search.index.update.person.PersonResourceRelationUpdateLogi
 import org.bibsonomy.search.index.update.post.CommunityPostIndexCommunityUpdateLogic;
 import org.bibsonomy.search.index.update.post.CommunityPostIndexUpdateLogic;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.BasicUtils;
 import org.elasticsearch.script.Script;
@@ -61,10 +60,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * special implementation for {@link ElasticsearchCommunityPostManager} to update publication specific fields
- * these fields are:
+ * Elasticsearch manager for goldstandard/community publication indices
+ * This is a special implementation of {@link ElasticsearchCommunityPostManager} to update publication specific fields.
+ * These fields are:
  *
- * - person resource relations
+ * - {@link ResourcePersonRelation}
  *
  * @author dzo
  */
@@ -78,89 +78,59 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 
 	private static final String ADD_PERSON_ID_TO_AUTHOR = buildAddPersonScript(ESConstants.Fields.Publication.AUTHORS);
 	private static final String ADD_PERSON_ID_TO_EDITOR = buildAddPersonScript(ESConstants.Fields.Publication.EDITORS);
+	// TODO fix adding other relations
 	private static final String ADD_OTHER_RELATION = "ctx._source." + ESConstants.Fields.Publication.OTHER_PERSON_RESOURCE_RELATIONS + ".add(params." + RELATION_KEY + ")";
 
 	private static final String REMOVE_PERSON_ID_TO_AUTHOR = buildRemovePersonScript(ESConstants.Fields.Publication.AUTHORS);
 	private static final String REMOVE_PERSON_ID_TO_EDITOR = buildRemovePersonScript(ESConstants.Fields.Publication.EDITORS);
+	// TODO check, if this actually works, if adding works
 	private static final String REMOVE_OTHER_RELATION = "ctx._source." + ESConstants.Fields.Publication.OTHER_PERSON_RESOURCE_RELATIONS + " = ctx._source." + ESConstants.Fields.Publication.OTHER_PERSON_RESOURCE_RELATIONS + ".stream().filter(x -> x." + ESConstants.Fields.Publication.PERSON_ID + " != params." + RELATION_KEY + "." + PERSON_ID_KEY + " && x." + ESConstants.Fields.Publication.PERSON_RELATION_TYPE + " != params." + RELATION_KEY + "." + TYPE_KEY + ").collect(Collectors.toList())";
-
-	private static String buildAddPersonScript(final String field) {
-		return buildAddFieldScript(field, ESConstants.Fields.Publication.PERSON_ID, PERSON_ID_KEY) + ";\n" + buildAddFieldScript(field, ESConstants.Fields.Publication.PERSON_COLLEGE, COLLEGE_KEY);
-	}
-
-	private static String buildAddFieldScript(String field, String key, String valueKey) {
-		return "ctx._source." + field + "[params." + INDEX_KEY + "]." + key + " = params." + RELATION_KEY + "." + valueKey;
-	}
-
-	private static String buildRemovePersonScript(final String field) {
-		return buildRemoveFieldScript(field, ESConstants.Fields.Publication.PERSON_COLLEGE) + ";\n" + buildRemoveFieldScript(field, ESConstants.Fields.Publication.PERSON_ID);
-	}
-
-	private static String buildRemoveFieldScript(final String field, final String key) {
-		return "ctx._source." + field + "[params." + INDEX_KEY + "].remove('" + key + "')";
-	}
-
-	private static String getRemoveScriptForPersonResourceRelation(PersonResourceRelationType type) {
-		switch (type) {
-			case AUTHOR:
-				return REMOVE_PERSON_ID_TO_AUTHOR;
-			case EDITOR:
-				return REMOVE_PERSON_ID_TO_EDITOR;
-		}
-
-		// add it to the other resource relation fields
-		return REMOVE_OTHER_RELATION;
-	}
-
-	private static String getAddScriptForPersonResourceRelation(PersonResourceRelationType type) {
-		switch (type) {
-			case AUTHOR:
-				return ADD_PERSON_ID_TO_AUTHOR;
-			case EDITOR:
-				return ADD_PERSON_ID_TO_EDITOR;
-		}
-
-		// add it to the other resource relation fields
-		return ADD_OTHER_RELATION;
-	}
 
 	private final PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic;
 
 	/**
-	 * default constructor
+	 * Default constructor
 	 *
-	 * @param systemId
-	 * @param disabledIndexing
-	 * @param updateEnabled
+	 * @param systemURI
 	 * @param client
 	 * @param generator
 	 * @param syncStateConverter
 	 * @param entityInformationProvider
+	 * @param indexEnabled
+	 * @param updateEnabled
+	 * @param regenerateEnabled
 	 * @param inputLogic
-	 * @param communityPostUpdateLogic
-	 * @param postUpdateLogic
 	 * @param databaseInformationLogic
+	 * @param postUpdateLogic
+	 * @param communityPostUpdateLogic
 	 * @param personResourceRelationUpdateLogic
 	 */
-	public ElasticsearchCommunityPostPublicationManager(URI systemId, boolean disabledIndexing, boolean updateEnabled, ESClient client, ElasticsearchIndexGenerator<Post<G>, SearchIndexDualSyncState> generator, Converter syncStateConverter, EntityInformationProvider entityInformationProvider, SearchDBInterface<G> inputLogic, CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic, CommunityPostIndexUpdateLogic<G> postUpdateLogic, DatabaseInformationLogic<SearchIndexDualSyncState> databaseInformationLogic, PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
-		super(systemId, disabledIndexing, updateEnabled, client, generator, syncStateConverter, entityInformationProvider, inputLogic, communityPostUpdateLogic, postUpdateLogic, databaseInformationLogic);
+	public ElasticsearchCommunityPostPublicationManager(URI systemURI,
+														ESClient client,
+														ElasticsearchIndexGenerator<Post<G>, SearchIndexState> generator,
+														Converter syncStateConverter,
+														EntityInformationProvider entityInformationProvider,
+														boolean indexEnabled,
+														boolean updateEnabled,
+														boolean regenerateEnabled,
+														final SearchDBInterface<G> inputLogic,
+														final DatabaseInformationLogic<SearchIndexState> databaseInformationLogic,
+														final CommunityPostIndexUpdateLogic<G> postUpdateLogic,
+														final CommunityPostIndexCommunityUpdateLogic<G> communityPostUpdateLogic,
+														final PersonResourceRelationUpdateLogic personResourceRelationUpdateLogic) {
+		super(systemURI, client, generator, syncStateConverter, entityInformationProvider, indexEnabled, updateEnabled, regenerateEnabled, inputLogic, databaseInformationLogic, postUpdateLogic, communityPostUpdateLogic);
 		this.personResourceRelationUpdateLogic = personResourceRelationUpdateLogic;
 	}
 
 	@Override
-	protected void updateResourceSpecificFields(final String indexName, final SearchIndexDualSyncState oldState, final SearchIndexDualSyncState targetState) {
-		final DefaultSearchIndexSyncState communitySearchIndexState = oldState.getFirstState();
-
+	protected void updateResourceSpecificFields(final String indexName, final SearchIndexState oldState, final SearchIndexState targetState) {
 		final List<Pair<String, UpdateData>> updateDataMap = new LinkedList<>();
-		/*
-		 * add new resource relations
-		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(communitySearchIndexState.getLastPersonChangeId(), communitySearchIndexState.getLastPersonLogDate(), limit, offset));
 
-		/*
-		 * remove resource relations
-		 */
-		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(communitySearchIndexState.getLastPersonLogDate()));
+		// Add new resource relations
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getAddScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getNewerEntities(oldState.getPersonId(), oldState.getRelationLogDate(), limit, offset));
+
+		// Remove resource relations
+		this.loop(indexName, updateDataMap, ElasticsearchCommunityPostPublicationManager::getRemoveScriptForPersonResourceRelation, (limit, offset) -> this.personResourceRelationUpdateLogic.getDeletedEntities(oldState.getRelationLogDate()));
 		
 		this.clearUpdateQueue(indexName, updateDataMap);
 	}
@@ -197,5 +167,51 @@ public class ElasticsearchCommunityPostPublicationManager<G extends BibTex> exte
 				}
 			}
 		}, ElasticsearchPostManager.SQL_BLOCKSIZE);
+	}
+
+	private static String buildAddPersonScript(final String field) {
+		return buildAddFieldScript(field, ESConstants.Fields.Publication.PERSON_ID, PERSON_ID_KEY) + ";\n" + buildAddFieldScript(field, ESConstants.Fields.Publication.PERSON_COLLEGE, COLLEGE_KEY);
+	}
+
+	private static String buildAddFieldScript(String field, String key, String valueKey) {
+		return "ctx._source." + field + "[params." + INDEX_KEY + "]." + key + " = params." + RELATION_KEY + "." + valueKey;
+	}
+
+	private static String buildRemovePersonScript(final String field) {
+		return String.format("if (%s) {%s; %s}", buildConditionFieldScript(field, ESConstants.Fields.Publication.PERSON_ID, PERSON_ID_KEY),
+				buildRemoveFieldScript(field, ESConstants.Fields.Publication.PERSON_ID),
+				buildRemoveFieldScript(field, ESConstants.Fields.Publication.PERSON_COLLEGE));
+	}
+
+	private static String buildRemoveFieldScript(final String field, final String key) {
+		return "ctx._source." + field + "[params." + INDEX_KEY + "].remove('" + key + "')";
+	}
+
+	private static String buildConditionFieldScript(String field, String key, String valueKey) {
+		return "ctx._source." + field + "[params." + INDEX_KEY + "]." + key + " == params." + RELATION_KEY + "." + valueKey;
+	}
+
+	private static String getRemoveScriptForPersonResourceRelation(PersonResourceRelationType type) {
+		switch (type) {
+			case AUTHOR:
+				return REMOVE_PERSON_ID_TO_AUTHOR;
+			case EDITOR:
+				return REMOVE_PERSON_ID_TO_EDITOR;
+		}
+
+		// add it to the other resource relation fields
+		return REMOVE_OTHER_RELATION;
+	}
+
+	private static String getAddScriptForPersonResourceRelation(PersonResourceRelationType type) {
+		switch (type) {
+			case AUTHOR:
+				return ADD_PERSON_ID_TO_AUTHOR;
+			case EDITOR:
+				return ADD_PERSON_ID_TO_EDITOR;
+		}
+
+		// add it to the other resource relation fields
+		return ADD_OTHER_RELATION;
 	}
 }

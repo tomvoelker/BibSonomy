@@ -30,23 +30,14 @@
 package org.bibsonomy.webapp.command.ajax;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Christian Kramer
  */
+@Getter
+@Setter
 public class ConceptAjaxCommand extends AjaxCommand<String> {
 	private String tag;
-
-	/**
-	 * @return String
-	 */
-	public String getTag() {
-		return this.tag;
-	}
-
-	/**
-	 * @param tag
-	 */
-	public void setTag(final String tag) {
-		this.tag = tag;
-	}
 }

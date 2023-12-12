@@ -35,17 +35,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -124,9 +129,6 @@ public class FunctionsTest {
 		assertEquals("", Functions.formatDateISO8601(null));
 	}
 	
-	
-
-	
 	@Test
 	public void testGetDate() throws Exception {
 		final Locale locale = new Locale("de");
@@ -196,4 +198,44 @@ public class FunctionsTest {
 		assertFalse(Functions.isSameHost("http://localhost/", "http://localhost2/"));
 		assertFalse(Functions.isSameHost("http://localhost/", "http://www.localhost/"));
 	}
+
+	/**
+	 * tests  {@link Functions#filterGroups(List, boolean)}
+	 */
+	@Test
+	public void testFilterGroups() {
+		// Create test groups
+		Group actualGroup1 = new Group();
+		Group organization1 = new Group();
+		organization1.setOrganization(true);
+		List<Group> groups = Arrays.asList(actualGroup1, organization1);
+
+		final List<Group> actualGroups = Functions.filterGroups(groups, false);
+		final List<Group> organizations = Functions.filterGroups(groups, true);
+
+		assertEquals(1, actualGroups.size());
+		assertEquals( 1, organizations.size());
+
+		assertFalse(actualGroups.get(0).isOrganization());
+		assertTrue(organizations.get(0).isOrganization());
+	}
+
+    /**
+     * tests  {@link Functions#split(String, String)}
+     */
+    @Test
+    public void testSplit() {
+        Collection<?> split = Functions.split("test article uppercase lowercase", " ");
+        Assert.assertEquals(4, split.size());
+    }
+
+    /**
+     * tests {@link tags.Functions#contains(java.util.Collection, Object)}
+     */
+    @Test
+    public void testContains() {
+        List<String> tags = Arrays.asList("test article uppercase lowercase".split(" "));
+        Assert.assertTrue(Functions.contains(tags, "test"));
+        Assert.assertFalse(Functions.contains(tags, "abc"));
+    }
 }

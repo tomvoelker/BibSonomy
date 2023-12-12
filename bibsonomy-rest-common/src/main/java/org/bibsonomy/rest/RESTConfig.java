@@ -36,6 +36,8 @@ import java.util.Date;
 
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * DO NOT CHANGE any constant values after a release
  *
@@ -47,7 +49,9 @@ public final class RESTConfig {
 		// noop
 	}
 
-	private static final String DATE_FORMAT_STRING = "yyyy-MM-DD HH:mm:ss";
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+	public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-DD HH:mm:ss";
 
 	public static final String POSTS_URL = "posts";
 
@@ -119,11 +123,25 @@ public final class RESTConfig {
 
 	public static final String SUB_TAG_PARAM = "subtag";
 
+	public static final String INTERHASH_PARAM = "interhash";
+
+	public static final String INTRAHASH_PARAM = "intrahash";
+
+	public static final String RELATION_TYPE_PARAM = "relationType";
+
+	public static final String RELATION_INDEX_PARAM = "relationIndex";
+
 	public static final String REGEX_PARAM = FILTER_PARAM;
 
 	public static final String START_PARAM = "start";
 
 	public static final String END_PARAM = "end";
+
+	public static final String BEFORE_CHANGE_DATE_PARAM = "beforeChangeDate";
+
+	public static final String AFTER_CHANGE_DATE_PARAM = "afterChangeDate";
+
+	public static final String OPERATION_PARAM = "operation";
 
 	public static final String SYNC_STRATEGY_PARAM = "strategy";
 
@@ -139,14 +157,34 @@ public final class RESTConfig {
 
 	public static final String CLIPBOARD_CLEAR = "clear";
 
-	/** the query name for a person id */
+	/** the query param for a username */
+	public static final String USER_PARAM = "user";
+
+	/** the query param for a person id */
 	public static final String PERSON_ID_PARAM = "personId";
+
+	/** the query param for the source id of a person merge */
+	public static final String SOURCE_ID_PARAM = "sourceId";
+
+	/** the query param for the target id of a person merge */
+	public static final String TARGET_ID_PARAM = "targetId";
 
 	/** the query param name for an additional key for persons */
 	public static final String PERSON_ADDITIONAL_KEY_PARAM = "additionalKey";
 
 	/** the separator used to separate key and value */
 	public static final String PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR = "=";
+
+	public static final String WITH_PERSONS_PARAM = "withPersons";
+
+	public static final String WITH_POSTS_PARAM = "withPosts";
+
+	public static final String WITH_PERSONS_OF_POSTS_PARAM = "withPersonsOfPosts";
+
+	public static final String ONLY_THESES_PARAM = "onlyTheses";
+
+	public static final String GROUP_BY_INTERHASH_PARAM = "groupByInterhash";
+
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
@@ -171,14 +209,30 @@ public final class RESTConfig {
 
 	public static final String IDENTITY_PROVIDER_TYPE = "identityProviderType";
 
-
+	/**
+	 * serialize a date with default date format for param
+	 * @param date		date
+	 * @return			serialized date
+	 */
 	public static String serializeDate(final Date date) {
-		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
-		return fmt.format(date);
+		if (present(date)) {
+			final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATE_FORMAT);
+			return fmt.format(date);
+		}
+		return null;
 	}
 
-	public static Date parseDate(final String dateString) throws ParseException {
-		final DateFormat fmt = new SimpleDateFormat(RESTConfig.DATE_FORMAT_STRING);
-		return fmt.parse(dateString);
+	/**
+	 * serialize a date with default datetime format for param
+	 * @param date		date
+	 * @return			serialized datetime
+	 */
+	public static String serializeDateTime(final Date date) {
+		if (present(date)) {
+			final DateFormat fmt = new SimpleDateFormat(RESTConfig.DEFAULT_DATETIME_FORMAT);
+			return fmt.format(date);
+		}
+		return null;
 	}
+
 }

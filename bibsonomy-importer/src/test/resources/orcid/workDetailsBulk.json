@@ -1,0 +1,204 @@
+{
+  "bulk": [
+    {
+      "work": {
+        "created-date": {
+          "value": 1624319688935
+        },
+        "last-modified-date": {
+          "value": 1624319688935
+        },
+        "source": {
+          "source-orcid": null,
+          "source-client-id": {
+            "uri": "https://orcid.org/client/0000-0001-9884-1913",
+            "path": "0000-0001-9884-1913",
+            "host": "orcid.org"
+          },
+          "source-name": {
+            "value": "Crossref"
+          },
+          "assertion-origin-orcid": null,
+          "assertion-origin-client-id": null,
+          "assertion-origin-name": null
+        },
+        "put-code": 95856315,
+        "path": "/0000-0002-0570-7908/work/95856315",
+        "title": {
+          "title": {
+            "value": "Boolean Substructures in Formal Concept Analysis"
+          },
+          "subtitle": null,
+          "translated-title": null
+        },
+        "journal-title": null,
+        "short-description": null,
+        "citation": {
+          "citation-type": "bibtex",
+          "citation-value": "@incollection{Koyda_2021,\n\tdoi = {10.1007/978-3-030-77867-5_3},\n\turl = {https://doi.org/10.1007%2F978-3-030-77867-5_3},\n\tyear = 2021,\n\tpublisher = {Springer International Publishing},\n\tpages = {38--53},\n\tauthor = {Maren Koyda and Gerd Stumme},\n\ttitle = {Boolean Substructures in Formal Concept Analysis},\n\tbooktitle = {Formal Concept Analysis}\n}"
+        },
+        "type": "book-chapter",
+        "publication-date": {
+          "year": {
+            "value": "2021"
+          },
+          "month": null,
+          "day": null
+        },
+        "external-ids": {
+          "external-id": [
+            {
+              "external-id-type": "doi",
+              "external-id-value": "10.1007/978-3-030-77867-5_3",
+              "external-id-normalized": {
+                "value": "10.1007/978-3-030-77867-5_3",
+                "transient": true
+              },
+              "external-id-normalized-error": null,
+              "external-id-url": {
+                "value": "https://doi.org/10.1007/978-3-030-77867-5_3"
+              },
+              "external-id-relationship": "self"
+            }
+          ]
+        },
+        "url": {
+          "value": "https://doi.org/10.1007/978-3-030-77867-5_3"
+        },
+        "contributors": {
+          "contributor": [
+            {
+              "contributor-orcid": null,
+              "credit-name": {
+                "value": "Maren Koyda"
+              },
+              "contributor-email": null,
+              "contributor-attributes": {
+                "contributor-sequence": null,
+                "contributor-role": "author"
+              }
+            },
+            {
+              "contributor-orcid": null,
+              "credit-name": {
+                "value": "Gerd Stumme"
+              },
+              "contributor-email": null,
+              "contributor-attributes": {
+                "contributor-sequence": null,
+                "contributor-role": "author"
+              }
+            }
+          ]
+        },
+        "language-code": null,
+        "country": null,
+        "visibility": "public"
+      }
+    },
+    {
+      "work": {
+        "created-date": {
+          "value": 1631912132902
+        },
+        "last-modified-date": {
+          "value": 1631912132902
+        },
+        "source": {
+          "source-orcid": null,
+          "source-client-id": {
+            "uri": "https://orcid.org/client/0000-0001-9884-1913",
+            "path": "0000-0001-9884-1913",
+            "host": "orcid.org"
+          },
+          "source-name": {
+            "value": "Crossref"
+          },
+          "assertion-origin-orcid": null,
+          "assertion-origin-client-id": null,
+          "assertion-origin-name": null
+        },
+        "put-code": 100126388,
+        "path": "/0000-0002-0570-7908/work/100126388",
+        "title": {
+          "title": {
+            "value": "Attribute Selection Using Contranominal Scales"
+          },
+          "subtitle": null,
+          "translated-title": null
+        },
+        "journal-title": null,
+        "short-description": null,
+        "citation": null,
+        "type": "book-chapter",
+        "publication-date": {
+          "year": {
+            "value": "2021"
+          },
+          "month": null,
+          "day": null
+        },
+        "external-ids": {
+          "external-id": [
+            {
+              "external-id-type": "doi",
+              "external-id-value": "10.1007/978-3-030-86982-3_10",
+              "external-id-normalized": {
+                "value": "10.1007/978-3-030-86982-3_10",
+                "transient": true
+              },
+              "external-id-normalized-error": null,
+              "external-id-url": {
+                "value": "https://doi.org/10.1007/978-3-030-86982-3_10"
+              },
+              "external-id-relationship": "self"
+            }
+          ]
+        },
+        "url": {
+          "value": "https://doi.org/10.1007/978-3-030-86982-3_10"
+        },
+        "contributors": {
+          "contributor": [
+            {
+              "contributor-orcid": null,
+              "credit-name": {
+                "value": "Dominik Dürrschnabel"
+              },
+              "contributor-email": null,
+              "contributor-attributes": {
+                "contributor-sequence": null,
+                "contributor-role": "author"
+              }
+            },
+            {
+              "contributor-orcid": null,
+              "credit-name": {
+                "value": "Maren Koyda"
+              },
+              "contributor-email": null,
+              "contributor-attributes": {
+                "contributor-sequence": null,
+                "contributor-role": "author"
+              }
+            },
+            {
+              "contributor-orcid": null,
+              "credit-name": {
+                "value": "Gerd Stumme"
+              },
+              "contributor-email": null,
+              "contributor-attributes": {
+                "contributor-sequence": null,
+                "contributor-role": "author"
+              }
+            }
+          ]
+        },
+        "language-code": null,
+        "country": null,
+        "visibility": "public"
+      }
+    }
+  ]
+}

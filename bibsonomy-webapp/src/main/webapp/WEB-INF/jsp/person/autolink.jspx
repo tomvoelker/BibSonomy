@@ -34,7 +34,7 @@
             </h1>
 
 			<c:forEach var="jobResult" items="${command.jobResults}">
-				<spring:eval expression="T(org.bibsonomy.common.information.utils.JobInformationUtils).extractInformationsOfType(jobResult.info, T(java.lang.Class).forName('org.bibsonomy.services.information.PersonResourceLinkInformationAdded'))" var="linkInfos"/>
+				<spring:eval expression="T(org.bibsonomy.common.information.utils.JobInformationUtils).extractInformationOfType(jobResult.info, T(java.lang.Class).forName('org.bibsonomy.services.information.PersonResourceLinkInformationAdded'))" var="linkInfos"/>
 
 				<c:if test="${fn:length(linkInfos) gt 0}">
 					<c:set var="post" value="${linkInfos[0].relation.post}" />

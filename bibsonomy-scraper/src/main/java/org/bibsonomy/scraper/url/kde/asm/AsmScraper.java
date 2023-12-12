@@ -29,27 +29,29 @@
  */
 package org.bibsonomy.scraper.url.kde.asm;
 
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.generic.LiteratumScraper;
+
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author Haile
  */
-public class AsmScraper extends CitationManagerScraper {
-	
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download to citation manager</a>");
+public class AsmScraper extends LiteratumScraper {
+
 	private static final String SITE_NAME = "American Society for Microbiology";
 	private static final String SITE_URL = "http://journals.asm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<>(
-					Pattern.compile(".*" + "asm.org"),
-					Pattern.compile("/content" + ".*")
+					Pattern.compile(".*" + "journals.asm.org"), EMPTY_PATTERN
 	));
+
+	private static final Pattern NO_COMMA_AFTER_DOI_PATTERN = Pattern.compile("(doi = \\{.*}[^,])");
 
 	@Override
 	public String getSupportedSiteName() {
@@ -67,12 +69,16 @@ public class AsmScraper extends CitationManagerScraper {
 	}
 
 	@Override
-	public Pattern getDownloadLinkPattern() {
-		return DOWNLOAD_LINK_PATTERN;
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return URL_PATTERNS;
 	}
 
 	@Override
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return URL_PATTERNS;
+	protected String postProcessBibtex(ScrapingContext scrapingContext, String bibtex) {
+		Matcher m_noComma = NO_COMMA_AFTER_DOI_PATTERN.matcher(bibtex);
+		if (m_noComma.find()){
+			return bibtex.replace(m_noComma.group(1), m_noComma.group(1) + "," );
+		}
+		return super.postProcessBibtex(scrapingContext, bibtex);
 	}
 }

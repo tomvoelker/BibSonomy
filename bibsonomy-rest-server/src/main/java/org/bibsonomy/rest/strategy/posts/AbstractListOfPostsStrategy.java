@@ -30,6 +30,7 @@
 package org.bibsonomy.rest.strategy.posts;
 
 import java.io.Writer;
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.SortCriteria;
@@ -59,6 +60,8 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final String search;
 	protected final QueryScope searchType;
 	protected final List<SortCriteria> sortCriteria;
+	protected final Date beforeChangeDate;
+	protected final Date afterChangeDate;
 	
 	/**
 	 * @param context
@@ -74,6 +77,8 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		final List<SortKey> sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORT_KEY_PARAM, null));
 		final List<SortOrder> sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORT_ORDER_PARAM, null));
 		this.sortCriteria = SortUtils.generateSortCriteria(sortKeys, sortOrders);
+		this.beforeChangeDate = RESTUtils.getDateParam(context, RESTConfig.BEFORE_CHANGE_DATE_PARAM);
+		this.afterChangeDate = RESTUtils.getDateParam(context, RESTConfig.AFTER_CHANGE_DATE_PARAM);
 
 		String groupingValue;
 		if (this.grouping != GroupingEntity.ALL) {

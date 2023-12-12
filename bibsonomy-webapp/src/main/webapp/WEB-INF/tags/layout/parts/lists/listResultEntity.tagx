@@ -1,0 +1,86 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group">
+
+	<jsp:directive.attribute name="columnSize" type="java.lang.Integer" required="true"/>
+
+	<jsp:directive.attribute name="headingTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="headingUrl" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="subHeadingTitle" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="description" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="iconUrl" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="iconFallback" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="iconCircle" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showDefaultIcon" type="java.lang.Boolean" required="false"/>
+
+	<jsp:directive.attribute name="links" fragment="true"/>
+	<jsp:directive.attribute name="buttons" fragment="true"/>
+
+	<c:if test="${iconCircle}">
+		<c:set var="iconType" value="media-circle"/>
+	</c:if>
+
+	<div class="col-md-${columnSize}">
+		<div class="media list-result-entity">
+			<div class="media-body">
+				<a href="${headingUrl}">
+					<h4 class="media-heading" title="${headingTitle}"><c:out value="${headingTitle}"/></h4>
+				</a>
+				<c:if test="${not empty subHeadingTitle}">
+					<small><span class="media-sub-heading"><c:out value="${subHeadingTitle}"/></span></small>
+				</c:if>
+
+				<div class="media-description">
+					<c:out value="${description}"/>
+				</div>
+
+				<div class="media-link-group">
+					<jsp:invoke fragment="links"/>
+				</div>
+				<div class="media-button-group">
+					<jsp:invoke fragment="buttons"/>
+				</div>
+			</div>
+
+			<c:choose>
+				<c:when test="${showDefaultIcon}">
+					<div class="media-right media-top">
+						<div class="media-image ${iconType}">
+							<c:choose>
+								<c:when test="${not empty iconUrl}">
+									<a href="${headingUrl}" title="${headingTitle}">
+										<img class="media-object ${iconType}" src="${iconUrl}" alt="${headingTitle}"/>
+									</a>
+								</c:when>
+								<c:otherwise>
+									<div class="media-image-default">
+										<fontawesome:icon icon="${iconFallback}"/>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${not empty iconUrl}">
+						<div class="media-right media-top">
+							<div class="media-image ${iconType}">
+								<a href="${headingUrl}" title="${headingTitle}">
+									<img class="media-object ${iconType}" src="${iconUrl}" alt="${headingTitle}"/>
+								</a>
+								<div class="media-image-default">
+									<fontawesome:icon icon="${iconFallback}"/>
+								</div>
+							</div>
+						</div>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
+
+</jsp:root>

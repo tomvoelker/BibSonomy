@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.services.searcher;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.SystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.logic.query.PostQuery;
@@ -44,6 +46,8 @@ import java.util.List;
  * @author dzo
  * @param <R>
  */
+@Getter
+@Setter
 public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 
 	/**
@@ -77,6 +81,8 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 		this.setFilters(other.getFilters());
 		this.setStartDate(other.getStartDate());
 		this.setEndDate(other.getEndDate());
+		this.setBeforeChangeDate(other.getBeforeChangeDate());
+		this.setAfterChangeDate(other.getAfterChangeDate());
 		this.setOnlyIncludeAuthorsWithoutPersonId(other.isOnlyIncludeAuthorsWithoutPersonId());
 		this.setPersonNames(other.getPersonNames());
 		this.setCollege(other.getCollege());
@@ -108,143 +114,4 @@ public class PostSearchQuery<R extends Resource> extends PostQuery<R> {
 
 	private List<SystemTag> systemTags;
 
-	/**
-	 * @return the requestedRelationNames
-	 */
-	public List<String> getRequestedRelationNames() {
-		return requestedRelationNames;
-	}
-
-	/**
-	 * @param requestedRelationNames the requestedRelationNames to set
-	 */
-	public void setRequestedRelationNames(List<String> requestedRelationNames) {
-		this.requestedRelationNames = requestedRelationNames;
-	}
-
-	/**
-	 * @return the titleSearchTerms
-	 */
-	public String getTitleSearchTerms() {
-		return titleSearchTerms;
-	}
-
-	/**
-	 * @param titleSearchTerms the titleSearchTerms to set
-	 */
-	public void setTitleSearchTerms(String titleSearchTerms) {
-		this.titleSearchTerms = titleSearchTerms;
-	}
-
-	/**
-	 * @return the authorSearchTerms
-	 */
-	public String getAuthorSearchTerms() {
-		return authorSearchTerms;
-	}
-
-	/**
-	 * @param authorSearchTerms the authorSearchTerms to set
-	 */
-	public void setAuthorSearchTerms(String authorSearchTerms) {
-		this.authorSearchTerms = authorSearchTerms;
-	}
-
-	/**
-	 * @return the negatedTags
-	 */
-	public List<String> getNegatedTags() {
-		return negatedTags;
-	}
-
-	/**
-	 * @param negatedTags the negatedTags to set
-	 */
-	public void setNegatedTags(List<String> negatedTags) {
-		this.negatedTags = negatedTags;
-	}
-
-	/**
-	 * @return the year
-	 */
-	public String getYear() {
-		return year;
-	}
-
-	/**
-	 * @param year the year to set
-	 */
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	/**
-	 * @return the firstYear
-	 */
-	public String getFirstYear() {
-		return firstYear;
-	}
-
-	/**
-	 * @param firstYear the firstYear to set
-	 */
-	public void setFirstYear(String firstYear) {
-		this.firstYear = firstYear;
-	}
-
-	/**
-	 * @return the lastYear
-	 */
-	public String getLastYear() {
-		return lastYear;
-	}
-
-	/**
-	 * @param lastYear the lastYear to set
-	 */
-	public void setLastYear(String lastYear) {
-		this.lastYear = lastYear;
-	}
-
-	/**
-	 * @return the entryType
-	 */
-	public String getEntryType() {
-		return entryType;
-	}
-
-	/**
-	 * @param entryType the entryType to set
-	 */
-	public void setEntryType(String entryType) {
-		this.entryType = entryType;
-	}
-
-	/**
-	 * @return the bibtexKey
-	 */
-	public String getBibtexKey() {
-		return bibtexKey;
-	}
-
-	/**
-	 * @param bibtexKey the bibtexKey to set
-	 */
-	public void setBibtexKey(String bibtexKey) {
-		this.bibtexKey = bibtexKey;
-	}
-
-	/**
-	 * @return the systemTags
-	 */
-	public List<SystemTag> getSystemTags() {
-		return systemTags;
-	}
-
-	/**
-	 * @param systemTags the systemTags to set
-	 */
-	public void setSystemTags(List<SystemTag> systemTags) {
-		this.systemTags = systemTags;
-	}
 }

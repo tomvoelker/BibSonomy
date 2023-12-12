@@ -55,7 +55,7 @@ package org.bibsonomy.scraper.url.kde.sciencemag;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -72,7 +72,7 @@ public class ScienceMagScraperTest {
 	 */
 	@Test
 	public void urlTest1Run() {
-		assertScraperResult("http://www.sciencemag.org/content/326/5956/1057", null, ScienceMagScraper.class, "scienceMag/ScienceMagScraperUnitURLTest1.bib");
+		assertScraperResult("https://www.science.org/doi/10.1126/science.326.5956.1057", null, ScienceMagScraper.class, "scienceMag/ScienceMagScraperUnitURLTest1.bib");
 	}
 
 	/**
@@ -80,6 +80,6 @@ public class ScienceMagScraperTest {
 	 */
 	@Test
 	public void urlTest2Run() {
-		assertScraperResult("http://www.sciencemag.org/content/276/5317/1425.full", null, ScienceMagScraper.class, "scienceMag/ScienceMagScraperUnitURLTest2.bib");
+		assertScraperResult("https://www.science.org/doi/10.1126/science.276.5317.1425", null, ScienceMagScraper.class, "scienceMag/ScienceMagScraperUnitURLTest2.bib");
 	}
 }

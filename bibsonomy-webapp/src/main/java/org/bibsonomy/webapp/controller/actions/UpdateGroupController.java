@@ -42,7 +42,9 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
@@ -67,13 +69,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * controller for updating a group
- * 
+ *
  * @author tni
  */
 public class UpdateGroupController implements ValidationAwareController<GroupSettingsPageCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
-
-	private static final String SETTINGS_GROUP_TAB_REDIRECT = "/settings?selTab=3";
 
 	private Errors errors = null;
 
@@ -83,7 +83,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
 	private String projectMail;
-	
+
+	private URLGenerator urlGenerator;
+
 	/**
 	 * the file logic to use
 	 */
@@ -113,15 +115,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		if (!context.isValidCkey()) {
 			this.errors.reject("error.field.valid.ckey");
 		}
-		
-		// FIXME: This should be replaced by a propper error handling
-		String tmpErrorCode = null;
 
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check
 		// for it, either.
 		groupToUpdate = this.logic.getGroupDetails(command.getGroupname(), false);
-		
+
 		if (groupToUpdate == null) {
 			this.errors.rejectValue("groupname", "settings.group.error.nonExistingGroup", new Object[] { command.getGroupname() },
 					"The group {0} does not exist.");
@@ -129,248 +128,322 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		}
 
 		final GroupUpdateOperation operation = command.getOperation();
-		Integer selTab = null;
 		if (present(operation)) {
 			final User loginUser = context.getLoginUser();
 			switch (operation) {
-			case ADD_INVITED: {
-				// sent an invite
-				final String username = command.getUsername();
-				if (present(username) && !username.equals(groupToUpdate.getName())) {
-					// get user details with an admin logic to get the mail
-					// address
-					final User invitedUser = this.adminLogic.getUserDetails(username);
-					if (UserUtils.isExistingUser(invitedUser)) {
-						final GroupMembership membership = groupToUpdate.getGroupMembershipForUser(invitedUser.getName());
-						if (!present(membership)) {
-							final GroupMembership ms = new GroupMembership(invitedUser, null, false);
-							try {
-								// since now only one user can be invited to a
-								// group at once
-								if (invitedUser.isSpammer()) {
-									this.errors.rejectValue("username", "group.member.invite.spammer", new Object[] { username, this.projectMail }, "You cannot invite user \"" + username + "\" to this group. The user is currently marked as spammer. Please contact the system administrator.");
-								} else {
-									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
-								}
-							} catch (final Exception ex) {
-								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
-								// if a user can't be added to a group, this
-								// exception is thrown
-								this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
-										"The User {0} couldn't be invited to the Group {1}.");
-							}
-						} else {
-							// TODO: handle case of already invited user
-							tmpErrorCode = "settings.group.error.alreadyInvited";
-						}
-					} else {
-						// TODO: handle case of non existing user!
-						tmpErrorCode = "settings.group.error.userDoesNotExist";
-					}
+				case UPDATE_SETTINGS: {
+					return this.updateSettings(command, groupToUpdate);
 				}
-				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
-				break;
-			}
-			case ADD_MEMBER: {
-				/*
-				 * add a new user to the group
-				 * this handles a join request by the user
-				 */
-				final String username = command.getUsername();
-				if (present(username) && !username.equals(groupToUpdate.getName())) {
-					final GroupMembership ms = new GroupMembership(new User(username), null, command.isUserSharedDocuments());
-					try {
-						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
-					} catch (final Exception ex) {
-						log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
-						// if a user can't be added to a group, this exception
-						// is thrown
-						this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
-								"The user {0} couldn't be added to the group {1}.");
-					}
+				case UPDATE_GROUP_REPORTING_SETTINGS: {
+					return this.updateGroupReportingSettings(command, groupToUpdate);
 				}
-				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
-				break;
-			}
-			case REMOVE_MEMBER: {
-				/*
-				 * remove the user from the group
-				 */
-				final String username = command.getUsername();
-				if (present(username) && !username.equals(groupToUpdate.getName())) {
-					final GroupMembership ms = new GroupMembership(new User(username), null, false);
-					try {
-						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_MEMBER, ms);
-
-						// if we removed ourselves from the group, return the
-						// homepage.
-						if (loginUser.getName().equals(username)) {
-							return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
-						}
-					} catch (final Exception ex) {
-						log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);
-						// if a user can't be added to a group, this exception
-						// is thrown
-						this.errors.reject("settings.group.error.removeUserFromGroupFailed", new Object[] { username, groupToUpdate },
-								"The User {0} couldn't be removed from the Group {1}.");
-					}
+				case ADD_INVITED: {
+					return this.addInvited(command, groupToUpdate, loginUser);
 				}
-				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
-				break;
-			}
-			case UPDATE_GROUP_REPORTING_SETTINGS: {
-				/*
-				 * update the reporting settings
-				 */
-				// the group to update
-				groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
-				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
-				break;
-			}
-			case UPDATE_SETTINGS: {
-				/*
-				 * the group properties to update
-				 */
-				final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
-				final boolean sharedDocs = command.getSharedDocuments() == 1;
-				final boolean allowJoin = command.getAllowJoin();
-				final String realname = command.getRealname();
-				final URL homepage = command.getHomepage();
-				final String description = command.getDescription();
-
-				final User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
-				groupUserToUpdate.setEmail("nomail"); // TODO: adapt to the
-														// notion that admins
-														// should receive mails.
-				// group picture
-				updateGroupPicture(groupUserToUpdate, command);
-				
-				// the group to update
-				try {
-					groupToUpdate.setPrivlevel(priv);
-					groupToUpdate.setSharedDocuments(sharedDocs);
-					groupToUpdate.setAllowJoin(allowJoin);
-					groupToUpdate.setDescription(description);
-
-					if (present(realname)) {
-						groupUserToUpdate.setRealname(realname);
-					}
-					if (present(homepage)) {
-						groupUserToUpdate.setHomepage(homepage);
-					}
-
-					this.logic.updateUser(groupUserToUpdate, UserUpdateOperation.UPDATE_CORE);
-					this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);
-				} catch (final Exception ex) {
-					log.error("error while updating settings for group '" + groupToUpdate + "'", ex);
-					// TODO: what exceptions can be thrown?!
+				case REMOVE_INVITED: {
+					return this.removeInvited(command, groupToUpdate, loginUser);
 				}
-				break;
-			}
-			case DECLINE_JOIN_REQUEST: {
-				final String username = command.getUsername();
-				if (present(username)) {
-					// the group to update
-					final User declineUser = this.adminLogic.getUserDetails(username);
-					final GroupMembership ms = new GroupMembership(declineUser, null, false);
-					try {
-						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
-						// TODO: I18N
-						this.mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), null, this.requestLogic.getLocale());
-					} catch (final Exception ex) {
-						log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
-						this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[] { username },
-								"The request of User {0} couldn't be removed.");
-					}
+				case ADD_MEMBER: {
+					return this.addMember(command, groupToUpdate);
 				}
-				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
-				break;
-			}
-			case REMOVE_INVITED: {
-				final String username = command.getUsername();
-				if (present(username)) {
-					final GroupMembership ms = new GroupMembership(new User(username), null, false);
-					try {
-						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
-						if (loginUser.getName().equals(username)) {
-							return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
-						}
-						selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
-					} catch (final Exception ex) {
-						log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
-						this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[] { username },
-								"The invite of User {0} couldn't be removed.");
-					}
+				case REMOVE_MEMBER: {
+					return this.removeMember(command, groupToUpdate, loginUser);
 				}
-				break;
-			}
-			case UPDATE_GROUPROLE: {
-				final String username = command.getUsername();
-				if (!present(command.getGroup())) {
-					this.errors.reject("settings.group.error.changeGroupRoleFailed", username);
+				case DECLINE_JOIN_REQUEST: {
+                    return this.declineJoinRequest(command, groupToUpdate);
 				}
-				if (!this.errors.hasErrors()) {
-					final GroupMembership ms = new GroupMembership(new User(username), command.getGroupRole(), false);
-					try {
-						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUPROLE, ms);
-					} catch (final Exception ex) {
-						log.error("error while changing the the role of user '" + username + "' from group '" + groupToUpdate + "'", ex);
-					}
+				case UPDATE_GROUPROLE: {
+                    return this.updateGroupRole(command, groupToUpdate);
 				}
-				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
-				break;
-			}
-			case REGENERATE_API_KEY: {
-				final User groupUser = this.logic.getUserDetails(groupToUpdate.getName());
-				this.logic.updateUser(groupUser, UserUpdateOperation.UPDATE_API);
-				log.debug("api key of groupuser" + groupUser.getName() + " has been changed successfully");
-				break;
-			}
-			default:
-				this.errors.reject("error.invalid_parameter");
-				break;
-			}
+				case DELETE_PRESET_TAG: {
+					return this.deletePresetTag(command, groupToUpdate);
+				}
+				case UPDATE_PRESET_TAG: {
+					return this.updatePresetTag(command, groupToUpdate);
+				}
+				case REGENERATE_API_KEY: {
+					return this.regenerateApiKey(command, groupToUpdate);
+				}
+				default:
+					this.errors.reject("error.invalid_parameter");
+					break;
+				}
 		} else {
 			this.errors.reject("error.invalid_parameter");
 		}
 
-		// success: go back where you've come from
-		// TODO: inform the user about the success!
-		// TODO: use url generator
-		String settingsPage = "/settings/group/" + groupToUpdate.getName();
-		String divider = "?";
-		if (present(selTab)) {
-			settingsPage += divider + "selTab=" + selTab;
-			divider = "&";
-		}
-		if (present(tmpErrorCode)) {
-			settingsPage += divider + "errorMessage=" + tmpErrorCode;
-		}
-		
-		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(settingsPage);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
+	}
+
+	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  String redirectUrl) {
+		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(redirectUrl);
 		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
 		extendedRedirectViewWithAttributes.addAttribute("lastOperation", operation);
 		return extendedRedirectViewWithAttributes;
+	}
+
+	private ExtendedRedirectView redirectView(Group groupToUpdate, GroupUpdateOperation operation,  Integer selTab) {
+		// success: go back where you've come from
+		String redirectUrl = this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), selTab);
+		return this.redirectView(groupToUpdate, operation, redirectUrl);
+	}
+
+	private ExtendedRedirectView updateSettings(GroupSettingsPageCommand command, Group groupToUpdate) {
+		/*
+		 * the group properties to update
+		 */
+		final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
+		final boolean sharedDocs = command.getSharedDocuments() == 1;
+		final boolean allowJoin = command.isAllowJoin();
+		final String realname = command.getRealname();
+		final URL homepage = command.getHomepage();
+		final String description = command.getDescription();
+
+		final User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
+		// TODO: adapt to the notion that admins should receive mails.
+		groupUserToUpdate.setEmail("nomail");
+		// group picture
+		updateGroupPicture(groupUserToUpdate, command);
+
+		// the group to update
+		try {
+			groupToUpdate.setPrivlevel(priv);
+			groupToUpdate.setSharedDocuments(sharedDocs);
+			groupToUpdate.setAllowJoin(allowJoin);
+			groupToUpdate.setDescription(description);
+
+			if (present(realname)) {
+				groupUserToUpdate.setRealname(realname);
+			}
+			if (present(homepage)) {
+				groupUserToUpdate.setHomepage(homepage);
+			}
+
+			this.logic.updateUser(groupUserToUpdate, UserUpdateOperation.UPDATE_CORE);
+			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS, null);
+		} catch (final Exception ex) {
+			log.error("error while updating settings for group '" + groupToUpdate + "'", ex);
+			// TODO: what exceptions can be thrown?!
+		}
+
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
 	}
 
 	private void updateGroupPicture(final User groupUserToUpdate, GroupSettingsPageCommand command) {
 		final MultipartFile file = command.getPictureFile();
 		/*
 		 * If a picture file is given -> upload
-		 * Else, if delete requested -> delete 
+		 * Else, if delete requested -> delete
 		 */
 		if (present(file) && file.getSize() > 0) {
 			try {
 				this.fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
 			} catch (final Exception ex) {
+				this.errors.reject("settings.picture.change.error",  new Object[]{ex.getMessage()}, "error while writing group picture");
 				log.error("error while writing group picture", ex);
 			}
-		} else if (command.getDeletePicture()) {
+		} else if (command.isDeletePicture()) {
 			this.fileLogic.deleteProfilePictureForUser(groupUserToUpdate.getName());
 		}
 	}
-	
+
+	private ExtendedRedirectView updateGroupReportingSettings(GroupSettingsPageCommand command, Group groupToUpdate) {
+		/*
+		 * update the reporting settings
+		 */
+		// the group to update
+		groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
+		this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS, null);
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
+	}
+
+	private ExtendedRedirectView addInvited(GroupSettingsPageCommand command, Group groupToUpdate, User loginUser) {
+		// sent an invite
+		final String username = command.getUsername();
+		if (present(username) && !username.equals(groupToUpdate.getName())) {
+			// get user details with an admin logic to get the mail address
+			final User invitedUser = this.adminLogic.getUserDetails(username);
+			if (UserUtils.isExistingUser(invitedUser)) {
+				final GroupMembership membership = groupToUpdate.getGroupMembershipForUser(invitedUser.getName());
+				if (!present(membership)) {
+					final GroupMembership ms = new GroupMembership(invitedUser, null, false);
+					try {
+						// since now only one user can be invited to a
+						// group at once
+						if (invitedUser.isSpammer()) {
+							this.errors.rejectValue("username", "group.member.invite.spammer", new Object[] { username, this.projectMail }, "You cannot invite user \"" + username + "\" to this group. The user is currently marked as spammer. Please contact the system administrator.");
+						} else {
+							this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+							this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+						}
+					} catch (final Exception ex) {
+						log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
+						// if a user can't be added to a group, this
+						// exception is thrown
+						this.errors.rejectValue("username", "settings.group.error.inviteUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
+								"The User {0} couldn't be invited to the Group {1}.");
+					}
+				} else {
+					this.errors.reject("settings.group.error.alreadyInvited");
+				}
+			} else {
+				this.errors.reject("settings.group.error.userDoesNotExist");
+			}
+
+
+			return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+		}
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+	}
+
+	private ExtendedRedirectView removeInvited(GroupSettingsPageCommand command, Group groupToUpdate, User loginUser) {
+		final String username = command.getUsername();
+		if (present(username)) {
+			final GroupMembership ms = new GroupMembership(new User(username), null, false);
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_INVITED, ms);
+				if (loginUser.getName().equals(username)) {
+					return new ExtendedRedirectView(this.urlGenerator.getGroupSettingsUrlByGroupName(groupToUpdate.getName(), null));
+				}
+			} catch (final Exception ex) {
+				log.error("error while removing the invite of user '" + username + "' from group '" + groupToUpdate + "'", ex);
+				this.errors.rejectValue("username", "settings.group.error.removeInviteFailed", new Object[] { username },
+						"The invite of User {0} couldn't be removed.");
+			}
+		}
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+	}
+
+	private ExtendedRedirectView addMember(GroupSettingsPageCommand command, Group groupToUpdate) {
+		/*
+		 * add a new user to the group
+		 * this handles a join request by the user
+		 */
+		final String username = command.getUsername();
+		if (present(username) && !username.equals(groupToUpdate.getName())) {
+			final GroupMembership ms = new GroupMembership(new User(username), null, command.isUserSharedDocuments());
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
+			} catch (final Exception ex) {
+				log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
+				// if a user can't be added to a group, this exception
+				// is thrown
+				this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
+						"The user {0} couldn't be added to the group {1}.");
+			}
+		}
+
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+	}
+
+	private ExtendedRedirectView removeMember(GroupSettingsPageCommand command, Group groupToUpdate, User loginUser) {
+		/*
+		 * remove the user from the group
+		 */
+		final String username = command.getUsername();
+		if (present(username) && !username.equals(groupToUpdate.getName())) {
+			final GroupMembership ms = new GroupMembership(new User(username), null, false);
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_MEMBER, ms);
+
+				// if we removed ourselves from the group, return the homepage.
+				if (loginUser.getName().equals(username)) {
+					return this.redirectView(groupToUpdate, command.getOperation(), this.urlGenerator.getProjectHome());
+				}
+			} catch (final Exception ex) {
+				log.error("error while removing user '" + username + "' from group '" + groupToUpdate + "'", ex);
+				// if a user can't be added to a group, this exception
+				// is thrown
+				this.errors.reject("settings.group.error.removeUserFromGroupFailed", new Object[] { username, groupToUpdate },
+						"The User {0} couldn't be removed from the Group {1}.");
+			}
+		}
+
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+	}
+
+	private ExtendedRedirectView declineJoinRequest(GroupSettingsPageCommand command, Group groupToUpdate) {
+		final String username = command.getUsername();
+		if (present(username)) {
+			// the group to update
+			final User declineUser = this.adminLogic.getUserDetails(username);
+			final GroupMembership ms = new GroupMembership(declineUser, null, false);
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DECLINE_JOIN_REQUEST, ms);
+				this.mailUtils.sendJoinGroupDenied(groupToUpdate.getName(), username, declineUser.getEmail(), null, this.requestLogic.getLocale());
+			} catch (final Exception ex) {
+				log.error("error while declining the join request of user '" + username + "' from group '" + groupToUpdate + "'", ex);
+				this.errors.rejectValue("username", "settings.group.error.declineJoinRequestFailed", new Object[] { username },
+						"The request of User {0} couldn't be removed.");
+			}
+		}
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+	}
+
+	private ExtendedRedirectView updateGroupRole(GroupSettingsPageCommand command, Group groupToUpdate) {
+		final String username = command.getUsername();
+		if (!present(command.getGroup())) {
+			this.errors.reject("settings.group.error.changeGroupRoleFailed", username);
+		}
+		if (!this.errors.hasErrors()) {
+			final GroupMembership ms = new GroupMembership(new User(username), command.getGroupRole(), false);
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUPROLE, ms);
+			} catch (final Exception ex) {
+				log.error("error while changing the the role of user '" + username + "' from group '" + groupToUpdate + "'", ex);
+			}
+		}
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.MEMBER_LIST_IDX);
+	}
+
+	private ExtendedRedirectView deletePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
+		final String tagName = command.getPresetTagName();
+
+		if(!present(tagName)) {
+			this.errors.reject("settings.group.presetTags.error.noTag");
+		} else {
+			if (GroupUtils.deletePresetTag(groupToUpdate, tagName)) {
+				try {
+					this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.DELETE_PRESET_TAG, null);
+				} catch (final Exception ex) {
+					log.error("error while deleting the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
+					this.errors.reject("settings.group.presetTags.error.updateFailed", tagName);
+				}
+			} else {
+				this.errors.reject("settings.group.presetTags.error.notFound", tagName);
+			}
+		}
+
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX);
+	}
+
+	private ExtendedRedirectView updatePresetTag(GroupSettingsPageCommand command, Group groupToUpdate) {
+		final String tagName = command.getPresetTagName();
+		String cleanedTagName = tagName.replaceAll("\\s+","");
+		final String tagDescription = command.getPresetTagDescription();
+
+		if(!present(cleanedTagName)) {
+			this.errors.reject("settings.group.presetTags.error.noTag");
+		} else {
+			try {
+				GroupUtils.addOrUpdatePresetTag(groupToUpdate, cleanedTagName, tagDescription);
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_PRESET_TAG, null);
+			} catch (final Exception ex) {
+				log.error("error while adding/updating the preset tag '" + tagName + "' for group '" + groupToUpdate + "'", ex);
+				this.errors.reject("settings.group.presetTags.error.updateFailed", tagName);
+			}
+		}
+
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.TAG_LIST_IDX);
+	}
+
+    private ExtendedRedirectView regenerateApiKey(GroupSettingsPageCommand command, Group groupToUpdate) {
+        final User groupUser = this.logic.getUserDetails(groupToUpdate.getName());
+        this.logic.updateUser(groupUser, UserUpdateOperation.UPDATE_API);
+        log.debug("api key of groupuser" + groupUser.getName() + " has been changed successfully");
+		return this.redirectView(groupToUpdate, command.getOperation(), GroupSettingsPageCommand.GROUP_SETTINGS_IDX);
+    }
+
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -414,6 +487,10 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		this.requestLogic = requestLogic;
 	}
 
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+
 	@Override
 	public boolean isValidationRequired(final GroupSettingsPageCommand command) {
 		// FIXME: why?
@@ -439,7 +516,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			}
 		};
 	}
-	
+
 	/**
 	 * @param fileLogic the fileLogic to set
 	 */

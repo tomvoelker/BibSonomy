@@ -9,7 +9,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
@@ -43,9 +42,6 @@
 			| page content
 			+-->
 		<jsp:attribute name="tabcontent">
-			<!-- display potential errors -->
-			<errors:global />
-			
 			<settings:profile command="${command}"/>
 			
 			<settings:settings command="${command}"/>

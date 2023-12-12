@@ -31,16 +31,19 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.AdditionalKey;
 import org.bibsonomy.util.StringUtils;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * util methods for {@link Person}
@@ -48,7 +51,6 @@ import java.util.List;
  * @author dzo
  */
 public final class PersonUtils {
-	private PersonUtils() {}
 	
 	/**
 	 * generates the base of person identifier
@@ -296,5 +298,28 @@ public final class PersonUtils {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Converts a list of goldstandard publication posts to their resource person relation equivalant.
+	 *
+	 * @param posts		the list of goldstandard publication posts
+	 * @param person	the person related to all the posts
+	 * @return			the list of resource person relations
+	 */
+	public static List<ResourcePersonRelation> convertToRelations(final List<Post<GoldStandardPublication>> posts, final Person person) {
+		List<ResourcePersonRelation> relations = new ArrayList<>();
+
+		for (Post<GoldStandardPublication> post : posts) {
+			for (ResourcePersonRelation relation : post.getResourcePersonRelations()) {
+				if (relation.getPerson().getPersonId().equals(person.getPersonId())) {
+					relation.setPost(post);
+					relations.add(relation);
+					break;
+				}
+			}
+		}
+
+		return relations;
 	}
 }

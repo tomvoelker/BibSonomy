@@ -11,6 +11,7 @@
 	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
@@ -31,217 +32,208 @@
 		<c:set var="showFolkSonomyLinks" value="${not empty loginUser.name}" />
 	</c:if>
 
-	<c:set var="itemType" value="http://schema.org/WebPage"/>
-	<div id="goldstandard">
-
-		<!--+
-			| HEADER
-			+-->
-		<div class="content-header row" id="info">
-
-			<div class="col-md-10">
-
-				<div class="content-header-entrytype">
-					<div class="content-header-entrytype-badge">
-						<fmt:message key="bookmark" />
-					</div>
-
-					<c:if test="${not empty postOfLoggedInUser}">
-							<span class="community-info warning">
-								<fontawsome:icon icon="warning" /><c:out value=" " />
-								<fmt:message key="community.warning.view" /><c:out value=" " />
-
-								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.bookmark.edit" /></a>
-							</span>
-					</c:if>
-				</div>
-
-				<h1>
-					<span itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span>
-				</h1>
-
-				<h2>
-					<a href="${fn:escapeXml(goldstandard.url)}" ref="nofollow" itemprop="url">
-						<c:out value="${mtl:cleanBibtex(goldstandard.url)}" />
-					</a>
-				</h2>
-
-				<c:if test="${command.context.userLoggedIn}">
-					<div class="content-header-buttons">
+	<div class="goldstandard-details">
+		<c:set var="itemType" value="http://schema.org/WebPage"/>
+		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
+			<!--+
+				| HEADER
+				+-->
+			<div class="row" id="info" data-interhash="${goldstandard.interHash}">
+				<div class="col-md-10">
+					<div class="content-header-entrytype">
 						<c:if test="${post.approved}">
 							<fmt:message key="goldStandard.approved.title" var="approved"/>
-							<div class="btn btn-success community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
-								<span class="fa fa-check-circle" ><!-- keep me --></span>
-							</div>
+							<span class="community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}">
+									<fontawesome:icon icon="check-circle" />
+								</span>
 						</c:if>
-
-						<buttons:communityPostActionButtons
-								post="${post}"
-								resourceType="bookmark"
-								communityPostExists="${isRealGoldstandard}"
-								postOfLoggedInUser="${postOfLoggedInUser}"
-						/>
+						<div class="content-header-entrytype-badge">
+							<fmt:message key="bookmark" />
+						</div>
 					</div>
-				</c:if>
 
-			</div>
+					<h1 itemprop="name">
+						<c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+					</h1>
 
-			<div class="col-md-2">
-				<div class="content-header-metric-buttons">
-					<!-- Addition Info Badges -->
-
-					<!-- In collection of users -->
-					<c:if test="${showFolkSonomyLinks}">
-						<fmt:message key="goldStandard.users" var="inCollectionOf"/>
-						<a class="content-header-additional-info-item btn btn-default hidden-xs"
-						   data-toggle="tooltip"
-						   data-placement="bottom"
-						   title="${fn:escapeXml(inCollectionOf)}"
-						   href="#goldStandardPublicationUsers"
-						>
-							<span class="content-header-additional-info-count"><c:out value="${command.relatedUserCommand.relatedUsers.size()}" /></span>
-
-							<span class="content-header-additional-info-description"><fmt:message key="users" /></span>
+					<h2>
+						<a href="${fn:escapeXml(goldstandard.url)}" ref="nofollow" itemprop="url">
+							<c:out value="${mtl:cleanBibtex(goldstandard.url)}" />
 						</a>
-					</c:if>
-
-					<!-- Tag count -->
-					<c:if test="${showFolkSonomyLinks}">
-						<fmt:message key="tags.of_resource" var="tagsTotal"/>
-						<a class="content-header-additional-info-item btn btn-default hidden-xs"
-						   data-toggle="tooltip"
-						   data-placement="bottom"
-						   title="${fn:escapeXml(tagsTotal)}"
-						   href="#goldStandardPublicationTags"
-						>
-							<span class="content-header-additional-info-count"><c:out value="${command.tagcloud.tags.size()}" /></span>
-
-							<span class="content-header-additional-info-description"><fmt:message key="tags" /></span>
-						</a>
-					</c:if>
+					</h2>
 				</div>
-			</div>
 
-			<div class="clearfix"><!-- KEEP ME --></div>
-
-		</div>
-
-		<!--+
-			| CONTENT
-			+-->
-		<div class="goldstandard-content">
-
-			<div class="row">
-				<div class="col-md-9 col-sm-12 col-xs-12 content">
-
-					<c:set var="description" value="${post.description}" />
-					<c:if test="${not empty description}">
-						<h3>
-							<span class="fa fa-align-justify"><!-- keep me --></span>
-							<c:out value=" "/>
-							<fmt:message key="post.resource.description.cap"/>
-						</h3>
-
-						<div class="meta" itemprop="description">
-							${mtl:markdownToHtml(description)}
-						</div>
-					</c:if>
-
-					<c:set var="imgUrl" value="${properties['project.img']}" />
-					<c:if test="${not empty imgUrl}">
-						<h3>
-							<span class="fa fa-desktop"><!-- keep me --></span>
-							<c:out value=" "/>
-							<fmt:message key="preview.cap"/>
-						</h3>
-
-						<div class="preview row">
-							<div class="col-md-12 text-center">
-								<a href="${fn:escapeXml(goldstandard.url)}" rel="nofollow"><img itemprop="image" src="${imgUrl}/preview/bookmark/${goldstandard.intraHash}?preview=LARGE" /></a>
-							</div>
-						</div>
-					</c:if>
-
-					<!-- tags -->
+				<div class="col-md-2 content-header-metric-buttons hidden-xs">
 					<c:if test="${showFolkSonomyLinks}">
-						<h3 id="goldStandardPublicationTags">
-							<span class="fa fa-tag"><!-- keep me --></span>
-							<c:out value=" "/>
-
-							<fmt:message key="publications.tags.headline"/>
-							<c:set var="tagsString" value="" />
-							<c:if test="${not empty postOfLoggedInUser.tags}">
-								<small>
-									<c:out value=" " /><fmt:message key="community.tags.myown"/>
-								</small>
-
-								<c:set var="tagsString" value="${mtl:toTagString(postOfLoggedInUser.tags)}" />
-							</c:if>
-						</h3>
-
-						<c:set var="tagSizeMode" value="detail" />
-						<c:if test="${command.tagcloud.style.id == 0}">
-							<c:set var="tagSizeMode" value="user" />
-						</c:if>
-
-						<tags:cloud
-								requPath="tag"
-								cmd="${command.tagcloud}"
-								tagSizeMode="${tagSizeMode}"
-								showTooltips="${command.context.loginUser.settings.tagboxTooltip}"
-								highlightTags="${tagsString}"
-						/>
-
-					</c:if>
-
-					<!-- users that have this resource in their collection -->
-					<c:if test="${showFolkSonomyLinks}">
-						<h3 id="goldStandardPublicationUsers">
-							<span class="fa fa-user"><!-- keep me --></span>
-							<c:out value=" "/>
-
-							<fmt:message key="goldstandard.resource.relatedUsers"/>
-						</h3>
-
-						<common:relatedUsers
-								userList="${command.relatedUserCommand.relatedUsers}"
-								showHeadline="false"
-						/>
-					</c:if>
-
-					<!--+
-                        | discussion
-                        +-->
-					<c:if test="${showFolkSonomyLinks}">
-						<c:set var="collapseClass" value="collapse" />
-						<c:set var="collapseExpanded" value="false" />
-						<c:if test="${not empty goldstandard.discussionItems}">
-							<c:set var="collapseClass" value="collapse in" />
-							<c:set var="collapseExpanded" value="true" />
-						</c:if>
-						<h3>
-							<span class="fa fa-comments"><!-- keep me --></span>
-							<c:out value=" "/>
-							<fmt:message key="publications.discussion.headline"/>
-
-							<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
-								<fmt:message key="show" />
-								/
-								<fmt:message key="hide" />
+						<div class="metric-info">
+							<fmt:message key="goldStandard.users" var="inCollectionOf"/>
+							<a class="content-header-additional-info-item hidden-xs"
+							   data-toggle="tooltip"
+							   data-placement="bottom"
+							   title="${fn:escapeXml(inCollectionOf)}"
+							   href="#goldStandardPublicationUsers"
+							>
+								<fontawesome:icon icon="users" />
+								<span class="badge"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)}" /></span>
 							</a>
-						</h3>
-
-						<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
-							<!-- discussion -->
-							<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+						</div>
+						<div class="metric-info">
+							<fmt:message key="tags.of_resource" var="tagsTotal"/>
+							<a class="content-header-additional-info-item hidden-xs"
+							   data-toggle="tooltip"
+							   data-placement="bottom"
+							   title="${fn:escapeXml(tagsTotal)}"
+							   href="#goldStandardPublicationTags"
+							>
+								<fontawesome:icon icon="tags" />
+								<span class="badge"><c:out value="${fn:length(command.tagcloud.tags)}" /></span>
+							</a>
 						</div>
 					</c:if>
-
 				</div>
 			</div>
+
+			<div class="goldstandard-actions row">
+				<div class="col-md-12 content-header-buttons">
+					<c:if test="${command.context.userLoggedIn}">
+						<div class="content-header-buttons">
+							<buttons:communityPostActionButtons
+									post="${post}"
+									resourceType="bookmark"
+									communityPostExists="${isRealGoldstandard}"
+									postOfLoggedInUser="${postOfLoggedInUser}"
+							/>
+
+							<c:if test="${not empty postOfLoggedInUser}">
+								<span class="community-info warning">
+									<fontawsome:icon icon="warning" /><c:out value=" " />
+									<fmt:message key="community.warning.view" /><c:out value=" " />
+
+									<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.bookmark.edit" /></a>
+								</span>
+							</c:if>
+						</div>
+					</c:if>
+				</div>
+			</div>
+
+			<hr />
+
+			<!--+
+				| CONTENT
+				+-->
+			<div class="goldstandard-content">
+
+				<div class="row">
+					<div class="col-md-9 col-sm-12 col-xs-12 content">
+
+						<c:set var="description" value="${post.description}" />
+						<c:if test="${not empty description}">
+							<h3>
+								<span class="fa fa-align-justify"><!-- keep me --></span>
+								<c:out value=" "/>
+								<fmt:message key="post.resource.description.cap"/>
+							</h3>
+
+							<div class="meta" itemprop="description">
+								${mtl:markdownToHtml(description)}
+							</div>
+						</c:if>
+
+						<c:set var="imgUrl" value="${properties['project.img']}" />
+						<c:if test="${not empty imgUrl}">
+							<h3>
+								<span class="fa fa-desktop"><!-- keep me --></span>
+								<c:out value=" "/>
+								<fmt:message key="preview.cap"/>
+							</h3>
+
+							<div class="preview row">
+								<div class="col-md-12 text-center">
+									<a href="${fn:escapeXml(goldstandard.url)}" rel="nofollow"><img itemprop="image" src="${imgUrl}/preview/bookmark/${goldstandard.intraHash}?preview=LARGE" /></a>
+								</div>
+							</div>
+						</c:if>
+
+						<!-- tags -->
+						<c:if test="${showFolkSonomyLinks}">
+							<h3 id="goldStandardPublicationTags">
+								<span class="fa fa-tag"><!-- keep me --></span>
+								<c:out value=" "/>
+
+								<fmt:message key="publications.tags.headline"/>
+								<c:set var="tagsString" value="" />
+								<c:if test="${not empty postOfLoggedInUser.tags}">
+									<small>
+										<c:out value=" " /><fmt:message key="community.tags.myown"/>
+									</small>
+
+									<c:set var="tagsString" value="${mtl:toTagString(postOfLoggedInUser.tags)}" />
+								</c:if>
+							</h3>
+
+							<c:set var="tagSizeMode" value="detail" />
+							<c:if test="${command.tagcloud.style.id == 0}">
+								<c:set var="tagSizeMode" value="user" />
+							</c:if>
+
+							<tags:cloud
+									requPath="tag"
+									cmd="${command.tagcloud}"
+									tagSizeMode="${tagSizeMode}"
+									showTooltips="${command.context.loginUser.settings.tagboxTooltip}"
+									highlightTags="${tagsString}"
+							/>
+
+						</c:if>
+
+						<!-- users that have this resource in their collection -->
+						<c:if test="${showFolkSonomyLinks}">
+							<h3 id="goldStandardPublicationUsers">
+								<span class="fa fa-user"><!-- keep me --></span>
+								<c:out value=" "/>
+
+								<fmt:message key="goldstandard.resource.relatedUsers"/>
+							</h3>
+
+							<common:relatedUsers
+									userList="${command.relatedUserCommand.relatedUsers}"
+									showHeadline="false"
+							/>
+						</c:if>
+
+						<!--+
+							| discussion
+							+-->
+						<c:if test="${showFolkSonomyLinks}">
+							<c:set var="collapseClass" value="collapse" />
+							<c:set var="collapseExpanded" value="false" />
+							<c:if test="${not empty goldstandard.discussionItems}">
+								<c:set var="collapseClass" value="collapse in" />
+								<c:set var="collapseExpanded" value="true" />
+							</c:if>
+							<h3>
+								<span class="fa fa-comments"><!-- keep me --></span>
+								<c:out value=" "/>
+								<fmt:message key="publications.discussion.headline"/>
+
+								<a class="discussion-toggle-link btn-primary badge" data-toggle="collapse" href="#discussion-section" role="button" aria-expanded="${collapseExpanded}" aria-controls="discussion-section">
+									<fmt:message key="show" />
+									/
+									<fmt:message key="hide" />
+								</a>
+							</h3>
+
+							<div class="${collapseClass}" id="discussion-section" aria-expanded="${collapseExpanded}">
+								<!-- discussion -->
+								<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+							</div>
+						</c:if>
+
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
-
-
-
 </jsp:root>

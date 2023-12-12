@@ -29,6 +29,9 @@
  */
 package org.bibsonomy.model.user.settings;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -36,6 +39,8 @@ import java.io.Serializable;
  *
  * @author jil
  */
+@Getter
+@Setter
 public class LayoutSettings implements Serializable {
 	private static final long serialVersionUID = 4543802036448366427L;
 
@@ -43,19 +48,5 @@ public class LayoutSettings implements Serializable {
 	 * are advanced buttons & ui options hidden from the user?
 	 */
 	private boolean simpleInterface = true;
-
-	/**
-	 * @return the simpleInterface
-	 */
-	public boolean isSimpleInterface() {
-		return this.simpleInterface;
-	}
-
-	/**
-	 * @param simpleInterface the simpleInterface to set
-	 */
-	public void setSimpleInterface(final boolean simpleInterface) {
-		this.simpleInterface = simpleInterface;
-	}
 
 }

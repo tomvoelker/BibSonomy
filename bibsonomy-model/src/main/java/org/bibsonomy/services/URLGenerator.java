@@ -112,8 +112,10 @@ public class URLGenerator {
 	public  static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
+	private static final String CV_PREFIX = "cv";
 	private static final String DOCUMENT_PREFIX = "documents";
 	private static final String DISAMBIGUATION_PREFIX = "person";
+	private static final String EXPLORE_PREFIX = "explore";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GOLDSTANDARD_BOOKMARK_PREFIX = "goldstandardbookmark";
@@ -125,6 +127,7 @@ public class URLGenerator {
 	private static final String PROJECTS = "projects";
 	private static final String PROJECT_PREFIX = "project";
 	private static final String LOGIN_PREFIX = "login";
+	private static final String LOGOUT_PREFIX = "logout";
 	private static final String LAYOUT_PREFIX = "layout";
 	private static final String ENDNOTE_PREFIX = "endnote";
 	private static final String MSWORD_PREFIX = "msofficexml";
@@ -150,7 +153,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
 	private static final String USER_RELATION = "handleUserRelation";
-  private static final String SCRAPER_INFO = "scraperinfo";
+  	private static final String SCRAPER_INFO = "scraperinfo";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -522,7 +525,7 @@ public class URLGenerator {
 	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
 		return "edit" + StringUtils.capitalizeWord(getResourceNameForEditForm(resourceClass));
 	}
-	
+
 	/**
 	 * @param resourceClass
 	 * @return
@@ -716,11 +719,14 @@ public class URLGenerator {
 	 * @return the group settings url for the specified group
 	 */
 	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
-		String url = this.projectHome + "settings" + "/" + GROUP_PREFIX + "/" + UrlUtils.encodePathSegment(groupName);
+		final UrlBuilder builder = new UrlBuilder(this.projectHome)
+				.addPathElement(SETTINGS_PREFIX)
+				.addPathElement(GROUP_PREFIX)
+				.addPathElement(UrlUtils.encodePathSegment(groupName));
 		if (present(selectedTab)) {
-			url += "?selTab=" + selectedTab.intValue();
+			builder.addParameter("selTab", selectedTab.toString());
 		}
-		return this.getUrl(url);
+		return this.getUrl(builder.toString());
 	}
 
 	/**
@@ -734,6 +740,34 @@ public class URLGenerator {
 	public String getGroupUrlByGroupNameAndTagName(final String groupName, final String tagName) {
 		final String url = this.getGroupUrlString(groupName) + SLASH + UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the group's CV page
+	 * @param groupName the group name
+	 * @return URL to group's CV page
+	 */
+	public String getCVUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(CV_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * Constructs the URL for the group's explore page
+	 * @param groupName the group name
+	 * @return URL to group's explore page
+	 */
+	public String getExploreUrlByGroup(final String groupName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(EXPLORE_PREFIX);
+		builder.addPathElement(GROUP_PREFIX);
+		builder.addPathElement(groupName);
+
+		return this.getUrl(builder.asString());
 	}
 
 	/**
@@ -836,6 +870,16 @@ public class URLGenerator {
 	 */
 	public String getLoginUrl() {
 		String url = this.projectHome + LOGIN_PREFIX;
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the logout page
+	 *
+	 * @return URL pointing to the logout page
+	 */
+	public String getLogoutUrl() {
+		String url = this.projectHome + LOGOUT_PREFIX;
 		return this.getUrl(url);
 	}
 
@@ -1032,12 +1076,7 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
-	/**
-	 * @return the projectHome
-	 */
-	public String getProjectHome() {
-		return this.projectHome;
-	}
+
 
 	/**
 	 * @return URL to all publications of the main page in bibtex formats.
@@ -1381,6 +1420,17 @@ public class URLGenerator {
 	}
 
 	/**
+	 * Constructs the URL with the given path element from the base URL.
+	 * @param path the path element
+	 * @return URL with the path
+	 */
+	public String getUrlWithPath(String path) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement(path);
+		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
 	 * If {@link #checkUrls} is <code>true</code>, each given string is
 	 * converted into a {@link URL} (if that fails, <code>null</code> is
 	 * returned). Otherwise, the given string is returned as is.
@@ -1458,6 +1508,34 @@ public class URLGenerator {
 				+ "/"
 				+ UrlUtils.encodePathSegment(tagName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the user's CV page
+	 * @param userName the group name
+	 * @return URL to user's CV page
+	 */
+	public String getCVUrlByUser(final String userName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(CV_PREFIX);
+		builder.addPathElement(USER_PREFIX);
+		builder.addPathElement(userName);
+
+		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * Constructs the URL for the user's explore page
+	 * @param userName the username
+	 * @return URL to user's explore page
+	 */
+	public String getExploreUrlByUser(final String userName) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(EXPLORE_PREFIX);
+		builder.addPathElement(USER_PREFIX);
+		builder.addPathElement(userName);
+
+		return this.getUrl(builder.asString());
 	}
 	
 	/**
@@ -1713,6 +1791,13 @@ public class URLGenerator {
 		}
 
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * @return the projectHome
+	 */
+	public String getProjectHome() {
+		return this.projectHome;
 	}
 
 	/**

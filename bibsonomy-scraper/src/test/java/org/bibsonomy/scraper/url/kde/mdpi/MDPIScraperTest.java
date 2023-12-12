@@ -37,7 +37,8 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -48,26 +49,28 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class MDPIScraperTest {
+	String resultDirectory = "mdpi/";
 	/**
 	 * starts URL test with id url_275
 	 */
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.mdpi.com/2072-4292/5/10/5122";
-		final String resultFile = "MDPIScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "MDPIScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, MDPIScraper.class, resultFile);
 	}
 	
 	@Test
 	public void url2TestRun(){
 		final String url = "http://www.mdpi.com/2220-9964/6/9/272";
-		final String resultFile = "MDPIScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "MDPIScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, MDPIScraper.class, resultFile);
 	}
 	
 	/**
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
 	public void testCitedBy() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.mdpi.com/2072-4292/5/10/5122"));

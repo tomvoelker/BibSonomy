@@ -69,7 +69,7 @@
 				<!-- news box ( = latest blog posts) -->
 				<ul class="newsbox">
 					<li>
-						<h4 class="sidebar"><fmt:message key="navi.news"/></h4>
+						<h4><fmt:message key="navi.news"/></h4>
 						<posts:tinybookmarks posts="${command.news}" cssClass="news"/>
 					</li>
 				</ul>

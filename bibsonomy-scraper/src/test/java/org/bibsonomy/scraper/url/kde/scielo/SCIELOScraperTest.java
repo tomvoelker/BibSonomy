@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.scielo;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,11 +41,33 @@ import org.junit.experimental.categories.Category;
 @Category(RemoteTest.class)
 
 public class SCIELOScraperTest {
-	/**
-	 * starts URL test with id url_335
-	 */
+	String resultDirectory = "scielo/";
+
 	@Test
 	public void url1TestRun(){
-		assertScraperResult("http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0066-782X2001001200008", SCIELOScraper.class, "SCIELOScraperUnitURLTest1.bib");
+		final String url = "http://scielo.iics.una.py/scielo.php?script=sci_arttext&pid=S1816-89492016000200009&lng=en&nrm=iso";
+		final String resultFile = resultDirectory + "SCIELOScraperUnitURLTest1.bib";
+		assertScraperResult(url, SCIELOScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "http://cienciaecultura.bvs.br/scielo.php?script=sci_arttext&pid=S0009-67252021000200007&lng=pt&nrm=iso";
+		final String resultFile = resultDirectory + "SCIELOScraperUnitURLTest2.bib";
+		assertScraperResult(url, SCIELOScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "http://scielo.senescyt.gob.ec/scielo.php?script=sci_abstract&pid=S1390-65422017000500067&lng=es&nrm=iso&tlng=es";
+		final String resultFile = resultDirectory + "SCIELOScraperUnitURLTest3.bib";
+		assertScraperResult(url, SCIELOScraper.class, resultFile);
+	}
+
+	@Test
+	public void url4TestRun(){
+		final String url = "http://ve.scielo.org/scielo.php?script=sci_arttext&pid=S0798-02642005000100002&lng=es&nrm=iso";
+		final String resultFile = resultDirectory + "SCIELOScraperUnitURLTest4.bib";
+		assertScraperResult(url, SCIELOScraper.class, resultFile);
 	}
 }

@@ -24,7 +24,6 @@
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
-	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	
 	<!-- fragments -->
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
@@ -71,15 +70,14 @@
 								<jsp:invoke fragment="customPageOptions"/>
 							</c:when>
 							<c:otherwise>
-								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+								<div class="btn-group dropdown-align-right all-resources-menu">
 									<rc:actions 
 											resourceType="bookmark" 
 											sortPage="${command.sortPage}" 
 											sortPageOrder="${command.sortPageOrder}"
 											entriesPerPage="${listView.entriesPerPage}"
 											showBookmark="${showBookmark}"
-											showPublication="${showPublication}" 
-											showInboxActions="${showInboxActions}" 
+											showPublication="${showPublication}"
 											isClipboard="${isClipboard}"
 											disableListNavigation="${disableListNavigation}"
 											disableResourcetypeSelection="${disableResourcetypeSelection}"

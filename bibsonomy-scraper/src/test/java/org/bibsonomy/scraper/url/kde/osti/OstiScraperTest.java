@@ -30,8 +30,7 @@
 package org.bibsonomy.scraper.url.kde.osti;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
-
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,11 +39,28 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class OstiScraperTest {
+	String resultDirectory = "osti/";
 	/**
 	 * starts URL test with id url_347
 	 */
 	@Test
-	public void urlTestRun(){
-		assertScraperResult("http://www.osti.gov/scitech/biblio/1150628-spatial-clustering-pixels-multispectral-image", OstiScraper.class, "OstiScraperUnitURLTest1.bib");
+	public void url1TestRun(){
+		final String url = "https://www.osti.gov/scitech/biblio/1150628-spatial-clustering-pixels-multispectral-image";
+		final String resultFile = resultDirectory + "OstiScraperUnitURLTest1.bib";
+		assertScraperResult(url,  OstiScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://www.osti.gov/biblio/1755975-draft-genome-sequence-fusarium-sp-strain-ds-novel-fungal-isolate-from-grass-rhizosphere";
+		final String resultFile = resultDirectory + "OstiScraperUnitURLTest2.bib";
+		assertScraperResult(url,  OstiScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://www.osti.gov/biblio/1604718-measurement-prompt-d0-d+-ds+-mathrm-mathrm-production-ppb-collisions-snn-sqrt-mathrm-mathrm-nn-tev";
+		final String resultFile = resultDirectory + "OstiScraperUnitURLTest3.bib";
+		assertScraperResult(url,  OstiScraper.class, resultFile);
 	}
 }

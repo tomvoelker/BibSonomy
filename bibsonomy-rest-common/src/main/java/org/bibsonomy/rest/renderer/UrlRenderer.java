@@ -37,7 +37,7 @@ import java.util.List;
 import org.bibsonomy.common.SortCriteria;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.TagRelation;
@@ -329,7 +329,7 @@ public class UrlRenderer {
 		}
 
 		if (present(syncDate)) {
-			urlBuilder.addParameter(RESTConfig.SYNC_DATE_PARAM, RESTConfig.serializeDate(syncDate));
+			urlBuilder.addParameter(RESTConfig.SYNC_DATE_PARAM, RESTConfig.serializeDateTime(syncDate));
 		}
 
 		if (present(status)) {
@@ -456,21 +456,12 @@ public class UrlRenderer {
 	}
 
 	/**
-	 * creates a persons url builder
-	 * @param userName the username of a user (when you want to find the claimed person of the user)
-	 * @return url builder
-	 */
-	public UrlBuilder createUrlBuilderForPersons(final String userName) {
-		return this.createUrlBuilderForPersons().addParameter(GroupingEntity.USER.toString().toLowerCase(), userName);
-	}
-
-	/**
 	 * creates a url builder for a person
 	 * @param personId the id of the person
 	 * @return url builder
 	 */
 	public UrlBuilder createUrlBuilderForPerson(String personId) {
-		return createUrlBuilderForPersons().addPathElement(personId);
+		return createUrlBuilderForPersons().addParameter(RESTConfig.PERSON_ID_PARAM, personId);
 	}
 
 	/**
@@ -479,16 +470,6 @@ public class UrlRenderer {
 	 */
 	public UrlBuilder createUrlBuilderForPersons() {
 		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL);
-	}
-
-	/**
-	 * creates a url builder to update a person
-	 * @param personId the person id
-	 * @param operation the update operation to apply
-	 * @return the url builder
-	 */
-	public UrlBuilder createUrlBuilderForPersons(String personId, PersonUpdateOperation operation) {
-		return createUrlBuilderForPerson(personId).addParameter("operation", operation.name().toLowerCase());
 	}
 
 	/**
@@ -540,9 +521,26 @@ public class UrlRenderer {
 	 * @param personId the id of the person
 	 * @return the url builder
 	 */
-	public UrlBuilder createUrlBuilderForResourcePersonRelations(String personId) {
-		return createUrlBuilderForApi().addPathElement(RESTConfig.PERSONS_URL)
-						.addPathElement(personId).addPathElement(RESTConfig.RELATIONS_SUB_PATH);
+	public UrlBuilder createUrlBuilderForPersonRelations(String personId) {
+		final UrlBuilder builder = createUrlBuilderForPerson(personId);
+		builder.addPathElement(RESTConfig.RELATIONS_SUB_PATH);
+		return builder;
+	}
+
+	/**
+	 * creates a url builder for a person resource relation
+	 * @param personId
+	 * @param interHash
+	 * @param type
+	 * @param index
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForPersonRelation(String personId, String interHash, PersonResourceRelationType type, int index) {
+		final UrlBuilder builder = this.createUrlBuilderForPersonRelations(personId);
+		builder.addParameter(RESTConfig.INTERHASH_PARAM, interHash);
+		builder.addParameter(RESTConfig.RELATION_TYPE_PARAM, type.toString());
+		builder.addParameter(RESTConfig.RELATION_INDEX_PARAM, String.valueOf(index));
+		return builder;
 	}
 
 	/**
@@ -567,22 +565,6 @@ public class UrlRenderer {
 		builder.addPathElement(RESTConfig.POSTS_PERSON_SUB_PATH);
 		builder.addParameter(RESTConfig.PERSON_ADDITIONAL_KEY_PARAM, additionalKey.getKeyName() + RESTConfig.PERSON_ADDITIONAL_KEY_PARAM_SEPARATOR + additionalKey.getKeyValue());
 
-		return builder;
-	}
-
-	/**
-	 * creates a url builder for a person resource relation
-	 * @param personId
-	 * @param interHash
-	 * @param index
-	 * @param type
-	 * @return
-	 */
-	public UrlBuilder createUrlBuilderForPersonResourceRelation(String personId, String interHash, int index, PersonResourceRelationType type) {
-		final UrlBuilder builder = this.createUrlBuilderForResourcePersonRelations(personId);
-		builder.addPathElement(interHash);
-		builder.addPathElement(type.toString());
-		builder.addPathElement(String.valueOf(index));
 		return builder;
 	}
 
@@ -698,7 +680,7 @@ public class UrlRenderer {
 	 */
 	public UrlBuilder createUrlBuilderForGroups(final GroupQuery query) {
 		final UrlBuilder urlBuilder = getUrlBuilderForGroups();
-		final Boolean organization = query.getOrganization();
+		final Boolean organization = query.isOrganization();
 		if (present(organization)) {
 			urlBuilder.addParameter(RESTConfig.ORGANIZATION_PARAM, String.valueOf(organization));
 		}
@@ -884,14 +866,14 @@ public class UrlRenderer {
 	 * @param searchType
 	 * @return
 	 */
-	public String createHrefForPosts(final GroupingEntity grouping,
+	public UrlBuilder createHrefForPosts(final GroupingEntity grouping,
 									 final String groupingValue, final Class<? extends Resource> resourceType,
 									 final List<String> tags, final String resourceHash, final String search,
 									 final List<SortCriteria> sortCriteria, final int start, final int end, final QueryScope searchType) {
 		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, sortCriteria, searchType);
 
 		applyStartEnd(urlBuilder, start, end);
-		return urlBuilder.asString();
+		return urlBuilder;
 	}
 
 	/**

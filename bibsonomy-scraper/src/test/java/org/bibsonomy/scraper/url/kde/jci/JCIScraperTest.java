@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -46,6 +46,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class JCIScraperTest {
+	String resultDirectory = "jci/";
 
 	/**
 	 * starts URL test with id url_219
@@ -53,7 +54,7 @@ public class JCIScraperTest {
 	@Test
 	public void urlTestRun() {
 		final String url = "http://www.jci.org/articles/view/19670";
-		final String resultFile = "JCIScraperUnitTest.bib";
+		final String resultFile = resultDirectory + "JCIScraperUnitTest.bib";
 		assertScraperResult(url, null, JCIScraper.class, resultFile);
 	}
 	@Test

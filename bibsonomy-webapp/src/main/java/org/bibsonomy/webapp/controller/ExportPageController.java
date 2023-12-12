@@ -106,14 +106,14 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		command.setCslLayoutMap(this.cslFilesManager.getCslFiles());
 		command.setLayoutMap(layoutMap);
 
-		if (command.getFormatEmbedded()) {
+		if (command.isFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
 		}
 
 		return Views.EXPORT;
 	}
 
-	private static Map<String, CSLStyle> convertCSLStylesToMap(final List<CSLStyle> layouts) {
+	public static Map<String, CSLStyle> convertCSLStylesToMap(final List<CSLStyle> layouts) {
 		return layouts.stream().collect(Collectors.toMap(CSLStyle::getDisplayName, item -> item));
 	}
 

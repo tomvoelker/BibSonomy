@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,7 +53,7 @@ public class AandAScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "https://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html";
-		final String resultFile = "AandAScraperUnitURLTest.bib";
+		final String resultFile = "aanda/AandAScraperUnitURLTest.bib";
 		assertScraperResult(url, AandAScraper.class, resultFile);
 	}
 
@@ -63,7 +63,7 @@ public class AandAScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "https://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html";
-		final String resultFile = "AandAScraperUnitURLTest1.bib";
+		final String resultFile = "aanda/AandAScraperUnitURLTest1.bib";
 		assertScraperResult(url, AandAScraper.class, resultFile);
 	}
 

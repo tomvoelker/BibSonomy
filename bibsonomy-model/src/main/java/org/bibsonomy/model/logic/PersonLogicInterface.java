@@ -29,10 +29,9 @@
  */
 package org.bibsonomy.model.logic;
 
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -60,15 +59,6 @@ public interface PersonLogicInterface {
 	Person getPersonById(final PersonIdType idType, final String id);
 
 	/**
-	 * gets the person by any additional key and value
-	 * @param keyName
-	 * @param keyValue
-	 * @return
-	 */
-	@Deprecated // FIXME: use getPersons method, the key value type is not unique for one person in general
-	Person getPersonByAdditionalKey(final String keyName, final String keyValue);
-
-	/**
 	 * sets id for new persons
 	 *
 	 * @param person the person to be saved or updated
@@ -80,7 +70,7 @@ public interface PersonLogicInterface {
 	 * @param person		the person to update
 	 * @param operation		the desired update operation
 	 */
-	void updatePerson(final Person person, final PersonUpdateOperation operation);
+	void updatePerson(final Person person, final PersonOperation operation);
 
 	/**
 	 * stores the specified person relation
@@ -100,21 +90,6 @@ public interface PersonLogicInterface {
 	void removeResourceRelation(final String personId, final String interHash, final int index, final PersonResourceRelationType type);
 
 	/**
-	 * @param withPersonId
-	 */
-	@Deprecated // use update person
-	void createPersonName(PersonName withPersonId);
-
-	/**
-	 * FIXME: remove database id
-	 *
-	 * removes a person name from a specific person
-	 * @param personNameId
-	 */
-	@Deprecated // use update person
-	void removePersonName(final Integer personNameId);
-
-	/**
 	 * retrieves persons
 	 * @param query the query specifying what person should be returned
 	 * @return the persons
@@ -131,13 +106,8 @@ public interface PersonLogicInterface {
 	List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelationQuery query);
 
 	/**
-	 * @param username
-	 */
-	@Deprecated // FIXME: add to update person logic
-	void unlinkUser(String username);
-
-	/**
-	 * TODO: add documentation
+	 * Get the merge matches for a person by the person ID.
+	 * The ID can be either the source or the target ID.
 	 *
 	 * @param personID the id of the person
 	 * @return

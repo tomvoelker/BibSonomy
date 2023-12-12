@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.nber;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,12 +41,13 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NberScraperTest {
+	String resultDirectory = "nber/";
 	
 	/**
 	 * starts URL test with id url_90
 	 */
 	@Test
 	public void urlTestRun(){
-		assertScraperResult("http://www.nber.org/papers/w14015", NberScraper.class, "NberScraperUnitURLTest.bib");
+		assertScraperResult("https://www.nber.org/papers/w14015", NberScraper.class, resultDirectory + "NberScraperUnitURLTest.bib");
 	}
 }

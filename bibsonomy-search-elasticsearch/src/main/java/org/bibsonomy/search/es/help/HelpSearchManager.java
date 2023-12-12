@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -50,6 +51,7 @@ import java.util.TreeSet;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Stream;
 
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.InvalidSearchRequestException;
@@ -57,6 +59,9 @@ import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.client.IndexData;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.model.SearchIndexInfo;
+import org.bibsonomy.search.model.SearchIndexStatus;
+import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpParser;
@@ -83,9 +88,12 @@ import org.jsoup.Jsoup;
 
 /**
  * manager for searching the help pages
- * 
+ *
+ * TODO implement like other search managers
+ *
  * @author dzo
  */
+@Setter
 public class HelpSearchManager implements HelpSearch {
 	private static final Log log = LogFactory.getLog(HelpSearchManager.class);
 	
@@ -140,20 +148,21 @@ public class HelpSearchManager implements HelpSearch {
 		}
 	}
 	
-	private boolean indexingDisabled;
-	
 	private String path;
-	
 	private String projectName;
 	private String projectTheme;
+	private String projectHelpTheme;
 	private String projectHome;
 	private String projectEmail;
 	private String projectNoSpamEmail;
 	private String projectAPIEmail;
+	private List<String> supportedLocales;
 
 	private URLGenerator urlGenerator;
 	
 	private ESClient client;
+	private boolean indexEnabled;
+	private boolean updateEnabled;
 	
 	private HelpParserFactory factory;
 	
@@ -163,7 +172,7 @@ public class HelpSearchManager implements HelpSearch {
 	 * re-index the complete help pages
 	 */
 	public void reindex() {
-		if (this.indexingDisabled) {
+		if (!this.indexEnabled || !this.updateEnabled) {
 			return;
 		}
 
@@ -180,6 +189,11 @@ public class HelpSearchManager implements HelpSearch {
 
 				languageFolders.forEach(languageFolder -> {
 					final String language = languageFolder.toFile().getName();
+					// Skip reindexing currently not supported locales of the system
+					if (!this.supportedLocales.contains(language)) {
+						return;
+					}
+
 					final String indexName = getIndexNameForLanguage(language);
 
 					if (!this.client.existsIndexWithName(indexName)) {
@@ -191,7 +205,7 @@ public class HelpSearchManager implements HelpSearch {
 					try (final Stream<Path> filePaths = Files.walk(languageFolder).filter(path -> path.toString().toLowerCase().endsWith(HelpUtils.FILE_SUFFIX))) {
 						filePaths.forEach(filePath -> {
 							final File file = filePath.toFile();
-							final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
+							final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHelpTheme, this.projectHome, this.projectEmail, this.projectNoSpamEmail, this.projectAPIEmail), this.urlGenerator);
 							final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
 							try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
 								final String markdown = StringUtils.getStringFromReader(helpPage);
@@ -330,80 +344,28 @@ public class HelpSearchManager implements HelpSearch {
 		return text;
 	}
 
-	/**
-	 * @param path the path to set
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
+	public List<SearchIndexInfo> getIndexInformations() {
 
-	/**
-	 * @param projectName the projectName to set
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
+		final List<SearchIndexInfo> infos = new LinkedList<>();
 
-	/**
-	 * @param projectTheme the projectTheme to set
-	 */
-	public void setProjectTheme(String projectTheme) {
-		this.projectTheme = projectTheme;
-	}
+		for (String locale : this.supportedLocales) {
+			final String indexName = this.getIndexNameForLanguage(locale);
 
-	/**
-	 * @param projectHome the projectHome to set
-	 */
-	public void setProjectHome(String projectHome) {
-		this.projectHome = projectHome;
-	}
-	
-	/**
-	 * @param projectEmail the projectEmail to set
-	 */
-	public void setProjectEmail(String projectEmail) {
-		this.projectEmail = projectEmail;
-	}
-	
-	/**
-	 * @param projectNoSpamEmail the projectNoSpamEmail to set
-	 */
-	public void setProjectNoSpamEmail(String projectNoSpamEmail) {
-		this.projectNoSpamEmail = projectNoSpamEmail;
-	}
-	
-	/**
-	 * @param projectAPIEmail the projectAPIEmail to set
-	 */
-	public void setProjectAPIEmail(String projectAPIEmail) {
-		this.projectAPIEmail = projectAPIEmail;
-	}
+			if (this.client.existsIndexWithName(indexName)) {
+				final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
+				searchIndexInfo.setId(indexName);
+				searchIndexInfo.setStatus(SearchIndexStatus.ACTIVE);
 
-	/**
-	 * @param urlGenerator the urlGenerator to set
-	 */
-	public void setUrlGenerator(final URLGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
+				// searchIndexInfo.setSyncState(); TODO
 
-	/**
-	 * @param client the client to set
-	 */
-	public void setClient(ESClient client) {
-		this.client = client;
-	}
+				final SearchIndexStatistics statistics = new SearchIndexStatistics();
+				final long count = this.client.getDocumentCount(indexName, HELP_PAGE_TYPE, null);
+				statistics.setNumberOfDocuments(count);
+				searchIndexInfo.setStatistics(statistics);
+				infos.add(searchIndexInfo);
+			}
+		}
 
-	/**
-	 * @param factory the factory to set
-	 */
-	public void setFactory(HelpParserFactory factory) {
-		this.factory = factory;
-	}
-
-	/**
-	 * @param indexingDisabled the indexingDisabled to set
-	 */
-	public void setIndexingDisabled(boolean indexingDisabled) {
-		this.indexingDisabled = indexingDisabled;
+		return infos;
 	}
 }

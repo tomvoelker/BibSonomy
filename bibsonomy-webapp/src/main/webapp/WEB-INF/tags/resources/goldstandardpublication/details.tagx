@@ -24,7 +24,9 @@
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 		  xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-		  xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+		  xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+		  xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+>
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
@@ -56,13 +58,13 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 
-	<div id="goldstandard" data-interhash="${goldstandard.interHash}">
+	<div class="goldstandard-details" >
 		<div itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 
 			<!--+
 				| HEADER
 				+-->
-			<div class="row" id="info">
+			<div class="row" id="info" data-interhash="${goldstandard.interHash}">
 				<div class="col-md-10">
 					<div class="content-header-entrytype">
 						<c:if test="${post.approved}">
@@ -95,7 +97,6 @@
 				</div>
 
 				<div class="col-md-2 content-header-metric-buttons hidden-xs">
-
 					<c:if test="${showFolkSonomyLinks}">
 						<div class="metric-info">
 							<fmt:message key="goldStandard.users" var="inCollectionOf"/>
@@ -173,6 +174,7 @@
 								resourceType="bibtex"
 								communityPostExists="${isRealGoldstandard}"
 								postOfLoggedInUser="${postOfLoggedInUser}"
+								ckey="${fn:escapeXml(command.context.ckey)}"
 						/>
 						<c:if test="${not empty postOfLoggedInUser}">
 							<span class="community-info warning">
@@ -188,7 +190,9 @@
 					</c:if>
 				</div>
 			</div>
+
 			<hr />
+
 			<!--+
                 | CONTENT
                 +-->
@@ -453,67 +457,7 @@
 						<fmt:message key="publications.citations.headline" />
 					</h3>
 
-					<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
-
-					<div class="sidebar-quick-cite-box">
-						<div class="form-group">
-							<label for="selectAllStyles"><fmt:message key="sidebar.quickCite.label" /></label>
-							<select class="form-control" data-formaturl="${exportUrl}" id="goldstandard-quick-cite">
-								<option><fmt:message key="form.input.select" /></option>
-							</select>
-							<div id="goldstandard-quick-cite-select"><!-- keep me --></div>
-						</div>
-
-						<div class="cust-loader">
-							<div class="loader">
-								<div class="loader--dot"><!-- KEEP ME --></div>
-								<div class="loader--dot"><!-- KEEP ME --></div>
-								<div class="loader--dot"><!-- KEEP ME --></div>
-								<div class="loader--dot"><!-- KEEP ME --></div>
-								<div class="loader--dot"><!-- KEEP ME --></div>
-								<div class="loader--dot"><!-- KEEP ME --></div>
-								<div class="loader--text"><!-- KEEP ME --></div>
-							</div>
-						</div>
-
-					</div>
-
-					<bsold:modal id="sidebar-quick-cite-box-modal" modalTitle="">
-						<jsp:attribute name="modalBody">
-							...
-						</jsp:attribute>
-
-						<jsp:attribute name="modalFooter">
-							<bsform:button
-									id="sidebar-quick-cite-box-modal-clipboard-button"
-									size="defaultSize"
-									style="defaultStyle"
-									valueKey="export.copyToLocalClipboard"
-									icon="clipboard"/>
-
-							<fmt:message key="box.close" var="modalCloseText" />
-							<bsform:button
-									size="defaultSize"
-									style="secondary"
-									dataDismiss="modal"
-									title="${modalCloseText}"
-									value="${modalCloseText}"
-							/>
-
-						</jsp:attribute>
-					</bsold:modal>
-
-					<div class="hidden" id="sidebar-quick-cite-box-endnote">
-						<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
-							<export:endnote post="${post}" escapeXml="${true}" />
-						</textarea>
-					</div>
-
-					<div class="hidden" id="sidebar-quick-cite-box-bibtex">
-						<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
-							<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
-						</textarea>
-					</div>
+					<sidebar:quickcite post="${post}" isCommunityPost="true" />
 
 
 					<!-- Search on... -->

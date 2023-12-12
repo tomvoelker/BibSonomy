@@ -362,6 +362,8 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
 	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#DELETE_GROUP_REQUEST}</dt><dd>Deletes the pending group.</dd>
+	 * <dt>{@link GroupUpdateOperation#UPDATE_PRESET_TAG}</dt><dd>Adds or updates a preset tag.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE_PRESET_TAG}</dt><dd>Deletes a preset tag.</dd>
 	 * </dl>
 	 *
 	 *
@@ -756,9 +758,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 
 	/**
 	 * returns the meta data the query requests
+	 * @param loggedInUser the logged in user
 	 * @param query
 	 * @param <R>
 	 * @return
 	 */
-	<R> R getMetaData(MetaDataQuery<R> query);
+	<R> R getMetaData(final User loggedInUser, final MetaDataQuery<R> query);
 }

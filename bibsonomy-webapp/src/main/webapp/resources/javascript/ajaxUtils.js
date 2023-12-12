@@ -78,3 +78,27 @@ function prepareAjaxErrorBoxes(className) {
 		});
 	});
 }
+
+function showAjaxAlert(type, message) {
+	var alert = $('<div></div>')
+		.attr('class', 'alert alert-dismissible alert-' + type)
+		.attr('role', 'alert');
+
+	var closeBtn = $('<button></button>')
+		.attr('class', 'close')
+		.attr('data-dismiss', 'alert')
+		.html('<span aria-hidden="true">&times;</span>');
+
+	alert.append(closeBtn);
+	if (type === 'danger') {
+		alert.append($('<strong></strong>').html(getString("error") + ': '));
+	}
+	alert.append(message);
+
+	$('#globalAjaxAlerts').append(alert);
+
+	// Scroll to the global AJAX alerts section
+	$('html, body').animate({
+		scrollTop: $("#globalAjaxAlerts").offset().top
+	}, 1000);
+}

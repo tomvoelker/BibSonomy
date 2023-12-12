@@ -217,6 +217,7 @@ final class BibtexPersonListParser {
             } else if (numberOfCommas == 1 || numberOfCommas == 2) {
 
                 if (numberOfCommas == 1) {
+                    // find index of comma
                     int commaIndex = -1;
                     for (int i = begin; i < end; i++) {
                         if (tokens[i] == COMMA) {
@@ -224,6 +225,7 @@ final class BibtexPersonListParser {
                             break;
                         }
                     }
+
                     final int preLastBegin = begin;
                     int preLastEnd = begin;
                     for (int i = preLastEnd; i < commaIndex; i++) {

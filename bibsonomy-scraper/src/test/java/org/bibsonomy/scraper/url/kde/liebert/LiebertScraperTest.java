@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.liebert;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,34 +42,34 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class LiebertScraperTest {
-
+	String resultDirectory = "liebert/";
 	/**
 	 * starts URL test with id url_88
 	 */
 	@Test
 	public void url1TestRun(){
-		final String url = "http://www.liebertonline.com/doi/abs/10.1089/152308604773934350";
-		final String resultFile = "LiebertScraperUnitURLTest1.bib";
+		final String url = "https://www.liebertpub.com/doi/abs/10.1089/152308604773934350";
+		final String resultFile = resultDirectory + "LiebertScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, LiebertScraper.class, resultFile);
 	}
-	
-	/**
-	 * starts URL test with id url_89
-	 */
-	@Test
-	public void url2TestRun(){
-		final String url = "http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350";
-		final String resultFile = "LiebertScraperUnitURLTest3.bib";
-		assertScraperResult(url, null, LiebertScraper.class, resultFile);
-	}
-	
+
 	/**
 	 * starts URL test with id url_248
 	 */
 	@Test
+	public void url2TestRun(){
+		final String url = "https://www.liebertpub.com/doi/abs/10.1089/teb.2007.0150";
+		final String resultFile = resultDirectory + "LiebertScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, LiebertScraper.class, resultFile);
+	}
+
+	/**
+	 * starts URL test with id url_89
+	 */
+	@Test
 	public void url3TestRun(){
-		final String url = "http://online.liebertpub.com/doi/abs/10.1089/teb.2007.0150";
-		final String resultFile = "LiebertScraperUnitURLTest2.bib";
+		final String url = "https://www.liebertpub.com/action/showCitFormats?doi=10.1089%2F152308604773934350";
+		final String resultFile = resultDirectory + "LiebertScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, LiebertScraper.class, resultFile);
 	}
 

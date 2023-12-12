@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.elsevierhealth;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,6 +42,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ElsevierhealthScraperTest {
+	String resultDirectory = "elsevierhealth/";
 	
 	/**
 	 * starts URL test with id url_168
@@ -49,7 +50,7 @@ public class ElsevierhealthScraperTest {
 	@Test
 	public void urlTestRun1(){
 		final String url = "http://www.us.elsevierhealth.com/product.jsp?lid=2&iid=0&sid=0&isbn=9780323055666";
-		final String resultFile = "ElsevierhealthScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "ElsevierhealthScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, ElsevierhealthScraper.class, resultFile);
 	}
 	

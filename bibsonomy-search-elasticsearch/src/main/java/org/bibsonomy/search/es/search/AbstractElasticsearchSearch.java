@@ -42,7 +42,7 @@ import org.bibsonomy.model.logic.query.util.BasicQueryUtils;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.*;
@@ -56,7 +56,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S extends SearchIndexSyncState, O> {
+public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S extends SearchIndexState, O> {
 
 	protected final ElasticsearchManager<T, S> manager;
 	private final Converter<T, Map<String, Object>, O> converter;
@@ -79,7 +79,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 				return results;
 			}
 			
-			final List<Pair<String, SortOrder>> sortOrder = this.getSortOrder(query);
+			final List<Pair<String, SortOrder>> sortCriteria = this.getSortCriteria(query);
 
 			/*
 			 * there is a limit in the es search how many entries we can skip (max result window)
@@ -99,7 +99,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 
 			final int offset = BasicQueryUtils.calcOffset(query);
 			final int limit = BasicQueryUtils.calcLimit(query, maxResultWindow);
-			final SearchHits hits = this.manager.search(queryBuilder, sortOrder, offset, limit, null, null);
+			final SearchHits hits = this.manager.search(queryBuilder, sortCriteria, offset, limit, null, null);
 
 			if (hits == null) {
 				return results;
@@ -130,7 +130,7 @@ public abstract class AbstractElasticsearchSearch<T, Q extends BasicQuery, S ext
 		}, statistics);
 	}
 
-	protected List<Pair<String, SortOrder>> getSortOrder(final Q query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final Q query) {
 		return null;
 	}
 

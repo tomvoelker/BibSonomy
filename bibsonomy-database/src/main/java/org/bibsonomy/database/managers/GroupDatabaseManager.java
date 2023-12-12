@@ -59,9 +59,9 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.params.group.GetParentGroupIdsRecursively;
+import org.bibsonomy.database.params.group.GroupPresetTagParam;
 import org.bibsonomy.database.params.group.InsertParentRelations;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -73,6 +73,7 @@ import org.bibsonomy.model.cris.CRISLink;
 import org.bibsonomy.model.logic.query.GroupQuery;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
 
@@ -154,22 +155,32 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	}
 
 	/**
-	 * Returns pending groups.
+	 * Returns all pending groups.
 	 *
-	 * TODO: This method handles two cases:
-	 *   1) if a username is set, only pending groups for this user are retrieved.
-	 *   2) if username is set to null, all pending groups will be retrieved.
-	 *   => This should be refactored into two separate methods
-	 *
-	 *
-	 * @param userName a valid username. If set to <code>null</code>, all pending groups will be retrieved, otherwise only pending groups for the supplied user are retrieved.
 	 * @param start start index within the result set.
 	 * @param end end index within the result set.
 	 * @param session a database session.
 	 *
 	 * @return list of all pending groups
 	 */
-	public List<Group> getPendingGroups(final String userName, final int start, final int end, final DBSession session) {
+	public List<Group> getPendingGroups(final int start, final int end, final DBSession session) {
+		final GroupParam param = new GroupParam();
+		param.setOffset(start);
+		param.setLimit(end);
+		return this.queryForList("getPendingGroups", param, Group.class, session);
+	}
+
+	/**
+	 * Returns only pending groups for this user are retrieved.
+	 *
+	 * @param userName a valid username.
+	 * @param start start index within the result set.
+	 * @param end end index within the result set.
+	 * @param session a database session.
+	 *
+	 * @return list of all pending groups
+	 */
+	public List<Group> getPendingGroupsByUsername(final String userName, final int start, final int end, final DBSession session) {
 		final GroupParam param = new GroupParam();
 		param.setUserName(userName);
 		param.setOffset(start);
@@ -213,7 +224,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	 * @param groupname - the name of the group
 	 * @param session
 	 * @return Return a list of {@link TagSet} objects if the group exists and
-	 *         if there are tagsets related to th group
+	 *         if there are tagsets related to the group
 	 */
 	public List<TagSet> getGroupTagSets(final String groupname, final DBSession session) {
 		return this.queryForList("getTagSetsForGroup", groupname, TagSet.class, session);
@@ -232,6 +243,43 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		param.setSetName(setName);
 		param.setGroupId(groupId);
 		return this.queryForObject("getTagSetBySetNameAndGroup", param, TagSet.class, session);
+	}
+
+	/**
+	 * Returns a list of preset tags for a group
+	 *
+	 * @param groupname - the name of the group
+	 * @param session
+	 * @return Return a list of {@link Tag} objects if the group exists and
+	 *         if there are preset tags related to the group
+	 */
+	public List<Tag> getPresetTagsForGroup(final String groupname, final DBSession session) {
+		return this.queryForList("getPresetTagsForGroup", groupname, Tag.class, session);
+	}
+
+	/**
+	 * Creates a new preset tag for the group.
+	 * Updates if unique key (name, group) already exists.
+	 *
+	 * @param group			the group
+	 * @param presetTag		the preset tag for the group
+	 * @param session		db session
+	 */
+	public void createOrUpdatePresetTag(final Group group, final Tag presetTag, final DBSession session) {
+		final GroupPresetTagParam param = new GroupPresetTagParam(group.getGroupId(), group.getName(), presetTag.getName(), presetTag.getDescription());
+		this.insert("insertOrUpdatePresetTag", param, session);
+	}
+
+	/**
+	 * Remove a preset tag for the group.
+	 *
+	 * @param group			the group
+	 * @param presetTag		the preset tag for the group
+	 * @param session		db session
+	 */
+	public void removePresetTag(final Group group, final Tag presetTag, final DBSession session) {
+		final GroupPresetTagParam param = new GroupPresetTagParam(group.getGroupId(), group.getName(), presetTag.getName(), presetTag.getDescription());
+		this.delete("deletePresetTag", param, session);
 	}
 
 	/**

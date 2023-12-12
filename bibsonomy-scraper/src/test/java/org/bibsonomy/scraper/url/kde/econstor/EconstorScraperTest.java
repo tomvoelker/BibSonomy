@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.econstor;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,12 +42,13 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class EconstorScraperTest {
-	/**
-	 * 
-	 */
+	String resultDirectory = "econstor/";
+
 	@Test
 	public void urlTestRun() {
-		assertScraperResult("https://www.econstor.eu/handle/10419/64547", EconstorScraper.class, "EconstorScraperUnitURLTest.bib");
+		final String url = "https://www.econstor.eu/handle/10419/64547";
+		final String resultFile = resultDirectory + "EconstorScraperUnitURLTest.bib";
+		assertScraperResult(url, null, EconstorScraper.class, resultFile);
 	}
 
 }

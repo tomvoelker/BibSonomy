@@ -54,7 +54,7 @@ public enum Views implements View {
 	HOMEPAGE("home"),
 
 	/**
-	 * the cris homepage (currently a static welcome page)
+	 * the cris homepage
 	 */
 	CRIS_HOMEPAGE("cris/home"),
 
@@ -67,7 +67,7 @@ public enum Views implements View {
 	PERSON_INTRO("persons"),
 
 	/** the details page of a person */
-	PERSON_SHOW("person/show"),
+	PERSON_SHOW("person/person"),
 
 	/** the person disambiguation page */
 	DISAMBIGUATION("disambiguation"),
@@ -89,6 +89,11 @@ public enum Views implements View {
 	 * user page displaying the resources of a single user
 	 */
 	USERPAGE("user"),
+
+	/**
+	 * user explore page
+	 */
+	USEREXPLOREPAGE("userExplore"),
 
 	/**
 	 * the user specific friend-of-a-friend (FOAF) project output
@@ -125,6 +130,11 @@ public enum Views implements View {
 	 * group page showing all resources of a specified group
 	 */
 	GROUPPAGE("group"),
+
+	/**
+	 * group explore page
+	 */
+	GROUPEXPLOREPAGE("groupExplore"),
 
 	/**
 	 * group page showing all resources of a specified group
@@ -355,9 +365,14 @@ public enum Views implements View {
 	AJAX_POSTS("ajax/posts"),
 
 	/**
-	 * posts
+	 * bibtex posts
 	 */
-	AJAX_PERSON_PUBLICATIONS("ajax/personPublications"),
+	AJAX_BIBTEXS("ajax/bibtexs"),
+
+	/**
+	 * person publications
+	 */
+	AJAX_PERSON_PUBLICATIONS("ajax/person/publications"),
 
 	/**
 	 * spammer predictions
@@ -375,6 +390,11 @@ public enum Views implements View {
 	AJAX_EDITTAGS("ajax/edittags"),
 
 	/**
+	 * response for open access status via Dissemin
+	 */
+	AJAX_DISSEMIN("ajax/openaccess/dissemin"),
+
+	/**
 	 * errors in JSON
 	 */
 	AJAX_ERRORS("ajax/errors"),
@@ -385,27 +405,27 @@ public enum Views implements View {
 	/**
 	 * spam admin page
 	 */
-	ADMIN_SPAM("actions/admin/spam"),
+	ADMIN_SPAM("admin/spam"),
 	/**
 	 * full text search admin page
 	 */
-	ADMIN_FULL_TEXT_SEARCH("admin/search"),
+	ADMIN_SEARCH_INDICES("admin/search"),
 	/**
-	 * recommender admin page
+	 * recommenders admin page
 	 */
-	ADMIN_RECOMMENDER("actions/admin/recommender"),
+	ADMIN_RECOMMENDERS("admin/recommenders"),
 	/**
 	 * Show the page for administrating groups
 	 */
-	ADMIN_GROUP("actions/admin/group"),
+	ADMIN_GROUPS("admin/groups"),
 	/**
 	 * manage OAuth consumer keys
 	 */
-	ADMIN_OAUTH("actions/admin/oauth"),
+	ADMIN_OAUTH_CONSUMERS("admin/oauthConsumers"),
 	/**
 	 * manage synchronization settings
 	 */
-	ADMIN_SYNC("actions/admin/sync"),
+	ADMIN_SYNC("admin/sync"),
 	
 	/** statistics about the system */
 	ADMIN_STATISTICS("admin/statistics"),

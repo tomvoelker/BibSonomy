@@ -258,6 +258,9 @@
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetPendingGroups">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsByUser">
+					<constructor-arg ref="groupDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.group.get.GetGroupsBySearch">
 					<constructor-arg ref="groupDatabaseManager" />
 				</bean>
@@ -278,9 +281,8 @@
 	<bean id="personChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByUserName" parent="abstractPersonChainElement"/>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsById" parent="abstractPersonChainElement"/>
 				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByOrganization" parent="abstractPersonChainElement"/>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByAdditionalKey" parent="abstractPersonChainElement"/>
 				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByFulltextSearch" parent="abstractPersonChainElement" />
 			</list>
 		</property>
@@ -295,7 +297,13 @@
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPersonsByInterhash">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsOnlyTheses">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsAfterChangeDate">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 			</list>
@@ -422,6 +430,7 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourceHistory" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsAfterChangeDate" parent="abstractGoldStandardPublicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
 			</list>
 		</property>
@@ -511,15 +520,25 @@
 		<entry>
 			<key>
 				<bean class="java.lang.Class" factory-method="forName">
-					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldValuesQuery" />
+					<constructor-arg value="org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery" />
 				</bean>
 			</key>
-			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldValuesProvider">
+			<bean class="org.bibsonomy.database.managers.metadata.DistinctFieldProvider">
 				<constructor-arg>
 					<map>
 						<entry key-ref="projectClass">
 							<bean class="org.bibsonomy.database.managers.metadata.ProjectMetaDataAdapter">
 								<constructor-arg ref="projectSearch" />
+							</bean>
+						</entry>
+						<entry key-ref="goldStandardPublicationClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
+								<constructor-arg ref="goldStandardPublicationSearch" />
+							</bean>
+						</entry>
+						<entry key-ref="publicationClass">
+							<bean class="org.bibsonomy.database.managers.metadata.ResourceMetaDataProvider">
+								<constructor-arg ref="publicationSearch" />
 							</bean>
 						</entry>
 					</map>

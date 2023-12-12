@@ -29,69 +29,33 @@
  */
 package org.bibsonomy.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A PersonMergeFieldConflict contains the field that is raising the conflict and the values of the persons that might be the same
  *
  * @author jhi
  */
+@Getter
+@Setter
 public class PersonMergeFieldConflict {
 	
 	private String fieldName;
-	private String person1Value;
-	private String person2Value;
+	private String targetValue;
+	private String sourceValue;
 	
 	/**
 	 * A PersonMergeFieldConflict contains the field that is raising the conflict and the values of the persons that might be the same
 	 * 
 	 * @param fieldName
-	 * @param person1Value
-	 * @param person2Value
+	 * @param targetValue
+	 * @param sourceValue
 	 */
-	public PersonMergeFieldConflict(String fieldName, String person1Value, String person2Value){
+	public PersonMergeFieldConflict(String fieldName, String targetValue, String sourceValue){
 		this.fieldName = fieldName;
-		this.person1Value = person1Value;
-		this.person2Value = person2Value;
-	}
-	
-	/**
-	 * @return the fieldName
-	 */
-	public String getFieldName() {
-		return this.fieldName;
+		this.targetValue = targetValue;
+		this.sourceValue = sourceValue;
 	}
 
-	/**
-	 * @param fieldName the fieldName to set
-	 */
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
-	/**
-	 * @return the person1Value
-	 */
-	public String getPerson1Value() {
-		return this.person1Value;
-	}
-
-	/**
-	 * @param person1Value the person1Value to set
-	 */
-	public void setPerson1Value(String person1Value) {
-		this.person1Value = person1Value;
-	}
-
-	/**
-	 * @return the person2Value
-	 */
-	public String getPerson2Value() {
-		return this.person2Value;
-	}
-
-	/**
-	 * @param person2Value the person2Value to set
-	 */
-	public void setPerson2Value(String person2Value) {
-		this.person2Value = person2Value;
-	}
 }

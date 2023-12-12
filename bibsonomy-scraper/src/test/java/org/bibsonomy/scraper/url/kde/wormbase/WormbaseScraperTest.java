@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.wormbase;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class WormbaseScraperTest {
+	String resultDirectory = "wormbase/";
 
 	/**
 	 * starts URL test with id url_125
@@ -48,7 +49,21 @@ public class WormbaseScraperTest {
 	@Test
 	public void url1TestRun(){
 		final String url = "http://www.wormbase.org/db/misc/paper?name=WBPaper00005873;class=Paper";
-		final String resultFile = "WormbaseScraperUnitURLTest.bib";
+		final String resultFile = resultDirectory + "WormbaseScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, WormbaseScraper.class, resultFile);
+	}
+
+	@Test
+	public void url2TestRun(){
+		final String url = "https://wormbase.org/resources/paper/WBPaper00035679#01--10";
+		final String resultFile = resultDirectory + "WormbaseScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, WormbaseScraper.class, resultFile);
+	}
+
+	@Test
+	public void url3TestRun(){
+		final String url = "https://wormbase.org/resources/paper/WBPaper00015930#01--10";
+		final String resultFile = resultDirectory + "WormbaseScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, WormbaseScraper.class, resultFile);
 	}
 	

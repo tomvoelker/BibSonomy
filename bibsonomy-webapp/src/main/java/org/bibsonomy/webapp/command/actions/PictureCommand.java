@@ -31,6 +31,8 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * @author ice
  */
+@Getter
+@Setter
 public class PictureCommand extends BaseCommand implements Serializable, DownloadCommand {
 
 	private static final long serialVersionUID = -3444057502420374593L;
@@ -54,29 +58,8 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	
 	private boolean delete;
 
+	/** user's Gravatar email address to be set. */
 	private String gravatarAddress;
-	
-
-	/**
-	 * @param RequestedUser the getRequestedUser to set
-	 */
-	public void setRequestedUser(String RequestedUser) {
-		this.requestedUser = RequestedUser;
-	}
-
-	/**
-	 * @return the getRequestedUser
-	 */
-	public String getRequestedUser() {
-		return requestedUser;
-	}
-
-	/**
-	 * @param filename the filename to set
-	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
 
 	/**
 	 * @return the filename
@@ -84,32 +67,6 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	@Override
 	public String getFilename() {
 		return filename;
-	}
-
-	/**
-	 * Sets user's Gravatar email address to be set.
-	 * 
-	 * @param address
-	 */
-	public void setGravatarAddress ( String address )
-	{
-		gravatarAddress = address;
-	}
-	
-	/**
-	 * Returns user's Gravatar email address to be set.
-	 * @return gravAddress
-	 */
-	public String getGravatarAddress ()
-	{
-		return gravatarAddress;
-	}
-
-	/**
-	 * @param pathToFile the pathToFile to set
-	 */
-	public void setPathToFile(String pathToFile) {
-		this.pathToFile = pathToFile;
 	}
 
 	/**
@@ -121,13 +78,6 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	}
 
 	/**
-	 * @param contentType the contentType to set
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	/**
 	 * @return the contentType
 	 */
 	@Override
@@ -135,34 +85,6 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 		return contentType;
 	}
 
-	/**
-	 * @param file the file to set
-	 */
-	public void setFile(MultipartFile file) {
-		this.file = file;
-	}
-
-	/**
-	 * @return the file
-	 */
-	public MultipartFile getFile() {
-		return file;
-	}
-
-	/**
-	 * @param delete the delete to set
-	 */
-	public void setDelete(boolean delete) {
-		this.delete = delete;
-	}
-
-	/**
-	 * @return the delete
-	 */
-	public boolean isDelete() {
-		return delete;
-	}
-	
 	/**
 	 * Returns the user logged in.
 	 * @return an instance of the user logged in

@@ -415,8 +415,11 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testGetGroupSettingsUrlByGroupName() {
-		String expected = projectHome + "settings/group/franzosengruppe";
-		assertEquals(expected, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
+		String expectedUrl = projectHome + "settings/group/franzosengruppe";
+		assertEquals(expectedUrl, ug.getGroupSettingsUrlByGroupName("franzosengruppe", null));
+
+		String expectedUrlWithTab = projectHome + "settings/group/franzosengruppe?selTab=1";
+		assertEquals(expectedUrlWithTab, ug.getGroupSettingsUrlByGroupName("franzosengruppe", 1));
 	}
 
 	@Test
@@ -466,4 +469,30 @@ public class URLGeneratorTest {
 		assertEquals(projectHome + "help_en/Login#OpenId", ug.getHelpPage("Login#OpenId", "en"));
 	}
 
+	/**
+	 * tests {@link URLGenerator#getExploreUrlByGroup(String)}
+	 */
+	@Test
+	public void testGetExploreUrlByGroup() {
+		final String expected = projectHome + "explore/group/kde";
+		assertEquals(expected, ug.getExploreUrlByGroup("kde"));
+	}
+
+	/**
+	 * tests {@link URLGenerator#getCVUrlByGroup(String)}
+	 */
+	@Test
+	public void testGetCVUrlByGroup() {
+		final String expected = projectHome + "cv/group/kde";
+		assertEquals(expected, ug.getCVUrlByGroup("kde"));
+	}
+
+	/**
+	 * tests {@link URLGenerator#getCVUrlByUser(String)}
+	 */
+	@Test
+	public void testGetCVUrlByUser() {
+		final String expected = projectHome + "cv/user/jaeschke";
+		assertEquals(expected, ug.getCVUrlByUser("jaeschke"));
+	}
 }

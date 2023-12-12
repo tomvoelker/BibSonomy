@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.apha;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,6 +40,7 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class APHAScraperTest {
+	String resultDirectory = "apha/";
 
 	/**
 	 * starts URL test with id url_288 for the host ajph.aphapublications.org/
@@ -47,7 +48,7 @@ public class APHAScraperTest {
 	@Test
 	public void url1TestRun() {
 		final String url = "http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.160184";
-		final String resultFile = "APHAScraperUnitURLTest1.bib";
+		final String resultFile = resultDirectory + "APHAScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
 	
@@ -57,9 +58,8 @@ public class APHAScraperTest {
 	@Test
 	public void url2TestRun() {
 		final String url = "http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.181958";
-		final String resultFile = "APHAScraperUnitURLTest2.bib";
+		final String resultFile = resultDirectory + "APHAScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, APHAScraper.class, resultFile);
 	}
-
 
 }

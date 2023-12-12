@@ -1,0 +1,161 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+
+	<jsp:directive.attribute name="isImport" type="java.lang.Boolean" required="true"
+							 description="We have to distinguish whether the snippet is used for the batchImport or for the batchEdit, since no preselection for the privacy settings can be made for the edit"/>
+	<jsp:directive.attribute name="resourcetype" type="java.lang.String" required="true"
+							 description="The type of resource that are edited (bookmark or bibtex)."/>
+
+	<!-- SUBMITBUTTON -->
+	<c:choose>
+		<c:when test="${isImport}">
+			<fmt:message key="batchedit.button.import" var="buttonUpdate"/>
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="batchedit.button.update" var="buttonUpdate"/>
+		</c:otherwise>
+	</c:choose>
+
+
+	<!-- HELP-TEXTS -->
+	<fmt:message key="batchedit.editTags.help" var="editTagsHelp"/>
+	<c:choose>
+		<c:when test="${isImport}">
+			<fmt:message key="batchedit.updateVisibility.help.import" var="updateVisibilityHelp"/>
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="batchedit.updateVisibility.help.edit" var="updateVisibilityHelp"/>
+		</c:otherwise>
+	</c:choose>
+	<fmt:message key="batchedit.normalize.help" var="normalizePostsHelp"/>
+	<fmt:message key="batchedit.delete.help" var="deletePostsHelp"/>
+
+	<fmt:message key="batchedit.editTags.placeholder" var="editTagsPlaceholder"/>
+
+	<fmt:message key="batchedit.editTags.warning" var="editTagsWarning"/>
+	<input type="hidden" name="editTagsWarning" value="${editTagsWarning}"/>
+
+	<fmt:message key="batchedit.editTags.addMyOwn" var="addMyOwnText"/>
+	<input type="hidden" name="addMyOwnText" value="${addMyOwnText}"/>
+	<fmt:message key="batchedit.editTags.removeMyOwn" var="removeMyOwnText"/>
+	<input type="hidden" name="removeMyOwnText" value="${removeMyOwnText}"/>
+
+	<div class="panel-group" style="margin-top: 10px">
+		<!-- Edit Tags option -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<fmt:message key="batchedit.editTags.heading"/>
+					<span class="badge" style="vertical-align: middle; margin-left: 1em" id="tagsCountBadge"><!-- KEEP ME! --></span>
+					<span class="pull-right">
+						<c:if test="${isImport and resourcetype eq 'bibtex'}">
+							<button type="button" style="vertical-align: middle; margin-right: 1em" class="btn btn-success btn-sm" id="addMyOwnTagButton"><fmt:message key="batchedit.editTags.addMyOwn"/></button>
+						</c:if>
+						<span class="fa fa-question-circle help-popover" data-toggle="tooltip"
+							  data-placement="top" title="${editTagsHelp}"><!-- KEEP ME! --></span>
+					</span>
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<input type="text" class="form-control" size="40" name="tags"
+						   id="tagsInput" placeholder="${editTagsPlaceholder}"/>
+					<span class="input-group-btn">
+												<button type="button" class="addTagsButton btn btn-success" id="addAllTags"
+												><fmt:message key="batchedit.editTags.AddTags"/></button>
+												<button type="button" class="removeTagsButton btn btn-danger" id="removeAllTags"
+												><fmt:message key="batchedit.editTags.RemoveTags"/></button>
+									</span>
+				</div>
+			</div>
+		</div>
+		<!-- Edit Visibility option -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<c:choose>
+						<c:when test="${isImport}">
+							<fmt:message key="batchedit.updateVisibility.heading.import"/>
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" id="checkboxVisibility"
+								   style="margin-right:2px"/>
+							<fmt:message key="batchedit.updateVisibility.heading.edit"/>
+							<span class="badge" style="vertical-align: middle; margin-left: 1em" id="visibilityCountBadge"><!-- KEEP ME! --></span>
+						</c:otherwise>
+					</c:choose>
+					<span class="pull-right">
+						<span class="fa fa-question-circle help-popover" data-toggle="tooltip" data-placement="top" title="${updateVisibilityHelp}"><!-- KEEP ME! --></span>
+					</span>
+				</h3>
+			</div>
+			<div class="panel-body" id="visibilitySelection">
+				<c:choose>
+					<c:when test="${isImport}">
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${mtl:selectedGroups(command.abstractGrouping, command.groups)}"/>
+					</c:when>
+					<c:otherwise>
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+		<!-- Normalize Bibtex option -->
+		<c:if test="${resourcetype eq 'bibtex'}">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<input type="checkbox" id="checkboxNormalize"
+							   style="margin-right:2px"/>
+						<fmt:message key="batchedit.normalize.heading"/>
+						<span class="badge" style="vertical-align: middle; margin-left: 1em" id="normalizeCountBadge"><!-- KEEP ME! --></span>
+						<span class="pull-right">
+							<span class="fa fa-question-circle help-popover" data-toggle="tooltip" data-placement="top" title="${normalizePostsHelp}"><!-- KEEP ME! --></span>
+						</span>
+					</h3>
+				</div>
+			</div>
+		</c:if>
+		<!-- Delete Post option -->
+		<c:if test="${not isImport}">
+			<div class="panel panel-danger" id="deletePanel">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<input type="checkbox" id="checkboxDelete"
+							   style="margin-right:2px"/>
+						<fmt:message key="batchedit.delete.heading"/>
+						<span class="badge" style="vertical-align: middle; margin-left: 1em" id="deleteCountBadge"><!-- KEEP ME! --></span>
+						<span class="pull-right">
+							<span class="fa fa-question-circle help-popover" data-toggle="tooltip" data-placement="top" title="${deletePostsHelp}"><!-- KEEP ME! --></span>
+						</span>
+					</h3>
+				</div>
+			</div>
+		</c:if>
+	</div>
+
+	<!-- Alerts -->
+	<div class="row">
+		<div class="col-md-12">
+			<tr>
+				<td colspan="0">
+					<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary"
+								   className="batchUpdateButton pull-right" type="submit"/>
+					<div class="alert alert-danger col-sm-12 invisible hidden deleteAlert"
+						 style="margin-bottom:0px; margin-top: 10px" role="alert"><fmt:message key="batchedit.deleteAlert"/></div>
+					<div class="alert alert-info col-sm-12 invisible hidden normalizeAlert"
+						 style="margin-bottom:0px; margin-top: 10px;" role="alert"><fmt:message key="batchedit.normalizeAlert"/></div>
+				</td>
+			</tr>
+		</div>
+	</div>
+</jsp:root>

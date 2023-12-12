@@ -55,7 +55,7 @@ import org.bibsonomy.search.es.index.converter.project.ProjectFields;
 import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.es.search.AbstractElasticsearchSearch;
 import org.bibsonomy.search.es.search.util.ElasticsearchIndexSearchUtils;
-import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.util.Converter;
 import org.bibsonomy.util.object.FieldDescriptor;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -76,7 +76,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  * @author dzo
  */
-public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexSyncState, Boolean> implements ProjectSearch {
+public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Project, ProjectQuery, SearchIndexState, Boolean> implements ProjectSearch {
 
 	private static final String DISTINCT_TERMS_AGGREGATION_ID = "distinct_terms";
 	private static final Map<String, String> FIELD_MAPPER = new HashMap<>();
@@ -93,7 +93,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	 * @param converter
 	 * @param infoLogic
 	 */
-	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexSyncState> manager, final Converter<Project, Map<String, Object>, Boolean> converter, final SearchInfoLogic infoLogic) {
+	public ElasticsearchProjectSearch(final ElasticsearchManager<Project, SearchIndexState> manager, final Converter<Project, Map<String, Object>, Boolean> converter, final SearchInfoLogic infoLogic) {
 		super(manager, converter);
 		this.infoLogic = infoLogic;
 	}
@@ -121,10 +121,10 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 	}
 
 	@Override
-	protected List<Pair<String, SortOrder>> getSortOrder(final ProjectQuery query) {
+	protected List<Pair<String, SortOrder>> getSortCriteria(final ProjectQuery query) {
 		final SortOrder sortOrderQuery = ElasticsearchIndexSearchUtils.convertSortOrder(query.getSortOrder());
-		final ProjectSortKey order = query.getOrder();
-		switch (order) {
+		final ProjectSortKey sortKey = query.getSortKey();
+		switch (sortKey) {
 			case TITLE: return Collections.singletonList(new Pair<>(ESConstants.getRawField(ProjectFields.TITLE), sortOrderQuery));
 			case START_DATE: return Collections.singletonList(new Pair<>(ProjectFields.START_DATE, sortOrderQuery));
 		}
@@ -201,7 +201,7 @@ public class ElasticsearchProjectSearch extends AbstractElasticsearchSearch<Proj
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, ProjectFields.TITLE_PREFIX));
 		}
 

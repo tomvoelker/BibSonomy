@@ -65,10 +65,10 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern ENDNOTE_PATTERN = Pattern.compile("<h2>Endnote<\\/h2>\\s*<p>(.*?)<\\/p>", Pattern.DOTALL); 
+	private static final Pattern ENDNOTE_PATTERN = Pattern.compile("<h2>Endnote</h2>.*?<p>(.*?)</p>", Pattern.DOTALL);
 	private static final Pattern ID_PATTERN = Pattern.compile("([^/]+$)");
-	private static final Pattern TYPE_PATTERN = Pattern.compile(SITE_URL + "(.*)/.*");
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta name=\"citation_abstract\" content=\"<p>(.*?)<\\/p>\">", Pattern.DOTALL);
+	private static final Pattern TYPE_PATTERN = Pattern.compile( HOST + "/(.*)/.*");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div class=\"abstract\">.*?<p>.*?<p>(.*?)</p>", Pattern.DOTALL);
 	
 	
 	@Override
@@ -142,7 +142,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
 		try {
 			final Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			
+
 			StringBuffer matches = new StringBuffer();
 			while (m.find()) {
 				matches.append(m.group() + "\n");

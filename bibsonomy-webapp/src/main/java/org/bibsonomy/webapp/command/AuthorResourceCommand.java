@@ -29,25 +29,15 @@
  */
 package org.bibsonomy.webapp.command;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author daill
  */
+@Setter
+@Getter
 public class AuthorResourceCommand extends TagResourceViewCommand {
-	
 	// the requested Author
 	private String requestedAuthor = "";
-		
-	/**
-	 * @return string with the requested author
-	 */
-	public String getRequestedAuthor() {
-		return this.requestedAuthor;
-	}
-
-	/**
-	 * @param requestedAuthor
-	 */
-	public void setRequestedAuthor(String requestedAuthor) {
-		this.requestedAuthor = requestedAuthor;
-	}
 }

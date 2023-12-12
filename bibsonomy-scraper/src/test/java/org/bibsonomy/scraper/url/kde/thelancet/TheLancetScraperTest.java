@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.thelancet;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,13 +41,35 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class TheLancetScraperTest {
+	String resultDirectory = "thelancet/";
 	/**
 	 * url_278
 	 */
 	@Test
-	public void urlTestRun(){
-		final String url = "http://www.thelancet.com/journals/lancet/article/PIIS0140-6736%2814%2960931-4/abstract";
-		final String resultFile = "TheLancetScraperUnitURLTest.bib";
+	public void urlTest1Run(){
+		final String url = "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(14)60931-4/fulltext";
+		final String resultFile = resultDirectory + "TheLancetScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, TheLancetScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest2Run(){
+		final String url = "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02344-8/fulltext";
+		final String resultFile = resultDirectory + "TheLancetScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, TheLancetScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest3Run(){
+		final String url = "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)02728-8/fulltext#section-7c530872-6235-4433-899c-b3f276970189";
+		final String resultFile = resultDirectory + "TheLancetScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, TheLancetScraper.class, resultFile);
+	}
+
+	@Test
+	public void urlTest4Run(){
+		final String url = "https://www.thelancet.com/journals/eclinm/article/PIIS2589-5370(21)00467-3/fulltext#seccesectitle0010";
+		final String resultFile = resultDirectory + "TheLancetScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, TheLancetScraper.class, resultFile);
 	}
 }

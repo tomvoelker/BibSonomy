@@ -22,7 +22,7 @@
 	</bean>
 
 	<bean id="elasticsearchGroupManager" class="org.bibsonomy.search.es.management.ElasticsearchEntityManager" parent="elasticsearchAbstractIndexManager">
-		<constructor-arg>
+		<constructor-arg name="generator">
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
 				<constructor-arg ref="esClient" />
 				<constructor-arg ref="systemURI" />
@@ -32,10 +32,11 @@
 				<constructor-arg ref="elasticsearchGroupEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg ref="postSyncStateConverter" />
-		<constructor-arg ref="elasticsearchGroupEntityInformationProvider" />
-		<constructor-arg ref="groupSearchUpdateLogic" />
-		<constructor-arg ref="groupDatabaseInformationLogic" />
+		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
+		<constructor-arg name="entityInformationProvider" ref="elasticsearchGroupEntityInformationProvider" />
+		<constructor-arg name="updateIndexLogic" ref="groupSearchUpdateLogic" />
+		<constructor-arg name="databaseInformationLogic" ref="groupDatabaseInformationLogic" />
+		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.person}" />
 	</bean>
 
 </beans>

@@ -72,9 +72,17 @@ $(function() {
 				
 				form.hide();
 			},
-			error:		function(jqXHR, data, errorThrown) {
-				handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
-			},
+			error: function(jqXHR, data, errorThrown) {
+				//TODO: Can be deleted as soon as no 405 error is returned regularly during HTTP PUT
+				$('#discussion').load(document.URL +  ' #discussion>*', function(){
+					onPageLoad();
+					plotRatingDistribution();
+					initStars();
+					$('.updatereview').hide()
+					$('.updatecomment').hide()
+				});
+
+			}
 		});
 		
 		return false;
@@ -108,13 +116,6 @@ function initStars() {
 	}).on('rating.change', function(event, value, caption) {
 		var form = $('.simple-review-form.createreview');
 		form.find('textarea').focus();
-		saveReview(form, function(rating, data) {
-			var hash = data.hash;
-			var hashInput = $('<input type="hidden" name="discussionItem.hash">').val(hash);
-			var actionInput = $('<input name="_method" value="PUT" type="hidden">');
-			form.append(actionInput);
-			form.append(hashInput);
-		});
 	});
 }
 

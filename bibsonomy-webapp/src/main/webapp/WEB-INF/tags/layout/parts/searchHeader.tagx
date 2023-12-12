@@ -12,6 +12,8 @@
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.EntitySearchAndFilterCommand" required="true" />
 	<jsp:directive.attribute name="hidePrefixMenu" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hideMiscPrefixes" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="startOverviewPrefix" type="java.lang.Boolean" required="false" />
 
 	<fmt:message var="searchPlaceholder" key="${searchPlaceholderKey}" />
 
@@ -39,18 +41,21 @@
 				<div class="col-md-12 text-center">
 					<ul class="prefix-list">
 						<c:set var="selectedPrefix" value="${command.prefix}" />
-						<c:set var="allSelected" value="${empty selectedPrefix}" />
-						<li class="${allSelected ? 'active' : ''}"><a href="${mtl:setParam(requPathAndQuery, 'prefix', '')}"><fmt:message key="prefix.all" /> </a></li>
+						<c:if test="${startOverviewPrefix}">
+							<c:set var="startSelected" value="${empty selectedPrefix}" />
+							<li class="${startSelected ? 'active' : ''}"><a href="${mtl:setParam(requPathAndQuery, 'prefix', '')}"><fmt:message key="prefix.START" /> </a></li>
+						</c:if>
 						<c:forEach var="prefix" items="${prefixes}">
-							<c:set var="prefixSelected" value="${selectedPrefix eq prefix}" />
-
-							<fmt:message key="prefix.${prefix}" var="prefixMessage" />
-							<c:if test="${fn:startsWith(prefixMessage, '???')}">
-								<c:set var="prefixMessage" value="${prefix}" />
+							<c:if test="${not hideMiscPrefixes or (prefix ne 'NUMBER' and prefix ne 'OTHER')}">
+								<c:set var="prefixSelected" value="${selectedPrefix eq prefix}" />
+								<fmt:message key="prefix.${prefix}" var="prefixMessage" />
+								<c:if test="${fn:startsWith(prefixMessage, '???')}">
+									<c:set var="prefixMessage" value="${prefix}" />
+								</c:if>
+								<li class="${prefixSelected ? 'active' : ''}">
+									<a href="${mtl:removeParam(mtl:setParam(requPathAndQuery, 'prefix', prefix), 'persons.start')}">${prefixMessage}</a>
+								</li>
 							</c:if>
-							<li class="${prefixSelected ? 'active' : ''}">
-								<a href="${mtl:removeParam(mtl:setParam(requPathAndQuery, 'prefix', prefix), 'groups.start')}">${prefixMessage}</a>
-							</li>
 						</c:forEach>
 					</ul>
 				</div>

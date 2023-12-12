@@ -55,7 +55,7 @@ public class GetPersonsByFulltextSearch extends PersonChainElement {
 
 	@Override
 	protected List<Person> handle(final QueryAdapter<PersonQuery> param, final DBSession session) {
-		return this.getPersonDatabaseManager().getPersonsByFulltextSearch(param.getQuery(), param.getLoggedinUser());
+		return this.personDatabaseManager.getPersonsByFulltextSearch(param.getQuery(), param.getLoggedinUser());
 	}
 
 	@Override

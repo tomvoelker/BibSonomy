@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
-
      BibSonomy-Model - Java- and JAXB-Model.
 
      Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
@@ -21,7 +19,6 @@
      You should have received a copy of the GNU Lesser General Public License
      along with this program; if not, write to the Free Software
      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 -->
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -55,7 +52,7 @@
 				<xsd:element name="bibtex" type="BibtexType" />
 				<xsd:element name="document" type="DocumentType" />
 				<xsd:element name="person" type="PersonType" />
-                <xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
+				<xsd:element name="resourcePersonRelation" type="ResourcePersonRelationType" />
 				<xsd:element name="project" type="ProjectType" />
 				<xsd:element name="cris_link" type="CRISLinkTypeType" />
 				<xsd:element name="personMatch" type="PersonMatchType" />
@@ -171,6 +168,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
 			<xsd:element name="parent" type="GroupType" minOccurs="0" />
 			<xsd:element name="groupRequest" type="GroupRequestType" minOccurs="0" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="presetTags" type="TagType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />
@@ -204,6 +202,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="superTags" type="TagsType" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="description" type="xsd:string" />
 		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero" />
 		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero" />
 		<!-- link to details page -->
@@ -244,6 +243,7 @@
 				<xsd:attribute name="description" type="xsd:string" />
 				<xsd:attribute name="postingdate" type="xsd:dateTime" />
 				<xsd:attribute name="changedate" type="xsd:dateTime" />
+				<xsd:attribute name="approved" type="xsd:boolean" />
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -256,7 +256,7 @@
 		<xsd:attribute name="md5hash" type="xsd:string" />
 		<xsd:attribute name="href" type="xsd:anyURI" />
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="UploadDataType">
 		<xsd:attribute name="multipartName" use="required" type="xsd:string" />
 	</xsd:complexType>
@@ -310,7 +310,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<!-- 
 		list of Documents
 	 -->
@@ -329,7 +329,7 @@
 		<xsd:attribute name="href" type="xsd:anyURI" />
 		<xsd:attribute name="date" type="xsd:dateTime" />
 	</xsd:complexType>
-	
+
 	<!-- 
 		list of extra URLs to be shown in the xml 
 	 -->
@@ -338,7 +338,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="url" type="ExtraUrlType" />
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 
 	<!--
 		a bookmark
@@ -362,7 +362,7 @@
 	<xsd:complexType name="AbstractPublicationType">
 		<!-- extra URLs -->
 		<xsd:sequence>
-		  <xsd:element minOccurs="0" maxOccurs="1" name="extraurls" type="ExtraUrlsType" />
+			<xsd:element minOccurs="0" maxOccurs="1" name="extraurls" type="ExtraUrlsType" />
 		</xsd:sequence>
 		<xsd:attribute name="title" type="xsd:string" use="required" />
 		<xsd:attribute name="bibtexKey" type="xsd:string" />
@@ -402,7 +402,7 @@
 		<!-- link to all posts of this publication -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
 	</xsd:complexType>
-	
+
 	<!--
 		a publication
 		TODO: add a publication type with full backwards compatibility
@@ -414,8 +414,8 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
-	
+
+
 	<!--
 		this type encapsulated a list of references for a gold standard
 	-->
@@ -424,12 +424,12 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="reference" type="ReferenceType" />
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="ReferenceType">
 		<xsd:attribute name="interhash" type="xsd:string" />
 		<xsd:attribute name="href" type="xsd:anyURI" />
 	</xsd:complexType>
-	
+
 	<!-- 
 		these publications are part of the collection, …
 	 -->
@@ -438,7 +438,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="publication" type="PublicationType" />
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="PublicationType">
 		<xsd:complexContent>
 			<xsd:extension base="ReferenceType">
@@ -446,7 +446,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<!-- 
 		this type connects the incollection to its collection, …
 	 -->
@@ -457,7 +457,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="GoldStandardPublicationType">
 		<xsd:complexContent>
 			<xsd:extension base="AbstractPublicationType">
@@ -469,10 +469,10 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<!--
 		helper type, as xsd:positiveInteger alone does not include zero
-	-->	
+	-->
 	<xsd:simpleType name="positiveIntegerIncludingZero">
 		<xsd:restriction base="xsd:integer">
 			<xsd:minInclusive value="0" />
@@ -481,7 +481,7 @@
 
 	<!--
 		type for resource hashes
-	-->	
+	-->
 	<xsd:simpleType name="hashType">
 		<xsd:restriction base="xsd:string">
 			<xsd:length value="32" />
@@ -491,7 +491,7 @@
 
 	<!--
 		type for status message
-	-->	
+	-->
 	<xsd:simpleType name="statType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="ok" />
@@ -506,7 +506,7 @@
 		<xsd:sequence>
 			<xsd:element name="post" type="PostType" />
 		</xsd:sequence>
-		
+
 		<xsd:attribute name="createDate" type="xsd:dateTime" />
 		<xsd:attribute name="changeDate" type="xsd:dateTime" />
 		<xsd:attribute name="hash" type="xsd:string" />
@@ -525,7 +525,7 @@
 		</xsd:sequence>
 		<xsd:attribute name="service" type="xsd:anyURI" />
 	</xsd:complexType>
-	
+
 	<!-- 
 		TODO: comment
 	-->
@@ -561,14 +561,14 @@
 		<xsd:attribute name="next" type="xsd:anyURI" />
 	</xsd:complexType>
 
-    <xsd:complexType name="ResourcePersonRelationType">
-        <xsd:sequence>
-            <xsd:element name="person" type="PersonType" />
-            <xsd:element name="resource" type="ResourceLinkType" />
+	<xsd:complexType name="ResourcePersonRelationType">
+		<xsd:sequence>
+			<xsd:element name="person" type="PersonType" />
+			<xsd:element name="resource" type="ResourceLinkType" />
 			<xsd:element name="relationType" type="RelationType" />
 			<xsd:element name="personIndex" type="xsd:integer" />
-        </xsd:sequence>
-    </xsd:complexType>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:simpleType name="GroupRoleType">
 		<xsd:restriction base="xsd:string">
@@ -654,11 +654,11 @@
 
 	<xsd:complexType name="PersonMatchType">
 		<xsd:sequence>
-			<xsd:element name="person1" type="PersonType" />
-			<xsd:element name="person2" type="PersonType" />
-			<xsd:element name="person1Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="person2Posts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="targetPerson" type="PersonType" />
+			<xsd:element name="sourcePerson" type="PersonType" />
 			<xsd:element name="userDenies" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="targetPosts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="sourcePosts" type="PostType" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="state" type="xsd:int" />
 		<xsd:attribute name="matchId" type="xsd:int" />

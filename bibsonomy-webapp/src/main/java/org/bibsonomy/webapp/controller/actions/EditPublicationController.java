@@ -34,6 +34,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unikassel.puma.openaccess.sword.SwordService;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -48,6 +51,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -55,198 +59,207 @@ import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
-import de.unikassel.puma.openaccess.sword.SwordService;
-
 /**
- * 
+ *
  * For strange Java Generics reasons I could not implement the 
  * {@link #instantiateEditPostCommand()} method in exactly the
  * same way in the {@link AbstractEditPublicationController}. Thus I had
  * to make that controller abstract and implement the method 
  * here.
- * 
+ *
  * The underlying problem is a bit deeper: I had to parameterize
  * {@link AbstractEditPublicationController} to subclass it in
  * {@link PostPublicationController}.
- * 
+ *
  * @author rja
  */
+@Setter
+@Getter
 public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> {
-	private static final Log log = LogFactory.getLog(EditPublicationController.class);
+    private static final Log log = LogFactory.getLog(EditPublicationController.class);
 
-	private SwordService swordService = null;
+    private SwordService swordService;
 
-	@Override
-	protected EditPublicationCommand instantiateEditPostCommand() {
-		return new EditPublicationCommand();
-	}
-	
-	@Override
-	protected View finalRedirect(String userName, Post<BibTex> post, final Post<BibTex> oldPost, String referer, boolean update) {
-		
-		/*
-		 * If a SWORD service is configured and the user claims to be the creator of the 
-		 * publication, we forward him to the SWORD service to allow the user to upload the
-		 * publication.
-		 */
-		if (present(this.swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
-			String ref = UrlUtils.safeURIEncode(referer);
-			String publicationUrl = this.urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
-			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
-		}
-		
-		return super.finalRedirect(userName, post, oldPost, referer, update);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#getHttpsReferrer(org.bibsonomy.webapp.command.actions.EditPostCommand)
-	 */
-	@Override
-	protected String getHttpsReferrer(EditPublicationCommand command) {
-		final String url = command.getUrl();
-		if (UrlUtils.isHTTPS(url)) {
-			return url;
-		}
-		
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#createOrUpdateSuccess(org.bibsonomy.webapp.command.actions.EditPostCommand, org.bibsonomy.model.User, org.bibsonomy.model.Post)
-	 */
-	@Override
-	protected void createOrUpdateSuccess(EditPublicationCommand command, User loginUser, Post<BibTex> post) {
-		super.createOrUpdateSuccess(command, loginUser, post);
-		// if a PersonId has been provided, it means that we have come from a person page ...
-		if (command.getPerson() != null) {
-			try {
-				storePersonRelation(command, loginUser, post);
-			} catch (LogicException e) {
-				// should not happen
-				log.error("error associating new post to person", e);
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#validatePost(org.bibsonomy.webapp.command.actions.EditPostCommand)
-	 */
-	@Override
-	protected void validatePost(EditPublicationCommand command) {
-		super.validatePost(command);
-		final PersonResourceRelationType personRole = command.getPersonRole();
-		final List<PersonName> publicationNames = (personRole != null) ? PersonUtils.getPersonsByRole(command.getPost().getResource(), personRole) : null;
-		if (((command.getPersonIndex() != null) && (publicationNames != null) && (command.getPersonIndex() >= publicationNames.size())) || ((command.getPersonId() != null) && (command.getPersonIndex() == null))) {
-			this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
-			return;
-		}
-	}
-	
-	private void storePersonRelation(final EditPublicationCommand command, final User loginUser, final Post<BibTex> pubPost) throws ResourcePersonAlreadyAssignedException {
-		
-		final Person person;
-		final Person commandPerson = command.getPerson();
-		if (present(commandPerson.getPersonId())) {
-			// a new publication is added to an existing person
-			person = this.logic.getPersonById(PersonIdType.PERSON_ID, commandPerson.getPersonId());
-			if (command.getPersonIndex() == null) {
-				final List<PersonName> publicationNames = PersonUtils.getPersonsByRoleWithFallback(pubPost.getResource(), command.getPersonRole());
-				command.setPersonIndex(findPersonIndex(person, publicationNames));
-			}
-		} else {
-			// a new person entity is created by creating a publication post and taking its author name
-			// as the name of the new person (accessible via add person button on persons/genealogy page)
-			final List<PersonName> publicationNames = PersonUtils.getPersonsByRoleWithFallback(pubPost.getResource(), command.getPersonRole());
-			if ((command.getPersonIndex() != null) && (command.getPersonIndex() >= publicationNames.size())) {
-				this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
-				return;
-			}
-			person = commandPerson;
-			person.setMainName(publicationNames.get(command.getPersonIndex()));
-			this.logic.createPerson(person);
-		}
-		
-		if (person != null) {
-			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-			resourcePersonRelation.setPerson(person);
-			resourcePersonRelation.setPost(pubPost);
-			resourcePersonRelation.setChangedBy(loginUser.getName());
-			resourcePersonRelation.setRelationType(command.getPersonRole());
-			resourcePersonRelation.setPersonIndex(command.getPersonIndex());
-			this.logic.createResourceRelation(resourcePersonRelation);
-			
-			if (!present(command.getPost().getResourcePersonRelations())) {
-				command.getPost().setResourcePersonRelations(new ArrayList<>());
-			}
-			command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
-		}
-	}
-	
-	private int findPersonIndex(final Person person, final List<PersonName> publicationNames) {
-		int personIndex = -1;
-		
-		if (publicationNames != null) {
-			for (int i = 0; i < publicationNames.size(); ++i) {
-				final PersonName cleanPubName = PersonNameUtils.cleanAndSoftNormalizeName(publicationNames.get(i), true);
-				for (PersonName perName : person.getNames()) {
-					final PersonName cleanPerName = PersonNameUtils.cleanAndSoftNormalizeName(perName, true);
-					final boolean lastNameMatch = checkPotentialNamePartEquality(cleanPerName.getLastName(), cleanPubName.getLastName(), false);
-					final boolean firstNameMatch = checkPotentialNamePartEquality(cleanPerName.getFirstName(), cleanPubName.getFirstName(), true);
-					if (firstNameMatch && lastNameMatch) {
-						personIndex = i;
-					}
-				}
-			}
-		}
-		return personIndex;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#preparePost(org.bibsonomy.webapp.command.actions.EditPublicationCommand, org.bibsonomy.model.Post)
-	 */
-	@Override
-	protected void preparePost(EditPublicationCommand command, Post<BibTex> post) {
-		super.preparePost(command, post);
-		
-		if (command.getPerson() != null) {
-			if (present(command.getPerson().getPersonId())) {
-				final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
-				command.setPerson(person);
-			}
-		}
-	}
+    private String bibliographyGroup;
 
-	private boolean checkPotentialNamePartEquality(String namePartA, String namePartB, boolean allowAbbreviation) {
-		boolean lastNameMatch = false;
-		if ((namePartA == null) || (namePartB == null)) {
-			lastNameMatch = (namePartB == namePartA);
-		} else {
-			if (namePartA.endsWith(".")) {
-				namePartA = " " + namePartA.substring(0, namePartA.length() - 1);
-			} else {
-				namePartA = " " + namePartA + " ";
-			}
-			namePartB = " " + namePartB + " ";
-			lastNameMatch |= namePartA.contains(namePartB);
-			lastNameMatch |= namePartB.contains(namePartA);
-		}
-		return lastNameMatch;
-	}
+    private boolean bibliographyAutoApproved;
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#populateCommandWithPost(org.bibsonomy.webapp.command.actions.EditPostCommand, org.bibsonomy.model.Post)
-	 */
-	@Override
-	protected void populateCommandWithPost(EditPublicationCommand command, Post<BibTex> post) {
-		super.populateCommandWithPost(command, post);
-		command.setPerson(null);
-	}
-	
-	/**
-	 * @param swordService the swordService to set
-	 */
-	public void setSwordService(SwordService swordService) {
-		this.swordService = swordService;
-	}
+    @Override
+    protected EditPublicationCommand instantiateEditPostCommand() {
+        return new EditPublicationCommand();
+    }
+
+    @Override
+    protected View finalRedirect(String userName, Post<BibTex> post, final Post<BibTex> oldPost, String referer, boolean update) {
+
+        /*
+         * If a SWORD service is configured and the user claims to be the creator of the
+         * publication, we forward him to the SWORD service to allow the user to upload the
+         * publication.
+         */
+        if (present(this.swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
+            String ref = UrlUtils.safeURIEncode(referer);
+            String publicationUrl = this.urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
+            return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
+        }
+
+        return super.finalRedirect(userName, post, oldPost, referer, update);
+    }
+
+    /* (non-Javadoc)
+     * @see org.bibsonomy.webapp.controller.actions.EditPostController#getHttpsReferrer(org.bibsonomy.webapp.command.actions.EditPostCommand)
+     */
+    @Override
+    protected String getHttpsReferrer(EditPublicationCommand command) {
+        final String url = command.getUrl();
+        if (UrlUtils.isHTTPS(url)) {
+            return url;
+        }
+
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.bibsonomy.webapp.controller.actions.EditPostController#createOrUpdateSuccess(org.bibsonomy.webapp.command.actions.EditPostCommand, org.bibsonomy.model.User, org.bibsonomy.model.Post)
+     */
+    @Override
+    protected void createOrUpdateSuccess(EditPublicationCommand command, User loginUser, Post<BibTex> post) {
+        super.createOrUpdateSuccess(command, loginUser, post);
+        // if a PersonId has been provided, it means that we have come from a person page ...
+        if (command.getPerson() != null) {
+            try {
+                storePersonRelation(command, loginUser, post);
+            } catch (LogicException e) {
+                // should not happen
+                log.error("error associating new post to person", e);
+                throw new RuntimeException(e);
+            }
+        }
+
+        /*
+         * if automatically approved by the bibliography group is enabled, we will create or update
+         * the goldstandard of the post as well AND set it to approved
+         */
+        if (bibliographyAutoApproved && present(bibliographyGroup)) {
+            // Check, if user is a member of the bibliography group // TODO: Use group level permission
+            if (present(GroupUtils.getGroupMembershipOfUserForGroup(loginUser, bibliographyGroup))) {
+                this.logic.approvePost(post, loginUser.getName());
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.bibsonomy.webapp.controller.actions.EditPostController#validatePost(org.bibsonomy.webapp.command.actions.EditPostCommand)
+     */
+    @Override
+    protected void validatePost(EditPublicationCommand command) {
+        super.validatePost(command);
+        final PersonResourceRelationType personRole = command.getPersonRole();
+        final List<PersonName> publicationNames = (personRole != null) ? PersonUtils.getPersonsByRole(command.getPost().getResource(), personRole) : null;
+        if (((command.getPersonIndex() != null) && (publicationNames != null) && (command.getPersonIndex() >= publicationNames.size())) || ((command.getPersonId() != null) && (command.getPersonIndex() == null))) {
+            this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
+            return;
+        }
+    }
+
+    private void storePersonRelation(final EditPublicationCommand command, final User loginUser, final Post<BibTex> pubPost) throws ResourcePersonAlreadyAssignedException {
+
+        final Person person;
+        final Person commandPerson = command.getPerson();
+        if (present(commandPerson.getPersonId())) {
+            // a new publication is added to an existing person
+            person = this.logic.getPersonById(PersonIdType.PERSON_ID, commandPerson.getPersonId());
+            if (command.getPersonIndex() == null) {
+                final List<PersonName> publicationNames = PersonUtils.getPersonsByRoleWithFallback(pubPost.getResource(), command.getPersonRole());
+                command.setPersonIndex(findPersonIndex(person, publicationNames));
+            }
+        } else {
+            // a new person entity is created by creating a publication post and taking its author name
+            // as the name of the new person (accessible via add person button on persons/genealogy page)
+            final List<PersonName> publicationNames = PersonUtils.getPersonsByRoleWithFallback(pubPost.getResource(), command.getPersonRole());
+            if ((command.getPersonIndex() != null) && (command.getPersonIndex() >= publicationNames.size())) {
+                this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
+                return;
+            }
+            person = commandPerson;
+            person.setMainName(publicationNames.get(command.getPersonIndex()));
+            this.logic.createPerson(person);
+        }
+
+        if (person != null) {
+            final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+            resourcePersonRelation.setPerson(person);
+            resourcePersonRelation.setPost(pubPost);
+            resourcePersonRelation.setChangedBy(loginUser.getName());
+            resourcePersonRelation.setRelationType(command.getPersonRole());
+            resourcePersonRelation.setPersonIndex(command.getPersonIndex());
+            this.logic.createResourceRelation(resourcePersonRelation);
+
+            if (!present(command.getPost().getResourcePersonRelations())) {
+                command.getPost().setResourcePersonRelations(new ArrayList<>());
+            }
+            command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
+        }
+    }
+
+    private int findPersonIndex(final Person person, final List<PersonName> publicationNames) {
+        int personIndex = -1;
+
+        if (publicationNames != null) {
+            for (int i = 0; i < publicationNames.size(); ++i) {
+                final PersonName cleanPubName = PersonNameUtils.cleanAndSoftNormalizeName(publicationNames.get(i), true);
+                for (PersonName perName : person.getNames()) {
+                    final PersonName cleanPerName = PersonNameUtils.cleanAndSoftNormalizeName(perName, true);
+                    final boolean lastNameMatch = checkPotentialNamePartEquality(cleanPerName.getLastName(), cleanPubName.getLastName(), false);
+                    final boolean firstNameMatch = checkPotentialNamePartEquality(cleanPerName.getFirstName(), cleanPubName.getFirstName(), true);
+                    if (firstNameMatch && lastNameMatch) {
+                        personIndex = i;
+                    }
+                }
+            }
+        }
+        return personIndex;
+    }
+
+    /* (non-Javadoc)
+     * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#preparePost(org.bibsonomy.webapp.command.actions.EditPublicationCommand, org.bibsonomy.model.Post)
+     */
+    @Override
+    protected void preparePost(EditPublicationCommand command, Post<BibTex> post) {
+        super.preparePost(command, post);
+
+        if (command.getPerson() != null) {
+            if (present(command.getPerson().getPersonId())) {
+                final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
+                command.setPerson(person);
+            }
+        }
+    }
+
+    private boolean checkPotentialNamePartEquality(String namePartA, String namePartB, boolean allowAbbreviation) {
+        boolean lastNameMatch = false;
+        if ((namePartA == null) || (namePartB == null)) {
+            lastNameMatch = (namePartB == namePartA);
+        } else {
+            if (namePartA.endsWith(".")) {
+                namePartA = " " + namePartA.substring(0, namePartA.length() - 1);
+            } else {
+                namePartA = " " + namePartA + " ";
+            }
+            namePartB = " " + namePartB + " ";
+            lastNameMatch |= namePartA.contains(namePartB);
+            lastNameMatch |= namePartB.contains(namePartA);
+        }
+        return lastNameMatch;
+    }
+
+    /* (non-Javadoc)
+     * @see org.bibsonomy.webapp.controller.actions.EditPostController#populateCommandWithPost(org.bibsonomy.webapp.command.actions.EditPostCommand, org.bibsonomy.model.Post)
+     */
+    @Override
+    protected void populateCommandWithPost(EditPublicationCommand command, Post<BibTex> post) {
+        super.populateCommandWithPost(command, post);
+        command.setPerson(null);
+    }
+
 }

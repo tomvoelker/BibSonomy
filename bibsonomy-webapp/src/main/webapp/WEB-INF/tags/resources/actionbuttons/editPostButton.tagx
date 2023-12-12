@@ -23,7 +23,7 @@
 		<c:set var="url" value="Bookmark"/>
 	</c:if>
 	<c:set var="editTitle" value=""/>
-	
+
 	<c:choose>
 		<c:when test="${enforceCommunityPost or empty post.user.name}">
 			<fmt:message var="editTitle" key="post.actions.edit.gold.title" />

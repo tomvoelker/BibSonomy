@@ -29,50 +29,27 @@
  */
 package org.bibsonomy.model.extra;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * an map entry representation containing a key and a value
  *
  * @author kchoong
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdditionalKey {
 
 	private String keyName;
 	private String keyValue;
 
-	public AdditionalKey() {
-
-	}
-
-	public AdditionalKey(String keyName, String keyValue) {
-		this.keyName = keyName;
-		this.keyValue = keyValue;
-	}
-
-	/**
-	 * @return the keyName
-	 */
-	public String getKeyName() {
-		return keyName;
-	}
-
-	/**
-	 * @param keyName the keyName to set
-	 */
-	public void setKeyName(String keyName) {
-		this.keyName = keyName;
-	}
-
-	/**
-	 * @return the keyValue
-	 */
-	public String getKeyValue() {
-		return keyValue;
-	}
-
-	/**
-	 * @param keyValue the keyValue to set
-	 */
-	public void setKeyValue(String keyValue) {
-		this.keyValue = keyValue;
+	@Override
+	public String toString() {
+		return keyName + "=" + keyValue;
 	}
 }

@@ -62,6 +62,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
@@ -159,36 +160,47 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	private BoolQueryBuilder buildQuery(final PersonQuery query) {
-		final String personQuery = query.getQuery();
+		final String personQuery = query.getSearch();
 
 		final BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 		final BoolQueryBuilder filterQuery = this.buildFilterQuery(query);
 		if (present(personQuery)) {
-			/*
-			 * maybe some of tokens of the query contain the title of a publication of the author
-			 */
-			final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
-			resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-							.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
-							.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
-							.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
-							.tieBreaker(0.8f)
-							.boost(4);
-			final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
+			// Build the main search query
+			final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
 
+			// If quotes are used for an exact search, the query uses a query string. Otherwise uses multi match for more fuzziness
+			if (personQuery.chars().filter(ch -> ch == '"').count() > 0) {
+				final QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery(personQuery)
+						.defaultOperator(Operator.AND);
+				// set the type to phrase prefix match
+				queryStringQueryBuilder.analyzeWildcard(true).tieBreaker(1f);
+
+				mainSearchQuery.should(queryStringQueryBuilder);
+			} else {
+				/*
+				 * maybe some of tokens of the query contain the title of a publication of the author
+				 */
+				final MultiMatchQueryBuilder resourceRelationQuery = QueryBuilders.multiMatchQuery(personQuery);
+				resourceRelationQuery.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+						.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
+						.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Resource.TITLE, 2.5f)
+						.field(PersonFields.RelationFields.POST + "." + ESConstants.Fields.Publication.SCHOOL, 1.3f)
+						.tieBreaker(0.8f)
+						.boost(4);
+
+				final HasChildQueryBuilder childSearchQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, resourceRelationQuery, ScoreMode.Max);
+				mainSearchQuery.should(childSearchQuery);
+
+				final QueryBuilder nameQuery = this.getNameQuery(query);
+				mainSearchQuery.should(nameQuery);
+			}
+
+			// Inner hits query for relations
 			final HasChildQueryBuilder childQuery = JoinQueryBuilders.hasChildQuery(PersonFields.TYPE_RELATION, QueryBuilders.matchAllQuery(), ScoreMode.None);
 			final InnerHitBuilder innerHit = new InnerHitBuilder();
 			childQuery.innerHit(innerHit);
 
-			final QueryBuilder nameQuery = this.getNameQuery(query);
-
-			/*
-			 * build the search query
-			 */
-			final BoolQueryBuilder mainSearchQuery = QueryBuilders.boolQuery();
-			mainSearchQuery.should(nameQuery);
-			mainSearchQuery.should(childSearchQuery);
-
+			// Add to main query
 			mainQuery.must(mainSearchQuery);
 			mainQuery.should(childQuery);
 		}
@@ -218,7 +230,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 		}
 
 		final Prefix prefix = query.getPrefix();
-		if (present(prefix)) {
+		if (present(prefix) && prefix != Prefix.ALL) {
 			filterQuery.must(ElasticsearchIndexSearchUtils.buildPrefixFilter(prefix, PersonFields.MAIN_NAME_PREFIX));
 		}
 
@@ -228,7 +240,7 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	private QueryBuilder getNameQuery(final PersonQuery query) {
 		final boolean usePrefixMatch = query.isUsePrefixMatch();
 		final boolean phraseMatch = query.isPhraseMatch();
-		final String searchQuery = query.getQuery();
+		final String searchQuery = query.getSearch();
 
 		/*
 		 * the search terms must match in the order entered and the last is only a prefix match
@@ -251,9 +263,9 @@ public class ElasticsearchPersonSearch implements PersonSearch {
 	}
 
 	private List<Pair<String, SortOrder>> getSortOrders(final PersonQuery query) {
-		final PersonSortKey order = query.getOrder();
-		if (present(order)) {
-			switch (order) {
+		final PersonSortKey sortKey = query.getSortKey();
+		if (present(sortKey)) {
+			switch (sortKey) {
 				case RANK:
 					return null; // rank is the default order
 				case MAIN_NAME_LAST_NAME:

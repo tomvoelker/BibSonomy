@@ -116,7 +116,7 @@ public class FollowersPageController extends SingleResourceListController implem
 				listCommand.setStart(origStart);
 				
 				// compute the ranking for each post in the list
-				RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), command.getRanking().getMethodObj(), command.getRanking().getNormalize());
+				RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), command.getRanking().getMethodObj(), command.getRanking().isNormalize());
 
 				// post-process & sort
 				this.postProcessAndSortList(command, resourceType);

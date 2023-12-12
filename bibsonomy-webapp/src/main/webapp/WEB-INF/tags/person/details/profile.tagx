@@ -1,0 +1,99 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
+		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details"
+>
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.PersonPageCommand" required="true" />
+	<jsp:directive.attribute name="title" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="personName" type="java.lang.String" required="true" />
+
+	<jsp:directive.attribute name="icons" fragment="true"/>
+	<jsp:directive.attribute name="buttons" fragment="true"/>
+
+	<spring:eval var="organizations" expression="T(org.bibsonomy.model.util.cris.CRISLinkUtils).filterCRISLinksBySourceType(T(java.lang.Class).forName('org.bibsonomy.model.Group'), command.person.crisLinks)"/>
+	<fmt:message key="person.index.searchInfo" var="searchInfo"/>
+
+	<div class="media">
+		<div class="media-left media-top">
+			<div class="media-image">
+				<c:if test="${not empty command.person.user}">
+					<c:set var="personIconUrl" value="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}"/>
+					<c:if test="${not empty personIconUrl}">
+						<img class="media-object" src="${personIconUrl}" alt="${personName}" />
+					</c:if>
+				</c:if>
+			</div>
+		</div>
+		<div class="media-body">
+			<div class="row person-header">
+				<div class="col-md-12">
+					<h1>
+						<c:out value="${title}"/>
+						<jsp:invoke fragment="icons" />
+					</h1>
+				</div>
+			</div>
+			<div class="media-description">
+				<c:choose>
+					<c:when test="${empty organizations}">
+						<!-- College -->
+						<c:if test="${not empty command.person.college}">
+							<perdetails:property command="${command}" type="college" value="${command.person.college}"/>
+						</c:if>
+					</c:when>
+					<c:otherwise>
+						<!-- Organizations -->
+						<c:choose>
+							<c:when test="${fn:length(organizations) eq 1}">
+								<perdetails:property command="${command}" type="organization" list="${organizations}"/>
+							</c:when>
+							<c:otherwise>
+								<perdetails:property command="${command}" type="organizations" list="${organizations}"/>
+							</c:otherwise>
+						</c:choose>
+					</c:otherwise>
+				</c:choose>
+
+				<!-- E-Mail -->
+				<c:if test="${properties['person.email.show'] and not empty command.person.email}">
+					<perdetails:property command="${command}" type="email" value="${command.person.email}"/>
+				</c:if>
+
+				<!-- Homepage -->
+				<c:if test="${not empty command.person.homepage}">
+					<perdetails:property command="${command}" type="homepage" value="${command.person.homepage}"/>
+				</c:if>
+
+				<!-- ORCiD -->
+				<c:if test="${not empty command.person.orcid}">
+					<perdetails:property command="${command}" type="orcid" value="${command.person.orcid}"/>
+				</c:if>
+
+				<!-- ResearcherID -->
+				<c:if test="${not empty command.person.researcherid}">
+					<perdetails:property command="${command}" type="researcherid" value="${command.person.researcherid}"/>
+				</c:if>
+
+				<!-- Alternative Names -->
+				<c:if test="${not empty command.alternativeNames}">
+					<perdetails:property command="${command}" type="personAlternateNames" list="${command.alternativeNames}"/>
+				</c:if>
+
+				<!-- Additional Keys -->
+				<c:if test="${not empty command.person.additionalKeys and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}">
+					<perdetails:additionalKeys additionalKeys="${command.person.additionalKeys}"/>
+				</c:if>
+
+			</div>
+			<div class="row person-buttons">
+				<jsp:invoke fragment="buttons" />
+			</div>
+		</div>
+	</div>
+
+</jsp:root>

@@ -35,7 +35,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.bibsonomy.common.exceptions.InvalidModelException;
@@ -45,6 +44,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -103,9 +103,8 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 		
 		final Date newDate;
 		if (present(this.date)) {
-			try {
-				newDate = RESTConfig.parseDate(this.date);
-			} catch (final ParseException e) {
+			newDate = RESTUtils.parseDateString(this.date, RESTConfig.DEFAULT_DATETIME_FORMAT);
+			if (!present(newDate)) {
 				throw new InvalidModelException("parsing date failed. Date was " + this.date);
 			}
 		} else {

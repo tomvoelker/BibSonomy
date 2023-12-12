@@ -30,13 +30,13 @@
 		|
 		+-->
 		<layout:layout
-		content="${content}"
-		heading="${heading}"
-		loginUser="${command.context.loginUser}"
-		pageTitle="${editPageTitle}" 
-		requPath="${requPath}" 
-		activeTab="${activeTab}"
-		noSidebar="${true}"
+			content="${content}"
+			heading="${heading}"
+			loginUser="${command.context.loginUser}"
+			pageTitle="${editPageTitle}"
+			requPath="${requPath}"
+			activeTab="${activeTab}"
+			noSidebar="${true}"
 		>
 		
 		</layout:layout>

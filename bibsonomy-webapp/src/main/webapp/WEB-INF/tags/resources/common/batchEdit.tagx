@@ -1,4 +1,4 @@
-<jsp:root version="2.0" 
+<jsp:root version="2.0"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -10,27 +10,45 @@
 	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="iconOnly" type="java.lang.Boolean" required="false" />
-	
+	<jsp:directive.attribute name="forAjaxPosts" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="buttonSize" type="java.lang.String" required="false" />
+
 	<c:if test="${empty iconOnly}">
 		<c:set var="iconOnly" value="${false}" />
 	</c:if>
-	
-	<!--+
-		+ TODO: use urlgenerator
-		+ batch edit
-		+ requPathAndQuery already contains "/"
-		+-->	
-	<c:if test="${isPublication}">
-		<c:url var="editUrl"   value="/beditbib${requPathAndQuery}" />
+
+	<c:if test="${empty buttonSize}">
+		<c:set var="buttonSize" value="xsmall" />
 	</c:if>
+
+	<!-- TODO: use urlgenerator -->
+	<c:url var="baseEditUrl" value="/beditbib" />
 	<c:if test="${isBookmark}">
-		<c:url var="editUrl" value="/bediturl${requPathAndQuery}"/>
+		<c:url var="baseEditUrl" value="/bediturl"/>
 	</c:if>
-	
+
+	<c:choose>
+		<c:when test="${forAjaxPosts}">
+			<c:url var="editUrl" value="${baseEditUrl}"/>
+		</c:when>
+		<c:otherwise>
+			<!-- requPathAndQuery must already contain "/" -->
+			<c:url var="editUrl" value="${baseEditUrl}${requPathAndQuery}"/>
+		</c:otherwise>
+	</c:choose>
+
 	<c:if test="${not iconOnly}">
 		<c:set var="textKey" value="post.meta.batch_edit" />
 		<c:set var="block" value="${true}" />
 	</c:if>
-	<bs:linkButton block="${block}" style="link" href="${editUrl}" size="xsmall" textKey="${textKey}" titleKey="post.meta.edit.title" icon="pencil" />
-	
+
+	<bs:linkButton id="batchEditButton"
+				   block="${block}"
+				   style="link"
+				   href="${editUrl}"
+				   size="${buttonSize}"
+				   textKey="${textKey}"
+				   titleKey="post.meta.edit.title"
+				   icon="pencil" />
+
 </jsp:root>

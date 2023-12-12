@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.scientific;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -41,11 +41,14 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class ScientificScraperTest {
+	String resultDirectory = "scientific/";
 	/**
 	 * starts URL test with id url_348
 	 */
 	@Test
 	public void url1TestRun() {
-		assertScraperResult("https://www.scientific.net/AMR.225-226.1032", ScientificScraper.class, "ScientificScraperUnitURLTest1.bib");
+		final String url = "https://www.scientific.net/AMR.225-226.1032";
+		final String resultFile = resultDirectory + "ScientificScraperUnitURLTest1.bib";
+		assertScraperResult(url, ScientificScraper.class, resultFile);
 	}
 }

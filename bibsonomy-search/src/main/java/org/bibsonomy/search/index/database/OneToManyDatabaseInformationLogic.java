@@ -29,39 +29,40 @@
  */
 package org.bibsonomy.search.index.database;
 
-import org.bibsonomy.search.update.DefaultSearchIndexSyncState;
-import org.bibsonomy.search.update.SearchIndexDualSyncState;
+
+import org.bibsonomy.search.model.SearchIndexDualState;
+import org.bibsonomy.search.model.SearchIndexState;
 
 /**
- * adapter to build a one to many database information logic of two {@link DatabaseInformationLogic}s
+ * adapter to build a one-to-many database information logic of two {@link DatabaseInformationLogic}s
  *
  * @author dzo
  */
-public class OneToManyDatabaseInformationLogic implements DatabaseInformationLogic<SearchIndexDualSyncState> {
+public class OneToManyDatabaseInformationLogic implements DatabaseInformationLogic<SearchIndexDualState> {
 
-	private final DatabaseInformationLogic<DefaultSearchIndexSyncState> firstDatabaseInformationLogic;
-	private final DatabaseInformationLogic<DefaultSearchIndexSyncState> secondDatabaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexState> firstDatabaseInformationLogic;
+	private final DatabaseInformationLogic<SearchIndexState> secondDatabaseInformationLogic;
 
 	/**
 	 * constructor with the required two information services
 	 * @param firstDatabaseInformationLogic
 	 * @param secondDatabaseInformationLogic
 	 */
-	public OneToManyDatabaseInformationLogic(DatabaseInformationLogic<DefaultSearchIndexSyncState> firstDatabaseInformationLogic, DatabaseInformationLogic<DefaultSearchIndexSyncState> secondDatabaseInformationLogic) {
+	public OneToManyDatabaseInformationLogic(DatabaseInformationLogic<SearchIndexState> firstDatabaseInformationLogic, DatabaseInformationLogic<SearchIndexState> secondDatabaseInformationLogic) {
 		this.firstDatabaseInformationLogic = firstDatabaseInformationLogic;
 		this.secondDatabaseInformationLogic = secondDatabaseInformationLogic;
 	}
 
 	@Override
-	public SearchIndexDualSyncState getDbState() {
-		final SearchIndexDualSyncState searchIndexDualSyncState = new SearchIndexDualSyncState();
+	public SearchIndexDualState getDbState() {
+		final SearchIndexDualState searchIndexDualSyncState = new SearchIndexDualState();
 
 		// get first state
-		final DefaultSearchIndexSyncState firstState = this.firstDatabaseInformationLogic.getDbState();
+		final SearchIndexState firstState = this.firstDatabaseInformationLogic.getDbState();
 		searchIndexDualSyncState.setFirstState(firstState);
 
 		// get second state
-		final DefaultSearchIndexSyncState secondState = this.secondDatabaseInformationLogic.getDbState();
+		final SearchIndexState secondState = this.secondDatabaseInformationLogic.getDbState();
 		searchIndexDualSyncState.setSecondState(secondState);
 
 		return searchIndexDualSyncState;

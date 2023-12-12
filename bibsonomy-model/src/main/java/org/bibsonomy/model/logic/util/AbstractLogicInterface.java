@@ -47,7 +47,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.common.enums.PersonOperation;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.QueryScope;
 import org.bibsonomy.common.enums.SortKey;
@@ -60,13 +60,13 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonMatch;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.PhDRecommendation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -141,7 +141,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#updatePerson(org.bibsonomy.model.Person, org.bibsonomy.common.enums.PersonUpdateOperation)
 	 */
 	@Override
-	public void updatePerson(Person person, PersonUpdateOperation operation) {
+	public void updatePerson(Person person, PersonOperation operation) {
 		this.doDefaultAction();
 	}
 
@@ -152,28 +152,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	public Person getPersonById(PersonIdType idType, String id) {
 		this.doDefaultAction();
 		return null;
-	}
-
-	@Override
-	public Person getPersonByAdditionalKey(String key, String value) {
-		this.doDefaultAction();
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
-	 */
-	@Override
-	public void removePersonName(Integer personNameId) {
-		this.doDefaultAction();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public void createPersonName(PersonName withPersonId) {
-		this.doDefaultAction();
 	}
 
 	@Override
@@ -228,6 +206,12 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public List<JobResult> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation) {
+		this.doDefaultAction();
+		return null;
+	}
+
+	@Override
+	public List<JobResult> approvePost(Post<BibTex> post, String username) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -918,14 +902,6 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
-	 */
-	@Override
-	public void unlinkUser(String username) {
-		this.doDefaultAction();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getPersonMatches(java.lang.String)
 	 */
 	@Override
@@ -1024,7 +1000,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	}
 
 	@Override
-	public <R> R getMetaData(MetaDataQuery<R> query) {
+	public <R> R getMetaData(User loggedInUser, MetaDataQuery<R> query) {
 		this.doDefaultAction();
 		return null;
 	}

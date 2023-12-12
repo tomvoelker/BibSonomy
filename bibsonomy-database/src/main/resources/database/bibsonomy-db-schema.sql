@@ -506,6 +506,21 @@ CREATE TABLE `group_tagsets` (
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `group_tags`
+--
+
+DROP TABLE IF EXISTS `group_preset_tags`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group_preset_tags` (
+  `tag_name` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
+  `group_name` varchar(30) NOT NULL default '',
+  `group` int(10) NOT NULL default '0',
+  `description` varchar(255),
+  UNIQUE KEY `unique_group_tag` (`tag_name`, `group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `groupids`
 --
 
@@ -515,7 +530,6 @@ SET character_set_client = utf8;
 CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
-  `parent` int(10) DEFAULT NULL,
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
   `allow_join` TINYINT(1) NULL DEFAULT '1',
@@ -525,6 +539,7 @@ CREATE TABLE `groupids` (
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
   `organization` BOOLEAN DEFAULT FALSE,
   `internal_id` VARCHAR(255) DEFAULT NULL,
+  `parent` int(10) DEFAULT NULL,
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1830,8 +1845,8 @@ CREATE TABLE `log_postchange` (
 
 CREATE TABLE `person_match`(
   `match_id` int(10) unsigned NOT NULL unique auto_increment,
-  `person1_id` varchar(64) NOT NULL,
-  `person2_id` varchar(64) NOT NULL,
+  `target_person_id` varchar(64) NOT NULL,
+  `source_person_id` varchar(64) NOT NULL,
   `state` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 if merge is denied, 2 if they are merged',
    PRIMARY KEY  (`match_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

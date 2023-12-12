@@ -350,22 +350,14 @@ $(function() {
 			}
 		});
 	});
-	
-	$('form.popover-confirm > *[data-toggle="popover"]').on('shown.bs.popover', function () {
-		$('.popover-content > .confirm').click(function() {
-			var form = $(this).parents('form.popover-confirm');
-			form.data("confirmed", "yes");
-			form.submit();
-			return false;
-		});
+
+	/*
+	 * Initialize popover with manual click trigger
+	 */
+	$('.popover-click').on('click', function() {
+		$(this).popover('toggle');
 	});
-	$('form.popover-confirm').submit(function() {
-		var confirmed = $(this).data("confirmed");
-		if (confirmed !== "yes") {
-			return false;
-		}
-	});
-	
+
 	$('a.doc-magnify').click(function() {
 		var previewModal = $('#preview-modal');
 		var image = $(this).parent().find('img');

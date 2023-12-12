@@ -31,7 +31,7 @@ package org.bibsonomy.scraper.url.kde.nejm;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -40,14 +40,15 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NEJMScraperTest {
+	String resultDirectory = "nejm/";
 
 	/**
 	 * starts URL test with id url_215
 	 */
 	@Test
 	public void urlTest1Run() {
-		final String url = "http://www.nejm.org/doi/full/10.1056/NEJMra1100109";
-		final String resultFile = "NEJMScraperUnitURLTest1.bib";
+		final String url = "https://www.nejm.org/doi/full/10.1056/NEJMra1100109";
+		final String resultFile = resultDirectory + "NEJMScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, NEJMScraper.class, resultFile);
 	}
 }

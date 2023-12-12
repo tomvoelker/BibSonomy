@@ -30,11 +30,12 @@
 package org.bibsonomy.common.enums;
 
 /**
- * all alpha numeric prefixes possible for selecting items
+ * all alphanumeric prefixes possible for selecting items
  *
  * @author dzo
  */
 public enum Prefix {
+	ALL,
 	A,
 	B,
 	C,
