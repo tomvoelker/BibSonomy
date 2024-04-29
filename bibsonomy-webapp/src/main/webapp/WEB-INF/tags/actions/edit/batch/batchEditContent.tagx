@@ -97,7 +97,8 @@
 						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 10)}">10</option>
 						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 20)}">20</option>
 						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 100)}">100</option>
-						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 10000)}">10000</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 500)}">500</option>
+						<option value="${mtl:setParam(entriesSelectUrl, entriesPerPage, 1000)}">1000</option>
 					</select>
 				</div>
 			</div>
