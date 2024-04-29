@@ -48,7 +48,7 @@
 					listViewStartParamName="${listViewStartParamName}"
 					updateExistingPost="${updateExistingPost}"
 					overwrite="${overwrite}"
-					directEdit="${true}">
+					directEdit="${false}">
 					<jsp:attribute name="shortPostDescription">
 						<jsp:invoke fragment="shortPostDescription" />
 					</jsp:attribute>
