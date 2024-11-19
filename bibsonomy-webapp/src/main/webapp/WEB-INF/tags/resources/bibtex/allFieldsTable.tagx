@@ -93,7 +93,7 @@
 			</c:choose>
 
 			<dd>
-				<a href="${fn:escapeXml(publication.url)}">
+				<a rel="nofollow" href="${fn:escapeXml(publication.url)}">
 					<c:if test="${isLinkToDocument}">
 						<fontawesome:icon icon="file-pdf-o" /><c:out value=" " />
 					</c:if>
@@ -113,7 +113,7 @@
 					<c:forEach items="${publication.extraUrls}" var="url">
 						<li>
 							<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-							<a itemprop="url" href="${escapedUrl}"><c:out value="${url.text}"/></a>
+							<a itemprop="url" rel="nofollow" href="${escapedUrl}"><c:out value="${url.text}"/></a>
 
 							<c:if test="${isOwnEntry}">
 								<fmt:message var="deleteUrl" key="post.bibtex.remove"/>
