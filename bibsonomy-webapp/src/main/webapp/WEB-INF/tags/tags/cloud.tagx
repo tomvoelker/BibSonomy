@@ -92,7 +92,8 @@
 						<c:if test="${showTooltips}">
 							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
 							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>
-						</c:if>	
+						</c:if>
+						<jspx:attribute name="rel">nofollow</jspx:attribute>
 						<jspx:body>${fn:escapeXml(tag.name)}</jspx:body>
 					</jspx:element>
 				</li>
