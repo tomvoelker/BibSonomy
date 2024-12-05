@@ -53,14 +53,14 @@
 			<body data-spy="scroll" data-target="#sidebar-nav">
 
 				<c:choose>
+					<c:when test="${properties['project.header.alert.message.spammer'] != null and loginUser != null and loginUser.spammer}">
+						<c:set var="alertMessage" value="${properties['project.header.alert.message.spammer']}" />
+					</c:when>
 					<c:when test="${pageContext.response.locale eq 'en'}">
 						<c:set var="alertMessage" value="${properties['project.header.alert.message.en']}" />
 					</c:when>
 					<c:when test="${pageContext.response.locale eq 'de'}">
 						<c:set var="alertMessage" value="${properties['project.header.alert.message.de']}" />
-					</c:when>
-					<c:when test="${properties['project.header.alert.message.spammer'] != null and loginUser != null and loginUser.spammer}">
-						<c:set var="alertMessage" value="${properties['project.header.alert.message.spammer']}" />
 					</c:when>
 					<c:otherwise></c:otherwise>
 				</c:choose>
