@@ -59,6 +59,9 @@
 					<c:when test="${pageContext.response.locale eq 'de'}">
 						<c:set var="alertMessage" value="${properties['project.header.alert.message.de']}" />
 					</c:when>
+					<c:when test="${properties['project.header.alert.message.spammer'] != null and loginUser != null and loginUser.spammer}">
+						<c:set var="alertMessage" value="${properties['project.header.alert.message.spammer']}" />
+					</c:when>
 					<c:otherwise></c:otherwise>
 				</c:choose>
 
@@ -77,6 +80,12 @@
 
 					<c:when test="${properties['project.header.alert.type'] eq 'info'}">
 						<div class="alert alert-info alert-dismissible text-center" style="padding: 7px;" role="alert">
+							<c:out value="${alertMessage}" />
+						</div>
+					</c:when>
+
+					<c:when test="${properties['project.header.alert.message.spammer'] != null and loginUser != null and loginUser.spammer}">
+						<div class="alert alert-danger text-center" style="padding: 7px;"  role="alert">
 							<c:out value="${alertMessage}" />
 						</div>
 					</c:when>
