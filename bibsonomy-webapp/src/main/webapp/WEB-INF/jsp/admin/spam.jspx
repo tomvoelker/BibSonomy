@@ -92,8 +92,8 @@
 						<th><fmt:message key="admin.userinfo.UpdatedAt" /></th>
 					</tr>
 				
-					<!-- Row number is set negative, so that row is not removed 
-					 	 when flagging and unflagging the specific user  
+					<!-- Row number is set negative, so that row is not removed
+					 	 when flagging and unflagging the specific user
 					-->
 					<tags:userInfo spamUser="${command.user}" rowNumber='-1'
 						moveFromTabSpammer="false" moveFromTabNSpammer="false"
@@ -104,9 +104,9 @@
 			<br />
 			<c:if test="${not empty command.tabs}">
 
-				<!--  
-					if no URL given, initialize to empty string 
-					(TODO: isn't this done automatically?) 
+				<!--
+					if no URL given, initialize to empty string
+					(TODO: isn't this done automatically?)
 				-->
 				<c:if test="${empty command.tabURL}">
 					<c:set var="tabURL" value=""/>
@@ -125,7 +125,9 @@
 								</c:when>
 								<c:otherwise>
 									<li>
-										<a href="${command.tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}" /></a>
+										<a href="${command.tabURL}?selTab=${tab.id}">
+											<c:out value="${tabTitle}" />
+										</a>
 									</li>
 								</c:otherwise>
 							</c:choose>
@@ -182,7 +184,16 @@
 
 							<c:choose>
 								<c:when test="${command.selTab &lt; 4}">
-									<c:set var="selTabEvaluation" value="userInformation" />
+									<c:choose>
+										<c:when test="${command.selTab == 2}">
+											<c:set var="selTabEvaluation"
+												   value="uncertain" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="selTabEvaluation"
+												   value="userInformation" />
+										</c:otherwise>
+									</c:choose>
 								</c:when>
 								<c:otherwise>
 									<c:set var="selTabEvaluation" value="classifier" />

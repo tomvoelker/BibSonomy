@@ -28,7 +28,7 @@
 	<!-- 
 		flag / unflag users as (non)spammers or mark as uncertain
 	-->
-	<c:set var="uncertainUser" value="${spamUser.prediction == 9 }" />
+	<c:set var="uncertainUser" value="${spamUser.prediction == 9 || selTab eq 'uncertain'}" />
 	<td class="spamflag">
 		<div class="btn-group" role="group">
 			<a type="button" class="btn btn-xs btn-default ${not spamUser.spammer and not uncertainUser ? 'btn-success' : ''}" href="javascript:unflagSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabNSpammer}')" title="unflag this user as spammer" onClick="${do_flag_action}">no</a>
