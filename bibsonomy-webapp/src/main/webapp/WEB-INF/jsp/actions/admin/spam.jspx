@@ -180,7 +180,16 @@
 					
 						<c:choose>
 							<c:when test="${command.selTab &lt; 4}">	
-					  			<c:set var="selTabEvaluation" value="userInformation" />
+					  			<c:choose>
+									<c:when test="${command.selTab == 2}">
+										<c:set var="selTabEvaluation"
+											   value="uncertain" />
+									</c:when>
+									<c:otherwise>
+										<c:set var="selTabEvaluation"
+											   value="userInformation" />
+									</c:otherwise>
+								</c:choose>
 					  		</c:when>
 					  		<c:otherwise>
 					  			<c:set var="selTabEvaluation" value="classifier" />

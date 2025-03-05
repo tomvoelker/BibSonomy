@@ -62,7 +62,6 @@ import org.springframework.security.access.AccessDeniedException;
 public class AdminSpamController implements MinimalisticController<AdminViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminSpamController.class);
 
-
 	private LogicInterface logic;
 
 	@Override
@@ -79,11 +78,30 @@ public class AdminSpamController implements MinimalisticController<AdminViewComm
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("please log in as admin");
 		}
-		
+
+		// Check if selTab parameter is present in the query string
+		// This will override the default set in the AdminViewCommand constructor
+		String queryString = context.getQueryString();
+		if (queryString != null && queryString.contains("selTab=")) {
+			// Parse the selTab parameter from the query string
+			String[] params = queryString.split("&");
+			for (String param : params) {
+				if (param.startsWith("selTab=")) {
+					try {
+						int tabIndex = Integer.parseInt(param.substring(7));
+						command.setSelTab(tabIndex);
+						break;
+					} catch (NumberFormatException e) {
+						log.warn("Invalid selTab parameter in query: " + param);
+					}
+				}
+			}
+		}
+
 		this.setUsers(command);
 
 		/*
-		 * only compute counts for specific tabs to save 
+		 * only compute counts for specific tabs to save
 		 * processing time for frequently used tabs
 		 */
 		final Integer selectedTab = command.getSelTab();
@@ -145,7 +163,7 @@ public class AdminSpamController implements MinimalisticController<AdminViewComm
 
 	private void setUsers(final AdminViewCommand command) {
 		if (command.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
-			// TODO: check interval 
+			// TODO: check interval
 			command.setContent(this.logic.getClassifierComparison(command.getInterval()[0], command.getLimit()));
 			return;
 		}
@@ -155,41 +173,41 @@ public class AdminSpamController implements MinimalisticController<AdminViewComm
 
 		/* set content in dependence of the selected tab */
 		switch (command.getSelTab()) {
-		case AdminViewCommand.MOST_RECENT:
-			classifier = Classifier.BOTH;
-			status = null;
-			break;
-		case AdminViewCommand.ADMIN_SPAMMER_INDEX:
-			classifier = Classifier.ADMIN;
-			status = SpamStatus.SPAMMER;
-			break;
-		case AdminViewCommand.ADMIN_UNSURE_INDEX:
-			classifier = Classifier.ADMIN;
-			status = SpamStatus.UNKNOWN;
-			break;
-		case AdminViewCommand.ADMIN_NOSPAMMER_INDEX:
-			classifier = Classifier.ADMIN;
-			status = SpamStatus.NO_SPAMMER;
-			break;
-		case AdminViewCommand.CLASSIFIER_SPAMMER_INDEX:
-			classifier = Classifier.CLASSIFIER;
-			status = SpamStatus.SPAMMER;
-			break;
-		case AdminViewCommand.CLASSIFIER_SPAMMER_UNSURE_INDEX:
-			classifier = Classifier.CLASSIFIER;
-			status = SpamStatus.SPAMMER_NOT_SURE;
-			break;
-		case AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX:
-			classifier = Classifier.CLASSIFIER;
-			status = SpamStatus.NO_SPAMMER;
-			break;
-		case AdminViewCommand.CLASSIFIER_NOSPAMMER_UNSURE_INDEX:
-			classifier = Classifier.CLASSIFIER;
-			status = SpamStatus.NO_SPAMMER_NOT_SURE;
-			break;
-		default:
-			classifier = null;
-			status = null;
+			case AdminViewCommand.MOST_RECENT:
+				classifier = Classifier.BOTH;
+				status = null;
+				break;
+			case AdminViewCommand.ADMIN_SPAMMER_INDEX:
+				classifier = Classifier.ADMIN;
+				status = SpamStatus.SPAMMER;
+				break;
+			case AdminViewCommand.ADMIN_UNSURE_INDEX:
+				classifier = Classifier.ADMIN;
+				status = SpamStatus.UNKNOWN;
+				break;
+			case AdminViewCommand.ADMIN_NOSPAMMER_INDEX:
+				classifier = Classifier.ADMIN;
+				status = SpamStatus.NO_SPAMMER;
+				break;
+			case AdminViewCommand.CLASSIFIER_SPAMMER_INDEX:
+				classifier = Classifier.CLASSIFIER;
+				status = SpamStatus.SPAMMER;
+				break;
+			case AdminViewCommand.CLASSIFIER_SPAMMER_UNSURE_INDEX:
+				classifier = Classifier.CLASSIFIER;
+				status = SpamStatus.SPAMMER_NOT_SURE;
+				break;
+			case AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX:
+				classifier = Classifier.CLASSIFIER;
+				status = SpamStatus.NO_SPAMMER;
+				break;
+			case AdminViewCommand.CLASSIFIER_NOSPAMMER_UNSURE_INDEX:
+				classifier = Classifier.CLASSIFIER;
+				status = SpamStatus.NO_SPAMMER_NOT_SURE;
+				break;
+			default:
+				classifier = null;
+				status = null;
 		}
 		command.setContent(this.logic.getClassifiedUsers(classifier, status, command.getLimit()));
 	}
