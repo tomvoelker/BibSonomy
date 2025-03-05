@@ -38,7 +38,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.TabsCommand;
 
 /**
- * Command bean for admin page 
+ * Command bean for admin page
  * 
  * @author Stefan Stützer
  */
@@ -47,7 +47,7 @@ import org.bibsonomy.webapp.command.TabsCommand;
 public class AdminViewCommand extends TabsCommand<User> {
 
 	/*
-	 * Titles of the tabs - order must match the following public 
+	 * Titles of the tabs - order must match the following public
 	 * integer definitions!
 	 */
 	private static final String[] tabTitles = {
@@ -71,7 +71,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public final static int CLASSIFIER_SPAMMER_INDEX = 4;
 	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 5;
 	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
-	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 7;
+	public final static int CLASSIFIER_NOSPAMMER_INDEX = 7;
 	public final static int CLASSIFIER_EVALUATE = 8;
 
 	/** Command containing current admin settings */
@@ -80,17 +80,17 @@ public class AdminViewCommand extends TabsCommand<User> {
 	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();
 
 	/** the time interval (in hours) for retrieving spammers */
-	//TODO: variable time intervals
-	private Integer[] interval = new Integer[] {12, 24, 168};
+	// TODO: variable time intervals
+	private Integer[] interval = new Integer[] { 12, 24, 168 };
 
 	/** number of entries shown on one page */
 	private Integer limit = 100;
 
 	/** information about a specific user */
-	private String aclUserInfo; 
+	private String aclUserInfo;
 
 	/** specific action for admin page */
-	private String action; 
+	private String action;
 
 	/** specific user to show */
 	private User user;
@@ -98,11 +98,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 	/** specific user information */
 	private final LinkedList<String> infos;
 
-
-	public AdminViewCommand() {	
+	public AdminViewCommand() {
 		addTabs(tabTitles);
 
-		// change default tab to classifier tab
+		// Set default tab to classifier spammer unsure tab (index 5)
+		// This will be overridden if the selTab parameter is present in the request
+		// The controller will handle extracting and applying the selTab parameter if
+		// present
 		setSelTab(CLASSIFIER_SPAMMER_UNSURE_INDEX);
 
 		// initialise info list
@@ -116,7 +118,6 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public String getAclUserInfo() {
 		return this.aclUserInfo;
 	}
-
 
 	public void addInfo(String info) {
 		this.infos.add(info);
