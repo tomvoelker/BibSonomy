@@ -127,7 +127,9 @@ public class PublicationImporter {
 			
 			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), PUBLICATION_IMPORT_EXTENSION_CHECKER);
 
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
+			// Use UTF-8 as default encoding if none is specified
+			final String encoding = command.getEncoding() != null ? command.getEncoding() : "UTF-8";
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileLogic.BIBTEX_EXTENSION))) {
 				/*
 				 * In case the uploaded file is in EndNote or RIS format, we convert it to BibTeX.
@@ -159,7 +161,14 @@ public class PublicationImporter {
 			 * FIXME add also extensions form DOCUMENT_EXTENSION to the message? 
 			 */
 			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileLogic.ACCEPTED_PUBLICATION_EXTENSIONS, ", ")}, e.getMessage());
+		} catch (final java.io.IOException e) {
+			log.error("IO error while processing uploaded file: " + e.getMessage(), e);
+			errors.reject("error.upload.failed.io", "An error occurred while reading your file. Please check if the file is accessible and try again.");
+		} catch (final SecurityException e) {
+			log.error("Security error while processing uploaded file: " + e.getMessage(), e);
+			errors.reject("error.upload.failed.security", "Access denied while processing your file. Please check file permissions.");
 		} catch (final Exception ex1) {
+			log.error("Unexpected error while processing uploaded file: " + ex1.getMessage(), ex1);
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
 			/*
