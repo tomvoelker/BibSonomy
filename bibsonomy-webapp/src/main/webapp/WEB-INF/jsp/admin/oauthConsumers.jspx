@@ -129,7 +129,7 @@
         	    <!--+
         	    	| Delete Consumer (invisible)
         	    	+--> 
-		    	<form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" id="deleteConsumerForm" method="post">
+		    	<form action="${relativeUrlGenerator.getAdminUrlByName('oauthconsumers')}" id="deleteConsumerForm" method="post">
              		<input type="hidden" name="adminAction" value="Remove" />
 		    		<input type="hidden" name="consumerInfo.consumerKey" id="consumerKey" />
 		    	</form>
@@ -140,7 +140,7 @@
 					+-->
 				<h3 id="register-consumer"><fmt:message key="admin.actions.consumer.register"/></h3>
 				
-        	    <form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
+		    	<form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('oauthconsumers')}" method="POST">
 					<bsform:fieldset legendKey="admin.oauth.consumer.details">
 						<jsp:attribute name="content">
 
