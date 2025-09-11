@@ -150,7 +150,7 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 	/**
 	 * List of repositories where this post has been send to (PUMA specific)
 	 */
-	private List<Repository> repositorys;
+	private List<Repository> repositories;
 
 	/**
 	 * This is the user who owns the post which should be copied.
@@ -203,7 +203,7 @@ public class Post<R extends Resource> implements Serializable, Linkable {
 		this.ranking = post.getRanking();
 		
 		this.metaData = post.getMetaData();
-		this.repositorys = post.getRepositorys();
+		this.repositories = post.getRepositories();
 		this.copyFrom = post.getCopyFrom();
 		this.approved = post.isApproved();
 	}

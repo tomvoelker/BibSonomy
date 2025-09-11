@@ -9,11 +9,17 @@
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="forAjaxPosts" type="java.lang.Boolean" required="false" />
 	
 	<!--+
 		+ export actions for publications / bookmarks
 		+-->
-	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
+	<c:set var="escapedRequestPathAndQuery" value=""/>
+	<c:if test="${not forAjaxPosts}">
+		<!-- requPathAndQuery must already contain "/" -->
+		<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}"/>
+	</c:if>
+
 	<c:if test="${isPublication}">
 		<c:url var="rssPath" value="/publrss${escapedRequestPathAndQuery}" />
 		<li><a href="${rssPath}"><fontawesome:icon icon="rss" spaceAfter="5" /> <fmt:message key="post.meta.rss"/></a></li>
@@ -25,6 +31,7 @@
 		<li class="divider"><!-- keep me --></li>
 		<li><a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a></li>
 	</c:if>
+
 	<c:if test="${isBookmark}">
 		<c:url var="rssPath" value="/rss${escapedRequestPathAndQuery}" />
 		<li><a href="${rssPath}"><fontawesome:icon icon="rss" spaceAfter="5" /> <fmt:message key="post.meta.rss"/></a></li>

@@ -1,0 +1,205 @@
+/**
+ * BibSonomy-OpenAccess - Check Open Access Policies for Publications
+ *
+ * Copyright (C) 2006 - 2021 Data Science Chair,
+ *                               University of Würzburg, Germany
+ *                               https://www.informatik.uni-wuerzburg.de/datascience/home/
+ *                           Information Processing and Analytics Group,
+ *                               Humboldt-Universität zu Berlin, Germany
+ *                               https://www.ibi.hu-berlin.de/en/research/Information-processing/
+ *                           Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               https://www.kde.cs.uni-kassel.de/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               https://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package de.unikassel.puma.openaccess.sword;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import de.unikassel.puma.openaccess.sword.renderer.xml.DivType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
+import de.unikassel.puma.openaccess.sword.renderer.xml.FileType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap.XmlData;
+import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec.FileGrp;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
+import de.unikassel.puma.openaccess.sword.renderer.xml.ObjectFactory;
+import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
+import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
+
+
+/**
+ * Generates METS-XML-Files for publication depositing using EPDCX format for the inner data
+ * 
+ * @author sven
+ */
+@Getter
+@Setter
+public class METSEpdcxGenerator extends AbstractMETSGenerator {
+	private static final Log log = LogFactory.getLog(METSEpdcxGenerator.class);
+
+	public METSEpdcxGenerator(UrlRenderer urlRenderer) {
+		super(urlRenderer);
+	}
+
+	@Override
+	public Mets generateMETS(PumaData<BibTex> pumaData) {
+		Post<BibTex> post = pumaData.getPost();
+		final ObjectFactory objectFactory = new ObjectFactory();
+
+		// METS
+		final Mets mets = objectFactory.createMets();
+		mets.setID("sort-mets_mets");
+		mets.setOBJID("sword-mets");
+		mets.setLABEL("DSpace SWORD Item");
+		mets.setPROFILE("DSpace METS SIP Profile 1.0");
+
+		// METS Hdr
+		final MetsHdr metsHdr = objectFactory.createMetsTypeMetsHdr();
+
+		final GregorianCalendar c = new GregorianCalendar();
+		XMLGregorianCalendar currentDate;
+		try {
+			currentDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			metsHdr.setCREATEDATE(currentDate);
+		} catch (final DatatypeConfigurationException e) {
+			log.warn("DatatypeConfigurationException");
+		}
+
+		mets.setMetsHdr(metsHdr);
+
+		final List<Agent> metsHdrAgentList = metsHdr.getAgent();
+		final Agent metsHdrAgent = new Agent();
+		metsHdrAgent.setROLE("CUSTODIAN");
+		metsHdrAgent.setTYPE("ORGANIZATION");
+		metsHdrAgent.setName("PUMA");
+
+		metsHdrAgentList.add(metsHdrAgent);
+
+		final List<MdSecType> dmdSec = mets.getDmdSec();
+
+		final MdSecType mdSec = objectFactory.createMdSecType();
+		mdSec.setID("sword-mets-dmd-1");
+		mdSec.setGROUPID("sword-mets-dmd-1_group-1");
+		dmdSec.add(mdSec);
+
+		final MdWrap mdWrap = objectFactory.createMdSecTypeMdWrap();
+		mdWrap.setMIMETYPE("text/xml");
+		mdWrap.setMDTYPE("OTHER");
+		mdWrap.setOTHERMDTYPE("BIBTEXML");
+		mdSec.setMdWrap(mdWrap);
+
+		final XmlData xmlData = objectFactory.createMdSecTypeMdWrapXmlData();
+		mdWrap.setXmlData(xmlData);
+
+		// METS FileSec
+		final FileSec metsFileSec = objectFactory.createMetsTypeFileSec();
+		mets.setFileSec(metsFileSec);
+
+		final FileGrp metsFileSecFileGrp = objectFactory.createMetsTypeFileSecFileGrp();
+		final List<FileType> fileItemList = new ArrayList<>();
+
+		metsFileSecFileGrp.setID("sword-mets-fgrp-1");
+		metsFileSecFileGrp.setUSE("CONTENT");
+		int filenumber = 0;
+		for (final Document doc : post.getResource().getDocuments()) {
+			final FileType fileItem = new FileType();
+			// fileItem.setGROUPID("sword-mets-fgid-0");
+			fileItem.setID("sword-mets-file-".concat(String.valueOf(filenumber)));
+			// TODO: if file is not pdf, set MIMEtype to something like binary data
+			fileItem.setMIMETYPE("application/pdf");
+
+			final FLocat fileLocat = new FLocat();
+			fileLocat.setLOCTYPE("URL");
+			fileLocat.setHref(doc.getFileName());
+			fileItem.getFLocat().add(fileLocat);
+
+			// add fileitem to filepointerlist for struct section
+			fileItemList.add(fileItem);
+
+			metsFileSecFileGrp.getFile().add(fileItem);
+			filenumber++;
+		}
+
+		metsFileSec.getFileGrp().add(metsFileSecFileGrp);
+
+		// METS structMap
+		final StructMapType structMap = new StructMapType();
+
+		structMap.setID("sword-mets-struct-1");
+		structMap.setLABEL("structure");
+		structMap.setTYPE("LOGICAL");
+
+		final DivType div1 = new DivType();
+		div1.setID("sword-mets-div-1");
+		div1.getDMDID().add(mdSec);   // TODO check if msSec is correct, or this must be a string?
+		div1.setTYPE("SWORD Object");
+
+		final DivType div2 = new DivType();
+		div2.setID("sword-mets-div-2");
+		div2.setTYPE("File");
+
+		for (final FileType fItem : fileItemList) {
+			final Fptr fptr = new Fptr();
+			fptr.setFILEID(fItem);
+			div2.getFptr().add(fptr);
+		}
+
+		div1.getDiv().add(div2);
+		structMap.setDiv(div1);
+		mets.getStructMap().add(structMap);
+
+		/* our post */
+		final PumaPost pumaPost = this.xmlRenderer.createPumaPost(pumaData, this.user);
+		xmlData.getAny().add(pumaPost);
+
+		return mets;
+	}
+
+	@Override
+	public void writeMETS(OutputStream outputStream) throws IOException {
+		final Writer writer = new FilterInvalidXMLCharsWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+		Mets mets = this.generateMETS(this.pumaData);
+		this.xmlRenderer.serializeMETS(writer, mets);
+	}
+
+}

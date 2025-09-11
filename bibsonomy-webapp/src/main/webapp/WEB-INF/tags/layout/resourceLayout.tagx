@@ -23,7 +23,6 @@
 	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 

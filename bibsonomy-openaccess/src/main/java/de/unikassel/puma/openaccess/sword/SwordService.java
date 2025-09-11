@@ -33,19 +33,22 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ObjectMovedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -56,159 +59,178 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.HashUtils;
-import org.purl.sword.base.DepositResponse;
-import org.purl.sword.base.ServiceDocument;
-import org.purl.sword.client.Client;
-import org.purl.sword.client.PostMessage;
-import org.purl.sword.client.SWORDClientException;
-import org.springframework.beans.factory.annotation.Required;
+import org.swordapp.client.AuthCredentials;
+import org.swordapp.client.ClientConfiguration;
+import org.swordapp.client.Deposit;
+import org.swordapp.client.DepositReceipt;
+import org.swordapp.client.ProtocolViolationException;
+import org.swordapp.client.SWORDClient;
+import org.swordapp.client.SWORDClientException;
+import org.swordapp.client.SWORDError;
+import org.swordapp.client.ServiceDocument;
 
 /**
- * Sword main
- * 
- * @author:  sven
- * 
+ * SWORD Service
+ *
+ * @author  sven
  */
+@Getter
+@Setter
 public class SwordService {
 	private static final Log log = LogFactory.getLog(SwordService.class);
-	
-	private static final String SWORDFILETYPE = "application/zip";
-	private static final String SWORDFORMAT = "http://purl.org/net/sword-types/METSDSpaceSIP"; 
-	
-	public static final String AF_ADDITIONALTITLE = "post.resource.openaccess.additionalfields.additionaltitle";
-	public static final String AF_SPONSOR = "post.resource.openaccess.additionalfields.sponsor";
-	public static final String AF_PHDORALEXAM = "post.resource.openaccess.additionalfields.phdoralexam";
-	public static final String AF_PHDREFEREE2 = "post.resource.openaccess.additionalfields.phdreferee2";
-	public static final String AF_PHDREFEREE = "post.resource.openaccess.additionalfields.phdreferee";
-	public static final String AF_INSTITUTION = "post.resource.openaccess.additionalfields.institution";
 
-	public static final String[] AF_FIELD_NAMES = new String[] {
-		AF_INSTITUTION,
-		AF_PHDREFEREE,
-		AF_PHDREFEREE2,
-		AF_PHDORALEXAM,
-		AF_SPONSOR,
-		AF_ADDITIONALTITLE
-	};
-	
-	private SwordConfig repositoryConfig;
+	private static final String SWORD_FILETYPE = "application/zip";
+	private static final String SWORD_FORMAT = "http://purl.org/net/sword-types/METSDSpaceSIP";
+
+	/** name or url of SWORD server of repository */
+	private String swordServer;
+
+	/** port number of SWORD server */
+	private int swordPort;
+
+	/** user agent to send to SWORD server */
+	private String swordUserAgent;
+
+	/** url to SWORD service document, e.g.: "/sword/servicedocument" */
+	private String swordDocumentUrl;
+
+	/** url to deposit SWORD document, e.g. "http://servername:8080/sword/deposit/urn:nbn:de:hebis:12-3456" */
+	private String swordDepositUrl;
+
+	/** SWORD authentication username */
+	private String swordUsername;
+
+	/** SWORD authentication password */
+	private String swordPassword;
+
+	/** API logic interface factory */
 	private LogicInterfaceFactory logicInterfaceFactory;
-	
-	private String projectDocumentPath;
+
+	/** Temp directory path to build zip-file for sword-deposit */
+	private String tempPath;
+
+	/** Deposit document path */
+	private String documentPath;
+
+	/** API URL renderer */
 	private UrlRenderer urlRenderer;
 
 	/**
 	 * retrieve service document from sword server
 	 * @return
 	 */
-	private ServiceDocument retrieveServicedocument(){
+	private ServiceDocument retrieveServiceDocument() {
+		// Internationalized Resource Identifiers
+		String iri = this.swordServer + ":" + this.swordPort + this.swordDocumentUrl;
 		ServiceDocument serviceDocument = null;
-		final Client swordClient = this.createClient();
+		final SWORDClient swordClient = this.createClient();
+
 		try {
-			serviceDocument = swordClient.getServiceDocument(this.repositoryConfig.getHttpServicedocumentUrl());
+			serviceDocument = swordClient.getServiceDocument(iri, new AuthCredentials(this.swordUsername, this.swordPassword));
 		} catch (final SWORDClientException e) {
 			log.info("SWORDClientException! getServiceDocument" + e.getMessage());
+		} catch (ProtocolViolationException e) {
+			e.printStackTrace();
 		}
+
 		return serviceDocument;
 	}
-	
+
 	/**
-	 * Check if servicedocument is available and repository contains configured deposit collection
-	 *    
-	 * @param doc Servicedocument
+	 * Check if document service is available and repository contains configured deposit collection
+	 *
+	 * @param doc service document
 	 * @param url deposit url
 	 * @param accept "application/zip"
-	 * @param acceptPackaging "http://purl.org/net/sword-types/METSDSpaceSIP"
+	 * @param acceptPackaging "https://purl.org/net/sword-types/METSDSpaceSIP"
 	 * @return
 	 */
-	private boolean checkServicedokument(final ServiceDocument doc, final String url, final String accept, final String acceptPackaging) {
-		// TODO: check service document
+	private boolean checkServiceDocument(final ServiceDocument doc, final String url, final String accept, final String acceptPackaging) {
+		// TODO check service document
 		return true;
 	}
-	
-	
+
+
 	/**
-	 * collects all informations to send Documents with metadata to repository 
-	 * @param pumaData 
-	 * @param user 
-	 * @throws SwordException 
+	 * collects all information to send documents with metadata to repository
+	 * @param pumaData
+	 * @param user
 	 */
-	public void submitDocument(final PumaData<?> pumaData, final User user) throws SwordException {
-		log.info("starting sword");
-		DepositResponse depositResponse = new DepositResponse(999); 
+	public void submitDocument(final PumaData<BibTex> pumaData, final User user) throws SwordException, FileNotFoundException {
+		log.info("Starting SWORD submission");
+		// DepositResponse depositResponse = new DepositResponse(999);
 		File swordZipFile = null;
 
-		final Post<?> post = pumaData.getPost(); 
-		
+		final Post<BibTex> post = pumaData.getPost();
+
 		/*
 		 * retrieve ZIP-FILE
 		 */
-		if (post.getResource() instanceof BibTex) {
-					
+		if (present(post.getResource())) {
 			// fileprefix
 			final String fileID = HashUtils.getMD5Hash(user.getName().getBytes()) + "_" + post.getResource().getIntraHash();
-					
-			// Destination directory 
-			final File destinationDirectory = new File(this.repositoryConfig.getDirTemp() + "/" +fileID);
+
+			// Destination directory
+			final File destinationDirectory = new File(this.tempPath + "/" +fileID);
 
 			// zip-filename
 			swordZipFile = new File(destinationDirectory.getAbsoluteFile() + "/" + fileID + ".zip");
 
 			final byte[] buffer = new byte[18024];
-					
+
 			log.info("getIntraHash = " + post.getResource().getIntraHash());
 
 			/*
 			 * get documents
 			 */
-			
+
 			// At the moment, there are no Documents delivered by method parameter post.
 			// retrieve list of documents from database - workaround
-			
-			// get documents for post and insert documents into post 
-			final BibTex publication = (BibTex) post.getResource();
+
+			// get documents for post and insert documents into post
+			final BibTex publication = post.getResource();
 			publication.setDocuments(this.retrieveDocumentsFromDatabase(user, post.getResource().getIntraHash()));
-			
-			if (!present(publication.getDocuments())) { 
+
+			if (!present(publication.getDocuments())) {
 				// we need at least one document to send it the repository
 				log.info("throw SwordException: noPDFattached");
 				throw new SwordException("error.sword.noPDFattached");
 			}
-					
+
 			try {
 				// create directory
 				final boolean mkdir_success = (new File(destinationDirectory.getAbsolutePath())).mkdir();
 				if (mkdir_success) {
 					log.info("Directory: " + destinationDirectory.getAbsolutePath() + " created");
 				}
-						
+
 				// open zip archive to add files to
 				log.info("zipFilename: " + swordZipFile);
-				final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(swordZipFile));
-				
-				final List<String> fileList = new ArrayList<String>();
+				final ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(swordZipFile.toPath()));
+
+				final List<String> fileList = new ArrayList<>();
 				for (final Document document : publication.getDocuments()) {
 					// get file and store it in hard coded folder "/tmp/"
 					fileList.add(document.getFileName());
 					final ZipEntry zipEntry = new ZipEntry(document.getFileName());
-		
+
 					// Set the compression ratio
 					zipOutputStream.setLevel(Deflater.DEFAULT_COMPRESSION);
-					
-					final String inputFilePath = this.projectDocumentPath + document.getFileHash().substring(0, 2) + "/" + document.getFileHash();
+
+					final String inputFilePath = this.documentPath + document.getFileHash().substring(0, 2) + "/" + document.getFileHash();
 					final FileInputStream in = new FileInputStream(inputFilePath);
-		
+
 					// Add ZIP entry to output stream.
 					zipOutputStream.putNextEntry(zipEntry);
-					
+
 					// transfer bytes from the current file to the ZIP file
 					int len;
 					while ((len = in.read(buffer)) > 0) {
 						zipOutputStream.write(buffer, 0, len);
 					}
-					
+
 					zipOutputStream.closeEntry();
-									
+
 					// close the current file input stream
 					in.close();
 				}
@@ -218,18 +240,16 @@ public class SwordService {
 				zipOutputStream.putNextEntry(zipEntry);
 
 				// create XML-Document
-				
-				final MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator(this.urlRenderer);
-				metsBibTexMLGenerator.setUser(user);
-				metsBibTexMLGenerator.setFilenameList(fileList);
-				
-				metsBibTexMLGenerator.setMetadata((PumaData<BibTex>) pumaData);
-				metsBibTexMLGenerator.writeMets(zipOutputStream);
+				final METSModsGenerator metsGenerator = new METSModsGenerator(this.urlRenderer);
+				metsGenerator.setUser(user);
+				metsGenerator.setFileNameList(fileList);
+				metsGenerator.setPumaData(pumaData);
+				metsGenerator.writeMETS(zipOutputStream);
 				zipOutputStream.closeEntry();
-				
-				// close zip archive  
+
+				// close zip archive
 				zipOutputStream.close();
-				
+
 				log.debug("saved to " + swordZipFile.getPath());
 			} catch (final MalformedURLException e) {
 				log.info("MalformedURLException! " + e.getMessage());
@@ -242,100 +262,69 @@ public class SwordService {
 		/*
 		 * end of retrieve ZIP-FILE
 		 */
-		
+
 		/*
 		 * do the SWORD stuff
 		 */
 
-		if (swordZipFile != null) {
-
-			// create sword client
-			final Client swordClient = this.createClient();
-			
-			/*
-			 * message file
-			 * create directory in temp-folder
-			 * store post documents there
-			 * store meta data there in format http://purl.org/net/sword-types/METSDSpaceSIP
-			 * delete post document files and meta data file
-			 */
-			
-			final PostMessage swordMessage = new PostMessage();
-			// message meta
-			swordMessage.setNoOp(false);
-			swordMessage.setUserAgent(this.repositoryConfig.getHttpUserAgent());
-			swordMessage.setFilepath(swordZipFile.getAbsolutePath());
-			swordMessage.setFiletype("application/zip");
-			swordMessage.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP"); // sets packaging!
-			swordMessage.setVerbose(false);
-
+		if (present(swordZipFile)) {
+			// create SWORD client
+			final SWORDClient swordClient = this.createClient();
 
 			try {
-				// check depositurl against service document
-				if (this.checkServicedokument(this.retrieveServicedocument(), this.repositoryConfig.getHttpServicedocumentUrl(), SWORDFILETYPE, SWORDFORMAT)) {
-					// transmit sword message (zip file with document metadata and document files
-					swordMessage.setDestination(this.repositoryConfig.getHttpDepositUrl());
-	
-					depositResponse = swordClient.postFile(swordMessage);
-					
-					/*
-					 * 200 OK Used in response to successful GET operations and
-					 * to Media Resource Creation operations where X-No-Op is
-					 * set to true and the server supports this header.
-					 * 
-					 * 201 Created
-					 * 
-					 * 202 Accepted - One of these MUST be used to indicate that
-					 * a deposit was successful. 202 Accepted is used when
-					 * processing of the data is not yet complete.
-					 * 
-					 * 
-					 * 400 Bad Request - used to indicate that there is some
-					 * problem with the request where there is no more
-					 * appropriate 4xx code.
-					 * 
-					 * 401 Unauthorized - In addition to the usage described in
-					 * HTTP, servers that support mediated deposit SHOULD use
-					 * this status code when the server does not understand the
-					 * value given in the X-Behalf-Of header. In this case a
-					 * human-readable explanation MUST be provided.
-					 * 
-					 * 403 Forbidden - indicates that there was a problem making
-					 * the deposit, it may be that the depositor is not
-					 * authorised to deposit on behalf of the target owner, or
-					 * the target owner does not have permission to deposit into
-					 * the specified collection.
-					 * 
-					 * 412 Precondition failed - MUST be returned by server
-					 * implementations if a calculated checksum does not match a
-					 * value provided by the client in the Content-MD5 header.
-					 * 
-					 * 415 Unsupported Media Type - MUST be used to indicate
-					 * that the format supplied in either a Content-Type header
-					 * or in an X-Packaging header or the combination of the two
-					 * is not accepted by the server.
-					 */
-					log.info("throw SwordException: errcode"+depositResponse.getHttpResponse());
-					throw new SwordException("error.sword.errcode"+depositResponse.getHttpResponse());
+				/*
+				 * message file
+				 * create directory in temp-folder
+				 * store post documents there
+				 * store meta data there in format http://purl.org/net/sword-types/METSDSpaceSIP
+				 * delete post document files and meta data file
+				 */
+				Deposit deposit = new Deposit();
+                deposit.setFilename(swordZipFile.getName());
+                deposit.setFile(Files.newInputStream(swordZipFile.toPath()));
+                deposit.setMimeType("application/zip");
+				deposit.setPackaging("http://purl.org/net/sword/package/METSDSpaceSIP");
+                deposit.setInProgress(true);
+				HashUtils.getMD5Hash(Files.readAllBytes(swordZipFile.toPath()));
+                //deposit.setMd5(); TODO needed?
+				//deposit.setSuggestedIdentifier(); TODO needed?
+
+				// check deposit URL against service document
+				if (this.checkServiceDocument(this.retrieveServiceDocument(), this.swordDocumentUrl, SWORD_FILETYPE, SWORD_FORMAT)) {
+
+					// transmit sword message (zip file with document metadata and document files)
+					DepositReceipt receipt = swordClient.deposit(
+							this.swordDepositUrl,
+							deposit,
+							new AuthCredentials(this.swordUsername, this.swordPassword)
+					);
+
+					log.info("SWORD deposit status code: " + receipt.getStatusCode());
+					//throw new SwordException("error.sword.errcode"+depositResponse.getHttpResponse());
 				}
 
 			} catch (final SWORDClientException e) {
-				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + swordMessage.getDestination());
+				log.warn("SWORDClientException: " + e.getMessage() + "\n" + e.getCause() + " / " + this.swordDepositUrl);
 				throw new SwordException("error.sword.urlnotaccessable");
+			} catch (ProtocolViolationException e) {
+				e.printStackTrace();
+			} catch (SWORDError swordError) {
+				// TODO log?
+				swordError.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
-	private Client createClient() {
-		final Client swordClient = new Client();
-		swordClient.setServer(this.repositoryConfig.getHttpServer(), this.repositoryConfig.getHttpPort());
-		swordClient.setUserAgent(this.repositoryConfig.getHttpUserAgent());
-		swordClient.setCredentials(this.repositoryConfig.getAuthUsername(), this.repositoryConfig.getAuthPassword());
-		return swordClient;
+	private SWORDClient createClient() {
+		final ClientConfiguration clientConfiguration = new ClientConfiguration();
+		clientConfiguration.setUserAgent(this.swordUserAgent);
+        return new SWORDClient(clientConfiguration);
 	}
-	
+
 	/*
-	 * Workaround method to retrieve 
+	 * Workaround method to retrieve
 	 */
 	private List<Document> retrieveDocumentsFromDatabase(final User user, final String resourceHash) {
 		final String username = user.getName();
@@ -344,15 +333,15 @@ public class SwordService {
 		 */
 		log.info("getting database access for user " + username);
 		final LogicInterface logic = this.logicInterfaceFactory.getLogicAccess(username, user.getApiKey());
-		
-		// get meta data for post
+
+		// get metadata for post
 		try {
-			final Post<? extends Resource> post = logic.getPostDetails(resourceHash, username); 
+			final Post<? extends Resource> post = logic.getPostDetails(resourceHash, username);
 			if (post.getResource() instanceof BibTex) {
-				
+
 				// get documents for post
 				return ((BibTex) post.getResource()).getDocuments();
-			}			
+			}
 		} catch (final ObjectNotFoundException e) {
 			log.warn("ResourceNotFoundException! SwordService-retrieveDocumentsFromDatabase");
 		} catch (final ObjectMovedException e) {
@@ -361,38 +350,4 @@ public class SwordService {
 		return null;
 	}
 
-	/**
-	 * Configuration of Sword-Server (Repository) 
-	 * 
-	 * @param repositoryConfig the repositoryConfig to set
-	 */
-	public void setRepositoryConfig(final SwordConfig repositoryConfig) {
-		this.repositoryConfig = repositoryConfig;
-	}
-	
-	/**
-	 * The path to the documents.
-	 * 
-	 * @param projectDocumentPath
-	 */
-	@Required
-	public void setProjectDocumentPath(final String projectDocumentPath) {
-		this.projectDocumentPath = projectDocumentPath;
-	}
-
-	/**
-	 * The URL renderer to create the proper API XML.
-	 * @param urlRenderer
-	 */
-	@Required
-	public void setUrlRenderer(final UrlRenderer urlRenderer) {
-		this.urlRenderer = urlRenderer;
-	}
-
-	/**
-	 * @param logicInterfaceFactory the logicInterfaceFactory to set
-	 */
-	public void setLogicInterfaceFactory(final LogicInterfaceFactory logicInterfaceFactory) {
-		this.logicInterfaceFactory = logicInterfaceFactory;
-	}
 }

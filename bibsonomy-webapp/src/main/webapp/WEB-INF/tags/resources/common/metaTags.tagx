@@ -101,12 +101,12 @@
 			<span class="label label-grey label-tag">
 				<c:choose>
 					<c:when test="${isRemotePost}">
-						<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+						<a rel="nofollow" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
 							<c:out value="${tag.name}" />
 						</a>
 					</c:when>
 					<c:otherwise>
-						<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+						<a rel="nofollow" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
 							<c:out value="${tag.name}" />
 						</a>
 					</c:otherwise>
@@ -154,12 +154,12 @@
 					<span class="label ${labelClass} label-tag">
 						<c:choose>
 							<c:when test="${isRemotePost}">
-								<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
+								<a rel="nofollow" href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
 									<c:out value="${tag.name}" />
 								</a>
 							</c:when>
 							<c:otherwise>
-								<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+								<a rel="nofollow" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
 									<c:out value="${tag.name}" />
 								</a>
 							</c:otherwise>

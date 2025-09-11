@@ -70,6 +70,11 @@ $(document).ready(function () {
             toggleNormalize(countCheckedBoxes(normalizeCheckBoxSelector) === 0);
             updateBadges();
         });
+
+        // Entries selection
+        $("#batchEditEntriesSelection").change(function(){
+            window.location.href = $(this).find(":selected").val();
+        });
     }
 
     if (!isImport) {
@@ -151,14 +156,16 @@ $(document).ready(function () {
         });
     }
 
-    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction)
+    $('input[name^=posts][name$=newTags]').change(addUpdateTagsAction);
+
     $('.addTagsButton').click(function () {
         addTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
-    $('.addTagsButton').click(function () {
-        addTags($('#tagsInput').val());
+
+    $('.removeTagsButton').click(function () {
+        removeTags($('#tagsInput').val());
         $('#tagsInput').val("");
         addUpdateTagsAction();
     });
@@ -170,11 +177,14 @@ $(document).ready(function () {
     });
 
     $('#batchedit').submit(function () {
-        //We check all posts, since the controller currently only processes checked posts due to the legacy version of this page still used by the batch edit page
+        //We check all editable posts, since the controller currently only processes checked posts due to the legacy version of this page still used by the batch edit page
         $(tagCheckBoxSelector).each(function () {
-            $(this).prop('checked', true);
-            $(this).prop('disabled', false);
-            $('input[name=' + $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
+            // Check if the current post is editable
+            var isEditable = $('input[name=' + $(this).prop('name').replace('checked', 'disabled').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']').val() !== 'true';
+            if (isEditable){
+                $(this).prop('checked', true).prop('disabled', false);
+                $('input[name=' + $(this).prop('name').replace('checked', 'newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1') + ']:text').prop('disabled', false);
+            }
         });
 
         $('input[name=action]').val(action);

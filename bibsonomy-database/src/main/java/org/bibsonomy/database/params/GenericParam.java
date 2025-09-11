@@ -40,6 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -72,6 +74,8 @@ import org.bibsonomy.model.User;
  * @author Christian Kramer
  * @author Christian Schenk
  */
+@Getter
+@Setter
 public abstract class GenericParam {
 
 	/** the current loggedin user */

@@ -8,7 +8,6 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-		  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 		  xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"
 		  xmlns:perdetails="urn:jsptagdir:/WEB-INF/tags/person/details"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -87,9 +86,6 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<!-- Error alerts -->
-			<errors:global/>
-			<div id="ajaxAlerts"><!-- keep me for AJAX alerts --></div>
 
 			<div class="row person-content person-info" data-person="${personId}" data-claimed-person="${hasClaimedPerson}" data-content="info">
 				<div class="col-md-12">
@@ -128,8 +124,8 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div style="clear: both;">
-        							<h3 class="list-headline">
-										<c:if test="${!showProjectLinks}">
+									<h3 class="list-headline">
+										<c:if test="${useCRISView and not showProjectLinks}">
 											<strong><fmt:message key="person.show.publications"/></strong><c:out value=" "/>
 											<span class="badge badge-primary"><c:out value="${command.totalCount}"/></span>
 										</c:if>
@@ -137,7 +133,11 @@
 											<div class="btn-group">
 												<bsform:button size="large" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
 												<ul id="sorting-dropdown-menu" class="dropdown-menu">
-													<rc:sorting requPathAndQuery="${requPathAndQuery}" sortPage="pubdate" sortPageOrder="desc" isBibtex="${true}" ignoreLinks="${true}" />
+													<rc:sorting requPathAndQuery="${requPathAndQuery}"
+																sortPage="pubdate"
+																sortPageOrder="desc"
+																isBibtex="${true}"
+																forAjaxPosts="${true}" />
 												</ul>
 											</div>
 										</div>
@@ -150,11 +150,12 @@
 					</div>
 					<div class="col-md-3 sidebar">
 						<c:if test="${not empty command.entrytypeFilters}">
-							<sidebar:searchFilterList filterField="entrytype" filterEntries="${command.entrytypeFilters}"
+							<sidebar:searchFilterList filterName="entrytype" filterField="entrytype"
+													  filterEntries="${command.entrytypeFilters}"
 													  headerMessageKey="explore.filter.entrytype.header"
 													  headerMessageIcon="book" buttonClass="filter-entry-counter" />
 						</c:if>
-						<c:if test="${properties['report.person.duplicate.publications']}">
+						<c:if test="${properties['report.person.publications.duplicate']}">
 							<div>
 								<sidebar:sidebarItem>
 									<jsp:attribute name="content">
@@ -167,7 +168,8 @@
 					</div>
 				</div>
 			</div>
-			
+
+			<modals:linkPublication />
 			<modals:unlinkPublication />
 		</jsp:attribute>
 	</layout:paneLayout>

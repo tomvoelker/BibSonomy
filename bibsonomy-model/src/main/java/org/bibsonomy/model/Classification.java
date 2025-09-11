@@ -50,7 +50,7 @@ public class Classification {
 	private String desc;
 
 	/*
-	 * url for more informations
+	 * url for more information
 	 */
 	private String url = "";
 

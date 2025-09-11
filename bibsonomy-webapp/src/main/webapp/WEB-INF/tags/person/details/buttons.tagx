@@ -16,7 +16,6 @@
 	<c:set var="loggedInNotSpammer" value="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}"/>
 
 	<div>
-
 		<c:if test="${hasClaimedPerson or isAdmin}">
 			<!-- Edit person details -->
 			<modals:editPersonDetails command="${command}" id="editPersonDetails"/> <!-- Edit person modal dialog -->
@@ -34,7 +33,7 @@
 		</c:if>
 
 		<!-- TODO: disable if CRIS system and person is in the configured college? -->
-		<c:if test="${useCRISView}">
+		<c:if test="${not useCRISView}">
 			<c:choose>
 				<!-- Unclaim person -->
 				<c:when test='${hasClaimedPerson}'>

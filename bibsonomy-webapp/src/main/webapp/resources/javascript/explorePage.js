@@ -25,9 +25,11 @@ function initFilters() {
     // add tag filters
     initFilterButtons('entrytype');
     initFilterButtons('year');
-    initFilterButtons('tags');
+    initFilterButtons('preset-tags');
+    // add custom search filters
+    addCustomSearchFilters();
     // add custom tag filters
-    addCustomFilters();
+    addCustomTagsFilters();
     // remove invalid year buttons
     validateYearFilters();
     // init 'show more' for year list
@@ -42,14 +44,17 @@ function initResourceMenu() {
     $('#batchEditButton, #export-dropdown-menu > li > a').click(function (e) {
         e.preventDefault();
 
+        var requestedName = $('#requestedName').val();
+        var entityType = $('#entityType').val();
+        var query = buildSearchQuery();
+
         // append search query as a parameter to URL
         var href = $(this).attr('href');
-        var query = buildSearchQuery();
-        var hrefWithParams = href + '?search=' + encodeURI(query);
+        var hrefWithParams = href + '/' + entityType + '/' + requestedName + '?search=' + encodeURI(query);
 
         // open URL with query in new tab
         window.open(hrefWithParams, '_blank').focus();
-    })
+    });
 }
 
 /**
@@ -61,10 +66,10 @@ var lastSelectedFilter;
 /**
  * Add action to all filter buttons in a section. On click set to active and update search results correspondingly.
  *
- * @param field the section identified by the field
+ * @param fieldName the section identified by the field name
  */
-function initFilterButtons(field) {
-    $('#filter-entries-' + field + ' > button').click(function () {
+function initFilterButtons(fieldName) {
+    $('#filter-entries-' + fieldName + ' > button').click(function () {
         lastSelectedFilter = this;
         $(this).toggleClass('active');
         updateCounters();
@@ -199,14 +204,14 @@ function showRelevantYears() {
  *
  * IMPORTANT: This requested JSON file has to be overwritten in the individual PUMA instances to use.
  */
-function addCustomFilters() {
+function addCustomTagsFilters() {
     var entries = $('#filter-entries-custom');
     $.ajax({
         url: '/resources/explore/customTags.json', // The url you are fetching the results.
         dataType: 'json',
         success: function (data) {
             data.forEach(function (entity) {
-                entries.append(createFilterButton(entity.label, entity.facility));
+                entries.append(createFilterButton(entity.label, entity.facility, entity.facility));
             });
             initFilterButtons('custom');
 
@@ -216,6 +221,27 @@ function addCustomFilters() {
     });
 }
 
+/**
+ * Get the list of custom search (for example: subcategories of misc posts specified by tags) for the current PUMA system.
+ *
+ * IMPORTANT: This requested JSON file has to be overwritten in the individual PUMA instances to use.
+ */
+function addCustomSearchFilters() {
+    var entries = $('#filter-entries-search');
+    $.ajax({
+        url: '/resources/explore/customSearch.json', // The url you are fetching the results.
+        dataType: 'json',
+        success: function (data) {
+            data.forEach(function (entity) {
+                entries.append(createFilterButton(entity.search, entity.label, entity.description));
+            });
+            initFilterButtons('search');
+
+            // show filter section
+            $('#filter-list-search').removeClass('hidden');
+        }
+    });
+}
 
 /**
  * Simple search for the custom tag list.

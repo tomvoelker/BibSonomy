@@ -83,7 +83,7 @@
 										</fmt:message>
 								</h5>
 								
-								<c:set var="urlGeneratorDiscussed" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'personalized')}" />
+								<c:set var="urlGeneratorDiscussed" value="${urlGeneratorFactory.createURLGeneratorForSystem(null)}" />
 								<a href="${urlGeneratorDiscussed.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" title="${title}">
 									<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
 								</a>

@@ -945,11 +945,11 @@ function togglePresetTagsPanel(groupId, isSelected) {
     if (panel.length) {
         // empty potential earlier input
         var input = $('#presetTagsInput-' + groupId);
-        input.val('');
         if (isSelected) {
-            panel.show(0);
+            panel.removeClass('hidden');
         } else {
-            panel.hide(0);
+            panel.addClass('hidden');
+            input.val('');
         }
     }
 }
@@ -958,38 +958,18 @@ function togglePresetTagsPanel(groupId, isSelected) {
  * Set hidden input for selected preset tags
  */
 function preparePresetTagsForm() {
-    var presetTags = [];
+    var tagSeparator = ' ';
+    var selectedPresetTags = {};
     $('.preset-tags-panel:not(.hidden)').each(function () {
         var panel = $(this);
         var groupId = panel.data('group');
         var inputVal = panel.find('#presetTagsInput-' + groupId).val().trim();
-        var tags = inputVal.split(' ');
-        var sysTags = createSysTagsForGroup(groupId, tags);
 
-        presetTags.push.apply(presetTags, sysTags);
+        // build JSON for preset tags input
+        selectedPresetTags[groupId] = inputVal.split(tagSeparator);
     });
 
-    // set group preset tag list
-    if(presetTags.length) {
-        $('#presetTagsForGroups').val(presetTags.join(' '));
-    }
-}
-
-/**
- * Create a list of group preset system tags
- * @param groupId
- * @param tags
- * @returns {*[]}
- */
-function createSysTagsForGroup(groupId, tags) {
-    var sysTags = [];
-    tags.forEach(function (tag) {
-        if (tag) {
-            sysTags.push('sys:group:' + groupId + ':' + tag);
-        }
-    });
-
-    return sysTags;
+    $('#selectedPresetTags').val(JSON.stringify(selectedPresetTags));
 }
 
 /**

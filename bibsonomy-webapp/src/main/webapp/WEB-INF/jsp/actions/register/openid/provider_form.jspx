@@ -6,8 +6,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout" 
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors" 
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
@@ -22,7 +21,6 @@
 			<h1 class="content-header"><fmt:message key="register.openid.step2" /></h1>
 			
 			<form:form action="/registerOpenID" class="form-horizontal" method="POST">
-				<errors:global />
 	
 				<bsform:fieldset legendKey="register.openid.required" >
 					<jsp:attribute name="content">

@@ -161,7 +161,9 @@ public class EditPersonDetailsController extends AbstractEditPersonController {
             return errorPersonNameNotFound(command);
         }
 
-        person.getMainName().setMain(false);
+        if (present(person.getMainName())) {
+            person.getMainName().setMain(false);
+        }
         person.setMainName(command.getPersonName());
 
         try {

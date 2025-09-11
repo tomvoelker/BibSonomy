@@ -36,7 +36,7 @@
 
 	<!-- preprocess tags to be highlighted (add space at beginning + end) -->
 	<c:if test="${not empty highlightTags}">
-		<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
+		<c:set var="highlightTagsList" value="${mtl:split(fn:toLowerCase(highlightTags), ' ')}"/>
 	</c:if>
 	
 	<!-- display of tag tooltips is disabled by default -->
@@ -69,8 +69,7 @@
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
 
 			<c:set var="myownTagClass" value="" />
-			<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
-			<c:if test="${not empty highlightTags and fn:contains(highlightTags, tagNameWithSpaces)}">
+			<c:if test="${not empty highlightTagsList and mtl:contains(highlightTagsList, tag.name)}">
 				<c:set var="myownTagClass" value="myown" />
 			</c:if>
 			
@@ -93,7 +92,8 @@
 						<c:if test="${showTooltips}">
 							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
 							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>
-						</c:if>	
+						</c:if>
+						<jspx:attribute name="rel">nofollow</jspx:attribute>
 						<jspx:body>${fn:escapeXml(tag.name)}</jspx:body>
 					</jspx:element>
 				</li>

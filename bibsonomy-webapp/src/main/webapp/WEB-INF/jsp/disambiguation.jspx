@@ -168,7 +168,9 @@
 								<h4 class="list-group-item-heading">
 									<div class="list-group-item">
 										<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">
-											<span class="authorName">${textOtherPerson}</span>
+											<span class="authorName">
+												<c:out value="${textOtherPerson}"/>
+											</span>
 										</a>
 									</div>
 								</h4>
@@ -180,7 +182,9 @@
 							<jsp:attribute name="alertBody">
 								<div>
 									<fmt:message key="disambiguation.notFound">
-										<fmt:param value="${title}" />
+										<fmt:param>
+											<c:out value="${title}"/>
+										</fmt:param>
 									</fmt:message>
 								</div>
 							</jsp:attribute>
@@ -189,7 +193,9 @@
 							<jsp:attribute name="content">
 								<span class="authorName">
 									<fmt:message key="disambiguation.newPerson">
-										<fmt:param value="${title}" />
+										<fmt:param>
+											<c:out value="${title}"/>
+										</fmt:param>
 									</fmt:message>
 								</span>
 							</jsp:attribute>
@@ -210,7 +216,7 @@
 			<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
 				<bsold:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
 					<jsp:attribute name="modalBody">
-						<p><fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${title}"/></fmt:message></p>
+						<p><fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param><c:out value="${title}"/></fmt:param></fmt:message></p>
 
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#newPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.newPerson"/></a></li>

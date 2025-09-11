@@ -26,6 +26,7 @@ out/
 # other files
 Thumbs.db
 .DS_Store
+.smarttomcat/
 
 # Pipeline related files
 allure-results/*.json

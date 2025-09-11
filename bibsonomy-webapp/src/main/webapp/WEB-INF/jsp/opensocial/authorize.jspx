@@ -74,9 +74,9 @@
 				<form class="oauthActions" name="authZForm" action="authorize" method="POST">
 					<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
 					<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
-					<input type="submit" class="btn btn-lg btn-danger" name="authorizeAction" value="${denyButtonMsg}"/>
+					<button type="submit" class="btn btn-lg btn-danger" name="authorizeAction" value="Deny">${denyButtonMsg}</button>
 					<c:out value=" "/>
-					<input type="submit" class="btn btn-lg btn-success" name="authorizeAction" value="${authorizeButtonMsg}"/>
+					<button type="submit" class="btn btn-lg btn-success" name="authorizeAction" value="Authorize">${authorizeButtonMsg}</button>
 				</form>
 			</div>
 			<br/>

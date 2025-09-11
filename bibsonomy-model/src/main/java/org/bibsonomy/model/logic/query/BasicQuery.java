@@ -43,12 +43,12 @@ import lombok.Setter;
 public class BasicQuery extends BasicPaginatedQuery implements SearchQuery, Query {
 
     /** free text search */
-    private String search;
+    protected String search;
 
     /** the provided search is not complete, e.g. someone is typing and we want a prefix match for the last token */
-    private boolean usePrefixMatch = false;
+    protected boolean usePrefixMatch = false;
 
     /** the complete phrase is ordered and the tokens should be matched in this order */
-    private boolean phraseMatch = false;
+    protected boolean phraseMatch = false;
 
 }

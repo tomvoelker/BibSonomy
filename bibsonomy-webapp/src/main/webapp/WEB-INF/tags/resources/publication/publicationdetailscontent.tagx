@@ -28,51 +28,46 @@
 	
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
-	
-	<c:set var="openAccessEnabled" value="${properties['publication.reporting.enabled'] eq 'true'}" />
-	<c:if test="${openAccessEnabled}"> 
-		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!-- keep me --></script>
-	</c:if>
 		
-		<!--+
-			| abstract 
-			+-->
-		<c:if test="${not empty post.resource['abstract']}"> 
-			<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" "/><fmt:message key="publications.abstract.headline"/></h4>
-			<div id="abstract" class="show-more">
-				<span class="contentContainer"><c:out value="${mtl:cleanBibtex(post.resource['abstract'])}" /></span>
-			</div>
-		</c:if>
-		
-		<!--+
-			| description
-			+-->
-		<c:if test="${not empty post.description}">
-			<h4 class="pub-details"><span class="fa fa-ellipsis-h"><!--  --></span><c:out value=" "/><fmt:message key="post.resource.description.cap"/></h4>
-			<div id="desc" class="show-more">
-				<span itemprop="description"><c:out value="${post.description}" /></span>
-			</div>
-		</c:if>
-		
-		<!--+
-			|
-			| resources (URLs/PDF/etc.)
-			|
-			+-->
-		<h3 class="pub-details"><span class="fa fa-link" ><!--  --></span><c:out value=" "/><fmt:message key="publications.resource.headline" /></h3>
-
-		<!--+
-			| full description table
-			+-->
-		<div class="goldstandard-metadata">
-			<bib:allFieldsTable publication="${publication}" post="${post}" isOwnEntry="${isOwnEntry}" />
+	<!--+
+		| abstract
+		+-->
+	<c:if test="${not empty post.resource['abstract']}">
+		<h4 class="pub-details"><fontawesome:icon icon="align-justify" fixedWidth="${true}" spaceAfter="5"/><fmt:message key="publications.abstract.headline"/></h4>
+		<div id="abstract" class="show-more">
+			<span class="contentContainer"><c:out value="${mtl:cleanBibtex(post.resource['abstract'])}" /></span>
 		</div>
+	</c:if>
 
-		<!--+
-			| tag list
-			+-->
-		<h4 class="pub-details"><span class="fa fa-tag"><!--  --></span><c:out value=" " />Tags</h4>
-		<div class="tag-list">
+	<!--+
+		| description
+		+-->
+	<c:if test="${not empty post.description}">
+		<h4 class="pub-details"><fontawesome:icon icon="ellipsis-h" fixedWidth="${true}" spaceAfter="5"/><fmt:message key="post.resource.description.cap"/></h4>
+		<div id="desc" class="show-more">
+			<span itemprop="description"><c:out value="${post.description}" /></span>
+		</div>
+	</c:if>
+
+	<!--+
+		|
+		| resources (URLs/PDF/etc.)
+		|
+		+-->
+	<h4 class="pub-details"><fontawesome:icon icon="link" fixedWidth="${true}" spaceAfter="5"/><fmt:message key="publications.resource.headline" /></h4>
+
+	<!--+
+		| full description table
+		+-->
+	<div class="goldstandard-metadata">
+		<bib:allFieldsTable publication="${publication}" post="${post}" isOwnEntry="${isOwnEntry}" />
+	</div>
+
+	<!--+
+		| tag list
+		+-->
+	<h4 class="pub-details"><fontawesome:icon icon="tag" fixedWidth="${true}" spaceAfter="5"/><fmt:message key="publications.tags.headline"/></h4>
+	<div class="tag-list">
 		<ul class="list-inline">
 		<c:forEach var="tag" items="${post.visibleTags}" varStatus="status">
 			<li>
@@ -80,7 +75,7 @@
 			<!-- TODO: remove special handling for myown -->
 			<c:if test="${tag.name eq 'myown'}"> <c:set var="lblColor" value="warning" /> </c:if>
 				<span class="label label-${lblColor}">
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" title=""> <c:out value="${tag.name}"/> </a>
+					<a rel="nofollow" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" title=""> <c:out value="${tag.name}"/> </a>
 				</span>
 			</li>
 		</c:forEach>
@@ -102,11 +97,7 @@
         | Community section - only shown if there are related users
         +-->
 	<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
-		<h3>
-			<fontawsome:icon icon="users" />
-			<c:out value=" "/>
-			<fmt:message key="community" />
-		</h3>
+		<h4 class="pub-details"><fontawsome:icon icon="users" fixedWidth="${true}" spaceAfter="5"/><fmt:message key="community" /></h4>
 
 		<ul class="nav nav-tabs publicationpage-tabs" role="tablist">
 			<li class="active"><a data-toggle="tab" href="#communityUsers"><fmt:message key="bibtex.details.related_users"/></a></li>

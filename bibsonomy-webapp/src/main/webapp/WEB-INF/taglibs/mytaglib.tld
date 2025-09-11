@@ -370,6 +370,12 @@
 	</function>
 
 	<function>
+		<name>split</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.Collection split(java.lang.String, java.lang.String)</function-signature>
+	</function>
+
+	<function>
 		<name>contains</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>boolean contains(java.util.Collection, java.lang.Object)</function-signature>
@@ -481,5 +487,11 @@
 		<name>selectedGroups</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.Set selectedGroups(java.lang.String,java.util.List)</function-signature>
+	</function>
+
+	<function>
+		<name>join</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.lang.String join(java.util.List, java.lang.String)</function-signature>
 	</function>
 </taglib>

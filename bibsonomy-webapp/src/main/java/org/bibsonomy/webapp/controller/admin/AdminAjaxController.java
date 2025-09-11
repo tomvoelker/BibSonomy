@@ -139,7 +139,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			command.setResponseString(command.getKey() + " updated");
 			break;
 		case FETCH_GROUP_WITH_PERMISSIONS:
-			this.fetchgroupForPermissions(command);
+			this.fetchGroupForPermissions(command);
 			return Views.AJAX_JSON_PERMISSIONS;
 		default:
 			break;
@@ -163,7 +163,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	/**
 	 * 
 	 */
-	private void fetchgroupForPermissions(final AdminAjaxCommand cmd) {
+	private void fetchGroupForPermissions(final AdminAjaxCommand cmd) {
 		String groupName = cmd.getGroupname();
 		if (present(groupName)) {
 			Group group = logic.getGroupDetails(groupName, false);

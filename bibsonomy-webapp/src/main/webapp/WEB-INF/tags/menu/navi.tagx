@@ -12,7 +12,11 @@
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	
+
+	<c:set var="urlGeneratorBib" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'bib')}" />
+	<c:set var="urlGeneratorDiscussed" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'discussed')}" />
+	<c:set var="urlGeneratorSettings" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'settings')}" />
+
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
 	<c:set var="userPerson" value="${loginUser.claimedPerson}" />
@@ -78,7 +82,6 @@
 						<li class="divider"><!-- KEEP ME --></li>
 						<li><a href="${relativeUrlGenerator.getCVUrlByUser(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 						<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
-						<c:set var="urlGeneratorBib" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'bib')}" />
 						<li><a href="${urlGeneratorBib.getUserUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
 					</c:if>
 				</ul>
@@ -138,7 +141,6 @@
 												<li><a href="${urlGeneratorDiscussed.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
 											</c:if>
 											<li class="divider"><!-- keep me --></li>
-											<c:set var="urlGeneratorSettings" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'settings')}" />
 											<li><a href="${urlGeneratorSettings.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.settings" /></a></li>
 										</ul>
 									</li>
@@ -276,11 +278,14 @@
 		| persons
 		+-->
 	<c:set target="${navElements}" property="persons">
-		<c:set var="genealogyEnabled" value="${properties['genealogy.activated'] eq 'true'}" />
-		<fmt:message key="navi.persons" var="personNaviLabel"/>
-		<c:if test="${crisSystem or not genealogyEnabled}">
-			<fmt:message key="persons" var="personNaviLabel"/>
-		</c:if>
+		<c:choose>
+			<c:when test="${properties['genealogy.landingpage.enabled']}">
+				<fmt:message key="navi.personsGenealogy" var="personNaviLabel"/>
+			</c:when>
+			<c:otherwise>
+				<fmt:message key="navi.persons" var="personNaviLabel"/>
+			</c:otherwise>
+		</c:choose>
 
 		<li class="${activeTab eq 'persons' ? 'active' : ''}">
 			<a href="${relativeUrlGenerator.getPersonsUrl()}">
@@ -326,15 +331,15 @@
 	<c:set target="${navElements}" property="admin">
 		<c:if test="${userIsAdmin}">
 			<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.admin"/><b class="caret">&amp;nbsp;</b></a>
 				<ul class="dropdown-menu">
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}">full text search</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}"><fmt:message key="navi.admin.spam"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('groups')}"><fmt:message key="navi.admin.groups"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}"><fmt:message key="navi.admin.searchIndices"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommenders')}"><fmt:message key="navi.admin.recommenders"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauthconsumers')}"><fmt:message key="navi.admin.oauthConsumers"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}"><fmt:message key="navi.admin.sync"/></a></li>
+					<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}"><fmt:message key="navi.admin.statistics"/></a></li>
 				</ul>
 			</li>
 		</c:if>
@@ -375,7 +380,6 @@
 					</c:choose>
 				</ul>
 			</div>
-			<c:set var="urlGeneratorDiscussed" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'discussed')}" />
 			<div id="bs-navbar-collapse" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<!-- Home -->

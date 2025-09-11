@@ -180,7 +180,16 @@
 					
 						<c:choose>
 							<c:when test="${command.selTab &lt; 4}">	
-					  			<c:set var="selTabEvaluation" value="userInformation" />
+					  			<c:choose>
+									<c:when test="${command.selTab == 2}">
+										<c:set var="selTabEvaluation"
+											   value="uncertain" />
+									</c:when>
+									<c:otherwise>
+										<c:set var="selTabEvaluation"
+											   value="userInformation" />
+									</c:otherwise>
+								</c:choose>
 					  		</c:when>
 					  		<c:otherwise>
 					  			<c:set var="selTabEvaluation" value="classifier" />
@@ -407,7 +416,7 @@
 						<tr>
 							<td>mode:</td>
 							<td>
-								<form:select path="settingsCommand.modeOptions" id="mode" size="1"
+								<form:select path="settingsCommand.mode" id="mode" size="1"
 											multiple="false">
 								<c:forEach var="entry" items="${settingsCommand.modeOptions}">
 									<form:option id="${entry.value}" value="${entry.value}"

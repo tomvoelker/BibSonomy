@@ -8,7 +8,6 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -42,8 +41,6 @@
 				</bs:alert>
 				
 				<form:form action="/joinGroup" method="POST" cssClass="form-horizontal">
-					<errors:global />
-					
 					<form:hidden path="group" />
 					<input type="hidden" name="ckey" value="${command.context.ckey}"/>
 					<form:hidden path="joinRequest" value="true" />

@@ -29,6 +29,10 @@
  */
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.List;
+
 import org.apache.http.HttpStatus;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -60,6 +64,10 @@ public class GetPersonByIdQuery extends AbstractQuery<Person> {
 		if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
 			return null;
 		}
-		return this.getRenderer().parsePerson(this.downloadedDocument);
+		List<Person> persons = this.getRenderer().parsePersons(this.downloadedDocument);
+		if (present(persons)) {
+			return persons.get(0);
+		}
+		return null;
 	}
 }

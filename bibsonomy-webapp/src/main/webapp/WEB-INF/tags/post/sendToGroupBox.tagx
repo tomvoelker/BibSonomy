@@ -12,7 +12,10 @@
 		| show selection of groups to send the post to
 		+-->
 
-	<jsp:directive.attribute name="groups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
+	<jsp:directive.attribute name="userGroups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
+	<jsp:directive.attribute name="selectedGroups" type="java.util.Collection" required="true" description="The groups that have been selected before rendering this."/>
+	<jsp:directive.attribute name="selectedPresetTags" type="java.util.Map" required="true" description="A map of the selected tags for each selected group."/>
+
 
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
@@ -26,22 +29,34 @@
 			<fmt:message var="selectPlaceholder" key="form.input.select"/>
 			<select id="sendToGroupSelect" name="sendToGroups" class="selectpicker show-tick form-control"
 					title="${selectPlaceholder}" data-icon-base="fas" data-tick-icon="fa-check" multiple="multiple">
-				<c:forEach items="${groups}" var="group">
+				<c:forEach items="${userGroups}" var="group">
 					<c:set var="displayName" value="${not empty group.realname ? group.realname : group.name}" />
-					<option data-content="${displayName}" value="${group.name}">
-						${displayName}
-					</option>
+					<c:choose>
+						<c:when test="${selectedGroups.contains(group.name)}">
+							<option data-content="${displayName}" value="${group.name}" selected="selected">
+								<c:out value="${displayName}"/>
+							</option>
+						</c:when>
+						<c:otherwise>
+							<option data-content="${displayName}" value="${group.name}">
+								<c:out value="${displayName}"/>
+							</option>
+						</c:otherwise>
+					</c:choose>
 				</c:forEach>
 			</select>
-			<input type="hidden" id="presetTagsForGroups" name="presetTagsForGroups"/>
+			<input type="hidden" id="selectedPresetTags" name="selectedPresetTags"/>
 			<p class="help-block"><fmt:message key="post.resource.sendTo.help"/></p>
 		</div>
 
 		<c:if test="${properties['group.presetTags.enabled']}">
-			<c:forEach items="${groups}" var="group">
+			<c:forEach items="${userGroups}" var="group">
 				<c:if test="${not empty group.presetTags}">
 					<div class="col-sm-${inputColSpan} col-sm-offset-${labelColSpan}">
-						<post:groupPresetTagBox group="${group}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
+						<post:groupPresetTagBox group="${group}"
+												isSelected="${selectedGroups.contains(group.name)}"
+												selectedTags="${selectedPresetTags.get(group.name)}"
+												labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}"/>
 					</div>
 				</c:if>
 			</c:forEach>

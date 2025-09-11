@@ -164,8 +164,8 @@ INSERT INTO `gold_standard` (`content_id`, `journal`, `volume`, `chapter`, `edit
 (1073740827,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'University of Nowhere',NULL,'muller2004wurst',0,'2015-07-06 14:15:12','testuserP',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'9132de6d174bcfd8018d0b299642f12d','0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','','phdthesis','Wurst aufs Brot','Müller, Heinrich Georg',NULL,'2004', NULL, 0,'2015-07-06 12:21:34',0, 2);
 
 -- bookmarks
-INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `simhash2`, `content_type`) VALUES
-(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', '20592a292e53843965c1bb42bfd51876', 1);
+INSERT INTO `gold_standard` (`content_id`, `title`, `url`, `description`, `date`, `user_name`, `simhash1`, `simhash2`, `change_date`, `content_type`) VALUES
+(1025, 'Universität Kassel', 'http://www.uni-kassel.de', 'Nordhessen', '2011-01-01 00:00:00', 'testuser1', '20592a292e53843965c1bb42bfd51876', '20592a292e53843965c1bb42bfd51876', '2015-07-06 12:21:34', 1);
 
 -- 
 -- Data for table `gold_standard_relations`
@@ -799,11 +799,11 @@ INSERT INTO `pub_person` (`person_change_id`, `simhash1`, `simhash2`, `relator_c
 (25, '0a00d00000fc00000a0000a0000f0ad0', '0a00d00000fc00000a0000a0000f0ad0', 'Maut', 0, 'w.test.1', 0,'2015-07-06 14:19:55','testuserP'),
 (26, '0d0b00c0000a000f00a00ad00ff612fc', '0d0b00c0000a000f00a00ad00ff612fc', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
 (27, '0ffa0a0ad000a00cbccf000adb0fdde0', '0ffa0a0ad000a00cbccf000adb0fdde0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
-(28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2015-07-06 14:19:55','testuserP'),
-(29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2015-07-06 14:19:55','testuserP'),
-(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2015-07-06 14:19:55','testuserP');
+(28, 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'eb0000af0a0c00b0b0ac0e0a0a00d0c0', 'Maut', 0, 'w.test.2', 0,'2016-07-06 14:19:55','testuserP'),
+(29, '0e0a00c000000f00d0d000b00eefe00b', '0e0a00c000000f00d0d000b00eefe00b', 'Maut', 0, 'w.test.3', 0,'2016-07-06 14:19:55','testuserP'),
+(30, '00dc000febca00a0f0f00ce0de000000', '00dc000febca00a0f0f00ce0de000000', 'Maut', 0, 'w.test.4', 0,'2016-07-06 14:19:55','testuserP');
 
-INSERT INTO `person_match` (match_id, person1_id, person2_id, state) VALUES
+INSERT INTO `person_match` (match_id, target_person_id, source_person_id, state) VALUES
 (1, 'w.test.1', 'w.test.2', 0),
 (2, 'w.test.1', 'w.test.3', 0),
 (3, 'w.test.2', 'w.test.3', 0),

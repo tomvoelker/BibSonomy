@@ -65,7 +65,7 @@ public enum PostUpdateOperation {
 	 * Update only the repositories attached to the post
 	 * (PUMA specific)
 	 */
-	UPDATE_REPOSITORY,
+	UPDATE_REPOSITORIES,
 	
 
 	/**

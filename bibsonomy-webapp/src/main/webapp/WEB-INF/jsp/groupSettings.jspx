@@ -3,7 +3,6 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:groupsettings="urn:jsptagdir:/WEB-INF/tags/groupsettings"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
@@ -54,9 +53,6 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="tabcontent">
-			<!-- display potential errors -->
-			<errors:global />
-			
 			<groupsettings:profile command="${command}" group="${group}" />
 
 			<groupsettings:userlists command="${command}" group="${group}" />

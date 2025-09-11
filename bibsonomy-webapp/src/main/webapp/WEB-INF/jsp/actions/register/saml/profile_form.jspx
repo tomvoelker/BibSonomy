@@ -8,7 +8,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:register="urn:jsptagdir:/WEB-INF/tags/actions/register"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
@@ -28,7 +27,7 @@
 				<div class="lead">
 					<p><fmt:message key="register.saml.step2.description"/></p>
 				</div>
-				<errors:global />
+
 				<bsform:fieldset legendKey="register.saml.required">
 					<jsp:attribute name="content">
 						<!--  SAML PROVIDER ID -->

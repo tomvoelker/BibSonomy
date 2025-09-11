@@ -321,7 +321,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getPostsWithRepository(final BibTexParam param, final DBSession session) {
-		return this.postList("selectBibtexWithRepositorys", param, session);
+		return this.postList("selectBibtexWithRepositories", param, session);
 	}
 
 	/**
@@ -662,14 +662,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 
 	@Override
 	protected void workOnOperation(final Post<BibTex> post, final Post<BibTex> oldPost, User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
-		if (PostUpdateOperation.UPDATE_REPOSITORY.equals(operation)) {
-			this.performUpdateRepositorys(post, oldPost, session);
+		if (PostUpdateOperation.UPDATE_REPOSITORIES.equals(operation)) {
+			this.performUpdateRepositories(post, oldPost, session);
 		} else {
 			super.workOnOperation(post, oldPost, loggedinUser, operation, session);
 		}
 	}
 
-	protected void performUpdateRepositorys(final Post<BibTex> post, final Post<BibTex> oldPost, final DBSession session) {
+	protected void performUpdateRepositories(final Post<BibTex> post, final Post<BibTex> oldPost, final DBSession session) {
 		final RepositoryParam param = new RepositoryParam();
 		param.setUserName(post.getUser().getName());
 		param.setInterHash(post.getResource().getInterHash());
@@ -678,11 +678,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// TODO: can we be sure that here is _at least_ or exactly one
 		// repository ?
 		// what is the expected behavior if no repository is given?
-		// if(!present(post.getRepositorys()))
+		// if(!present(post.getRepositories()))
 		// return;
 
 		// TODO: NPE?
-		param.setRepositoryName(post.getRepositorys().get(0).getId());
+		param.setRepositoryName(post.getRepositories().get(0).getId());
 
 		this.insert("insertRepository", param, session);
 	}

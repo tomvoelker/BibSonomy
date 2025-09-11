@@ -29,6 +29,8 @@
  */
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -36,8 +38,10 @@ import java.util.NoSuchElementException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.util.UrlUtils;
 
 /**
  * Static methods to handle Resources.
@@ -102,5 +106,30 @@ public class ResourceUtils {
 			}
 		}
 		throw new NoSuchElementException(resourceName);
+	}
+	
+	
+	/**
+	 * Extracts a URL from the post. Easy for bookmarks, a little more difficult
+	 * for publications.
+	 * 
+	 * @param post
+	 * @return the extracted URL
+	 */
+	public static String getLinkAddress(final Post<? extends Resource> post) {
+		final Resource resource = post.getResource();
+		if (resource instanceof Bookmark) {
+			return ((Bookmark) resource).getUrl();
+		} else if (resource instanceof BibTex) {
+			final BibTex bibtex = (BibTex) resource;
+
+			final String url = bibtex.getUrl();
+			if (present(url)) return UrlUtils.cleanBibTeXUrl(url);
+			bibtex.serializeMiscFields();
+
+			final String ee = bibtex.getMiscField("ee");
+			if (present(ee)) return UrlUtils.cleanBibTeXUrl(ee);
+		}
+		return null;
 	}
 }

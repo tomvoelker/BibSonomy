@@ -29,11 +29,20 @@
  */
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationSortKey;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,14 +50,66 @@ import java.util.List;
  */
 public class GetResourcePersonRelationsQuery extends AbstractQuery<List<ResourcePersonRelation>> {
 	private final String personId;
+	private final String interhash;
+	private final PersonResourceRelationType relationType;
+	private final Integer authorIndex;
+	private final Date beforeChangeDate;
+	private final Date afterChangeDate;
 
-	public GetResourcePersonRelationsQuery(String personId) {
-		this.personId = personId;
+	private final boolean withPersons;
+	private final boolean withPosts;
+	private final boolean withPersonsOfPosts;
+	private final boolean onlyTheses;
+	private final boolean groupByInterhash;
+
+	private final PersonResourceRelationSortKey sortKey;
+	private final SortOrder sortOrder;
+
+	private final int start;
+
+	private final int end;
+
+
+	public GetResourcePersonRelationsQuery(ResourcePersonRelationQuery query) {
+		if (!present(query)) {
+			throw new IllegalArgumentException("No resource-person relation query given.");
+		}
+
+		this.personId = query.getPersonId();
+		this.interhash = query.getInterhash();
+		this.relationType = query.getRelationType();
+		this.authorIndex = query.getAuthorIndex();
+		this.beforeChangeDate = query.getBeforeChangeDate();
+		this.afterChangeDate = query.getAfterChangeDate();
+		this.withPersons = query.isWithPersons();
+		this.withPosts = query.isWithPosts();
+		this.withPersonsOfPosts = query.isWithPersonsOfPosts();
+		this.onlyTheses = query.isOnlyTheses();
+		this.groupByInterhash = query.isGroupByInterhash();
+		this.sortKey = query.getSortKey();
+		this.sortOrder = query.getSortOrder();
+		this.start = query.getStart();
+		this.end = query.getEnd();
 	}
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = this.performGetRequest(this.getUrlRenderer().createUrlBuilderForResourcePersonRelations(this.personId).asString());
+		UrlBuilder urlBuilder = this.getUrlRenderer().createUrlBuilderForPersonRelations(this.personId);
+		urlBuilder.addParameter(RESTConfig.INTERHASH_PARAM, this.interhash);
+		urlBuilder.addParameter(RESTConfig.RELATION_TYPE_PARAM, this.relationType);
+		urlBuilder.addParameter(RESTConfig.RELATION_INDEX_PARAM, this.authorIndex);
+		urlBuilder.addParameter(RESTConfig.BEFORE_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.beforeChangeDate));
+		urlBuilder.addParameter(RESTConfig.AFTER_CHANGE_DATE_PARAM, RESTConfig.serializeDate(this.afterChangeDate));
+		urlBuilder.addParameter(RESTConfig.WITH_POSTS_PARAM, this.withPosts);
+		urlBuilder.addParameter(RESTConfig.WITH_PERSONS_OF_POSTS_PARAM, this.withPersonsOfPosts);
+		urlBuilder.addParameter(RESTConfig.ONLY_THESES_PARAM, this.onlyTheses);
+		urlBuilder.addParameter(RESTConfig.GROUP_BY_INTERHASH_PARAM, this.groupByInterhash);
+		urlBuilder.addParameter(RESTConfig.SORT_KEY_PARAM, this.sortKey);
+		urlBuilder.addParameter(RESTConfig.SORT_ORDER_PARAM, this.sortOrder);
+		urlBuilder.addParameter(RESTConfig.START_PARAM, this.start);
+		urlBuilder.addParameter(RESTConfig.END_PARAM, this.end);
+
+		this.downloadedDocument = this.performGetRequest(urlBuilder.asString());
 	}
 
 	@Override

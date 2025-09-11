@@ -30,6 +30,7 @@
 package org.bibsonomy.webapp.command.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -105,7 +106,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private List<String> sendToGroups = new ArrayList<>();
 
-	private String presetTagsForGroups;
+	private String selectedPresetTags;
+
+	private Map<String, List<String>> selectedPresetTagsByGroup = new HashMap<>();
+
+	private List<String> selectedPresetSystemTags = new ArrayList<>();
 
 	private SortedSet<RecommendedTag> recommendedTags;
 

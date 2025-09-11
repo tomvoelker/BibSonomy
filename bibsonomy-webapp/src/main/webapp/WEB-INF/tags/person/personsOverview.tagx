@@ -17,7 +17,7 @@
     <fmt:message key="person.index.placeholder" var="placeholderText"/>
     <fmt:message key="person.index.searchInfo" var="searchInfo"/>
 
-    <parts:searchHeader headerMessageKey="persons.header" searchPlaceholderKey="person.search"
+    <parts:searchHeader headerMessageKey="persons.header" searchPlaceholderKey="person.search" hideMiscPrefixes="${true}"
                         requPathAndQuery="${requPathAndQuery}" command="${command}" />
 
     <c:set var="loggedinUser" value="${command.context.userLoggedIn}" />

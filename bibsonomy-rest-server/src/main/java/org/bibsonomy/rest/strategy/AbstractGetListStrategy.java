@@ -78,7 +78,8 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 	}
 
 	@Override
-	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException { final L resultList = getList();
+	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		final L resultList = getList();
 		
 		if (resultList.size() != (getView().getEndValue() - getView().getStartValue())) {
 			this.view.setEndValue( resultList.size() + this.view.getStartValue());

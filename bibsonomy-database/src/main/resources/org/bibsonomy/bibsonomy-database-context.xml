@@ -281,9 +281,8 @@
 	<bean id="personChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByUserName" parent="abstractPersonChainElement"/>
+				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsById" parent="abstractPersonChainElement"/>
 				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByOrganization" parent="abstractPersonChainElement"/>
-				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByAdditionalKey" parent="abstractPersonChainElement"/>
 				<bean class="org.bibsonomy.database.managers.chain.person.GetPersonsByFulltextSearch" parent="abstractPersonChainElement" />
 			</list>
 		</property>
@@ -302,6 +301,9 @@
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsWithPosts">
+					<constructor-arg ref="personDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.personresourceRelation.GetResourcePersonRelationsAfterChangeDate">
 					<constructor-arg ref="personDatabaseManager" />
 				</bean>
 			</list>
@@ -428,6 +430,7 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourceHistory" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsAfterChangeDate" parent="abstractGoldStandardPublicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
 			</list>
 		</property>

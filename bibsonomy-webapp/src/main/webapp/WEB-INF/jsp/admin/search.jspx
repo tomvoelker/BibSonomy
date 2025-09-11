@@ -10,10 +10,11 @@
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 
-    <fmt:message key="navi.admin" var="pageTitle"/>
+	<fmt:message key="navi.admin" var="adminPageTitle" />
+	<fmt:message key="navi.admin.searchIndices" var="searchIndexTitle" />
 
     <layout:layout
-            pageTitle="full text search"
+            pageTitle="${searchIndexTitle} | ${adminPageTitle}"
             loginUser="${command.context.loginUser}"
             requPath="${requPath}"
             noSidebar="${true}">
@@ -22,7 +23,7 @@
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:admin/>
-					<nav:crumb nameKey="navi.admin.fulltextsearch" active="true"/>
+					<nav:crumb name="${searchIndexTitle}" active="true"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -38,7 +39,10 @@
 				<adminSearch:entityIndicesInfo entity="${entity}" searchIndexInfos="${searchIndexInfos}" showWarning="${true}" showActions="${true}" />
 			</c:forEach>
 
-			<adminSearch:entityIndicesInfo entity="Help" searchIndexInfos="${command.searchIndexInfo.get('Help')}" showWarning="${false}" showActions="${false}" />
+			<c:if test="${not empty command.searchIndexInfo.get('Help')}">
+				<adminSearch:entityIndicesInfo entity="Help" searchIndexInfos="${command.searchIndexInfo.get('Help')}" showWarning="${false}" showActions="${false}" />
+			</c:if>
+
     	</jsp:attribute>
 	</layout:layout>
 </jsp:root>

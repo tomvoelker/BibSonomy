@@ -36,7 +36,7 @@
 		<constructor-arg name="entityInformationProvider" ref="elasticsearchGroupEntityInformationProvider" />
 		<constructor-arg name="updateIndexLogic" ref="groupSearchUpdateLogic" />
 		<constructor-arg name="databaseInformationLogic" ref="groupDatabaseInformationLogic" />
-		<constructor-arg name="regenerateEnabled" value="false" />
+		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.person}" />
 	</bean>
 
 </beans>

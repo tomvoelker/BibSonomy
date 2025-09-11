@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="forAjaxPosts" type="java.lang.Boolean" required="false" />
 	
 	<!--+
 		+ clipboard actions (pick all, unpick all, clear clipboard)

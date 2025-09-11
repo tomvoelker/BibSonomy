@@ -1,0 +1,33 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
+
+    <c:set var="oaStatus" value="${command.policy.get('classification')}" />
+    <c:set var="preprintStatus" value="${command.policy.get('preprint')}" />
+    <c:set var="postprintStatus" value="${command.policy.get('postprint')}" />
+    <c:set var="publishedStatus" value="${command.policy.get('published')}" />
+
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <fmt:message key="post.resource.openaccess.status.dissemin.${oaStatus}" var="oaStatusTxt"/>
+            <fmt:message key="post.resource.openaccess.status.dissemin.${oaStatus}.description" var="oaStatusDesc"/>
+            <img class="oa-status-img" src="/resources/image/puma/openaccess/status_${oaStatus}.png" alt="${oaStatusTxt}"/>
+            <h3 class="oa-status-txt" title="${oaStatusDesc}">${oaStatusTxt}</h3>
+        </div>
+
+        <div class="col-md-6" style="margin-top: 15px;">
+            <fmt:message var="preprintDesc" key="post.resource.openaccess.status.preprint.description"/>
+            <fmt:message var="postprintDesc" key="post.resource.openaccess.status.postprint.description"/>
+            <fmt:message var="publishedDesc" key="post.resource.openaccess.status.published.description"/>
+            <p><b title="${preprintDesc}"><fmt:message key="post.resource.openaccess.status.preprint"/>: </b><fmt:message key="post.resource.openaccess.status.dissemin.${preprintStatus}"/></p>
+            <p><b title="${postprintDesc}"><fmt:message key="post.resource.openaccess.status.postprint"/>: </b><fmt:message key="post.resource.openaccess.status.dissemin.${postprintStatus}"/></p>
+            <p><b title="${publishedDesc}"><fmt:message key="post.resource.openaccess.status.published"/>: </b><fmt:message key="post.resource.openaccess.status.dissemin.${publishedStatus}"/></p>
+        </div>
+    </div>
+
+
+</jsp:root>

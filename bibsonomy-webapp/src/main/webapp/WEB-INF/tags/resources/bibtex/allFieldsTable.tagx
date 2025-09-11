@@ -23,11 +23,10 @@
 		<!--+
 			| BibTeX key
 			+-->
-		<dt><fmt:message key="post.resource.bibtexKey"/>:</dt>
+		<dt><fmt:message key="post.resource.bibtexKey"/></dt>
 		<dd>
 			<a href="/bibtexkey/${mtl:encodePathSegment(publication.bibtexKey)}/${mtl:encodePathSegment(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a>
 		</dd>
-
 
 		<dt><fmt:message key="post.resource.entrytype"/></dt>
 		<dd><c:out value="${mtl:cleanBibtex(publication.entrytype)}" /></dd>
@@ -94,7 +93,7 @@
 			</c:choose>
 
 			<dd>
-				<a href="${fn:escapeXml(publication.url)}">
+				<a rel="nofollow" href="${fn:escapeXml(publication.url)}">
 					<c:if test="${isLinkToDocument}">
 						<fontawesome:icon icon="file-pdf-o" /><c:out value=" " />
 					</c:if>
@@ -108,13 +107,13 @@
 				| additional URLs
 				+-->
 		<c:if test="${not empty publication.extraUrls or isOwnEntry}">
-			<dt><fmt:message key="bibtex.additional_urls"/>:</dt>
+			<dt><fmt:message key="bibtex.additional_urls"/></dt>
 			<dd>
 				<ul id="urlList">
 					<c:forEach items="${publication.extraUrls}" var="url">
 						<li>
 							<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-							<a itemprop="url" href="${escapedUrl}"><c:out value="${url.text}"/></a>
+							<a itemprop="url" rel="nofollow" href="${escapedUrl}"><c:out value="${url.text}"/></a>
 
 							<c:if test="${isOwnEntry}">
 								<fmt:message var="deleteUrl" key="post.bibtex.remove"/>

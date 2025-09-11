@@ -151,6 +151,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 				this.switchActiveAndInactiveIndex();
 			}
 
+			LOG.info("deleting index " + indexName);
 			this.client.deleteIndex(indexName);
 		} finally {
 			this.updateLock.release();
@@ -222,7 +223,7 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
-			// set the preferedIndexToDelete to the inactive one iff no index specified
+			// set the preferredIndexToDelete to the inactive one iff no index specified
 			if (!present(indexToDelete)) {
 				indexToDelete = inactiveIndexName;
 			}
@@ -234,18 +235,18 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 			// remove the standby alias
 			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexStatus.STANDBY)));
 			// only set the alias if the index should not be deleted
-			final boolean preferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
+			final boolean preferredDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
 				// remove active alias from the current active index
 				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
 				// we use the index as inactive index if we do not want to delete it
-				if (!preferedDeletedActiveIndex) {
+				if (!preferredDeletedActiveIndex) {
 					aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
 				}
 			}
 
 			// only remove the alias if the other index should be deleted
-			if (present(inactiveIndexName) && !preferedDeletedActiveIndex) {
+			if (present(inactiveIndexName) && !preferredDeletedActiveIndex) {
 				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
 			}
 
@@ -385,7 +386,9 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		 * here we use the mapping version info of the old state
 		 * BasicUtils#VERSION maybe contain a new deployed version
 		 */
-		state.setMappingVersion(BasicUtils.VERSION);
+		state.setMappingVersion(oldState.getMappingVersion());
+		state.setBuildDate(oldState.getBuildDate());
+		state.setBuildTime(oldState.getBuildTime());
 		state.setUpdatedAt(new Date());
 		indexData.setSource(this.syncStateConverter.convert(state));
 		this.client.insertNewDocument(ElasticsearchUtils.getSearchIndexStateIndexName(this.systemURI), indexName, indexData);
@@ -494,6 +497,8 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexRegenerationTask<T> task = new ElasticSearchIndexRegenerationTask<>(this, this.generator, newIndexName, indexNameToReplace);
+
+		LOG.info("regenerating index: " + indexNameToReplace + "->" + newIndexName);
 		this.executeTask(async, task);
 	}
 
@@ -530,31 +535,30 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		}
 
 		try {
-			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			if (present(activeIndex)) {
-				this.regenerateIndex(activeIndex, false);
+			// First we try to regenerate the inactive index
+			final String firstToRegenerate = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			// Then the active next
+			final String secondToRegenerate = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+
+			if (present(firstToRegenerate)) {
+				// If there is an inactive index, we regenerate it first and switch to it
+				this.regenerateIndex(firstToRegenerate, false);
 			} else {
+				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
-			final String currentActiveIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
-			final String currentInactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
 
-			final String secondIndexToRegenerate;
-			if (present(activeIndex) && !activeIndex.equals(currentActiveIndex)) {
-				secondIndexToRegenerate = currentActiveIndex;
+			if (present(secondToRegenerate)) {
+				// If there is an secondToRegenerate, we regenerate it and switch to it
+				this.regenerateIndex(secondToRegenerate, false);
 			} else {
-				secondIndexToRegenerate = currentInactiveIndex;
-			}
-
-			if (present(secondIndexToRegenerate)) {
-				this.regenerateIndex(secondIndexToRegenerate, false);
-			} else {
+				// Otherwise we build a new index and switch to it
 				this.generateIndex(false, true);
 			}
 		} catch (final IndexAlreadyGeneratingException e) {
 			LOG.error("error while regeneration all indices", e);
 		}
-	}
+    }
 
 	/**
 	 * generates a new index for the resource
@@ -576,6 +580,8 @@ public abstract class ElasticsearchManager<T, S extends SearchIndexState> implem
 		}
 		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.entityInformationProvider.getType());
 		final ElasticSearchIndexGenerationTask<T> task = new ElasticSearchIndexGenerationTask<>(this, this.generator, newIndexName, activeIndexAfterGeneration);
+
+		LOG.info("generating new index " + newIndexName);
 		this.executeTask(async, task);
 	}
 
