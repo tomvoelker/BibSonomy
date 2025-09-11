@@ -18,8 +18,7 @@ cache:
 build:
   stage: build
   script:
-    - mvn $MAVEN_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent
-    - mvn install $MAVEN_OPTS -DskipTests
+    - mvn $MAVEN_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipTests
   artifacts:
     untracked: true
     expire_in: 1 hour
