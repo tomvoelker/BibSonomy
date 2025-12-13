@@ -67,6 +67,9 @@ test:
       junit:
         - target/surefire-reports/TEST-*.xml
         - bibsonomy-*/target/surefire-reports/TEST-*.xml
+      coverage_report:
+        coverage_format: jacoco
+        path: coverage/target/site/jacoco-aggregate/jacoco.xml
     expose_as: testresults
     paths:
       - target/
@@ -126,56 +129,15 @@ report:
       - target/report
       - allure-results
 
-# https://docs.gitlab.com/ee/user/project/merge_requests/test_coverage_visualization.html#maven-example
-coverage:
-  stage: visualize
-  dependencies:
-    - test
-  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
-  script:
-    # convert report from jacoco to cobertura, using relative project path
-    - "python /opt/cover2cover.py coverage/target/site/jacoco-aggregate/jacoco.xml
-      $CI_PROJECT_DIR/bibsonomy-bibtex-parser/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-common/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-database/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-database-common/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-exporter/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-importer/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-layout/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-logging/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-marc-parser/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-model/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-openaccess/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-opensocial/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-pingback/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-qrcode/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-recommender/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-rest-client/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-rest-client-oauth/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-rest-common/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-rest-server/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-scraper/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-scrapingservice/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-search/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-search-elasticsearch/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-synchronization/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-web-common/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-webapp/src/main/java/
-      $CI_PROJECT_DIR/bibsonomy-wiki/src/main/java/
-      > coverage/target/site/coverage.xml"
-  artifacts:
-    expire_in: 1 hour
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage/target/site/coverage.xml
+# Coverage is now reported directly from the test job using GitLab's native JaCoCo support
+# https://docs.gitlab.com/ci/testing/code_coverage/jacoco/
 
 deploy_results:
   stage: deploy
   image: ubuntu
   dependencies:
     - report
-    - coverage
+    - test
   before_script:
     - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )"
     - eval $(ssh-agent -s)
