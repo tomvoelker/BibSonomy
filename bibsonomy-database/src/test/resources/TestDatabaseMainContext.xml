@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- dummies for search indices -->
 	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
@@ -17,8 +16,8 @@
 
 	<bean id="goldStandardInformationService" class="org.bibsonomy.testutil.DummyInformationService" />
 
-	<import resource="classpath:TestDatabaseBaseContext.xml"/>
-	<import resource="classpath:TestDatabaseContext.xml"/>
+	<import resource="classpath:TestDatabaseBaseContext.xml" />
+	<import resource="classpath:TestDatabaseContext.xml" />
 
 	<bean id="systemTagTest" class="org.bibsonomy.database.systemtags.SystemtagsTest">
 		<property name="maxQuerySize" value="${database.maxQuerySize}" />
@@ -26,17 +25,21 @@
 
 	<bean id="publicationReader" class="org.bibsonomy.testutil.DummyPublicationReader" />
 
-	<bean id="dbLogicPrototype" class="org.bibsonomy.database.DBLogic" scope="prototype" init-method="initializeMaps">
+	<bean id="dbLogicPrototype" class="org.bibsonomy.database.DBLogic" scope="prototype"
+		init-method="initializeMaps">
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 		<property name="projectDatabaseManager" ref="projectDatabaseManager" />
 		<property name="publicationReader" ref="publicationReader" />
 		<property name="crisLinkDatabaseManager" ref="crisLinkDatabaseManger" />
 	</bean>
 
-	<bean id="apiInterfaceFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory" parent="abstractInterfaceFactory" />
-	<bean id="logicInterfaceFactory" class="org.bibsonomy.database.DBLogicUserInterfaceFactory" parent="abstractInterfaceFactory" />
+	<bean id="apiInterfaceFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory"
+		parent="abstractInterfaceFactory" />
+	<bean id="logicInterfaceFactory" class="org.bibsonomy.database.DBLogicUserInterfaceFactory"
+		parent="abstractInterfaceFactory" />
 
-	<bean id="abstractInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
+	<bean id="abstractInterfaceFactory"
+		class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
 	</bean>
@@ -48,7 +51,8 @@
 		<property name="projectBlog" value="${project.blog}" />
 		<property name="projectEmail" value="${project.email}" />
 		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
-		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
+		<property name="projectJoinGroupRequestFromAddress"
+			value="${project.joinGroupRequestFromAddress}" />
 		<property name="projectReportEmail" value="${project.reportMail}" />
 		<property name="mailHost" value="${mail.smtp.host}" />
 		<property name="absoluteURLGenerator" value="" />

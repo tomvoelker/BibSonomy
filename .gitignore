@@ -27,3 +27,8 @@ out/
 Thumbs.db
 .DS_Store
 .smarttomcat/
+
+# Pipeline related files
+allure-results/*.json
+coverage/*
+src/main/webapp/WEB-INF/lib/
