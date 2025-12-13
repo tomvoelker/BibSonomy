@@ -151,8 +151,13 @@ deploy_results:
     - mkdir -p "$CI_COMMIT_BRANCH"/latest/testresults "$CI_COMMIT_BRANCH"/latest/coverage "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/testresults "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage
     - cp -a target/report/. "$CI_COMMIT_BRANCH"/latest/testresults
     - cp -a target/report/. "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/testresults/
-    - cp -a coverage/target/site/jacoco-aggregate/. "$CI_COMMIT_BRANCH"/latest/coverage/
-    - cp -a coverage/target/site/jacoco-aggregate/. "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage/
+    - |
+      if [ -d "coverage/target/site/jacoco-aggregate" ]; then
+        cp -a coverage/target/site/jacoco-aggregate/. "$CI_COMMIT_BRANCH"/latest/coverage/
+        cp -a coverage/target/site/jacoco-aggregate/. "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage/
+      else
+        echo "Warning: coverage/target/site/jacoco-aggregate not found, skipping coverage deployment"
+      fi
     - rsync -a "$CI_COMMIT_BRANCH" bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
 
 deploy_biblicious:
