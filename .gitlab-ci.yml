@@ -1,0 +1,171 @@
+image: tomvoelker/maven-mariadb
+
+stages:
+  - build
+  - test
+  - prepVisualize
+  - visualize
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_OPTS clean org.jacoco:jacoco-maven-plugin:prepare-agent install -DskipTests
+  artifacts:
+    untracked: true
+    expire_in: 1 hour
+    expose_as: jars
+    paths:
+      - target/
+
+test:
+  stage: test
+  allow_failure: true
+  variables:
+    MARIADB_ROOT_PASSWORD: root
+    MARIADB_USER: bibsonomy
+    MARIADB_PASSWORD: password
+  services:
+    - mariadb:10.3
+  before_script:
+    - mysql --version
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL time_zone = 'Europe/Paris';"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL default_storage_engine='InnoDB';"
+
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode="STRICT_TRANS_TABLES";"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_DATE');"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_AUTO_CREATE_USER');"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ENGINE_SUBSTITUTION');"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_IN_DATE');"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "SELECT @@SQL_MODE, @@GLOBAL.SQL_MODE;"
+
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS bibsonomy_unit_test;"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS main_db;"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS item_recommender_db;"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS tag_recommender_db;"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON main_db.* TO '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_PASSWORD';"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON item_recommender_db.* TO '$MARIADB_USER'@'%';"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON tag_recommender_db.* TO '$MARIADB_USER'@'%';"
+    - mysql -h mariadb -u root -p$MARIADB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+  script:
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -s misc/scripts/settings.xml -P bibsonomy-test-settings
+  after_script:
+    - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
+  artifacts:
+    untracked: true
+    when: always
+    expire_in: 1 hour
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - bibsonomy-*/target/surefire-reports/TEST-*.xml
+      coverage_report:
+        coverage_format: jacoco
+        path: coverage/target/site/jacoco-aggregate/jacoco.xml
+    expose_as: testresults
+    paths:
+      - target/
+      - coverage/target
+
+test-scraper:
+  stage: test
+  rules:
+    - when: manual
+      if: $CI_COMMIT_BRANCH =~ /^.*scraper.*$/i
+  script:
+    - mvn test org.jacoco:jacoco-maven-plugin:report-aggregate $MAVEN_OPTS --fail-never -pl bibsonomy-scraper -P allTests
+  artifacts:
+    untracked: true
+    when: always
+    expire_in: 1 hour
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - bibsonomy-*/target/surefire-reports/TEST-*.xml
+    expose_as: scrapertestresults
+    paths:
+      - target/
+
+get_history:
+  stage: prepVisualize
+  dependencies:
+    - build
+  image: ubuntu
+  before_script:
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )"
+    - eval $(ssh-agent -s)
+    - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/"$CI_COMMIT_BRANCH"/latest/testresults/history allure-results || rsync -a bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www/master/latest/testresults/history allure-results
+  artifacts:
+    untracked: true
+
+report:
+  stage: visualize
+  dependencies:
+    - test
+    - get_history
+  image: tomvoelker/simple-allure-cli
+  script:
+    - allure generate -c -o target/report allure-results
+  artifacts:
+    untracked: true
+    when: always
+    expire_in: 1 hour
+    expose_as: allureresults
+    paths:
+      - target/report
+      - allure-results
+
+# Coverage is now reported directly from the test job using GitLab's native JaCoCo support
+# https://docs.gitlab.com/ci/testing/code_coverage/jacoco/
+
+deploy_results:
+  stage: deploy
+  image: ubuntu
+  dependencies:
+    - report
+    - test
+  before_script:
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client rsync -y )"
+    - eval $(ssh-agent -s)
+    - echo "$SSH_DEPLOY" | base64 --decode | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan bertha.cs.uni-kassel.de >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - echo "${CI_COMMIT_SHA:0:8}"
+    - mkdir -p "$CI_COMMIT_BRANCH"/latest/testresults "$CI_COMMIT_BRANCH"/latest/coverage "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/testresults "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage
+    - cp -a target/report/. "$CI_COMMIT_BRANCH"/latest/testresults
+    - cp -a target/report/. "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/testresults/
+    - |
+      if [ -d "coverage/target/site/jacoco-aggregate" ]; then
+        cp -a coverage/target/site/jacoco-aggregate/. "$CI_COMMIT_BRANCH"/latest/coverage/
+        cp -a coverage/target/site/jacoco-aggregate/. "$CI_COMMIT_BRANCH"/"${CI_COMMIT_SHA:0:8}"/coverage/
+      else
+        echo "Warning: coverage/target/site/jacoco-aggregate not found, skipping coverage deployment"
+      fi
+    - rsync -a "$CI_COMMIT_BRANCH" bib-static@bertha.cs.uni-kassel.de:/home/bib-static/www
+
+deploy_biblicious:
+  stage: deploy
+  dependencies:
+    - test
+  rules:
+    - when: manual
+      if: $CI_COMMIT_BRANCH =~ /^.*biblicious.*$/i
+  script:
+    - mvn -f bibsonomy-webapp/pom.xml tomcat7:redeploy $MAVEN_OPTS -Ddeploy-to=biblicious -Dtomcat.username=tcadmin -Dtomcat.password=$(echo $thewhitetomcatdeploy | base64 -di -) -DskipTests
