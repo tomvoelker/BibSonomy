@@ -1,0 +1,15 @@
+==Grouppage of the group <name/>==
+{| class="wikitable" style="text-align:left;padding:15px"
+|style="width: 5em" | <groupimage />
+|style="padding: 0 10px; vertical-align: top" | <description />
+|}
+
+==Members==
+<members />
+
+==Recently added bookmarks==
+<bookmarks tags="myown" limit="3" />
+
+==Recently added publications==
+<publications order="asc" keys="year" limit="3" />
+

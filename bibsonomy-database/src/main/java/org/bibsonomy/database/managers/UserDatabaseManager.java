@@ -65,7 +65,7 @@ import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.file.LazyUploadedFile;
-import org.bibsonomy.wiki.TemplateManager;
+import org.bibsonomy.database.util.WikiTemplateLoader;
 
 /**
  * Used to retrieve users from the database.
@@ -1241,6 +1241,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Inserts a default wiki for a newly activated user or for a newly
 	 * registered openid user.
 	 *
+	 * <p><strong>Note:</strong> This method previously used {@code org.bibsonomy.wiki.TemplateManager}
+	 * from the {@code bibsonomy-wiki} module. The dependency was removed to avoid transitive
+	 * Spring 3.2 dependencies that conflict with Spring Boot 3.x. Templates are now loaded
+	 * directly from this module's resources via {@link WikiTemplateLoader}.
+	 *
 	 * @param user
 	 * @param session
 	 */
@@ -1250,7 +1255,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		param.setDate(user.getRegistrationDate());
 
 		// Hier wird standardmaessig ein Benutzer-Wiki angelegt!
-		param.setWikiText(TemplateManager.getTemplate("user1en"));
+		// Note: Template loading moved from bibsonomy-wiki to avoid Spring 3.2 dependency conflicts
+		param.setWikiText(WikiTemplateLoader.getTemplate("user1en"));
 		// hier passiert keine Sicherung, da die session-transactions in den umfassenden
 		// Methoden bereits eroeffnet wurden.
 		this.insert("insertWiki", param, session);
