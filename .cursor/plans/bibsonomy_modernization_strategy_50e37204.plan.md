@@ -1,6 +1,6 @@
 ---
 name: BibSonomy Modernization Strategy
-overview: Create a gradual modernization plan for BibSonomy, starting with a new Kotlin REST API module that reuses core database/model modules, followed by a modern React frontend, while keeping the legacy system operational.
+overview: Create a gradual modernization plan for BibSonomy, starting with a new Kotlin REST API module that reuses core database/model modules, followed by a modern Vue 3 frontend, while keeping the legacy system operational.
 todos:
   - id: setup-kotlin-module
     content: Create new Maven module bibsonomy-rest-api-v2 with Kotlin, Java 21, and Spring Boot 3.x
@@ -15,7 +15,7 @@ todos:
     content: Implement GET /api/v2/posts endpoint as proof of concept
     status: pending
   - id: setup-frontend
-    content: Initialize React + TypeScript frontend project with API client
+    content: Initialize Vue 3 + TypeScript frontend project with API client
     status: pending
   - id: define-mvp-scope
     content: Define exact MVP feature set with stakeholders
@@ -125,7 +125,7 @@ todos:
 
 ### Phase 2: Modern Frontend
 
-**Technology**: React + TypeScript
+**Technology**: Vue 3 + TypeScript
 
 **Approach**:
 
@@ -202,19 +202,20 @@ bibsonomy-rest-api-v2/
 
 **Technology Recommendation**:
 
-- **React 18+** with **TypeScript**
+- **Vue 3** with **TypeScript**
 - **Vite** for build tool (fast, simple)
-- **React Router** for navigation
-- **TanStack Query (React Query)** for API state management (AI-friendly, clean patterns)
-- **UI Framework**: **shadcn/ui** + **Tailwind CSS** (modern, customizable, AI-friendly)
-  - Alternative: **Chakra UI** (also good, more opinionated)
-- **Zod** for runtime type validation (works great with TypeScript)
+- **vue-router** for navigation
+- **@tanstack/vue-query** for API/server state management
+- **Pinia** for client-side/global UI state (auth, preferences)
+- **UI**: **Headless UI** components + **Tailwind CSS** (or UnoCSS) for styling control and small footprint
+- **Zod** (via `zod` or `@vuelidate` if preferred) for runtime type validation of API responses
 
 **Why this stack**:
 
-- AI agents work well with React + TypeScript (clear patterns)
-- shadcn/ui is copy-paste components (easy to customize, no heavy framework)
-- TanStack Query handles caching/refetching automatically
+- Gentle learning curve and straightforward templates
+- vue-query handles caching, dedupe, pagination, and retries
+- Pinia is lightweight for shared UI/auth state
+- Headless UI + Tailwind keeps bundle lean and theming flexible
 - Vite = fast dev experience
 
 **Structure**:
@@ -226,18 +227,21 @@ bibsonomy-frontend/
 ├── vite.config.ts
 ├── tailwind.config.js
 ├── src/
-│   ├── App.tsx
+│   ├── main.ts
+│   ├── App.vue
 │   ├── components/
-│   │   ├── ui/ (shadcn components)
-│   │   ├── PostList.tsx
-│   │   ├── PostCard.tsx
-│   │   └── UserProfile.tsx
+│   │   ├── ui/ (Headless UI wrappers)
+│   │   ├── PostList.vue
+│   │   ├── PostCard.vue
+│   │   └── UserProfile.vue
 │   ├── pages/
-│   │   ├── HomePage.tsx
-│   │   ├── PostDetailPage.tsx
-│   │   └── ProfilePage.tsx
-│   ├── services/
-│   │   └── api.ts (API client with TanStack Query)
+│   │   ├── HomePage.vue
+│   │   ├── PostDetailPage.vue
+│   │   └── ProfilePage.vue
+│   ├── composables/
+│   │   └── useApi.ts (API client with vue-query)
+│   ├── store/
+│   │   └── auth.ts (Pinia store)
 │   └── types/
 │       └── models.ts (TypeScript types from API)
 ```
@@ -339,10 +343,10 @@ bibsonomy-frontend/
 
 ### Step 5: Setup frontend project
 
-   - Initialize React + TypeScript + Vite project
-   - Add shadcn/ui + Tailwind
-   - Add TanStack Query
-   - Create API client
+   - Initialize Vue 3 + TypeScript + Vite project
+   - Add Headless UI + Tailwind
+   - Add @tanstack/vue-query and Pinia
+   - Create API client/composables
    - Display posts list (homepage)
 
 ## Authentication Strategy
