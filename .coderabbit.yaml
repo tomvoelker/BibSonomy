@@ -35,7 +35,7 @@ reviews:
     - path: "**/*.sh"
       instructions: "Enforce shellcheck hygiene, safe `set -euo pipefail` patterns, and portability across macOS/Linux."
     - path: "**/*.md"
-      instructions: "Prefer concise, action-oriented documentation; ensure commands are correct for macOS/Linux; keep modernization plan references intact."
+      instructions: "Do NOT provide formatting suggestions (line length, spacing, punctuation, etc.). Focus only on factual accuracy, broken links, and incorrect commands. Prefer concise, action-oriented documentation; ensure commands are correct for macOS/Linux; keep modernization plan references intact."
   auto_review:
     ignore_title_keywords: ["WIP", "DRAFT"]
     drafts: true
