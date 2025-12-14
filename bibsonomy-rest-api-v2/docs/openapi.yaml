@@ -90,6 +90,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 100
           style: form
           explode: false
           description: Filter by tags (comma-separated, all tags must match)
@@ -373,11 +374,13 @@ paths:
                   type: array
                   items:
                     type: string
+                  maxItems: 100
                   description: Tags to apply to all imported posts
                 groups:
                   type: array
                   items:
                     type: string
+                  maxItems: 50
                   description: Groups to share imported posts with
       responses:
         '201':
@@ -423,10 +426,12 @@ paths:
                   type: array
                   items:
                     type: string
+                  maxItems: 100
                 groups:
                   type: array
                   items:
                     type: string
+                  maxItems: 50
       responses:
         '201':
           description: Publication imported
@@ -456,10 +461,12 @@ paths:
                   type: array
                   items:
                     type: string
+                  maxItems: 100
                 groups:
                   type: array
                   items:
                     type: string
+                  maxItems: 50
       responses:
         '201':
           description: Post created from URL
@@ -490,10 +497,12 @@ paths:
                   type: array
                   items:
                     type: string
+                  maxItems: 100
                 groups:
                   type: array
                   items:
                     type: string
+                  maxItems: 50
       responses:
         '201':
           description: Publication created with PDF attached
@@ -524,10 +533,12 @@ paths:
                   type: array
                   items:
                     type: string
+                  maxItems: 100
                 groups:
                   type: array
                   items:
                     type: string
+                  maxItems: 50
       responses:
         '201':
           description: Bookmarks imported successfully
@@ -566,10 +577,12 @@ paths:
                   type: array
                   items:
                     type: string
+                  maxItems: 100
                 groups:
                   type: array
                   items:
                     type: string
+                  maxItems: 50
       responses:
         '201':
           description: Publications imported
@@ -1331,6 +1344,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 100
           style: form
           explode: false
       responses:
@@ -1917,10 +1931,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PersonNameDto'
+          maxItems: 100
         editors:
           type: array
           items:
             $ref: '#/components/schemas/PersonNameDto'
+          maxItems: 100
         year:
           type: integer
           example: 2020
@@ -1972,11 +1988,13 @@ components:
           type: array
           items:
             type: string
+          maxItems: 100
           example: ['machine-learning', 'nlp']
         groups:
           type: array
           items:
             type: string
+          maxItems: 50
           example: ['public', 'research-group']
         visibility:
           type: string
@@ -2018,6 +2036,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PersonNameDto'
+          maxItems: 100
         year:
           type: integer
         journal:
@@ -2033,10 +2052,12 @@ components:
           type: array
           items:
             type: string
+          maxItems: 100
         groups:
           type: array
           items:
             type: string
+          maxItems: 50
         visibility:
           type: string
           enum: [public, private, groups]
@@ -2187,6 +2208,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 50
 
     PaginatedUserList:
       type: object
@@ -2248,6 +2270,7 @@ components:
               type: array
               items:
                 type: string
+              maxItems: 100
               description: Suggested tags for posts in this group
             _links:
               type: object
@@ -2306,6 +2329,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 100
 
     GroupMemberDto:
       type: object
@@ -2363,11 +2387,13 @@ components:
               type: array
               items:
                 type: string
+              maxItems: 100
               description: Broader tags
             subtags:
               type: array
               items:
                 type: string
+              maxItems: 100
               description: Narrower tags
 
     RelatedTagDto:
