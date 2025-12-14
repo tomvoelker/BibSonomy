@@ -13,7 +13,7 @@ BibSonomy is a social bookmark and publication sharing system developed since 20
 **Read this first**: BibSonomy is undergoing a gradual modernization. The codebase contains:
 
 1. **Legacy System** (Java 8, Spring 3.2, iBatis) - **Maintained but NOT modernized**
-2. **New Modern System** (Kotlin, Java 21, Spring Boot 3, React) - **Active development**
+2. **New Modern System** (Kotlin, Java 21, Spring Boot 3, Vue 3) - **Active development**
 
 See `.cursor/plans/bibsonomy_modernization_strategy_50e37204.plan.md` for full details.
 
@@ -21,9 +21,9 @@ See `.cursor/plans/bibsonomy_modernization_strategy_50e37204.plan.md` for full d
 
 ```
 ┌─────────────────────────────────────┐
-│ NEW: React + TypeScript Frontend    │  (bibsonomy-frontend)
-│ (Vite build tool, react-i18next)    │
-│ (TanStack Query, Tailwind CSS)      │
+│ NEW: Vue 3 + TypeScript Frontend    │  (bibsonomy-frontend)
+│ (Vite build tool, vue-i18n)         │
+│ (@tanstack/vue-query, Tailwind CSS) │
 └──────────────┬──────────────────────┘
                │ REST API
 ┌──────────────▼──────────────────────┐
@@ -47,7 +47,7 @@ PARALLEL OPERATION:
 └──────────────────────────────────────┘
 ```
 
-**Key Principle**: New code in Kotlin/React; legacy code preserved as-is for stability.
+**Key Principle**: New code in Kotlin/Vue; legacy code preserved as-is for stability.
 
 ## Code Quality & Testing Philosophy
 
@@ -87,13 +87,14 @@ PARALLEL OPERATION:
 - ✅ **Immutable data classes** for DTOs and value objects
 - ✅ **Thorough integration tests** for all API surface
 
-**For Frontend React Code**:
+**For Frontend Vue Code**:
 - ✅ TypeScript with strict mode
-- ✅ Functional components with hooks
-- ✅ TanStack Query for server state management
-- ✅ Zod for runtime validation of API responses
-- ✅ shadcn/ui components (copy-paste, customizable)
-- ✅ Accessibility considerations (semantic HTML, ARIA labels)
+- ✅ Vue 3 SFCs with Composition API
+- ✅ @tanstack/vue-query for server state management
+- ✅ Pinia for shared UI/client state (auth, prefs) when needed
+- ✅ vue-i18n for translations; semantic HTML and ARIA for a11y
+- ✅ Zod (or lightweight validators) for runtime API validation
+- ✅ Headless UI + Tailwind (or UnoCSS) for accessible, lean UI primitives
 - ✅ Focus on correctness and API integration over test coverage
 
 **For Legacy Code** (`bibsonomy-database`, `bibsonomy-webapp`):
@@ -303,39 +304,28 @@ fun Post<out Resource>.toDto(): PostDto {
 - Include authentication in tests
 - Test error cases (404, 400, 401, 403, 500)
 
-### Creating the React Frontend
+### Creating the Vue Frontend
 
 **Tech Stack** (decided after discussion):
 
 **Core (Required)**:
-- **React 18+** - UI framework
+- **Vue 3 (SFC + Composition API)** - UI framework
 - **TypeScript** - Type safety (critical for AI-generated code)
-- **Vite** - Build tool (modern, fast alternative to Webpack/Create React App)
-- **React Router** - Client-side routing for SPA
-- **react-i18next** - Internationalization (German/English support)
+- **Vite** - Build tool (modern, fast)
+- **vue-router** - Client-side routing for SPA
+- **vue-i18n** - Internationalization (German/English support)
 
 **Highly Recommended**:
-- **TanStack Query** (React Query) - Server state management
-  - Why: Handles API caching, loading states, refetching, error handling automatically
-  - Alternative: Plain `fetch` + `useState` (much more boilerplate)
-- **Tailwind CSS** - Utility-first CSS framework
-  - Why: Fast styling, AI models excellent at generating Tailwind classes
-  - Alternative: Plain CSS, CSS Modules, styled-components
-
-**Optional**:
-- **shadcn/ui** - UI component library (copy-paste, NOT a dependency!)
-  - Why: Pre-built accessible components you customize
-  - Alternative: Build your own components, Material-UI, Chakra UI
+- **@tanstack/vue-query** - Server state management (caching, dedupe, retries, pagination)
+- **Pinia** - Shared client/UI state (auth tokens, prefs, global filters)
+- **Tailwind CSS** (or UnoCSS) + **Headless UI** - Accessible primitives with small footprint
 - **Zod** - Runtime type validation for API responses
-  - Why: Catches API contract changes at runtime
-  - Alternative: Trust TypeScript types only
 
 **Package Manager**: Bun (modern, faster) or npm (traditional, safer)
 
 **NOT included** (avoid unnecessary dependencies):
-- ❌ Redux (TanStack Query handles server state)
-- ❌ Formik/React Hook Form (plain controlled inputs sufficient for MVP)
-- ❌ Heavy UI frameworks like Material-UI (bundle bloat)
+- ❌ Redux/Vuex (Pinia + vue-query cover needs)
+- ❌ Heavy UI frameworks unless requested (keep bundle lean)
 
 **Project Structure**:
 ```
@@ -348,18 +338,22 @@ bibsonomy-frontend/
 │           └── translation.json
 ├── src/
 │   ├── components/
-│   │   ├── ui/           # shadcn components (if used)
-│   │   ├── PostCard.tsx
-│   │   ├── PostList.tsx
-│   │   └── UserProfile.tsx
+│   │   ├── ui/           # Headless UI wrappers
+│   │   ├── PostCard.vue
+│   │   ├── PostList.vue
+│   │   └── UserProfile.vue
 │   ├── pages/
-│   │   ├── HomePage.tsx
-│   │   ├── PostDetailPage.tsx
-│   │   └── ProfilePage.tsx
-│   ├── lib/
-│   │   ├── api.ts        # API client with TanStack Query
-│   │   ├── i18n.ts       # i18next configuration
-│   │   └── schemas.ts    # Zod schemas (if used)
+│   │   ├── HomePage.vue
+│   │   ├── PostDetailPage.vue
+│   │   └── ProfilePage.vue
+│   ├── composables/
+│   │   ├── useApi.ts     # API client with vue-query
+│   │   └── useAuth.ts    # Auth helpers (Pinia integration)
+│   ├── store/
+│   │   └── auth.ts       # Pinia store
+│   ├── plugins/
+│   │   ├── i18n.ts       # vue-i18n configuration
+│   │   └── query.ts      # vue-query client
 │   └── types/
 │       └── models.ts     # TypeScript types
 ├── package.json
@@ -368,10 +362,10 @@ bibsonomy-frontend/
 └── tailwind.config.js    # If using Tailwind
 ```
 
-**API Integration Pattern** (with TanStack Query):
+**API Integration Pattern** (with @tanstack/vue-query):
 ```typescript
-// lib/api.ts
-import { useQuery } from '@tanstack/react-query'
+// composables/usePosts.ts
+import { useQuery } from '@tanstack/vue-query'
 
 export function usePosts(params: PostQueryParams) {
   return useQuery({
@@ -380,45 +374,31 @@ export function usePosts(params: PostQueryParams) {
       const response = await fetch(`/api/v2/posts?${new URLSearchParams(params)}`)
       if (!response.ok) throw new Error('Failed to fetch posts')
       const data = await response.json()
-      return data as Post[] // TypeScript types
-      // Or with Zod: return z.array(PostSchema).parse(data)
+      return data as Post[] // Or z.array(PostSchema).parse(data)
     }
   })
 }
 ```
 
-**Internationalization Pattern** (react-i18next):
+**Internationalization Pattern** (vue-i18n):
 ```typescript
-// lib/i18n.ts
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
+// plugins/i18n.ts
+import { createI18n } from 'vue-i18n'
+import en from '../locales/en/translation.json'
+import de from '../locales/de/translation.json'
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources: {
-      en: { translation: require('../../public/locales/en/translation.json') },
-      de: { translation: require('../../public/locales/de/translation.json') }
-    },
-    lng: 'de', // default German (like legacy webapp)
-    fallbackLng: 'en',
-    interpolation: { escapeValue: false }
-  })
+export const i18n = createI18n({
+  legacy: false,
+  locale: 'de',         // default German (like legacy webapp)
+  fallbackLocale: 'en',
+  messages: { en, de }
+})
 
-// In components:
-import { useTranslation } from 'react-i18next'
+// In a component
+import { useI18n } from 'vue-i18n'
 
-function PostCard() {
-  const { t, i18n } = useTranslation()
-
-  return (
-    <div>
-      <h2>{t('post.title')}</h2>
-      <button onClick={() => i18n.changeLanguage('en')}>EN</button>
-      <button onClick={() => i18n.changeLanguage('de')}>DE</button>
-    </div>
-  )
-}
+const { t, locale } = useI18n()
+const switchToEn = () => (locale.value = 'en')
 ```
 
 **Translation Files**:
@@ -483,10 +463,11 @@ Test settings: `misc/scripts/settings.xml` (profile: `bibsonomy-test-settings`)
 **Component Diagram**:
 ```
 ┌───────────────────────────────────────────────────────┐
-│ React Frontend (bibsonomy-frontend)                   │
-│ - React 18 + TypeScript + Vite (build tool)           │
-│ - react-i18next (German/English)                      │
-│ - TanStack Query (API state), Tailwind (styling)      │
+│ Vue 3 Frontend (bibsonomy-frontend)                   │
+│ - Vue 3 + TypeScript + Vite (build tool)              │
+│ - vue-i18n (German/English)                           │
+│ - @tanstack/vue-query (API state), Tailwind (styling) │
+│ - Pinia (auth/prefs)                                  │
 └─────────────────┬─────────────────────────────────────┘
                   │ HTTP/JSON API
 ┌─────────────────▼─────────────────────────────────────┐
@@ -746,22 +727,23 @@ Never create circular dependencies between modules.
 - Or: Call legacy REST API for token validation initially
 - Or: Share authentication logic via common module
 
-### Working on React Frontend
+### Working on Vue Frontend
 
 **Adding a new page**:
 
-1. **Define Zod schema** for API data in `src/lib/schemas.ts`
-2. **Create API hook** in `src/lib/api.ts` using TanStack Query
-3. **Create page component** in `src/pages/`
-4. **Add route** to router configuration
-5. **Write integration test** for critical flows
+1. **Define Zod schema** for API data in `src/types/schemas.ts`
+2. **Create composable** in `src/composables/useApi.ts` (or specific file) using @tanstack/vue-query
+3. **Create page component** in `src/pages/YourPage.vue`
+4. **Add route** to `src/router/index.ts`
+5. **Wire Pinia store** if shared UI/auth state is needed
+6. **Write integration test** for critical flows
 
 **Calling the REST API**:
 ```typescript
-// Use TanStack Query hooks
-const { data, isLoading, error } = usePosts({ limit: 20 })
+// composables/usePosts.ts
+import { useQuery } from '@tanstack/vue-query'
+import { PostListSchema } from '@/types/schemas'
 
-// Or custom hook
 export function usePosts(params: PostQueryParams) {
   return useQuery({
     queryKey: ['posts', params],
@@ -810,12 +792,13 @@ export function usePosts(params: PostQueryParams) {
 - Meaningful variable names, no abbreviations
 - Prefer sealed classes for sum types (e.g., `sealed class Result<T>`)
 
-**Modern React/TypeScript Code**:
-- Functional components with hooks (no class components)
+**Modern Vue/TypeScript Code**:
+- Vue 3 SFCs with Composition API
 - TypeScript strict mode
-- react-i18next for translations (German/English)
-- TanStack Query for server state (no Redux for API data)
-- Tailwind CSS utility classes (or plain CSS/CSS Modules)
+- vue-i18n for translations (German/English)
+- @tanstack/vue-query for server state (no Redux/Vuex for API data)
+- Pinia for shared UI/client state when needed
+- Tailwind CSS utility classes (or UnoCSS/plain CSS)
 - Semantic HTML with accessibility in mind
 - Vitest for testing (Vite's test runner)
 
@@ -849,7 +832,7 @@ export function usePosts(params: PostQueryParams) {
 
 **New Modules** (when created):
 - `bibsonomy-rest-api-v2/` - Kotlin Spring Boot API
-- `bibsonomy-frontend/` - React TypeScript frontend
+- `bibsonomy-frontend/` - Vue 3 + TypeScript frontend
 
 ### Domain Model Quick Reference
 
@@ -875,7 +858,7 @@ export function usePosts(params: PostQueryParams) {
 | Task | Use |
 |------|-----|
 | New REST API endpoint | Create in `bibsonomy-rest-api-v2` (Kotlin) |
-| New UI page/feature | Create in `bibsonomy-frontend` (React) |
+| New UI page/feature | Create in `bibsonomy-frontend` (Vue 3 + TypeScript) |
 | Bug in legacy webapp | Fix in `bibsonomy-webapp` (minimal change) |
 | New database query | Add to `bibsonomy-database` iBatis XML + expose via `LogicInterface` |
 | New domain field | Add to `bibsonomy-model` + update iBatis XML + create DTO mapping |
