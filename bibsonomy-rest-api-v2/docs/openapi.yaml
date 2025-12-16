@@ -72,6 +72,8 @@ paths:
         Get a paginated list of posts (bookmarks and/or publications).
         Supports filtering by resource type, tags, user, group, and search query.
       operationId: listPosts
+      security:
+        - {}
       parameters:
         - $ref: '#/components/parameters/offsetParam'
         - $ref: '#/components/parameters/limitParam'
@@ -116,6 +118,14 @@ paths:
             enum: [json, bibtex, endnote, csv, rss, html, csl, xml, foaf, netscape]
             default: json
           description: Export format (can also use Accept header)
+        - name: includeTotal
+          in: query
+          schema:
+            type: boolean
+            default: false
+          description: |
+            When true, also calculates totalCount for the full result set (can be slow on large datasets).
+            When false, totalCount reflects only the number of items in this page.
       responses:
         '200':
           description: Successful response
@@ -196,6 +206,15 @@ paths:
       tags: [Posts]
       summary: Get post by ID
       operationId: getPostById
+      security:
+        - {}
+      parameters:
+        - name: user
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Owner of the post (required to disambiguate and to access private posts)
       responses:
         '200':
           description: Successful response
@@ -1771,8 +1790,8 @@ components:
       in: path
       required: true
       schema:
-        type: integer
-      description: Post ID
+        type: string
+      description: Resource hash of the post (intraHash/interHash from legacy API)
 
     usernameParam:
       name: username

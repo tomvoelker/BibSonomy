@@ -123,6 +123,8 @@ API v2 uses **OAuth2/JWT** authentication (not HTTP Basic Auth like v1).
 
 **OpenID Connect** is supported for external authentication providers.
 
+**Legacy compatibility:** Until token issuance is finished, v2 accepts the legacy v1 Basic + API-key header (`Authorization: Basic base64(username:apikey)`) and propagates the authenticated user into `LogicInterface`.
+
 **Note:** LDAP and SAML were supported in legacy system but removed in v2. If needed, these can be re-added via custom authentication providers.
 
 ## MVP Feature Scope
