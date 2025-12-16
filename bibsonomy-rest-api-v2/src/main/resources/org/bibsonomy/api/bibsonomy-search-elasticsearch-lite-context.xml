@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- Minimal stub search configuration: we avoid loading the legacy search stack
+         (iBatis mappings, Elasticsearch clients, etc.) and instead expose no-op
+         search beans so the rest of the application can start. -->
+
+    <bean id="noOpResourceSearch" class="org.bibsonomy.api.search.NoOpResourceSearch" />
+
+    <alias name="noOpResourceSearch" alias="bookmarkSearch" />
+    <alias name="noOpResourceSearch" alias="publicationSearch" />
+    <alias name="noOpResourceSearch" alias="goldStandardPublicationSearch" />
+    <alias name="noOpResourceSearch" alias="goldStandardBookmarkSearch" />
+    <alias name="noOpResourceSearch" alias="projectSearch" />
+    <alias name="noOpResourceSearch" alias="groupSearch" />
+    <alias name="noOpResourceSearch" alias="personSearch" />
+</beans>

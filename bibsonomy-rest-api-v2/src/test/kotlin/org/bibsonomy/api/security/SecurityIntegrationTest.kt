@@ -1,0 +1,111 @@
+package org.bibsonomy.api.security
+
+import org.bibsonomy.api.config.SecurityConfig
+import org.bibsonomy.common.enums.Role
+import org.bibsonomy.common.exceptions.AccessDeniedException
+import org.bibsonomy.model.User
+import org.bibsonomy.model.logic.LogicInterface
+import org.bibsonomy.model.logic.LogicInterfaceFactory
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Primary
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@SpringBootTest(
+    classes = [TestSecurityApplication::class],
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = ["spring.main.allow-bean-definition-overriding=true"]
+)
+class SecurityIntegrationTest(
+    @Autowired private val restTemplate: TestRestTemplate
+) {
+
+    @Test
+    fun `no auth is permitted`() {
+        val response = restTemplate.getForEntity("/api/v2/posts", String::class.java)
+        assertEquals(HttpStatus.OK, response.statusCode)
+    }
+
+    @Test
+    fun `invalid basic auth still permitted for public endpoint`() {
+        val headers = HttpHeaders()
+        headers.setBasicAuth("wrong", "creds")
+        val response: ResponseEntity<String> = restTemplate.exchange(
+            "/api/v2/posts",
+            HttpMethod.GET,
+            HttpEntity<Void>(headers),
+            String::class.java
+        )
+        assertEquals(HttpStatus.OK, response.statusCode)
+    }
+
+    @Test
+    fun `valid basic auth returns 200`() {
+        val headers = HttpHeaders()
+        headers.setBasicAuth(StubLogicInterfaceFactory.VALID_USER, StubLogicInterfaceFactory.VALID_API_KEY)
+        val response: ResponseEntity<String> = restTemplate.exchange(
+            "/api/v2/posts",
+            HttpMethod.GET,
+            HttpEntity<Void>(headers),
+            String::class.java
+        )
+        assertEquals(HttpStatus.OK, response.statusCode)
+    }
+}
+
+/**
+ * Minimal application wiring security only, with a dummy posts endpoint.
+ */
+@SpringBootApplication
+@Import(SecurityConfig::class, LegacyAuthenticationConfiguration::class, StubBeans::class)
+class TestSecurityApplication
+
+@RestController
+@RequestMapping("/api/v2/posts")
+class DummyPostsController {
+    @GetMapping
+    fun list(): ResponseEntity<String> = ResponseEntity.ok("ok")
+}
+
+class StubLogicInterfaceFactory : LogicInterfaceFactory {
+    override fun getLogicAccess(loginName: String?, apiKey: String?): LogicInterface {
+        val logic = Mockito.mock(LogicInterface::class.java)
+        val user = User().apply {
+            name = loginName ?: "guest"
+            role = Role.ADMIN
+        }
+        Mockito.`when`(logic.authenticatedUser).thenReturn(user)
+        return logic
+    }
+
+    companion object {
+        const val VALID_USER = "tomvoelker"
+        const val VALID_API_KEY = "d73d8ca82d162f31b38ddba275737350"
+    }
+}
+
+/**
+ * Provides stubbed beans for tests.
+ */
+class StubBeans {
+    @Bean
+    fun stubLogicInterfaceFactory(): LogicInterfaceFactory = StubLogicInterfaceFactory()
+
+    @Bean
+    @Primary
+    fun logicInterface(factory: LogicInterfaceFactory): LogicInterface = factory.getLogicAccess(null, null)
+}

@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: bibsonomy-rest-api-v2
+  main:
+    allow-circular-references: true
+
+  # Jackson JSON configuration
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# SpringDoc OpenAPI configuration
+springdoc:
+  api-docs:
+    path: /api/v2/api-docs
+  swagger-ui:
+    path: /api/v2/swagger-ui.html
+    operationsSorter: alpha
+    tagsSorter: alpha
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    org.bibsonomy: DEBUG
+    org.springframework.web: DEBUG
