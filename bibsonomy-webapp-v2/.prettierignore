@@ -1,0 +1,8 @@
+dist
+node_modules
+coverage
+.vite
+*.d.ts
+pnpm-lock.yaml
+bun.lockb
+package-lock.json
