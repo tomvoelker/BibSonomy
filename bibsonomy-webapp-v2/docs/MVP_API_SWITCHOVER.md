@@ -56,6 +56,7 @@ Plan to make the homepage work against the real `bibsonomy-rest-api-v2` followin
    - `curl http://localhost:8080/api/v2/posts?limit=5` → confirm shape matches new DTO.
    - `curl http://localhost:8080/api/v2/tags?limit=20` → confirm tag list.
    - ✅ Verified `mvn -Puse-toolchain-java23 -DskipTests -t ./toolchains.xml -f bibsonomy-rest-api-v2/pom.xml package` and app startup with `--spring.profiles.active=local` (port 8080).
+   - ✅ Verified `GET /api/v2/posts?limit=1` and `GET /api/v2/tags?limit=5` return OpenAPI-compatible JSON.
 
 ---
 
@@ -80,6 +81,7 @@ Plan to make the homepage work against the real `bibsonomy-rest-api-v2` followin
    - Run frontend with mocks off: `VITE_ENABLE_MOCKS=false bun dev` (or `npm run dev`).
    - Confirm homepage shows real posts split into bookmarks/publications and the tag cloud comes from API.
    - Verify no 404/CORS errors in the browser console.
+   - ✅ `npm run type-check` passes.
 
 ---
 

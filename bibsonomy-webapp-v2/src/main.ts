@@ -13,8 +13,8 @@ import { startMockWorker } from './mocks/browser'
 // Import global styles
 import './assets/main.css'
 
-// Start MSW if enabled
-if (import.meta.env.VITE_ENABLE_MOCKS === 'true') {
+// Start MSW only in dev when explicitly enabled
+if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true') {
   void startMockWorker().then(() => {
     initApp()
   })
