@@ -13,7 +13,7 @@ This module provides a clean, JSON-first REST API v2 that:
 
 ## Architecture
 
-```
+```text
 REST API v2 (Spring Boot 3.x, Kotlin)
     ↓ (adapts)
 Legacy Database Layer (Spring 3.2, iBatis)
@@ -47,37 +47,41 @@ MySQL Database
 ## Build & Run
 
 **Build:**
+
 ```bash
 mvn clean install
 ```
 
 **Run locally:**
+
 ```bash
 mvn spring-boot:run
 ```
 
 **Run tests:**
+
 ```bash
 mvn test
 ```
 
 **Generate OpenAPI docs:**
+
 ```bash
 # After starting the application, visit:
-http://localhost:8080/swagger-ui.html
-http://localhost:8080/v3/api-docs
+[Swagger UI](http://localhost:8080/swagger-ui.html)
+[OpenAPI JSON](http://localhost:8080/v3/api-docs)
 ```
 
 ## API Documentation
 
 Once running, interactive API documentation is available at:
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI JSON: http://localhost:8080/v3/api-docs
-- OpenAPI YAML: http://localhost:8080/v3/api-docs.yaml
+- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- OpenAPI JSON: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+- OpenAPI YAML: [http://localhost:8080/v3/api-docs.yaml](http://localhost:8080/v3/api-docs.yaml)
 
 ## Project Structure
 
-```
+```text
 bibsonomy-rest-api-v2/
 ├── docs/                           # Documentation
 │   ├── openapi.yaml                # OpenAPI 3.0 specification
@@ -85,36 +89,45 @@ bibsonomy-rest-api-v2/
 │   ├── REMOVED_FEATURES.md         # Excluded features reference
 │   └── DEFERRED_FEATURES.md        # Post-MVP features reference
 ├── src/main/kotlin/
-│   └── org/bibsonomy/api/v2/
-│       ├── Application.kt          # Spring Boot main
+│   └── org/bibsonomy/api/
+│       ├── ApiApplication.kt       # Spring Boot main
 │       ├── config/                 # Configuration classes
-│       │   ├── DatabaseConfig.kt   # Bridge to legacy DB layer
-│       │   ├── SecurityConfig.kt   # OAuth2/JWT config
-│       │   └── OpenApiConfig.kt    # OpenAPI configuration
-│       ├── controllers/            # REST controllers
-│       │   ├── PostsController.kt
-│       │   ├── UsersController.kt
-│       │   ├── TagsController.kt
-│       │   └── GroupsController.kt
+│       │   ├── DatabaseBridgeConfig.kt # Bridge to legacy DB layer
+│       │   ├── DataSourceLoggingConfig.kt
+│       │   ├── LegacyBeanAliasesConfig.kt
+│       │   ├── LegacyCrisStubConfig.kt
+│       │   ├── LegacyGoldStandardStubConfig.kt
+│       │   ├── LegacyLogicConfig.kt
+│       │   ├── LegacyPluginStubConfig.kt
+│       │   ├── LegacySearchConfig.kt
+│       │   └── SecurityConfig.kt   # OAuth2/JWT config
+│       ├── controller/             # REST controllers
+│       │   └── PostsController.kt
 │       ├── dto/                    # API DTOs (request/response)
+│       │   ├── GroupDto.kt
+│       │   ├── PaginatedResponse.kt
 │       │   ├── PostDto.kt
-│       │   ├── UserDto.kt
 │       │   ├── TagDto.kt
-│       │   └── GroupDto.kt
-│       ├── services/               # Service layer (adapts LogicInterface)
-│       │   ├── PostService.kt
-│       │   ├── UserService.kt
-│       │   └── TagService.kt
-│       ├── mappers/                # Domain ↔ DTO mapping
-│       │   ├── PostMapper.kt
-│       │   ├── UserMapper.kt
-│       │   └── TagMapper.kt
-│       └── exceptions/             # Custom exceptions
-│           └── ApiExceptions.kt
+│       │   └── UserDto.kt
+│       ├── mapper/                 # Domain ↔ DTO mapping
+│       │   └── PostMapper.kt
+│       ├── search/                 # Legacy search integration
+│       │   ├── FixedCommunityBookmarkConverter.kt
+│       │   ├── FixedCommunityPublicationConverter.kt
+│       │   └── NoopPdfExtractor.kt
+│       ├── security/               # Authentication helpers
+│       │   └── LegacyAuthentication.kt
+│       └── service/                # Service layer (adapts LogicInterface)
+│           └── PostService.kt
 └── src/test/kotlin/
-    └── org/bibsonomy/api/v2/
-        ├── controllers/            # REST integration tests
-        └── services/               # Service integration tests
+    └── org/bibsonomy/api/
+        ├── config/                 # Configuration tests
+        │   ├── SearchConfigIntegrationTest.kt
+        │   └── SystemTagConfigTest.kt
+        ├── controller/             # REST integration tests
+        │   └── PostsControllerAuthIntegrationTest.kt
+        └── security/               # Security integration tests
+            └── SecurityIntegrationTest.kt
 ```
 
 ## Authentication
@@ -161,6 +174,7 @@ See [CLAUDE.md](../CLAUDE.md) in repository root for development guidelines.
 **Key patterns:**
 
 1. **Database access via LogicInterface:**
+
    ```kotlin
    @Service
    class PostService(private val logic: LogicInterface) {
@@ -172,6 +186,7 @@ See [CLAUDE.md](../CLAUDE.md) in repository root for development guidelines.
    ```
 
 2. **Explicit DTO mapping:**
+
    ```kotlin
    fun Post<out Resource>.toDto(): PostDto {
        return PostDto(
@@ -183,6 +198,7 @@ See [CLAUDE.md](../CLAUDE.md) in repository root for development guidelines.
    ```
 
 3. **Integration testing:**
+
    ```kotlin
    @SpringBootTest(webEnvironment = RANDOM_PORT)
    class PostControllerIntegrationTest {

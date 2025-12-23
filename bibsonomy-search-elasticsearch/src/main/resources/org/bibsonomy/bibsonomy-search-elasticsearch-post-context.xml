@@ -8,7 +8,7 @@
 						http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<bean id="elasticsearchBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchPostManager" parent="elasticsearchAbstractIndexManager">
-		<constructor-arg name="generator">
+		<constructor-arg index="2" name="generator">
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
@@ -18,14 +18,14 @@
 				<constructor-arg ref="elasticsearchBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
-		<constructor-arg name="entityInformationProvider" ref="elasticsearchBookmarkEntityInformationProvider" />
-		<constructor-arg name="inputLogic" ref="bookmarkSearchDBLogic" />
-		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.bookmark}" />
+		<constructor-arg index="3" name="syncStateConverter" ref="postSyncStateConverter" />
+		<constructor-arg index="4" name="entityInformationProvider" ref="elasticsearchBookmarkEntityInformationProvider" />
+		<constructor-arg index="8" name="inputLogic" ref="bookmarkSearchDBLogic" />
+		<constructor-arg index="7" name="regenerateEnabled" value="${cron.search.regenerate.enabled.bookmark}" />
 	</bean>
 
 	<bean id="elasticsearchPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchPublicationManager" parent="elasticsearchAbstractIndexManager">
-		<constructor-arg name="generator">
+		<constructor-arg index="2" name="generator">
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGenerator">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
@@ -35,14 +35,14 @@
 				<constructor-arg ref="elasticsearchPublicationEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
-		<constructor-arg name="entityInformationProvider" ref="elasticsearchPublicationEntityInformationProvider" />
-		<constructor-arg name="inputLogic" ref="publicationSearchDBLogic" />
-		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.publication}" />
+		<constructor-arg index="3" name="syncStateConverter" ref="postSyncStateConverter" />
+		<constructor-arg index="4" name="entityInformationProvider" ref="elasticsearchPublicationEntityInformationProvider" />
+		<constructor-arg index="8" name="inputLogic" ref="publicationSearchDBLogic" />
+		<constructor-arg index="7" name="regenerateEnabled" value="${cron.search.regenerate.enabled.publication}" />
 	</bean>
 
 	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostManager" parent="elasticsearchAbstractIndexManager">
-		<constructor-arg name="generator">
+		<constructor-arg index="2" name="generator">
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
@@ -57,17 +57,17 @@
 				<constructor-arg ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
-		<constructor-arg name="entityInformationProvider" ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
-		<constructor-arg name="inputLogic" ref="goldStandardBookmarkSearchDBLogic" />
-		<constructor-arg name="communityPostUpdateLogic" ref="communityIndexUpdateLogicCommunityBookmark" />
-		<constructor-arg name="postUpdateLogic" ref="communityIndexUpdateLogicBookmark" />
-		<constructor-arg name="databaseInformationLogic" ref="communityBookmarkDatabaseInformationLogic" />
-		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.goldstandardBookmark}" />
+		<constructor-arg index="3" name="syncStateConverter" ref="postSyncStateConverter" />
+		<constructor-arg index="4" name="entityInformationProvider" ref="elasticsearchCommunityBookmarkEntityInformationProvider" />
+		<constructor-arg index="8" name="inputLogic" ref="goldStandardBookmarkSearchDBLogic" />
+		<constructor-arg index="10" name="postUpdateLogic" ref="communityIndexUpdateLogicBookmark" />
+		<constructor-arg index="9" name="databaseInformationLogic" ref="communityBookmarkDatabaseInformationLogic" />
+		<constructor-arg index="11" name="communityPostUpdateLogic" ref="communityIndexUpdateLogicCommunityBookmark" />
+		<constructor-arg index="7" name="regenerateEnabled" value="${cron.search.regenerate.enabled.goldstandardBookmark}" />
 	</bean>
 
 	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.post.ElasticsearchCommunityPostPublicationManager" parent="elasticsearchAbstractIndexManager">
-		<constructor-arg name="generator">
+		<constructor-arg index="2" name="generator">
 			<bean class="org.bibsonomy.search.es.index.generator.ElasticsearchIndexGeneratorWithMultipleSources">
 				<constructor-arg ref="systemURI" />
 				<constructor-arg ref="esClient" />
@@ -82,14 +82,14 @@
 				<constructor-arg ref="elasticsearchCommunityPublicationEntityInformationProvider" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg name="syncStateConverter" ref="postSyncStateConverter" />
-		<constructor-arg name="entityInformationProvider" ref="elasticsearchCommunityPublicationEntityInformationProvider" />
-		<constructor-arg name="inputLogic" ref="goldStandardPublicationSearchDBLogic" />
-		<constructor-arg name="communityPostUpdateLogic" ref="communityIndexUpdateLogicCommunityPublication" />
-		<constructor-arg name="postUpdateLogic" ref="communityIndexUpdateLogicPublication" />
-		<constructor-arg name="databaseInformationLogic" ref="communityPublicationDatabaseInformationLogic" />
-		<constructor-arg name="personResourceRelationUpdateLogic" ref="personResourceRelationUpdateDBLogicWithPersonUpdates" />
-		<constructor-arg name="regenerateEnabled" value="${cron.search.regenerate.enabled.goldstandardPublication}" />
+		<constructor-arg index="3" name="syncStateConverter" ref="postSyncStateConverter" />
+		<constructor-arg index="4" name="entityInformationProvider" ref="elasticsearchCommunityPublicationEntityInformationProvider" />
+		<constructor-arg index="8" name="inputLogic" ref="goldStandardPublicationSearchDBLogic" />
+		<constructor-arg index="10" name="postUpdateLogic" ref="communityIndexUpdateLogicPublication" />
+		<constructor-arg index="11" name="communityPostUpdateLogic" ref="communityIndexUpdateLogicCommunityPublication" />
+		<constructor-arg index="9" name="databaseInformationLogic" ref="communityPublicationDatabaseInformationLogic" />
+		<constructor-arg index="12" name="personResourceRelationUpdateLogic" ref="personResourceRelationUpdateDBLogicWithPersonUpdates" />
+		<constructor-arg index="7" name="regenerateEnabled" value="${cron.search.regenerate.enabled.goldstandardPublication}" />
 	</bean>
 
 	<bean id="elasticsearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.mapping.post.BookmarkMappingBuilder">

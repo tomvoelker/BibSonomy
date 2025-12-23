@@ -362,11 +362,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!-- Upgrade to a JUnit 5 capable version -->
-                <version>3.0.0-M9</version>
-                <configuration combine.self="override">
-                    <!-- Drop parent-injected argLine (jacoco sets its own via property). -->
-                    <argLine></argLine>
+                <version>3.2.2</version>
+                <configuration>
+                    <!-- Preserve parent/Jacoco argLine while allowing overrides if needed. -->
+                    <argLine>${argLine}</argLine>
                 </configuration>
             </plugin>
         </plugins>

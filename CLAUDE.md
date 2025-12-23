@@ -75,6 +75,22 @@ PARALLEL OPERATION:
 - ❌ **DO NOT** create exhaustive snapshot test suites
 - ❌ Keep test burden light - this is AI-generated code with clear patterns
 
+## Build & Run Cheatsheet (REST API v2)
+
+When working on `bibsonomy-rest-api-v2`, use the Java 23 toolchain and the provided toolchains file:
+
+- Build (skip tests):  
+  ```bash
+  JAVA_HOME=$JAVA_23_HOME mvn -Puse-toolchain-java23 -DskipTests -t ../toolchains.xml -f bibsonomy-rest-api-v2/pom.xml package
+  ```
+
+- Run locally with `local` profile:  
+  ```bash
+  JAVA_HOME=$JAVA_23_HOME java -jar bibsonomy-rest-api-v2/target/bibsonomy-rest-api-v2-4.1.0.jar --spring.profiles.active=local
+  ```
+
+Keep these commands in mind before reporting build/run issues.
+
 ### Code Quality Standards
 
 **For New Kotlin Code** (`bibsonomy-rest-api-v2`):

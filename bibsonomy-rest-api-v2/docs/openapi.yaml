@@ -270,6 +270,8 @@ paths:
             application/json:
               schema:
                 type: array
+                description: Maximum of 100 documents per response.
+                maxItems: 100
                 items:
                   $ref: '#/components/schemas/DocumentDto'
 
@@ -1534,14 +1536,6 @@ paths:
         '201':
           description: Reference added
 
-    delete:
-      tags: [Community]
-      summary: Remove reference relation
-      operationId: removeReference
-      responses:
-        '204':
-          description: Reference removed
-
     get:
       tags: [Community]
       summary: List references for this post
@@ -1556,6 +1550,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/references/{targetPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - $ref: '#/components/parameters/targetPostIdParam'
+
+    delete:
+      tags: [Community]
+      summary: Remove reference relation
+      operationId: removeReference
+      responses:
+        '204':
+          description: Reference removed
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /api/v2/community/{postId}/part-of:
     parameters:
@@ -1581,14 +1590,6 @@ paths:
         '201':
           description: Part-of relation added
 
-    delete:
-      tags: [Community]
-      summary: Remove part-of relation
-      operationId: removePartOf
-      responses:
-        '204':
-          description: Part-of relation removed
-
     get:
       tags: [Community]
       summary: List part-of relations
@@ -1603,6 +1604,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/part-of/{parentPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - $ref: '#/components/parameters/parentPostIdParam'
+
+    delete:
+      tags: [Community]
+      summary: Remove part-of relation to parent post
+      operationId: removePartOfParent
+      responses:
+        '204':
+          description: Part-of relation removed
 
   /api/v2/community/{postId}:
     parameters:
@@ -1792,6 +1806,22 @@ components:
       schema:
         type: string
       description: Resource hash of the post (intraHash/interHash from legacy API)
+
+    targetPostIdParam:
+      name: targetPostId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the referenced post
+
+    parentPostIdParam:
+      name: parentPostId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the parent post
 
     usernameParam:
       name: username

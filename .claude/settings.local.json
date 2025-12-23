@@ -2,7 +2,22 @@
   "permissions": {
     "allow": [
       "Bash(tree:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(mvn help:evaluate:*)",
+      "Bash(bun create:*)",
+      "Bash(bun install:*)",
+      "Bash(bunx tailwindcss:*)",
+      "Bash(bun run format:*)",
+      "Bash(bun run lint:*)",
+      "Bash(timeout 10 bun run dev:*)",
+      "Bash(bun add:*)",
+      "Bash(curl:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(bun run type-check:*)",
+      "Bash(wc:*)"
     ]
   }
 }

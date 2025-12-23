@@ -636,22 +636,26 @@ Summary of deferred features by priority and complexity:
 Based on user value, dependencies, and complexity:
 
 ### Phase 1: Core Extensions (Months 1-3)
+
 1. **Person Pages** - Foundational CRIS feature, high user value for academic users
 2. **Concepts/Relations** - Extends existing tag functionality, moderate complexity
 3. **Statistics Pages** - Admin monitoring, useful early to track API adoption
 
 ### Phase 2: Advanced CRIS (Months 4-6)
-4. **Project Pages** - Builds on Person API
-5. **Publication Reporting** - Combines Person/Project APIs
-6. **Organization Pages** - Completes CRIS feature set
+
+1. **Project Pages** - Builds on Person API
+2. **Publication Reporting** - Combines Person/Project APIs
+3. **Organization Pages** - Completes CRIS feature set
 
 ### Phase 3: Power Features (Months 7-9)
-7. **Custom Layouts** - Important for academic citation workflows
-8. **Synchronization** - Power-user feature, high maintenance overhead
+
+1. **Custom Layouts** - Important for academic citation workflows
+2. **Synchronization** - Power-user feature, high maintenance overhead
 
 ### Phase 4: Polish (Months 10-12)
-9. **Did You Know Messages** - UI enhancement
-10. **Hash Examples & Scraper Info** - Educational content
+
+1. **Did You Know Messages** - UI enhancement
+2. **Hash Examples & Scraper Info** - Educational content
 
 ---
 
