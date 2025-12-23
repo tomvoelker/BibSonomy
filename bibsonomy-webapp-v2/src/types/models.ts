@@ -6,15 +6,12 @@
 import { z } from 'zod'
 
 // =============================================================================
-// User
+// User (ref)
 // =============================================================================
 
 export const UserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  email: z.string().email().optional(),
+  username: z.string(),
+  realName: z.string().optional(),
 })
 
 export type User = z.infer<typeof UserSchema>
@@ -24,8 +21,8 @@ export type User = z.infer<typeof UserSchema>
 // =============================================================================
 
 export const GroupSchema = z.object({
-  id: z.string(),
   name: z.string(),
+  displayName: z.string().optional(),
 })
 
 export type Group = z.infer<typeof GroupSchema>
@@ -36,50 +33,76 @@ export type Group = z.infer<typeof GroupSchema>
 
 export const TagSchema = z.object({
   name: z.string(),
-  globalCount: z.number().optional(),
+  count: z.number().optional(),
+  countPublic: z.number().optional(),
 })
 
 export type Tag = z.infer<typeof TagSchema>
 
 // =============================================================================
-// BibTeX Data
+// Resource
 // =============================================================================
 
-export const BibTexDataSchema = z.object({
-  entryType: z.string(), // article, book, inproceedings, etc.
-  bibTexKey: z.string(),
-  author: z.string().optional(),
-  title: z.string().optional(),
-  journal: z.string().optional(),
-  booktitle: z.string().optional(),
-  year: z.string().optional(),
-  volume: z.string().optional(),
-  number: z.string().optional(),
-  pages: z.string().optional(),
-  publisher: z.string().optional(),
-  isbn: z.string().optional(),
-  abstract: z.string().optional(),
-  // Additional fields can be added as needed
+export const PersonNameSchema = z.object({
+  name: z.string(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
 })
 
-export type BibTexData = z.infer<typeof BibTexDataSchema>
+export type PersonName = z.infer<typeof PersonNameSchema>
+
+export const BookmarkResourceSchema = z.object({
+  resourceType: z.literal('bookmark'),
+  url: z.string(),
+  title: z.string(),
+  urlHash: z.string().nullable().optional(),
+})
+
+export type BookmarkResource = z.infer<typeof BookmarkResourceSchema>
+
+export const BibTexResourceSchema = z.object({
+  resourceType: z.literal('bibtex'),
+  bibtexKey: z.string().nullable().optional(),
+  entryType: z.string(),
+  title: z.string(),
+  authors: z.array(PersonNameSchema).optional().nullable(),
+  editors: z.array(PersonNameSchema).optional().nullable(),
+  year: z.number().optional().nullable(),
+  month: z.string().optional().nullable(),
+  journal: z.string().optional().nullable(),
+  booktitle: z.string().optional().nullable(),
+  publisher: z.string().optional().nullable(),
+  volume: z.string().optional().nullable(),
+  number: z.string().optional().nullable(),
+  pages: z.string().optional().nullable(),
+  doi: z.string().optional().nullable(),
+  url: z.string().optional().nullable(),
+  abstract: z.string().optional().nullable(),
+})
+
+export type BibTexResource = z.infer<typeof BibTexResourceSchema>
+
+export const ResourceSchema = z.discriminatedUnion('resourceType', [
+  BookmarkResourceSchema,
+  BibTexResourceSchema,
+])
+
+export type Resource = z.infer<typeof ResourceSchema>
 
 // =============================================================================
 // Post (Publication or Bookmark)
 // =============================================================================
 
 export const PostSchema = z.object({
-  id: z.string(),
-  resourceType: z.enum(['publication', 'bookmark']),
-  title: z.string(),
+  id: z.number(),
+  resource: ResourceSchema,
   description: z.string().optional(),
-  url: z.string().url().nullable(),
-  bibTexData: BibTexDataSchema.nullable(),
   user: UserSchema,
   groups: z.array(GroupSchema),
   tags: z.array(TagSchema),
   createdAt: z.string().datetime(), // ISO 8601 datetime string
-  updatedAt: z.string().datetime(),
+  updatedAt: z.string().datetime().optional().nullable(),
+  visibility: z.enum(['public', 'private', 'groups']),
 })
 
 export type Post = z.infer<typeof PostSchema>
@@ -89,7 +112,7 @@ export type Post = z.infer<typeof PostSchema>
 // =============================================================================
 
 export const PaginationSchema = z.object({
-  total: z.number(),
+  totalCount: z.number(),
   offset: z.number(),
   limit: z.number(),
 })
@@ -97,8 +120,10 @@ export const PaginationSchema = z.object({
 export type Pagination = z.infer<typeof PaginationSchema>
 
 export const PostListResponseSchema = z.object({
-  posts: z.array(PostSchema),
-  pagination: PaginationSchema,
+  items: z.array(PostSchema),
+  totalCount: PaginationSchema.shape.totalCount,
+  offset: PaginationSchema.shape.offset,
+  limit: PaginationSchema.shape.limit,
 })
 
 export type PostListResponse = z.infer<typeof PostListResponseSchema>
@@ -109,12 +134,12 @@ export type PostListResponse = z.infer<typeof PostListResponseSchema>
 
 export interface GetPostsParams {
   user?: string
-  tag?: string
-  resourceType?: 'publication' | 'bookmark'
+  tags?: string[]
+  resourceType?: 'bibtex' | 'bookmark' | 'all'
   limit?: number
   offset?: number
   search?: string
-  sortBy?: 'date' | 'title' | 'relevance'
+  sortBy?: 'date' | 'title' | 'author' | 'relevance'
   sortOrder?: 'asc' | 'desc'
 }
 
@@ -122,12 +147,12 @@ export interface GetPostsParams {
 // Helper type guards
 // =============================================================================
 
-export function isPublication(post: Post): post is Post & { resourceType: 'publication' } {
-  return post.resourceType === 'publication'
+export function isPublication(post: Post): post is Post & { resource: BibTexResource } {
+  return post.resource.resourceType === 'bibtex'
 }
 
-export function isBookmark(post: Post): post is Post & { resourceType: 'bookmark' } {
-  return post.resourceType === 'bookmark'
+export function isBookmark(post: Post): post is Post & { resource: BookmarkResource } {
+  return post.resource.resourceType === 'bookmark'
 }
 
 // =============================================================================
@@ -137,33 +162,36 @@ export function isBookmark(post: Post): post is Post & { resourceType: 'bookmark
 /**
  * Format authors for display (e.g., "Smith, John and Doe, Jane" -> "Smith & Doe")
  */
-export function formatAuthors(authorString: string | undefined): string {
-  if (!authorString) return 'Unknown'
+export function formatAuthors(authors: PersonName[] | null | undefined): string {
+  if (!authors || authors.length === 0) return 'Unknown'
 
-  const authors = authorString
-    .split(' and ')
+  const displayNames = authors
     .map((author) => {
-      // Handle "Last, First" format
-      const parts = author.trim().split(',')
-      return parts[0]?.trim() ?? author.trim()
+      if (author.lastName) return author.lastName
+      const parts = author.name.trim().split(',')
+      return parts[0]?.trim() ?? author.name.trim()
     })
     .filter(Boolean)
 
-  if (authors.length === 0) return 'Unknown'
-  if (authors.length === 1) return authors[0] ?? 'Unknown'
-  if (authors.length === 2) return authors.join(' & ')
+  if (displayNames.length === 0) return 'Unknown'
+  if (displayNames.length === 1) return displayNames[0] ?? 'Unknown'
+  if (displayNames.length === 2) return displayNames.join(' & ')
 
   // For 3+ authors, show "First et al."
-  return `${authors[0]} et al.`
+  return `${displayNames[0]} et al.`
 }
 
 /**
  * Get display title for a post (handles missing titles)
  */
 export function getPostTitle(post: Post): string {
-  if (post.title) return post.title
-  if (post.bibTexData?.title) return post.bibTexData.title
-  if (post.url) return post.url
+  if (isBookmark(post)) {
+    if (post.resource.title) return post.resource.title
+    return post.resource.url
+  }
+
+  if (post.resource.title) return post.resource.title
+  if (post.resource.url) return post.resource.url
   return 'Untitled'
 }
 
@@ -171,7 +199,7 @@ export function getPostTitle(post: Post): string {
  * Get publication year from various sources
  */
 export function getPublicationYear(post: Post): string | null {
-  if (post.bibTexData?.year) return post.bibTexData.year
+  if (isPublication(post) && post.resource.year) return post.resource.year.toString()
 
   // Fallback to createdAt year
   const createdYear = new Date(post.createdAt).getFullYear()

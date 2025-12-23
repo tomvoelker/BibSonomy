@@ -15,7 +15,14 @@ import {
  * Fetch a list of posts with optional filtering and pagination
  */
 export async function getPosts(params?: GetPostsParams): Promise<PostListResponse> {
-  const response = await apiClient.get('/posts', { params })
+  const queryParams = params
+    ? {
+        ...params,
+        tags: params.tags?.join(','),
+      }
+    : undefined
+
+  const response = await apiClient.get('/posts', { params: queryParams })
 
   // Validate response with Zod schema
   const validated = PostListResponseSchema.parse(response.data)

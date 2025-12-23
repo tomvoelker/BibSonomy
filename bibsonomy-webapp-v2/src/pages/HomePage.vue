@@ -20,11 +20,11 @@ const { data, isLoading } = usePosts(filters)
 
 // Separate posts by type
 const bookmarks = computed(() =>
-  data.value?.posts.filter((p) => p.resourceType === 'bookmark') || []
+  data.value?.items.filter((p) => p.resource.resourceType === 'bookmark') || []
 )
 
 const publications = computed(() =>
-  data.value?.posts.filter((p) => p.resourceType === 'publication') || []
+  data.value?.items.filter((p) => p.resource.resourceType === 'bibtex') || []
 )
 
 // View filter state

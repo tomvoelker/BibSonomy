@@ -6,7 +6,7 @@ package org.bibsonomy.api.search;
  */
 public class MinimalFileContentExtractorService implements org.bibsonomy.search.index.utils.FileContentExtractorService {
     @Override
-    public String extractContent(final Document document) {
+    public String extractContent(final org.bibsonomy.model.Document document) {
         return "";
     }
 }

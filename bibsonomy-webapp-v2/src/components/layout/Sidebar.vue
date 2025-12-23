@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useTags } from '@/composables/useTags'
+import type { Tag } from '@/types/models'
 
 const { t } = useI18n()
 
-// Mock popular tags - TODO: fetch from API
-const popularTags = ref([
+const fallbackTags: Tag[] = [
   { name: 'deep-learning', count: 150 },
   { name: 'machine-learning', count: 200 },
   { name: 'neural-networks', count: 120 },
@@ -18,18 +19,28 @@ const popularTags = ref([
   { name: 'scikit-learn', count: 75 },
   { name: 'pandas', count: 140 },
   { name: 'numpy', count: 130 },
-])
+]
+
+const { data, isError } = useTags({ limit: 30 })
+
+const resolvedTags = computed(() => {
+  if (isError.value || !data.value || data.value.length === 0) {
+    return fallbackTags
+  }
+  return data.value
+})
 
 // Calculate tag sizes and colors based on count
 const tagSizes = computed(() => {
-  const counts = popularTags.value.map(t => t.count)
+  const counts = resolvedTags.value.map((tag) => tag.count ?? tag.countPublic ?? 1)
   const minCount = Math.min(...counts)
   const maxCount = Math.max(...counts)
   const range = maxCount - minCount
 
-  return popularTags.value.map(tag => {
+  return resolvedTags.value.map((tag) => {
+    const count = tag.count ?? tag.countPublic ?? 1
     // Scale from 0.85em to 1.8em
-    const normalized = range > 0 ? (tag.count - minCount) / range : 0.5
+    const normalized = range > 0 ? (count - minCount) / range : 0.5
     const size = 0.85 + (normalized * 0.95)
 
     // Determine opacity/weight based on popularity (higher = more prominent)
@@ -40,7 +51,7 @@ const tagSizes = computed(() => {
       ...tag,
       fontSize: `${size}em`,
       opacity,
-      fontWeight: weight
+      fontWeight: weight,
     }
   })
 })

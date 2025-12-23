@@ -30,9 +30,9 @@ const emit = defineEmits<{
 const description = computed(() => {
   if (isPublication(props.post)) {
     // For publications, show authors and year
-    const authors = formatAuthors(props.post.bibTexData?.author || '')
+    const authors = formatAuthors(props.post.resource.authors)
     const year = getPublicationYear(props.post)
-    const journal = props.post.bibTexData?.journal
+    const journal = props.post.resource.journal
 
     let desc = authors
     if (year) desc += ` (${year})`
@@ -40,7 +40,7 @@ const description = computed(() => {
     return desc
   } else {
     // For bookmarks, show description or URL
-    return props.post.description || props.post.url || ''
+    return props.post.description || props.post.resource.url || ''
   }
 })
 </script>

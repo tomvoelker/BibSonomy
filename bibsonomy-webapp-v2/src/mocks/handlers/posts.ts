@@ -15,28 +15,28 @@ export const postsHandlers = [
     const url = new URL(request.url)
     const user = url.searchParams.get('user') ?? undefined
     const tag = url.searchParams.get('tag') ?? undefined
+    const tags = url.searchParams.get('tags') ?? undefined
     const resourceType = url.searchParams.get('resourceType') as
-      | 'publication'
+      | 'bibtex'
       | 'bookmark'
+      | 'all'
       | undefined
     const limit = parseInt(url.searchParams.get('limit') ?? '10', 10)
     const offset = parseInt(url.searchParams.get('offset') ?? '0', 10)
 
     const result = getMockPosts({
       user,
-      tag,
-      resourceType,
+      tag: tag ?? tags ?? undefined,
+      resourceType: resourceType === 'all' ? undefined : resourceType,
       limit,
       offset,
     })
 
     return HttpResponse.json({
-      posts: result.posts,
-      pagination: {
-        total: result.total,
-        offset: result.offset,
-        limit: result.limit,
-      },
+      items: result.items,
+      totalCount: result.totalCount,
+      offset: result.offset,
+      limit: result.limit,
     })
   }),
 
@@ -68,11 +68,11 @@ export const postsHandlers = [
     const body = (await request.json()) as Record<string, unknown>
 
     // Simulate validation
-    if (!body.title || !body.resourceType) {
+    if (!body.resource) {
       return HttpResponse.json(
         {
           error: 'Bad Request',
-          message: 'Missing required fields: title, resourceType',
+          message: 'Missing required field: resource',
           status: 400,
         },
         { status: 400 }
@@ -81,10 +81,11 @@ export const postsHandlers = [
 
     // Simulate successful creation
     const newPost = {
-      id: Math.random().toString(36).substring(7),
+      id: Math.floor(Math.random() * 100000),
       ...body,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      visibility: 'public',
     }
 
     return HttpResponse.json(newPost, { status: 201 })

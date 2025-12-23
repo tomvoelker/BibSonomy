@@ -28,11 +28,11 @@ const thumbnailUrl = computed(() => {
     <img
       v-if="thumbnailUrl"
       :src="thumbnailUrl"
-      :alt="`Thumbnail for ${post.resourceType}`"
+      :alt="`Thumbnail for ${post.resource.resourceType}`"
       class="w-full h-full object-cover"
     />
     <span v-else class="text-gray-400 text-xs">
-      {{ post.resourceType === 'bookmark' ? '🔖' : '📄' }}
+      {{ post.resource.resourceType === 'bookmark' ? '🔖' : '📄' }}
     </span>
 
     <!-- Overlay badges -->

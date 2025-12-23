@@ -12,8 +12,8 @@ const props = defineProps<Props>()
 
 // Format date
 const formattedDate = computed(() => {
-  if (!props.post.date) return ''
-  const date = new Date(props.post.date)
+  if (!props.post.createdAt) return ''
+  const date = new Date(props.post.createdAt)
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
