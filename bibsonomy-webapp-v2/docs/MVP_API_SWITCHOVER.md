@@ -82,6 +82,7 @@ Plan to make the homepage work against the real `bibsonomy-rest-api-v2` followin
    - Confirm homepage shows real posts split into bookmarks/publications and the tag cloud comes from API.
    - Verify no 404/CORS errors in the browser console.
    - ✅ `npm run type-check` passes.
+   - ✅ `npm run dev` starts Vite on `http://localhost:5173/`.
 
 ---
 
