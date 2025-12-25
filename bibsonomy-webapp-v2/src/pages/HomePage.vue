@@ -10,22 +10,26 @@ import PostSection from '@/components/home/PostSection.vue'
 import BookmarkCard from '@/components/post/BookmarkCard.vue'
 import PublicationCard from '@/components/post/PublicationCard.vue'
 import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import Pagination from '@/components/ui/Pagination.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-// Fetch recent posts
-const filters = ref({ limit: 10, offset: 0 })
-const { data, isLoading } = usePosts(filters)
+// Fetch recent posts per resource type (matches legacy homepage behavior)
+const bookmarkFilters = ref({ limit: 10, offset: 0, resourceType: 'bookmark' as const })
+const bibtexFilters = ref({ limit: 10, offset: 0, resourceType: 'bibtex' as const })
+const {
+  data: bookmarkData,
+  isLoading: bookmarksLoading,
+} = usePosts(bookmarkFilters)
+const {
+  data: publicationData,
+  isLoading: publicationsLoading,
+} = usePosts(bibtexFilters)
 
 // Separate posts by type
-const bookmarks = computed(() =>
-  data.value?.posts.filter((p) => p.resourceType === 'bookmark') || []
-)
-
-const publications = computed(() =>
-  data.value?.posts.filter((p) => p.resourceType === 'publication') || []
-)
+const bookmarks = computed(() => bookmarkData.value?.items || [])
+const publications = computed(() => publicationData.value?.items || [])
 
 // View filter state
 const viewMode = ref<'all' | 'bookmarks' | 'publications'>('all')
@@ -39,6 +43,27 @@ const viewOptions = computed(() => [
 // Show/hide based on view mode
 const showBookmarks = computed(() => viewMode.value === 'all' || viewMode.value === 'bookmarks')
 const showPublications = computed(() => viewMode.value === 'all' || viewMode.value === 'publications')
+
+// Pagination handlers
+function handleBookmarksPrev() {
+  bookmarkFilters.value.offset = Math.max(0, bookmarkFilters.value.offset - bookmarkFilters.value.limit)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function handleBookmarksNext() {
+  bookmarkFilters.value.offset += bookmarkFilters.value.limit
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function handlePublicationsPrev() {
+  bibtexFilters.value.offset = Math.max(0, bibtexFilters.value.offset - bibtexFilters.value.limit)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function handlePublicationsNext() {
+  bibtexFilters.value.offset += bibtexFilters.value.limit
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
 
 <template>
@@ -76,9 +101,19 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
             <PostSection
               :title="t('post.bookmarks')"
               :posts="bookmarks"
-              :loading="isLoading"
+              :loading="bookmarksLoading"
               :icon="Bookmark"
               :card-component="BookmarkCard"
+            />
+
+            <!-- Bookmarks Pagination (only show when not in 'all' mode) -->
+            <Pagination
+              v-if="viewMode === 'bookmarks' && bookmarkData"
+              :total-count="bookmarkData.totalCount"
+              :offset="bookmarkData.offset"
+              :limit="bookmarkData.limit"
+              @prev="handleBookmarksPrev"
+              @next="handleBookmarksNext"
             />
           </div>
 
@@ -94,9 +129,19 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
               <PostSection
                 :title="t('post.publications')"
                 :posts="publications"
-                :loading="isLoading"
+                :loading="publicationsLoading"
                 :icon="FileText"
                 :card-component="PublicationCard"
+              />
+
+              <!-- Publications Pagination (only show when not in 'all' mode) -->
+              <Pagination
+                v-if="viewMode === 'publications' && publicationData"
+                :total-count="publicationData.totalCount"
+                :offset="publicationData.offset"
+                :limit="publicationData.limit"
+                @prev="handlePublicationsPrev"
+                @next="handlePublicationsNext"
               />
             </div>
           </div>

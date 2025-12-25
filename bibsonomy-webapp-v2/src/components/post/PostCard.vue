@@ -30,18 +30,26 @@ const emit = defineEmits<{
 const description = computed(() => {
   if (isPublication(props.post)) {
     // For publications, show authors and year
-    const authors = formatAuthors(props.post.bibTexData?.author || '')
+    const authors = formatAuthors(props.post.resource.authors)
     const year = getPublicationYear(props.post)
-    const journal = props.post.bibTexData?.journal
+    const journal = props.post.resource.journal
 
     let desc = authors
     if (year) desc += ` (${year})`
     if (journal) desc += ` - ${journal}`
     return desc
   } else {
-    // For bookmarks, show description or URL
-    return props.post.description || props.post.url || ''
+    // For bookmarks, show description only
+    return props.post.description || ''
   }
+})
+
+// Get bookmark URL for display
+const bookmarkUrl = computed(() => {
+  if (!isPublication(props.post)) {
+    return props.post.resource.url || ''
+  }
+  return ''
 })
 </script>
 
@@ -63,7 +71,14 @@ const description = computed(() => {
         {{ getPostTitle(post) }}
       </Link>
 
-      <!-- Description/Authors/URL -->
+      <!-- URL for bookmarks -->
+      <div v-if="bookmarkUrl" class="text-xs text-gray-500 mb-1 truncate">
+        <a :href="bookmarkUrl" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">
+          {{ bookmarkUrl }}
+        </a>
+      </div>
+
+      <!-- Description/Authors -->
       <div v-if="description" class="text-xs md:text-sm text-gray-700 mb-2 line-clamp-2">
         {{ description }}
       </div>

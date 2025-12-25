@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { Edit } from 'lucide-vue-next'
+import { Edit, LogIn } from 'lucide-vue-next'
 import { useBranding } from '@/composables/useBranding'
 import Button from '@/components/ui/Button.vue'
 
@@ -38,6 +38,15 @@ const { branding } = useBranding()
         href="/error/not-implemented?feature=Getting+Started"
       >
         {{ t('home.learnmore') }}
+      </Button>
+
+      <!-- Login Button -->
+      <Button
+        variant="primary"
+        :icon="LogIn"
+        href="/error/not-implemented?feature=Login"
+      >
+        {{ t('home.login') }}
       </Button>
     </div>
   </div>
