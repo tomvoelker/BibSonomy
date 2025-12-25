@@ -5,7 +5,9 @@
       "Bash(ls:*)",
       "Bash(git fetch:*)",
       "Bash(git reset:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
