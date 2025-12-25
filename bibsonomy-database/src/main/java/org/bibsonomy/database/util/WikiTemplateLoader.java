@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,38 +26,42 @@ import org.apache.commons.logging.LogFactory;
  */
 public class WikiTemplateLoader {
     private static final Log log = LogFactory.getLog(WikiTemplateLoader.class);
-    
+
     private static final String TEMPLATE_DIR = "/org/bibsonomy/database/templates/";
-    private static final Map<String, String> templateCache = new HashMap<>();
+    private static final Map<String, String> templateCache = new ConcurrentHashMap<>();
+
+    /**
+     * Sentinel value for missing templates to avoid repeated failed lookups.
+     * ConcurrentHashMap doesn't support null values, so we use this marker.
+     */
+    private static final String TEMPLATE_NOT_FOUND = "";
     
     /**
      * Gets a wiki template by name.
-     * Templates are loaded from classpath and cached.
-     * 
+     * Templates are loaded from classpath and cached using thread-safe atomic operations.
+     *
      * @param templateName the template name (e.g., "user1en", "group1en")
      * @return the template content, or null if not found
      */
     public static String getTemplate(String templateName) {
-        // Check cache first
-        if (templateCache.containsKey(templateName)) {
-            return templateCache.get(templateName);
-        }
-        
-        // Load from classpath
-        String resourcePath = TEMPLATE_DIR + templateName + ".wikitemplate";
-        try (InputStream is = WikiTemplateLoader.class.getResourceAsStream(resourcePath)) {
-            if (is == null) {
-                log.warn("Template file not found: " + resourcePath);
-                return null;
+        // Atomically load and cache the template if not present
+        String content = templateCache.computeIfAbsent(templateName, key -> {
+            String resourcePath = TEMPLATE_DIR + key + ".wikitemplate";
+            try (InputStream is = WikiTemplateLoader.class.getResourceAsStream(resourcePath)) {
+                if (is == null) {
+                    log.warn("Template file not found: " + resourcePath);
+                    return TEMPLATE_NOT_FOUND; // Use sentinel for missing templates
+                }
+
+                return loadTemplateFromStream(is);
+            } catch (IOException e) {
+                log.error("Error loading template: " + key, e);
+                return TEMPLATE_NOT_FOUND; // Use sentinel for failed loads
             }
-            
-            String content = loadTemplateFromStream(is);
-            templateCache.put(templateName, content);
-            return content;
-        } catch (IOException e) {
-            log.error("Error loading template: " + templateName, e);
-            return null;
-        }
+        });
+
+        // Return null for sentinel value (maintains original API contract)
+        return TEMPLATE_NOT_FOUND.equals(content) ? null : content;
     }
     
     private static String loadTemplateFromStream(InputStream is) throws IOException {
