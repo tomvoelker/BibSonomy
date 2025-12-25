@@ -69,6 +69,23 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
     private boolean mailingEnabled;
     private String receiverMail;
 
+    /**
+     * Flag to track if reflection-based mail sending has failed.
+     * Set to true after first reflection error to avoid repeated expensive reflection attempts.
+     */
+    private boolean reflectionMailFailed = false;
+
+    /**
+     * Flag to track if we've already logged the reflection error.
+     * Ensures we only log the detailed warning once.
+     */
+    private boolean reflectionErrorLogged = false;
+
+    /**
+     * Counter for suppressed reflection errors (for metrics/monitoring).
+     */
+    private int suppressedReflectionErrorCount = 0;
+
     @Override
     public <T extends Resource> void performBeforeCreate(Post<T> post, DBSession session) {
         // noop
@@ -153,15 +170,40 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
 
     /**
      * Sends mail notification using reflection to avoid compile-time dependency on MailUtils.
-     * This allows bibsonomy-database to work without bibsonomy-web-common
+     * This allows bibsonomy-database to work without bibsonomy-web-common.
+     *
+     * Reflection errors are detected once and then suppressed to avoid log spam.
      */
     private void sendUnableToMatchRelationMailViaReflection(String title, String interhash, String personId, String receiverMail) {
+        // Skip if reflection has previously failed to avoid repeated expensive attempts
+        if (reflectionMailFailed) {
+            suppressedReflectionErrorCount++;
+            if (log.isDebugEnabled()) {
+                log.debug("Skipping mail notification due to previous reflection failure " +
+                        "(suppressed count: " + suppressedReflectionErrorCount +
+                        " for interhash: " + interhash + ")");
+            }
+            return;
+        }
+
         try {
-            Method method = this.mailUtils.getClass().getMethod("sendUnableToMatchRelationMail", 
+            Method method = this.mailUtils.getClass().getMethod("sendUnableToMatchRelationMail",
                     String.class, String.class, String.class, String.class);
             method.invoke(this.mailUtils, title, interhash, personId, receiverMail);
-        } catch (Exception e) {
-            log.warn("Failed to send relation matching notification mail via reflection: " + e.getMessage(), e);
+        } catch (NoSuchMethodException | IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
+            // Mark reflection as failed to prevent future attempts
+            reflectionMailFailed = true;
+
+            // Log detailed warning only once
+            if (!reflectionErrorLogged) {
+                reflectionErrorLogged = true;
+                log.warn("Failed to send relation matching notification mail via reflection. " +
+                        "Mail notifications will be disabled for this instance. " +
+                        "Ensure bibsonomy-web-common module is available if mail notifications are required. " +
+                        "Error: " + e.getClass().getSimpleName() + ": " + e.getMessage(), e);
+            }
+
+            suppressedReflectionErrorCount++;
         }
     }
 
