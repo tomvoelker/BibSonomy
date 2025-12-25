@@ -172,6 +172,9 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
      * Sends mail notification using reflection to avoid compile-time dependency on MailUtils.
      * This allows bibsonomy-database to work without bibsonomy-web-common.
      *
+     * Tries getMethod first for public methods, then falls back to getDeclaredMethod
+     * with setAccessible(true) for non-public methods.
+     *
      * Reflection errors are detected once and then suppressed to avoid log spam.
      */
     private void sendUnableToMatchRelationMailViaReflection(String title, String interhash, String personId, String receiverMail) {
@@ -187,8 +190,17 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
         }
 
         try {
-            Method method = this.mailUtils.getClass().getMethod("sendUnableToMatchRelationMail",
-                    String.class, String.class, String.class, String.class);
+            Method method;
+            try {
+                // Try public method first
+                method = this.mailUtils.getClass().getMethod("sendUnableToMatchRelationMail",
+                        String.class, String.class, String.class, String.class);
+            } catch (NoSuchMethodException e) {
+                // Fall back to declared method (handles non-public methods)
+                method = this.mailUtils.getClass().getDeclaredMethod("sendUnableToMatchRelationMail",
+                        String.class, String.class, String.class, String.class);
+                method.setAccessible(true);
+            }
             method.invoke(this.mailUtils, title, interhash, personId, receiverMail);
         } catch (NoSuchMethodException | IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
             // Mark reflection as failed to prevent future attempts
