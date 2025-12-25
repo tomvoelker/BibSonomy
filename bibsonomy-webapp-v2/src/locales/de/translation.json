@@ -24,7 +24,8 @@
     "headline": "Der einfache Weg zum Verwalten wissenschaftlicher Publikationen und Lesezeichen",
     "lead": "{projectName} hilft Ihnen beim Verwalten Ihrer Publikationen und Lesezeichen, bei der Zusammenarbeit mit Kollegen und beim Finden neuer interessanter Sachen für Ihre Forschung.",
     "register": "kostenlos registrieren",
-    "learnmore": "erfahren Sie mehr"
+    "learnmore": "erfahren Sie mehr",
+    "login": "Anmelden"
   },
   "nav": {
     "home": "Startseite",

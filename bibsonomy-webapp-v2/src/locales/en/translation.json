@@ -24,7 +24,8 @@
     "headline": "The easy way to manage scientific publications and bookmarks",
     "lead": "{projectName} helps you to manage your publications and bookmarks, to collaborate with your colleagues and to find new interesting material for your research.",
     "register": "register for free",
-    "learnmore": "learn more"
+    "learnmore": "learn more",
+    "login": "sign in"
   },
   "nav": {
     "home": "Home",
