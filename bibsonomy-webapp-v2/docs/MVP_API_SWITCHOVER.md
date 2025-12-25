@@ -30,7 +30,7 @@ Plan to make the homepage work against the real `bibsonomy-rest-api-v2` followin
 - Sidebar tag cloud uses `GET /api/v2/tags` (limit 50) with a static fallback on error and alphabetical display order.
 
 ### Mismatches to Resolve
-- None for MVP scope; remaining work is validation against a running backend.
+- Legacy tag cloud respects user tagbox settings (minfreq/maxcount/sort). The v2 homepage currently uses shared defaults unless auth-specific settings are wired.
 
 ---
 
