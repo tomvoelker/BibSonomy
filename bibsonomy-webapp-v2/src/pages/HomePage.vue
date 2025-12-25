@@ -14,18 +14,21 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-// Fetch recent posts
-const filters = ref({ limit: 10, offset: 0 })
-const { data, isLoading } = usePosts(filters)
+// Fetch recent posts per resource type (matches legacy homepage behavior)
+const bookmarkFilters = ref({ limit: 5, offset: 0, resourceType: 'bookmark' as const })
+const bibtexFilters = ref({ limit: 5, offset: 0, resourceType: 'bibtex' as const })
+const {
+  data: bookmarkData,
+  isLoading: bookmarksLoading,
+} = usePosts(bookmarkFilters)
+const {
+  data: publicationData,
+  isLoading: publicationsLoading,
+} = usePosts(bibtexFilters)
 
 // Separate posts by type
-const bookmarks = computed(() =>
-  data.value?.items.filter((p) => p.resource.resourceType === 'bookmark') || []
-)
-
-const publications = computed(() =>
-  data.value?.items.filter((p) => p.resource.resourceType === 'bibtex') || []
-)
+const bookmarks = computed(() => bookmarkData.value?.items || [])
+const publications = computed(() => publicationData.value?.items || [])
 
 // View filter state
 const viewMode = ref<'all' | 'bookmarks' | 'publications'>('all')
@@ -76,7 +79,7 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
             <PostSection
               :title="t('post.bookmarks')"
               :posts="bookmarks"
-              :loading="isLoading"
+              :loading="bookmarksLoading"
               :icon="Bookmark"
               :card-component="BookmarkCard"
             />
@@ -94,7 +97,7 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
               <PostSection
                 :title="t('post.publications')"
                 :posts="publications"
-                :loading="isLoading"
+                :loading="publicationsLoading"
                 :icon="FileText"
                 :card-component="PublicationCard"
               />

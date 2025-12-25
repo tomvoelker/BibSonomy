@@ -21,7 +21,7 @@ const fallbackTags: Tag[] = [
   { name: 'numpy', count: 130 },
 ]
 
-const { data, isError } = useTags({ limit: 30 })
+const { data, isError } = useTags({ limit: 50, maxCount: 50 })
 
 const resolvedTags = computed(() => {
   if (isError.value || !data.value || data.value.length === 0) {
@@ -30,15 +30,19 @@ const resolvedTags = computed(() => {
   return data.value
 })
 
+const sortedTags = computed(() => {
+  return [...resolvedTags.value].sort((a, b) => a.name.localeCompare(b.name))
+})
+
 // Calculate tag sizes and colors based on count
 const tagSizes = computed(() => {
-  const counts = resolvedTags.value.map((tag) => tag.count ?? tag.countPublic ?? 1)
+  const counts = sortedTags.value.map((tag) => tag.countPublic ?? tag.count ?? 1)
   const minCount = Math.min(...counts)
   const maxCount = Math.max(...counts)
   const range = maxCount - minCount
 
-  return resolvedTags.value.map((tag) => {
-    const count = tag.count ?? tag.countPublic ?? 1
+  return sortedTags.value.map((tag) => {
+    const count = tag.countPublic ?? tag.count ?? 1
     // Scale from 0.85em to 1.8em
     const normalized = range > 0 ? (count - minCount) / range : 0.5
     const size = 0.85 + (normalized * 0.95)

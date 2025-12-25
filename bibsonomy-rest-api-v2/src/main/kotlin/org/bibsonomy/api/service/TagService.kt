@@ -32,9 +32,16 @@ class TagService(
     ): List<TagDto> {
         val logic = resolveLogicFromRequest()
         val clampedLimit = limit.coerceIn(1, 100)
-        val effectiveLimit = maxCount?.coerceIn(1, clampedLimit) ?: clampedLimit
+        val defaultMax = 50
+        val usesMinFreq = (minFreq ?: 0) > 0
+        val effectiveLimit = if (usesMinFreq) {
+            defaultMax
+        } else {
+            maxCount?.coerceIn(1, clampedLimit) ?: clampedLimit
+        }
         val start = offset.coerceAtLeast(0)
         val end = start + effectiveLimit
+        val sortKey = if (!usesMinFreq) SortKey.FREQUENCY else null
 
         val tags = logic.getTags(
             Resource::class.java,
@@ -46,15 +53,16 @@ class TagService(
             QueryScope.LOCAL,
             null,
             null,
-            SortKey.POPULAR,
+            sortKey,
             null,
             null,
             start,
             end
         )
 
-        val filtered = if (minFreq != null) {
-            tags.filter { (it.globalcount ?: 0) >= minFreq }
+        val filtered = if (usesMinFreq) {
+            val threshold = minFreq ?: 0
+            tags.filter { (it.usercount ?: it.globalcount ?: 0) >= threshold }
         } else {
             tags
         }
