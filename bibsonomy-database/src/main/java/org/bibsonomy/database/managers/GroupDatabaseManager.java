@@ -858,7 +858,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		param.setDate(new Date());
 
 		// Note: Template loading moved from bibsonomy-wiki to avoid Spring 3.2 dependency conflicts
-		param.setWikiText(WikiTemplateLoader.getTemplate("group1en"));
+		final String wikiText = WikiTemplateLoader.getTemplate("group1en");
+		if (wikiText == null) {
+			throw new IllegalStateException("Wiki template 'group1en' not found in resources");
+		}
+		param.setWikiText(wikiText);
 		this.update("updateWikiForUser", param, session);
 	}
 

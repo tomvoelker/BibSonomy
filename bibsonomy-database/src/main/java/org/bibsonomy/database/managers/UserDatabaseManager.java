@@ -1256,7 +1256,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 		// Hier wird standardmaessig ein Benutzer-Wiki angelegt!
 		// Note: Template loading moved from bibsonomy-wiki to avoid Spring 3.2 dependency conflicts
-		param.setWikiText(WikiTemplateLoader.getTemplate("user1en"));
+		final String wikiText = WikiTemplateLoader.getTemplate("user1en");
+		if (wikiText == null) {
+			throw new IllegalStateException("Wiki template 'user1en' not found in resources");
+		}
+		param.setWikiText(wikiText);
 		// hier passiert keine Sicherung, da die session-transactions in den umfassenden
 		// Methoden bereits eroeffnet wurden.
 		this.insert("insertWiki", param, session);
