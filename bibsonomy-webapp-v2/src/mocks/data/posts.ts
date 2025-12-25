@@ -3,7 +3,7 @@
  * Based on OpenAPI specification
  */
 
-export const mockPosts = [
+const legacyPosts = [
   {
     id: '1a2b3c4d',
     resourceType: 'publication',
@@ -280,21 +280,84 @@ export const mockPosts = [
   },
 ]
 
+const parseAuthors = (authorString?: string | null) => {
+  if (!authorString) return undefined
+  return authorString
+    .split(' and ')
+    .map((name) => ({ name: name.trim() }))
+    .filter((author) => author.name.length > 0)
+}
+
+const toRealName = (user: { firstName?: string; lastName?: string }) => {
+  const parts = [user.firstName, user.lastName].filter(Boolean)
+  return parts.length > 0 ? parts.join(' ') : undefined
+}
+
+export const mockPosts = legacyPosts.map((post, index) => {
+  const isPublication = post.resourceType === 'publication'
+  return {
+    id: index + 1,
+    user: {
+      username: post.user.name,
+      realName: toRealName(post.user),
+    },
+    resource: isPublication
+      ? {
+          resourceType: 'bibtex',
+          bibtexKey: post.bibTexData?.bibTexKey ?? null,
+          entryType: post.bibTexData?.entryType ?? 'misc',
+          title: post.bibTexData?.title || post.title,
+          authors: parseAuthors(post.bibTexData?.author),
+          editors: undefined,
+          year: post.bibTexData?.year ? Number(post.bibTexData.year) : undefined,
+          month: undefined,
+          journal: post.bibTexData?.journal,
+          booktitle: post.bibTexData?.booktitle,
+          publisher: post.bibTexData?.publisher,
+          volume: post.bibTexData?.volume,
+          number: post.bibTexData?.number,
+          pages: post.bibTexData?.pages,
+          doi: undefined,
+          url: post.bibTexData?.url ?? post.url,
+          abstract: post.bibTexData?.abstract,
+        }
+      : {
+          resourceType: 'bookmark',
+          url: post.url ?? '',
+          title: post.title,
+          urlHash: null,
+        },
+    description: post.description,
+    tags: post.tags.map((tag) => ({
+      name: tag.name,
+      count: tag.globalCount,
+      countPublic: undefined,
+    })),
+    groups: post.groups.map((group) => ({
+      name: group.name,
+      displayName: undefined,
+    })),
+    createdAt: post.createdAt,
+    updatedAt: post.updatedAt,
+    visibility: 'public',
+  }
+})
+
 export const getMockPost = (id: string) => {
-  return mockPosts.find((post) => post.id === id)
+  return mockPosts.find((post) => String(post.id) === id)
 }
 
 export const getMockPosts = (params?: {
   user?: string
   tag?: string
-  resourceType?: 'publication' | 'bookmark'
+  resourceType?: 'bibtex' | 'bookmark'
   limit?: number
   offset?: number
 }) => {
   let filtered = [...mockPosts]
 
   if (params?.user) {
-    filtered = filtered.filter((post) => post.user.name === params.user)
+    filtered = filtered.filter((post) => post.user.username === params.user)
   }
 
   if (params?.tag) {
@@ -302,7 +365,7 @@ export const getMockPosts = (params?: {
   }
 
   if (params?.resourceType) {
-    filtered = filtered.filter((post) => post.resourceType === params.resourceType)
+    filtered = filtered.filter((post) => post.resource.resourceType === params.resourceType)
   }
 
   const total = filtered.length
@@ -312,8 +375,8 @@ export const getMockPosts = (params?: {
   const paginated = filtered.slice(offset, offset + limit)
 
   return {
-    posts: paginated,
-    total,
+    items: paginated,
+    totalCount: total,
     offset,
     limit,
   }
