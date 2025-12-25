@@ -240,7 +240,7 @@ INSERT INTO `friends` VALUES
 -- 
 -- Data for table `groupids`
 -- 
-INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
+INSERT IGNORE INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
 ('public',          -2147483648, NULL,  1, 0, NULL),
 ('private',         -2147483647, NULL,  1, 0, NULL),
 ('friends',         -2147483646, NULL,  1, 0, NULL),
@@ -309,7 +309,7 @@ INSERT INTO `group_preset_tags` VALUES
 -- Data for table `ids`
 -- 
 
-INSERT INTO `ids` VALUES 
+INSERT IGNORE INTO `ids` VALUES 
 (0,  1073741827, 'content_id'),
 (1,  1073741830, 'tas id'),
 (2,  21,  'relation id'),
