@@ -36,7 +36,7 @@
     </bean>
 
     <!-- Lightweight file extraction stub to avoid legacy PDF/cache wiring -->
-    <bean id="fileContentExtractorService" class="MinimalFileContentExtractorService" />
+    <bean id="fileContentExtractorService" class="org.bibsonomy.api.search.MinimalFileContentExtractorService" />
 
     <!-- search modules -->
     <import resource="classpath:org/bibsonomy/bibsonomy-search-post-context.xml" />

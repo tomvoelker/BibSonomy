@@ -1,3 +1,7 @@
+package org.bibsonomy.api.search;
+
+import org.bibsonomy.model.Document;
+
 /**
  * Lightweight no-op extractor to keep the search bean graph intact without
  * pulling legacy file handling dependencies.
