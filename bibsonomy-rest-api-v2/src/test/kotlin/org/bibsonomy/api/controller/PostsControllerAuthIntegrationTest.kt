@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
@@ -367,6 +368,7 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
     }
 }
 
+@Configuration
 class StubPostsBeans {
     @Bean
     fun stubLogicInterfaceFactory(): LogicInterfaceFactory = StubPostsLogicFactory()
