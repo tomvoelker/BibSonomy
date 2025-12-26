@@ -30,6 +30,13 @@ final class MetaDataProvidersFactory {
             final Class<?> goldStandardPublicationClass,
             final Class<?> publicationClass) {
 
+        Objects.requireNonNull(projectSearch, "projectSearch must not be null");
+        Objects.requireNonNull(goldStandardPublicationSearch, "goldStandardPublicationSearch must not be null");
+        Objects.requireNonNull(publicationSearch, "publicationSearch must not be null");
+        Objects.requireNonNull(projectClass, "projectClass must not be null");
+        Objects.requireNonNull(goldStandardPublicationClass, "goldStandardPublicationClass must not be null");
+        Objects.requireNonNull(publicationClass, "publicationClass must not be null");
+
         @SuppressWarnings({"rawtypes", "unchecked"})
         final Map providers = new HashMap();
         providers.put(projectClass, new ProjectMetaDataAdapter(projectSearch));
