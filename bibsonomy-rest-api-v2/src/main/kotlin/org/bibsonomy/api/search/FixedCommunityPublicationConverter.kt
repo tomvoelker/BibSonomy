@@ -17,7 +17,14 @@ class FixedCommunityPublicationConverter(
     @Suppress("UNUSED_PARAMETER") fileContentExtractorService: FileContentExtractorService
 ) : Converter<Post<BibTex>, Map<String, Any>, Set<String>> {
 
-    override fun convert(source: Post<BibTex>): Map<String, Any> = emptyMap()
+    override fun convert(source: Post<BibTex>): Map<String, Any> {
+        val postId = source.contentId ?: "unknown"
+        val title = source.resource?.title ?: "unknown"
+        throw UnsupportedOperationException(
+            "convert(Post<BibTex> -> Map) is not implemented in FixedCommunityPublicationConverter stub " +
+            "(post id: $postId, title: $title). This converter is a minimal placeholder for broken legacy search bytecode."
+        )
+    }
 
     override fun convert(source: Map<String, Any>, options: Set<String>): Post<BibTex> = Post<BibTex>().apply {
         resource = GoldStandardPublication().apply {
