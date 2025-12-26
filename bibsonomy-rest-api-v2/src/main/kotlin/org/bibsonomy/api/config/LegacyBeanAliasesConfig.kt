@@ -168,19 +168,15 @@ class LegacyBeanAliasesConfig {
 
     // Stub search DB logics to allow search beans to instantiate without the full legacy DB wiring.
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun bookmarkSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun publicationSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun goldStandardBookmarkSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun goldStandardPublicationSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean(name = ["goldStandardPublicationClass"])
