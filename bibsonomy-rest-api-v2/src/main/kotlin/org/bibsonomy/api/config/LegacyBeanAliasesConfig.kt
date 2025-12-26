@@ -151,12 +151,6 @@ class LegacyBeanAliasesConfig {
                 }
             }
             registry.registerBeanDefinition("systemTagFactory", systemTagFactoryDef)
-
-            // Make sure permission manager gets a real map instead of an unparsed string placeholder
-            if (registry.containsBeanDefinition("permissionDatabaseManager")) {
-                val def = registry.getBeanDefinition("permissionDatabaseManager")
-                def.propertyValues.add("specialUserTagMap", emptyMap<String, String>())
-            }
         }
 
     /**
