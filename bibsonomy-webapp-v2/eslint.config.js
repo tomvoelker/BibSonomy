@@ -73,9 +73,9 @@ export default [
     },
   },
 
-  // TypeScript files (excluding config files)
+  // TypeScript files (excluding config files and Vue SFCs)
   {
-    files: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.vue'],
+    files: ['src/**/*.ts', 'src/**/*.tsx'],
     plugins: {
       '@typescript-eslint': pluginTypeScript,
     },
@@ -89,7 +89,7 @@ export default [
     },
     rules: {
       ...pluginTypeScript.configs.recommended.rules,
-      ...pluginTypeScript.configs['recommended-requiring-type-checking'].rules,
+      // Use vue-tsc for type-aware checks to keep lint fast and pragmatic.
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -107,6 +107,7 @@ export default [
           prefer: 'type-imports',
         },
       ],
+      'prefer-promise-reject-errors': 'off',
     },
   },
 

@@ -24,18 +24,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+          cache: maven
+
+      - name: Build legacy dependencies (skip tests)
+        run: >
+          mvn -DskipTests
+          -pl bibsonomy-model,bibsonomy-database,bibsonomy-common,bibsonomy-search,bibsonomy-search-elasticsearch,bibsonomy-bibtex-parser,bibsonomy-marc-parser
+          -am install
+
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
           cache: maven
 
-      - name: Build dependencies (skip tests)
-        run: mvn -pl bibsonomy-rest-api-v2 -am -DskipTests package
-
       - name: Run REST API v2 tests
-        run: mvn -pl bibsonomy-rest-api-v2 test
+        run: mvn -f bibsonomy-rest-api-v2/pom.xml test
 
   webapp-tests:
     name: Webapp v2 checks

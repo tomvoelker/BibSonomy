@@ -6,7 +6,10 @@ import axios from 'axios'
 
 export const apiClient = axios.create({
   // Use relative URL for MSW to work, or full URL in production
-  baseURL: import.meta.env.VITE_ENABLE_MOCKS === 'true' ? '/api/v2' : (import.meta.env.VITE_API_BASE_URL || '/api/v2'),
+  baseURL:
+    import.meta.env.VITE_ENABLE_MOCKS === 'true'
+      ? '/api/v2'
+      : import.meta.env.VITE_API_BASE_URL || '/api/v2',
   headers: {
     'Content-Type': 'application/json',
   },
