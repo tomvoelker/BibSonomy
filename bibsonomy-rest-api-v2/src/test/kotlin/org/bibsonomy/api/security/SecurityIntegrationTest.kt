@@ -134,8 +134,9 @@ class StubLogicInterfaceFactory : LogicInterfaceFactory {
     }
 
     companion object {
-        const val VALID_USER = "tomvoelker"
-        const val VALID_API_KEY = "d73d8ca82d162f31b38ddba275737350"
+        // Use test database credentials from bibsonomy-database/src/test/resources/database/insert-test-data.sql
+        const val VALID_USER = "testuser1"
+        const val VALID_API_KEY = "11111111111111111111111111111111"
     }
 }
 
