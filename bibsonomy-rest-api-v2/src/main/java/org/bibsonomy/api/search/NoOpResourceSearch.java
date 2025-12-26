@@ -24,8 +24,11 @@ public class NoOpResourceSearch implements ResourceSearch<Resource> {
     }
 
     @Override
+    private static final Statistics EMPTY_STATISTICS = new Statistics();
+
+    @Override
     public Statistics getStatistics(final User loggedinUser, final PostSearchQuery postQuery) {
-        return new Statistics();
+        return EMPTY_STATISTICS;
     }
 
     @Override
