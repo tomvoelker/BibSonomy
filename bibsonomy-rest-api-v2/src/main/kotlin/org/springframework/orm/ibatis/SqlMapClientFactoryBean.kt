@@ -69,7 +69,15 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
         sqlMapClient = buildSqlMapClient(configLocations, sqlMapClientProperties)
         val ds = dataSource
         if (ds != null) {
-            val txConfig = transactionConfigClass.getDeclaredConstructor().newInstance()
+            val txConfig = try {
+                transactionConfigClass.getDeclaredConstructor().newInstance()
+            } catch (e: ReflectiveOperationException) {
+                throw IllegalStateException(
+                    "Failed to instantiate TransactionConfig class '${transactionConfigClass.name}': " +
+                    "requires a public no-argument constructor. Ensure the class has a public no-arg constructor.",
+                    e
+                )
+            }
             var dsToUse: DataSource = ds
             if (useTransactionAwareDataSource && ds !is TransactionAwareDataSourceProxy) {
                 dsToUse = TransactionAwareDataSourceProxy(ds)
