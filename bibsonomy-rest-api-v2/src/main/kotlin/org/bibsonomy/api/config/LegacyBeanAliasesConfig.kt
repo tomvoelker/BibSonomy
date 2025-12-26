@@ -52,6 +52,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.beans.factory.annotation.Qualifier
+import org.slf4j.LoggerFactory
 
 /**
  * Provides bean aliases expected by the legacy XML configuration but not
@@ -59,6 +60,10 @@ import org.springframework.beans.factory.annotation.Qualifier
  */
 @Configuration
 class LegacyBeanAliasesConfig {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(LegacyBeanAliasesConfig::class.java)
+    }
 
     /**
      * Remove/override selected legacy beans from the imported XML when they
@@ -238,7 +243,8 @@ class LegacyBeanAliasesConfig {
         if (raw.isNullOrBlank()) return emptyMap()
         return try {
             ObjectMapper().readValue(raw, object : TypeReference<Map<String, String>>() {})
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            logger.warn("Failed to parse specialUsersTagMap as JSON, falling back to manual parser. Raw input: '$raw'", e)
             // Fallback: remove braces and split on commas; tolerate unresolved placeholders.
             raw.trim('{', '}')
                 .split(',')
