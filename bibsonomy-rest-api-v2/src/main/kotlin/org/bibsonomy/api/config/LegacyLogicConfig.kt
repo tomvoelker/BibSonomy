@@ -49,7 +49,7 @@ class LegacyLogicConfig {
             bibtexReader = bibtexReader,
             crisLinkDatabaseManager = crisLinkDatabaseManager,
             personResourceRelationDatabaseManager = personResourceRelationDatabaseManager,
-            metaDataProviders = metaDataProviders as Map<Class<*>, MetaDataProvider<*>>
+            metaDataProviders = metaDataProviders
         )
 }
 
