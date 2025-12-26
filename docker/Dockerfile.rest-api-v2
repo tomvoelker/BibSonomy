@@ -9,13 +9,14 @@ RUN mvn -DskipTests \
 
 FROM maven:3.9.6-eclipse-temurin-21 AS api-build
 
-ENV JAVA_TOOL_OPTIONS="-XX:UseSVE=0"
+ARG TARGETARCH
 
 WORKDIR /workspace
 COPY . .
 COPY --from=legacy-build /root/.m2 /root/.m2
 
-RUN mvn -DskipTests -Dmaven.test.skip=true -f bibsonomy-rest-api-v2/pom.xml package
+RUN if [ "$TARGETARCH" = "arm64" ]; then export JAVA_TOOL_OPTIONS="-XX:UseSVE=0"; fi \
+  && mvn -DskipTests -Dmaven.test.skip=true -f bibsonomy-rest-api-v2/pom.xml package
 
 FROM eclipse-temurin:21-jre
 
