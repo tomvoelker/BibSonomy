@@ -1,6 +1,7 @@
 package org.bibsonomy.api.controller
 
 import org.bibsonomy.api.dto.PaginatedPostList
+import org.bibsonomy.api.dto.PostDto
 import org.bibsonomy.api.service.PostService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -77,7 +78,7 @@ class PostsController(
     fun getPost(
         @PathVariable("postId") postId: String,
         @RequestParam(required = false) user: String?
-    ): ResponseEntity<org.bibsonomy.api.dto.PostDto> {
+    ): ResponseEntity<PostDto> {
         val dto = postService.getPostByHash(postId, user)
         return ResponseEntity.ok(dto)
     }
