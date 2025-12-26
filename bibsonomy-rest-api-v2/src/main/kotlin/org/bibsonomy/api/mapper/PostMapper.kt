@@ -69,23 +69,42 @@ fun Resource.toDto(): ResourceDto {
 
 /**
  * Convert a Bookmark to BookmarkDto.
+ *
+ * @throws IllegalArgumentException if url, title, or urlHash are null/blank
  */
 fun Bookmark.toDto(): BookmarkDto {
+    require(!this.url.isNullOrBlank()) {
+        "Bookmark URL cannot be null or blank (intraHash: ${this.intraHash})"
+    }
+    require(!this.title.isNullOrBlank()) {
+        "Bookmark title cannot be null or blank for URL: ${this.url}"
+    }
+    val urlHash = this.interHash ?: this.intraHash
+    requireNotNull(urlHash) {
+        "Bookmark must have at least one hash (interHash or intraHash) for URL: ${this.url}"
+    }
+
     return BookmarkDto(
-        url = this.url ?: "",
-        title = this.title ?: "",
-        urlHash = this.interHash ?: this.intraHash
+        url = this.url,
+        title = this.title,
+        urlHash = urlHash
     )
 }
 
 /**
  * Convert a BibTex to BibTexDto.
+ *
+ * @throws IllegalArgumentException if title is null or blank
  */
 fun BibTex.toDto(): BibTexDto {
+    require(!this.title.isNullOrBlank()) {
+        "BibTeX title cannot be null or blank (bibtexKey: ${this.bibtexKey}, intraHash: ${this.intraHash})"
+    }
+
     return BibTexDto(
         bibtexKey = this.bibtexKey,
         entryType = this.entrytype ?: "misc",
-        title = this.title ?: "",
+        title = this.title,
         authors = this.author?.map { it.toDto() },
         editors = this.editor?.map { it.toDto() },
         year = this.year?.toIntOrNull(),
