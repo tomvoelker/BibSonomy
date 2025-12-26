@@ -643,7 +643,12 @@ paths:
     post:
       tags: [Users]
       summary: Register new user
-      description: Create a new user account
+      description: >
+        Create a new user account.
+
+        **Privacy Note**: The response includes the user's email address since
+        this is a self-registration request. The newly created user is automatically
+        authenticated to receive their full profile including personal data.
       operationId: registerUser
       security: []
       requestBody:
@@ -654,7 +659,9 @@ paths:
               $ref: '#/components/schemas/UserRegistrationRequest'
       responses:
         '201':
-          description: User registered successfully
+          description: >
+            User registered successfully.
+            Response includes email (personal data) as this is a self-request.
           content:
             application/json:
               schema:
@@ -667,6 +674,15 @@ paths:
     get:
       tags: [Users]
       summary: Get user profile
+      description: >
+        Retrieve a user's profile information.
+
+        **Privacy Note**: Email address is only included when:
+        - Requesting your own profile (authenticated self-request), OR
+        - Requesting as an admin user
+
+        When viewing other users' profiles as a non-admin, the email field will be omitted
+        to comply with privacy regulations (GDPR).
       operationId: getUserProfile
       responses:
         '200':
@@ -679,6 +695,11 @@ paths:
     put:
       tags: [Users]
       summary: Update user profile
+      description: >
+        Update the authenticated user's profile.
+
+        **Privacy Note**: The response includes email (personal data) since users
+        can only update their own profile (authenticated self-request).
       operationId: updateUserProfile
       requestBody:
         required: true
@@ -688,7 +709,9 @@ paths:
               $ref: '#/components/schemas/UserProfileUpdateRequest'
       responses:
         '200':
-          description: Profile updated successfully
+          description: >
+            Profile updated successfully.
+            Response includes email as this is a self-request.
           content:
             application/json:
               schema:
@@ -1534,14 +1557,6 @@ paths:
         '201':
           description: Reference added
 
-    delete:
-      tags: [Community]
-      summary: Remove reference relation
-      operationId: removeReference
-      responses:
-        '204':
-          description: Reference removed
-
     get:
       tags: [Community]
       summary: List references for this post
@@ -1556,6 +1571,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/references/{targetPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: targetPostId
+        in: path
+        required: true
+        description: ID of the referenced post to remove
+        schema:
+          type: integer
+
+    delete:
+      tags: [Community]
+      summary: Remove specific reference relation
+      description: Remove the reference from this post to the specified target post
+      operationId: removeReference
+      responses:
+        '204':
+          description: Reference removed
+        '404':
+          description: Reference not found
 
   /api/v2/community/{postId}/part-of:
     parameters:
@@ -1581,14 +1617,6 @@ paths:
         '201':
           description: Part-of relation added
 
-    delete:
-      tags: [Community]
-      summary: Remove part-of relation
-      operationId: removePartOf
-      responses:
-        '204':
-          description: Part-of relation removed
-
     get:
       tags: [Community]
       summary: List part-of relations
@@ -1603,6 +1631,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/part-of/{parentPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: parentPostId
+        in: path
+        required: true
+        description: ID of the parent post to remove from part-of relation
+        schema:
+          type: integer
+
+    delete:
+      tags: [Community]
+      summary: Remove specific part-of relation
+      description: Remove the part-of relation from this post to the specified parent post
+      operationId: removePartOf
+      responses:
+        '204':
+          description: Part-of relation removed
+        '404':
+          description: Part-of relation not found
 
   /api/v2/community/{postId}:
     parameters:
@@ -2119,20 +2168,56 @@ components:
     # USER SCHEMAS
     # =========================================================================
 
-    UserDto:
+    UserBaseDto:
       type: object
-      required: [username, realName, email]
+      description: Base user information visible to all users
+      required: [username, realName]
       properties:
         username:
           type: string
+          description: Unique username
           example: jsmith
         realName:
           type: string
+          description: User's real name
           example: John Smith
-        email:
-          type: string
-          format: email
-          example: john.smith@example.com
+
+    UserPublicDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+        - type: object
+          description: >
+            Public user information returned when viewing other users' profiles.
+            Email address is NOT included for privacy compliance (GDPR).
+            Use this schema for public user listings and viewing other users.
+
+    UserPrivateDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+        - type: object
+          description: >
+            Private user information including email address.
+            Email is only included when:
+            - User is viewing their own profile (authenticated self-request)
+            - Admin is viewing user details (admin request)
+            This schema ensures personal data (email) is only exposed when authorized.
+          required: [email]
+          properties:
+            email:
+              type: string
+              format: email
+              description: >
+                Email address (personal data).
+                Only included for authenticated self-requests or admin requests.
+              example: john.smith@example.com
+
+    UserDto:
+      description: >
+        **DEPRECATED**: Use UserPublicDto or UserPrivateDto instead.
+        This schema is kept for backward compatibility but will be removed in future versions.
+        For new endpoints, use UserPrivateDto for self/admin requests and UserPublicDto for public views.
+      allOf:
+        - $ref: '#/components/schemas/UserPrivateDto'
 
     UserProfileDto:
       allOf:
@@ -2231,12 +2316,15 @@ components:
 
     PaginatedUserList:
       type: object
+      description: >
+        Paginated list of users for public viewing.
+        Uses UserPublicDto to exclude email addresses for privacy compliance.
       required: [items, totalCount]
       properties:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/UserDto'
+            $ref: '#/components/schemas/UserPublicDto'
         totalCount:
           type: integer
         offset:
