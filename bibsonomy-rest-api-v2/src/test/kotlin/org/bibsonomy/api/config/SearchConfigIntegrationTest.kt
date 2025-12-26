@@ -27,7 +27,7 @@ class SearchConfigIntegrationTest(
     @Test
     fun `publication search bean is wired`() {
         assertThat(publicationSearch).isNotNull
-        assertThat(publicationSearch::class.java.simpleName.lowercase()).contains("search")
+        assertThat(publicationSearch).isInstanceOf(ResourceSearch::class.java)
     }
 
     @Test
