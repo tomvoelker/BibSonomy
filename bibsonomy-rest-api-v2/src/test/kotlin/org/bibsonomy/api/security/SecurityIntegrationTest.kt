@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
@@ -124,10 +125,17 @@ class DummyPostsController {
 
 class StubLogicInterfaceFactory : LogicInterfaceFactory {
     override fun getLogicAccess(loginName: String?, apiKey: String?): LogicInterface {
+        // Validate credentials: only accept the valid test credentials or guest access
+        if (loginName != null && apiKey != null) {
+            if (loginName != VALID_USER || apiKey != VALID_API_KEY) {
+                throw AccessDeniedException("Invalid credentials: $loginName")
+            }
+        }
+
         val logic = Mockito.mock(LogicInterface::class.java)
         val user = User().apply {
             name = loginName ?: "guest"
-            role = Role.ADMIN
+            role = if (loginName == VALID_USER) Role.ADMIN else Role.DEFAULT
         }
         Mockito.`when`(logic.authenticatedUser).thenReturn(user)
         return logic
@@ -143,6 +151,7 @@ class StubLogicInterfaceFactory : LogicInterfaceFactory {
 /**
  * Provides stubbed beans for tests.
  */
+@Configuration
 class StubBeans {
     @Bean
     fun stubLogicInterfaceFactory(): LogicInterfaceFactory = StubLogicInterfaceFactory()
