@@ -13,7 +13,7 @@ import java.net.URI
  * without relying on legacy compiled classes.
  */
 class FixedCommunityPublicationConverter(
-    systemURI: URI,
+    @Suppress("UNUSED_PARAMETER") systemURI: URI,
     @Suppress("UNUSED_PARAMETER") fileContentExtractorService: FileContentExtractorService
 ) : Converter<Post<BibTex>, Map<String, Any>, Set<String>> {
 
