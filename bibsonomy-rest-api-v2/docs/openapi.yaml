@@ -1515,14 +1515,6 @@ paths:
         '201':
           description: Reference added
 
-    delete:
-      tags: [Community]
-      summary: Remove reference relation
-      operationId: removeReference
-      responses:
-        '204':
-          description: Reference removed
-
     get:
       tags: [Community]
       summary: List references for this post
@@ -1537,6 +1529,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/references/{targetPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: targetPostId
+        in: path
+        required: true
+        description: ID of the referenced post to remove
+        schema:
+          type: integer
+
+    delete:
+      tags: [Community]
+      summary: Remove specific reference relation
+      description: Remove the reference from this post to the specified target post
+      operationId: removeReference
+      responses:
+        '204':
+          description: Reference removed
+        '404':
+          description: Reference not found
 
   /api/v2/community/{postId}/part-of:
     parameters:
@@ -1562,14 +1575,6 @@ paths:
         '201':
           description: Part-of relation added
 
-    delete:
-      tags: [Community]
-      summary: Remove part-of relation
-      operationId: removePartOf
-      responses:
-        '204':
-          description: Part-of relation removed
-
     get:
       tags: [Community]
       summary: List part-of relations
@@ -1584,6 +1589,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/part-of/{parentPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: parentPostId
+        in: path
+        required: true
+        description: ID of the parent post to remove from part-of relation
+        schema:
+          type: integer
+
+    delete:
+      tags: [Community]
+      summary: Remove specific part-of relation
+      description: Remove the part-of relation from this post to the specified parent post
+      operationId: removePartOf
+      responses:
+        '204':
+          description: Part-of relation removed
+        '404':
+          description: Part-of relation not found
 
   /api/v2/community/{postId}:
     parameters:
