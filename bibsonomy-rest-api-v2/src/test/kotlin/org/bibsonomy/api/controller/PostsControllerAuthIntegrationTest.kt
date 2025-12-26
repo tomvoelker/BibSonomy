@@ -62,7 +62,7 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    fun `invalid basic auth returns 401 from posts controller`() {
+    fun `invalid basic auth still permitted for public GET endpoint`() {
         val headers = HttpHeaders()
         headers.setBasicAuth("wrong", "creds")
         val response: ResponseEntity<String> = restTemplate.exchange(
@@ -71,6 +71,7 @@ class PostsControllerAuthIntegrationTest(
             HttpEntity<Void>(headers),
             String::class.java
         )
+        // GET /api/v2/posts/** is public (permitAll), so invalid auth is ignored
         assertEquals(HttpStatus.OK, response.statusCode)
     }
 
