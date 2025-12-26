@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - containerize-new-stack
   workflow_dispatch: {}
 
 permissions:
