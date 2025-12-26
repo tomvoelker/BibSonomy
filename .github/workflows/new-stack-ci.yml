@@ -1,0 +1,66 @@
+name: New Stack CI
+
+on:
+  push:
+    branches:
+      - containerize-new-stack
+      - main
+    paths:
+      - bibsonomy-rest-api-v2/**
+      - bibsonomy-webapp-v2/**
+      - .github/workflows/new-stack-ci.yml
+  pull_request:
+    paths:
+      - bibsonomy-rest-api-v2/**
+      - bibsonomy-webapp-v2/**
+      - .github/workflows/new-stack-ci.yml
+  workflow_dispatch:
+
+jobs:
+  rest-api-tests:
+    name: REST API v2 tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build dependencies (skip tests)
+        run: mvn -pl bibsonomy-rest-api-v2 -am -DskipTests package
+
+      - name: Run REST API v2 tests
+        run: mvn -pl bibsonomy-rest-api-v2 test
+
+  webapp-tests:
+    name: Webapp v2 checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: "latest"
+
+      - name: Install dependencies
+        working-directory: bibsonomy-webapp-v2
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        working-directory: bibsonomy-webapp-v2
+        run: bun run lint
+
+      - name: Type check
+        working-directory: bibsonomy-webapp-v2
+        run: bun run type-check
+
+      - name: Test
+        working-directory: bibsonomy-webapp-v2
+        run: bun run test
