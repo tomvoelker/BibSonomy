@@ -24,8 +24,8 @@
         <property name="maxIdle" value="${database.search.maxIdle}" />
         <property name="maxTotal" value="${database.search.maxTotal}" />
         <property name="maxWaitMillis" value="${database.search.maxWait}" />
-        <property name="removeAbandonedOnMaintenance" value="${database.search.removeAbandoned}" />
-        <property name="removeAbandonedOnBorrow" value="${database.search.removeAbandoned}" />
+        <property name="removeAbandonedOnMaintenance" value="${database.search.removeAbandonedOnMaintenance:${database.search.removeAbandoned}}" />
+        <property name="removeAbandonedOnBorrow" value="${database.search.removeAbandonedOnBorrow:${database.search.removeAbandoned}}" />
         <property name="removeAbandonedTimeout" value="${database.search.removeAbandonedTimeout}" />
     </bean>
 
