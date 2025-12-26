@@ -2,6 +2,7 @@ package org.bibsonomy.api.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bibsonomy.database.managers.metadata.DistinctFieldProvider;
@@ -13,7 +14,6 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.logic.query.statistics.meta.DistinctFieldQuery;
 import org.bibsonomy.services.searcher.ProjectSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
-
 /**
  * Helper to assemble the metaDataProviders map without fighting Kotlin's type inference.
  */
