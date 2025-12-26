@@ -19,7 +19,7 @@ data class PostDto(
     val groups: List<GroupRefDto>,
     val createdAt: Instant,
     val updatedAt: Instant?,
-    val visibility: String
+    val visibility: Visibility
 )
 
 /**

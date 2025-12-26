@@ -150,21 +150,21 @@ fun Group.toRefDto(): GroupRefDto {
  * Determine post visibility based on groups.
  *
  * BibSonomy convention:
- * - Group ID 0 (public) → "public"
- * - Group ID 1 (private) → "private"
- * - Other groups → "groups"
+ * - Group ID 0 (public) → Visibility.PUBLIC
+ * - Group ID 1 (private) → Visibility.PRIVATE
+ * - Other groups → Visibility.GROUPS
  */
-private fun determineVisibility(groups: Set<Group>?): String {
+private fun determineVisibility(groups: Set<Group>?): Visibility {
     if (groups == null || groups.isEmpty()) {
-        return "public"
+        return Visibility.PUBLIC
     }
 
     val groupIds = groups.mapNotNull { it.groupId }.toSet()
 
     return when {
-        groupIds.contains(0) -> "public"
-        groupIds.contains(1) && groupIds.size == 1 -> "private"
-        else -> "groups"
+        groupIds.contains(0) -> Visibility.PUBLIC
+        groupIds.contains(1) && groupIds.size == 1 -> Visibility.PRIVATE
+        else -> Visibility.GROUPS
     }
 }
 
