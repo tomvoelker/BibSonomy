@@ -36,7 +36,7 @@ fun Post<out Resource>.toDto(): PostDto {
         ?: throw IllegalStateException("Post resource cannot be null")
 
     val createdAt = this.date?.toInstant()
-        ?: throw IllegalStateException("Post date cannot be null for contentId=$contentId")
+        ?: throw IllegalStateException("Post date cannot be null (contentId: $contentId, user: ${user.name})")
 
     val updatedAt = this.changeDate?.toInstant()
 
