@@ -15,7 +15,7 @@ spec:
       containers:
         - name: rest-api
           image: ghcr.io/tomvoelker/bibsonomy-rest-api-v2:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
