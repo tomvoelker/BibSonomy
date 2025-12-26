@@ -1,0 +1,154 @@
+name: New Stack CI
+
+on:
+  push:
+    branches:
+      - containerize-new-stack
+      - main
+    paths:
+      - bibsonomy-rest-api-v2/**
+      - bibsonomy-webapp-v2/**
+      - .github/workflows/new-stack-ci.yml
+  pull_request:
+    paths:
+      - bibsonomy-rest-api-v2/**
+      - bibsonomy-webapp-v2/**
+      - .github/workflows/new-stack-ci.yml
+  workflow_dispatch:
+
+jobs:
+  rest-api-tests:
+    name: REST API v2 tests
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.3
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: bibsonomy
+      MARIADB_PASSWORD: password
+      MARIADB_HOST: 127.0.0.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MariaDB client
+        run: sudo apt-get update && sudo apt-get install -y mariadb-client
+
+      - name: Initialize test database
+        run: |
+          set -euo pipefail
+          echo "Waiting for MariaDB to become ready..."
+          echo "Host resolution:" && getent hosts "$MARIADB_HOST" || true
+          for i in {1..60}; do
+            if timeout 5s mysqladmin ping -h "$MARIADB_HOST" --protocol=tcp -uroot -p"$MARIADB_ROOT_PASSWORD" --silent; then
+              echo "MariaDB is up."
+              break
+            fi
+            echo "MariaDB not ready yet ($i/60)..."
+            sleep 2
+          done
+          mysqladmin ping -h "$MARIADB_HOST" --protocol=tcp -uroot -p"$MARIADB_ROOT_PASSWORD" --silent
+
+          echo "Configuring MariaDB globals..."
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL time_zone = 'Europe/Paris';"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL default_storage_engine='InnoDB';"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL sql_mode='STRICT_TRANS_TABLES';"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_DATE');"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_AUTO_CREATE_USER');"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ENGINE_SUBSTITUTION');"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_IN_DATE');"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "SELECT @@SQL_MODE, @@GLOBAL.SQL_MODE;"
+
+          echo "Creating databases and users..."
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS bibsonomy_unit_test;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS bibsonomy_recommender;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS bibsonomy_item_recommender;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS bibsonomy_opensocial;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS main_db;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS item_recommender_db;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS tag_recommender_db;"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_PASSWORD';"
+          mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" -e "FLUSH PRIVILEGES;"
+
+          echo "Loading schema..."
+          time mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" bibsonomy_unit_test < bibsonomy-database/src/main/resources/database/bibsonomy-db-schema.sql
+          echo "Loading base data..."
+          time mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" bibsonomy_unit_test < bibsonomy-database/src/main/resources/database/bibsonomy-db-init.sql
+          echo "Loading test data..."
+          time mysql -h "$MARIADB_HOST" --protocol=tcp -u root -p"$MARIADB_ROOT_PASSWORD" bibsonomy_unit_test < bibsonomy-database/src/test/resources/database/insert-test-data.sql
+
+          cat <<'EOF' > "$HOME/bibsonomy.properties"
+          database.main.url=jdbc:mysql://127.0.0.1:3306/bibsonomy_unit_test?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+          database.main.username=bibsonomy
+          database.main.password=password
+          database.recommender.tag.url=jdbc:mysql://127.0.0.1:3306/bibsonomy_recommender?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+          database.recommender.tag.username=bibsonomy
+          database.recommender.tag.password=password
+          database.recommender.item.url=jdbc:mysql://127.0.0.1:3306/bibsonomy_item_recommender?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+          database.recommender.item.username=bibsonomy
+          database.recommender.item.password=password
+          database.opensocial.url=jdbc:mysql://127.0.0.1:3306/bibsonomy_opensocial?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+          database.opensocial.username=bibsonomy
+          database.opensocial.password=password
+          EOF
+
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+          cache: maven
+
+      - name: Build legacy dependencies (skip tests)
+        run: >
+          mvn -DskipTests
+          -pl bibsonomy-model,bibsonomy-database,bibsonomy-common,bibsonomy-search,bibsonomy-search-elasticsearch,bibsonomy-bibtex-parser,bibsonomy-marc-parser
+          -am install
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Run REST API v2 tests
+        run: mvn -f bibsonomy-rest-api-v2/pom.xml test
+
+  webapp-tests:
+    name: Webapp v2 checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: "latest"
+
+      - name: Install dependencies
+        working-directory: bibsonomy-webapp-v2
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        working-directory: bibsonomy-webapp-v2
+        run: bun run lint
+
+      - name: Type check
+        working-directory: bibsonomy-webapp-v2
+        run: bun run type-check
+
+      - name: Test
+        working-directory: bibsonomy-webapp-v2
+        run: bun run test -- --passWithNoTests

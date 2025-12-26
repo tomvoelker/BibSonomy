@@ -29,8 +29,8 @@ const linkClasses = computed(() => {
   return 'text-primary-600 hover:text-primary-700 hover:underline transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded-sm'
 })
 
-const linkTarget = computed(() => props.external ? '_blank' : undefined)
-const linkRel = computed(() => props.external ? 'noopener noreferrer' : undefined)
+const linkTarget = computed(() => (props.external ? '_blank' : undefined))
+const linkRel = computed(() => (props.external ? 'noopener noreferrer' : undefined))
 </script>
 
 <template>

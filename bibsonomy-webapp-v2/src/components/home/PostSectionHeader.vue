@@ -23,13 +23,7 @@ const emit = defineEmits<{
   <div class="flex items-center justify-between border-b border-gray-300 pb-3 mb-4">
     <!-- Left: Title + Count -->
     <div class="flex items-center gap-2">
-      <component
-        v-if="icon"
-        :is="icon"
-        :size="20"
-        class="text-gray-600"
-        aria-hidden="true"
-      />
+      <component v-if="icon" :is="icon" :size="20" class="text-gray-600" aria-hidden="true" />
       <h3 class="text-xl font-medium text-gray-800">{{ title }}</h3>
       <Badge variant="gray">{{ count }}</Badge>
     </div>

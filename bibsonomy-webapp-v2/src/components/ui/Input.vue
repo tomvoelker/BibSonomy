@@ -32,18 +32,19 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 
-const inputId = computed(() => attrs.id as string || `input-${Math.random().toString(36).substr(2, 9)}`)
+const inputId = computed(
+  () => (attrs.id as string) || `input-${Math.random().toString(36).substr(2, 9)}`
+)
 
 const inputClasses = computed(() => {
-  const base = 'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors'
+  const base =
+    'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors'
 
   const stateClasses = props.error
     ? 'border-danger-300 text-danger-900 placeholder-danger-300 focus:ring-danger-500 focus:border-danger-500'
     : 'border-gray-300 focus:ring-primary-500 focus:border-primary-500'
 
-  const disabledClass = props.disabled
-    ? 'bg-gray-50 text-gray-500 cursor-not-allowed'
-    : 'bg-white'
+  const disabledClass = props.disabled ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : 'bg-white'
 
   return [base, stateClasses, disabledClass].join(' ')
 })
@@ -58,11 +59,7 @@ const handleInput = (event: Event) => {
 <template>
   <div class="w-full">
     <!-- Label -->
-    <label
-      v-if="label"
-      :for="inputId"
-      class="block text-sm font-medium text-gray-700 mb-1"
-    >
+    <label v-if="label" :for="inputId" class="block text-sm font-medium text-gray-700 mb-1">
       {{ label }}
       <span v-if="required" class="text-danger-500" aria-label="required">*</span>
     </label>
@@ -83,21 +80,12 @@ const handleInput = (event: Event) => {
     />
 
     <!-- Helper text -->
-    <p
-      v-if="helperText && !error"
-      :id="`${inputId}-helper`"
-      class="mt-1 text-sm text-gray-500"
-    >
+    <p v-if="helperText && !error" :id="`${inputId}-helper`" class="mt-1 text-sm text-gray-500">
       {{ helperText }}
     </p>
 
     <!-- Error message -->
-    <p
-      v-if="error"
-      :id="`${inputId}-error`"
-      class="mt-1 text-sm text-danger-600"
-      role="alert"
-    >
+    <p v-if="error" :id="`${inputId}-error`" class="mt-1 text-sm text-danger-600" role="alert">
       {{ error }}
     </p>
   </div>

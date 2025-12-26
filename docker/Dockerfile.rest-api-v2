@@ -1,0 +1,32 @@
+FROM maven:3.9.6-eclipse-temurin-8 AS legacy-build
+
+WORKDIR /workspace
+COPY . .
+
+RUN mvn -DskipTests \
+    -pl bibsonomy-model,bibsonomy-database,bibsonomy-common,bibsonomy-search,bibsonomy-search-elasticsearch,bibsonomy-bibtex-parser,bibsonomy-marc-parser \
+    -am install
+
+FROM maven:3.9.6-eclipse-temurin-21 AS api-build
+
+ARG TARGETARCH
+
+WORKDIR /workspace
+COPY . .
+COPY --from=legacy-build /root/.m2 /root/.m2
+
+RUN if [ "$TARGETARCH" = "arm64" ]; then export JAVA_TOOL_OPTIONS="-XX:UseSVE=0"; fi \
+  && mvn -DskipTests -Dmaven.test.skip=true -f bibsonomy-rest-api-v2/pom.xml package
+
+FROM eclipse-temurin:21-jre
+
+ENV JAVA_OPTS="-Duser.home=/var/lib/bibsonomy"
+WORKDIR /app
+
+COPY --from=api-build /workspace/bibsonomy-rest-api-v2/target/bibsonomy-rest-api-v2-*.jar /app/app.jar
+COPY docker/entrypoint-rest-api.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/entrypoint.sh"]

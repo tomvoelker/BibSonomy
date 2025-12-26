@@ -16,7 +16,11 @@ const column1Links = [
 
 const developerLinks = [
   { text: t('footer.overview'), href: 'https://bibsonomy.bitbucket.io', external: true },
-  { text: t('footer.apiDoc'), href: 'https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API', external: true },
+  {
+    text: t('footer.apiDoc'),
+    href: 'https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API',
+    external: true,
+  },
 ]
 
 // Column 2: Privacy & Contact
@@ -30,9 +34,21 @@ const column2Links = [
 // Column 3: Integration
 const column3Links = [
   { text: t('footer.academicPuma'), href: 'https://academic-puma.de/', external: true },
-  { text: t('footer.typoThree'), href: 'https://typo3.org/extensions/repository/view/ext_bibsonomy_csl', external: true },
-  { text: t('footer.wordpress'), href: 'https://wordpress.org/plugins/bibsonomy-csl/', external: true },
-  { text: t('footer.javaClient'), href: 'https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/', external: true },
+  {
+    text: t('footer.typoThree'),
+    href: 'https://typo3.org/extensions/repository/view/ext_bibsonomy_csl',
+    external: true,
+  },
+  {
+    text: t('footer.wordpress'),
+    href: 'https://wordpress.org/plugins/bibsonomy-csl/',
+    external: true,
+  },
+  {
+    text: t('footer.javaClient'),
+    href: 'https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/',
+    external: true,
+  },
   { text: t('footer.scraperInfo'), href: '/error/not-implemented?feature=Scraper%20Info' },
 ]
 
@@ -81,16 +97,10 @@ const socialMediaLinks = [
       </div>
 
       <!-- Column 2: Privacy & Contact -->
-      <FooterColumn
-        :title="t('footer.privacyContact')"
-        :links="column2Links"
-      />
+      <FooterColumn :title="t('footer.privacyContact')" :links="column2Links" />
 
       <!-- Column 3: Integration -->
-      <FooterColumn
-        :title="t('footer.integration')"
-        :links="column3Links"
-      />
+      <FooterColumn :title="t('footer.integration')" :links="column3Links" />
 
       <!-- Column 4: About BibSonomy + Social Media -->
       <div class="w-full md:w-1/2 lg:flex-[0_0_25%] lg:max-w-[25%] px-4 mb-6 md:mb-0">

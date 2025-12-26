@@ -21,9 +21,7 @@ const cardClasses = computed(() => {
 
   const paddingClass = props.padded ? 'p-4' : ''
   const borderClass = props.bordered ? 'border border-gray-300' : ''
-  const clickableClass = props.clickable
-    ? 'cursor-pointer hover:shadow-md transition-shadow'
-    : ''
+  const clickableClass = props.clickable ? 'cursor-pointer hover:shadow-md transition-shadow' : ''
 
   return [base, paddingClass, borderClass, clickableClass].filter(Boolean).join(' ')
 })

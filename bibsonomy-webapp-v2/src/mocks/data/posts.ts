@@ -226,8 +226,7 @@ const legacyPosts = [
       year: '2019',
       edition: '2nd',
       isbn: '978-0135957059',
-      abstract:
-        'A guide to thinking like a programmer and building better software.',
+      abstract: 'A guide to thinking like a programmer and building better software.',
     },
     user: {
       id: 'user789',

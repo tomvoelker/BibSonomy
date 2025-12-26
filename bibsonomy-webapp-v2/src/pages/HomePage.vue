@@ -18,14 +18,8 @@ const { t } = useI18n()
 // Fetch recent posts per resource type (matches legacy homepage behavior)
 const bookmarkFilters = ref({ limit: 10, offset: 0, resourceType: 'bookmark' as const })
 const bibtexFilters = ref({ limit: 10, offset: 0, resourceType: 'bibtex' as const })
-const {
-  data: bookmarkData,
-  isLoading: bookmarksLoading,
-} = usePosts(bookmarkFilters)
-const {
-  data: publicationData,
-  isLoading: publicationsLoading,
-} = usePosts(bibtexFilters)
+const { data: bookmarkData, isLoading: bookmarksLoading } = usePosts(bookmarkFilters)
+const { data: publicationData, isLoading: publicationsLoading } = usePosts(bibtexFilters)
 
 // Separate posts by type
 const bookmarks = computed(() => bookmarkData.value?.items || [])
@@ -42,11 +36,16 @@ const viewOptions = computed(() => [
 
 // Show/hide based on view mode
 const showBookmarks = computed(() => viewMode.value === 'all' || viewMode.value === 'bookmarks')
-const showPublications = computed(() => viewMode.value === 'all' || viewMode.value === 'publications')
+const showPublications = computed(
+  () => viewMode.value === 'all' || viewMode.value === 'publications'
+)
 
 // Pagination handlers
 function handleBookmarksPrev() {
-  bookmarkFilters.value.offset = Math.max(0, bookmarkFilters.value.offset - bookmarkFilters.value.limit)
+  bookmarkFilters.value.offset = Math.max(
+    0,
+    bookmarkFilters.value.offset - bookmarkFilters.value.limit
+  )
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -86,7 +85,7 @@ function handlePublicationsNext() {
             class="flex flex-col -mx-4"
             :class="{
               'md:flex-row': viewMode === 'all',
-              'md:flex-col': viewMode !== 'all'
+              'md:flex-col': viewMode !== 'all',
             }"
           >
             <!-- Bookmarks Section (conditional) -->
@@ -94,36 +93,36 @@ function handlePublicationsNext() {
               v-if="showBookmarks"
               class="w-full px-4 mb-6 md:mb-0"
               :class="{
-                'md:flex-1': viewMode === 'all',
-                'md:max-w-full': viewMode !== 'all'
+                'md:flex-1 md:min-w-0': viewMode === 'all',
+                'md:max-w-full': viewMode !== 'all',
               }"
             >
-            <PostSection
-              :title="t('post.bookmarks')"
-              :posts="bookmarks"
-              :loading="bookmarksLoading"
-              :icon="Bookmark"
-              :card-component="BookmarkCard"
-            />
+              <PostSection
+                :title="t('post.bookmarks')"
+                :posts="bookmarks"
+                :loading="bookmarksLoading"
+                :icon="Bookmark"
+                :card-component="BookmarkCard"
+              />
 
-            <!-- Bookmarks Pagination (only show when not in 'all' mode) -->
-            <Pagination
-              v-if="viewMode === 'bookmarks' && bookmarkData"
-              :total-count="bookmarkData.totalCount"
-              :offset="bookmarkData.offset"
-              :limit="bookmarkData.limit"
-              @prev="handleBookmarksPrev"
-              @next="handleBookmarksNext"
-            />
-          </div>
+              <!-- Bookmarks Pagination (only show when not in 'all' mode) -->
+              <Pagination
+                v-if="viewMode === 'bookmarks' && bookmarkData"
+                :total-count="bookmarkData.totalCount"
+                :offset="bookmarkData.offset"
+                :limit="bookmarkData.limit"
+                @prev="handleBookmarksPrev"
+                @next="handleBookmarksNext"
+              />
+            </div>
 
             <!-- Publications Section (conditional) -->
             <div
               v-if="showPublications"
               class="w-full px-4 mb-6 md:mb-0"
               :class="{
-                'md:flex-1': viewMode === 'all',
-                'md:max-w-full': viewMode !== 'all'
+                'md:flex-1 md:min-w-0': viewMode === 'all',
+                'md:max-w-full': viewMode !== 'all',
               }"
             >
               <PostSection

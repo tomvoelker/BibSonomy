@@ -12,12 +12,15 @@
          search beans so the rest of the application can start. -->
 
     <bean id="noOpResourceSearch" class="org.bibsonomy.api.search.NoOpResourceSearch" />
+    <bean id="noOpProjectSearch" class="org.bibsonomy.api.search.NoOpProjectSearch" />
+    <bean id="noOpPersonSearch" class="org.bibsonomy.api.search.NoOpPersonSearch" />
+    <bean id="noOpGroupSearch" class="org.bibsonomy.api.search.NoOpGroupSearch" />
 
     <alias name="noOpResourceSearch" alias="bookmarkSearch" />
     <alias name="noOpResourceSearch" alias="publicationSearch" />
     <alias name="noOpResourceSearch" alias="goldStandardPublicationSearch" />
     <alias name="noOpResourceSearch" alias="goldStandardBookmarkSearch" />
-    <alias name="noOpResourceSearch" alias="projectSearch" />
-    <alias name="noOpResourceSearch" alias="groupSearch" />
-    <alias name="noOpResourceSearch" alias="personSearch" />
+    <alias name="noOpProjectSearch" alias="projectSearch" />
+    <alias name="noOpGroupSearch" alias="groupSearch" />
+    <alias name="noOpPersonSearch" alias="personSearch" />
 </beans>

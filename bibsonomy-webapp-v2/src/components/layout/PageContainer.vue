@@ -4,7 +4,7 @@ interface Props {
   noPadding?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   noPadding: false,
 })
 </script>

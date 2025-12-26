@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-webapp-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bibsonomy-webapp-v2
+  template:
+    metadata:
+      labels:
+        app: bibsonomy-webapp-v2
+    spec:
+      containers:
+        - name: webapp
+          image: ghcr.io/tomvoelker/bibsonomy-webapp-v2:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-tmp
+              mountPath: /tmp
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-tmp
+          emptyDir: {}

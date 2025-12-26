@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - rest-api-deployment.yaml
+  - rest-api-service.yaml
+  - webapp-deployment.yaml
+  - webapp-service.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: bibsonomy
+      app.kubernetes.io/managed-by: kustomize

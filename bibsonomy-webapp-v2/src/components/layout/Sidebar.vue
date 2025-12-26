@@ -45,10 +45,10 @@ const tagSizes = computed(() => {
     const count = tag.countPublic ?? tag.count ?? 1
     // Scale from 0.85em to 1.8em
     const normalized = range > 0 ? (count - minCount) / range : 0.5
-    const size = 0.85 + (normalized * 0.95)
+    const size = 0.85 + normalized * 0.95
 
     // Determine opacity/weight based on popularity (higher = more prominent)
-    const opacity = 0.6 + (normalized * 0.4) // 0.6 to 1.0
+    const opacity = 0.6 + normalized * 0.4 // 0.6 to 1.0
     const weight = normalized > 0.7 ? '600' : normalized > 0.4 ? '500' : '400'
 
     return {
@@ -77,7 +77,7 @@ const tagSizes = computed(() => {
           :style="{
             fontSize: tag.fontSize,
             opacity: tag.opacity,
-            fontWeight: tag.fontWeight
+            fontWeight: tag.fontWeight,
           }"
         >
           {{ tag.name }}
@@ -87,12 +87,8 @@ const tagSizes = computed(() => {
 
     <!-- Recent Activity (placeholder) -->
     <div class="pt-4 border-t border-gray-300">
-      <h3 class="text-sm font-bold text-gray-800 mb-3">
-        Recent Activity
-      </h3>
-      <p class="text-sm text-gray-600">
-        Recent posts will appear here...
-      </p>
+      <h3 class="text-sm font-bold text-gray-800 mb-3">Recent Activity</h3>
+      <p class="text-sm text-gray-600">Recent posts will appear here...</p>
     </div>
   </aside>
 </template>

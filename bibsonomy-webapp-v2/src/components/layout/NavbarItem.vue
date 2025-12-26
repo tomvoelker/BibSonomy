@@ -21,9 +21,7 @@ const isActive = computed(() => {
 
 const linkClasses = computed(() => {
   const base = 'block px-4 py-2.5 text-sm text-gray-100 no-underline leading-5 transition-colors'
-  const activeClass = isActive.value
-    ? 'bg-info-600 text-white'
-    : 'hover:bg-info-600'
+  const activeClass = isActive.value ? 'bg-info-600 text-white' : 'hover:bg-info-600'
 
   return `${base} ${activeClass}`
 })

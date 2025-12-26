@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bibsonomy-webapp-v2
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      nodePort: PREVIEW_WEB_NODEPORT

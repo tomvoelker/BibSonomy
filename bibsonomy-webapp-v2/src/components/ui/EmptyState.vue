@@ -10,19 +10,13 @@ interface Props {
   message: string
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
     <!-- Icon -->
-    <component
-      v-if="icon"
-      :is="icon"
-      :size="48"
-      class="text-gray-400 mb-4"
-      aria-hidden="true"
-    />
+    <component v-if="icon" :is="icon" :size="48" class="text-gray-400 mb-4" aria-hidden="true" />
 
     <!-- Title -->
     <h3 v-if="title" class="text-lg font-medium text-gray-900 mb-2">
