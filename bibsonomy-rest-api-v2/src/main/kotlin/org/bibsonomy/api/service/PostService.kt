@@ -3,6 +3,7 @@ package org.bibsonomy.api.service
 import org.bibsonomy.api.dto.PaginatedPostList
 import org.bibsonomy.api.dto.PostDto
 import org.bibsonomy.api.mapper.toDto
+import org.bibsonomy.api.security.BasicAuthUtils
 import org.bibsonomy.common.enums.GroupingEntity
 import org.bibsonomy.common.enums.SortOrder
 import org.bibsonomy.common.enums.SortKey
@@ -19,8 +20,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import java.nio.charset.StandardCharsets
-import java.util.Base64
 
 /**
  * Service layer for posts API.
@@ -155,24 +154,14 @@ class PostService(
         val user = current.authenticatedUser
         val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
         val header = request?.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header != null && header.startsWith("Basic ")) {
-            val (username, apiKey) = decodeBasic(header)
+        if (header != null && header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
+            val (username, apiKey) = BasicAuthUtils.decode(header)
             // Only rebuild logic if the current proxy is unauthenticated/guest or mismatched.
             if (user?.name.isNullOrBlank() || user?.name != username) {
                 return logicFactory.getLogicAccess(username, apiKey)
             }
         }
         return current
-    }
-
-    private fun decodeBasic(header: String): Pair<String, String> {
-        val base64Token = header.removePrefix("Basic ").trim()
-        val decoded = String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8)
-        val delim = decoded.indexOf(':')
-        require(delim >= 0) { "Invalid basic authentication token" }
-        val username = decoded.substring(0, delim)
-        val apiKey = decoded.substring(delim + 1)
-        return username to apiKey
     }
 
     private fun buildComparator(sortKey: SortKey, sortOrder: SortOrder): Comparator<org.bibsonomy.model.Post<Resource>> {

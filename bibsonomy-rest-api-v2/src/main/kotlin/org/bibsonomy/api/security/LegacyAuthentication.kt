@@ -96,14 +96,14 @@ class LegacyBasicAuthenticationFilter(
         }
 
         val header = request.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header == null || !header.startsWith(BASIC_PREFIX)) {
+        if (header == null || !header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
             // Allow anonymous access on public endpoints; otherwise fall through without auth.
             filterChain.doFilter(request, response)
             return
         }
 
         try {
-            val (username, apiKey) = parseBasicHeader(header)
+            val (username, apiKey) = BasicAuthUtils.decode(header)
             val authRequest = UsernamePasswordAuthenticationToken(username, apiKey)
             val authResult = authenticationManager.authenticate(authRequest)
             org.springframework.security.core.context.SecurityContextHolder.getContext().authentication = authResult
@@ -112,30 +112,6 @@ class LegacyBasicAuthenticationFilter(
             entryPoint.commence(request, response, ex)
         }
     }
-
-    private fun parseBasicHeader(header: String): Pair<String, String> {
-        val base64Token = header.removePrefix(BASIC_PREFIX).trim()
-        val decoded = String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8)
-        val delim = decoded.indexOf(':')
-        if (delim < 0) throw BadCredentialsException("Invalid basic authentication token")
-        val username = decoded.substring(0, delim)
-        val apiKey = decoded.substring(delim + 1)
-        return username to apiKey
-    }
-
-    companion object {
-        internal const val BASIC_PREFIX = "Basic "
-    }
-}
-
-private fun decodeBasic(header: String): Pair<String, String> {
-    val base64Token = header.removePrefix(LegacyBasicAuthenticationFilter.BASIC_PREFIX).trim()
-    val decoded = String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8)
-    val delim = decoded.indexOf(':')
-    if (delim < 0) throw BadCredentialsException("Invalid basic authentication token")
-    val username = decoded.substring(0, delim)
-    val apiKey = decoded.substring(delim + 1)
-    return username to apiKey
 }
 
 /**
@@ -166,8 +142,8 @@ class LegacyAuthenticationConfiguration {
         // Allow optional auth on public GET /posts: derive credentials from the Basic header if present.
         val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
         val header = request?.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header != null && header.startsWith(LegacyBasicAuthenticationFilter.BASIC_PREFIX)) {
-            val (username, apiKey) = decodeBasic(header)
+        if (header != null && header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
+            val (username, apiKey) = BasicAuthUtils.decode(header)
             return logicInterfaceFactory.getLogicAccess(username, apiKey)
         }
 
