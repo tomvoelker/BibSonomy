@@ -108,15 +108,6 @@ class LegacyBeanAliasesConfig {
             }
 
             registry.registerBeanDefinition(
-                "goldStandardPublicationClass",
-                RootBeanDefinition(Class::class.java) { GoldStandardPublication::class.java }
-            )
-            registry.registerBeanDefinition(
-                "goldStandardBookmarkClass",
-                RootBeanDefinition(Class::class.java) { GoldStandardBookmark::class.java }
-            )
-
-            registry.registerBeanDefinition(
                 "reportInformationService",
                 RootBeanDefinition(DummyInformationService::class.java)
             )
