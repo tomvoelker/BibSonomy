@@ -23,7 +23,6 @@ public class NoOpResourceSearch implements ResourceSearch<Resource> {
         return Collections.emptyList();
     }
 
-    @Override
     private static final Statistics EMPTY_STATISTICS = new Statistics();
 
     @Override
