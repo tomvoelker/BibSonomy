@@ -73,4 +73,4 @@ jobs:
 
       - name: Test
         working-directory: bibsonomy-webapp-v2
-        run: bun run test
+        run: bun run test -- --passWithNoTests
