@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-rest-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: rest-api
+          env:
+            - name: SECURITY_PERMITDOCS
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: bibsonomy-rest-api-db

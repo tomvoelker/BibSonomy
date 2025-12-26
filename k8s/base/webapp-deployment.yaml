@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bibsonomy-webapp
+  template:
+    metadata:
+      labels:
+        app: bibsonomy-webapp
+    spec:
+      containers:
+        - name: webapp
+          image: ghcr.io/tomvoelker/bibsonomy-webapp-v2:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

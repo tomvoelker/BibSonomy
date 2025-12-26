@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-rest-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bibsonomy-rest-api
+  template:
+    metadata:
+      labels:
+        app: bibsonomy-rest-api
+    spec:
+      containers:
+        - name: rest-api
+          image: ghcr.io/tomvoelker/bibsonomy-rest-api-v2:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local
+          volumeMounts:
+            - name: bibsonomy-files
+              mountPath: /var/lib/bibsonomy
+      volumes:
+        - name: bibsonomy-files
+          emptyDir: {}

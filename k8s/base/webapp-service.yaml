@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bibsonomy-webapp
+spec:
+  selector:
+    app: bibsonomy-webapp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
