@@ -288,10 +288,34 @@ class DatabaseBridgeConfig {
 ### Profiles
 
 - **`local`**: Local development (uses local MySQL, mock auth)
+- **`dev`**: Development logging (DEBUG for org.bibsonomy, org.springframework.web)
 - **`test`**: Integration tests (uses test database)
-- **`prod`**: Production (requires full config)
+- **`prod`**: Production (quieter logging: WARN root, INFO bibsonomy, WARN spring)
 
 Profile-specific configs: `src/main/resources/application-{profile}.yml`
+
+**Activate profiles:**
+```bash
+# Environment variable
+export SPRING_PROFILES_ACTIVE=dev
+java -jar target/bibsonomy-rest-api-v2-*.jar
+
+# CLI flag
+java -jar target/bibsonomy-rest-api-v2-*.jar --spring.profiles.active=dev
+
+# Maven
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+# Multiple profiles (comma-separated)
+export SPRING_PROFILES_ACTIVE=local,dev
+```
+
+**Logging Levels by Profile:**
+| Profile | root | org.bibsonomy | org.springframework.web |
+|---------|------|---------------|-------------------------|
+| (default) | INFO | INFO | INFO |
+| dev | INFO | DEBUG | DEBUG |
+| prod | WARN | INFO | WARN |
 
 ### CORS Configuration
 

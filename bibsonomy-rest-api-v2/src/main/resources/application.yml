@@ -26,9 +26,11 @@ springdoc:
     operationsSorter: alpha
     tagsSorter: alpha
 
-# Logging configuration
+# Logging configuration (defaults)
+# For environment-specific logging, see:
+# - application-dev.yml (development: DEBUG logging)
+# - application-prod.yml (production: WARN/INFO logging)
+# Activate profile via SPRING_PROFILES_ACTIVE env var or --spring.profiles.active CLI flag
 logging:
   level:
     root: INFO
-    org.bibsonomy: DEBUG
-    org.springframework.web: DEBUG
