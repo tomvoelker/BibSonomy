@@ -47,12 +47,13 @@ class PostsController(
         @RequestParam(name = "format", defaultValue = "json") format: String,
         @RequestParam(name = "includeTotal", defaultValue = "false") includeTotal: Boolean
     ): PaginatedPostList {
-        // Validate and clamp limit to max 100
+        // Validate and clamp limit to max 100, offset to non-negative
         val clampedLimit = limit.coerceIn(1, 100)
+        val clampedOffset = offset.coerceAtLeast(0)
         val effectiveResourceType = resourceTypeAlias ?: resourceType
 
         return postService.getPosts(
-            offset = offset,
+            offset = clampedOffset,
             limit = clampedLimit,
             resourceType = effectiveResourceType,
             tags = tags,
