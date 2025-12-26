@@ -1,0 +1,10 @@
+# Development profile configuration
+# Activate with: SPRING_PROFILES_ACTIVE=dev or --spring.profiles.active=dev
+
+# Development logging: DEBUG for application code
+logging:
+  level:
+    root: INFO
+    org.bibsonomy: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
