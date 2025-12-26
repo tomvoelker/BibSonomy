@@ -1,0 +1,91 @@
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  high_level_summary_instructions: "Bullet the intent of the change, the main risks (backward compatibility, data integrity, auth), and any follow-up work."
+  fail_commit_status: true
+  collapse_walkthrough: true
+  sequence_diagrams: false
+  in_progress_fortune: false
+  poem: false
+  path_filters:
+    - "src/**"
+    - "bibsonomy-*/**"
+    - "!**/target/**"
+    - "!**/dist/**"
+    - "!**/node_modules/**"
+    - "!**/.git/**"
+  path_instructions:
+    - path: "bibsonomy-database/**"
+      instructions: >
+        Preserve backward compatibility with the legacy Spring 3.2 + iBatis wiring; avoid schema or SQL changes unless explicitly requested; watch for transaction and cache side effects; ensure MySQL portability and no data loss. Do NOT nag about outdated dependencies/Java level—flag only regressions or clear safety risks.
+    - path: "bibsonomy-webapp/**"
+      instructions: >
+        JSP/Spring MVC is legacy—avoid modern API usage that could break Java 8 targets; keep taglibs and i18n behavior intact; check controller/service wiring for regressions and XSS risks in JSP outputs. Do NOT demand dependency upgrades or framework rewrites unless they block correctness/security.
+    - path: "bibsonomy-rest-api-v2/**"
+      instructions: >
+        Kotlin + Spring Boot 3 adapter layer: enforce null-safety, DTOs decoupled from domain models, explicit mapping, consistent HTTP semantics, and Java 8 interop when calling old modules; prefer constructor injection and immutable data classes; expect thorough tests (integration-first) for API surface.
+    - path: "bibsonomy-frontend/**"
+      instructions: >
+        Modern frontend is secondary—keep feedback light on test coverage and focus on correctness, accessibility, and API integration; avoid heavy snapshot/test demands unless breaking behavior is likely.
+    - path: "**/pom.xml"
+      instructions: >
+        Verify dependency scopes, Java compatibility (legacy modules target 1.8), and plugin versions; highlight dependency convergence or shading issues.
+    - path: "**/*.sql"
+      instructions: "Check for idempotent, reversible, and MySQL-compatible statements; avoid destructive defaults."
+    - path: "**/*.sh"
+      instructions: "Enforce shellcheck hygiene, safe `set -euo pipefail` patterns, and portability across macOS/Linux."
+    - path: "**/*.md"
+      instructions: "Do NOT provide formatting suggestions (line length, spacing, punctuation, etc.). Focus only on factual accuracy, broken links, and incorrect commands. Prefer concise, action-oriented documentation; ensure commands are correct for macOS/Linux; keep modernization plan references intact."
+  auto_review:
+    ignore_title_keywords: ["WIP", "DRAFT"]
+    drafts: true
+    base_branches: [".*"]
+  finishing_touches:
+    docstrings:
+      enabled: false
+  pre_merge_checks:
+    docstrings:
+      mode: off
+    title:
+      requirements: "Concise, imperative, under ~70 chars, and scoped to the change."
+    custom_checks:
+      - mode: warning
+        name: "No new secrets"
+        instructions: "Fail if credentials/tokens/API keys are added outside test fixtures."
+      - mode: warning
+        name: "Legacy compatibility"
+        instructions: "Flag any change that raises minimum Java version or removes legacy Spring/iBatis wiring without explicit migration notes."
+  tools:
+    pmd:
+      enabled: false
+    semgrep:
+      enabled: false
+    eslint:
+      enabled: false
+    ruff:
+      enabled: false
+    golangci-lint:
+      enabled: false
+    detekt:
+      enabled: false
+
+chat:
+  art: false
+
+knowledge_base:
+  code_guidelines:
+    filePatterns:
+      - ".cursor/plans/*.md"
+      - "Readme.md"
+      - "docs/**/*.md"
+      - ".github/**/*.md"
+
+code_generation:
+  unit_tests:
+    path_instructions:
+      - path: "**/src/test/**"
+        instructions: "Favor integration-style tests that pin behavior of legacy modules; avoid brittle mocks of iBatis mappers."
+      - path: "bibsonomy-rest-api-v2/**"
+        instructions: "Prefer REST-level and service-level integration tests over unit mocks; cover error paths and auth where applicable."
+      - path: "bibsonomy-frontend/**"
+        instructions: "Keep tests minimal; limit to critical interactions and regressions—no exhaustive snapshot suites."

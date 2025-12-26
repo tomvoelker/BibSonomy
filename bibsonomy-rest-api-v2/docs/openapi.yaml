@@ -1,0 +1,2672 @@
+openapi: 3.0.3
+info:
+  title: BibSonomy REST API v2
+  version: 2.0.0
+  description: |
+    Modern JSON-first REST API for BibSonomy, a social bookmarking and publication sharing system.
+
+    ## Key Features
+    - **Posts**: Manage bookmarks and bibliographic publications with tags and groups
+    - **Tagging**: Free-form tagging with autocomplete, recommendations, and related tags
+    - **Groups**: Create collaborative groups with hierarchies and member roles
+    - **Search**: Full-text search with advanced filtering
+    - **Import/Export**: Multiple formats (JSON, BibTeX, CSV, RSS, EndNote, CSL)
+    - **Documents**: PDF upload/download for publications
+
+    ## Authentication
+    - OAuth2/JWT (recommended)
+    - OpenID Connect for external providers
+    - API keys for programmatic access
+
+    ## Design Principles
+    - **JSON-first**: Default format (XML available via Accept header)
+    - **Versioned**: All endpoints use `/api/v2/` prefix
+    - **RESTful**: Resources over actions, proper HTTP methods
+    - **Consistent**: Standard pagination, sorting, filtering patterns
+  contact:
+    name: BibSonomy Development Team
+    url: https://github.com/bibsonomy
+  license:
+    name: LGPL 3.0
+    url: https://www.gnu.org/licenses/lgpl-3.0.html
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.bibsonomy.org
+    description: Production server (example)
+
+security:
+  - bearerAuth: []
+  - apiKey: []
+  - oAuth2: [read, write]
+
+tags:
+  - name: Posts
+    description: Manage bookmarks and publications
+  - name: Users
+    description: User accounts, profiles, and settings
+  - name: Groups
+    description: Collaborative groups and hierarchies
+  - name: Tags
+    description: Tagging system and tag discovery
+  - name: Search
+    description: Full-text search and discovery
+  - name: Documents
+    description: Document attachments for publications
+  - name: Authentication
+    description: Authentication and token management
+  - name: Community
+    description: Gold standard/community posts
+
+paths:
+  # =============================================================================
+  # POSTS API
+  # =============================================================================
+
+  /api/v2/posts:
+    get:
+      tags: [Posts]
+      summary: List posts
+      description: |
+        Get a paginated list of posts (bookmarks and/or publications).
+        Supports filtering by resource type, tags, user, group, and search query.
+      operationId: listPosts
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortByParam'
+        - $ref: '#/components/parameters/orderParam'
+        - name: resourceType
+          in: query
+          schema:
+            type: string
+            enum: [bookmark, bibtex, all]
+            default: all
+          description: Filter by resource type
+        - name: tags
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+            maxItems: 100
+          style: form
+          explode: false
+          description: Filter by tags (comma-separated, all tags must match)
+        - name: user
+          in: query
+          schema:
+            type: string
+          description: Filter by username
+        - name: group
+          in: query
+          schema:
+            type: string
+          description: Filter by group name
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Full-text search query
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [json, bibtex, endnote, csv, rss, html, csl, xml, foaf, netscape]
+            default: json
+          description: Export format (can also use Accept header)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+            application/x-bibtex:
+              schema:
+                type: string
+                description: BibTeX format
+            application/x-endnote:
+              schema:
+                type: string
+                description: EndNote format
+            text/csv:
+              schema:
+                type: string
+                description: CSV format
+            application/rss+xml:
+              schema:
+                type: string
+                description: RSS feed
+            text/html:
+              schema:
+                type: string
+                description: Formatted HTML
+            application/vnd.citationstyles.csl+json:
+              schema:
+                type: string
+                description: CSL JSON format
+            application/xml:
+              schema:
+                type: string
+                description: XML format
+            application/rdf+xml:
+              schema:
+                type: string
+                description: FOAF RDF format
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Posts]
+      summary: Create a post
+      description: Create a new bookmark or publication post
+      operationId: createPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+      responses:
+        '201':
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL of the created post
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v2/posts/{postId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+
+    get:
+      tags: [Posts]
+      summary: Get post by ID
+      operationId: getPostById
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Posts]
+      summary: Update post
+      operationId: updatePost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateRequest'
+      responses:
+        '200':
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Posts]
+      summary: Delete post
+      operationId: deletePost
+      responses:
+        '204':
+          description: Post deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v2/posts/{postId}/documents:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+
+    get:
+      tags: [Documents]
+      summary: List documents for a post
+      operationId: listPostDocuments
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentDto'
+
+    post:
+      tags: [Documents]
+      summary: Upload document to post
+      operationId: uploadDocument
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to upload
+      responses:
+        '201':
+          description: Document uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDto'
+
+  /api/v2/posts/{postId}/documents/{filename}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: filename
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Documents]
+      summary: Download document
+      operationId: downloadDocument
+      responses:
+        '200':
+          description: Document file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+    delete:
+      tags: [Documents]
+      summary: Delete document
+      operationId: deleteDocument
+      responses:
+        '204':
+          description: Document deleted successfully
+
+  /api/v2/bibtexkey/{key}:
+    parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: BibTeX citation key
+        example: Smith2020
+
+    get:
+      tags: [Posts]
+      summary: Lookup post by BibTeX key
+      description: |
+        Find publication by its BibTeX citation key.
+
+        **Conflict resolution when multiple posts have the same key:**
+        - Without `user` parameter: Returns the most recently created public post with that key
+        - With `user` parameter: Returns that specific user's post with the key
+
+        If no post is found with the given key, returns 404.
+      operationId: getPostByBibtexKey
+      parameters:
+        - name: user
+          in: query
+          schema:
+            type: string
+          description: Username to filter by (returns that user's post with this key)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # =============================================================================
+  # IMPORT API
+  # =============================================================================
+
+  /api/v2/import/bibtex:
+    post:
+      tags: [Posts]
+      summary: Import BibTeX file or snippet
+      description: Import publications from BibTeX file upload or text snippet
+      operationId: importBibtex
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: BibTeX file to upload
+                bibtex:
+                  type: string
+                  description: BibTeX snippet as text
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                  description: Tags to apply to all imported posts
+                groups:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 50
+                  description: Groups to share imported posts with
+      responses:
+        '201':
+          description: Posts imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imported:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        line:
+                          type: integer
+                        message:
+                          type: string
+
+  /api/v2/import/doi:
+    post:
+      tags: [Posts]
+      summary: Import publication by DOI
+      description: Fetch publication metadata by DOI or ISBN
+      operationId: importDoi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identifier]
+              properties:
+                identifier:
+                  type: string
+                  description: DOI or ISBN
+                  example: 10.1145/3490099
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                groups:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 50
+      responses:
+        '201':
+          description: Publication imported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+
+  /api/v2/import/url:
+    post:
+      tags: [Posts]
+      summary: Import from URL
+      description: Scrape metadata from URL (for bookmarks or publications)
+      operationId: importUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url:
+                  type: string
+                  format: uri
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                groups:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 50
+      responses:
+        '201':
+          description: Post created from URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+
+  /api/v2/import/pdf:
+    post:
+      tags: [Posts]
+      summary: Import PDF with metadata extraction
+      description: Upload PDF and extract bibliographic metadata
+      operationId: importPdf
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                groups:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 50
+      responses:
+        '201':
+          description: Publication created with PDF attached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+
+  /api/v2/import/bookmarks:
+    post:
+      tags: [Posts]
+      summary: Import browser bookmarks
+      description: Import bookmarks from Firefox/Chrome/Safari/Opera export files
+      operationId: importBookmarks
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Browser bookmark export file (HTML)
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                groups:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 50
+      responses:
+        '201':
+          description: Bookmarks imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imported:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                  skipped:
+                    type: integer
+                    description: Number of duplicate URLs skipped
+
+  /api/v2/import/endnote:
+    post:
+      tags: [Posts]
+      summary: Import EndNote file
+      description: Import publications from EndNote format
+      operationId: importEndnote
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: EndNote file
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                groups:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 50
+      responses:
+        '201':
+          description: Publications imported
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imported:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+
+  # =============================================================================
+  # USERS API
+  # =============================================================================
+
+  /api/v2/users:
+    get:
+      tags: [Users]
+      summary: List users
+      operationId: listUsers
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by username or real name
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+
+    post:
+      tags: [Users]
+      summary: Register new user
+      description: >
+        Create a new user account.
+
+        **Privacy Note**: The response includes the user's email address since
+        this is a self-registration request. The newly created user is automatically
+        authenticated to receive their full profile including personal data.
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+      responses:
+        '201':
+          description: >
+            User registered successfully.
+            Response includes email (personal data) as this is a self-request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+
+  /api/v2/users/{username}:
+    parameters:
+      - $ref: '#/components/parameters/usernameParam'
+
+    get:
+      tags: [Users]
+      summary: Get user profile
+      description: >
+        Retrieve a user's profile information.
+
+        **Privacy Note**: Email address is only included when:
+        - Requesting your own profile (authenticated self-request), OR
+        - Requesting as an admin user
+
+        When viewing other users' profiles as a non-admin, the email field will be omitted
+        to comply with privacy regulations (GDPR).
+      operationId: getUserProfile
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDto'
+
+    put:
+      tags: [Users]
+      summary: Update user profile
+      description: >
+        Update the authenticated user's profile.
+
+        **Privacy Note**: The response includes email (personal data) since users
+        can only update their own profile (authenticated self-request).
+      operationId: updateUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileUpdateRequest'
+      responses:
+        '200':
+          description: >
+            Profile updated successfully.
+            Response includes email as this is a self-request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDto'
+
+    delete:
+      tags: [Users]
+      summary: Delete user account
+      operationId: deleteUser
+      responses:
+        '204':
+          description: User deleted successfully
+
+  /api/v2/users/{username}/posts:
+    parameters:
+      - $ref: '#/components/parameters/usernameParam'
+
+    get:
+      tags: [Posts, Users]
+      summary: List user's posts
+      operationId: listUserPosts
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/formatParam'
+        - name: resourceType
+          in: query
+          schema:
+            type: string
+            enum: [bookmark, bibtex, all]
+            default: all
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+            application/x-bibtex:
+              schema:
+                type: string
+            application/x-endnote:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+            application/rss+xml:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.citationstyles.csl+json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
+
+  /api/v2/users/{username}/settings:
+    parameters:
+      - $ref: '#/components/parameters/usernameParam'
+
+    get:
+      tags: [Users]
+      summary: Get user settings
+      operationId: getUserSettings
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsDto'
+
+    put:
+      tags: [Users]
+      summary: Update user settings
+      operationId: updateUserSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsDto'
+      responses:
+        '200':
+          description: Settings updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsDto'
+
+  /api/v2/users/{username}/api-keys:
+    parameters:
+      - $ref: '#/components/parameters/usernameParam'
+
+    get:
+      tags: [Users, Authentication]
+      summary: List user's API keys
+      operationId: listApiKeys
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKeyDto'
+
+    post:
+      tags: [Users, Authentication]
+      summary: Generate new API key
+      operationId: createApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Descriptive name for the API key
+      responses:
+        '201':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyDto'
+
+  # =============================================================================
+  # GROUPS API
+  # =============================================================================
+
+  /api/v2/groups:
+    get:
+      tags: [Groups]
+      summary: List groups
+      operationId: listGroups
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: visibility
+          in: query
+          schema:
+            type: string
+            enum: [public, private, viewable]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupList'
+
+    post:
+      tags: [Groups]
+      summary: Create group
+      operationId: createGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreateRequest'
+      responses:
+        '201':
+          description: Group created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDto'
+
+  /api/v2/groups/{groupname}:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+
+    get:
+      tags: [Groups]
+      summary: Get group details
+      operationId: getGroup
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDetailsDto'
+
+    put:
+      tags: [Groups]
+      summary: Update group
+      operationId: updateGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupUpdateRequest'
+      responses:
+        '200':
+          description: Group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDto'
+
+    delete:
+      tags: [Groups]
+      summary: Delete group
+      operationId: deleteGroup
+      responses:
+        '204':
+          description: Group deleted successfully
+
+  /api/v2/groups/{groupname}/members:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+
+    get:
+      tags: [Groups]
+      summary: List group members
+      operationId: listGroupMembers
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupMemberDto'
+
+    post:
+      tags: [Groups]
+      summary: Add member to group
+      operationId: addGroupMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, role]
+              properties:
+                username:
+                  type: string
+                role:
+                  type: string
+                  enum: [admin, moderator, member]
+                  description: |
+                    - admin: Full group management permissions
+                    - moderator: Can approve members and moderate content
+                    - member: Regular member
+      responses:
+        '201':
+          description: Member added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMemberDto'
+
+  /api/v2/groups/{groupname}/members/{username}:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+      - $ref: '#/components/parameters/usernameParam'
+
+    put:
+      tags: [Groups]
+      summary: Update member role
+      operationId: updateGroupMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [admin, moderator, member]
+      responses:
+        '200':
+          description: Member updated successfully
+
+    delete:
+      tags: [Groups]
+      summary: Remove member from group
+      operationId: removeGroupMember
+      responses:
+        '204':
+          description: Member removed successfully
+
+  /api/v2/groups/{groupname}/invitations:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+
+    get:
+      tags: [Groups]
+      summary: List pending invitations
+      description: List users invited to join this group
+      operationId: listGroupInvitations
+      responses:
+        '200':
+          description: List of pending invitations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupInvitationDto'
+
+    post:
+      tags: [Groups]
+      summary: Invite user to group
+      description: Send an invitation to a user to join the group
+      operationId: inviteUserToGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username]
+              properties:
+                username:
+                  type: string
+                  description: Username to invite
+                role:
+                  type: string
+                  enum: [admin, moderator, member]
+                  default: member
+                  description: Role to assign when invitation is accepted
+                message:
+                  type: string
+                  description: Optional invitation message
+      responses:
+        '201':
+          description: Invitation sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupInvitationDto'
+
+  /api/v2/groups/{groupname}/invitations/{username}:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+      - $ref: '#/components/parameters/usernameParam'
+
+    delete:
+      tags: [Groups]
+      summary: Cancel invitation
+      description: Cancel a pending invitation
+      operationId: cancelInvitation
+      responses:
+        '204':
+          description: Invitation cancelled
+
+  /api/v2/groups/{groupname}/join-requests:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+
+    get:
+      tags: [Groups]
+      summary: List join requests
+      description: List pending requests to join this group (admin/moderator only)
+      operationId: listJoinRequests
+      responses:
+        '200':
+          description: List of pending join requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupJoinRequestDto'
+
+    post:
+      tags: [Groups]
+      summary: Request to join group
+      description: Submit a request to join the group
+      operationId: requestJoinGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Optional message to group admins
+      responses:
+        '201':
+          description: Join request submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupJoinRequestDto'
+
+  /api/v2/groups/{groupname}/join-requests/{username}:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+      - $ref: '#/components/parameters/usernameParam'
+
+    put:
+      tags: [Groups]
+      summary: Approve or reject join request
+      description: Approve or reject a pending join request (admin/moderator only)
+      operationId: handleJoinRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [approve, reject]
+                role:
+                  type: string
+                  enum: [admin, moderator, member]
+                  default: member
+                  description: Role to assign if approving
+      responses:
+        '200':
+          description: Join request handled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [approved, rejected]
+
+    delete:
+      tags: [Groups]
+      summary: Withdraw join request
+      description: Withdraw your own pending join request
+      operationId: withdrawJoinRequest
+      responses:
+        '204':
+          description: Join request withdrawn
+
+  /api/v2/groups/{groupname}/posts:
+    parameters:
+      - $ref: '#/components/parameters/groupnameParam'
+
+    get:
+      tags: [Groups, Posts]
+      summary: List group posts
+      operationId: listGroupPosts
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/formatParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+            application/x-bibtex:
+              schema:
+                type: string
+            application/x-endnote:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+            application/rss+xml:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.citationstyles.csl+json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
+
+  # =============================================================================
+  # TAGS API
+  # =============================================================================
+
+  /api/v2/tags:
+    get:
+      tags: [Tags]
+      summary: List tags
+      description: Get tags with optional cloud data (frequencies)
+      operationId: listTags
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: minFreq
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Minimum frequency for tag cloud
+        - name: maxCount
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Maximum number of tags to return
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagDto'
+
+  /api/v2/tags/{tagname}:
+    parameters:
+      - name: tagname
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Tags]
+      summary: Get tag details
+      operationId: getTag
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagDetailsDto'
+
+  /api/v2/tags/{tagname}/related:
+    parameters:
+      - name: tagname
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Tags]
+      summary: Get related tags
+      description: Find tags frequently used with this tag
+      operationId: getRelatedTags
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RelatedTagDto'
+
+  /api/v2/tags/{tagname}/posts:
+    parameters:
+      - name: tagname
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Tags, Posts]
+      summary: List posts with tag
+      operationId: listPostsByTag
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/formatParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+            application/x-bibtex:
+              schema:
+                type: string
+            application/x-endnote:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+            application/rss+xml:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.citationstyles.csl+json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
+
+  # =============================================================================
+  # SEARCH API
+  # =============================================================================
+
+  /api/v2/search:
+    get:
+      tags: [Search]
+      summary: Search posts
+      description: Full-text search across posts with advanced filtering
+      operationId: searchPosts
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/formatParam'
+        - name: resourceType
+          in: query
+          schema:
+            type: string
+            enum: [bookmark, bibtex, all]
+            default: all
+        - name: user
+          in: query
+          schema:
+            type: string
+        - name: group
+          in: query
+          schema:
+            type: string
+        - name: tags
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+            maxItems: 100
+          style: form
+          explode: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+            application/x-bibtex:
+              schema:
+                type: string
+            application/x-endnote:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+            application/rss+xml:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.citationstyles.csl+json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
+
+  /api/v2/search/popular:
+    get:
+      tags: [Search]
+      summary: Get popular posts
+      operationId: getPopularPosts
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 90
+          description: Number of days to look back
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+
+  /api/v2/authors/{authorName}:
+    parameters:
+      - name: authorName
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Search]
+      summary: Get author page
+      description: List publications by author
+      operationId: getAuthorPosts
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+
+  # =============================================================================
+  # COMMUNITY POSTS API
+  # =============================================================================
+
+  /api/v2/community:
+    get:
+      tags: [Community]
+      summary: List community posts
+      description: List gold standard/community posts
+      operationId: listCommunityPosts
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/formatParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+            application/x-bibtex:
+              schema:
+                type: string
+            application/x-endnote:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+            application/rss+xml:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.citationstyles.csl+json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            application/rdf+xml:
+              schema:
+                type: string
+
+    post:
+      tags: [Community]
+      summary: Create community post
+      operationId: createCommunityPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+      responses:
+        '201':
+          description: Community post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+
+  /api/v2/community/{postId}/references:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+
+    post:
+      tags: [Community]
+      summary: Add reference relation
+      description: Mark that this post references another post
+      operationId: addReference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targetPostId]
+              properties:
+                targetPostId:
+                  type: integer
+                  description: ID of the post being referenced
+      responses:
+        '201':
+          description: Reference added
+
+    get:
+      tags: [Community]
+      summary: List references for this post
+      description: Get all posts referenced by this community post
+      operationId: listReferences
+      responses:
+        '200':
+          description: List of referenced posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/references/{targetPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: targetPostId
+        in: path
+        required: true
+        description: ID of the referenced post to remove
+        schema:
+          type: integer
+
+    delete:
+      tags: [Community]
+      summary: Remove specific reference relation
+      description: Remove the reference from this post to the specified target post
+      operationId: removeReference
+      responses:
+        '204':
+          description: Reference removed
+        '404':
+          description: Reference not found
+
+  /api/v2/community/{postId}/part-of:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+
+    post:
+      tags: [Community]
+      summary: Add part-of relation
+      description: Mark that this post is part of another post
+      operationId: addPartOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [parentPostId]
+              properties:
+                parentPostId:
+                  type: integer
+                  description: ID of the parent post
+      responses:
+        '201':
+          description: Part-of relation added
+
+    get:
+      tags: [Community]
+      summary: List part-of relations
+      description: Get the parent post(s) this post is part of
+      operationId: listPartOf
+      responses:
+        '200':
+          description: List of parent posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/part-of/{parentPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: parentPostId
+        in: path
+        required: true
+        description: ID of the parent post to remove from part-of relation
+        schema:
+          type: integer
+
+    delete:
+      tags: [Community]
+      summary: Remove specific part-of relation
+      description: Remove the part-of relation from this post to the specified parent post
+      operationId: removePartOf
+      responses:
+        '204':
+          description: Part-of relation removed
+        '404':
+          description: Part-of relation not found
+
+  /api/v2/community/{postId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+
+    get:
+      tags: [Community]
+      summary: Get community post by ID
+      operationId: getCommunityPost
+      responses:
+        '200':
+          description: Community post details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Community]
+      summary: Update community post
+      operationId: updateCommunityPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateRequest'
+      responses:
+        '200':
+          description: Community post updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Community]
+      summary: Delete community post
+      operationId: deleteCommunityPost
+      responses:
+        '204':
+          description: Community post deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # =============================================================================
+  # AUTHENTICATION API
+  # =============================================================================
+
+  /api/v2/auth/token:
+    post:
+      tags: [Authentication]
+      summary: Get access token
+      description: Obtain JWT access token via OAuth2
+      operationId: getToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [grant_type]
+              properties:
+                grant_type:
+                  type: string
+                  enum: [password, refresh_token, authorization_code]
+                username:
+                  type: string
+                password:
+                  type: string
+                refresh_token:
+                  type: string
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+
+  /api/v2/auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+
+# =============================================================================
+# COMPONENTS
+# =============================================================================
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained via /api/v2/auth/token
+
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for programmatic access
+
+    oAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /api/v2/oauth/authorize
+          tokenUrl: /api/v2/auth/token
+          refreshUrl: /api/v2/auth/refresh
+          scopes:
+            read: Read access to posts, users, groups, tags
+            write: Write access (create/update/delete)
+            admin: Administrative access
+
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: /.well-known/openid-configuration
+
+  parameters:
+    offsetParam:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of items to skip
+
+    limitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Number of items to return
+
+    sortByParam:
+      name: sortBy
+      in: query
+      schema:
+        type: string
+        default: date
+      description: Field to sort by (date, title, author, relevance)
+
+    orderParam:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+      description: Sort order
+
+    postIdParam:
+      name: postId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Post ID
+
+    usernameParam:
+      name: username
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Username
+
+    groupnameParam:
+      name: groupname
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Group name
+
+    formatParam:
+      name: format
+      in: query
+      schema:
+        type: string
+        enum: [json, bibtex, endnote, csv, rss, html, csl, xml, foaf, netscape]
+        default: json
+      description: Export format (can also use Accept header)
+
+  responses:
+    BadRequest:
+      description: Bad request (validation error)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    # =========================================================================
+    # POST SCHEMAS
+    # =========================================================================
+
+    PostDto:
+      type: object
+      required: [id, user, resource, createdAt]
+      properties:
+        id:
+          type: integer
+          description: Post ID
+          example: 12345
+        user:
+          $ref: '#/components/schemas/UserRefDto'
+        resource:
+          oneOf:
+            - $ref: '#/components/schemas/BookmarkDto'
+            - $ref: '#/components/schemas/BibTexDto'
+          discriminator:
+            propertyName: resourceType
+            mapping:
+              bookmark: '#/components/schemas/BookmarkDto'
+              bibtex: '#/components/schemas/BibTexDto'
+        description:
+          type: string
+          description: User's description/notes for this post
+          example: Great paper on machine learning
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagDto'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupRefDto'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-10-15T14:30:00Z'
+        visibility:
+          type: string
+          enum: [public, private, groups]
+          description: |
+            Post visibility level:
+            - public: Visible to everyone (group ID 0)
+            - private: Visible only to owner (group ID 1)
+            - groups: Visible to specific groups listed in 'groups' array
+          example: public
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: uri
+            documents:
+              type: string
+              format: uri
+
+    BookmarkDto:
+      type: object
+      required: [resourceType, url, title]
+      properties:
+        resourceType:
+          type: string
+          enum: [bookmark]
+        url:
+          type: string
+          format: uri
+          example: https://example.com/article
+        title:
+          type: string
+          example: Interesting Article
+        urlHash:
+          type: string
+          description: MD5 hash of URL (for deduplication)
+          example: 5d41402abc4b2a76b9719d911017c592
+
+    BibTexDto:
+      type: object
+      required: [resourceType, title, entryType]
+      properties:
+        resourceType:
+          type: string
+          enum: [bibtex]
+        bibtexKey:
+          type: string
+          example: Smith2020
+        entryType:
+          type: string
+          enum: [article, book, booklet, collection, conference, dataset, electronic, inbook, incollection, inproceedings, manual, mastersthesis, misc, patent, periodical, phdthesis, preprint, presentation, proceedings, standard, techreport, unpublished]
+          example: article
+        title:
+          type: string
+          example: Deep Learning for Natural Language Processing
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonNameDto'
+          maxItems: 100
+        editors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonNameDto'
+          maxItems: 100
+        year:
+          type: integer
+          example: 2020
+        month:
+          type: string
+          example: January
+        journal:
+          type: string
+        booktitle:
+          type: string
+        publisher:
+          type: string
+        volume:
+          type: string
+        number:
+          type: string
+        pages:
+          type: string
+          example: 123-145
+        doi:
+          type: string
+        url:
+          type: string
+          format: uri
+        abstract:
+          type: string
+        simHash1:
+          type: string
+          description: Similarity hash (interHash)
+        simHash2:
+          type: string
+          description: Strict hash (intraHash)
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentRefDto'
+
+    PostCreateRequest:
+      type: object
+      required: [resource, tags]
+      properties:
+        resource:
+          oneOf:
+            - $ref: '#/components/schemas/BookmarkCreateDto'
+            - $ref: '#/components/schemas/BibTexCreateDto'
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          maxItems: 100
+          example: ['machine-learning', 'nlp']
+        groups:
+          type: array
+          items:
+            type: string
+          maxItems: 50
+          example: ['public', 'research-group']
+        visibility:
+          type: string
+          enum: [public, private, groups]
+          default: public
+          description: |
+            Post visibility level:
+            - public: Visible to everyone
+            - private: Visible only to owner
+            - groups: Visible to specific groups listed in 'groups' array
+
+    BookmarkCreateDto:
+      type: object
+      required: [resourceType, url]
+      properties:
+        resourceType:
+          type: string
+          enum: [bookmark]
+        url:
+          type: string
+          format: uri
+        title:
+          type: string
+
+    BibTexCreateDto:
+      type: object
+      required: [resourceType, title, entryType]
+      properties:
+        resourceType:
+          type: string
+          enum: [bibtex]
+        bibtexKey:
+          type: string
+        entryType:
+          type: string
+        title:
+          type: string
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonNameDto'
+          maxItems: 100
+        year:
+          type: integer
+        journal:
+          type: string
+        # ... other BibTeX fields
+
+    PostUpdateRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          maxItems: 100
+        groups:
+          type: array
+          items:
+            type: string
+          maxItems: 50
+        visibility:
+          type: string
+          enum: [public, private, groups]
+          description: Update post visibility level
+        resource:
+          type: object
+          description: Updated resource fields
+
+    PaginatedPostList:
+      type: object
+      required: [items, totalCount, offset, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostDto'
+        totalCount:
+          type: integer
+          example: 150
+        offset:
+          type: integer
+          example: 0
+        limit:
+          type: integer
+          example: 20
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: uri
+            next:
+              type: string
+              format: uri
+            prev:
+              type: string
+              format: uri
+
+    # =========================================================================
+    # USER SCHEMAS
+    # =========================================================================
+
+    UserBaseDto:
+      type: object
+      description: Base user information visible to all users
+      required: [username, realName]
+      properties:
+        username:
+          type: string
+          description: Unique username
+          example: jsmith
+        realName:
+          type: string
+          description: User's real name
+          example: John Smith
+
+    UserPublicDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+        - type: object
+          description: >
+            Public user information returned when viewing other users' profiles.
+            Email address is NOT included for privacy compliance (GDPR).
+            Use this schema for public user listings and viewing other users.
+
+    UserPrivateDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+        - type: object
+          description: >
+            Private user information including email address.
+            Email is only included when:
+            - User is viewing their own profile (authenticated self-request)
+            - Admin is viewing user details (admin request)
+            This schema ensures personal data (email) is only exposed when authorized.
+          required: [email]
+          properties:
+            email:
+              type: string
+              format: email
+              description: >
+                Email address (personal data).
+                Only included for authenticated self-requests or admin requests.
+              example: john.smith@example.com
+
+    UserDto:
+      description: >
+        **DEPRECATED**: Use UserPublicDto or UserPrivateDto instead.
+        This schema is kept for backward compatibility but will be removed in future versions.
+        For new endpoints, use UserPrivateDto for self/admin requests and UserPublicDto for public views.
+      allOf:
+        - $ref: '#/components/schemas/UserPrivateDto'
+
+    UserProfileDto:
+      allOf:
+        - $ref: '#/components/schemas/UserDto'
+        - type: object
+          properties:
+            homepage:
+              type: string
+              format: uri
+            biography:
+              type: string
+            institution:
+              type: string
+            registeredAt:
+              type: string
+              format: date-time
+            _links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  format: uri
+                posts:
+                  type: string
+                  format: uri
+
+    UserRefDto:
+      type: object
+      required: [username]
+      properties:
+        username:
+          type: string
+        realName:
+          type: string
+
+    UserRegistrationRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        realName:
+          type: string
+
+    UserProfileUpdateRequest:
+      type: object
+      properties:
+        realName:
+          type: string
+        homepage:
+          type: string
+          format: uri
+        biography:
+          type: string
+        institution:
+          type: string
+
+    UserSettingsDto:
+      type: object
+      properties:
+        language:
+          type: string
+          enum: [en, de]
+          default: de
+        itemsPerPage:
+          type: integer
+          minimum: 5
+          maximum: 100
+          default: 20
+        tagCloud:
+          type: object
+          properties:
+            minFreq:
+              type: integer
+              minimum: 1
+              default: 1
+            maxCount:
+              type: integer
+              minimum: 10
+              maximum: 500
+              default: 50
+        defaultGroups:
+          type: array
+          items:
+            type: string
+          maxItems: 50
+
+    PaginatedUserList:
+      type: object
+      description: >
+        Paginated list of users for public viewing.
+        Uses UserPublicDto to exclude email addresses for privacy compliance.
+      required: [items, totalCount]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPublicDto'
+        totalCount:
+          type: integer
+        offset:
+          type: integer
+        limit:
+          type: integer
+
+    # =========================================================================
+    # GROUP SCHEMAS
+    # =========================================================================
+
+    GroupDto:
+      type: object
+      required: [name, visibility]
+      properties:
+        name:
+          type: string
+          example: research-group
+        displayName:
+          type: string
+          example: Research Group
+        description:
+          type: string
+        visibility:
+          type: string
+          enum: [public, private, viewable]
+          description: |
+            - public: Anyone can view and join
+            - private: Members only
+            - viewable: Anyone can view, members only can post
+        parent:
+          type: string
+          description: Parent group name (for hierarchy)
+
+    GroupDetailsDto:
+      allOf:
+        - $ref: '#/components/schemas/GroupDto'
+        - type: object
+          properties:
+            memberCount:
+              type: integer
+            postCount:
+              type: integer
+            sharedDocuments:
+              type: boolean
+              description: Whether members can access each other's documents
+            allowJoinRequests:
+              type: boolean
+            presetTags:
+              type: array
+              items:
+                type: string
+              maxItems: 100
+              description: Suggested tags for posts in this group
+            _links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  format: uri
+                members:
+                  type: string
+                  format: uri
+                posts:
+                  type: string
+                  format: uri
+
+    GroupRefDto:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        displayName:
+          type: string
+
+    GroupCreateRequest:
+      type: object
+      required: [name, visibility]
+      properties:
+        name:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+        displayName:
+          type: string
+        description:
+          type: string
+        visibility:
+          type: string
+          enum: [public, private, viewable]
+        parent:
+          type: string
+
+    GroupUpdateRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+        description:
+          type: string
+        visibility:
+          type: string
+          enum: [public, private, viewable]
+        sharedDocuments:
+          type: boolean
+        allowJoinRequests:
+          type: boolean
+        presetTags:
+          type: array
+          items:
+            type: string
+          maxItems: 100
+
+    GroupMemberDto:
+      type: object
+      required: [user, role, joinedAt]
+      properties:
+        user:
+          $ref: '#/components/schemas/UserRefDto'
+        role:
+          type: string
+          enum: [admin, moderator, member]
+        joinedAt:
+          type: string
+          format: date-time
+
+    PaginatedGroupList:
+      type: object
+      required: [items, totalCount]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupDto'
+        totalCount:
+          type: integer
+        offset:
+          type: integer
+        limit:
+          type: integer
+
+    # =========================================================================
+    # TAG SCHEMAS
+    # =========================================================================
+
+    TagDto:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          example: machine-learning
+        count:
+          type: integer
+          description: Total usage count
+          example: 42
+        countPublic:
+          type: integer
+          description: Public usage count
+
+    TagDetailsDto:
+      allOf:
+        - $ref: '#/components/schemas/TagDto'
+        - type: object
+          properties:
+            supertags:
+              type: array
+              items:
+                type: string
+              maxItems: 100
+              description: Broader tags
+            subtags:
+              type: array
+              items:
+                type: string
+              maxItems: 100
+              description: Narrower tags
+
+    RelatedTagDto:
+      type: object
+      required: [name, cooccurrenceCount]
+      properties:
+        name:
+          type: string
+        cooccurrenceCount:
+          type: integer
+          description: Number of times this tag co-occurs with the query tag
+
+    # =========================================================================
+    # DOCUMENT SCHEMAS
+    # =========================================================================
+
+    DocumentDto:
+      type: object
+      required: [filename, uploadedAt, md5Hash]
+      properties:
+        filename:
+          type: string
+          example: paper.pdf
+        md5Hash:
+          type: string
+          example: 098f6bcd4621d373cade4e832627b4f6
+        uploadedAt:
+          type: string
+          format: date-time
+        uploadedBy:
+          type: string
+          description: Username of uploader
+        _links:
+          type: object
+          properties:
+            download:
+              type: string
+              format: uri
+
+    DocumentRefDto:
+      type: object
+      required: [filename]
+      properties:
+        filename:
+          type: string
+
+    # =========================================================================
+    # COMMON SCHEMAS
+    # =========================================================================
+
+    PersonNameDto:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          example: John Smith
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+
+    ApiKeyDto:
+      type: object
+      required: [id, name, key, createdAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: Production API Key
+        key:
+          type: string
+          example: sk_live_abc123...
+          description: Only returned on creation
+        createdAt:
+          type: string
+          format: date-time
+        lastUsedAt:
+          type: string
+          format: date-time
+
+    TokenResponse:
+      type: object
+      required: [access_token, token_type, expires_in]
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          example: 3600
+          description: Token lifetime in seconds
+        refresh_token:
+          type: string
+        scope:
+          type: string
+          example: read write
+
+    PostRefDto:
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          type: integer
+          description: Post ID
+        title:
+          type: string
+          description: Post title
+        user:
+          $ref: '#/components/schemas/UserRefDto'
+
+    GroupInvitationDto:
+      type: object
+      required: [username, invitedBy, invitedAt, role, status]
+      properties:
+        username:
+          type: string
+          description: Username of invited user
+        invitedBy:
+          type: string
+          description: Username of user who sent the invitation
+        invitedAt:
+          type: string
+          format: date-time
+        role:
+          type: string
+          enum: [admin, moderator, member]
+          description: Role to be assigned when accepted
+        message:
+          type: string
+          description: Optional invitation message
+        status:
+          type: string
+          enum: [pending, accepted, rejected, cancelled]
+          description: Invitation status
+
+    GroupJoinRequestDto:
+      type: object
+      required: [username, requestedAt, status]
+      properties:
+        username:
+          type: string
+          description: Username requesting to join
+        requestedAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+          description: Optional message from requestor
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          description: Request status
+        reviewedBy:
+          type: string
+          description: Username of admin/moderator who reviewed the request
+        reviewedAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Invalid request parameters
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+        timestamp:
+          type: string
+          format: date-time
