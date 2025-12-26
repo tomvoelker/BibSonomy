@@ -1990,7 +1990,7 @@ components:
           example: Smith2020
         entryType:
           type: string
-          enum: [article, book, inproceedings, inbook, phdthesis, mastersthesis, techreport, misc]
+          enum: [article, book, booklet, collection, conference, dataset, electronic, inbook, incollection, inproceedings, manual, mastersthesis, misc, patent, periodical, phdthesis, preprint, presentation, proceedings, standard, techreport, unpublished]
           example: article
         title:
           type: string
