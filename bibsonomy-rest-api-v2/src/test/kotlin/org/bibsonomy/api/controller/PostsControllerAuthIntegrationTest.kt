@@ -14,6 +14,8 @@ import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
 import org.bibsonomy.model.logic.query.PostQuery
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -175,8 +177,8 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(!body.contains("Private BibTex"))
+        assertTrue(body.contains("Public BibTex"))
+        assertFalse(body.contains("Private BibTex"))
     }
 
     @Test
@@ -188,8 +190,8 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(!body.contains("Private"))
+        assertTrue(body.contains("Public BibTex"))
+        assertFalse(body.contains("Private"))
     }
 
     @Test
@@ -202,7 +204,7 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Private BibTex"))
+        assertTrue(body.contains("Private BibTex"))
     }
 
     @Test
@@ -217,8 +219,8 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(body.contains("Private BibTex"))
+        assertTrue(body.contains("Public BibTex"))
+        assertTrue(body.contains("Private BibTex"))
     }
 
     @Test
@@ -247,10 +249,10 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(body.contains("Private BibTex"))
-        assert(body.contains("Public Bookmark"))
-        assert(body.contains("Private Bookmark"))
+        assertTrue(body.contains("Public BibTex"))
+        assertTrue(body.contains("Private BibTex"))
+        assertTrue(body.contains("Public Bookmark"))
+        assertTrue(body.contains("Private Bookmark"))
     }
 }
 
