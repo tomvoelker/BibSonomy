@@ -1,0 +1,10 @@
+.git
+**/.DS_Store
+**/node_modules
+**/target
+**/dist
+**/.idea
+**/.vscode
+**/.classpath
+**/.project
+**/.settings

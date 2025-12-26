@@ -1,0 +1,59 @@
+services:
+  mariadb:
+    image: mariadb:10.3
+    platform: linux/arm64
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: main_db
+      MARIADB_USER: bibsonomy
+      MARIADB_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./mysql-init/00-create-dbs.sql:/docker-entrypoint-initdb.d/00-create-dbs.sql:ro
+      - ../bibsonomy-database/src/main/resources/database/bibsonomy-db-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ../bibsonomy-database/src/main/resources/database/bibsonomy-db-init.sql:/docker-entrypoint-initdb.d/02-init.sql:ro
+      - ../bibsonomy-database/src/test/resources/database/insert-test-data.sql:/docker-entrypoint-initdb.d/03-test-data.sql:ro
+
+  rest-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.rest-api-v2
+    platform: linux/arm64
+    depends_on:
+      - mariadb
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DATABASE_MAIN_URL: jdbc:mysql://mariadb/main_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+      DATABASE_MAIN_USERNAME: bibsonomy
+      DATABASE_MAIN_PASSWORD: password
+      DATABASE_MAIN_DRIVERCLASSNAME: com.mysql.jdbc.Driver
+      DATABASE_RECOMMENDER_ITEM_URL: jdbc:mysql://mariadb/item_recommender_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+      DATABASE_RECOMMENDER_ITEM_USERNAME: bibsonomy
+      DATABASE_RECOMMENDER_ITEM_PASSWORD: password
+      DATABASE_RECOMMENDER_TAG_URL: jdbc:mysql://mariadb/tag_recommender_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+      DATABASE_RECOMMENDER_TAG_USERNAME: bibsonomy
+      DATABASE_RECOMMENDER_TAG_PASSWORD: password
+    ports:
+      - "8080:8080"
+    volumes:
+      - bibsonomy-files:/var/lib/bibsonomy
+
+  webapp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.webapp-v2
+      args:
+        VITE_API_BASE_URL: http://localhost:8080/api/v2
+        VITE_PROJECT_THEME: bibsonomy
+        VITE_ENABLE_MOCKS: "false"
+    platform: linux/arm64
+    depends_on:
+      - rest-api
+    ports:
+      - "5173:80"
+
+volumes:
+  mariadb-data:
+  bibsonomy-files:
