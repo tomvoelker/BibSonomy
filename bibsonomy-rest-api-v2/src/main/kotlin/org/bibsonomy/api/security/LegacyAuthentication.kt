@@ -123,11 +123,6 @@ class LegacyBasicAuthenticationFilter(
         return username to apiKey
     }
 
-    private fun isPublicRequest(request: HttpServletRequest): Boolean {
-        return request.method.equals("GET", ignoreCase = true) &&
-            request.requestURI.startsWith("/api/v2/posts")
-    }
-
     companion object {
         internal const val BASIC_PREFIX = "Basic "
     }
