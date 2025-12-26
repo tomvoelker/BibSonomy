@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: extsonomy
+namePrefix: PREVIEW_NAME_PREFIX
+
+resources:
+  - ../../base
+
+labels:
+  - pairs:
+      app.kubernetes.io/component: preview
+      preview.bibsonomy.org/branch: PREVIEW_BRANCH
+      preview.bibsonomy.org/pr: "PREVIEW_PR"
+      preview.bibsonomy.org/db-mode: biblicious
+
+patches:
+  - path: rest-api-secret-patch.yaml
+  - path: rest-api-image-patch.yaml
+  - path: webapp-image-patch.yaml
+  - path: rest-api-nodeport.yaml
+  - path: webapp-nodeport.yaml

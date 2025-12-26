@@ -1,0 +1,259 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.vars.outputs.pr_number }}
+      branch: ${{ steps.vars.outputs.branch }}
+      sanitized_branch: ${{ steps.vars.outputs.sanitized_branch }}
+      name_prefix: ${{ steps.vars.outputs.name_prefix }}
+      api_nodeport: ${{ steps.vars.outputs.api_nodeport }}
+      web_nodeport: ${{ steps.vars.outputs.web_nodeport }}
+      api_base_url: ${{ steps.vars.outputs.api_base_url }}
+      db_mode: ${{ steps.vars.outputs.db_mode }}
+      rest_image: ${{ steps.vars.outputs.rest_image }}
+      web_image: ${{ steps.vars.outputs.web_image }}
+    steps:
+      - name: Compute preview settings
+        id: vars
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          import sys
+
+          event_path = os.environ["GITHUB_EVENT_PATH"]
+          with open(event_path, "r", encoding="utf-8") as handle:
+              event = json.load(handle)
+
+          pr = event.get("pull_request")
+          if not pr:
+              print("pull_request event data missing", file=sys.stderr)
+              sys.exit(1)
+
+          pr_number = pr["number"]
+          branch = pr["head"]["ref"]
+          head_sha = pr["head"]["sha"]
+          owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "unknown")
+
+          labels = [label["name"] for label in pr.get("labels", [])]
+          db_mode = "minimal"
+          for label in labels:
+              if label.startswith("preview-db="):
+                  db_mode = label.split("=", 1)[1].strip() or "minimal"
+                  break
+
+          sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
+          sanitized = re.sub(r"-{2,}", "-", sanitized)
+
+          base_name = "bibsonomy-webapp-v2"
+          max_prefix_len = 63 - len(base_name)
+          prefix_base = f"pr-{sanitized}"
+          if len(prefix_base) + 1 > max_prefix_len:
+              hash_suffix = hashlib.sha256(branch.encode("utf-8")).hexdigest()[:6]
+              trim_len = max_prefix_len - len("pr-") - len(hash_suffix) - 1
+              trimmed = sanitized[: max(trim_len, 1)].rstrip("-")
+              prefix_base = f"pr-{trimmed}-{hash_suffix}"
+
+          name_prefix = f"{prefix_base}-"
+
+          hash_value = int(hashlib.sha256(branch.encode("utf-8")).hexdigest()[:8], 16)
+          base_port = 30000 + (hash_value % 1900)
+          api_nodeport = base_port
+          web_nodeport = base_port + 1
+
+          api_base_url = f"http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:{api_nodeport}/api/v2"
+          image_suffix = f"pr-{pr_number}-{head_sha[:7]}"
+          rest_image = f"ghcr.io/{owner}/bibsonomy-rest-api-v2:{image_suffix}"
+          web_image = f"ghcr.io/{owner}/bibsonomy-webapp-v2:{image_suffix}"
+
+          output_path = os.environ["GITHUB_OUTPUT"]
+          with open(output_path, "a", encoding="utf-8") as out:
+              out.write(f"pr_number={pr_number}\n")
+              out.write(f"branch={branch}\n")
+              out.write(f"sanitized_branch={sanitized}\n")
+              out.write(f"name_prefix={name_prefix}\n")
+              out.write(f"api_nodeport={api_nodeport}\n")
+              out.write(f"web_nodeport={web_nodeport}\n")
+              out.write(f"api_base_url={api_base_url}\n")
+              out.write(f"db_mode={db_mode}\n")
+              out.write(f"rest_image={rest_image}\n")
+              out.write(f"web_image={web_image}\n")
+          PY
+
+  build-images:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push REST API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.rest-api-v2
+          platforms: linux/amd64
+          push: true
+          tags: ${{ needs.prepare.outputs.rest_image }}
+
+      - name: Build and push Webapp image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.webapp-v2
+          platforms: linux/amd64
+          push: true
+          tags: ${{ needs.prepare.outputs.web_image }}
+          build-args: |
+            VITE_API_BASE_URL=${{ needs.prepare.outputs.api_base_url }}
+            VITE_PROJECT_THEME=bibsonomy
+            VITE_ENABLE_MOCKS=false
+
+  deploy:
+    needs: [prepare, build-images]
+    runs-on: self-hosted
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      KUBECONFIG: /home/github-runner/.kube/config
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure kubectl connectivity
+        run: |
+          for i in {1..10}; do
+            if kubectl get nodes >/dev/null 2>&1; then
+              echo "kubectl connection ok"
+              exit 0
+            fi
+            echo "kubectl connection failed ($i/10), retrying..."
+            sleep 3
+          done
+          echo "kubectl connection failed after retries"
+          exit 1
+
+      - name: Prepare preview overlay
+        env:
+          DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+          BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+          API_NODEPORT: ${{ needs.prepare.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ needs.prepare.outputs.web_nodeport }}
+          REST_IMAGE: ${{ needs.prepare.outputs.rest_image }}
+          WEB_IMAGE: ${{ needs.prepare.outputs.web_image }}
+        run: |
+          set -euo pipefail
+          OVERLAY_BASE="k8s/overlays/preview-${DB_MODE}"
+          PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
+
+          rm -rf "$PREVIEW_DIR"
+          cp -R "$OVERLAY_BASE" "$PREVIEW_DIR"
+
+          if [ "$DB_MODE" = "minimal" ]; then
+            MARIADB_SERVICE="${NAME_PREFIX}mariadb"
+            sed -i "s/PREVIEW_MARIADB_HOST/${MARIADB_SERVICE}/g" "$PREVIEW_DIR/rest-api-db-patch.yaml"
+          fi
+
+          sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/kustomization.yaml"
+          sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$PREVIEW_DIR/kustomization.yaml"
+          sed -i "s/PREVIEW_PR/${PR_NUMBER}/g" "$PREVIEW_DIR/kustomization.yaml"
+          sed -i "s#PREVIEW_REST_IMAGE#${REST_IMAGE}#g" "$PREVIEW_DIR/rest-api-image-patch.yaml"
+          sed -i "s#PREVIEW_WEB_IMAGE#${WEB_IMAGE}#g" "$PREVIEW_DIR/webapp-image-patch.yaml"
+          sed -i "s/PREVIEW_API_NODEPORT/${API_NODEPORT}/g" "$PREVIEW_DIR/rest-api-nodeport.yaml"
+          sed -i "s/PREVIEW_WEB_NODEPORT/${WEB_NODEPORT}/g" "$PREVIEW_DIR/webapp-nodeport.yaml"
+
+          if [ "$DB_MODE" = "biblicious" ]; then
+            SECRET_NAME="${NAME_PREFIX}bibsonomy-rest-api-db"
+            export SECRET_NAME
+            kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json | \
+              python - <<'PY' | kubectl apply -f -
+          import json
+          import os
+          import sys
+
+          secret = json.load(sys.stdin)
+          secret["metadata"]["name"] = os.environ["SECRET_NAME"]
+          secret["metadata"]["namespace"] = "extsonomy"
+          secret["metadata"]["labels"] = secret["metadata"].get("labels", {})
+          secret["metadata"]["labels"]["app.kubernetes.io/component"] = "preview"
+          secret["metadata"]["labels"]["preview.bibsonomy.org/branch"] = os.environ["BRANCH"]
+          secret["metadata"]["labels"]["preview.bibsonomy.org/pr"] = os.environ["PR_NUMBER"]
+          secret["metadata"]["labels"]["preview.bibsonomy.org/db-mode"] = "biblicious"
+          for field in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]:
+              secret["metadata"].pop(field, None)
+          print(json.dumps(secret))
+          PY
+            sed -i "s/PREVIEW_DB_SECRET/${SECRET_NAME}/g" "$PREVIEW_DIR/rest-api-secret-patch.yaml"
+          fi
+
+      - name: Apply preview resources
+        env:
+          BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+        run: |
+          PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
+          kubectl apply -k "$PREVIEW_DIR"
+
+      - name: Post preview comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+          API_NODEPORT: ${{ needs.prepare.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ needs.prepare.outputs.web_nodeport }}
+        run: |
+          API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
+          WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
+          cat <<EOF > /tmp/preview-comment.md
+          <!-- bibsonomy-preview -->
+          ✅ Preview deployed for branch \`${BRANCH}\`
+
+          - Webapp: ${WEB_URL}
+          - REST API: ${API_URL}
+          - DB mode: ${DB_MODE}
+
+          Debug:
+          \`\`\`bash
+          kubectl -n extsonomy get pods -l preview.bibsonomy.org/pr=${PR_NUMBER}
+          kubectl -n extsonomy get svc -l preview.bibsonomy.org/pr=${PR_NUMBER}
+          \`\`\`
+          EOF
+
+          EXISTING_COMMENT_ID=$(gh api repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments \
+            --jq '.[] | select(.body | contains("<!-- bibsonomy-preview -->")) | .id' | head -n 1)
+
+          if [ -n "$EXISTING_COMMENT_ID" ]; then
+            gh api repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_COMMENT_ID} \
+              --method PATCH \
+              --field body="$(cat /tmp/preview-comment.md)"
+          else
+            gh pr comment "${PR_NUMBER}" --body-file /tmp/preview-comment.md
+          fi

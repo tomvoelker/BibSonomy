@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: extsonomy
+namePrefix: PREVIEW_NAME_PREFIX
+
+resources:
+  - ../../base
+  - mariadb-deployment.yaml
+  - mariadb-service.yaml
+
+configMapGenerator:
+  - name: mariadb-init
+    files:
+      - 00-create-dbs.sql=../../../docker/mysql-init/00-create-dbs.sql
+      - 01-schema.sql=../../../bibsonomy-database/src/main/resources/database/bibsonomy-db-schema.sql
+      - 02-init.sql=../../../bibsonomy-database/src/main/resources/database/bibsonomy-db-init.sql
+      - 03-test-data.sql=../../../bibsonomy-database/src/test/resources/database/insert-test-data.sql
+    options:
+      disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      app.kubernetes.io/component: preview
+      preview.bibsonomy.org/branch: PREVIEW_BRANCH
+      preview.bibsonomy.org/pr: "PREVIEW_PR"
+      preview.bibsonomy.org/db-mode: minimal
+
+patches:
+  - path: rest-api-db-patch.yaml
+  - path: rest-api-image-patch.yaml
+  - path: webapp-image-patch.yaml
+  - path: rest-api-nodeport.yaml
+  - path: webapp-nodeport.yaml
