@@ -167,10 +167,3 @@ private fun determineVisibility(groups: Set<Group>?): Visibility {
         else -> Visibility.GROUPS
     }
 }
-
-/**
- * Extension function to convert java.util.Date to java.time.Instant.
- */
-private fun java.util.Date.toInstant(): Instant {
-    return Instant.ofEpochMilli(this.time)
-}
