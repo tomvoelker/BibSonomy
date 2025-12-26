@@ -94,7 +94,7 @@ function handlePublicationsNext() {
               v-if="showBookmarks"
               class="w-full px-4 mb-6 md:mb-0"
               :class="{
-                'md:flex-1': viewMode === 'all',
+                'md:flex-1 md:min-w-0': viewMode === 'all',
                 'md:max-w-full': viewMode !== 'all'
               }"
             >
@@ -122,7 +122,7 @@ function handlePublicationsNext() {
               v-if="showPublications"
               class="w-full px-4 mb-6 md:mb-0"
               :class="{
-                'md:flex-1': viewMode === 'all',
+                'md:flex-1 md:min-w-0': viewMode === 'all',
                 'md:max-w-full': viewMode !== 'all'
               }"
             >
