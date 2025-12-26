@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maven Toolchains Configuration Example
+
+  This file allows Maven to use different JDK versions for different modules in the same build.
+
+  SETUP INSTRUCTIONS:
+
+  1. Copy this file to 'toolchains.xml' in the repository root:
+     $ cp toolchains.xml.example toolchains.xml
+
+  2. Edit toolchains.xml and replace the <jdkHome> paths with your actual JDK installation paths
+
+  3. NEVER commit your customized toolchains.xml (it's in .gitignore)
+
+  WHY TOOLCHAINS?
+
+  BibSonomy has a dual JDK requirement:
+  - Legacy modules (bibsonomy-model, bibsonomy-database, etc.) require Java 8
+  - REST API v2 (bibsonomy-rest-api-v2) requires Java 21
+
+  Toolchains allow both to coexist in a single Maven build.
+
+  FINDING YOUR JDK PATHS:
+
+  macOS:
+    $ /usr/libexec/java_home -V
+    Lists all installed JDKs with their paths
+
+  Linux:
+    $ update-alternatives --display java
+    Or check: /usr/lib/jvm/
+
+  Windows:
+    Check: C:\Program Files\Java\
+    Or: C:\Program Files\Eclipse Adoptium\
+
+  ALTERNATIVE TO TOOLCHAINS:
+
+  If you don't want to use toolchains, you can:
+  1. Set JAVA_HOME to Java 21
+  2. Build only the REST API v2 module:
+     $ cd bibsonomy-rest-api-v2
+     $ mvn clean install
+-->
+<toolchains xmlns="http://maven.apache.org/TOOLCHAINS/1.1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/TOOLCHAINS/1.1.0 https://maven.apache.org/xsd/toolchains-1.1.0.xsd">
+
+	<!-- Java 8 - Required for legacy modules -->
+	<toolchain>
+		<type>jdk</type>
+		<provides>
+			<version>1.8</version>
+		</provides>
+		<configuration>
+			<!-- REPLACE THIS PATH with your Java 8 installation -->
+			<!-- Examples:
+			     macOS Intel:    /Library/Java/JavaVirtualMachines/jdk1.8.0_xxx.jdk/Contents/Home
+			     macOS ARM:      /Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home
+			     Linux:          /usr/lib/jvm/java-8-openjdk-amd64
+			     Windows:        C:\Program Files\Java\jdk1.8.0_xxx
+			-->
+			<jdkHome>/path/to/your/java-8-installation</jdkHome>
+		</configuration>
+	</toolchain>
+
+	<!-- Java 21 or 23 - Required for REST API v2 -->
+	<toolchain>
+		<type>jdk</type>
+		<provides>
+			<!-- Use the version you have installed: 21, 22, or 23 -->
+			<version>21</version>
+		</provides>
+		<configuration>
+			<!-- REPLACE THIS PATH with your Java 21+ installation -->
+			<!-- Examples:
+			     macOS Homebrew: /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+			     macOS Intel:    /Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home
+			     Linux:          /usr/lib/jvm/java-21-openjdk-amd64
+			     Windows:        C:\Program Files\Eclipse Adoptium\jdk-21.0.x.x-hotspot
+			-->
+			<jdkHome>/path/to/your/java-21-installation</jdkHome>
+		</configuration>
+	</toolchain>
+
+	<!-- Optional: If you have Java 23 instead of 21, use this -->
+	<!--
+	<toolchain>
+		<type>jdk</type>
+		<provides>
+			<version>23</version>
+		</provides>
+		<configuration>
+			<jdkHome>/path/to/your/java-23-installation</jdkHome>
+		</configuration>
+	</toolchain>
+	-->
+
+</toolchains>
