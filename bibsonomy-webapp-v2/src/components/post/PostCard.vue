@@ -54,7 +54,7 @@ const bookmarkUrl = computed(() => {
 </script>
 
 <template>
-  <Card class="flex gap-3 md:gap-4 p-3 md:p-4 hover:shadow-md transition-shadow h-auto md:h-[180px]">
+  <Card class="flex min-w-0 gap-3 md:gap-4 p-3 md:p-4 hover:shadow-md transition-shadow h-auto md:h-[180px]">
     <!-- Thumbnail (smaller on mobile) -->
     <div class="flex-shrink-0">
       <PostThumbnail :post="post" />
