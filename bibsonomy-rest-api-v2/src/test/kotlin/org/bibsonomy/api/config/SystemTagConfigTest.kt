@@ -5,6 +5,7 @@ import org.bibsonomy.database.systemstags.SystemTagFactory
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
@@ -27,6 +28,10 @@ class SystemTagConfigTest(
 @Configuration
 @Import(LegacyBeanAliasesConfig::class)
 class SystemTagTestConfig {
+    /**
+     * Provide a test-scoped mock of PermissionDatabaseManager to avoid
+     * global singleton state in tests.
+     */
     @Bean
-    fun permissionDatabaseManager(): PermissionDatabaseManager = PermissionDatabaseManager.getInstance()
+    fun permissionDatabaseManager(): PermissionDatabaseManager = Mockito.mock(PermissionDatabaseManager::class.java)
 }
