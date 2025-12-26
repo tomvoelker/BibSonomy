@@ -214,7 +214,7 @@ paths:
           schema:
             type: string
           required: false
-          description: Owner of the post (required to disambiguate and to access private posts)
+          description: Optional post owner username. Used to disambiguate posts when resource hashes are per-user scoped in the legacy API. Access to private posts is enforced via authentication headers, not this parameter.
       responses:
         '200':
           description: Successful response
