@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.Customizer
+import org.springframework.beans.factory.annotation.Value
 
 /**
  * Security configuration for REST API v2.
@@ -25,7 +26,8 @@ import org.springframework.security.config.Customizer
 @EnableWebSecurity
 class SecurityConfig(
     private val legacyBasicAuthenticationProvider: LegacyBasicAuthenticationProvider,
-    private val legacyAuthenticationEntryPoint: AuthenticationEntryPoint
+    private val legacyAuthenticationEntryPoint: AuthenticationEntryPoint,
+    @Value("\${security.permitDocs:false}") private val permitDocs: Boolean
 ) {
 
     @Bean
@@ -46,12 +48,18 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authenticationManager(authenticationManager)
             .authorizeHttpRequests { authorize ->
+                val docMatchers = if (permitDocs) {
+                    arrayOf("/api/v2/api-docs/**", "/api/v2/swagger-ui.html", "/api/v2/swagger-ui/**")
+                } else {
+                    emptyArray()
+                }
                 authorize
                     .requestMatchers(
                         "/api/v2/auth/**",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
-                        "/swagger-ui.html"
+                        "/swagger-ui.html",
+                        *docMatchers
                     ).permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts/**").permitAll()

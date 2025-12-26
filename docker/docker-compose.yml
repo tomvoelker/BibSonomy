@@ -25,6 +25,7 @@ services:
       - mariadb
     environment:
       SPRING_PROFILES_ACTIVE: local
+      SECURITY_PERMITDOCS: "true"
       DATABASE_MAIN_URL: jdbc:mysql://mariadb/main_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
       DATABASE_MAIN_USERNAME: bibsonomy
       DATABASE_MAIN_PASSWORD: password
