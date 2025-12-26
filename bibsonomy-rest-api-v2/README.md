@@ -35,15 +35,38 @@ The REST API v2 is built on Spring Boot 3.2+, which requires Java 17 as an absol
 
 When building this module, ensure you have Java 21 configured:
 
+**Option 1: Set JAVA_HOME (simple, REST API v2 only)**
+
 ```bash
 # Set JAVA_HOME to Java 21
 export JAVA_HOME=/path/to/java-21
 
-# Or use Maven toolchains (recommended)
-mvn -t ../toolchains.xml clean install
+# Then build normally
+mvn clean install
 ```
 
-See `toolchains.xml` in the repository root for multi-JDK build configuration.
+**Option 2: Maven Toolchains (recommended, full project build)**
+
+Maven toolchains allow the full project to build with both Java 8 (legacy modules) and Java 21 (REST API v2) in a single build.
+
+**First-time setup:**
+
+```bash
+# 1. Copy the example file
+cp toolchains.xml.example toolchains.xml
+
+# 2. Edit toolchains.xml and replace the placeholder paths with your actual JDK installation paths
+#    - Find Java 8 path: /usr/libexec/java_home -V (macOS) or update-alternatives --display java (Linux)
+#    - Find Java 21 path: same commands
+#    - Edit the <jdkHome> entries in toolchains.xml
+
+# 3. Build using toolchains
+mvn -t toolchains.xml clean install
+```
+
+**Important:** `toolchains.xml` is in `.gitignore` because JDK paths are developer-specific. Each developer must create their own from `toolchains.xml.example`.
+
+See `toolchains.xml.example` in the repository root for detailed setup instructions and platform-specific path examples.
 
 ## Architecture
 
