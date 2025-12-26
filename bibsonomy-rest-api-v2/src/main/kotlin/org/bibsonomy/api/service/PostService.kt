@@ -14,6 +14,7 @@ import org.bibsonomy.model.Resource
 import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
 import org.bibsonomy.model.logic.query.PostQuery
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.http.HttpHeaders
@@ -32,6 +33,7 @@ class PostService(
     private val logic: LogicInterface,
     private val logicFactory: LogicInterfaceFactory
 ) {
+    private val log = LoggerFactory.getLogger(PostService::class.java)
 
     fun getPostByHash(resourceHash: String, user: String?): PostDto {
         val logic = resolveLogicFromRequest()
@@ -114,7 +116,25 @@ class PostService(
             try {
                 post.toDto()
             } catch (e: IllegalStateException) {
-                // Skip posts with invalid data (e.g., null contentId)
+                // Skip posts with invalid data (e.g., null contentId, date, user, or resource)
+                val postId = post.contentId ?: "unknown"
+                val userName = post.user?.name ?: "unknown"
+                val resourceTitle = post.resource?.let {
+                    when (it) {
+                        is org.bibsonomy.model.Bookmark -> it.title
+                        is org.bibsonomy.model.BibTex -> it.title
+                        else -> null
+                    }
+                } ?: "unknown"
+
+                log.warn(
+                    "Skipping post with invalid data - postId: {}, user: {}, title: {}, error: {}",
+                    postId,
+                    userName,
+                    resourceTitle,
+                    e.message,
+                    e
+                )
                 null
             }
         }
