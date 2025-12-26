@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Primary
  */
 @Configuration(proxyBeanMethods = false)
 class LegacyCrisStubConfig {
-    @Bean(name = ["crisLinkDatabaseManger"])
+    @Bean(name = ["crisLinkDatabaseManager"])
     @Primary
     fun crisLinkDatabaseManagerStub(): CRISLinkDatabaseManager = object : CRISLinkDatabaseManager() {}
 
@@ -27,14 +27,14 @@ class LegacyCrisStubConfig {
     fun crisLinkBeanOverride(): BeanDefinitionRegistryPostProcessor =
         object : BeanDefinitionRegistryPostProcessor {
             override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
-                if (registry.containsBeanDefinition("crisLinkDatabaseManger")) {
-                    registry.removeBeanDefinition("crisLinkDatabaseManger")
+                if (registry.containsBeanDefinition("crisLinkDatabaseManager")) {
+                    registry.removeBeanDefinition("crisLinkDatabaseManager")
                 }
                 val bd = RootBeanDefinition(CRISLinkDatabaseManager::class.java) {
                     crisLinkDatabaseManagerStub()
                 }
                 bd.isPrimary = true
-                registry.registerBeanDefinition("crisLinkDatabaseManger", bd)
+                registry.registerBeanDefinition("crisLinkDatabaseManager", bd)
             }
 
             override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
