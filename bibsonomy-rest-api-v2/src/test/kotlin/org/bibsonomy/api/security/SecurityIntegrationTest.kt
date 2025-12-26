@@ -22,6 +22,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -65,6 +67,41 @@ class SecurityIntegrationTest(
         )
         assertEquals(HttpStatus.OK, response.statusCode)
     }
+
+    @Test
+    fun `protected POST endpoint requires authentication`() {
+        val requestBody = mapOf("title" to "Test Post", "url" to "https://example.com")
+
+        // No auth should return UNAUTHORIZED
+        val noAuthResponse: ResponseEntity<String> = restTemplate.postForEntity(
+            "/api/v2/posts",
+            requestBody,
+            String::class.java
+        )
+        assertEquals(HttpStatus.UNAUTHORIZED, noAuthResponse.statusCode)
+
+        // Invalid auth should return UNAUTHORIZED
+        val invalidHeaders = HttpHeaders()
+        invalidHeaders.setBasicAuth("invalid", "credentials")
+        val invalidAuthResponse: ResponseEntity<String> = restTemplate.exchange(
+            "/api/v2/posts",
+            HttpMethod.POST,
+            HttpEntity(requestBody, invalidHeaders),
+            String::class.java
+        )
+        assertEquals(HttpStatus.UNAUTHORIZED, invalidAuthResponse.statusCode)
+
+        // Valid auth should succeed
+        val validHeaders = HttpHeaders()
+        validHeaders.setBasicAuth(StubLogicInterfaceFactory.VALID_USER, StubLogicInterfaceFactory.VALID_API_KEY)
+        val validAuthResponse: ResponseEntity<String> = restTemplate.exchange(
+            "/api/v2/posts",
+            HttpMethod.POST,
+            HttpEntity(requestBody, validHeaders),
+            String::class.java
+        )
+        assertEquals(HttpStatus.CREATED, validAuthResponse.statusCode)
+    }
 }
 
 /**
@@ -79,6 +116,10 @@ class TestSecurityApplication
 class DummyPostsController {
     @GetMapping
     fun list(): ResponseEntity<String> = ResponseEntity.ok("ok")
+
+    @PostMapping
+    fun create(@RequestBody body: Map<String, Any>): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.CREATED).body("created")
 }
 
 class StubLogicInterfaceFactory : LogicInterfaceFactory {
