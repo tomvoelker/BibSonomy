@@ -124,8 +124,8 @@ paths:
             type: boolean
             default: false
           description: |
-            When true, also calculates totalCount for the full result set (can be slow on large datasets).
-            When false, totalCount reflects only the number of items in this page.
+            When true, calculates totalCount for the full result set (can be slow on large datasets).
+            When false, totalCount is set to -1 to indicate it was not computed.
       responses:
         '200':
           description: Successful response
@@ -2144,6 +2144,9 @@ components:
             $ref: '#/components/schemas/PostDto'
         totalCount:
           type: integer
+          description: |
+            Total count of items matching the query across all pages.
+            Set to -1 when includeTotal=false (not computed for performance).
           example: 150
         offset:
           type: integer
