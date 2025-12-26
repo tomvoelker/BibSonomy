@@ -55,8 +55,9 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
     }
 
     fun setTransactionConfigClass(transactionConfigClass: Class<out TransactionConfig>?) {
-        Assert.isTrue(transactionConfigClass != null, "transactionConfigClass must not be null")
-        this.transactionConfigClass = transactionConfigClass!!
+        this.transactionConfigClass = requireNotNull(transactionConfigClass) {
+            "transactionConfigClass must not be null"
+        }
     }
 
     fun setTransactionConfigProperties(transactionConfigProperties: Properties?) {
