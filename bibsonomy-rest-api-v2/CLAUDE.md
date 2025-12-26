@@ -44,7 +44,7 @@ mvn clean package
 
 ```bash
 # Run with 'local' profile (uses local database config)
-JAVA_HOME=$JAVA_23_HOME java -jar target/bibsonomy-rest-api-v2-4.1.0.jar --spring.profiles.active=local
+JAVA_HOME=$JAVA_23_HOME java -jar target/bibsonomy-rest-api-v2-4.1.0-SNAPSHOT.jar --spring.profiles.active=local
 
 # Alternative: Use Spring Boot Maven plugin
 mvn spring-boot:run -Dspring-boot.run.profiles=local
