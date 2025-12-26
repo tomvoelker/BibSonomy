@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bibsonomy-webapp
+  name: bibsonomy-webapp-v2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bibsonomy-webapp
+      app: bibsonomy-webapp-v2
   template:
     metadata:
       labels:
-        app: bibsonomy-webapp
+        app: bibsonomy-webapp-v2
     spec:
       containers:
         - name: webapp
@@ -18,3 +18,13 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-tmp
+              mountPath: /tmp
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-tmp
+          emptyDir: {}

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bibsonomy-rest-api
+  name: bibsonomy-rest-api-v2
 spec:
   template:
     spec:
