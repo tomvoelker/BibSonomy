@@ -141,10 +141,10 @@ class PostService(
 
         val totalCount = if (includeTotal) {
             when (resourceType.lowercase()) {
-                "bookmark" -> getCount(org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey)
-                "bibtex" -> getCount(org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
-                "all" -> getCount(org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey) +
-                    getCount(org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
+                "bookmark" -> getCount(logic, org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey)
+                "bibtex" -> getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
+                "all" -> getCount(logic, org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey) +
+                    getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
                 else -> postDtos.size
             }
         } else {
@@ -202,6 +202,7 @@ class PostService(
     }
 
     private fun getCount(
+        logic: LogicInterface,
         resourceClass: Class<out Resource>,
         tags: List<String>?,
         user: String?,
