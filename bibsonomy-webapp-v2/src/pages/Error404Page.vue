@@ -62,7 +62,13 @@ const goHome = () => {
         <img
           src="/404.jpg"
           alt="404 Error"
-          style="max-width: 100%; height: auto; margin: 20px auto; border-radius: 4px; display: block"
+          style="
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 4px;
+            display: block;
+          "
         />
 
         <!-- Go Home Button -->

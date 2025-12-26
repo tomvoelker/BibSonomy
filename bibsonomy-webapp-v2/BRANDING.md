@@ -24,17 +24,20 @@ This matches the original webapp's behavior where `project.name = BibLicious` in
 ### 2. Configuration Files
 
 **`src/config/branding.ts`**
+
 - Contains theme definitions (bibsonomy, biblicious, puma)
 - Each theme defines: project name, tagline, colors, favicon, social links, feature flags
 - Exports `getBrandingConfig()` function that returns the active theme
 
 **`src/composables/useBranding.ts`**
+
 - Vue composable for accessing branding in components
 - Usage: `const { branding } = useBranding()`
 
 ### 3. Environment Variables
 
 **.env.example / .env.production**
+
 ```bash
 # In production, set the theme:
 VITE_PROJECT_THEME=bibsonomy  # or 'puma' for PUMA deployments
@@ -55,7 +58,7 @@ const themes: Record<string, BrandingConfig> = {
   customTheme: {
     projectName: 'CustomName',
     tagline: 'Your custom tagline',
-    primaryColor: '#ff0000',  // Custom color
+    primaryColor: '#ff0000', // Custom color
     faviconPath: '/favicon-custom.ico',
     blogUrl: 'https://blog.custom.org',
     social: {
@@ -73,6 +76,7 @@ const themes: Record<string, BrandingConfig> = {
    - `public/favicon-custom.ico`
 
 3. **Deploy with environment variable**:
+
 ```bash
 VITE_PROJECT_THEME=customTheme bun run build
 ```
@@ -124,32 +128,38 @@ if (branding.features.groupsAndFriends) {
 
 ## Comparison with Original System
 
-| Original Webapp | Modern Vue App |
-|----------------|----------------|
+| Original Webapp                                    | Modern Vue App                      |
+| -------------------------------------------------- | ----------------------------------- |
 | `project.properties` → `project.name = BibLicious` | Auto-detect dev mode → "BibLicious" |
-| `project.theme = bibsonomy` | `VITE_PROJECT_THEME=bibsonomy` |
-| `theme_bibsonomy.properties` | `themes.bibsonomy` in `branding.ts` |
-| `theme_puma.properties` | `themes.puma` in `branding.ts` |
-| JSP: `${properties['project.name']}` | Vue: `branding.projectName` |
+| `project.theme = bibsonomy`                        | `VITE_PROJECT_THEME=bibsonomy`      |
+| `theme_bibsonomy.properties`                       | `themes.bibsonomy` in `branding.ts` |
+| `theme_puma.properties`                            | `themes.puma` in `branding.ts`      |
+| JSP: `${properties['project.name']}`               | Vue: `branding.projectName`         |
 
 ## Testing
 
 ### Test dev mode (BibLicious):
+
 ```bash
 bun run dev
 ```
+
 Visit http://localhost:5173 - should show "BibLicious"
 
 ### Test production mode (BibSonomy):
+
 ```bash
 VITE_PROJECT_THEME=bibsonomy bun run build
 bun run preview
 ```
+
 Should show "BibSonomy"
 
 ### Test PUMA theme:
+
 ```bash
 VITE_PROJECT_THEME=puma bun run build
 bun run preview
 ```
+
 Should show "PUMA" with red color scheme

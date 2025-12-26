@@ -31,11 +31,7 @@ const groups = computed(() => props.post.groups || [])
 <template>
   <div class="text-xs text-gray-600 flex items-center gap-2 flex-wrap">
     <!-- Clock Icon + Relative Time -->
-    <span
-      v-if="relativeTime"
-      class="flex items-center gap-1"
-      :title="fullDateTime"
-    >
+    <span v-if="relativeTime" class="flex items-center gap-1" :title="fullDateTime">
       <Clock :size="12" class="text-gray-500" />
       {{ relativeTime }}
     </span>
@@ -45,12 +41,7 @@ const groups = computed(() => props.post.groups || [])
     <UserLink :user="post.user" />
 
     <!-- Groups -->
-    <Badge
-      v-for="group in groups"
-      :key="group.name"
-      size="xs"
-      variant="secondary"
-    >
+    <Badge v-for="group in groups" :key="group.name" size="xs" variant="secondary">
       {{ group.name }}
     </Badge>
   </div>

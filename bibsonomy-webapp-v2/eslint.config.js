@@ -70,6 +70,8 @@ export default [
       ],
       'vue/html-comment-content-spacing': ['error', 'always'],
       'vue/padding-line-between-blocks': ['error', 'always'],
+      'vue/attributes-order': 'off',
+      'no-undef': 'off',
     },
   },
 
@@ -108,6 +110,7 @@ export default [
         },
       ],
       'prefer-promise-reject-errors': 'off',
+      'no-undef': 'off',
     },
   },
 

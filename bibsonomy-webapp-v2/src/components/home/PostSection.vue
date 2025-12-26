@@ -15,17 +15,17 @@ interface Props {
   cardComponent: Component
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   loading: false,
 })
-
-const { t } = useI18n()
 
 const emit = defineEmits<{
   filter: []
   sort: []
   export: []
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -46,19 +46,11 @@ const emit = defineEmits<{
     </div>
 
     <!-- Empty State -->
-    <EmptyState
-      v-else-if="posts.length === 0"
-      :message="t('post.noPosts')"
-    />
+    <EmptyState v-else-if="posts.length === 0" :message="t('post.noPosts')" />
 
     <!-- Posts Grid -->
     <div v-else class="grid gap-4">
-      <component
-        :is="cardComponent"
-        v-for="post in posts"
-        :key="post.id"
-        :post="post"
-      />
+      <component :is="cardComponent" v-for="post in posts" :key="post.id" :post="post" />
     </div>
   </div>
 </template>

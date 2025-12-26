@@ -8,7 +8,7 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
-const featureName = route.query.feature as string || 'This feature'
+const featureName = (route.query.feature as string) || 'This feature'
 
 const goHome = () => {
   router.push('/')

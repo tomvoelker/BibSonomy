@@ -9,6 +9,7 @@ This guide is specific to the **bibsonomy-webapp-v2** module - the modern Vue 3 
 **bibsonomy-webapp-v2** is a modern single-page application (SPA) built with Vue 3, TypeScript, and Vite. It consumes the REST API v2 and provides a responsive, accessible user interface.
 
 **Tech Stack**:
+
 - **Vue 3** (Composition API + SFC)
 - **TypeScript** (strict mode)
 - **Vite** (build tool and dev server)
@@ -44,6 +45,7 @@ bun run dev
 ```
 
 The dev server includes:
+
 - Hot Module Replacement (HMR)
 - TypeScript type checking
 - Auto-reload on file changes
@@ -191,7 +193,7 @@ export function usePosts(userName?: string, tags?: string[]) {
     queryFn: async () => {
       const params = new URLSearchParams()
       if (userName) params.append('userName', userName)
-      tags?.forEach(tag => params.append('tags', tag))
+      tags?.forEach((tag) => params.append('tags', tag))
 
       const response = await fetch(`/api/v2/posts?${params}`)
       if (!response.ok) {
@@ -202,7 +204,7 @@ export function usePosts(userName?: string, tags?: string[]) {
 
       // Validate with Zod
       return PostDtoSchema.array().parse(data)
-    }
+    },
   })
 }
 
@@ -220,7 +222,7 @@ export function usePost(userName: string, resourceHash: string) {
       const data = await response.json()
       return PostDtoSchema.parse(data)
     },
-    retry: false  // Don't retry 404s
+    retry: false, // Don't retry 404s
   })
 }
 
@@ -233,7 +235,7 @@ export function useCreatePost() {
       const response = await fetch('/api/v2/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
+        body: JSON.stringify(request),
       })
 
       if (!response.ok) throw new Error('Failed to create post')
@@ -244,7 +246,7 @@ export function useCreatePost() {
     onSuccess: () => {
       // Invalidate and refetch posts list
       queryClient.invalidateQueries({ queryKey: ['posts'] })
-    }
+    },
   })
 }
 ```
@@ -269,7 +271,7 @@ function handleCreatePost() {
   createPost({
     title: 'New Post',
     url: 'https://example.com',
-    tags: ['example']
+    tags: ['example'],
   })
 }
 </script>
@@ -280,9 +282,7 @@ function handleCreatePost() {
     <div v-else-if="error">Error: {{ error.message }}</div>
     <PostList v-else :posts="posts" />
 
-    <button @click="handleCreatePost" :disabled="isPending">
-      Create Post
-    </button>
+    <button @click="handleCreatePost" :disabled="isPending">Create Post</button>
   </div>
 </template>
 ```
@@ -327,7 +327,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     // Actions
     login,
-    logout
+    logout,
   }
 })
 ```
@@ -435,12 +435,12 @@ export const PostDtoSchema = z.object({
   description: z.string().nullable(),
   tags: z.array(z.string()),
   userName: z.string(),
-  created: z.string().datetime()  // ISO 8601 string
+  created: z.string().datetime(), // ISO 8601 string
 })
 
 export const PostListDtoSchema = z.object({
   posts: z.array(PostDtoSchema),
-  total: z.number()
+  total: z.number(),
 })
 
 export type PostDto = z.infer<typeof PostDtoSchema>
@@ -462,7 +462,7 @@ export function usePosts() {
 
       // Validate - throws ZodError if invalid
       return PostDtoSchema.array().parse(data)
-    }
+    },
   })
 }
 ```
@@ -473,11 +473,7 @@ export function usePosts() {
 
 ```vue
 <!-- ❌ BAD - Prop drilling -->
-<UserProfile
-  :user="user"
-  :is-loading="isLoading"
-  :on-update="handleUpdate"
-/>
+<UserProfile :user="user" :is-loading="isLoading" :on-update="handleUpdate" />
 
 <!-- ✅ GOOD - Let component fetch its own data -->
 <UserProfile :user-name="userName" />
@@ -563,10 +559,7 @@ const { data: user, isLoading } = useUser(props.userName)
 </button>
 
 <!-- ✅ Focus management -->
-<button
-  class="focus:outline-none focus:ring-2 focus:ring-blue-500"
-  @click="handleClick"
->
+<button class="focus:outline-none focus:ring-2 focus:ring-blue-500" @click="handleClick">
   Click me
 </button>
 
@@ -603,7 +596,7 @@ describe('PostListPage', () => {
 
     // Wait for data to load
     await wrapper.vm.$nextTick()
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Check that posts are displayed
     expect(wrapper.findAll('.post-card').length).toBeGreaterThan(0)
@@ -637,11 +630,11 @@ describe('PostCard', () => {
       url: 'https://example.com',
       tags: ['test'],
       userName: 'john',
-      created: '2025-01-01T00:00:00Z'
+      created: '2025-01-01T00:00:00Z',
     }
 
     const wrapper = mount(PostCard, {
-      props: { post }
+      props: { post },
     })
 
     expect(wrapper.text()).toContain('Test Post')
@@ -681,9 +674,9 @@ const router = createRouter({
     {
       path: '/your-page',
       name: 'YourPage',
-      component: YourPage
-    }
-  ]
+      component: YourPage,
+    },
+  ],
 })
 ```
 
@@ -744,7 +737,7 @@ export function usePosts() {
       const data = await fetchPosts()
       console.log('Posts fetched:', data)
       return data
-    }
+    },
   })
 
   console.log('Query state:', query.status.value, query.data.value)
@@ -764,7 +757,7 @@ export function usePosts() {
 interface User {
   name: string
   email: string
-  age?: number  // Optional with ?
+  age?: number // Optional with ?
 }
 
 // ✅ Type component props
@@ -780,7 +773,7 @@ const emit = defineEmits<{
 }>()
 
 // ❌ Avoid 'any'
-const data: any = await fetch()  // NO!
+const data: any = await fetch() // NO!
 ```
 
 ### Vue Composition API
@@ -874,16 +867,16 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',  // REST API v2
-        changeOrigin: true
-      }
-    }
+        target: 'http://localhost:8080', // REST API v2
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': '/src'  // Use @/ for imports
-    }
-  }
+      '@': '/src', // Use @/ for imports
+    },
+  },
 })
 ```
 

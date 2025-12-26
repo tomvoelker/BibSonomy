@@ -48,7 +48,9 @@ const badgeClasses = computed(() => {
     gray: 'bg-white text-gray-600 border border-gray-400',
   }
 
-  const variantClass = props.outlined ? outlinedVariants[props.variant] : filledVariants[props.variant]
+  const variantClass = props.outlined
+    ? outlinedVariants[props.variant]
+    : filledVariants[props.variant]
 
   return [base, sizeClasses[props.size], variantClass].join(' ')
 })
