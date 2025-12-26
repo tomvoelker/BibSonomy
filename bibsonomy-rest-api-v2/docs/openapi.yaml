@@ -1551,8 +1551,9 @@ paths:
               required: [targetPostId]
               properties:
                 targetPostId:
-                  type: integer
-                  description: ID of the post being referenced
+                  type: string
+                  pattern: '^[a-f0-9]{32}$'
+                  description: Resource hash of the post being referenced (same format as postId)
       responses:
         '201':
           description: Reference added
@@ -1578,9 +1579,10 @@ paths:
       - name: targetPostId
         in: path
         required: true
-        description: ID of the referenced post to remove
+        description: Resource hash of the referenced post to remove (same format as postId)
         schema:
-          type: integer
+          type: string
+          pattern: '^[a-f0-9]{32}$'
 
     delete:
       tags: [Community]
@@ -1611,8 +1613,9 @@ paths:
               required: [parentPostId]
               properties:
                 parentPostId:
-                  type: integer
-                  description: ID of the parent post
+                  type: string
+                  pattern: '^[a-f0-9]{32}$'
+                  description: Resource hash of the parent post (same format as postId)
       responses:
         '201':
           description: Part-of relation added
@@ -1638,9 +1641,10 @@ paths:
       - name: parentPostId
         in: path
         required: true
-        description: ID of the parent post to remove from part-of relation
+        description: Resource hash of the parent post to remove from part-of relation (same format as postId)
         schema:
-          type: integer
+          type: string
+          pattern: '^[a-f0-9]{32}$'
 
     delete:
       tags: [Community]
@@ -1840,7 +1844,14 @@ components:
       required: true
       schema:
         type: string
-      description: Resource hash of the post (intraHash/interHash from legacy API)
+        pattern: '^[a-f0-9]{32}$'
+      description: |
+        Resource hash (MD5 hex string) identifying the post. Matches PostDto.id.
+        For bookmarks: MD5 of the URL (e.g., "5d41402abc4b2a76b9719d911017c592")
+        For publications: Hash of bibliographic fields (intraHash or interHash)
+
+        **Note**: Since multiple users can have the same resource (same hash),
+        use the optional `user` query parameter to disambiguate when needed.
 
     usernameParam:
       name: username
@@ -1906,9 +1917,22 @@ components:
       required: [id, user, resource, createdAt]
       properties:
         id:
-          type: integer
-          description: Post ID
-          example: 12345
+          type: string
+          description: |
+            Resource hash (MD5 hex string) serving as the primary post identifier.
+            Matches the legacy REST API v1 behavior using intraHash or interHash from
+            the resource. This hash represents the resource content itself, enabling:
+            - Natural deduplication across users (same resource = same hash)
+            - RESTful resource identification (hash represents the resource)
+            - Compatibility with legacy API clients
+
+            **Important**: The hash alone may be ambiguous if multiple users have the
+            same resource. Use the optional `user` query parameter to disambiguate:
+            `GET /api/v2/posts/{id}?user={username}`
+
+            For bookmarks: MD5 hash of the URL (matches resource.urlHash)
+            For publications: Hash of bibliographic fields (matches resource.resourceHash)
+          example: a1b2c3d4e5f6789012345678901234ab
         user:
           $ref: '#/components/schemas/UserRefDto'
         resource:
@@ -1961,7 +1985,7 @@ components:
 
     BookmarkDto:
       type: object
-      required: [resourceType, url, title]
+      required: [resourceType, url, title, urlHash]
       properties:
         resourceType:
           type: string
@@ -1975,16 +1999,27 @@ components:
           example: Interesting Article
         urlHash:
           type: string
-          description: MD5 hash of URL (for deduplication)
+          description: |
+            MD5 hash of the bookmark URL. This is the resource identifier used
+            in API endpoints and matches PostDto.id for bookmark posts.
+            Enables deduplication across users (same URL = same hash).
           example: 5d41402abc4b2a76b9719d911017c592
 
     BibTexDto:
       type: object
-      required: [resourceType, title, entryType]
+      required: [resourceType, resourceHash, title, entryType]
       properties:
         resourceType:
           type: string
           enum: [bibtex]
+        resourceHash:
+          type: string
+          description: |
+            Hash of the publication content (intraHash or interHash from domain model).
+            This is the resource identifier used in API endpoints and matches PostDto.id
+            for publication posts. Calculated from bibliographic fields (title, authors,
+            year, etc.) to enable deduplication across users and institutions.
+          example: a1b2c3d4e5f6789012345678901234ab
         bibtexKey:
           type: string
           example: Smith2020
@@ -2031,12 +2066,6 @@ components:
           format: uri
         abstract:
           type: string
-        simHash1:
-          type: string
-          description: Similarity hash (interHash)
-        simHash2:
-          type: string
-          description: Strict hash (intraHash)
         documents:
           type: array
           items:
@@ -2613,8 +2642,11 @@ components:
       required: [id, title]
       properties:
         id:
-          type: integer
-          description: Post ID
+          type: string
+          pattern: '^[a-f0-9]{32}$'
+          description: |
+            Resource hash identifying the post (same format as PostDto.id).
+            MD5 hash of the resource content for consistent identification.
         title:
           type: string
           description: Post title

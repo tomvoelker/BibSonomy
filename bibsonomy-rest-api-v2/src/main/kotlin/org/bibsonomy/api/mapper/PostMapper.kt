@@ -24,6 +24,14 @@ import java.time.Instant
 
 /**
  * Convert a Post domain model to a PostDto.
+ *
+ * Uses the resource hash (interHash or intraHash) as the primary identifier,
+ * matching legacy REST API v1 behavior. This enables:
+ * - Natural resource deduplication across users
+ * - RESTful resource identification (hash represents the resource itself)
+ * - Compatibility with legacy API clients
+ *
+ * @throws IllegalStateException if required fields are null
  */
 fun Post<out Resource>.toDto(): PostDto {
     val contentId = this.contentId
@@ -35,6 +43,13 @@ fun Post<out Resource>.toDto(): PostDto {
     val resource = this.resource
         ?: throw IllegalStateException("Post resource cannot be null")
 
+    // Extract resource hash for use as primary identifier
+    val resourceHash = resource.interHash ?: resource.intraHash
+        ?: throw IllegalStateException(
+            "Post resource must have a hash (interHash or intraHash) " +
+            "(contentId: $contentId, user: ${user.name}, resourceType: ${resource.javaClass.simpleName})"
+        )
+
     val createdAt = this.date?.toInstant()
         ?: throw IllegalStateException("Post date cannot be null (contentId: $contentId, user: ${user.name})")
 
@@ -44,7 +59,7 @@ fun Post<out Resource>.toDto(): PostDto {
     val visibility = determineVisibility(this.groups)
 
     return PostDto(
-        id = contentId,
+        id = resourceHash,
         user = user.toRefDto(),
         resource = resource.toDto(),
         description = this.description?.takeIf { it.isNotBlank() },
@@ -94,14 +109,20 @@ fun Bookmark.toDto(): BookmarkDto {
 /**
  * Convert a BibTex to BibTexDto.
  *
- * @throws IllegalArgumentException if title is null or blank
+ * @throws IllegalArgumentException if title or resourceHash are null/blank
  */
 fun BibTex.toDto(): BibTexDto {
     require(!this.title.isNullOrBlank()) {
         "BibTeX title cannot be null or blank (bibtexKey: ${this.bibtexKey}, intraHash: ${this.intraHash})"
     }
 
+    val resourceHash = this.interHash ?: this.intraHash
+    requireNotNull(resourceHash) {
+        "BibTeX must have at least one hash (interHash or intraHash) for title: ${this.title}, bibtexKey: ${this.bibtexKey}"
+    }
+
     return BibTexDto(
+        resourceHash = resourceHash,
         bibtexKey = this.bibtexKey,
         entryType = this.entrytype ?: "misc",
         title = this.title,
