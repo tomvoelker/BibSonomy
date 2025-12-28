@@ -2,32 +2,13 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTags } from '@/composables/useTags'
-import type { Tag } from '@/types/models'
 
 const { t } = useI18n()
 
-const fallbackTags: Tag[] = [
-  { name: 'deep-learning', count: 150 },
-  { name: 'machine-learning', count: 200 },
-  { name: 'neural-networks', count: 120 },
-  { name: 'computer-vision', count: 95 },
-  { name: 'nlp', count: 85 },
-  { name: 'python', count: 180 },
-  { name: 'tensorflow', count: 110 },
-  { name: 'pytorch', count: 105 },
-  { name: 'keras', count: 90 },
-  { name: 'scikit-learn', count: 75 },
-  { name: 'pandas', count: 140 },
-  { name: 'numpy', count: 130 },
-]
-
-const { data, isError } = useTags({ limit: 50, maxCount: 50 })
+const { data, isError, isLoading } = useTags({ limit: 50, maxCount: 50 })
 
 const resolvedTags = computed(() => {
-  if (isError.value || !data.value || data.value.length === 0) {
-    return fallbackTags
-  }
-  return data.value
+  return data.value ?? []
 })
 
 const sortedTags = computed(() => {
@@ -68,6 +49,12 @@ const tagSizes = computed(() => {
       <h3 class="text-sm font-bold text-gray-800 mb-3">
         {{ t('tag.popular') }}
       </h3>
+      <p v-if="isError" class="text-sm text-danger-700 mb-3">
+        {{ t('tag.noTags') }}
+      </p>
+      <p v-else-if="isLoading" class="text-sm text-gray-600 mb-3">
+        {{ t('loading') }}
+      </p>
       <div class="flex flex-wrap gap-x-3 gap-y-2 items-center justify-center leading-relaxed">
         <a
           v-for="tag in tagSizes"
