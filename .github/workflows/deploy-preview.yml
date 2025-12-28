@@ -238,18 +238,54 @@ jobs:
           kubectl -n extsonomy delete configmap "${NAME_PREFIX}mariadb-init" --ignore-not-found
           kubectl apply -k "$PREVIEW_DIR"
 
-      - name: Post preview comment
+      - name: Wait for preview deployments
         env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
-          BRANCH: ${{ needs.prepare.outputs.branch }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+        run: |
+          kubectl -n extsonomy rollout status deployment "${NAME_PREFIX}bibsonomy-rest-api-v2" --timeout=180s
+          kubectl -n extsonomy rollout status deployment "${NAME_PREFIX}bibsonomy-webapp-v2" --timeout=180s
+          if [ "$DB_MODE" = "minimal" ]; then
+            kubectl -n extsonomy rollout status deployment "${NAME_PREFIX}mariadb" --timeout=180s
+          fi
+
+      - name: Resolve preview NodePorts
+        id: ports
+        env:
           NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
         run: |
           REST_SERVICE="${NAME_PREFIX}bibsonomy-rest-api-v2"
           WEB_SERVICE="${NAME_PREFIX}bibsonomy-webapp-v2"
           API_NODEPORT=$(kubectl -n extsonomy get svc "${REST_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
           WEB_NODEPORT=$(kubectl -n extsonomy get svc "${WEB_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
+          echo "api_nodeport=${API_NODEPORT}" >> "$GITHUB_OUTPUT"
+          echo "web_nodeport=${WEB_NODEPORT}" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke check preview endpoints
+        env:
+          API_NODEPORT: ${{ steps.ports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.ports.outputs.web_nodeport }}
+        run: |
+          API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2/tags?limit=1&maxCount=1"
+          WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}/"
+          for i in {1..10}; do
+            if curl -fsS "$API_URL" >/dev/null && curl -fsS "$WEB_URL" >/dev/null; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Preview endpoints not reachable after retries" >&2
+          exit 1
+
+      - name: Post preview comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+          API_NODEPORT: ${{ steps.ports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.ports.outputs.web_nodeport }}
+        run: |
           API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
           WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
           cat <<EOF > /tmp/preview-comment.md
