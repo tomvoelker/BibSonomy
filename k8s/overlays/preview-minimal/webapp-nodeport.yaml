@@ -6,4 +6,6 @@ spec:
   type: NodePort
   ports:
     - name: http
+      port: 80
+      targetPort: 80
       nodePort: PREVIEW_WEB_NODEPORT
