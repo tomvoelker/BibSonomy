@@ -503,6 +503,13 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 -- Ensure popular tags are visible in minimal preview environments.
 UPDATE `tags` SET `show_tag` = 1;
 
+-- Seed popular_tags so /api/v2/tags returns data for ALL content type.
+DELETE FROM `popular_tags`;
+INSERT INTO `popular_tags` (`tag_lower`, `tag_ctr`, `content_type`, `popular_days`)
+  SELECT LOWER(`tag_name`), `tag_ctr_public`, 0, 0
+    FROM `tags`
+   WHERE `tag_ctr_public` > 0;
+
 
 
 
