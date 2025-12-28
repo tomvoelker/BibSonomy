@@ -26,8 +26,12 @@ spec:
               mountPath: /var/cache/nginx
             - name: nginx-tmp
               mountPath: /tmp
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
       volumes:
         - name: nginx-cache
           emptyDir: {}
         - name: nginx-tmp
+          emptyDir: {}
+        - name: nginx-conf
           emptyDir: {}
