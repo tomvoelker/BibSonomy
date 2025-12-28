@@ -16,6 +16,7 @@ labels:
 
 patches:
   - path: rest-api-secret-patch.yaml
+  - path: rest-api-cors-patch.yaml
   - path: rest-api-image-patch.yaml
   - path: webapp-image-patch.yaml
   - path: rest-api-nodeport.yaml

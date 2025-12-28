@@ -196,6 +196,9 @@ jobs:
             sed -i "s#PREVIEW_SQL_DIR#sql#g" "$PREVIEW_DIR/kustomization.yaml"
           fi
 
+          WEB_ORIGIN="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
+          sed -i "s#PREVIEW_WEB_ORIGIN#${WEB_ORIGIN}#g" "$PREVIEW_DIR/rest-api-cors-patch.yaml"
+
           sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/kustomization.yaml"
           sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$PREVIEW_DIR/kustomization.yaml"
           sed -i "s/PREVIEW_PR/${PR_NUMBER}/g" "$PREVIEW_DIR/kustomization.yaml"
