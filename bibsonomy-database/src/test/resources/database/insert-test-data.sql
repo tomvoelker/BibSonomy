@@ -500,6 +500,9 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 (21052615,'andere','',1,0,0),
 (21052616,'person','',1,0,0);
 
+-- Ensure popular tags are visible in minimal preview environments.
+UPDATE `tags` SET `show_tag` = 1;
+
 
 
 
