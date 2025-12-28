@@ -229,9 +229,13 @@ jobs:
       - name: Apply preview resources
         env:
           BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
         run: |
           PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
-          kubectl delete -k "$PREVIEW_DIR" --ignore-not-found
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}bibsonomy-rest-api-v2" --ignore-not-found
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}bibsonomy-webapp-v2" --ignore-not-found
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}mariadb" --ignore-not-found
+          kubectl -n extsonomy delete configmap "${NAME_PREFIX}mariadb-init" --ignore-not-found
           kubectl apply -k "$PREVIEW_DIR"
 
       - name: Post preview comment
