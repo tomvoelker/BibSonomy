@@ -243,10 +243,35 @@ jobs:
           NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
         run: |
-          kubectl -n extsonomy rollout status deployment "${NAME_PREFIX}bibsonomy-rest-api-v2" --timeout=180s
-          kubectl -n extsonomy rollout status deployment "${NAME_PREFIX}bibsonomy-webapp-v2" --timeout=180s
+          wait_deploy() {
+            local name="$1"
+            local timeout_seconds="$2"
+            local start_ts
+            start_ts=$(date +%s)
+            while true; do
+              local ready replicas generation observed
+              ready=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.readyReplicas}')
+              replicas=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.replicas}')
+              generation=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.metadata.generation}')
+              observed=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.observedGeneration}')
+              ready=${ready:-0}
+              replicas=${replicas:-0}
+              if [ "$ready" = "$replicas" ] && [ -n "$replicas" ] && [ "$observed" = "$generation" ]; then
+                return 0
+              fi
+              if [ $(( $(date +%s) - start_ts )) -ge "$timeout_seconds" ]; then
+                echo "Timed out waiting for deployment ${name} to be ready" >&2
+                kubectl -n extsonomy get deployment "$name" -o wide || true
+                return 1
+              fi
+              sleep 5
+            done
+          }
+
+          wait_deploy "${NAME_PREFIX}bibsonomy-rest-api-v2" 600
+          wait_deploy "${NAME_PREFIX}bibsonomy-webapp-v2" 600
           if [ "$DB_MODE" = "minimal" ]; then
-            kubectl -n extsonomy rollout status deployment "${NAME_PREFIX}mariadb" --timeout=180s
+            wait_deploy "${NAME_PREFIX}mariadb" 600
           fi
 
       - name: Resolve preview NodePorts
