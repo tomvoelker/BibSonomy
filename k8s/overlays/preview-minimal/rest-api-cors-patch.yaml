@@ -8,5 +8,5 @@ spec:
       containers:
         - name: rest-api
           env:
-            - name: BIBSONOMY_CORS_ALLOWED_ORIGINS
-              value: PREVIEW_WEB_ORIGIN
+            - name: BIBSONOMY_CORS_ALLOWED_ORIGIN_PATTERNS
+              value: http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:*

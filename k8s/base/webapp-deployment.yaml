@@ -16,6 +16,9 @@ spec:
         - name: webapp
           image: ghcr.io/tomvoelker/bibsonomy-webapp-v2:latest
           imagePullPolicy: Always
+          env:
+            - name: API_UPSTREAM
+              value: http://bibsonomy-rest-api-v2:8080
           ports:
             - containerPort: 80
           volumeMounts:

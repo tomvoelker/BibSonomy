@@ -18,9 +18,6 @@ jobs:
       branch: ${{ steps.vars.outputs.branch }}
       sanitized_branch: ${{ steps.vars.outputs.sanitized_branch }}
       name_prefix: ${{ steps.vars.outputs.name_prefix }}
-      api_nodeport: ${{ steps.vars.outputs.api_nodeport }}
-      web_nodeport: ${{ steps.vars.outputs.web_nodeport }}
-      api_base_url: ${{ steps.vars.outputs.api_base_url }}
       db_mode: ${{ steps.vars.outputs.db_mode }}
       rest_image: ${{ steps.vars.outputs.rest_image }}
       web_image: ${{ steps.vars.outputs.web_image }}
@@ -74,12 +71,6 @@ jobs:
 
           name_prefix = f"{prefix_base}-"
 
-          hash_value = int(hashlib.sha256(branch.encode("utf-8")).hexdigest()[:8], 16)
-          base_port = 30000 + (hash_value % 1900)
-          api_nodeport = base_port
-          web_nodeport = base_port + 1
-
-          api_base_url = f"http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:{api_nodeport}/api/v2"
           image_suffix = f"pr-{pr_number}-{head_sha[:7]}"
           rest_image = f"ghcr.io/{owner}/bibsonomy-rest-api-v2:{image_suffix}"
           web_image = f"ghcr.io/{owner}/bibsonomy-webapp-v2:{image_suffix}"
@@ -90,9 +81,6 @@ jobs:
               out.write(f"branch={branch}\n")
               out.write(f"sanitized_branch={sanitized}\n")
               out.write(f"name_prefix={name_prefix}\n")
-              out.write(f"api_nodeport={api_nodeport}\n")
-              out.write(f"web_nodeport={web_nodeport}\n")
-              out.write(f"api_base_url={api_base_url}\n")
               out.write(f"db_mode={db_mode}\n")
               out.write(f"rest_image={rest_image}\n")
               out.write(f"web_image={web_image}\n")
@@ -135,7 +123,7 @@ jobs:
           push: true
           tags: ${{ needs.prepare.outputs.web_image }}
           build-args: |
-            VITE_API_BASE_URL=${{ needs.prepare.outputs.api_base_url }}
+            VITE_API_BASE_URL=/api/v2
             VITE_PROJECT_THEME=bibsonomy
             VITE_ENABLE_MOCKS=false
 
@@ -166,57 +154,12 @@ jobs:
           echo "kubectl connection failed after retries"
           exit 1
 
-      - name: Allocate NodePorts
-        id: nodeports
-        env:
-          PREFERRED_API: ${{ needs.prepare.outputs.api_nodeport }}
-          PREFERRED_WEB: ${{ needs.prepare.outputs.web_nodeport }}
-        run: |
-          set -euo pipefail
-          used_ports_file="$(mktemp)"
-          kubectl get svc -n extsonomy -o jsonpath='{range .items[*].spec.ports[*]}{.nodePort}{"\n"}{end}' \
-            | awk 'NF' \
-            | sort -u > "$used_ports_file"
-
-          is_free() {
-            local port="$1"
-            if grep -qx "${port}" "$used_ports_file"; then
-              return 1
-            fi
-            return 0
-          }
-
-          api_port="${PREFERRED_API}"
-          web_port="${PREFERRED_WEB}"
-          if ! is_free "$api_port" || ! is_free "$web_port"; then
-            for candidate in $(seq 30000 32766); do
-              candidate_web=$((candidate + 1))
-              if is_free "$candidate" && is_free "$candidate_web"; then
-                api_port="$candidate"
-                web_port="$candidate_web"
-                break
-              fi
-            done
-          fi
-
-          if ! is_free "$api_port" || ! is_free "$web_port"; then
-            echo "Unable to find free NodePorts in range 30000-32767" >&2
-            exit 1
-          fi
-
-          echo "api_nodeport=$api_port" >> "$GITHUB_OUTPUT"
-          echo "web_nodeport=$web_port" >> "$GITHUB_OUTPUT"
-          echo "API_NODEPORT=$api_port" >> "$GITHUB_ENV"
-          echo "WEB_NODEPORT=$web_port" >> "$GITHUB_ENV"
-
       - name: Prepare preview overlay
         env:
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
           NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
           BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
           PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
-          API_NODEPORT: ${{ steps.nodeports.outputs.api_nodeport }}
-          WEB_NODEPORT: ${{ steps.nodeports.outputs.web_nodeport }}
           REST_IMAGE: ${{ needs.prepare.outputs.rest_image }}
           WEB_IMAGE: ${{ needs.prepare.outputs.web_image }}
         run: |
@@ -239,16 +182,14 @@ jobs:
             sed -i "s#PREVIEW_SQL_DIR#sql#g" "$PREVIEW_DIR/kustomization.yaml"
           fi
 
-          WEB_ORIGIN="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
-          sed -i "s#PREVIEW_WEB_ORIGIN#${WEB_ORIGIN}#g" "$PREVIEW_DIR/rest-api-cors-patch.yaml"
-
           sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/kustomization.yaml"
           sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$PREVIEW_DIR/kustomization.yaml"
           sed -i "s/PREVIEW_PR/${PR_NUMBER}/g" "$PREVIEW_DIR/kustomization.yaml"
           sed -i "s#PREVIEW_REST_IMAGE#${REST_IMAGE}#g" "$PREVIEW_DIR/rest-api-image-patch.yaml"
           sed -i "s#PREVIEW_WEB_IMAGE#${WEB_IMAGE}#g" "$PREVIEW_DIR/webapp-image-patch.yaml"
-          sed -i "s/PREVIEW_API_NODEPORT/${API_NODEPORT}/g" "$PREVIEW_DIR/rest-api-nodeport.yaml"
-          sed -i "s/PREVIEW_WEB_NODEPORT/${WEB_NODEPORT}/g" "$PREVIEW_DIR/webapp-nodeport.yaml"
+          if [ -f "$PREVIEW_DIR/webapp-api-upstream-patch.yaml" ]; then
+            sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/webapp-api-upstream-patch.yaml"
+          fi
           for selector_patch in \
             rest-api-selector-patch.yaml \
             webapp-selector-patch.yaml \
@@ -288,43 +229,10 @@ jobs:
       - name: Apply preview resources
         env:
           BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
-          API_NODEPORT: ${{ steps.nodeports.outputs.api_nodeport }}
-          WEB_NODEPORT: ${{ steps.nodeports.outputs.web_nodeport }}
         run: |
           PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
-          api_port="${API_NODEPORT}"
-          web_port="${WEB_NODEPORT}"
-
-          for attempt in $(seq 1 8); do
-            sed -E -i "s/nodePort: [0-9]+/nodePort: ${api_port}/" "$PREVIEW_DIR/rest-api-nodeport.yaml"
-            sed -E -i "s/nodePort: [0-9]+/nodePort: ${web_port}/" "$PREVIEW_DIR/webapp-nodeport.yaml"
-            WEB_ORIGIN="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${web_port}"
-            sed -E -i "s#value: .*#value: ${WEB_ORIGIN}#" "$PREVIEW_DIR/rest-api-cors-patch.yaml"
-
-            kubectl delete -k "$PREVIEW_DIR" --ignore-not-found
-            apply_output="$(kubectl apply -k "$PREVIEW_DIR" 2>&1)"
-            apply_status=$?
-            if [ "$apply_status" -eq 0 ]; then
-              echo "API_NODEPORT=${api_port}" >> "$GITHUB_ENV"
-              echo "WEB_NODEPORT=${web_port}" >> "$GITHUB_ENV"
-              exit 0
-            fi
-
-            if echo "$apply_output" | grep -q "provided port is already allocated"; then
-              api_port=$((api_port + 2))
-              web_port=$((web_port + 2))
-              if [ "$web_port" -gt 32767 ]; then
-                echo "NodePort range exhausted" >&2
-                exit 1
-              fi
-              continue
-            fi
-
-            echo "kubectl apply failed for non-NodePort reason" >&2
-            exit 1
-          done
-          echo "Unable to find free NodePorts after retries" >&2
-          exit 1
+          kubectl delete -k "$PREVIEW_DIR" --ignore-not-found
+          kubectl apply -k "$PREVIEW_DIR"
 
       - name: Post preview comment
         env:
@@ -332,9 +240,12 @@ jobs:
           PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
           BRANCH: ${{ needs.prepare.outputs.branch }}
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
-          API_NODEPORT: ${{ env.API_NODEPORT }}
-          WEB_NODEPORT: ${{ env.WEB_NODEPORT }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
         run: |
+          REST_SERVICE="${NAME_PREFIX}bibsonomy-rest-api-v2"
+          WEB_SERVICE="${NAME_PREFIX}bibsonomy-webapp-v2"
+          API_NODEPORT=$(kubectl -n extsonomy get svc "${REST_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
+          WEB_NODEPORT=$(kubectl -n extsonomy get svc "${WEB_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
           API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
           WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
           cat <<EOF > /tmp/preview-comment.md
