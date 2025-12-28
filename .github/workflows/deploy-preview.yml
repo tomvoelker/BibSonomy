@@ -288,10 +288,43 @@ jobs:
       - name: Apply preview resources
         env:
           BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          API_NODEPORT: ${{ steps.nodeports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.nodeports.outputs.web_nodeport }}
         run: |
           PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
-          kubectl delete -k "$PREVIEW_DIR" --ignore-not-found
-          kubectl apply -k "$PREVIEW_DIR"
+          api_port="${API_NODEPORT}"
+          web_port="${WEB_NODEPORT}"
+
+          for attempt in $(seq 1 8); do
+            sed -E -i "s/nodePort: [0-9]+/nodePort: ${api_port}/" "$PREVIEW_DIR/rest-api-nodeport.yaml"
+            sed -E -i "s/nodePort: [0-9]+/nodePort: ${web_port}/" "$PREVIEW_DIR/webapp-nodeport.yaml"
+            WEB_ORIGIN="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${web_port}"
+            sed -E -i "s#value: .*#value: ${WEB_ORIGIN}#" "$PREVIEW_DIR/rest-api-cors-patch.yaml"
+
+            kubectl delete -k "$PREVIEW_DIR" --ignore-not-found
+            apply_output="$(kubectl apply -k "$PREVIEW_DIR" 2>&1)"
+            apply_status=$?
+            if [ "$apply_status" -eq 0 ]; then
+              echo "API_NODEPORT=${api_port}" >> "$GITHUB_ENV"
+              echo "WEB_NODEPORT=${web_port}" >> "$GITHUB_ENV"
+              exit 0
+            fi
+
+            if echo "$apply_output" | grep -q "provided port is already allocated"; then
+              api_port=$((api_port + 2))
+              web_port=$((web_port + 2))
+              if [ "$web_port" -gt 32767 ]; then
+                echo "NodePort range exhausted" >&2
+                exit 1
+              fi
+              continue
+            fi
+
+            echo "kubectl apply failed for non-NodePort reason" >&2
+            exit 1
+          done
+          echo "Unable to find free NodePorts after retries" >&2
+          exit 1
 
       - name: Post preview comment
         env:
@@ -299,8 +332,8 @@ jobs:
           PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
           BRANCH: ${{ needs.prepare.outputs.branch }}
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
-          API_NODEPORT: ${{ steps.nodeports.outputs.api_nodeport }}
-          WEB_NODEPORT: ${{ steps.nodeports.outputs.web_nodeport }}
+          API_NODEPORT: ${{ env.API_NODEPORT }}
+          WEB_NODEPORT: ${{ env.WEB_NODEPORT }}
         run: |
           API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
           WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
