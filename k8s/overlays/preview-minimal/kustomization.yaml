@@ -12,10 +12,10 @@ resources:
 configMapGenerator:
   - name: mariadb-init
     files:
-      - 00-create-dbs.sql=../../../docker/mysql-init/00-create-dbs.sql
-      - 01-schema.sql=../../../bibsonomy-database/src/main/resources/database/bibsonomy-db-schema.sql
-      - 02-init.sql=../../../bibsonomy-database/src/main/resources/database/bibsonomy-db-init.sql
-      - 03-test-data.sql=../../../bibsonomy-database/src/test/resources/database/insert-test-data.sql
+      - 00-create-dbs.sql=PREVIEW_SQL_DIR/00-create-dbs.sql
+      - 01-schema.sql=PREVIEW_SQL_DIR/01-schema.sql
+      - 02-init.sql=PREVIEW_SQL_DIR/02-init.sql
+      - 03-test-data.sql=PREVIEW_SQL_DIR/03-test-data.sql
     options:
       disableNameSuffixHash: true
 

@@ -187,6 +187,13 @@ jobs:
           if [ "$DB_MODE" = "minimal" ]; then
             MARIADB_SERVICE="${NAME_PREFIX}mariadb"
             sed -i "s/PREVIEW_MARIADB_HOST/${MARIADB_SERVICE}/g" "$PREVIEW_DIR/rest-api-db-patch.yaml"
+            SQL_DIR="$PREVIEW_DIR/sql"
+            mkdir -p "$SQL_DIR"
+            cp docker/mysql-init/00-create-dbs.sql "$SQL_DIR/00-create-dbs.sql"
+            cp bibsonomy-database/src/main/resources/database/bibsonomy-db-schema.sql "$SQL_DIR/01-schema.sql"
+            cp bibsonomy-database/src/main/resources/database/bibsonomy-db-init.sql "$SQL_DIR/02-init.sql"
+            cp bibsonomy-database/src/test/resources/database/insert-test-data.sql "$SQL_DIR/03-test-data.sql"
+            sed -i "s#PREVIEW_SQL_DIR#sql#g" "$PREVIEW_DIR/kustomization.yaml"
           fi
 
           sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/kustomization.yaml"
