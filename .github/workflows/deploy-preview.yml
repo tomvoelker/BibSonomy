@@ -13,6 +13,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
+      deploy_enabled: ${{ steps.vars.outputs.deploy_enabled }}
       pr_number: ${{ steps.vars.outputs.pr_number }}
       branch: ${{ steps.vars.outputs.branch }}
       sanitized_branch: ${{ steps.vars.outputs.sanitized_branch }}
@@ -51,9 +52,13 @@ jobs:
           labels = [label["name"] for label in pr.get("labels", [])]
           db_mode = "minimal"
           for label in labels:
-              if label.startswith("preview-db="):
-                  db_mode = label.split("=", 1)[1].strip() or "minimal"
-                  break
+            if label.startswith("preview-db="):
+              db_mode = label.split("=", 1)[1].strip() or "minimal"
+              break
+
+          deploy_enabled = False
+          if pr.get("head", {}).get("repo", {}).get("full_name") == os.environ.get("GITHUB_REPOSITORY"):
+              deploy_enabled = "preview-deploy" in labels
 
           sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
           sanitized = re.sub(r"-{2,}", "-", sanitized)
@@ -91,12 +96,13 @@ jobs:
               out.write(f"db_mode={db_mode}\n")
               out.write(f"rest_image={rest_image}\n")
               out.write(f"web_image={web_image}\n")
+              out.write(f"deploy_enabled={'true' if deploy_enabled else 'false'}\n")
           PY
 
   build-images:
     needs: prepare
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ needs.prepare.outputs.deploy_enabled == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -135,8 +141,9 @@ jobs:
 
   deploy:
     needs: [prepare, build-images]
-    runs-on: self-hosted
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: [self-hosted, preview-extsonomy]
+    if: ${{ needs.prepare.outputs.deploy_enabled == 'true' }}
+    environment: preview-extsonomy
     permissions:
       contents: read
       pull-requests: write
