@@ -247,6 +247,7 @@ jobs:
           BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
         run: |
           PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
+          kubectl delete -k "$PREVIEW_DIR" --ignore-not-found
           kubectl apply -k "$PREVIEW_DIR"
 
       - name: Post preview comment
