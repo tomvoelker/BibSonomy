@@ -166,14 +166,57 @@ jobs:
           echo "kubectl connection failed after retries"
           exit 1
 
+      - name: Allocate NodePorts
+        id: nodeports
+        env:
+          PREFERRED_API: ${{ needs.prepare.outputs.api_nodeport }}
+          PREFERRED_WEB: ${{ needs.prepare.outputs.web_nodeport }}
+        run: |
+          set -euo pipefail
+          used_ports_file="$(mktemp)"
+          kubectl get svc -A -o jsonpath='{range .items[*].spec.ports[*]}{.nodePort}{"\n"}{end}' \
+            | awk 'NF' \
+            | sort -u > "$used_ports_file"
+
+          is_free() {
+            local port="$1"
+            if grep -qx "${port}" "$used_ports_file"; then
+              return 1
+            fi
+            return 0
+          }
+
+          api_port="${PREFERRED_API}"
+          web_port="${PREFERRED_WEB}"
+          if ! is_free "$api_port" || ! is_free "$web_port"; then
+            for candidate in $(seq 30000 32766); do
+              candidate_web=$((candidate + 1))
+              if is_free "$candidate" && is_free "$candidate_web"; then
+                api_port="$candidate"
+                web_port="$candidate_web"
+                break
+              fi
+            done
+          fi
+
+          if ! is_free "$api_port" || ! is_free "$web_port"; then
+            echo "Unable to find free NodePorts in range 30000-32767" >&2
+            exit 1
+          fi
+
+          echo "api_nodeport=$api_port" >> "$GITHUB_OUTPUT"
+          echo "web_nodeport=$web_port" >> "$GITHUB_OUTPUT"
+          echo "API_NODEPORT=$api_port" >> "$GITHUB_ENV"
+          echo "WEB_NODEPORT=$web_port" >> "$GITHUB_ENV"
+
       - name: Prepare preview overlay
         env:
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
           NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
           BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
           PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
-          API_NODEPORT: ${{ needs.prepare.outputs.api_nodeport }}
-          WEB_NODEPORT: ${{ needs.prepare.outputs.web_nodeport }}
+          API_NODEPORT: ${{ steps.nodeports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.nodeports.outputs.web_nodeport }}
           REST_IMAGE: ${{ needs.prepare.outputs.rest_image }}
           WEB_IMAGE: ${{ needs.prepare.outputs.web_image }}
         run: |
@@ -256,8 +299,8 @@ jobs:
           PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
           BRANCH: ${{ needs.prepare.outputs.branch }}
           DB_MODE: ${{ needs.prepare.outputs.db_mode }}
-          API_NODEPORT: ${{ needs.prepare.outputs.api_nodeport }}
-          WEB_NODEPORT: ${{ needs.prepare.outputs.web_nodeport }}
+          API_NODEPORT: ${{ steps.nodeports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.nodeports.outputs.web_nodeport }}
         run: |
           API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
           WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
