@@ -206,6 +206,17 @@ jobs:
           sed -i "s#PREVIEW_WEB_IMAGE#${WEB_IMAGE}#g" "$PREVIEW_DIR/webapp-image-patch.yaml"
           sed -i "s/PREVIEW_API_NODEPORT/${API_NODEPORT}/g" "$PREVIEW_DIR/rest-api-nodeport.yaml"
           sed -i "s/PREVIEW_WEB_NODEPORT/${WEB_NODEPORT}/g" "$PREVIEW_DIR/webapp-nodeport.yaml"
+          for selector_patch in \
+            rest-api-selector-patch.yaml \
+            webapp-selector-patch.yaml \
+            rest-api-service-selector-patch.yaml \
+            webapp-service-selector-patch.yaml \
+            mariadb-selector-patch.yaml \
+            mariadb-service-selector-patch.yaml; do
+            if [ -f "$PREVIEW_DIR/${selector_patch}" ]; then
+              sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$PREVIEW_DIR/${selector_patch}"
+            fi
+          done
 
           if [ "$DB_MODE" = "biblicious" ]; then
             SECRET_NAME="${NAME_PREFIX}bibsonomy-rest-api-db"

@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-webapp-v2
+spec:
+  selector:
+    matchLabels:
+      preview.bibsonomy.org/branch: PREVIEW_BRANCH
+  template:
+    metadata:
+      labels:
+        preview.bibsonomy.org/branch: PREVIEW_BRANCH

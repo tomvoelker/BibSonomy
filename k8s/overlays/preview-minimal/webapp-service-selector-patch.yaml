@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bibsonomy-webapp-v2
+spec:
+  selector:
+    preview.bibsonomy.org/branch: PREVIEW_BRANCH
