@@ -174,7 +174,7 @@ jobs:
         run: |
           set -euo pipefail
           used_ports_file="$(mktemp)"
-          kubectl get svc -A -o jsonpath='{range .items[*].spec.ports[*]}{.nodePort}{"\n"}{end}' \
+          kubectl get svc -n extsonomy -o jsonpath='{range .items[*].spec.ports[*]}{.nodePort}{"\n"}{end}' \
             | awk 'NF' \
             | sort -u > "$used_ports_file"
 
