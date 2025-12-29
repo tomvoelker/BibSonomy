@@ -22,8 +22,6 @@ import java.util.Set;
  */
 public class NoOpResourceSearch implements ResourceSearch<Resource> {
 
-    private static final Statistics EMPTY_STATISTICS = new Statistics();
-
     /**
      * Returns an empty list of posts.
      * @return non-null empty list
@@ -35,11 +33,13 @@ public class NoOpResourceSearch implements ResourceSearch<Resource> {
 
     /**
      * Returns empty statistics.
-     * @return non-null empty Statistics instance
+     * Statistics is mutable (Lombok @Setter), so return a fresh instance each time
+     * to prevent callers from mutating shared state.
+     * @return non-null fresh Statistics instance with default values
      */
     @Override
     public Statistics getStatistics(final User loggedinUser, final PostSearchQuery<?> postQuery) {
-        return EMPTY_STATISTICS;
+        return new Statistics();
     }
 
     /**
