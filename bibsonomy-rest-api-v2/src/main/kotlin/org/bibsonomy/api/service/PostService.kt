@@ -35,6 +35,23 @@ class PostService(
 ) {
     private val log = LoggerFactory.getLogger(PostService::class.java)
 
+    companion object {
+        /**
+         * Maximum allowed offset for resourceType="all" merged pagination.
+         *
+         * For merged pagination, we must fetch [0, offset+limit) from BOTH resource types,
+         * merge/sort them, then slice. At offset=500, limit=20, this fetches 2×520 = 1040 items.
+         * Beyond this threshold, clients should use a specific resourceType or cursor pagination.
+         */
+        const val MAX_OFFSET_FOR_MERGED_PAGINATION = 500
+
+        /**
+         * Offset threshold above which a warning header is recommended.
+         * Clients should consider switching to specific resourceType or cursor pagination.
+         */
+        const val MERGED_PAGINATION_WARNING_THRESHOLD = 200
+    }
+
     fun getPostByHash(resourceHash: String, user: String?): PostDto {
         val logic = resolveLogicFromRequest()
         return try {
@@ -102,6 +119,15 @@ class PostService(
             "bookmark" -> logic.getPosts(baseQuery(org.bibsonomy.model.Bookmark::class.java, offset, offset + limit))
             "bibtex" -> logic.getPosts(baseQuery(org.bibsonomy.model.BibTex::class.java, offset, offset + limit))
             "all" -> {
+                // Validate offset for merged pagination to prevent excessive data fetching.
+                // For offset=N, we fetch 2×(N+limit) items before slicing.
+                if (offset > MAX_OFFSET_FOR_MERGED_PAGINATION) {
+                    throw ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Offset $offset exceeds maximum ($MAX_OFFSET_FOR_MERGED_PAGINATION) for resourceType='all'. " +
+                            "Use resourceType='bookmark' or 'bibtex' for deep pagination, or use cursor-based pagination."
+                    )
+                }
                 val fetchEnd = offset + limit
                 val bookmarks = logic.getPosts(baseQuery(org.bibsonomy.model.Bookmark::class.java, 0, fetchEnd))
                 val publications = logic.getPosts(baseQuery(org.bibsonomy.model.BibTex::class.java, 0, fetchEnd))

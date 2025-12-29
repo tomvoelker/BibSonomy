@@ -71,6 +71,13 @@ paths:
       description: |
         Get a paginated list of posts (bookmarks and/or publications).
         Supports filtering by resource type, tags, user, group, and search query.
+
+        **Pagination note for `resourceType=all`:**
+        When fetching both bookmarks and publications together, the server must fetch
+        and merge results from both sources. For performance reasons:
+        - Maximum offset is **500** for `resourceType=all` (returns 400 if exceeded)
+        - A warning header `X-Pagination-Warning` is returned when offset > 200
+        - For deep pagination, use `resourceType=bookmark` or `resourceType=bibtex` instead
       operationId: listPosts
       security:
         - {}
@@ -85,7 +92,9 @@ paths:
             type: string
             enum: [bookmark, bibtex, all]
             default: all
-          description: Filter by resource type
+          description: |
+            Filter by resource type. Use `all` for combined results (limited to offset ≤ 500).
+            For deep pagination beyond page 25, use `bookmark` or `bibtex` explicitly.
         - name: tags
           in: query
           schema:
@@ -165,8 +174,22 @@ paths:
               schema:
                 type: string
                 description: FOAF RDF format
+          headers:
+            X-Pagination-Warning:
+              schema:
+                type: string
+              description: |
+                Returned when resourceType=all and offset > 200 to warn about
+                potential performance impact of merged pagination with high offsets.
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: |
+            Bad request. Common causes:
+            - Offset exceeds 500 for resourceType=all (merged pagination limit)
+            - Invalid parameter values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
