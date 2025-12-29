@@ -26,7 +26,7 @@ class FixedCommunityPublicationConverter(
         )
     }
 
-    override fun convert(source: Map<String, Any>, options: Set<String>): Post<BibTex> = Post<BibTex>().apply {
+    override fun convert(source: Map<String, Any>, @Suppress("UNUSED_PARAMETER") options: Set<String>): Post<BibTex> = Post<BibTex>().apply {
         resource = GoldStandardPublication().apply {
             title = source["title"] as? String
             abstract = source["abstract"] as? String

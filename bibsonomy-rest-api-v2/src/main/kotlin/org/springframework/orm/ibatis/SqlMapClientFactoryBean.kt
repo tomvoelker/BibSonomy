@@ -92,6 +92,13 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
     private fun defaultTxProps(): Properties =
         Properties().apply { setProperty("SetAutoCommitAllowed", "false") }
 
+    /**
+     * Build the SqlMapClient from the given config locations.
+     *
+     * Note: Only a single config location is supported. If multiple locations are provided,
+     * only the last one will be used (iBatis 2 does not support config merging).
+     * The legacy BibSonomy XML configuration uses a single configLocation.
+     */
     @Throws(IOException::class)
     protected fun buildSqlMapClient(
         configLocations: Array<Resource>?,
@@ -110,6 +117,7 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
                 throw IOException("Failed to parse config resource: $configLocation", cause)
             }
         }
+        // Safe: assertion above guarantees at least one config, so client is assigned
         return client!!
     }
 
