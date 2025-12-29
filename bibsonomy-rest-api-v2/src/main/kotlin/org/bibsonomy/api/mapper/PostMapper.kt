@@ -157,10 +157,16 @@ fun PersonName.toDto(): PersonNameDto {
 
 /**
  * Convert a User to UserRefDto.
+ *
+ * @throws IllegalStateException if user name is null or blank
  */
 fun User.toRefDto(): UserRefDto {
+    // Fail fast: username is a required identifier, never mask with empty string
+    val username = this.name?.takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("User name cannot be null or blank")
+
     return UserRefDto(
-        username = this.name ?: "",
+        username = username,
         realName = this.realname?.takeIf { it.isNotBlank() }
     )
 }
@@ -178,10 +184,16 @@ fun Tag.toDto(): TagDto {
 
 /**
  * Convert a Group to GroupRefDto.
+ *
+ * @throws IllegalStateException if group name is null or blank
  */
 fun Group.toRefDto(): GroupRefDto {
+    // Fail fast: group name is a required identifier, never mask with empty string
+    val groupName = this.name?.takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("Group name cannot be null or blank")
+
     return GroupRefDto(
-        name = this.name ?: "",
+        name = groupName,
         displayName = this.realname?.takeIf { it.isNotBlank() }
     )
 }

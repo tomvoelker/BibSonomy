@@ -3,6 +3,7 @@ package org.bibsonomy.api.dto
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 /**
@@ -63,6 +64,6 @@ class VisibilitySerializationTest {
         )
 
         val json = objectMapper.writeValueAsString(postDto)
-        assert(json.contains("\"visibility\":\"public\""))
+        assertTrue(json.contains("\"visibility\":\"public\""))
     }
 }
