@@ -83,7 +83,7 @@ This document captures the intentional shortcuts/stubs we introduced to get the 
 4) **Permission config**: populate `specialUserTagMap` with real values.  
 5) **Plugins**: reintroduce required database plugins and remove the no-op registry.  
 6) **Gold-standard**: restore gold-standard chains/managers/info service if needed.  
-7) **Search/metadata**: wire real search beans and metadata providers; remove empty stubs. **(Done)**  
+7) **Search/metadata**: wire real search beans and metadata providers; remove empty stubs. *(Still using no-op stubs; search returns empty results.)*  
 8) **Resource-type handling**: ~~enforce/handle "all" properly or return 400 on unsupported types instead of forcing bibtex.~~ **(Addressed)** Merged pagination now has guardrails (offset cap at 500, warning header above 200). Consider cursor pagination for future deep navigation needs.  
 9) **Hygiene**: add integration tests (posts bibtex/bookmark, auth-required paths), health checks, and remove temporary warnings.
 
@@ -92,6 +92,6 @@ This document captures the intentional shortcuts/stubs we introduced to get the 
 - Search/markup system tag processing restored; executable system tags still disabled.  
 - Real validation and file handling in place; plugin side effects and gold-standard features still disabled.  
 - Search beans are no-op; metadata providers are fed by the stub searchers (empty results).  
-- Resource type defaults to bibtex unless explicitly set to bookmark.
+- Resource type defaults to `all` (merged bookmarks + publications); unknown types fall back to bibtex.
 
 Keep this list updated as you remove stubs and wire real components.***

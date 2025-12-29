@@ -171,7 +171,8 @@ class PostService(
                 "bibtex" -> getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
                 "all" -> getCount(logic, org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey) +
                     getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
-                else -> postDtos.size
+                // Unknown types fall back to bibtex query (see posts fetch above), so count should match
+                else -> getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
             }
         } else {
             postDtos.size

@@ -173,10 +173,16 @@ fun User.toRefDto(): UserRefDto {
 
 /**
  * Convert a Tag to TagDto.
+ *
+ * @throws IllegalStateException if tag name is null or blank
  */
 fun Tag.toDto(): TagDto {
+    // Fail fast: tag name is a required identifier, never mask with empty string
+    val tagName = this.name?.takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("Tag name cannot be null or blank")
+
     return TagDto(
-        name = this.name ?: "",
+        name = tagName,
         count = this.globalcount,
         countPublic = this.usercount
     )

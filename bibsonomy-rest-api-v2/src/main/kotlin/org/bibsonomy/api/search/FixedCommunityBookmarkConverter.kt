@@ -16,7 +16,7 @@ class FixedCommunityBookmarkConverter(@Suppress("UNUSED_PARAMETER") systemURI: U
 
     override fun convert(source: Post<Bookmark>): Map<String, Any> = emptyMap()
 
-    override fun convert(source: Map<String, Any>, options: Set<String>): Post<Bookmark> = Post<Bookmark>().apply {
+    override fun convert(source: Map<String, Any>, @Suppress("UNUSED_PARAMETER") options: Set<String>): Post<Bookmark> = Post<Bookmark>().apply {
         resource = GoldStandardBookmark().apply { url = source["url"] as? String }
     }
 }
