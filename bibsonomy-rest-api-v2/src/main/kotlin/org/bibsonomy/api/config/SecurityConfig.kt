@@ -53,7 +53,14 @@ class SecurityConfig(
                         "/swagger-ui/**",
                         "/swagger-ui.html"
                     ).permitAll()
+                    // Permit all GET requests to posts endpoints (list and single-post)
+                    .requestMatchers(HttpMethod.GET, "/api/v2/posts").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/posts/").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/posts/*").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts/**").permitAll()
+                    // Permit GET for tags endpoint too (public listing)
+                    .requestMatchers(HttpMethod.GET, "/api/v2/tags").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/tags/**").permitAll()
                     .anyRequest().authenticated()
             }
             .exceptionHandling { it.authenticationEntryPoint(legacyAuthenticationEntryPoint) }
