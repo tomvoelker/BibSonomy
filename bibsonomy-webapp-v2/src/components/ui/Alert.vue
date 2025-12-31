@@ -75,10 +75,10 @@ const iconColor = computed(() => {
     <button
       v-if="dismissible"
       type="button"
-      @click="emit('dismiss')"
       class="flex-shrink-0 hover:opacity-70 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded"
       :class="iconColor"
       aria-label="Dismiss"
+      @click="emit('dismiss')"
     >
       <XCircle :size="20" />
     </button>

@@ -16,18 +16,18 @@ const changeLanguage = (lang: 'de' | 'en') => {
     <span class="text-gray-600">(&nbsp;</span>
     <button
       type="button"
-      @click="changeLanguage('en')"
       class="text-primary-600 bg-transparent border-0 p-0 cursor-pointer hover:underline"
       :class="{ 'font-bold': locale === 'en' }"
+      @click="changeLanguage('en')"
     >
       en
     </button>
     <span class="text-gray-600">&nbsp;|&nbsp;</span>
     <button
       type="button"
-      @click="changeLanguage('de')"
       class="text-primary-600 bg-transparent border-0 p-0 cursor-pointer hover:underline"
       :class="{ 'font-bold': locale === 'de' }"
+      @click="changeLanguage('de')"
     >
       de
     </button>

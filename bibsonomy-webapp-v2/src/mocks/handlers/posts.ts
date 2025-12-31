@@ -73,7 +73,7 @@ export const postsHandlers = [
     const body = (await request.json()) as Record<string, unknown>
 
     // Validate required fields
-    if (typeof body['title'] !== 'string' || !(body['title'] as string).trim()) {
+    if (typeof body['title'] !== 'string' || !body['title'].trim()) {
       return HttpResponse.json(
         {
           error: 'Bad Request',
@@ -88,7 +88,8 @@ export const postsHandlers = [
       return HttpResponse.json(
         {
           error: 'Bad Request',
-          message: 'Missing or invalid required field: resourceType (must be "publication" or "bookmark")',
+          message:
+            'Missing or invalid required field: resourceType (must be "publication" or "bookmark")',
           status: 400,
         },
         { status: 400 }

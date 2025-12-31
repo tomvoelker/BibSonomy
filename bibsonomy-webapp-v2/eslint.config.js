@@ -29,6 +29,21 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         global: 'readonly',
+        btoa: 'readonly',
+        atob: 'readonly',
+        fetch: 'readonly',
+        Event: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLElement: 'readonly',
+        Element: 'readonly',
+        FormData: 'readonly',
+        URLSearchParams: 'readonly',
+        URL: 'readonly',
+        Request: 'readonly',
+        Response: 'readonly',
+        Headers: 'readonly',
+        AbortController: 'readonly',
+        AbortSignal: 'readonly',
       },
     },
   },
@@ -73,9 +88,9 @@ export default [
     },
   },
 
-  // TypeScript files (excluding config files)
+  // TypeScript files (excluding config files and Vue files)
   {
-    files: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.vue'],
+    files: ['src/**/*.ts', 'src/**/*.tsx'],
     plugins: {
       '@typescript-eslint': pluginTypeScript,
     },
@@ -95,6 +110,39 @@ export default [
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unsafe-call': 'warn',
+      '@typescript-eslint/prefer-promise-reject-errors': 'warn',
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+        },
+      ],
+    },
+  },
+
+  // TypeScript rules for Vue files (parser already set in Vue config above)
+  {
+    files: ['src/**/*.vue'],
+    plugins: {
+      '@typescript-eslint': pluginTypeScript,
+    },
+    rules: {
+      ...pluginTypeScript.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_|^props$|^emit$',
         },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',

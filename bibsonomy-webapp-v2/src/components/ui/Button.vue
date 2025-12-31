@@ -36,7 +36,8 @@ const componentTag = computed(() => {
 })
 
 const buttonClasses = computed(() => {
-  const base = 'inline-flex items-center justify-center gap-2 font-medium transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
+  const base =
+    'inline-flex items-center justify-center gap-2 font-medium transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
 
   // Size classes
   const sizeClasses = {
@@ -47,22 +48,23 @@ const buttonClasses = computed(() => {
 
   // Variant classes
   const variantClasses = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500 disabled:bg-primary-300',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus-visible:ring-gray-500 disabled:bg-gray-300',
-    success: 'bg-success-600 text-white hover:bg-success-700 focus-visible:ring-success-500 disabled:bg-success-300',
-    danger: 'bg-danger-600 text-white hover:bg-danger-700 focus-visible:ring-danger-500 disabled:bg-danger-300',
-    warning: 'bg-warning-600 text-white hover:bg-warning-700 focus-visible:ring-warning-500 disabled:bg-warning-300',
+    primary:
+      'bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500 disabled:bg-primary-300',
+    secondary:
+      'bg-gray-600 text-white hover:bg-gray-700 focus-visible:ring-gray-500 disabled:bg-gray-300',
+    success:
+      'bg-success-600 text-white hover:bg-success-700 focus-visible:ring-success-500 disabled:bg-success-300',
+    danger:
+      'bg-danger-600 text-white hover:bg-danger-700 focus-visible:ring-danger-500 disabled:bg-danger-300',
+    warning:
+      'bg-warning-600 text-white hover:bg-warning-700 focus-visible:ring-warning-500 disabled:bg-warning-300',
     link: 'text-primary-600 hover:underline focus-visible:ring-primary-500 disabled:text-primary-300',
   }
 
-  const disabledClass = (props.disabled || props.loading) ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+  const disabledClass =
+    props.disabled || props.loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
 
-  return [
-    base,
-    sizeClasses[props.size],
-    variantClasses[props.variant],
-    disabledClass,
-  ].join(' ')
+  return [base, sizeClasses[props.size], variantClasses[props.variant], disabledClass].join(' ')
 })
 </script>
 
@@ -72,15 +74,17 @@ const buttonClasses = computed(() => {
     :type="componentTag === 'button' ? type : undefined"
     :to="to"
     :href="href"
-    :disabled="componentTag === 'button' ? (disabled || loading) : undefined"
+    :disabled="componentTag === 'button' ? disabled || loading : undefined"
     :class="buttonClasses"
     :aria-disabled="disabled || loading"
-    @click="(disabled || loading) && componentTag !== 'button' ? $event.preventDefault() : undefined"
+    @click="
+      (disabled || loading) && componentTag !== 'button' ? $event.preventDefault() : undefined
+    "
   >
     <!-- Icon (left side) -->
     <component
-      v-if="icon && !loading"
       :is="icon"
+      v-if="icon && !loading"
       :size="size === 'sm' ? 14 : size === 'lg' ? 20 : 16"
       aria-hidden="true"
     />
@@ -95,7 +99,14 @@ const buttonClasses = computed(() => {
       viewBox="0 0 24 24"
       aria-hidden="true"
     >
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <circle
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+      ></circle>
       <path
         class="opacity-75"
         fill="currentColor"

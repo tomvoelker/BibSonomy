@@ -18,7 +18,11 @@ const column1Links = computed<FooterLink[]>(() => [
 
 const developerLinks = computed<FooterLink[]>(() => [
   { text: t('footer.overview'), href: 'https://bibsonomy.bitbucket.io', external: true },
-  { text: t('footer.apiDoc'), href: 'https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API', external: true },
+  {
+    text: t('footer.apiDoc'),
+    href: 'https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API',
+    external: true,
+  },
 ])
 
 // Column 2: Privacy & Contact
@@ -32,9 +36,21 @@ const column2Links = computed<FooterLink[]>(() => [
 // Column 3: Integration
 const column3Links = computed<FooterLink[]>(() => [
   { text: t('footer.academicPuma'), href: 'https://academic-puma.de/', external: true },
-  { text: t('footer.typoThree'), href: 'https://typo3.org/extensions/repository/view/ext_bibsonomy_csl', external: true },
-  { text: t('footer.wordpress'), href: 'https://wordpress.org/plugins/bibsonomy-csl/', external: true },
-  { text: t('footer.javaClient'), href: 'https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/', external: true },
+  {
+    text: t('footer.typoThree'),
+    href: 'https://typo3.org/extensions/repository/view/ext_bibsonomy_csl',
+    external: true,
+  },
+  {
+    text: t('footer.wordpress'),
+    href: 'https://wordpress.org/plugins/bibsonomy-csl/',
+    external: true,
+  },
+  {
+    text: t('footer.javaClient'),
+    href: 'https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/',
+    external: true,
+  },
   { text: t('footer.scraperInfo'), href: '/error/not-implemented?feature=Scraper%20Info' },
 ])
 
@@ -75,26 +91,22 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
-              :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
+              :aria-label="
+                link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined
+              "
             >
               {{ link.text }}
-              <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
+              <span v-if="link.external" class="sr-only">({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>
       </div>
 
       <!-- Column 2: Privacy & Contact -->
-      <FooterColumn
-        :title="t('footer.privacyContact')"
-        :links="column2Links"
-      />
+      <FooterColumn :title="t('footer.privacyContact')" :links="column2Links" />
 
       <!-- Column 3: Integration -->
-      <FooterColumn
-        :title="t('footer.integration')"
-        :links="column3Links"
-      />
+      <FooterColumn :title="t('footer.integration')" :links="column3Links" />
 
       <!-- Column 4: About BibSonomy + Social Media -->
       <div class="w-full md:w-1/2 lg:flex-[0_0_25%] lg:max-w-[25%] px-4 mb-6 md:mb-0">
@@ -110,10 +122,12 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
-              :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
+              :aria-label="
+                link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined
+              "
             >
               {{ link.text }}
-              <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
+              <span v-if="link.external" class="sr-only">({{ t('common.opensInNewTab') }})</span>
             </component>
           </li>
         </ul>
@@ -131,7 +145,7 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               :aria-label="`${link.text} (${t('common.opensInNewTab')})`"
             >
               {{ link.text }}
-              <span class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
+              <span class="sr-only">({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>

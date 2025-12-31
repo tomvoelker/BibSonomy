@@ -25,18 +25,11 @@ const { branding } = useBranding()
 
     <!-- CTA Buttons -->
     <div class="flex flex-col sm:flex-row gap-2 mt-3 md:mt-5">
-      <Button
-        variant="success"
-        :icon="Edit"
-        to="/error/not-implemented?feature=Register"
-      >
+      <Button variant="success" :icon="Edit" to="/error/not-implemented?feature=Register">
         {{ t('home.register') }}
       </Button>
 
-      <Button
-        variant="info"
-        to="/error/not-implemented?feature=Getting+Started"
-      >
+      <Button variant="info" to="/error/not-implemented?feature=Getting+Started">
         {{ t('home.learnmore') }}
       </Button>
     </div>

@@ -23,25 +23,25 @@ const popularTags = ref([
 
 // Calculate tag sizes and colors based on count
 const tagSizes = computed(() => {
-  const counts = popularTags.value.map(t => t.count)
+  const counts = popularTags.value.map((t) => t.count)
   const minCount = Math.min(...counts)
   const maxCount = Math.max(...counts)
   const range = maxCount - minCount
 
-  return popularTags.value.map(tag => {
+  return popularTags.value.map((tag) => {
     // Scale from 0.85em to 1.8em
     const normalized = range > 0 ? (tag.count - minCount) / range : 0.5
-    const size = 0.85 + (normalized * 0.95)
+    const size = 0.85 + normalized * 0.95
 
     // Determine opacity/weight based on popularity (higher = more prominent)
-    const opacity = 0.6 + (normalized * 0.4) // 0.6 to 1.0
+    const opacity = 0.6 + normalized * 0.4 // 0.6 to 1.0
     const weight = normalized > 0.7 ? '600' : normalized > 0.4 ? '500' : '400'
 
     return {
       ...tag,
       fontSize: `${size}em`,
       opacity,
-      fontWeight: weight
+      fontWeight: weight,
     }
   })
 })
@@ -63,7 +63,7 @@ const tagSizes = computed(() => {
           :style="{
             fontSize: tag.fontSize,
             opacity: tag.opacity,
-            fontWeight: tag.fontWeight
+            fontWeight: tag.fontWeight,
           }"
         >
           {{ tag.name }}
@@ -73,12 +73,8 @@ const tagSizes = computed(() => {
 
     <!-- Recent Activity (placeholder) -->
     <div class="pt-4 border-t border-gray-300">
-      <h3 class="text-sm font-bold text-gray-800 mb-3">
-        Recent Activity
-      </h3>
-      <p class="text-sm text-gray-600">
-        Recent posts will appear here...
-      </p>
+      <h3 class="text-sm font-bold text-gray-800 mb-3">Recent Activity</h3>
+      <p class="text-sm text-gray-600">Recent posts will appear here...</p>
     </div>
   </aside>
 </template>

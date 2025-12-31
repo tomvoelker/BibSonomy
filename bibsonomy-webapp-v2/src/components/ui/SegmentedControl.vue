@@ -28,13 +28,13 @@ const activeOption = computed({
       v-for="option in options"
       :key="option.id"
       type="button"
-      @click="activeOption = option.id"
       class="px-3 py-1.5 text-sm font-medium rounded transition-all"
       :class="
         activeOption === option.id
           ? 'bg-white text-gray-900 shadow-sm'
           : 'text-gray-600 hover:text-gray-900'
       "
+      @click="activeOption = option.id"
     >
       {{ option.label }}
     </button>

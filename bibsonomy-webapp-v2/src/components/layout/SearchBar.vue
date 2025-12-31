@@ -16,7 +16,7 @@ const handleSearch = () => {
 
 <template>
   <div id="search">
-    <form @submit.prevent="handleSearch" class="m-0">
+    <form class="m-0" @submit.prevent="handleSearch">
       <div class="relative flex border-collapse">
         <!-- Search Scope Dropdown -->
         <div class="flex-shrink-0">

@@ -54,9 +54,9 @@ const closeMobileMenu = () => {
           <span>{{ t('nav.home') }}</span>
         </RouterLink>
         <button
-          @click="toggleMobileMenu"
           class="text-gray-100 p-2 hover:bg-primary-700 rounded transition-colors"
           :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+          @click="toggleMobileMenu"
         >
           <Menu v-if="!mobileMenuOpen" :size="24" />
           <X v-else :size="24" />

@@ -19,7 +19,7 @@ const formattedDate = computed(() => {
   return date.toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   })
 })
 
@@ -36,12 +36,7 @@ const groups = computed(() => props.post.groups || [])
     <span v-if="formattedDate">{{ formattedDate }}</span>
 
     <!-- Groups -->
-    <Badge
-      v-for="group in groups"
-      :key="group.name"
-      size="xs"
-      variant="secondary"
-    >
+    <Badge v-for="group in groups" :key="group.name" size="xs" variant="secondary">
       {{ group.name }}
     </Badge>
   </div>
