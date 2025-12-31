@@ -147,6 +147,32 @@ Minor comments marked as "Trivial Nitpick" that don't warrant changes are docume
 
 ---
 
+## Additional Fixes (2025-12-31, iteration 4)
+
+### New Comments Addressed
+
+#### PostService: totalCount returns -1 when includeTotal=false
+- **Original Issue:** Was returning `items.size` instead of `-1` per OpenAPI spec
+- **Fix Applied:** Return `-1` to indicate count was not computed
+
+#### FixedCommunityBookmarkConverter: Throw instead of empty map
+- **Original Issue:** `convert(Post<Bookmark>)` returned `emptyMap()` silently
+- **Fix Applied:** Throw `UnsupportedOperationException` to align with publication converter
+
+#### SqlMapClientFactoryBean: Multi-config warning
+- **Original Issue:** Multiple configLocations silently ignored all but last
+- **Fix Applied:** Added SLF4J logger and warning when >1 config provided
+
+#### PostMapper: Visibility fallback documentation
+- **Original Issue:** Ambiguity about null/empty groups defaulting to PUBLIC
+- **Fix Applied:** Added documentation explaining legacy behavior
+
+#### PostService: Optional auth documentation
+- **Original Issue:** Auth header re-parsing seemed redundant
+- **Fix Applied:** Added KDoc explaining optional auth pattern for public endpoints
+
+---
+
 ## Verification Date
 
-Last verified: 2025-12-31 (iteration 3)
+Last verified: 2025-12-31 (iteration 4)
