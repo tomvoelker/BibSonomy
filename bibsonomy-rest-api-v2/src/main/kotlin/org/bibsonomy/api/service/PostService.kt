@@ -175,7 +175,8 @@ class PostService(
                 else -> getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
             }
         } else {
-            postDtos.size
+            // Per OpenAPI spec: when includeTotal=false, return -1 to indicate not computed
+            -1
         }
 
         return PaginatedPostList(
@@ -196,6 +197,15 @@ class PostService(
         }
     }
 
+    /**
+     * Resolve the LogicInterface for the current request, supporting optional auth.
+     *
+     * The injected `logic` bean is request-scoped and already authenticated for protected
+     * endpoints. However, public endpoints (GET /posts) allow optional authentication where
+     * the SecurityContext may be unauthenticated/guest even when Basic Auth header is present.
+     * This method re-parses the header only when the current logic is guest but credentials
+     * are available, enabling authenticated users to see their private posts on public endpoints.
+     */
     private fun resolveLogicFromRequest(): LogicInterface {
         val current = logic
         val user = current.authenticatedUser

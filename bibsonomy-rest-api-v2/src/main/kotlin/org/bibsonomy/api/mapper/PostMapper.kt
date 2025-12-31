@@ -211,6 +211,11 @@ fun Group.toRefDto(): GroupRefDto {
  * - Group ID 0 (public) → Visibility.PUBLIC
  * - Group ID 1 (private) → Visibility.PRIVATE
  * - Other groups → Visibility.GROUPS
+ *
+ * Note: Null or empty groups default to PUBLIC. This matches BibSonomy's legacy
+ * behavior where posts without explicit group assignments are treated as public.
+ * In practice, the database always populates groups, so this fallback handles
+ * edge cases during mapping only.
  */
 private fun determineVisibility(groups: Set<Group>?): Visibility {
     if (groups == null || groups.isEmpty()) {

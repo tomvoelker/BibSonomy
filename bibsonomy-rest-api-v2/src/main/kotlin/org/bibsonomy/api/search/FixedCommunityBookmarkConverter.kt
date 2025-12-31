@@ -17,7 +17,14 @@ import java.net.URI
 class FixedCommunityBookmarkConverter(@Suppress("UNUSED_PARAMETER") systemURI: URI) :
     Converter<Post<Bookmark>, Map<String, Any>, Set<String>> {
 
-    override fun convert(source: Post<Bookmark>): Map<String, Any> = emptyMap()
+    override fun convert(source: Post<Bookmark>): Map<String, Any> {
+        val postId = source.contentId ?: "unknown"
+        val url = source.resource?.url ?: "unknown"
+        throw UnsupportedOperationException(
+            "convert(Post<Bookmark> -> Map) is not implemented in FixedCommunityBookmarkConverter stub " +
+            "(post id: $postId, url: $url). This converter is a minimal placeholder for broken legacy search bytecode."
+        )
+    }
 
     override fun convert(source: Map<String, Any>, @Suppress("UNUSED_PARAMETER") options: Set<String>): Post<Bookmark> = Post<Bookmark>().apply {
         resource = GoldStandardBookmark().apply {

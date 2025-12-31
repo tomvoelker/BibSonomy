@@ -7,6 +7,7 @@ import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate
 import com.ibatis.sqlmap.engine.transaction.TransactionConfig
 import com.ibatis.sqlmap.engine.transaction.TransactionManager
 import com.ibatis.sqlmap.engine.transaction.external.ExternalTransactionConfig
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.Resource
@@ -24,6 +25,7 @@ import javax.sql.DataSource
  * (configLocation + dataSource + transactionConfigClass) is supported.
  */
 class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
+    private val logger = LoggerFactory.getLogger(SqlMapClientFactoryBean::class.java)
 
     private var configLocations: Array<Resource>? = null
     private var sqlMapClientProperties: Properties? = null
@@ -105,9 +107,15 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
         properties: Properties?
     ): SqlMapClient {
         Assert.isTrue(!ObjectUtils.isEmpty(configLocations), "At least 1 'configLocation' entry is required")
+        if (configLocations!!.size > 1) {
+            logger.warn(
+                "Multiple configLocations provided (${configLocations.size}), but only the last one will be used. " +
+                "iBatis 2 does not support config merging."
+            )
+        }
         var client: SqlMapClient? = null
         val configParser = SqlMapConfigParser()
-        configLocations!!.forEach { configLocation ->
+        configLocations.forEach { configLocation ->
             try {
                 configLocation.inputStream.use { stream ->
                     val parsed = configParser.parse(stream, properties)
