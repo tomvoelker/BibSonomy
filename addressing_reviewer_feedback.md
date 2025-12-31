@@ -135,6 +135,7 @@ All actionable comments have been addressed. The remaining "unresolved" comments
 4. **Unused param suppression** - Already fixed: both converters have consistent `@Suppress("UNUSED_PARAMETER")`
 5. **decodeBasic duplication** - Already fixed: `BasicAuthUtils.decode()` exists at `security/BasicAuthUtils.kt`
 6. **PostService LogicInterface inconsistency** - Already fixed: `getCount` takes `logic: LogicInterface` parameter (line 232)
+7. **PostService MERGED_PAGINATION_WARNING_THRESHOLD unused** - Already implemented: PostsController.kt lines 73-81 add warning header when offset exceeds threshold
 
 Minor comments marked as "Trivial Nitpick" that don't warrant changes are documented above with reasoning.
 
