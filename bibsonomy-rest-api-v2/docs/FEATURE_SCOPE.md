@@ -359,4 +359,3 @@ The MVP is considered successful when:
 - [Removed Features](REMOVED_FEATURES.md) - Excluded features with codebase references
 - [Deferred Features](DEFERRED_FEATURES.md) - Post-MVP features with implementation notes
 - [CLAUDE.md](../../CLAUDE.md) - Development guidelines for the entire project
-- [Modernization Strategy](../../.cursor/plans/bibsonomy_modernization_strategy_50e37204.plan.md) - Overall modernization plan

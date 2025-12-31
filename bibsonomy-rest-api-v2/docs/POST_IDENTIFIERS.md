@@ -351,7 +351,6 @@ val hash = resource.interHash ?: resource.intraHash
 ## See Also
 
 - [OpenAPI Specification](./openapi.yaml) - Full API documentation
-- [Legacy API Documentation](../../bibsonomy-rest-server/docs/) - REST API v1 reference
 - [Domain Model](../../bibsonomy-model/src/main/java/org/bibsonomy/model/) - Java domain classes
 - [DTO Package](../src/main/kotlin/org/bibsonomy/api/dto/) - Kotlin DTOs
 
@@ -367,7 +366,7 @@ A: Use the `user` query parameter: `GET /api/v2/posts/{hash}?user={username}`
 A: Yes. Hash = MD5(resource content). Same content → Same hash, always.
 
 **Q: Can hashes collide?**
-A: Extremely unlikely (MD5 collision probability ≈ 2^-128). If concerned, the API validates uniqueness at creation.
+A: Extremely unlikely. MD5 has a 128-bit hash space (2^128), and due to the birthday paradox, ~50% collision probability only occurs after ~2^64 hashes. At BibSonomy's scale this is negligible. The API also validates uniqueness at creation.
 
 **Q: Why not UUIDs?**
 A: Content-addressable hashes enable deduplication. UUID = random, no content relationship.
