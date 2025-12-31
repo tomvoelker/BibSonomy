@@ -259,8 +259,11 @@ class PostsControllerAuthIntegrationTest(
 
 /**
  * Minimal app wiring the real PostsController + PostService with stubbed LogicInterfaceFactory.
+ * Uses @EnableAutoConfiguration instead of @SpringBootApplication to avoid component scanning
+ * that would pick up other controllers (TagsController) requiring their own dependencies.
  */
-@SpringBootApplication(exclude = [DataSourceAutoConfiguration::class])
+@org.springframework.boot.autoconfigure.EnableAutoConfiguration(exclude = [DataSourceAutoConfiguration::class])
+@Configuration
 @Import(
     SecurityConfig::class,
     LegacyAuthenticationConfiguration::class,
