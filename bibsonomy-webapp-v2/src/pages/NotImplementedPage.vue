@@ -41,13 +41,13 @@ const goBack = () => {
         <!-- Info Box -->
         <div class="p-5 my-8 border border-info-200 rounded bg-info-50 text-info-700 text-left">
           <h4 class="mt-0 mb-2.5 text-base font-bold">
-            Currently Implemented Features:
+            {{ t('error.implementedFeaturesTitle') }}
           </h4>
           <ul class="my-2.5 pl-5 list-disc">
-            <li class="my-1">Browse posts (bookmarks and publications)</li>
-            <li class="my-1">View post details</li>
-            <li class="my-1">Language switching (English/German)</li>
-            <li class="my-1">Responsive design matching original BibSonomy</li>
+            <li class="my-1">{{ t('error.implementedFeature1') }}</li>
+            <li class="my-1">{{ t('error.implementedFeature2') }}</li>
+            <li class="my-1">{{ t('error.implementedFeature3') }}</li>
+            <li class="my-1">{{ t('error.implementedFeature4') }}</li>
           </ul>
         </div>
 

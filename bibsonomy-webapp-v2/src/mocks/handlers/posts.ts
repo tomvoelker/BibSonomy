@@ -95,6 +95,15 @@ export const postsHandlers = [
       )
     }
 
+    // Helper to validate bibTexData (must be object or null/undefined)
+    const validateBibTexData = (data: unknown): Record<string, unknown> | null => {
+      if (data === null || data === undefined) return null
+      if (typeof data === 'object' && !Array.isArray(data)) {
+        return data as Record<string, unknown>
+      }
+      return null // Invalid types are treated as null
+    }
+
     // Simulate successful creation with validated fields
     const now = new Date().toISOString()
     const newPost = {
@@ -103,7 +112,7 @@ export const postsHandlers = [
       resourceType: body['resourceType'],
       description: typeof body['description'] === 'string' ? body['description'] : undefined,
       url: typeof body['url'] === 'string' ? body['url'] : null,
-      bibTexData: body['bibTexData'] ?? null,
+      bibTexData: validateBibTexData(body['bibTexData']),
       tags: Array.isArray(body['tags']) ? body['tags'] : [],
       groups: Array.isArray(body['groups']) ? body['groups'] : [],
       user: { id: 'mock-user', name: 'Mock User' },
