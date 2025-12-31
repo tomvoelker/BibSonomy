@@ -501,9 +501,13 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 (21052616,'person','',1,0,0);
 
 -- Ensure popular tags are visible in minimal preview environments.
+-- NOTE: Intentionally unbounded UPDATE to set all tags visible in the test database.
+-- This script assumes it runs against a clean test database, not a production system.
 UPDATE `tags` SET `show_tag` = 1;
 
 -- Seed popular_tags so /api/v2/tags returns data for ALL content type.
+-- NOTE: Clears and reseeds popular_tags to establish a known test state.
+-- This is intentional for reproducible tests - the DELETE ensures idempotent runs.
 DELETE FROM `popular_tags`;
 INSERT INTO `popular_tags` (`tag_lower`, `tag_ctr`, `content_type`, `popular_days`)
   SELECT LOWER(`tag_name`), `tag_ctr_public`, 0, 0
