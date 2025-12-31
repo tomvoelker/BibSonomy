@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 interface Link {
   text: string
   href: string
@@ -20,14 +22,16 @@ defineProps<Props>()
     </h4>
     <ul class="list-none p-0 m-0 text-[13px]">
       <li v-for="link in links" :key="link.href" class="mb-1">
-        <a
-          :href="link.href"
+        <component
+          :is="link.external ? 'a' : RouterLink"
+          :href="link.external ? link.href : undefined"
+          :to="link.external ? undefined : link.href"
           class="text-primary-600 no-underline hover:underline"
           :target="link.external ? '_blank' : undefined"
           :rel="link.external ? 'noopener noreferrer' : undefined"
         >
           {{ link.text }}
-        </a>
+        </component>
       </li>
     </ul>
   </div>

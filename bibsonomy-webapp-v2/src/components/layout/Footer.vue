@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useBranding } from '@/composables/useBranding'
 import FooterColumn from './FooterColumn.vue'
@@ -58,9 +59,9 @@ const socialMediaLinks = computed(() => [
         </h4>
         <ul class="list-none p-0 m-0 text-[13px]">
           <li v-for="link in column1Links" :key="link.href" class="mb-1">
-            <a :href="link.href" class="text-primary-600 no-underline hover:underline">
+            <RouterLink :to="link.href" class="text-primary-600 no-underline hover:underline">
               {{ link.text }}
-            </a>
+            </RouterLink>
           </li>
         </ul>
 
@@ -100,14 +101,16 @@ const socialMediaLinks = computed(() => [
         </h4>
         <ul class="list-none p-0 m-0 text-[13px]">
           <li v-for="link in column4Links" :key="link.href" class="mb-1">
-            <a
-              :href="link.href"
+            <component
+              :is="link.external ? 'a' : RouterLink"
+              :href="link.external ? link.href : undefined"
+              :to="link.external ? undefined : link.href"
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
             >
               {{ link.text }}
-            </a>
+            </component>
           </li>
         </ul>
 
