@@ -89,9 +89,45 @@ This document tracks how CodeRabbit reviewer feedback on PR #6 has been addresse
 
 ---
 
+## Additional Fixes (2025-12-31)
+
+### Critical Issues Fixed
+
+#### default-bibsonomy.properties: Hardcoded Cryptographic Keys
+- **Original Issue:** Lines 158 and 212 contained hardcoded crypto keys
+- **Fix Applied:** Replaced with `changeme` placeholder + security comments directing to ~/bibsonomy.properties
+
+#### LegacyCrisStubConfig: Redundant Bean Definition
+- **Original Issue:** Both @Bean method and BeanDefinitionRegistryPostProcessor registered the same bean
+- **Fix Applied:** Removed @Bean annotation, kept only the post-processor pattern (consistent with other stub configs)
+
+#### SqlMapClientFactoryBean: Unsafe Null Handling
+- **Original Issue:** `!!` operator could cause unclear NPE if parser returns null
+- **Fix Applied:** Added explicit null check after `parser.parse()` with descriptive error message
+
+#### application.yml: Circular Bean References
+- **Original Issue:** `allow-circular-references: true` is a code smell
+- **Decision:** Documented as intentional for legacy compatibility - the bibsonomy-database module has circular deps in Spring 3.2 XML
+
+### Stale/Not Addressing
+
+#### PostsControllerAuthIntegrationTest: Test Assertion
+- **Status:** Already fixed - test name changed to `invalid basic auth still permitted for public GET endpoint`
+- Comment was made on old code before the test was renamed
+
+#### PostMapper.kt: bibtexKey null handling
+- **Status:** Not an issue - `BibTexDto.bibtexKey` is `String?` (nullable), so passing null is correct
+
+#### SystemTagFactory: Singleton Mutation
+- **Status:** Known limitation - `SystemTagFactory` is designed as singleton in legacy module
+- Cannot instantiate new instances (no public constructor). Adding a warning comment would require modifying frozen legacy code.
+- Test isolation is maintained by running each test class in separate JVM via Maven Surefire.
+
+---
+
 ## Remaining Open Comments (if any)
 
-All actionable comments have been addressed. The remaining 6 "unresolved" comments in the GitHub PR view are **stale** - they were made on older code revisions and the issues have since been fixed:
+All actionable comments have been addressed. The remaining "unresolved" comments in the GitHub PR view are **stale** - they were made on older code revisions and the issues have since been fixed:
 
 1. **MetaDataProvidersFactory 6 params** - Trivial nitpick, intentionally not addressing (documented above)
 2. **LegacyGoldStandardStubConfig `Any()`** - Already fixed: uses `object {}` at lines 118, 126
@@ -106,4 +142,4 @@ Minor comments marked as "Trivial Nitpick" that don't warrant changes are docume
 
 ## Verification Date
 
-Last verified: 2025-12-31
+Last verified: 2025-12-31 (iteration 2)
