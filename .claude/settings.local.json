@@ -5,7 +5,18 @@
       "Bash(ls:*)",
       "Bash(git fetch:*)",
       "Bash(git reset:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git merge:*)",
+      "Bash(git log:*)",
+      "Bash(git merge-base:*)",
+      "Bash(xargs git log --oneline -1)",
+      "Bash(git pull:*)",
+      "Bash(git branch:*)",
+      "Bash(JAVA_HOME=$JAVA_23_HOME mvn:*)",
+      "Bash(kotlinc:*)",
+      "Bash(git commit:*)",
+      "Bash(grep:*)",
+      "Bash(mvn test:*)"
     ]
   }
 }
