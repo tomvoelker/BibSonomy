@@ -18,7 +18,8 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "login": "sign in"
+    "login": "sign in",
+    "opensInNewTab": "opens in new tab"
   },
   "home": {
     "headline": "The easy way to manage scientific publications and bookmarks",

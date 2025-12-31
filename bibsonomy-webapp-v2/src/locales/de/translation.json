@@ -18,7 +18,8 @@
     "confirm": "Bestätigen",
     "yes": "Ja",
     "no": "Nein",
-    "login": "Anmelden"
+    "login": "Anmelden",
+    "opensInNewTab": "öffnet in neuem Tab"
   },
   "home": {
     "headline": "Der einfache Weg zum Verwalten wissenschaftlicher Publikationen und Lesezeichen",

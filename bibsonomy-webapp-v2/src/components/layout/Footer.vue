@@ -3,14 +3,7 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useBranding } from '@/composables/useBranding'
-import FooterColumn from './FooterColumn.vue'
-
-/** Footer link object with text, href, and optional external flag */
-interface FooterLink {
-  text: string
-  href: string
-  external?: boolean
-}
+import FooterColumn, { type FooterLink } from './FooterColumn.vue'
 
 const { t } = useI18n()
 const { branding } = useBranding()
@@ -82,8 +75,10 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
+              :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
             >
               {{ link.text }}
+              <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>
@@ -115,8 +110,10 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
+              :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
             >
               {{ link.text }}
+              <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
             </component>
           </li>
         </ul>
@@ -131,8 +128,10 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               class="text-primary-600 no-underline hover:underline"
               target="_blank"
               rel="noopener noreferrer"
+              :aria-label="`${link.text} (${t('common.opensInNewTab')})`"
             >
               {{ link.text }}
+              <span class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>

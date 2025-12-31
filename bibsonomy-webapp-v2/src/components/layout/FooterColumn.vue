@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
-interface Link {
+/** Footer link definition - exported for reuse in Footer.vue */
+export interface FooterLink {
   text: string
   href: string
   external?: boolean
@@ -9,10 +11,12 @@ interface Link {
 
 interface Props {
   title: string
-  links: Link[]
+  links: FooterLink[]
 }
 
 defineProps<Props>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -29,8 +33,10 @@ defineProps<Props>()
           class="text-primary-600 no-underline hover:underline"
           :target="link.external ? '_blank' : undefined"
           :rel="link.external ? 'noopener noreferrer' : undefined"
+          :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
         >
           {{ link.text }}
+          <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
         </component>
       </li>
     </ul>
