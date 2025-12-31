@@ -72,9 +72,10 @@ const buttonClasses = computed(() => {
     :type="componentTag === 'button' ? type : undefined"
     :to="to"
     :href="href"
-    :disabled="disabled || loading"
+    :disabled="componentTag === 'button' ? (disabled || loading) : undefined"
     :class="buttonClasses"
     :aria-disabled="disabled || loading"
+    @click="(disabled || loading) && componentTag !== 'button' ? $event.preventDefault() : undefined"
   >
     <!-- Icon (left side) -->
     <component

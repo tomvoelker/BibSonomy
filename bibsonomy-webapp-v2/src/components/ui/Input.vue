@@ -50,7 +50,12 @@ const inputClasses = computed(() => {
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  const value = props.type === 'number' ? Number(target.value) : target.value
+  let value: string | number = target.value
+  if (props.type === 'number' && target.value !== '') {
+    const num = Number(target.value)
+    // Keep as number if valid, otherwise keep original string to allow correction
+    value = isNaN(num) ? target.value : num
+  }
   emit('update:modelValue', value)
 }
 </script>
