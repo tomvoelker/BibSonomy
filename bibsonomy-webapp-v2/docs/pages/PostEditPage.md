@@ -124,8 +124,8 @@ PUT /api/v2/posts/{postId}
 POST /api/v2/posts/{postId}/documents
 multipart/form-data: file
 
-// Tag autocomplete
-GET /api/v2/tags?search={query}&limit=10
+// Tag listing (for autocomplete, filter by frequency)
+GET /api/v2/tags?limit=10&minFreq=1
 ```
 
 ## State Management
