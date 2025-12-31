@@ -52,34 +52,27 @@ GET /api/v2/tags?maxCount=100&minFreq=1
 // With filters
 GET /api/v2/tags?maxCount=200&minFreq=5
 
-// Search tags
-GET /api/v2/tags?search={query}&maxCount=50
+// Paginated
+GET /api/v2/tags?limit=50&offset=0&minFreq=1
 
-// Popular tags
-GET /api/v2/tags?sortBy=frequency&order=desc&limit=10
-
-// Recent tags
-GET /api/v2/tags?sortBy=recent&order=desc&limit=10
-
-// Related tags (on hover)
-GET /api/v2/tags/{tagname}/related?limit=10
+// High-frequency tags only
+GET /api/v2/tags?minFreq=10&maxCount=100
 ```
+
+> **Note**: The current API supports `offset`, `limit`, `minFreq`, and `maxCount` parameters.
+> Client-side sorting and search filtering can be implemented on the returned tag list.
 
 ## State Management
 
 - **vue-query**:
-  - `useQuery(['tags', filters], fetchTags)`
-  - `useQuery(['popular-tags'], fetchPopularTags)`
-  - `useQuery(['recent-tags'], fetchRecentTags)`
-  - `useQuery(['related-tags', tagname], fetchRelatedTags, { enabled: !!hoveredTag })`
+  - `useQuery(['tags', filters], fetchTags)` - main tag list with filters
 - **Pinia**:
   - `filterStore` (persist filters to localStorage)
 - **Component State**:
   - `minFreq: number`
   - `maxCount: number`
-  - `sortBy: SortBy`
-  - `searchQuery: string`
-  - `hoveredTag: string | null` (for related tags)
+  - `sortBy: 'frequency' | 'alphabetical'` (client-side sorting)
+  - `searchQuery: string` (client-side filtering)
 
 ## User Interactions
 
@@ -95,12 +88,16 @@ GET /api/v2/tags/{tagname}/related?limit=10
 
 ## URL Parameters & Query Strings
 
+API parameters (server-side):
 - `minFreq`: Minimum frequency (default: 1)
 - `maxCount`: Maximum tag count (default: 100)
-- `sortBy`: `frequency` | `alphabetical` | `recent` (default: `frequency`)
-- `search`: Search query
+- `limit`: Maximum number of tags to return
+- `offset`: Pagination offset
 
-Example: `/tags?minFreq=5&maxCount=200&sortBy=frequency`
+UI state parameters (client-side, persisted in URL):
+- `sort`: `frequency` | `alphabetical` (default: `frequency`) - client-side sorting
+
+Example: `/tags?minFreq=5&maxCount=200&sort=frequency`
 
 ## Page States
 
