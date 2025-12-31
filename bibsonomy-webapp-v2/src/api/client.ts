@@ -3,6 +3,7 @@
  */
 
 import axios from 'axios'
+import { useAuthStore } from '@/store/auth'
 
 export const apiClient = axios.create({
   // Use relative URL for MSW to work, or full URL in production
@@ -42,10 +43,9 @@ apiClient.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized
     if (error.response?.status === 401) {
-      // Clear auth and redirect to login
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
-      // You could dispatch a Pinia action here or emit an event
+      // Clear auth via store (centralizes state management)
+      const authStore = useAuthStore()
+      authStore.clearAuth()
       console.warn('Session expired. Please log in again.')
     }
 

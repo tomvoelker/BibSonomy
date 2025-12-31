@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBranding } from '@/composables/useBranding'
 import FooterColumn from './FooterColumn.vue'
@@ -7,44 +8,44 @@ const { t } = useI18n()
 const { branding } = useBranding()
 
 // Column 1: What is BibSonomy
-const column1Links = [
+const column1Links = computed(() => [
   { text: t('footer.gettingStarted'), href: '/error/not-implemented?feature=Getting%20Started' },
   { text: t('footer.buttons'), href: '/error/not-implemented?feature=Buttons' },
   { text: t('footer.help'), href: '/error/not-implemented?feature=Help' },
   { text: t('footer.faqs'), href: '/error/not-implemented?feature=FAQ' },
-]
+])
 
-const developerLinks = [
+const developerLinks = computed(() => [
   { text: t('footer.overview'), href: 'https://bibsonomy.bitbucket.io', external: true },
   { text: t('footer.apiDoc'), href: 'https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API', external: true },
-]
+])
 
 // Column 2: Privacy & Contact
-const column2Links = [
+const column2Links = computed(() => [
   { text: t('footer.about'), href: '/error/not-implemented?feature=About' },
   { text: t('footer.termsOfUse'), href: '/error/not-implemented?feature=Terms%20of%20Use' },
   { text: t('footer.cookies'), href: '/error/not-implemented?feature=Cookies' },
   { text: t('footer.issues'), href: '/error/not-implemented?feature=Issues' },
-]
+])
 
 // Column 3: Integration
-const column3Links = [
+const column3Links = computed(() => [
   { text: t('footer.academicPuma'), href: 'https://academic-puma.de/', external: true },
   { text: t('footer.typoThree'), href: 'https://typo3.org/extensions/repository/view/ext_bibsonomy_csl', external: true },
   { text: t('footer.wordpress'), href: 'https://wordpress.org/plugins/bibsonomy-csl/', external: true },
   { text: t('footer.javaClient'), href: 'https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/', external: true },
   { text: t('footer.scraperInfo'), href: '/error/not-implemented?feature=Scraper%20Info' },
-]
+])
 
 // Column 4: About BibSonomy
-const column4Links = [
+const column4Links = computed(() => [
   { text: t('footer.team'), href: '/error/not-implemented?feature=Team' },
   { text: t('footer.blog'), href: 'https://blog.bibsonomy.org', external: true },
-]
+])
 
-const socialMediaLinks = [
+const socialMediaLinks = computed(() => [
   { text: t('footer.twitter'), href: 'https://twitter.com/bibsonomy', external: true },
-]
+])
 </script>
 
 <template>

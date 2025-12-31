@@ -28,14 +28,14 @@ const { branding } = useBranding()
       <Button
         variant="success"
         :icon="Edit"
-        href="/error/not-implemented?feature=Register"
+        to="/error/not-implemented?feature=Register"
       >
         {{ t('home.register') }}
       </Button>
 
       <Button
         variant="info"
-        href="/error/not-implemented?feature=Getting+Started"
+        to="/error/not-implemented?feature=Getting+Started"
       >
         {{ t('home.learnmore') }}
       </Button>

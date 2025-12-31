@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import { useBranding } from '@/composables/useBranding'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 import SearchBar from './SearchBar.vue'
@@ -13,9 +14,9 @@ const { branding } = useBranding()
         <!-- Left: Logo (full width on mobile, half on desktop) -->
         <div class="w-full md:w-1/2">
           <h1 class="text-3xl md:text-4xl font-medium leading-tight mb-1 text-primary-600">
-            <a href="/" class="text-primary-600 no-underline hover:underline">
+            <RouterLink to="/" class="text-primary-600 no-underline hover:underline">
               {{ branding.projectName }}
-            </a>
+            </RouterLink>
           </h1>
           <p class="text-gray-600 text-sm m-0">
             {{ branding.tagline }}
