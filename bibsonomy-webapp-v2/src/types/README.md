@@ -4,10 +4,7 @@ TypeScript type definitions and Zod schemas for runtime validation.
 
 ## Structure
 
-- `models.ts` - Core domain types (Post, User, Tag, etc.)
-- `schemas.ts` - Zod schemas for API response validation
-- `api.ts` - API request/response types
-- `*.d.ts` - Ambient type declarations
+- `models.ts` - Core domain types and Zod schemas (Post, User, Tag, etc.)
 
 ## Guidelines
 
