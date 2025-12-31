@@ -26,6 +26,15 @@ class TagService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    /**
+     * Fetch multiplier when minFreq filter is active.
+     * Since minFreq filtering happens in-memory after fetching, we need to
+     * over-fetch to compensate for filtered items.
+     */
+    private companion object {
+        const val MIN_FREQ_FETCH_MULTIPLIER = 3
+    }
+
     fun listTags(
         offset: Int,
         limit: Int,
@@ -35,33 +44,52 @@ class TagService(
         val logic = resolveLogicFromRequest()
         val clampedLimit = limit.coerceIn(1, 100)
         val effectiveLimit = maxCount?.coerceIn(1, clampedLimit) ?: clampedLimit
-        val start = offset.coerceAtLeast(0)
-        val end = start + effectiveLimit
+        val requestedOffset = offset.coerceAtLeast(0)
 
-        val tags = logic.getTags(
-            Resource::class.java,
-            GroupingEntity.ALL,
-            null,
-            null,
-            null,
-            null,
-            QueryScope.LOCAL,
-            null,
-            null,
-            SortKey.POPULAR,
-            null,
-            null,
-            start,
-            end
-        )
-
-        val filtered = if (minFreq != null) {
+        return if (minFreq != null) {
+            // When filtering by minFreq, fetch a larger batch since the filter
+            // is applied in-memory. Fetch from start, filter, then paginate.
+            val fetchEnd = (requestedOffset + effectiveLimit) * MIN_FREQ_FETCH_MULTIPLIER
+            val tags = logic.getTags(
+                Resource::class.java,
+                GroupingEntity.ALL,
+                null,
+                null,
+                null,
+                null,
+                QueryScope.LOCAL,
+                null,
+                null,
+                SortKey.POPULAR,
+                null,
+                null,
+                0,
+                fetchEnd
+            )
             tags.filter { (it.globalcount ?: 0) >= minFreq }
+                .drop(requestedOffset)
+                .take(effectiveLimit)
+                .map { it.toDto() }
         } else {
-            tags
+            // No frequency filter - use direct database pagination
+            val end = requestedOffset + effectiveLimit
+            logic.getTags(
+                Resource::class.java,
+                GroupingEntity.ALL,
+                null,
+                null,
+                null,
+                null,
+                QueryScope.LOCAL,
+                null,
+                null,
+                SortKey.POPULAR,
+                null,
+                null,
+                requestedOffset,
+                end
+            ).map { it.toDto() }
         }
-
-        return filtered.map { it.toDto() }
     }
 
     /**
