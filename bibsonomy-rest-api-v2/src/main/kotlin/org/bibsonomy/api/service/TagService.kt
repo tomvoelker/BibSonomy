@@ -9,7 +9,9 @@ import org.bibsonomy.common.enums.SortKey
 import org.bibsonomy.model.Resource
 import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.stereotype.Service
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -22,6 +24,7 @@ class TagService(
     private val logic: LogicInterface,
     private val logicFactory: LogicInterfaceFactory
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun listTags(
         offset: Int,
@@ -72,9 +75,14 @@ class TagService(
         val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
         val header = request?.getHeader(HttpHeaders.AUTHORIZATION)
         if (header != null && header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
-            val (username, apiKey) = BasicAuthUtils.decode(header)
-            if (user?.name.isNullOrBlank() || user?.name != username) {
-                return logicFactory.getLogicAccess(username, apiKey)
+            try {
+                val (username, apiKey) = BasicAuthUtils.decode(header)
+                if (user?.name.isNullOrBlank() || user?.name != username) {
+                    return logicFactory.getLogicAccess(username, apiKey)
+                }
+            } catch (e: BadCredentialsException) {
+                logger.debug("Invalid Authorization header format, ignoring: {}", e.message)
+                // Fall through to return current logic with default/anonymous access
             }
         }
         return current
