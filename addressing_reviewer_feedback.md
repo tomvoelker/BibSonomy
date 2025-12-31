@@ -109,6 +109,11 @@ This document tracks how CodeRabbit reviewer feedback on PR #6 has been addresse
 - **Original Issue:** `allow-circular-references: true` is a code smell
 - **Decision:** Documented as intentional for legacy compatibility - the bibsonomy-database module has circular deps in Spring 3.2 XML
 
+#### FixedCommunityBookmarkConverter: Null-Safety for URL
+- **Original Issue:** `source["url"] as? String` could assign null to non-nullable `Bookmark.url`
+- **Fix Applied:** Added defensive empty string fallback `?: ""`
+- Also added documentation noting converter is not wired as a Spring bean
+
 ### Stale/Not Addressing
 
 #### PostsControllerAuthIntegrationTest: Test Assertion
@@ -136,6 +141,7 @@ All actionable comments have been addressed. The remaining "unresolved" comments
 5. **decodeBasic duplication** - Already fixed: `BasicAuthUtils.decode()` exists at `security/BasicAuthUtils.kt`
 6. **PostService LogicInterface inconsistency** - Already fixed: `getCount` takes `logic: LogicInterface` parameter (line 232)
 7. **PostService MERGED_PAGINATION_WARNING_THRESHOLD unused** - Already implemented: PostsController.kt lines 73-81 add warning header when offset exceeds threshold
+8. **FixedCommunityBookmarkConverter null URL** - Fixed: Added `?: ""` fallback for non-nullable Bookmark.url field
 
 Minor comments marked as "Trivial Nitpick" that don't warrant changes are documented above with reasoning.
 
@@ -143,4 +149,4 @@ Minor comments marked as "Trivial Nitpick" that don't warrant changes are docume
 
 ## Verification Date
 
-Last verified: 2025-12-31 (iteration 2)
+Last verified: 2025-12-31 (iteration 3)
