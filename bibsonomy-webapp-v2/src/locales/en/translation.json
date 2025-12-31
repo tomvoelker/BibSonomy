@@ -118,10 +118,10 @@
     "languageEnglish": "English"
   },
   "error": {
-    "pageTitle": "An error occured!",
+    "pageTitle": "An error occurred!",
     "notFound": "Sorry, the requested page does not exist on our server.",
     "notFoundHeader": "error 404 - page not found",
-    "serverError": "Sorry, an internal error has occured.",
+    "serverError": "Sorry, an internal error has occurred.",
     "serverErrorHeader": "error 500 - internal server error",
     "serviceUnavailable": "Sorry, the service is temporarily unavailable.",
     "serviceUnavailableHeader": "error 503 - service unavailable",
