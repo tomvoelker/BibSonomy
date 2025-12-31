@@ -16,28 +16,28 @@ class PostMapperVisibilityTest {
 
     @Test
     fun `post with public group has PUBLIC visibility`() {
-        val post = createTestPost(setOf(Group(0))) // Group ID 0 = public
+        val post = createTestPost(setOf(createGroup(0, "public"))) // Group ID 0 = public
         val dto = post.toDto()
         assertEquals(Visibility.PUBLIC, dto.visibility)
     }
 
     @Test
     fun `post with only private group has PRIVATE visibility`() {
-        val post = createTestPost(setOf(Group(1))) // Group ID 1 = private
+        val post = createTestPost(setOf(createGroup(1, "private"))) // Group ID 1 = private
         val dto = post.toDto()
         assertEquals(Visibility.PRIVATE, dto.visibility)
     }
 
     @Test
     fun `post with custom group has GROUPS visibility`() {
-        val post = createTestPost(setOf(Group(42))) // Group ID 42 = custom group
+        val post = createTestPost(setOf(createGroup(42, "mygroup"))) // Group ID 42 = custom group
         val dto = post.toDto()
         assertEquals(Visibility.GROUPS, dto.visibility)
     }
 
     @Test
     fun `post with private and custom groups has GROUPS visibility`() {
-        val post = createTestPost(setOf(Group(1), Group(42))) // Private + custom
+        val post = createTestPost(setOf(createGroup(1, "private"), createGroup(42, "mygroup"))) // Private + custom
         val dto = post.toDto()
         assertEquals(Visibility.GROUPS, dto.visibility)
     }
@@ -58,9 +58,16 @@ class PostMapperVisibilityTest {
 
     @Test
     fun `post with public and custom groups has PUBLIC visibility`() {
-        val post = createTestPost(setOf(Group(0), Group(42))) // Public trumps all
+        val post = createTestPost(setOf(createGroup(0, "public"), createGroup(42, "mygroup"))) // Public trumps all
         val dto = post.toDto()
         assertEquals(Visibility.PUBLIC, dto.visibility)
+    }
+
+    private fun createGroup(id: Int, name: String): Group {
+        return Group().apply {
+            groupId = id
+            this.name = name
+        }
     }
 
     private fun createTestPost(groups: Set<Group>?): Post<BibTex> {
@@ -72,6 +79,7 @@ class PostMapperVisibilityTest {
         val bibtex = BibTex().apply {
             title = "Test Publication"
             entrytype = "article"
+            intraHash = "testhash123"
         }
 
         return Post<BibTex>().apply {

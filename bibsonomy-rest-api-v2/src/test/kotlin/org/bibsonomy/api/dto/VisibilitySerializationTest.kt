@@ -52,7 +52,7 @@ class VisibilitySerializationTest {
     @Test
     fun `PostDto with visibility serializes correctly`() {
         val postDto = PostDto(
-            id = 1,
+            id = "hash123",
             user = UserRefDto("testuser", "Test User"),
             resource = BookmarkDto("https://example.com", "Example", "hash123"),
             description = "Test post",
