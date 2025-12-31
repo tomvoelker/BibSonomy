@@ -8,9 +8,13 @@ interface Props {
   title?: string
   /** Message text */
   message: string
+  /** Semantic heading level (h2, h3, h4, h5, h6) for accessibility */
+  headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  headingLevel: 'h3',
+})
 </script>
 
 <template>
@@ -24,10 +28,14 @@ defineProps<Props>()
       aria-hidden="true"
     />
 
-    <!-- Title -->
-    <h3 v-if="title" class="text-lg font-medium text-gray-900 mb-2">
+    <!-- Title (semantic heading level configurable for accessibility) -->
+    <component
+      v-if="title"
+      :is="props.headingLevel"
+      class="text-lg font-medium text-gray-900 mb-2"
+    >
       {{ title }}
-    </h3>
+    </component>
 
     <!-- Message -->
     <p class="text-gray-600 max-w-md">

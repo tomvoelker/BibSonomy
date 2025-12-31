@@ -21,93 +21,42 @@ const goBack = () => {
 
 <template>
   <MainLayout>
-    <div
-      style="
-        background: white;
-        border-left: 1px solid #cbcbcb;
-        border-right: 1px solid #cbcbcb;
-        max-width: 1170px;
-        margin: 0 auto;
-        padding: 40px 15px;
-        min-height: 500px;
-      "
-    >
-      <div style="max-width: 600px; margin: 0 auto; text-align: center">
+    <div class="bg-white border-l border-r border-gray-300 max-w-[1170px] mx-auto py-10 px-4 min-h-[500px]">
+      <div class="max-w-[600px] mx-auto text-center">
         <!-- Construction Icon -->
-        <div style="margin: 20px 0">
-          <Construction :size="80" style="color: #f0ad4e" />
+        <div class="my-5">
+          <Construction :size="80" class="text-warning-500" />
         </div>
 
-        <h1
-          style="
-            font-size: 36px;
-            font-weight: 500;
-            line-height: 1.1;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            color: #333;
-          "
-        >
+        <h1 class="text-4xl font-medium leading-tight mt-5 mb-5 text-gray-800">
           {{ t('error.notImplementedHeader') }}
         </h1>
 
         <!-- Warning Alert -->
-        <div
-          style="
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #faebcc;
-            border-radius: 4px;
-            background-color: #fcf8e3;
-            color: #8a6d3b;
-            text-align: left;
-          "
-        >
-          <strong style="display: block; margin-bottom: 10px">{{ featureName }}</strong>
+        <div class="p-4 mb-5 border border-warning-200 rounded bg-warning-50 text-warning-800 text-left">
+          <strong class="block mb-2.5">{{ featureName }}</strong>
           {{ t('error.notImplementedMessage') }}
         </div>
 
         <!-- Info Box -->
-        <div
-          style="
-            padding: 20px;
-            margin: 30px 0;
-            border: 1px solid #bce8f1;
-            border-radius: 4px;
-            background-color: #d9edf7;
-            color: #31708f;
-            text-align: left;
-          "
-        >
-          <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 16px; font-weight: bold">
+        <div class="p-5 my-8 border border-info-200 rounded bg-info-50 text-info-700 text-left">
+          <h4 class="mt-0 mb-2.5 text-base font-bold">
             Currently Implemented Features:
           </h4>
-          <ul style="margin: 10px 0; padding-left: 20px">
-            <li style="margin: 5px 0">Browse posts (bookmarks and publications)</li>
-            <li style="margin: 5px 0">View post details</li>
-            <li style="margin: 5px 0">Language switching (English/German)</li>
-            <li style="margin: 5px 0">Responsive design matching original BibSonomy</li>
+          <ul class="my-2.5 pl-5 list-disc">
+            <li class="my-1">Browse posts (bookmarks and publications)</li>
+            <li class="my-1">View post details</li>
+            <li class="my-1">Language switching (English/German)</li>
+            <li class="my-1">Responsive design matching original BibSonomy</li>
           </ul>
         </div>
 
         <!-- Action Buttons -->
-        <div style="margin-top: 30px">
+        <div class="mt-8">
           <button
             @click="goBack"
             type="button"
-            style="
-              padding: 10px 16px;
-              font-size: 18px;
-              line-height: 1.33;
-              border-radius: 6px;
-              color: #fff;
-              background-color: #428bca;
-              border: 1px solid #357ebd;
-              cursor: pointer;
-              margin-right: 10px;
-            "
-            @mouseover="($event.target as HTMLElement).style.backgroundColor = '#3071a9'"
-            @mouseout="($event.target as HTMLElement).style.backgroundColor = '#428bca'"
+            class="px-4 py-2.5 text-lg leading-normal rounded-md text-white bg-primary-600 border border-primary-700 cursor-pointer mr-2.5 hover:bg-primary-700 transition-colors"
           >
             {{ t('common.back') }}
           </button>
@@ -115,18 +64,7 @@ const goBack = () => {
           <button
             @click="goHome"
             type="button"
-            style="
-              padding: 10px 16px;
-              font-size: 18px;
-              line-height: 1.33;
-              border-radius: 6px;
-              color: #333;
-              background-color: #fff;
-              border: 1px solid #ccc;
-              cursor: pointer;
-            "
-            @mouseover="($event.target as HTMLElement).style.backgroundColor = '#e6e6e6'"
-            @mouseout="($event.target as HTMLElement).style.backgroundColor = '#fff'"
+            class="px-4 py-2.5 text-lg leading-normal rounded-md text-gray-800 bg-white border border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors"
           >
             {{ t('error.goHome') }}
           </button>
