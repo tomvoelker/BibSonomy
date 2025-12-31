@@ -133,7 +133,7 @@ None (root route)
 
 ## i18n Keys
 
-```
+```text
 page.home.title
 page.home.heroHeading
 page.home.heroSubheading
