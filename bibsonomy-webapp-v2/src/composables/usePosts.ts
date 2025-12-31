@@ -4,6 +4,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { isRef } from 'vue'
 import { getPosts, getPost, createPost, updatePost, deletePost } from '@/api/posts'
 import type { GetPostsParams, Post } from '@/types/models'
 import type { Ref } from 'vue'
@@ -15,7 +16,7 @@ export function usePosts(params?: Ref<GetPostsParams> | GetPostsParams) {
   return useQuery({
     queryKey: ['posts', params],
     queryFn: () => {
-      const queryParams = 'value' in params ? params.value : params
+      const queryParams = isRef(params) ? params.value : params
       return getPosts(queryParams)
     },
   })
