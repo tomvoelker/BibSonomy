@@ -1,0 +1,35 @@
+package org.bibsonomy.api.search
+
+import org.bibsonomy.model.Bookmark
+import org.bibsonomy.model.GoldStandardBookmark
+import org.bibsonomy.model.Post
+import org.bibsonomy.search.util.Converter
+import java.net.URI
+
+/**
+ * Replacement for the broken CommunityBookmarkConverter bytecode in the legacy
+ * search module. Minimal converter to keep the search wiring alive without
+ * relying on the legacy compiled classes.
+ *
+ * Note: This converter is currently not wired as a Spring bean and is only
+ * included for structural compatibility with legacy search configuration.
+ */
+class FixedCommunityBookmarkConverter(@Suppress("UNUSED_PARAMETER") systemURI: URI) :
+    Converter<Post<Bookmark>, Map<String, Any>, Set<String>> {
+
+    override fun convert(source: Post<Bookmark>): Map<String, Any> {
+        val postId = source.contentId ?: "unknown"
+        val url = source.resource?.url ?: "unknown"
+        throw UnsupportedOperationException(
+            "convert(Post<Bookmark> -> Map) is not implemented in FixedCommunityBookmarkConverter stub " +
+            "(post id: $postId, url: $url). This converter is a minimal placeholder for broken legacy search bytecode."
+        )
+    }
+
+    override fun convert(source: Map<String, Any>, @Suppress("UNUSED_PARAMETER") options: Set<String>): Post<Bookmark> = Post<Bookmark>().apply {
+        resource = GoldStandardBookmark().apply {
+            // Defensive: Bookmark.url is non-nullable in Java, use empty string as fallback
+            url = source["url"] as? String ?: ""
+        }
+    }
+}
