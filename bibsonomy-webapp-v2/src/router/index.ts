@@ -4,6 +4,7 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 
 // Route definitions
 const routes: RouteRecordRaw[] = [
@@ -13,6 +14,15 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/HomePage.vue'),
     meta: {
       title: 'Home',
+      requiresAuth: false,
+    },
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/pages/NotImplementedPage.vue'),
+    meta: {
+      title: 'Login',
       requiresAuth: false,
     },
   },
@@ -69,10 +79,9 @@ const router = createRouter({
 
 // Navigation guard for authentication
 router.beforeEach((to, from, next) => {
-  // This is a placeholder - implement actual auth check
-  const isAuthenticated = false // TODO: Check auth store
+  const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     // Redirect to login if not authenticated
     next({ name: 'login', query: { redirect: to.fullPath } })
   } else {
