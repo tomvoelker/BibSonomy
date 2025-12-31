@@ -53,10 +53,19 @@ This document captures the intentional shortcuts/stubs we introduced to get the 
   - What: `/api/v2/posts/{postId}` uses the legacy `getPostDetails(hash, owner)`; `postId` is the resource hash (intra/inter), not the numeric contentId, and `user` query param disambiguates the owner.  
   - Impact: Numeric contentId lookup is not implemented; callers must supply the hash (and owner for private posts). Future work would need a DB/API hook to fetch by contentId.
 
-- **Resource-type fallback (Low/Medium)**  
-  - Locations: `PostsController.kt`, `PostService.kt`  
-  - What: Accepts `resourceType`/`resourcetype`, defaults to `all`, coerces unknown to `bibtex`.  
+- **Resource-type fallback (Low/Medium)**
+  - Locations: `PostsController.kt`, `PostService.kt`
+  - What: Accepts `resourceType`/`resourcetype`, defaults to `all`, coerces unknown to `bibtex`.
   - Impact: `all` merges bibtex+bookmarks in-memory (sorted/limited in code) to avoid legacy mixed-type query support; total counts are optional and expensive (`includeTotal=true`).
+
+- **Merged pagination limits for resourceType=all (Low)**
+  - Locations: `PostService.kt`, `PostsController.kt`
+  - What: For `resourceType=all`, the server fetches `[0, offset+limit)` from both bookmarks and publications, merges/sorts them, then slices. This has O(offset) memory cost.
+  - Limits:
+    - **Max offset: 500** – requests with higher offset return HTTP 400
+    - **Warning threshold: 200** – requests above this get `X-Pagination-Warning` header
+  - Rationale: The legacy API never supported merged pagination (threw `UnsupportedResourceTypeException`). This implementation is an improvement, but deep pagination should use specific `resourceType=bookmark` or `resourceType=bibtex`.
+  - Future: Consider cursor-based pagination if users need deep merged results.
 
 ## Progress snapshot (posts)
 - List posts: implemented with optional auth (public by default, private when authenticated), sorting, tags/search, resourceType all/bibtex/bookmark, optional `includeTotal`.
@@ -74,8 +83,8 @@ This document captures the intentional shortcuts/stubs we introduced to get the 
 4) **Permission config**: populate `specialUserTagMap` with real values.  
 5) **Plugins**: reintroduce required database plugins and remove the no-op registry.  
 6) **Gold-standard**: restore gold-standard chains/managers/info service if needed.  
-7) **Search/metadata**: wire real search beans and metadata providers; remove empty stubs. **(Done)**  
-8) **Resource-type handling**: enforce/handle “all” properly or return 400 on unsupported types instead of forcing bibtex.  
+7) **Search/metadata**: wire real search beans and metadata providers; remove empty stubs. *(Still using no-op stubs; search returns empty results.)*  
+8) **Resource-type handling**: ~~enforce/handle "all" properly or return 400 on unsupported types instead of forcing bibtex.~~ **(Addressed)** Merged pagination now has guardrails (offset cap at 500, warning header above 200). Consider cursor pagination for future deep navigation needs.  
 9) **Hygiene**: add integration tests (posts bibtex/bookmark, auth-required paths), health checks, and remove temporary warnings.
 
 ## Current behavior to expect
@@ -83,6 +92,6 @@ This document captures the intentional shortcuts/stubs we introduced to get the 
 - Search/markup system tag processing restored; executable system tags still disabled.  
 - Real validation and file handling in place; plugin side effects and gold-standard features still disabled.  
 - Search beans are no-op; metadata providers are fed by the stub searchers (empty results).  
-- Resource type defaults to bibtex unless explicitly set to bookmark.
+- Resource type defaults to `all` (merged bookmarks + publications); unknown types fall back to bibtex.
 
 Keep this list updated as you remove stubs and wire real components.***

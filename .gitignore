@@ -37,3 +37,6 @@ src/main/webapp/WEB-INF/lib/
 bibsonomy-rest-api-v2/src/main/resources/application-local.yml
 .m2/
 bibsonomy-rest-api-v2/.m2/
+
+# Maven toolchains (developer-specific JDK paths)
+toolchains.xml

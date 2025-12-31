@@ -1,7 +1,9 @@
 package org.bibsonomy.api.controller
 
 import org.bibsonomy.api.dto.PaginatedPostList
+import org.bibsonomy.api.dto.PostDto
 import org.bibsonomy.api.service.PostService
+import org.bibsonomy.api.service.PostService.Companion.MERGED_PAGINATION_WARNING_THRESHOLD
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -46,13 +48,14 @@ class PostsController(
         @RequestParam(name = "order", defaultValue = "desc") order: String,
         @RequestParam(name = "format", defaultValue = "json") format: String,
         @RequestParam(name = "includeTotal", defaultValue = "false") includeTotal: Boolean
-    ): PaginatedPostList {
-        // Validate and clamp limit to max 100
+    ): ResponseEntity<PaginatedPostList> {
+        // Validate and clamp limit to max 100, offset to non-negative
         val clampedLimit = limit.coerceIn(1, 100)
+        val clampedOffset = offset.coerceAtLeast(0)
         val effectiveResourceType = resourceTypeAlias ?: resourceType
 
-        return postService.getPosts(
-            offset = offset,
+        val result = postService.getPosts(
+            offset = clampedOffset,
             limit = clampedLimit,
             resourceType = effectiveResourceType,
             tags = tags,
@@ -64,6 +67,20 @@ class PostsController(
             format = format,
             includeTotal = includeTotal
         )
+
+        // Add warning header for merged pagination with high offset
+        val responseBuilder = ResponseEntity.ok()
+        if (effectiveResourceType.equals("all", ignoreCase = true) &&
+            clampedOffset > MERGED_PAGINATION_WARNING_THRESHOLD
+        ) {
+            responseBuilder.header(
+                "X-Pagination-Warning",
+                "High offset ($clampedOffset) with resourceType='all' may be slow. " +
+                    "Consider using resourceType='bookmark' or 'bibtex' for deep pagination."
+            )
+        }
+
+        return responseBuilder.body(result)
     }
 
     /**
@@ -76,7 +93,7 @@ class PostsController(
     fun getPost(
         @PathVariable("postId") postId: String,
         @RequestParam(required = false) user: String?
-    ): ResponseEntity<org.bibsonomy.api.dto.PostDto> {
+    ): ResponseEntity<PostDto> {
         val dto = postService.getPostByHash(postId, user)
         return ResponseEntity.ok(dto)
     }

@@ -3,6 +3,7 @@ package org.bibsonomy.api.service
 import org.bibsonomy.api.dto.PaginatedPostList
 import org.bibsonomy.api.dto.PostDto
 import org.bibsonomy.api.mapper.toDto
+import org.bibsonomy.api.security.BasicAuthUtils
 import org.bibsonomy.common.enums.GroupingEntity
 import org.bibsonomy.common.enums.SortOrder
 import org.bibsonomy.common.enums.SortKey
@@ -13,14 +14,13 @@ import org.bibsonomy.model.Resource
 import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
 import org.bibsonomy.model.logic.query.PostQuery
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.http.HttpHeaders
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import java.nio.charset.StandardCharsets
-import java.util.Base64
 
 /**
  * Service layer for posts API.
@@ -33,6 +33,24 @@ class PostService(
     private val logic: LogicInterface,
     private val logicFactory: LogicInterfaceFactory
 ) {
+    private val log = LoggerFactory.getLogger(PostService::class.java)
+
+    companion object {
+        /**
+         * Maximum allowed offset for resourceType="all" merged pagination.
+         *
+         * For merged pagination, we must fetch [0, offset+limit) from BOTH resource types,
+         * merge/sort them, then slice. At offset=500, limit=20, this fetches 2×520 = 1040 items.
+         * Beyond this threshold, clients should use a specific resourceType or cursor pagination.
+         */
+        const val MAX_OFFSET_FOR_MERGED_PAGINATION = 500
+
+        /**
+         * Offset threshold above which a warning header is recommended.
+         * Clients should consider switching to specific resourceType or cursor pagination.
+         */
+        const val MERGED_PAGINATION_WARNING_THRESHOLD = 200
+    }
 
     fun getPostByHash(resourceHash: String, user: String?): PostDto {
         val logic = resolveLogicFromRequest()
@@ -101,6 +119,15 @@ class PostService(
             "bookmark" -> logic.getPosts(baseQuery(org.bibsonomy.model.Bookmark::class.java, offset, offset + limit))
             "bibtex" -> logic.getPosts(baseQuery(org.bibsonomy.model.BibTex::class.java, offset, offset + limit))
             "all" -> {
+                // Validate offset for merged pagination to prevent excessive data fetching.
+                // For offset=N, we fetch 2×(N+limit) items before slicing.
+                if (offset > MAX_OFFSET_FOR_MERGED_PAGINATION) {
+                    throw ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Offset $offset exceeds maximum ($MAX_OFFSET_FOR_MERGED_PAGINATION) for resourceType='all'. " +
+                            "Use resourceType='bookmark' or 'bibtex' for deep pagination, or use cursor-based pagination."
+                    )
+                }
                 val fetchEnd = offset + limit
                 val bookmarks = logic.getPosts(baseQuery(org.bibsonomy.model.Bookmark::class.java, 0, fetchEnd))
                 val publications = logic.getPosts(baseQuery(org.bibsonomy.model.BibTex::class.java, 0, fetchEnd))
@@ -115,21 +142,41 @@ class PostService(
             try {
                 post.toDto()
             } catch (e: IllegalStateException) {
-                // Skip posts with invalid data (e.g., null contentId)
+                // Skip posts with invalid data (e.g., null contentId, date, user, or resource)
+                val postId = post.contentId ?: "unknown"
+                val userName = post.user?.name ?: "unknown"
+                val resourceTitle = post.resource?.let {
+                    when (it) {
+                        is org.bibsonomy.model.Bookmark -> it.title
+                        is org.bibsonomy.model.BibTex -> it.title
+                        else -> null
+                    }
+                } ?: "unknown"
+
+                log.warn(
+                    "Skipping post with invalid data - postId: {}, user: {}, title: {}, error: {}",
+                    postId,
+                    userName,
+                    resourceTitle,
+                    e.message,
+                    e
+                )
                 null
             }
         }
 
         val totalCount = if (includeTotal) {
             when (resourceType.lowercase()) {
-                "bookmark" -> getCount(org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey)
-                "bibtex" -> getCount(org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
-                "all" -> getCount(org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey) +
-                    getCount(org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
-                else -> postDtos.size
+                "bookmark" -> getCount(logic, org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey)
+                "bibtex" -> getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
+                "all" -> getCount(logic, org.bibsonomy.model.Bookmark::class.java, normalizedTags, user, group, search, sortKey) +
+                    getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
+                // Unknown types fall back to bibtex query (see posts fetch above), so count should match
+                else -> getCount(logic, org.bibsonomy.model.BibTex::class.java, normalizedTags, user, group, search, sortKey)
             }
         } else {
-            postDtos.size
+            // Per OpenAPI spec: when includeTotal=false, return -1 to indicate not computed
+            -1
         }
 
         return PaginatedPostList(
@@ -150,29 +197,28 @@ class PostService(
         }
     }
 
+    /**
+     * Resolve the LogicInterface for the current request, supporting optional auth.
+     *
+     * The injected `logic` bean is request-scoped and already authenticated for protected
+     * endpoints. However, public endpoints (GET /posts) allow optional authentication where
+     * the SecurityContext may be unauthenticated/guest even when Basic Auth header is present.
+     * This method re-parses the header only when the current logic is guest but credentials
+     * are available, enabling authenticated users to see their private posts on public endpoints.
+     */
     private fun resolveLogicFromRequest(): LogicInterface {
         val current = logic
         val user = current.authenticatedUser
         val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
         val header = request?.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header != null && header.startsWith("Basic ")) {
-            val (username, apiKey) = decodeBasic(header)
+        if (header != null && header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
+            val (username, apiKey) = BasicAuthUtils.decode(header)
             // Only rebuild logic if the current proxy is unauthenticated/guest or mismatched.
             if (user?.name.isNullOrBlank() || user?.name != username) {
                 return logicFactory.getLogicAccess(username, apiKey)
             }
         }
         return current
-    }
-
-    private fun decodeBasic(header: String): Pair<String, String> {
-        val base64Token = header.removePrefix("Basic ").trim()
-        val decoded = String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8)
-        val delim = decoded.indexOf(':')
-        require(delim >= 0) { "Invalid basic authentication token" }
-        val username = decoded.substring(0, delim)
-        val apiKey = decoded.substring(delim + 1)
-        return username to apiKey
     }
 
     private fun buildComparator(sortKey: SortKey, sortOrder: SortOrder): Comparator<org.bibsonomy.model.Post<Resource>> {
@@ -193,6 +239,7 @@ class PostService(
     }
 
     private fun getCount(
+        logic: LogicInterface,
         resourceClass: Class<out Resource>,
         tags: List<String>?,
         user: String?,

@@ -52,6 +52,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.beans.factory.annotation.Qualifier
+import org.slf4j.LoggerFactory
 
 /**
  * Provides bean aliases expected by the legacy XML configuration but not
@@ -59,6 +60,10 @@ import org.springframework.beans.factory.annotation.Qualifier
  */
 @Configuration
 class LegacyBeanAliasesConfig {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(LegacyBeanAliasesConfig::class.java)
+    }
 
     /**
      * Remove/override selected legacy beans from the imported XML when they
@@ -101,15 +106,6 @@ class LegacyBeanAliasesConfig {
                     registry.removeBeanDefinition(name)
                 }
             }
-
-            registry.registerBeanDefinition(
-                "goldStandardPublicationClass",
-                RootBeanDefinition(Class::class.java) { GoldStandardPublication::class.java }
-            )
-            registry.registerBeanDefinition(
-                "goldStandardBookmarkClass",
-                RootBeanDefinition(Class::class.java) { GoldStandardBookmark::class.java }
-            )
 
             registry.registerBeanDefinition(
                 "reportInformationService",
@@ -155,12 +151,6 @@ class LegacyBeanAliasesConfig {
                 }
             }
             registry.registerBeanDefinition("systemTagFactory", systemTagFactoryDef)
-
-            // Make sure permission manager gets a real map instead of an unparsed string placeholder
-            if (registry.containsBeanDefinition("permissionDatabaseManager")) {
-                val def = registry.getBeanDefinition("permissionDatabaseManager")
-                def.propertyValues.add("specialUserTagMap", emptyMap<String, String>())
-            }
         }
 
     /**
@@ -178,19 +168,15 @@ class LegacyBeanAliasesConfig {
 
     // Stub search DB logics to allow search beans to instantiate without the full legacy DB wiring.
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun bookmarkSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun publicationSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun goldStandardBookmarkSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     fun goldStandardPublicationSearchDBLogic(): SearchDBInterface<*> = DummySearchDBInterface()
 
     @Bean(name = ["goldStandardPublicationClass"])
@@ -238,7 +224,8 @@ class LegacyBeanAliasesConfig {
         if (raw.isNullOrBlank()) return emptyMap()
         return try {
             ObjectMapper().readValue(raw, object : TypeReference<Map<String, String>>() {})
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            logger.warn("Failed to parse specialUsersTagMap as JSON, falling back to manual parser. Raw input: '$raw'", e)
             // Fallback: remove braces and split on commas; tolerate unresolved placeholders.
             raw.trim('{', '}')
                 .split(',')

@@ -71,6 +71,13 @@ paths:
       description: |
         Get a paginated list of posts (bookmarks and/or publications).
         Supports filtering by resource type, tags, user, group, and search query.
+
+        **Pagination note for `resourceType=all`:**
+        When fetching both bookmarks and publications together, the server must fetch
+        and merge results from both sources. For performance reasons:
+        - Maximum offset is **500** for `resourceType=all` (returns 400 if exceeded)
+        - A warning header `X-Pagination-Warning` is returned when offset > 200
+        - For deep pagination, use `resourceType=bookmark` or `resourceType=bibtex` instead
       operationId: listPosts
       security:
         - {}
@@ -85,7 +92,9 @@ paths:
             type: string
             enum: [bookmark, bibtex, all]
             default: all
-          description: Filter by resource type
+          description: |
+            Filter by resource type. Use `all` for combined results (limited to offset ≤ 500).
+            For deep pagination beyond page 25, use `bookmark` or `bibtex` explicitly.
         - name: tags
           in: query
           schema:
@@ -124,8 +133,8 @@ paths:
             type: boolean
             default: false
           description: |
-            When true, also calculates totalCount for the full result set (can be slow on large datasets).
-            When false, totalCount reflects only the number of items in this page.
+            When true, calculates totalCount for the full result set (can be slow on large datasets).
+            When false, totalCount is set to -1 to indicate it was not computed.
       responses:
         '200':
           description: Successful response
@@ -165,8 +174,22 @@ paths:
               schema:
                 type: string
                 description: FOAF RDF format
+          headers:
+            X-Pagination-Warning:
+              schema:
+                type: string
+              description: |
+                Returned when resourceType=all and offset > 200 to warn about
+                potential performance impact of merged pagination with high offsets.
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: |
+            Bad request. Common causes:
+            - Offset exceeds 500 for resourceType=all (merged pagination limit)
+            - Invalid parameter values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -214,7 +237,7 @@ paths:
           schema:
             type: string
           required: false
-          description: Owner of the post (required to disambiguate and to access private posts)
+          description: Optional post owner username. Used to disambiguate posts when resource hashes are per-user scoped in the legacy API. Access to private posts is enforced via authentication headers, not this parameter.
       responses:
         '200':
           description: Successful response
@@ -643,7 +666,12 @@ paths:
     post:
       tags: [Users]
       summary: Register new user
-      description: Create a new user account
+      description: >
+        Create a new user account.
+
+        **Privacy Note**: The response includes the user's email address since
+        this is a self-registration request. The newly created user is automatically
+        authenticated to receive their full profile including personal data.
       operationId: registerUser
       security: []
       requestBody:
@@ -654,7 +682,9 @@ paths:
               $ref: '#/components/schemas/UserRegistrationRequest'
       responses:
         '201':
-          description: User registered successfully
+          description: >
+            User registered successfully.
+            Response includes email (personal data) as this is a self-request.
           content:
             application/json:
               schema:
@@ -667,6 +697,15 @@ paths:
     get:
       tags: [Users]
       summary: Get user profile
+      description: >
+        Retrieve a user's profile information.
+
+        **Privacy Note**: Email address is only included when:
+        - Requesting your own profile (authenticated self-request), OR
+        - Requesting as an admin user
+
+        When viewing other users' profiles as a non-admin, the email field will be omitted
+        to comply with privacy regulations (GDPR).
       operationId: getUserProfile
       responses:
         '200':
@@ -679,6 +718,11 @@ paths:
     put:
       tags: [Users]
       summary: Update user profile
+      description: >
+        Update the authenticated user's profile.
+
+        **Privacy Note**: The response includes email (personal data) since users
+        can only update their own profile (authenticated self-request).
       operationId: updateUserProfile
       requestBody:
         required: true
@@ -688,7 +732,9 @@ paths:
               $ref: '#/components/schemas/UserProfileUpdateRequest'
       responses:
         '200':
-          description: Profile updated successfully
+          description: >
+            Profile updated successfully.
+            Response includes email as this is a self-request.
           content:
             application/json:
               schema:
@@ -1528,19 +1574,12 @@ paths:
               required: [targetPostId]
               properties:
                 targetPostId:
-                  type: integer
-                  description: ID of the post being referenced
+                  type: string
+                  pattern: '^[a-f0-9]{32}$'
+                  description: Resource hash of the post being referenced (same format as postId)
       responses:
         '201':
           description: Reference added
-
-    delete:
-      tags: [Community]
-      summary: Remove reference relation
-      operationId: removeReference
-      responses:
-        '204':
-          description: Reference removed
 
     get:
       tags: [Community]
@@ -1556,6 +1595,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/references/{targetPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: targetPostId
+        in: path
+        required: true
+        description: Resource hash of the referenced post to remove (same format as postId)
+        schema:
+          type: string
+          pattern: '^[a-f0-9]{32}$'
+
+    delete:
+      tags: [Community]
+      summary: Remove specific reference relation
+      description: Remove the reference from this post to the specified target post
+      operationId: removeReference
+      responses:
+        '204':
+          description: Reference removed
+        '404':
+          description: Reference not found
 
   /api/v2/community/{postId}/part-of:
     parameters:
@@ -1575,19 +1636,12 @@ paths:
               required: [parentPostId]
               properties:
                 parentPostId:
-                  type: integer
-                  description: ID of the parent post
+                  type: string
+                  pattern: '^[a-f0-9]{32}$'
+                  description: Resource hash of the parent post (same format as postId)
       responses:
         '201':
           description: Part-of relation added
-
-    delete:
-      tags: [Community]
-      summary: Remove part-of relation
-      operationId: removePartOf
-      responses:
-        '204':
-          description: Part-of relation removed
 
     get:
       tags: [Community]
@@ -1603,6 +1657,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostRefDto'
+
+  /api/v2/community/{postId}/part-of/{parentPostId}:
+    parameters:
+      - $ref: '#/components/parameters/postIdParam'
+      - name: parentPostId
+        in: path
+        required: true
+        description: Resource hash of the parent post to remove from part-of relation (same format as postId)
+        schema:
+          type: string
+          pattern: '^[a-f0-9]{32}$'
+
+    delete:
+      tags: [Community]
+      summary: Remove specific part-of relation
+      description: Remove the part-of relation from this post to the specified parent post
+      operationId: removePartOf
+      responses:
+        '204':
+          description: Part-of relation removed
+        '404':
+          description: Part-of relation not found
 
   /api/v2/community/{postId}:
     parameters:
@@ -1791,7 +1867,14 @@ components:
       required: true
       schema:
         type: string
-      description: Resource hash of the post (intraHash/interHash from legacy API)
+        pattern: '^[a-f0-9]{32}$'
+      description: |
+        Resource hash (MD5 hex string) identifying the post. Matches PostDto.id.
+        For bookmarks: MD5 of the URL (e.g., "5d41402abc4b2a76b9719d911017c592")
+        For publications: Hash of bibliographic fields (intraHash or interHash)
+
+        **Note**: Since multiple users can have the same resource (same hash),
+        use the optional `user` query parameter to disambiguate when needed.
 
     usernameParam:
       name: username
@@ -1857,9 +1940,22 @@ components:
       required: [id, user, resource, createdAt]
       properties:
         id:
-          type: integer
-          description: Post ID
-          example: 12345
+          type: string
+          description: |
+            Resource hash (MD5 hex string) serving as the primary post identifier.
+            Matches the legacy REST API v1 behavior using intraHash or interHash from
+            the resource. This hash represents the resource content itself, enabling:
+            - Natural deduplication across users (same resource = same hash)
+            - RESTful resource identification (hash represents the resource)
+            - Compatibility with legacy API clients
+
+            **Important**: The hash alone may be ambiguous if multiple users have the
+            same resource. Use the optional `user` query parameter to disambiguate:
+            `GET /api/v2/posts/{id}?user={username}`
+
+            For bookmarks: MD5 hash of the URL (matches resource.urlHash)
+            For publications: Hash of bibliographic fields (matches resource.resourceHash)
+          example: a1b2c3d4e5f6789012345678901234ab
         user:
           $ref: '#/components/schemas/UserRefDto'
         resource:
@@ -1912,7 +2008,7 @@ components:
 
     BookmarkDto:
       type: object
-      required: [resourceType, url, title]
+      required: [resourceType, url, title, urlHash]
       properties:
         resourceType:
           type: string
@@ -1926,22 +2022,33 @@ components:
           example: Interesting Article
         urlHash:
           type: string
-          description: MD5 hash of URL (for deduplication)
+          description: |
+            MD5 hash of the bookmark URL. This is the resource identifier used
+            in API endpoints and matches PostDto.id for bookmark posts.
+            Enables deduplication across users (same URL = same hash).
           example: 5d41402abc4b2a76b9719d911017c592
 
     BibTexDto:
       type: object
-      required: [resourceType, title, entryType]
+      required: [resourceType, resourceHash, title, entryType]
       properties:
         resourceType:
           type: string
           enum: [bibtex]
+        resourceHash:
+          type: string
+          description: |
+            Hash of the publication content (intraHash or interHash from domain model).
+            This is the resource identifier used in API endpoints and matches PostDto.id
+            for publication posts. Calculated from bibliographic fields (title, authors,
+            year, etc.) to enable deduplication across users and institutions.
+          example: a1b2c3d4e5f6789012345678901234ab
         bibtexKey:
           type: string
           example: Smith2020
         entryType:
           type: string
-          enum: [article, book, inproceedings, inbook, phdthesis, mastersthesis, techreport, misc]
+          enum: [article, book, booklet, collection, conference, dataset, electronic, inbook, incollection, inproceedings, manual, mastersthesis, misc, patent, periodical, phdthesis, preprint, presentation, proceedings, standard, techreport, unpublished]
           example: article
         title:
           type: string
@@ -1982,12 +2089,6 @@ components:
           format: uri
         abstract:
           type: string
-        simHash1:
-          type: string
-          description: Similarity hash (interHash)
-        simHash2:
-          type: string
-          description: Strict hash (intraHash)
         documents:
           type: array
           items:
@@ -2095,6 +2196,9 @@ components:
             $ref: '#/components/schemas/PostDto'
         totalCount:
           type: integer
+          description: |
+            Total count of items matching the query across all pages.
+            Set to -1 when includeTotal=false (not computed for performance).
           example: 150
         offset:
           type: integer
@@ -2119,20 +2223,56 @@ components:
     # USER SCHEMAS
     # =========================================================================
 
-    UserDto:
+    UserBaseDto:
       type: object
-      required: [username, realName, email]
+      description: Base user information visible to all users
+      required: [username, realName]
       properties:
         username:
           type: string
+          description: Unique username
           example: jsmith
         realName:
           type: string
+          description: User's real name
           example: John Smith
-        email:
-          type: string
-          format: email
-          example: john.smith@example.com
+
+    UserPublicDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+        - type: object
+          description: >
+            Public user information returned when viewing other users' profiles.
+            Email address is NOT included for privacy compliance (GDPR).
+            Use this schema for public user listings and viewing other users.
+
+    UserPrivateDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+        - type: object
+          description: >
+            Private user information including email address.
+            Email is only included when:
+            - User is viewing their own profile (authenticated self-request)
+            - Admin is viewing user details (admin request)
+            This schema ensures personal data (email) is only exposed when authorized.
+          required: [email]
+          properties:
+            email:
+              type: string
+              format: email
+              description: >
+                Email address (personal data).
+                Only included for authenticated self-requests or admin requests.
+              example: john.smith@example.com
+
+    UserDto:
+      description: >
+        **DEPRECATED**: Use UserPublicDto or UserPrivateDto instead.
+        This schema is kept for backward compatibility but will be removed in future versions.
+        For new endpoints, use UserPrivateDto for self/admin requests and UserPublicDto for public views.
+      allOf:
+        - $ref: '#/components/schemas/UserPrivateDto'
 
     UserProfileDto:
       allOf:
@@ -2231,12 +2371,15 @@ components:
 
     PaginatedUserList:
       type: object
+      description: >
+        Paginated list of users for public viewing.
+        Uses UserPublicDto to exclude email addresses for privacy compliance.
       required: [items, totalCount]
       properties:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/UserDto'
+            $ref: '#/components/schemas/UserPublicDto'
         totalCount:
           type: integer
         offset:
@@ -2522,8 +2665,11 @@ components:
       required: [id, title]
       properties:
         id:
-          type: integer
-          description: Post ID
+          type: string
+          pattern: '^[a-f0-9]{32}$'
+          description: |
+            Resource hash identifying the post (same format as PostDto.id).
+            MD5 hash of the resource content for consistent identification.
         title:
           type: string
           description: Post title

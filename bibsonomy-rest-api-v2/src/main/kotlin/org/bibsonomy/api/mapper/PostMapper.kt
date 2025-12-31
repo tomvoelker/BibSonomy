@@ -24,6 +24,14 @@ import java.time.Instant
 
 /**
  * Convert a Post domain model to a PostDto.
+ *
+ * Uses the resource hash (interHash or intraHash) as the primary identifier,
+ * matching legacy REST API v1 behavior. This enables:
+ * - Natural resource deduplication across users
+ * - RESTful resource identification (hash represents the resource itself)
+ * - Compatibility with legacy API clients
+ *
+ * @throws IllegalStateException if required fields are null
  */
 fun Post<out Resource>.toDto(): PostDto {
     val contentId = this.contentId
@@ -35,8 +43,15 @@ fun Post<out Resource>.toDto(): PostDto {
     val resource = this.resource
         ?: throw IllegalStateException("Post resource cannot be null")
 
+    // Extract resource hash for use as primary identifier
+    val resourceHash = resource.interHash ?: resource.intraHash
+        ?: throw IllegalStateException(
+            "Post resource must have a hash (interHash or intraHash) " +
+            "(contentId: $contentId, user: ${user.name}, resourceType: ${resource.javaClass.simpleName})"
+        )
+
     val createdAt = this.date?.toInstant()
-        ?: Instant.now()
+        ?: throw IllegalStateException("Post date cannot be null (contentId: $contentId, user: ${user.name})")
 
     val updatedAt = this.changeDate?.toInstant()
 
@@ -44,7 +59,7 @@ fun Post<out Resource>.toDto(): PostDto {
     val visibility = determineVisibility(this.groups)
 
     return PostDto(
-        id = contentId,
+        id = resourceHash,
         user = user.toRefDto(),
         resource = resource.toDto(),
         description = this.description?.takeIf { it.isNotBlank() },
@@ -69,23 +84,48 @@ fun Resource.toDto(): ResourceDto {
 
 /**
  * Convert a Bookmark to BookmarkDto.
+ *
+ * @throws IllegalArgumentException if url, title, or urlHash are null/blank
  */
 fun Bookmark.toDto(): BookmarkDto {
+    require(!this.url.isNullOrBlank()) {
+        "Bookmark URL cannot be null or blank (intraHash: ${this.intraHash})"
+    }
+    require(!this.title.isNullOrBlank()) {
+        "Bookmark title cannot be null or blank for URL: ${this.url}"
+    }
+    val urlHash = this.interHash ?: this.intraHash
+    requireNotNull(urlHash) {
+        "Bookmark must have at least one hash (interHash or intraHash) for URL: ${this.url}"
+    }
+
     return BookmarkDto(
-        url = this.url ?: "",
-        title = this.title ?: "",
-        urlHash = this.interHash ?: this.intraHash
+        url = this.url,
+        title = this.title,
+        urlHash = urlHash
     )
 }
 
 /**
  * Convert a BibTex to BibTexDto.
+ *
+ * @throws IllegalArgumentException if title or resourceHash are null/blank
  */
 fun BibTex.toDto(): BibTexDto {
+    require(!this.title.isNullOrBlank()) {
+        "BibTeX title cannot be null or blank (bibtexKey: ${this.bibtexKey}, intraHash: ${this.intraHash})"
+    }
+
+    val resourceHash = this.interHash ?: this.intraHash
+    requireNotNull(resourceHash) {
+        "BibTeX must have at least one hash (interHash or intraHash) for title: ${this.title}, bibtexKey: ${this.bibtexKey}"
+    }
+
     return BibTexDto(
+        resourceHash = resourceHash,
         bibtexKey = this.bibtexKey,
         entryType = this.entrytype ?: "misc",
-        title = this.title ?: "",
+        title = this.title,
         authors = this.author?.map { it.toDto() },
         editors = this.editor?.map { it.toDto() },
         year = this.year?.toIntOrNull(),
@@ -117,20 +157,32 @@ fun PersonName.toDto(): PersonNameDto {
 
 /**
  * Convert a User to UserRefDto.
+ *
+ * @throws IllegalStateException if user name is null or blank
  */
 fun User.toRefDto(): UserRefDto {
+    // Fail fast: username is a required identifier, never mask with empty string
+    val username = this.name?.takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("User name cannot be null or blank")
+
     return UserRefDto(
-        username = this.name ?: "",
+        username = username,
         realName = this.realname?.takeIf { it.isNotBlank() }
     )
 }
 
 /**
  * Convert a Tag to TagDto.
+ *
+ * @throws IllegalStateException if tag name is null or blank
  */
 fun Tag.toDto(): TagDto {
+    // Fail fast: tag name is a required identifier, never mask with empty string
+    val tagName = this.name?.takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("Tag name cannot be null or blank")
+
     return TagDto(
-        name = this.name ?: "",
+        name = tagName,
         count = this.globalcount,
         countPublic = this.usercount
     )
@@ -138,10 +190,16 @@ fun Tag.toDto(): TagDto {
 
 /**
  * Convert a Group to GroupRefDto.
+ *
+ * @throws IllegalStateException if group name is null or blank
  */
 fun Group.toRefDto(): GroupRefDto {
+    // Fail fast: group name is a required identifier, never mask with empty string
+    val groupName = this.name?.takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("Group name cannot be null or blank")
+
     return GroupRefDto(
-        name = this.name ?: "",
+        name = groupName,
         displayName = this.realname?.takeIf { it.isNotBlank() }
     )
 }
@@ -150,27 +208,25 @@ fun Group.toRefDto(): GroupRefDto {
  * Determine post visibility based on groups.
  *
  * BibSonomy convention:
- * - Group ID 0 (public) → "public"
- * - Group ID 1 (private) → "private"
- * - Other groups → "groups"
+ * - Group ID 0 (public) → Visibility.PUBLIC
+ * - Group ID 1 (private) → Visibility.PRIVATE
+ * - Other groups → Visibility.GROUPS
+ *
+ * Note: Null or empty groups default to PUBLIC. This matches BibSonomy's legacy
+ * behavior where posts without explicit group assignments are treated as public.
+ * In practice, the database always populates groups, so this fallback handles
+ * edge cases during mapping only.
  */
-private fun determineVisibility(groups: Set<Group>?): String {
+private fun determineVisibility(groups: Set<Group>?): Visibility {
     if (groups == null || groups.isEmpty()) {
-        return "public"
+        return Visibility.PUBLIC
     }
 
     val groupIds = groups.mapNotNull { it.groupId }.toSet()
 
     return when {
-        groupIds.contains(0) -> "public"
-        groupIds.contains(1) && groupIds.size == 1 -> "private"
-        else -> "groups"
+        groupIds.contains(0) -> Visibility.PUBLIC
+        groupIds.contains(1) && groupIds.size == 1 -> Visibility.PRIVATE
+        else -> Visibility.GROUPS
     }
-}
-
-/**
- * Extension function to convert java.util.Date to java.time.Instant.
- */
-private fun java.util.Date.toInstant(): Instant {
-    return Instant.ofEpochMilli(this.time)
 }

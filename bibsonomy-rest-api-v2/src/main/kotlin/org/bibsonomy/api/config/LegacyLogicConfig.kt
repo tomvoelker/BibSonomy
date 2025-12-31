@@ -39,7 +39,7 @@ class LegacyLogicConfig {
         projectDatabaseManager: ProjectDatabaseManager,
         dbSessionFactory: DBSessionFactory,
         bibtexReader: CompositeBibtexReader,
-        @Qualifier("crisLinkDatabaseManger") crisLinkDatabaseManager: CRISLinkDatabaseManager,
+        @Qualifier("crisLinkDatabaseManager") crisLinkDatabaseManager: CRISLinkDatabaseManager,
         personResourceRelationDatabaseManager: PersonResourceRelationDatabaseManager,
         @Qualifier("metaDataProviders") metaDataProviders: Map<Class<*>, MetaDataProvider<*>>
     ): LogicInterfaceFactory =
@@ -49,7 +49,7 @@ class LegacyLogicConfig {
             bibtexReader = bibtexReader,
             crisLinkDatabaseManager = crisLinkDatabaseManager,
             personResourceRelationDatabaseManager = personResourceRelationDatabaseManager,
-            metaDataProviders = metaDataProviders as Map<Class<*>, MetaDataProvider<*>>
+            metaDataProviders = metaDataProviders
         )
 }
 

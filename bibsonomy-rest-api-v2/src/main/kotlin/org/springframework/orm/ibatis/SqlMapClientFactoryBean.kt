@@ -7,6 +7,7 @@ import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate
 import com.ibatis.sqlmap.engine.transaction.TransactionConfig
 import com.ibatis.sqlmap.engine.transaction.TransactionManager
 import com.ibatis.sqlmap.engine.transaction.external.ExternalTransactionConfig
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.Resource
@@ -24,6 +25,7 @@ import javax.sql.DataSource
  * (configLocation + dataSource + transactionConfigClass) is supported.
  */
 class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
+    private val logger = LoggerFactory.getLogger(SqlMapClientFactoryBean::class.java)
 
     private var configLocations: Array<Resource>? = null
     private var sqlMapClientProperties: Properties? = null
@@ -55,8 +57,9 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
     }
 
     fun setTransactionConfigClass(transactionConfigClass: Class<out TransactionConfig>?) {
-        Assert.isTrue(transactionConfigClass != null, "transactionConfigClass must not be null")
-        this.transactionConfigClass = transactionConfigClass!!
+        this.transactionConfigClass = requireNotNull(transactionConfigClass) {
+            "transactionConfigClass must not be null"
+        }
     }
 
     fun setTransactionConfigProperties(transactionConfigProperties: Properties?) {
@@ -68,7 +71,15 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
         sqlMapClient = buildSqlMapClient(configLocations, sqlMapClientProperties)
         val ds = dataSource
         if (ds != null) {
-            val txConfig = transactionConfigClass.getDeclaredConstructor().newInstance()
+            val txConfig = try {
+                transactionConfigClass.getDeclaredConstructor().newInstance()
+            } catch (e: ReflectiveOperationException) {
+                throw IllegalStateException(
+                    "Failed to instantiate TransactionConfig class '${transactionConfigClass.name}': " +
+                    "requires a public no-argument constructor. Ensure the class has a public no-arg constructor.",
+                    e
+                )
+            }
             var dsToUse: DataSource = ds
             if (useTransactionAwareDataSource && ds !is TransactionAwareDataSourceProxy) {
                 dsToUse = TransactionAwareDataSourceProxy(ds)
@@ -83,25 +94,42 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
     private fun defaultTxProps(): Properties =
         Properties().apply { setProperty("SetAutoCommitAllowed", "false") }
 
+    /**
+     * Build the SqlMapClient from the given config locations.
+     *
+     * Note: Only a single config location is supported. If multiple locations are provided,
+     * only the last one will be used (iBatis 2 does not support config merging).
+     * The legacy BibSonomy XML configuration uses a single configLocation.
+     */
     @Throws(IOException::class)
     protected fun buildSqlMapClient(
         configLocations: Array<Resource>?,
         properties: Properties?
     ): SqlMapClient {
         Assert.isTrue(!ObjectUtils.isEmpty(configLocations), "At least 1 'configLocation' entry is required")
+        if (configLocations!!.size > 1) {
+            logger.warn(
+                "Multiple configLocations provided (${configLocations.size}), but only the last one will be used. " +
+                "iBatis 2 does not support config merging."
+            )
+        }
         var client: SqlMapClient? = null
         val configParser = SqlMapConfigParser()
-        configLocations!!.forEach { configLocation ->
+        configLocations.forEach { configLocation ->
             try {
                 configLocation.inputStream.use { stream ->
-                    client = configParser.parse(stream, properties)
+                    val parsed = configParser.parse(stream, properties)
+                        ?: throw IOException("iBatis parser returned null for config: $configLocation")
+                    client = parsed
                 }
             } catch (ex: RuntimeException) {
                 val cause = ex.cause ?: ex
                 throw IOException("Failed to parse config resource: $configLocation", cause)
             }
         }
-        return client!!
+        return checkNotNull(client) {
+            "SqlMapClient was not built from any of the provided config locations"
+        }
     }
 
     protected fun applyTransactionConfig(client: SqlMapClient, txConfig: TransactionConfig) {

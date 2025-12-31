@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.http.HttpMethod
-import org.springframework.security.config.Customizer
 
 /**
  * Security configuration for REST API v2.
@@ -42,7 +41,6 @@ class SecurityConfig(
     ): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            .cors(Customizer.withDefaults())
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authenticationManager(authenticationManager)
             .authorizeHttpRequests { authorize ->
@@ -53,10 +51,7 @@ class SecurityConfig(
                         "/swagger-ui/**",
                         "/swagger-ui.html"
                     ).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v2/posts").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v2/tags").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v2/tags/**").permitAll()
                     .anyRequest().authenticated()
             }
             .exceptionHandling { it.authenticationEntryPoint(legacyAuthenticationEntryPoint) }

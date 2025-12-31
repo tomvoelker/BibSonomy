@@ -1,0 +1,10 @@
+# Production profile configuration
+# Activate with: SPRING_PROFILES_ACTIVE=prod or --spring.profiles.active=prod
+
+# Production logging: quieter levels for performance and cleaner logs
+logging:
+  level:
+    root: WARN
+    org.bibsonomy: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN

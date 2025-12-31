@@ -109,11 +109,21 @@ class LegacyGoldStandardStubConfig {
         override fun onPubPersonDelete(rel: ResourcePersonRelation?, loginUser: User?, session: DBSession?) {}
     }
 
+    /**
+     * Stub for goldStandardPublicationDatabaseManager.
+     * Uses an anonymous object instead of Any() for clearer type semantics.
+     * This bean is never invoked - it exists only to satisfy wiring dependencies.
+     */
     @Bean(name = ["goldStandardPublicationDatabaseManager"])
-    fun goldStandardPublicationDatabaseManagerStub(): Any = Any()
+    fun goldStandardPublicationDatabaseManagerStub(): Any = object {}
 
+    /**
+     * Stub for goldStandardBookmarkDatabaseMananger (legacy typo preserved).
+     * Uses an anonymous object instead of Any() for clearer type semantics.
+     * This bean is never invoked - it exists only to satisfy wiring dependencies.
+     */
     @Bean(name = ["goldStandardBookmarkDatabaseMananger"])
-    fun goldStandardBookmarkDatabaseManagerStub(): Any = Any()
+    fun goldStandardBookmarkDatabaseManagerStub(): Any = object {}
 
     @Bean(name = ["goldStandardPublicationChain"])
     fun goldStandardPublicationChainStub(): Chain<Any, Any> = Chain<Any, Any>().apply { setElements(emptyList()) }

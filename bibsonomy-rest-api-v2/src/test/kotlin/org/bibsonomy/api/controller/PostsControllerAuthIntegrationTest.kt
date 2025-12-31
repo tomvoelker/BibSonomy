@@ -14,6 +14,8 @@ import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
 import org.bibsonomy.model.logic.query.PostQuery
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -23,6 +25,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
@@ -62,7 +65,7 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    fun `invalid basic auth returns 401 from posts controller`() {
+    fun `invalid basic auth still permitted for public GET endpoint`() {
         val headers = HttpHeaders()
         headers.setBasicAuth("wrong", "creds")
         val response: ResponseEntity<String> = restTemplate.exchange(
@@ -71,6 +74,7 @@ class PostsControllerAuthIntegrationTest(
             HttpEntity<Void>(headers),
             String::class.java
         )
+        // GET /api/v2/posts/** is public (permitAll), so invalid auth is ignored
         assertEquals(HttpStatus.OK, response.statusCode)
     }
 
@@ -174,8 +178,8 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(!body.contains("Private BibTex"))
+        assertTrue(body.contains("Public BibTex"))
+        assertFalse(body.contains("Private BibTex"))
     }
 
     @Test
@@ -187,8 +191,8 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(!body.contains("Private"))
+        assertTrue(body.contains("Public BibTex"))
+        assertFalse(body.contains("Private"))
     }
 
     @Test
@@ -201,7 +205,7 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Private BibTex"))
+        assertTrue(body.contains("Private BibTex"))
     }
 
     @Test
@@ -216,8 +220,8 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(body.contains("Private BibTex"))
+        assertTrue(body.contains("Public BibTex"))
+        assertTrue(body.contains("Private BibTex"))
     }
 
     @Test
@@ -246,10 +250,10 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assert(body.contains("Public BibTex"))
-        assert(body.contains("Private BibTex"))
-        assert(body.contains("Public Bookmark"))
-        assert(body.contains("Private Bookmark"))
+        assertTrue(body.contains("Public BibTex"))
+        assertTrue(body.contains("Private BibTex"))
+        assertTrue(body.contains("Public Bookmark"))
+        assertTrue(body.contains("Private Bookmark"))
     }
 }
 
@@ -355,14 +359,16 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
     }
 
     companion object {
-        const val VALID_USER = "tomvoelker"
-        const val VALID_API_KEY = "d73d8ca82d162f31b38ddba275737350"
+        // Use test database credentials from bibsonomy-database/src/test/resources/database/insert-test-data.sql
+        const val VALID_USER = "testuser1"
+        const val VALID_API_KEY = "11111111111111111111111111111111"
         var lastQuery: PostQuery<*>? = null
         const val PUBLIC_HASH = "public-hash"
         const val PRIVATE_HASH = "private-hash"
     }
 }
 
+@Configuration
 class StubPostsBeans {
     @Bean
     fun stubLogicInterfaceFactory(): LogicInterfaceFactory = StubPostsLogicFactory()

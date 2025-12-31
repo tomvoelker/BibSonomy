@@ -9,7 +9,6 @@
         <groupId>org.bibsonomy</groupId>
         <artifactId>bibsonomy</artifactId>
         <version>4.1.0</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>bibsonomy-rest-api-v2</artifactId>
@@ -18,13 +17,20 @@
     <description>Modern Kotlin REST API v2 for BibSonomy</description>
 
     <properties>
-        <kotlin.version>1.9.22</kotlin.version>
-        <spring.boot.version>3.2.1</spring.boot.version>
+        <kotlin.version>1.9.25</kotlin.version>
+        <spring.boot.version>3.2.12</spring.boot.version>
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
+    <!--
+        Dependency Management:
+        Import Spring Boot BOM to ensure all Spring Boot managed dependencies
+        (including Jackson, Spring Framework, etc.) use consistent versions.
+
+        This prevents version conflicts and ensures compatibility when upgrading Spring Boot.
+    -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -189,17 +195,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
         <!-- Force Spring Framework 6.x despite legacy parent dependencyManagement -->
         <dependency>
@@ -242,22 +245,18 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.16.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.16.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.16.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.16.1</version>
         </dependency>
 
         <!-- OpenAPI/Swagger -->
@@ -271,7 +270,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.boot.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -327,7 +325,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>add-java-sources</id>
@@ -362,8 +360,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!-- Upgrade to a JUnit 5 capable version -->
-                <version>3.0.0-M9</version>
+                <version>3.5.4</version>
                 <configuration combine.self="override">
                     <!-- Drop parent-injected argLine (jacoco sets its own via property). -->
                     <argLine></argLine>
