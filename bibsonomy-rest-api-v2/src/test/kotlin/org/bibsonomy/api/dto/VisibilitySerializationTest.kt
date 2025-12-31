@@ -1,6 +1,7 @@
 package org.bibsonomy.api.dto
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -11,7 +12,9 @@ import org.junit.jupiter.api.Test
  */
 class VisibilitySerializationTest {
 
-    private val objectMapper: ObjectMapper = jacksonObjectMapper()
+    private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+    }
 
     @Test
     fun `PUBLIC serializes to lowercase string`() {
