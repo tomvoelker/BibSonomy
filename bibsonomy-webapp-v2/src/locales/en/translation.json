@@ -103,6 +103,10 @@
     "addTag": "Add Tag",
     "noTags": "No tags found"
   },
+  "activity": {
+    "recent": "Recent Activity",
+    "placeholder": "Recent posts will appear here..."
+  },
   "settings": {
     "settings": "Settings",
     "general": "General",

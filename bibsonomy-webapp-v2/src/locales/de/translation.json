@@ -103,6 +103,10 @@
     "addTag": "Tag hinzufügen",
     "noTags": "Keine Tags gefunden"
   },
+  "activity": {
+    "recent": "Neueste Aktivität",
+    "placeholder": "Aktuelle Beiträge werden hier angezeigt..."
+  },
   "settings": {
     "settings": "Einstellungen",
     "general": "Allgemein",

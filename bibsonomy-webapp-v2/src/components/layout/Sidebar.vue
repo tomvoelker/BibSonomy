@@ -74,8 +74,8 @@ const tagSizes = computed(() => {
 
     <!-- Recent Activity (placeholder) -->
     <div class="pt-4 border-t border-gray-300">
-      <h3 class="text-sm font-bold text-gray-800 mb-3">Recent Activity</h3>
-      <p class="text-sm text-gray-600">Recent posts will appear here...</p>
+      <h3 class="text-sm font-bold text-gray-800 mb-3">{{ t('activity.recent') }}</h3>
+      <p class="text-sm text-gray-600">{{ t('activity.placeholder') }}</p>
     </div>
   </aside>
 </template>
