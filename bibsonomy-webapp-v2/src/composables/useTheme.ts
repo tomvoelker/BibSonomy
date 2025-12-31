@@ -3,8 +3,12 @@ import { useBranding } from './useBranding'
 /**
  * Composable for theme-related utilities
  * Provides convenient access to theme colors and classes
+ *
+ * Re-exports branding for components that need both theme classes and branding info,
+ * providing a single import point for all theme-related concerns.
  */
 export function useTheme() {
+  // Re-export branding for unified theme API
   const { branding } = useBranding()
 
   // Static theme classes (no need for computed since these are constants)
