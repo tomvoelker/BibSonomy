@@ -104,6 +104,29 @@ export const PostListResponseSchema = z.object({
 export type PostListResponse = z.infer<typeof PostListResponseSchema>
 
 // =============================================================================
+// Create/Update Post Request
+// =============================================================================
+
+export interface CreatePostRequest {
+  title: string
+  resourceType: 'publication' | 'bookmark'
+  description?: string
+  url?: string | null
+  bibTexData?: BibTexData | null
+  tags?: string[]
+  groups?: string[]
+}
+
+export interface UpdatePostRequest {
+  title?: string
+  description?: string
+  url?: string | null
+  bibTexData?: BibTexData | null
+  tags?: string[]
+  groups?: string[]
+}
+
+// =============================================================================
 // Query Parameters
 // =============================================================================
 
