@@ -12,8 +12,6 @@ MSW intercepts HTTP requests and returns mock responses, allowing frontend devel
 - `server.ts` - MSW server setup for Node/Vitest
 - `handlers/` - Request handlers organized by resource
   - `posts.ts` - Post endpoints
-  - `users.ts` - User endpoints
-  - `tags.ts` - Tag endpoints
 - `data/` - Mock data fixtures
 
 ## Guidelines

@@ -18,14 +18,14 @@
     "confirm": "Bestätigen",
     "yes": "Ja",
     "no": "Nein",
-    "login": "Anmelden"
+    "login": "Anmelden",
+    "opensInNewTab": "öffnet in neuem Tab"
   },
   "home": {
     "headline": "Der einfache Weg zum Verwalten wissenschaftlicher Publikationen und Lesezeichen",
     "lead": "{projectName} hilft Ihnen beim Verwalten Ihrer Publikationen und Lesezeichen, bei der Zusammenarbeit mit Kollegen und beim Finden neuer interessanter Sachen für Ihre Forschung.",
     "register": "kostenlos registrieren",
-    "learnmore": "erfahren Sie mehr",
-    "login": "Anmelden"
+    "learnmore": "erfahren Sie mehr"
   },
   "nav": {
     "home": "Startseite",
@@ -129,6 +129,11 @@
     "notImplemented": "Diese Funktion ist noch nicht implementiert.",
     "notImplementedHeader": "Noch nicht implementiert",
     "notImplementedMessage": "Diese Funktion wird gerade entwickelt und wird in einer zukünftigen Version verfügbar sein. Bitte schauen Sie später wieder vorbei oder nutzen Sie eine der implementierten Funktionen.",
+    "implementedFeaturesTitle": "Derzeit implementierte Funktionen:",
+    "implementedFeature1": "Beiträge durchsuchen (Lesezeichen und Publikationen)",
+    "implementedFeature2": "Beitragsdetails anzeigen",
+    "implementedFeature3": "Sprachwechsel (Englisch/Deutsch)",
+    "implementedFeature4": "Responsives Design passend zum originalen BibSonomy",
     "pageNotFound": "Seite nicht gefunden",
     "networkError": "Netzwerkfehler",
     "unknownError": "Unbekannter Fehler",

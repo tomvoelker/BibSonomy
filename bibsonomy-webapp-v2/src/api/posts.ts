@@ -9,20 +9,15 @@ import {
   type Post,
   type PostListResponse,
   type GetPostsParams,
+  type CreatePostRequest,
+  type UpdatePostRequest,
 } from '@/types/models'
 
 /**
  * Fetch a list of posts with optional filtering and pagination
  */
 export async function getPosts(params?: GetPostsParams): Promise<PostListResponse> {
-  const queryParams = params
-    ? {
-        ...params,
-        tags: params.tags?.join(','),
-      }
-    : undefined
-
-  const response = await apiClient.get('/posts', { params: queryParams })
+  const response = await apiClient.get('/posts', { params })
 
   // Validate response with Zod schema
   const validated = PostListResponseSchema.parse(response.data)
@@ -45,7 +40,7 @@ export async function getPost(id: string): Promise<Post> {
 /**
  * Create a new post
  */
-export async function createPost(post: Partial<Post>): Promise<Post> {
+export async function createPost(post: CreatePostRequest): Promise<Post> {
   const response = await apiClient.post('/posts', post)
 
   const validated = PostSchema.parse(response.data)
@@ -56,7 +51,7 @@ export async function createPost(post: Partial<Post>): Promise<Post> {
 /**
  * Update an existing post
  */
-export async function updatePost(id: string, post: Partial<Post>): Promise<Post> {
+export async function updatePost(id: string, post: UpdatePostRequest): Promise<Post> {
   const response = await apiClient.put(`/posts/${id}`, post)
 
   const validated = PostSchema.parse(response.data)

@@ -4,8 +4,9 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { isRef } from 'vue'
 import { getPosts, getPost, createPost, updatePost, deletePost } from '@/api/posts'
-import type { GetPostsParams, Post } from '@/types/models'
+import type { GetPostsParams, CreatePostRequest, UpdatePostRequest } from '@/types/models'
 import type { Ref } from 'vue'
 
 /**
@@ -15,7 +16,7 @@ export function usePosts(params?: Ref<GetPostsParams> | GetPostsParams) {
   return useQuery({
     queryKey: ['posts', params],
     queryFn: () => {
-      const queryParams = 'value' in params ? params.value : params
+      const queryParams = isRef(params) ? params.value : params
       return getPosts(queryParams)
     },
   })
@@ -28,10 +29,10 @@ export function usePost(id: Ref<string> | string) {
   return useQuery({
     queryKey: ['posts', id],
     queryFn: () => {
-      const postId = typeof id === 'string' ? id : id.value
+      const postId = isRef(id) ? id.value : id
       return getPost(postId)
     },
-    enabled: typeof id === 'string' ? !!id : () => !!id.value,
+    enabled: isRef(id) ? () => !!id.value : !!id,
   })
 }
 
@@ -42,7 +43,7 @@ export function useCreatePost() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (post: Partial<Post>) => createPost(post),
+    mutationFn: (post: CreatePostRequest) => createPost(post),
     onSuccess: () => {
       // Invalidate posts list to refetch
       void queryClient.invalidateQueries({ queryKey: ['posts'] })
@@ -57,7 +58,7 @@ export function useUpdatePost() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, post }: { id: string; post: Partial<Post> }) => updatePost(id, post),
+    mutationFn: ({ id, post }: { id: string; post: UpdatePostRequest }) => updatePost(id, post),
     onSuccess: (_data, variables) => {
       // Invalidate both the list and the specific post
       void queryClient.invalidateQueries({ queryKey: ['posts'] })

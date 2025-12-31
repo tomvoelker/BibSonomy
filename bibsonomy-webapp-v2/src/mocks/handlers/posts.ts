@@ -7,36 +7,41 @@ import { getMockPosts, getMockPost } from '../data/posts'
 
 const API_BASE = '/api/v2'
 
+// Counter for generating unique IDs (more robust than Math.random)
+let idCounter = 0
+function generateId(): string {
+  return `mock-${Date.now()}-${++idCounter}`
+}
+
 export const postsHandlers = [
   // GET /api/v2/posts - List posts with filtering
   http.get(`${API_BASE}/posts`, async ({ request }) => {
     await delay(300) // Simulate network latency
 
     const url = new URL(request.url)
-    const user = url.searchParams.get('user') ?? undefined
-    const tag = url.searchParams.get('tag') ?? undefined
-    const tags = url.searchParams.get('tags') ?? undefined
-    const resourceType = url.searchParams.get('resourceType') as
-      | 'bibtex'
-      | 'bookmark'
-      | 'all'
-      | undefined
+    const userParam = url.searchParams.get('user')
+    const tagParam = url.searchParams.get('tag')
+    const resourceTypeParam = url.searchParams.get('resourceType')
     const limit = parseInt(url.searchParams.get('limit') ?? '10', 10)
     const offset = parseInt(url.searchParams.get('offset') ?? '0', 10)
 
     const result = getMockPosts({
-      user,
-      tag: tag ?? tags ?? undefined,
-      resourceType: resourceType === 'all' ? undefined : resourceType,
+      ...(userParam ? { user: userParam } : {}),
+      ...(tagParam ? { tag: tagParam } : {}),
+      ...(resourceTypeParam === 'publication' || resourceTypeParam === 'bookmark'
+        ? { resourceType: resourceTypeParam }
+        : {}),
       limit,
       offset,
     })
 
     return HttpResponse.json({
-      items: result.items,
-      totalCount: result.totalCount,
-      offset: result.offset,
-      limit: result.limit,
+      posts: result.posts,
+      pagination: {
+        total: result.total,
+        offset: result.offset,
+        limit: result.limit,
+      },
     })
   }),
 
@@ -44,7 +49,7 @@ export const postsHandlers = [
   http.get(`${API_BASE}/posts/:id`, async ({ params }) => {
     await delay(200)
 
-    const id = params.id as string
+    const id = params['id'] as string
     const post = getMockPost(id)
 
     if (!post) {
@@ -67,25 +72,52 @@ export const postsHandlers = [
 
     const body = (await request.json()) as Record<string, unknown>
 
-    // Simulate validation
-    if (!body.resource) {
+    // Validate required fields
+    if (typeof body['title'] !== 'string' || !(body['title'] as string).trim()) {
       return HttpResponse.json(
         {
           error: 'Bad Request',
-          message: 'Missing required field: resource',
+          message: 'Missing or invalid required field: title',
           status: 400,
         },
         { status: 400 }
       )
     }
 
-    // Simulate successful creation
+    if (body['resourceType'] !== 'publication' && body['resourceType'] !== 'bookmark') {
+      return HttpResponse.json(
+        {
+          error: 'Bad Request',
+          message: 'Missing or invalid required field: resourceType (must be "publication" or "bookmark")',
+          status: 400,
+        },
+        { status: 400 }
+      )
+    }
+
+    // Helper to validate bibTexData (must be object or null/undefined)
+    const validateBibTexData = (data: unknown): Record<string, unknown> | null => {
+      if (data === null || data === undefined) return null
+      if (typeof data === 'object' && !Array.isArray(data)) {
+        return data as Record<string, unknown>
+      }
+      return null // Invalid types are treated as null
+    }
+
+    // Simulate successful creation with validated fields
+    const now = new Date().toISOString()
     const newPost = {
-      id: Math.floor(Math.random() * 100000),
-      ...body,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      visibility: 'public',
+      id: generateId(),
+      title: body['title'],
+      resourceType: body['resourceType'],
+      description: typeof body['description'] === 'string' ? body['description'] : undefined,
+      url: typeof body['url'] === 'string' ? body['url'] : null,
+      bibTexData: validateBibTexData(body['bibTexData']),
+      tags: Array.isArray(body['tags']) ? body['tags'] : [],
+      groups: Array.isArray(body['groups']) ? body['groups'] : [],
+      user: { id: 'mock-user', name: 'Mock User' },
+      createdAt: now,
+      updatedAt: now,
     }
 
     return HttpResponse.json(newPost, { status: 201 })
@@ -95,7 +127,7 @@ export const postsHandlers = [
   http.put(`${API_BASE}/posts/:id`, async ({ params, request }) => {
     await delay(350)
 
-    const id = params.id as string
+    const id = params['id'] as string
     const post = getMockPost(id)
 
     if (!post) {
@@ -125,7 +157,7 @@ export const postsHandlers = [
   http.delete(`${API_BASE}/posts/:id`, async ({ params }) => {
     await delay(250)
 
-    const id = params.id as string
+    const id = params['id'] as string
     const post = getMockPost(id)
 
     if (!post) {

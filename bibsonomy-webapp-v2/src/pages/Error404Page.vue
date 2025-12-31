@@ -14,46 +14,17 @@ const goHome = () => {
 
 <template>
   <MainLayout>
-    <div
-      style="
-        background: white;
-        border-left: 1px solid #cbcbcb;
-        border-right: 1px solid #cbcbcb;
-        max-width: 1170px;
-        margin: 0 auto;
-        padding: 40px 15px;
-        min-height: 500px;
-      "
-    >
-      <div style="max-width: 600px; margin: 0 auto; text-align: center">
-        <h1
-          style="
-            font-size: 36px;
-            font-weight: 500;
-            line-height: 1.1;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            color: #333;
-          "
-        >
+    <div class="bg-white border-l border-r border-gray-300 max-w-[1170px] mx-auto py-10 px-4 min-h-[500px]">
+      <div class="max-w-[600px] mx-auto text-center">
+        <h1 class="text-4xl font-medium leading-tight mt-5 mb-5 text-gray-800">
           {{ t('error.notFoundHeader') }}
         </h1>
 
         <!-- Info Alert -->
-        <div
-          style="
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #bce8f1;
-            border-radius: 4px;
-            background-color: #d9edf7;
-            color: #31708f;
-            text-align: left;
-          "
-        >
+        <div class="p-4 mb-5 border border-info-200 rounded bg-info-50 text-info-700 text-left">
           <Info
             :size="16"
-            style="display: inline-block; vertical-align: middle; margin-right: 8px"
+            class="inline-block align-middle mr-2"
           />
           {{ t('error.notFound') }}
         </div>
@@ -62,26 +33,14 @@ const goHome = () => {
         <img
           src="/404.jpg"
           alt="404 Error"
-          style="max-width: 100%; height: auto; margin: 20px auto; border-radius: 4px; display: block"
+          class="max-w-full h-auto my-5 mx-auto rounded block"
         />
 
         <!-- Go Home Button -->
         <button
           @click="goHome"
           type="button"
-          style="
-            padding: 10px 16px;
-            font-size: 18px;
-            line-height: 1.33;
-            border-radius: 6px;
-            color: #fff;
-            background-color: #428bca;
-            border: 1px solid #357ebd;
-            cursor: pointer;
-            margin-top: 20px;
-          "
-          @mouseover="($event.target as HTMLElement).style.backgroundColor = '#3071a9'"
-          @mouseout="($event.target as HTMLElement).style.backgroundColor = '#428bca'"
+          class="px-4 py-2.5 text-lg leading-normal rounded-md text-white bg-primary-600 border border-primary-700 cursor-pointer mt-5 hover:bg-primary-700 transition-colors"
         >
           {{ t('error.goHome') }}
         </button>

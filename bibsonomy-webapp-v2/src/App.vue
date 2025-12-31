@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import { RouterView } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { usePreferencesStore } from './store/preferences'
@@ -6,8 +7,15 @@ import { usePreferencesStore } from './store/preferences'
 const { locale } = useI18n()
 const preferencesStore = usePreferencesStore()
 
-// Sync i18n locale with preferences store
+// Initialize i18n locale from preferences store
 locale.value = preferencesStore.locale
+
+// Keep preferences store updated when locale changes (e.g., from LanguageSwitcher)
+watch(locale, (newLocale) => {
+  if (newLocale !== preferencesStore.locale) {
+    preferencesStore.setLocale(newLocale as 'en' | 'de')
+  }
+})
 </script>
 
 <template>

@@ -4,10 +4,22 @@
  */
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, onScopeDispose } from 'vue'
 
 export type Locale = 'en' | 'de'
 export type Theme = 'light' | 'dark' | 'system'
+
+// Maximum posts per page to prevent performance issues
+const MAX_POSTS_PER_PAGE = 100
+
+// Helper for safe localStorage operations (can fail in private browsing or quota exceeded)
+function safeSetItem(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value)
+  } catch (error) {
+    console.warn(`Failed to save preference '${key}' to localStorage:`, error)
+  }
+}
 
 export const usePreferencesStore = defineStore('preferences', () => {
   // State
@@ -18,18 +30,20 @@ export const usePreferencesStore = defineStore('preferences', () => {
   // Actions
   function setLocale(newLocale: Locale) {
     locale.value = newLocale
-    localStorage.setItem('pref_locale', newLocale)
+    safeSetItem('pref_locale', newLocale)
   }
 
   function setTheme(newTheme: Theme) {
     theme.value = newTheme
-    localStorage.setItem('pref_theme', newTheme)
+    safeSetItem('pref_theme', newTheme)
     applyTheme(newTheme)
   }
 
   function setPostsPerPage(count: number) {
-    postsPerPage.value = count
-    localStorage.setItem('pref_posts_per_page', count.toString())
+    // Clamp value between 1 and MAX_POSTS_PER_PAGE
+    const validCount = Math.max(1, Math.min(count, MAX_POSTS_PER_PAGE))
+    postsPerPage.value = validCount
+    safeSetItem('pref_posts_per_page', validCount.toString())
   }
 
   function applyTheme(themeValue: Theme) {
@@ -78,10 +92,16 @@ export const usePreferencesStore = defineStore('preferences', () => {
 
   // Watch for system theme changes
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  mediaQuery.addEventListener('change', () => {
+  const handleMediaChange = () => {
     if (theme.value === 'system') {
       applyTheme('system')
     }
+  }
+  mediaQuery.addEventListener('change', handleMediaChange)
+
+  // Register cleanup with Vue's scope dispose (automatically called when store is disposed)
+  onScopeDispose(() => {
+    mediaQuery.removeEventListener('change', handleMediaChange)
   })
 
   // Initialize from localStorage

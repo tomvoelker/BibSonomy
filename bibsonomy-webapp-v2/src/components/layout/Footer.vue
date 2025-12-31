@@ -1,50 +1,52 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useBranding } from '@/composables/useBranding'
-import FooterColumn from './FooterColumn.vue'
+import FooterColumn, { type FooterLink } from './FooterColumn.vue'
 
 const { t } = useI18n()
 const { branding } = useBranding()
 
 // Column 1: What is BibSonomy
-const column1Links = [
+const column1Links = computed<FooterLink[]>(() => [
   { text: t('footer.gettingStarted'), href: '/error/not-implemented?feature=Getting%20Started' },
   { text: t('footer.buttons'), href: '/error/not-implemented?feature=Buttons' },
   { text: t('footer.help'), href: '/error/not-implemented?feature=Help' },
   { text: t('footer.faqs'), href: '/error/not-implemented?feature=FAQ' },
-]
+])
 
-const developerLinks = [
+const developerLinks = computed<FooterLink[]>(() => [
   { text: t('footer.overview'), href: 'https://bibsonomy.bitbucket.io', external: true },
   { text: t('footer.apiDoc'), href: 'https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API', external: true },
-]
+])
 
 // Column 2: Privacy & Contact
-const column2Links = [
+const column2Links = computed<FooterLink[]>(() => [
   { text: t('footer.about'), href: '/error/not-implemented?feature=About' },
   { text: t('footer.termsOfUse'), href: '/error/not-implemented?feature=Terms%20of%20Use' },
   { text: t('footer.cookies'), href: '/error/not-implemented?feature=Cookies' },
   { text: t('footer.issues'), href: '/error/not-implemented?feature=Issues' },
-]
+])
 
 // Column 3: Integration
-const column3Links = [
+const column3Links = computed<FooterLink[]>(() => [
   { text: t('footer.academicPuma'), href: 'https://academic-puma.de/', external: true },
   { text: t('footer.typoThree'), href: 'https://typo3.org/extensions/repository/view/ext_bibsonomy_csl', external: true },
   { text: t('footer.wordpress'), href: 'https://wordpress.org/plugins/bibsonomy-csl/', external: true },
   { text: t('footer.javaClient'), href: 'https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/', external: true },
   { text: t('footer.scraperInfo'), href: '/error/not-implemented?feature=Scraper%20Info' },
-]
+])
 
 // Column 4: About BibSonomy
-const column4Links = [
+const column4Links = computed<FooterLink[]>(() => [
   { text: t('footer.team'), href: '/error/not-implemented?feature=Team' },
   { text: t('footer.blog'), href: 'https://blog.bibsonomy.org', external: true },
-]
+])
 
-const socialMediaLinks = [
+const socialMediaLinks = computed<FooterLink[]>(() => [
   { text: t('footer.twitter'), href: 'https://twitter.com/bibsonomy', external: true },
-]
+])
 </script>
 
 <template>
@@ -57,9 +59,9 @@ const socialMediaLinks = [
         </h4>
         <ul class="list-none p-0 m-0 text-[13px]">
           <li v-for="link in column1Links" :key="link.href" class="mb-1">
-            <a :href="link.href" class="text-primary-600 no-underline hover:underline">
+            <RouterLink :to="link.href" class="text-primary-600 no-underline hover:underline">
               {{ link.text }}
-            </a>
+            </RouterLink>
           </li>
         </ul>
 
@@ -73,8 +75,10 @@ const socialMediaLinks = [
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
+              :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
             >
               {{ link.text }}
+              <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>
@@ -99,14 +103,18 @@ const socialMediaLinks = [
         </h4>
         <ul class="list-none p-0 m-0 text-[13px]">
           <li v-for="link in column4Links" :key="link.href" class="mb-1">
-            <a
-              :href="link.href"
+            <component
+              :is="link.external ? 'a' : RouterLink"
+              :href="link.external ? link.href : undefined"
+              :to="link.external ? undefined : link.href"
               class="text-primary-600 no-underline hover:underline"
               :target="link.external ? '_blank' : undefined"
               :rel="link.external ? 'noopener noreferrer' : undefined"
+              :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
             >
               {{ link.text }}
-            </a>
+              <span v-if="link.external" class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
+            </component>
           </li>
         </ul>
 
@@ -120,8 +128,10 @@ const socialMediaLinks = [
               class="text-primary-600 no-underline hover:underline"
               target="_blank"
               rel="noopener noreferrer"
+              :aria-label="`${link.text} (${t('common.opensInNewTab')})`"
             >
               {{ link.text }}
+              <span class="sr-only"> ({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>

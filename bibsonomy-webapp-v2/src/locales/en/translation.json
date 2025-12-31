@@ -18,14 +18,14 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "login": "sign in"
+    "login": "sign in",
+    "opensInNewTab": "opens in new tab"
   },
   "home": {
     "headline": "The easy way to manage scientific publications and bookmarks",
     "lead": "{projectName} helps you to manage your publications and bookmarks, to collaborate with your colleagues and to find new interesting material for your research.",
     "register": "register for free",
-    "learnmore": "learn more",
-    "login": "sign in"
+    "learnmore": "learn more"
   },
   "nav": {
     "home": "Home",
@@ -119,16 +119,21 @@
     "languageEnglish": "English"
   },
   "error": {
-    "pageTitle": "An error occured!",
+    "pageTitle": "An error occurred!",
     "notFound": "Sorry, the requested page does not exist on our server.",
     "notFoundHeader": "error 404 - page not found",
-    "serverError": "Sorry, an internal error has occured.",
+    "serverError": "Sorry, an internal error has occurred.",
     "serverErrorHeader": "error 500 - internal server error",
     "serviceUnavailable": "Sorry, the service is temporarily unavailable.",
     "serviceUnavailableHeader": "error 503 - service unavailable",
     "notImplemented": "This feature is not yet implemented.",
     "notImplementedHeader": "Not Implemented Yet",
     "notImplementedMessage": "This feature is currently being developed and will be available in a future release. Please check back later or use one of the implemented features.",
+    "implementedFeaturesTitle": "Currently Implemented Features:",
+    "implementedFeature1": "Browse posts (bookmarks and publications)",
+    "implementedFeature2": "View post details",
+    "implementedFeature3": "Language switching (English/German)",
+    "implementedFeature4": "Responsive design matching original BibSonomy",
     "pageNotFound": "Page not found",
     "networkError": "Network error",
     "unknownError": "Unknown error",

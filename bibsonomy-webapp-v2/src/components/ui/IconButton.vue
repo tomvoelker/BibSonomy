@@ -80,10 +80,12 @@ const iconSize = computed(() => {
     :type="componentTag === 'button' ? type : undefined"
     :to="to"
     :href="href"
-    :disabled="disabled"
+    :disabled="componentTag === 'button' ? disabled : undefined"
     :class="buttonClasses"
     :aria-label="ariaLabel"
     :aria-disabled="disabled"
+    :tabindex="disabled && componentTag !== 'button' ? -1 : undefined"
+    @click="disabled && componentTag !== 'button' ? $event.preventDefault() : undefined"
   >
     <component :is="icon" :size="iconSize" aria-hidden="true" />
   </component>

@@ -15,15 +15,21 @@ import './assets/main.css'
 
 // Start MSW if enabled
 if (import.meta.env.VITE_ENABLE_MOCKS === 'true') {
-  void startMockWorker().then(() => {
-    initApp()
-  })
+  void startMockWorker()
+    .then(() => {
+      initApp()
+    })
+    .catch((error) => {
+      console.error('[MSW] Failed to start mock worker:', error)
+      console.warn('[MSW] Initializing app without mocks')
+      initApp()
+    })
 } else {
   initApp()
 }
 
 function initApp() {
-  const app = createApp(App as Parameters<typeof createApp>[0])
+  const app = createApp(App)
 
   // Create Pinia instance
   const pinia = createPinia()

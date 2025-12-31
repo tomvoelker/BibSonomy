@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { computed, useId } from 'vue'
 
 interface Props {
   /** Input value (v-model) */
@@ -30,9 +30,9 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | number]
 }>()
 
-const attrs = useAttrs()
-
-const inputId = computed(() => attrs.id as string || `input-${Math.random().toString(36).substr(2, 9)}`)
+// Use Vue's useId() for collision-resistant unique ID generation
+const generatedId = useId()
+const inputId = computed(() => `input-${generatedId}`)
 
 const inputClasses = computed(() => {
   const base = 'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors'
@@ -50,7 +50,12 @@ const inputClasses = computed(() => {
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  const value = props.type === 'number' ? Number(target.value) : target.value
+  let value: string | number = target.value
+  if (props.type === 'number' && target.value !== '') {
+    const num = Number(target.value)
+    // Keep as number if valid, otherwise keep original string to allow correction
+    value = isNaN(num) ? target.value : num
+  }
   emit('update:modelValue', value)
 }
 </script>

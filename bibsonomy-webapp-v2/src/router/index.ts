@@ -4,6 +4,7 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 
 // Route definitions
 const routes: RouteRecordRaw[] = [
@@ -13,6 +14,15 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/HomePage.vue'),
     meta: {
       title: 'Home',
+      requiresAuth: false,
+    },
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/pages/NotImplementedPage.vue'),
+    meta: {
+      title: 'Login',
       requiresAuth: false,
     },
   },
@@ -58,7 +68,7 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(_to, _from, savedPosition) {
     if (savedPosition) {
       return savedPosition
     } else {
@@ -68,11 +78,10 @@ const router = createRouter({
 })
 
 // Navigation guard for authentication
-router.beforeEach((to, from, next) => {
-  // This is a placeholder - implement actual auth check
-  const isAuthenticated = false // TODO: Check auth store
+router.beforeEach((to, _from, next) => {
+  const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta['requiresAuth'] && !authStore.isAuthenticated) {
     // Redirect to login if not authenticated
     next({ name: 'login', query: { redirect: to.fullPath } })
   } else {
@@ -82,7 +91,7 @@ router.beforeEach((to, from, next) => {
 
 // Update document title
 router.afterEach((to) => {
-  const title = to.meta.title as string | undefined
+  const title = to.meta['title'] as string | undefined
   document.title = title ? `${title} - BibSonomy` : 'BibSonomy'
 })
 

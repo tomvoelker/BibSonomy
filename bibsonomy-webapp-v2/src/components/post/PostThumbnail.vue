@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Bookmark as BookmarkIcon, EyeOff, Users } from 'lucide-vue-next'
+import { Bookmark, EyeOff } from 'lucide-vue-next'
+import Badge from '@/components/ui/Badge.vue'
 import type { Post } from '@/types/models'
 
 interface Props {
@@ -9,57 +10,39 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Check if post is private
-const isPrivate = computed(() => {
-  return props.post.visibility === 'private' ||
-    props.post.groups.some((g) => g.name === 'private')
-})
-
-// Check if post is in specific groups
-const isInGroups = computed(() => {
-  return props.post.visibility === 'groups' ||
-    props.post.groups.some((g) => g.name !== 'public' && g.name !== 'private')
-})
+// Check if post is private or in collection
+// Note: These are placeholder checks - adjust based on actual data structure
+const isPrivate = computed(() => false) // TODO: implement based on post visibility
+const inCollection = computed(() => false) // TODO: implement based on post collection status
 
 // Get thumbnail URL if available
 const thumbnailUrl = computed(() => {
-  // TODO: implement when backend provides thumbnail URLs
+  // TODO: implement based on actual post structure
   return undefined
 })
 </script>
 
 <template>
-  <div class="post-thumbnail w-16 h-16 md:w-20 md:h-20 relative bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+  <div class="post-thumbnail">
     <!-- Thumbnail image or placeholder -->
     <img
       v-if="thumbnailUrl"
       :src="thumbnailUrl"
-      :alt="`Thumbnail for ${post.resource.resourceType}`"
+      :alt="`Thumbnail for ${post.resourceType}`"
       class="w-full h-full object-cover"
     />
-    <span v-else class="text-2xl">
-      {{ post.resource.resourceType === 'bookmark' ? '🔖' : '📄' }}
+    <span v-else class="text-gray-400 text-xs">
+      {{ post.resourceType === 'bookmark' ? '🔖' : '📄' }}
     </span>
 
-    <!-- Overlay badges (top-right corner) -->
-    <div class="absolute top-0.5 right-0.5 flex flex-col gap-0.5">
-      <!-- Private -->
-      <div
-        v-if="isPrivate"
-        class="bg-gray-700 text-white rounded-full p-0.5"
-        title="Private"
-      >
-        <EyeOff :size="10" />
-      </div>
-
-      <!-- In Groups -->
-      <div
-        v-if="isInGroups"
-        class="bg-green-600 text-white rounded-full p-0.5"
-        title="Shared with groups"
-      >
-        <Users :size="10" />
-      </div>
+    <!-- Overlay badges -->
+    <div class="absolute top-1 right-1 flex gap-1">
+      <Badge v-if="isPrivate" size="xs" variant="danger">
+        <EyeOff :size="12" />
+      </Badge>
+      <Badge v-if="inCollection" size="xs" variant="info">
+        <Bookmark :size="12" />
+      </Badge>
     </div>
   </div>
 </template>

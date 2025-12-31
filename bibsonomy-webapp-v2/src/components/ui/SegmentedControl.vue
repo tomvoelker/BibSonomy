@@ -27,6 +27,7 @@ const activeOption = computed({
     <button
       v-for="option in options"
       :key="option.id"
+      type="button"
       @click="activeOption = option.id"
       class="px-3 py-1.5 text-sm font-medium rounded transition-all"
       :class="

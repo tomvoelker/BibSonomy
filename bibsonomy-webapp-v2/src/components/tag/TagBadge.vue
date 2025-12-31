@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import type { Tag } from '@/types/models'
 
 interface Props {
@@ -13,16 +14,16 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <a
+  <RouterLink
     v-if="clickable"
-    :href="`/tags/${tag.name}`"
-    class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] md:text-xs font-medium border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors no-underline"
+    :to="`/tags/${tag.name}`"
+    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors no-underline"
   >
     {{ tag.name }}
-  </a>
+  </RouterLink>
   <span
     v-else
-    class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] md:text-xs font-medium border border-primary-600 text-primary-600"
+    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border border-primary-600 text-primary-600"
   >
     {{ tag.name }}
   </span>

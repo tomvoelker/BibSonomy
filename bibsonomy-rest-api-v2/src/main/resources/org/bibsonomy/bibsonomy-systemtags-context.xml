@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- factory for creating system tags -->
+	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
+		<property name="executableSystemTags" ref="executableSystemTagSet"/>
+		<property name="searchSystemTags" ref="searchSystemTagSet"/>
+		<property name="markUpSystemTags" ref="markUpSystemTagSet"/>
+	</bean>
+
+	<!--+
+    | Every systemTag in BibSonomy is registered in one of the following sets/maps
+    | A systemTag that is not registered here will not be identified as a systemTag. 
+	+-->
+
+	<!--+
+	    | EXECUTABLE SYSTEMTAGS
+		| In this list we list all executable systemTags
+		| The references are used in the construction of instances of such tags
+		+-->
+	<util:set id="executableSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="forGroupTag"/>
+		<ref bean="forFriendTag"/>
+		<ref bean="reportTag" />
+		<ref bean="addRelationTag" />
+	</util:set>
+	
+	<!--+
+	    | beans for the executable systemTags
+	    +-->
+
+	<bean id="noAuthInterfaceFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
+		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+	</bean>
+
+	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
+		<property name="fileLogic" ref="fileLogic" />
+		<property name="logicInterfaceFactory" ref="noAuthInterfaceFactory" />
+		<property name="hideFromTag" value="${group.sendTo.fromTag.hidden}" />
+		<property name="mergeEnabled" value="${group.sendTo.merge.enabled}" />
+		<property name="userTagsEnabled" value="${group.sendTo.userTags.enabled}" />
+	</bean>
+
+	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag">
+		<property name="bibliographyUser" value="${bibliography.bibliographyUser}" />
+	</bean>
+	
+	<bean id="reportTag" class="org.bibsonomy.database.systemstags.executable.ReportTag" parent="forGroupTag">
+		<property name="services">
+			<list>
+				<!-- FIXME: here we need a class that is definied in bibsonomy-web-common -->
+				<ref bean="reportInformationService"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="addRelationTag" class="org.bibsonomy.database.systemstags.executable.AddRelationTag">
+		<property name="mailUtils" ref="mailUtils" />
+		<property name="mailingEnabled" value="${systag.addRelation.mailing.enabled}" />
+		<property name="receiverMail" value="${systag.addRelation.mailing.mail}" />
+	</bean>
+	
+	<!--+
+	    |SEARCH SYSTEMTAGS
+ 		+-->
+	<util:set id="searchSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="authorTag"/>
+		<ref bean="bibtexkeyTag"/>
+		<ref bean="daysTag"/>
+		<ref bean="entrytypeTag"/>
+		<ref bean="groupTag"/>
+		<ref bean="titleTag"/>
+		<ref bean="userTag"/>
+		<ref bean="yearTag"/>
+		<ref bean="notTag"/>
+		<ref bean="userRelationSystemTag"/>
+		<ref bean="networkRelationSystemTag"/>
+	</util:set>
+	
+	
+	<!--+
+	    | beans for the search systemTags
+	    +-->
+	<bean id="authorTag" class="org.bibsonomy.database.systemstags.search.AuthorSystemTag"/>
+	<bean id="bibtexkeyTag" class="org.bibsonomy.database.systemstags.search.BibTexKeySystemTag"/>
+	<bean id="daysTag" class="org.bibsonomy.database.systemstags.search.DaysSystemTag"/>
+	<bean id="entrytypeTag" class="org.bibsonomy.database.systemstags.search.EntryTypeSystemTag"/>
+	<bean id="groupTag" class="org.bibsonomy.database.systemstags.search.GroupSystemTag"/>
+	<bean id="titleTag" class="org.bibsonomy.database.systemstags.search.TitleSystemTag"/>
+	<bean id="userTag" class="org.bibsonomy.database.systemstags.search.UserSystemTag"/>
+	<bean id="yearTag" class="org.bibsonomy.database.systemstags.search.YearSystemTag"/>
+	<bean id="userRelationSystemTag" class="org.bibsonomy.database.systemstags.search.UserRelationSystemTag"/>
+	<bean id="networkRelationSystemTag" class="org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag"/>
+	<bean id="notTag" class="org.bibsonomy.database.systemstags.search.NotTagSystemTag"/>
+
+	<!--+
+	    |MARKUP SYSTEMTAGS
+		+-->	  
+	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="relevantForSystemTag"/>
+		<ref bean="sentSystemTag"/>
+		<ref bean="myOwnSystemTag"/>
+		<ref bean="unfiledSystemTag"/>
+		<ref bean="jabrefSystemTag"/>
+		<ref bean="hiddenSystemTag"/>
+		<ref bean="externalSystemTag"/>
+		<ref bean="reportedSystemTag" />
+	</util:set>
+	
+	<!--+
+	    | beans for the markUp systemTags
+	    +-->
+	<bean id="relevantForSystemTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
+	<bean id="sentSystemTag" class="org.bibsonomy.database.systemstags.markup.SentSystemTag"/>
+	<bean id="myOwnSystemTag" class="org.bibsonomy.database.systemstags.markup.MyOwnSystemTag"/>
+	<bean id="unfiledSystemTag" class="org.bibsonomy.database.systemstags.markup.UnfiledSystemTag"/>
+	<bean id="jabrefSystemTag" class="org.bibsonomy.database.systemstags.markup.JabrefSystemTag"/>
+	<bean id="hiddenSystemTag" class="org.bibsonomy.database.systemstags.markup.HiddenTagSystemTag"/>
+	<bean id="externalSystemTag" class="org.bibsonomy.database.systemstags.markup.ExternalSystemTag"/>
+	<bean id="reportedSystemTag" class="org.bibsonomy.database.systemstags.markup.ReportedSystemTag" />
+
+</beans>
