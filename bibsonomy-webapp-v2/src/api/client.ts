@@ -10,7 +10,7 @@ export const apiClient = axios.create({
   baseURL:
     import.meta.env['VITE_ENABLE_MOCKS'] === 'true'
       ? '/api/v2'
-      : (import.meta.env['VITE_API_BASE_URL'] as string | undefined) ?? '/api/v2',
+      : ((import.meta.env['VITE_API_BASE_URL'] as string | undefined) ?? '/api/v2'),
   headers: {
     'Content-Type': 'application/json',
   },

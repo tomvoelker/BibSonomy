@@ -3,8 +3,7 @@
  * Runs before each test file
  */
 
-import { afterEach, beforeAll, afterAll, vi } from 'vitest'
-import { config } from '@vue/test-utils'
+import { afterEach, beforeAll, afterAll } from 'vitest'
 import { server } from '../mocks/server'
 
 // Set up MSW server for tests
@@ -40,7 +39,6 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock IntersectionObserver for components that use it
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 ;(globalThis as Record<string, unknown>).IntersectionObserver = class IntersectionObserver {
   constructor() {}
   disconnect() {}
@@ -52,7 +50,6 @@ Object.defineProperty(window, 'matchMedia', {
 }
 
 // Mock ResizeObserver for components that use it
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 ;(globalThis as Record<string, unknown>).ResizeObserver = class ResizeObserver {
   constructor() {}
   disconnect() {}
