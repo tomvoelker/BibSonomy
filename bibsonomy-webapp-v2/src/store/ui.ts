@@ -13,6 +13,9 @@ export interface Toast {
   duration?: number
 }
 
+// Counter for guaranteed unique toast IDs
+let toastIdCounter = 0
+
 export const useUIStore = defineStore('ui', () => {
   // State
   const sidebarOpen = ref(false)
@@ -34,7 +37,7 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   function showToast(toast: Omit<Toast, 'id'>) {
-    const id = Math.random().toString(36).substring(7)
+    const id = `toast-${++toastIdCounter}`
     const newToast: Toast = {
       id,
       ...toast,
