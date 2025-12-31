@@ -19,19 +19,18 @@ export const postsHandlers = [
     await delay(300) // Simulate network latency
 
     const url = new URL(request.url)
-    const user = url.searchParams.get('user') ?? undefined
-    const tag = url.searchParams.get('tag') ?? undefined
-    const resourceType = url.searchParams.get('resourceType') as
-      | 'publication'
-      | 'bookmark'
-      | undefined
+    const userParam = url.searchParams.get('user')
+    const tagParam = url.searchParams.get('tag')
+    const resourceTypeParam = url.searchParams.get('resourceType')
     const limit = parseInt(url.searchParams.get('limit') ?? '10', 10)
     const offset = parseInt(url.searchParams.get('offset') ?? '0', 10)
 
     const result = getMockPosts({
-      user,
-      tag,
-      resourceType,
+      ...(userParam ? { user: userParam } : {}),
+      ...(tagParam ? { tag: tagParam } : {}),
+      ...(resourceTypeParam === 'publication' || resourceTypeParam === 'bookmark'
+        ? { resourceType: resourceTypeParam }
+        : {}),
       limit,
       offset,
     })
@@ -50,7 +49,7 @@ export const postsHandlers = [
   http.get(`${API_BASE}/posts/:id`, async ({ params }) => {
     await delay(200)
 
-    const id = params.id as string
+    const id = params['id'] as string
     const post = getMockPost(id)
 
     if (!post) {
@@ -74,7 +73,7 @@ export const postsHandlers = [
     const body = (await request.json()) as Record<string, unknown>
 
     // Validate required fields
-    if (typeof body.title !== 'string' || !body.title.trim()) {
+    if (typeof body['title'] !== 'string' || !(body['title'] as string).trim()) {
       return HttpResponse.json(
         {
           error: 'Bad Request',
@@ -85,7 +84,7 @@ export const postsHandlers = [
       )
     }
 
-    if (body.resourceType !== 'publication' && body.resourceType !== 'bookmark') {
+    if (body['resourceType'] !== 'publication' && body['resourceType'] !== 'bookmark') {
       return HttpResponse.json(
         {
           error: 'Bad Request',
@@ -100,13 +99,13 @@ export const postsHandlers = [
     const now = new Date().toISOString()
     const newPost = {
       id: generateId(),
-      title: body.title,
-      resourceType: body.resourceType,
-      description: typeof body.description === 'string' ? body.description : undefined,
-      url: typeof body.url === 'string' ? body.url : null,
-      bibTexData: body.bibTexData ?? null,
-      tags: Array.isArray(body.tags) ? body.tags : [],
-      groups: Array.isArray(body.groups) ? body.groups : [],
+      title: body['title'],
+      resourceType: body['resourceType'],
+      description: typeof body['description'] === 'string' ? body['description'] : undefined,
+      url: typeof body['url'] === 'string' ? body['url'] : null,
+      bibTexData: body['bibTexData'] ?? null,
+      tags: Array.isArray(body['tags']) ? body['tags'] : [],
+      groups: Array.isArray(body['groups']) ? body['groups'] : [],
       user: { id: 'mock-user', name: 'Mock User' },
       createdAt: now,
       updatedAt: now,
@@ -119,7 +118,7 @@ export const postsHandlers = [
   http.put(`${API_BASE}/posts/:id`, async ({ params, request }) => {
     await delay(350)
 
-    const id = params.id as string
+    const id = params['id'] as string
     const post = getMockPost(id)
 
     if (!post) {
@@ -149,7 +148,7 @@ export const postsHandlers = [
   http.delete(`${API_BASE}/posts/:id`, async ({ params }) => {
     await delay(250)
 
-    const id = params.id as string
+    const id = params['id'] as string
     const post = getMockPost(id)
 
     if (!post) {

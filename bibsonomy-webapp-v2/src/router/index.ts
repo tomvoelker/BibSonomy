@@ -68,7 +68,7 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(_to, _from, savedPosition) {
     if (savedPosition) {
       return savedPosition
     } else {
@@ -78,10 +78,10 @@ const router = createRouter({
 })
 
 // Navigation guard for authentication
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  if (to.meta['requiresAuth'] && !authStore.isAuthenticated) {
     // Redirect to login if not authenticated
     next({ name: 'login', query: { redirect: to.fullPath } })
   } else {
@@ -91,7 +91,7 @@ router.beforeEach((to, from, next) => {
 
 // Update document title
 router.afterEach((to) => {
-  const title = to.meta.title as string | undefined
+  const title = to.meta['title'] as string | undefined
   document.title = title ? `${title} - BibSonomy` : 'BibSonomy'
 })
 

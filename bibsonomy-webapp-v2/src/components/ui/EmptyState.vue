@@ -43,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
     </p>
 
     <!-- Action slot (optional) -->
-    <div v-if="$slots.action" class="mt-6">
+    <div v-if="$slots['action']" class="mt-6">
       <slot name="action" />
     </div>
   </div>
