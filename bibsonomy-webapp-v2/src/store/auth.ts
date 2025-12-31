@@ -5,14 +5,10 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { type User, UserSchema } from '@/types/models'
 
-export interface User {
-  id: string
-  name: string
-  firstName: string
-  lastName: string
-  email: string
-}
+// Re-export User type for consumers that import from auth store
+export type { User }
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -45,8 +41,16 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (storedToken && storedUser) {
       try {
-        token.value = storedToken
-        user.value = JSON.parse(storedUser) as User
+        const parsedUser = JSON.parse(storedUser)
+        // Validate user data with Zod schema
+        const validatedUser = UserSchema.safeParse(parsedUser)
+        if (validatedUser.success) {
+          token.value = storedToken
+          user.value = validatedUser.data
+        } else {
+          console.warn('Stored user data failed validation, clearing auth')
+          clearAuth()
+        }
       } catch (error) {
         console.error('Failed to parse stored user data:', error)
         clearAuth()

@@ -17,6 +17,8 @@ export const useUIStore = defineStore('ui', () => {
   // State
   const sidebarOpen = ref(false)
   const toasts = ref<Toast[]>([])
+  // Track timer IDs for cleanup
+  const toastTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
   // Actions
   function toggleSidebar() {
@@ -43,19 +45,30 @@ export const useUIStore = defineStore('ui', () => {
 
     // Auto-remove after duration
     if (newToast.duration && newToast.duration > 0) {
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
+        toastTimers.delete(id)
         removeToast(id)
       }, newToast.duration)
+      toastTimers.set(id, timerId)
     }
 
     return id
   }
 
   function removeToast(id: string) {
+    // Cancel pending timer if exists
+    const timerId = toastTimers.get(id)
+    if (timerId) {
+      clearTimeout(timerId)
+      toastTimers.delete(id)
+    }
     toasts.value = toasts.value.filter((t) => t.id !== id)
   }
 
   function clearToasts() {
+    // Cancel all pending timers
+    toastTimers.forEach((timerId) => clearTimeout(timerId))
+    toastTimers.clear()
     toasts.value = []
   }
 

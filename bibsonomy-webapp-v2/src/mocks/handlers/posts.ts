@@ -7,6 +7,12 @@ import { getMockPosts, getMockPost } from '../data/posts'
 
 const API_BASE = '/api/v2'
 
+// Counter for generating unique IDs (more robust than Math.random)
+let idCounter = 0
+function generateId(): string {
+  return `mock-${Date.now()}-${++idCounter}`
+}
+
 export const postsHandlers = [
   // GET /api/v2/posts - List posts with filtering
   http.get(`${API_BASE}/posts`, async ({ request }) => {
@@ -67,24 +73,43 @@ export const postsHandlers = [
 
     const body = (await request.json()) as Record<string, unknown>
 
-    // Simulate validation
-    if (!body.title || !body.resourceType) {
+    // Validate required fields
+    if (typeof body.title !== 'string' || !body.title.trim()) {
       return HttpResponse.json(
         {
           error: 'Bad Request',
-          message: 'Missing required fields: title, resourceType',
+          message: 'Missing or invalid required field: title',
           status: 400,
         },
         { status: 400 }
       )
     }
 
-    // Simulate successful creation
+    if (body.resourceType !== 'publication' && body.resourceType !== 'bookmark') {
+      return HttpResponse.json(
+        {
+          error: 'Bad Request',
+          message: 'Missing or invalid required field: resourceType (must be "publication" or "bookmark")',
+          status: 400,
+        },
+        { status: 400 }
+      )
+    }
+
+    // Simulate successful creation with validated fields
+    const now = new Date().toISOString()
     const newPost = {
-      id: Math.random().toString(36).substring(7),
-      ...body,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      id: generateId(),
+      title: body.title,
+      resourceType: body.resourceType,
+      description: typeof body.description === 'string' ? body.description : undefined,
+      url: typeof body.url === 'string' ? body.url : null,
+      bibTexData: body.bibTexData ?? null,
+      tags: Array.isArray(body.tags) ? body.tags : [],
+      groups: Array.isArray(body.groups) ? body.groups : [],
+      user: { id: 'mock-user', name: 'Mock User' },
+      createdAt: now,
+      updatedAt: now,
     }
 
     return HttpResponse.json(newPost, { status: 201 })

@@ -78,11 +78,17 @@ export const usePreferencesStore = defineStore('preferences', () => {
 
   // Watch for system theme changes
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  mediaQuery.addEventListener('change', () => {
+  const handleMediaChange = () => {
     if (theme.value === 'system') {
       applyTheme('system')
     }
-  })
+  }
+  mediaQuery.addEventListener('change', handleMediaChange)
+
+  // Cleanup function (called when store is disposed, e.g., in tests)
+  function $dispose() {
+    mediaQuery.removeEventListener('change', handleMediaChange)
+  }
 
   // Initialize from localStorage
   loadPreferencesFromStorage()
@@ -96,5 +102,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     setLocale,
     setTheme,
     setPostsPerPage,
+    // Cleanup
+    $dispose,
   }
 })
