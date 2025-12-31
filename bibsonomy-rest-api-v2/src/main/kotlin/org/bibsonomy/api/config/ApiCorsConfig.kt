@@ -10,22 +10,29 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 /**
  * CORS configuration for the REST API.
  *
- * Allowed origins are configurable via the `cors.allowed-origins` property.
- * Defaults to localhost development servers if not specified.
+ * Configuration options:
+ * - cors.allowed-origins: Comma-separated additional allowed origins
+ * - cors.allowed-origin-patterns: Comma-separated origin patterns for wildcards
+ *
+ * Localhost development servers (5173, 4173) are always allowed.
  */
 @Configuration
 class ApiCorsConfig(
-    @Value("\${cors.allowed-origins:http://localhost:5173,http://localhost:4173}")
-    private val allowedOrigins: String
+    @Value("\${cors.allowed-origins:}") private val extraOriginsConfig: String,
+    @Value("\${cors.allowed-origin-patterns:}") private val originPatternsConfig: String
 ) {
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
+        val defaultOrigins = listOf("http://localhost:5173", "http://localhost:4173")
+        val extraOrigins = extraOriginsConfig.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        val originPatterns = originPatternsConfig.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+
         val config = CorsConfiguration().apply {
-            this.allowedOrigins = this@ApiCorsConfig.allowedOrigins
-                .split(",")
-                .map { it.trim() }
-                .filter { it.isNotEmpty() }
+            allowedOrigins = defaultOrigins + extraOrigins
+            if (originPatterns.isNotEmpty()) {
+                allowedOriginPatterns = originPatterns
+            }
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Authorization", "Content-Type", "Accept")
             allowCredentials = true

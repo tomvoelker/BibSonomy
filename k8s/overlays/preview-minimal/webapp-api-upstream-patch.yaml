@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-webapp-v2
+spec:
+  template:
+    spec:
+      containers:
+        - name: webapp
+          env:
+            - name: API_UPSTREAM
+              value: http://PREVIEW_NAME_PREFIXbibsonomy-rest-api-v2:8080
