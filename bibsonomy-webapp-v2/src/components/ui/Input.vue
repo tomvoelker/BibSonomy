@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 
-const inputId = computed(() => attrs.id as string || `input-${Math.random().toString(36).substr(2, 9)}`)
+const inputId = computed(() => attrs.id as string || `input-${Math.random().toString(36).substring(2, 11)}`)
 
 const inputClasses = computed(() => {
   const base = 'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors'

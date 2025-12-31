@@ -29,7 +29,7 @@ if (import.meta.env.VITE_ENABLE_MOCKS === 'true') {
 }
 
 function initApp() {
-  const app = createApp(App as Parameters<typeof createApp>[0])
+  const app = createApp(App)
 
   // Create Pinia instance
   const pinia = createPinia()

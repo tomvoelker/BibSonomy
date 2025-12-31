@@ -41,34 +41,26 @@ export interface BrandingConfig {
  * Theme definitions
  * Equivalent to theme_*.properties files in original webapp
  */
-const themes: Record<string, BrandingConfig> = {
-  bibsonomy: {
-    projectName: 'BibSonomy',
-    tagline: 'The blue social bookmark and publication sharing system.',
-    primaryColor: '#006699',
-    faviconPath: '/favicon.ico',
-    blogUrl: 'https://blog.bibsonomy.org',
-    social: {
-      twitter: 'bibsonomyCrew',
-    },
-    features: {
-      groupsAndFriends: false,
-      homepageExternalSearch: false,
-    },
+const bibsonomyConfig: BrandingConfig = {
+  projectName: 'BibSonomy',
+  tagline: 'The blue social bookmark and publication sharing system.',
+  primaryColor: '#006699',
+  faviconPath: '/favicon.ico',
+  blogUrl: 'https://blog.bibsonomy.org',
+  social: {
+    twitter: 'bibsonomyCrew',
   },
+  features: {
+    groupsAndFriends: false,
+    homepageExternalSearch: false,
+  },
+}
+
+const themes: Record<string, BrandingConfig> = {
+  bibsonomy: bibsonomyConfig,
   biblicious: {
+    ...bibsonomyConfig,
     projectName: 'BibLicious',
-    tagline: 'The blue social bookmark and publication sharing system.',
-    primaryColor: '#006699',
-    faviconPath: '/favicon.ico',
-    blogUrl: 'https://blog.bibsonomy.org',
-    social: {
-      twitter: 'bibsonomyCrew',
-    },
-    features: {
-      groupsAndFriends: false,
-      homepageExternalSearch: false,
-    },
   },
   puma: {
     projectName: 'PUMA',

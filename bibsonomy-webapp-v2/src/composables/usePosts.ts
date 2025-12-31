@@ -29,10 +29,10 @@ export function usePost(id: Ref<string> | string) {
   return useQuery({
     queryKey: ['posts', id],
     queryFn: () => {
-      const postId = typeof id === 'string' ? id : id.value
+      const postId = isRef(id) ? id.value : id
       return getPost(postId)
     },
-    enabled: typeof id === 'string' ? !!id : () => !!id.value,
+    enabled: isRef(id) ? () => !!id.value : !!id,
   })
 }
 

@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { Edit, Copy, History, Share2 } from 'lucide-vue-next'
 import IconButton from '@/components/ui/IconButton.vue'
-import type { Post } from '@/types/models'
-
-interface Props {
-  post: Post
-}
-
-defineProps<Props>()
 
 const emit = defineEmits<{
   edit: []

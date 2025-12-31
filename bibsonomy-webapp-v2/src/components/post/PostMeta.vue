@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UserLink from '@/components/user/UserLink.vue'
 import Badge from '@/components/ui/Badge.vue'
 import type { Post } from '@/types/models'
@@ -9,12 +10,13 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { locale } = useI18n()
 
-// Format date
+// Format date using i18n locale
 const formattedDate = computed(() => {
   if (!props.post.date) return ''
   const date = new Date(props.post.date)
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
