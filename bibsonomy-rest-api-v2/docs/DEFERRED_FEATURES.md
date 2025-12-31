@@ -42,40 +42,40 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/PersonPageController.java` - Main person page view
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/PersonDisambiguationPageController.java` - Handles disambiguation of duplicate persons
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/MergePersonController.java` - Merges duplicate person records
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/EditPersonController.java` - Edit person details
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/EditPersonDetailsController.java` - Edit specific person fields
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/EditRelationController.java` - Edit person-resource relations
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/relation/AddPersonResourceRelationController.java` - Link person to publication
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/relation/DeletePersonResourceRelationController.java` - Unlink person from publication
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/PersonsPageController.java` - List all persons
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/person/PersonPublicationsAjaxController.java` - AJAX: Load person's publications
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/person/PersonProjectsAjaxController.java` - AJAX: Load person's projects
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/person/PersonSimilarAjaxController.java` - AJAX: Find similar persons (for disambiguation)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/PersonPageController.java` - Main person page view
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/PersonDisambiguationPageController.java` - Handles disambiguation of duplicate persons
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/MergePersonController.java` - Merges duplicate person records
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/EditPersonController.java` - Edit person details
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/EditPersonDetailsController.java` - Edit specific person fields
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/EditRelationController.java` - Edit person-resource relations
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/relation/AddPersonResourceRelationController.java` - Link person to publication
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/person/relation/DeletePersonResourceRelationController.java` - Unlink person from publication
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/PersonsPageController.java` - List all persons
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/person/PersonPublicationsAjaxController.java` - AJAX: Load person's publications
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/person/PersonProjectsAjaxController.java` - AJAX: Load person's projects
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/person/PersonSimilarAjaxController.java` - AJAX: Find similar persons (for disambiguation)
 
 **Domain Models**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/Person.java` - Core Person entity
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/PersonName.java` - Person name representation
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/PersonMatch.java` - Person matching/disambiguation
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/PersonMergeFieldConflict.java` - Conflict resolution during merge
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/ResourcePersonRelation.java` - Link between Person and Publication (referenced in Person.java)
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/Person.java` - Core Person entity
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/PersonName.java` - Person name representation
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/PersonMatch.java` - Person matching/disambiguation
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/PersonMergeFieldConflict.java` - Conflict resolution during merge
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/ResourcePersonRelation.java` - Link between Person and Publication (referenced in Person.java)
 
 **Database Tables**:
-- `person` - Core person data (see: `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/resources/database/migrations/3.3.0/person-entities.sql`)
+- `person` - Core person data (see: `bibsonomy-database/src/main/resources/database/migrations/3.3.0/person-entities.sql`)
 - `person_name` - Multiple names per person (aliases, former names)
-- `person_additional_keys` - External identifiers (ORCID, ResearcherID, etc.) (see: `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/resources/database/migrations/4.0.0/add_person_additional_keys.sql`)
+- `person_additional_keys` - External identifiers (ORCID, ResearcherID, etc.) (see: `bibsonomy-database/src/main/resources/database/migrations/4.0.0/add_person_additional_keys.sql`)
 - `person_resource_relation` - Links persons to publications
-- `similar_persons` - Pre-computed similarity scores for disambiguation (see: `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/resources/database/migrations/3.8.13/add_table_similar_persons.sql`)
+- `similar_persons` - Pre-computed similarity scores for disambiguation (see: `bibsonomy-database/src/main/resources/database/migrations/3.8.13/add_table_similar_persons.sql`)
 
 **Query Builders**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/logic/querybuilder/PersonQueryBuilder.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/logic/query/PersonQuery.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/logic/querybuilder/PersonQueryBuilder.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/logic/query/PersonQuery.java`
 
 **Legacy REST API**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/PersonsHandler.java` - REST endpoint for persons
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/persons/GetPersonPostsStrategy.java` - Get publications for person
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/PersonsHandler.java` - REST endpoint for persons
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/persons/GetPersonPostsStrategy.java` - Get publications for person
 
 **Implementation Notes**:
 
@@ -121,16 +121,16 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/ProjectPageController.java` - View single project
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/ProjectsPageController.java` - List all projects
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/actions/EditProjectController.java` - Edit project
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/actions/DeleteProjectController.java` - Delete project
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/ajax/ProjectPersonLinkAjaxController.java` - AJAX: Link/unlink persons to projects
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/ProjectPageController.java` - View single project
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/ProjectsPageController.java` - List all projects
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/actions/EditProjectController.java` - Edit project
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/actions/DeleteProjectController.java` - Delete project
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/ajax/ProjectPersonLinkAjaxController.java` - AJAX: Link/unlink persons to projects
 
 **Domain Models**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/cris/Project.java` - Core Project entity
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/cris/ProjectPersonLinkType.java` - Type of person-project relationship (PI, collaborator, etc.)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/validation/ProjectValidator.java` - Validation logic
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/cris/Project.java` - Core Project entity
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/cris/ProjectPersonLinkType.java` - Type of person-project relationship (PI, collaborator, etc.)
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/validation/ProjectValidator.java` - Validation logic
 
 **Database Tables**:
 - `project` - Core project data (title, description, dates, funding)
@@ -138,11 +138,11 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 - `project_publication` - Links projects to publications
 
 **Query Builders**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/logic/querybuilder/ProjectQueryBuilder.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/logic/query/ProjectQuery.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/logic/querybuilder/ProjectQueryBuilder.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/logic/query/ProjectQuery.java`
 
 **Legacy REST API**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/ProjectsHandler.java` - REST endpoint for projects
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/ProjectsHandler.java` - REST endpoint for projects
 
 **Implementation Notes**:
 
@@ -184,11 +184,11 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/OrganizationPageController.java` - View organization page
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/cris/OrganizationPageController.java` - View organization page
 
 **Domain Models**:
 - Likely uses Group entity with specialized CRIS attributes
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/cris/GroupPersonLinkType.java` - Type of person-organization relationship
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/cris/GroupPersonLinkType.java` - Type of person-organization relationship
 
 **Database Tables**:
 - Likely extends `group` table with CRIS-specific fields
@@ -231,10 +231,10 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/PublicationReportingPageController.java` - Publication reporting
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/PersonReportingPageController.java` - Person-specific reports
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/ProjectReportingPageController.java` - Project-specific reports
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/AbstractReportingPageController.java` - Base reporting controller
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/PublicationReportingPageController.java` - Publication reporting
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/PersonReportingPageController.java` - Person-specific reports
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/ProjectReportingPageController.java` - Project-specific reports
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/reporting/AbstractReportingPageController.java` - Base reporting controller
 
 **Implementation Notes**:
 
@@ -275,22 +275,22 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/SyncPageController.java` - Main sync page
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/actions/SyncSettingsController.java` - Sync settings management
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/SyncPageController.java` - Main sync page
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/actions/SyncSettingsController.java` - Sync settings management
 
 **Domain Models**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SyncService.java` - Sync service configuration
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationData.java` - Sync metadata
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationPost.java` - Sync post data
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationStatus.java` - Sync status enum
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationDirection.java` - Sync direction (push/pull/bidirectional)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/ConflictResolutionStrategy.java` - How to resolve conflicts
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SyncService.java` - Sync service configuration
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationData.java` - Sync metadata
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationPost.java` - Sync post data
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationStatus.java` - Sync status enum
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SynchronizationDirection.java` - Sync direction (push/pull/bidirectional)
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/ConflictResolutionStrategy.java` - How to resolve conflicts
 
 **Synchronization Client**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/TwoStepSynchronizationClient.java` - Main sync client
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/AbstractSynchronizationClient.java` - Base sync client
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/SynchronizationClient.java` - Sync interface
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/AutoSync.java` - Automatic sync scheduler
+- `bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/TwoStepSynchronizationClient.java` - Main sync client
+- `bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/AbstractSynchronizationClient.java` - Base sync client
+- `bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/SynchronizationClient.java` - Sync interface
+- `bibsonomy-synchronization/src/main/java/org/bibsonomy/synchronization/AutoSync.java` - Automatic sync scheduler
 
 **Database Tables**:
 - `sync_service` - User's sync service configurations
@@ -298,7 +298,7 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 
 **LogicInterface Methods**:
 - `LogicInterface.getSyncServiceSettings(String userName, URI service, boolean server)` - Get user's sync settings
-- `SyncLogicInterface` - Specialized interface for sync operations (see: `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SyncLogicInterface.java`)
+- `SyncLogicInterface` - Specialized interface for sync operations (see: `bibsonomy-model/src/main/java/org/bibsonomy/model/sync/SyncLogicInterface.java`)
 
 **Implementation Notes**:
 
@@ -350,7 +350,7 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/StatisticsController.java` - Main statistics endpoint
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/StatisticsController.java` - Main statistics endpoint
 
 **LogicInterface Methods**:
 - `LogicInterface.getUserStatistics(GroupingEntity, Set<Filter>, String, SpamStatus, Date, Date)` - User counts
@@ -404,7 +404,7 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/DidYouKnowMessageController.java` - Base controller for "Did You Know" messages
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/DidYouKnowMessageController.java` - Base controller for "Did You Know" messages
 
 **Model**:
 - `DidYouKnowMessage` class (referenced in controller)
@@ -449,8 +449,8 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/HashExampleController.java` - Hash example page (`/hashexample`)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ScraperInfoController.java` - Scraper info page (`/scraperinfo`)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/HashExampleController.java` - Hash example page (`/hashexample`)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ScraperInfoController.java` - Scraper info page (`/scraperinfo`)
 
 **Scraper Infrastructure**:
 - `KDEScraperFactory` - Factory for available scrapers (referenced in ScraperInfoController)
@@ -488,13 +488,13 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Controllers**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ConceptPageController.java` - View concept page (`/concept/tag/CONCEPT`)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/RelationsController.java` - View popular concepts (`/concepts`)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/ConceptController.java` - AJAX concept operations
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ConceptPageController.java` - View concept page (`/concept/tag/CONCEPT`)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/RelationsController.java` - View popular concepts (`/concepts`)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/ConceptController.java` - AJAX concept operations
 
 **Domain Models**:
 - `Tag` model has concept-related fields (see concept prefix: `Tag.CONCEPT_PREFIX = "c:"`)
-- `ConceptStatus` enum - PICKED, UNPICKED, ALL (see: `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-common/src/main/java/org/bibsonomy/common/enums/ConceptStatus.java`)
+- `ConceptStatus` enum - PICKED, UNPICKED, ALL (see: `bibsonomy-common/src/main/java/org/bibsonomy/common/enums/ConceptStatus.java`)
 
 **LogicInterface Methods**:
 - `LogicInterface.getConcepts(Class, GroupingEntity, String, String, Set<String>, ConceptStatus, int, int)` - Get concept list
@@ -502,10 +502,10 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 
 **Database**:
 - `tag_relation` table - Stores hierarchical relationships between tags
-- Concept chain processing (see: `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/concept/`)
+- Concept chain processing (see: `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/concept/`)
 
 **Legacy REST API**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/concepts/GetConceptsStrategy.java`
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/concepts/GetConceptsStrategy.java`
 
 **Implementation Notes**:
 
@@ -553,7 +553,7 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 **Codebase References**:
 
 **Layout Rendering**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-layout/` - Entire layout module
+- `bibsonomy-layout/` - Entire layout module
   - JabRef layout renderer (`bibsonomy-layout/src/main/java/org/bibsonomy/layout/jabref/`)
   - CSL (Citation Style Language) renderer (`bibsonomy-layout/src/main/java/org/bibsonomy/layout/citeproc/`)
   - Standard layouts (`bibsonomy-layout/src/main/java/org/bibsonomy/layout/standard/`)
@@ -565,8 +565,8 @@ BibSonomy includes CRIS (Current Research Information System) features for manag
 - `CSLFilesManager` - Manages CSL style files
 
 **Web Views**:
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/view/LayoutView.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/view/ExportLayoutView.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/view/LayoutView.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/view/ExportLayoutView.java`
 
 **Implementation Notes**:
 

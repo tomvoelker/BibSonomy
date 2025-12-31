@@ -43,30 +43,30 @@ This created a Facebook-like social layer on top of the publication/bookmark sha
 ### Codebase References
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FriendPageController.java` - Single friend management
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FriendsPageController.java` - Friends overview page (shows posts from friends)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FriendsOverviewController.java` - Friends list management
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/SpheresPageController.java` - Friend groups/"spheres" management
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FriendPageController.java` - Single friend management
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FriendsPageController.java` - Friends overview page (shows posts from friends)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FriendsOverviewController.java` - Friends list management
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/SpheresPageController.java` - Friend groups/"spheres" management
 
 #### Commands (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/FriendsResourceViewCommand.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/FriendsOverviewCommand.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/SphereResourceViewCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/FriendsResourceViewCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/FriendsOverviewCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/SphereResourceViewCommand.java`
 
 #### Database Layer
 **Database Managers:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetFriendsOfUser.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetUserFriends.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetFriendsOfUser.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetUserFriends.java`
 
 **Query Chain Elements:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesByFriends.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesOfFriendsByUser.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesOfFriendsByTags.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/tag/get/GetTagsByFriendOfUser.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/user/GetFriendHistoryCount.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesByFriends.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesOfFriendsByUser.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesOfFriendsByTags.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/tag/get/GetTagsByFriendOfUser.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/user/GetFriendHistoryCount.java`
 
 **System Tags:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/systemstags/executable/ForFriendTag.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/systemstags/executable/ForFriendTag.java`
 
 #### Database Schema
 **Tables:**
@@ -98,7 +98,7 @@ void deleteUserRelationship(String sourceUser, String targetUser, UserRelation r
 **Enum:** `UserRelation.FRIEND_OF`, `UserRelation.OF_FRIEND` (in `org.bibsonomy.common.enums.UserRelation`)
 
 #### REST API (Legacy v1)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-client/src/main/java/org/bibsonomy/rest/client/queries/get/GetFriendsQuery.java`
+- `bibsonomy-rest-client/src/main/java/org/bibsonomy/rest/client/queries/get/GetFriendsQuery.java`
 
 **URL Patterns:**
 - `/friends` - View posts from friends
@@ -139,14 +139,14 @@ This was separate from the bidirectional "friends" feature.
 ### Codebase References
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FollowersPageController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/FollowersPageController.java`
 
 #### Commands (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/FollowersViewCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/FollowersViewCommand.java`
 
 #### Database Layer
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetFollowersOfUser.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetUserFollowers.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetFollowersOfUser.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/user/get/GetUserFollowers.java`
 
 #### Database Schema
 **Note:** Followers were stored in the same `friends` table with different `tag_name` values (e.g., `sys:network:follower` vs `sys:network:bibsonomy-friend`)
@@ -190,21 +190,21 @@ This was like email for posts, enabling direct peer-to-peer sharing.
 ### Codebase References
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/InboxPageController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/InboxPageController.java`
 
 #### Database Manager
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/InboxDatabaseManager.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesFromInbox.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/get/GetResourcesForUserInboxCount.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/InboxDatabaseManager.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesFromInbox.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/get/GetResourcesForUserInboxCount.java`
 
 **Database Params:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/params/InboxParam.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/params/InboxParam.java`
 
 **Tests:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/test/java/org/bibsonomy/database/managers/InboxDatabaseManagerTest.java`
+- `bibsonomy-database/src/test/java/org/bibsonomy/database/managers/InboxDatabaseManagerTest.java`
 
 #### Domain Model
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/Inbox.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/Inbox.java`
 
 ```java
 public class Inbox implements Serializable {
@@ -277,31 +277,31 @@ This was powered by the `bibsonomy-recommender` module with multiple ML algorith
 ### Codebase References
 
 #### Recommender Module
-**Entire module:** `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/`
+**Entire module:** `bibsonomy-recommender/`
 
 **Key classes:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/item/AbstractItemRecommender.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/item/content/ContentBasedItemRecommender.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/item/content/TagBasedItemRecommender.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/AbstractTagRecommender.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/popular/MostPopularByResourceTagRecommender.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/popular/MostPopularByUserTagRecommender.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/simple/SimpleContentBasedTagRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/item/AbstractItemRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/item/content/ContentBasedItemRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/item/content/TagBasedItemRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/AbstractTagRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/popular/MostPopularByResourceTagRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/popular/MostPopularByUserTagRecommender.java`
+- `bibsonomy-recommender/src/main/java/org/bibsonomy/recommender/tag/simple/SimpleContentBasedTagRecommender.java`
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/RecommendedPostsPageController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/GetPublicationRecommendedTagsController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/GetBookmarkRecommendedTagsController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/ItemRecommenderFeedbackController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/RecommendationsAjaxController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/RecommendedPostsPageController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/GetPublicationRecommendedTagsController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/GetBookmarkRecommendedTagsController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/ItemRecommenderFeedbackController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/RecommendationsAjaxController.java`
 
 #### Admin Interface
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/admin/AdminRecommendersController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/admin/AdminRecommendersCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/admin/AdminRecommendersController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/admin/AdminRecommendersCommand.java`
 
 #### Domain Models
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/RecommendedPost.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/PhDRecommendation.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/RecommendedPost.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/PhDRecommendation.java`
 
 ```java
 public class RecommendedPost<T extends Resource> implements Serializable {
@@ -359,31 +359,31 @@ This was intended as a temporary workspace before deciding what to do with posts
 ### Codebase References
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ClipboardPageController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/ClipboardController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ClipboardPageController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/ClipboardController.java`
 
 #### Commands & Actions
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/ajax/ClipboardManagerCommand.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/ajax/action/ClipboardAction.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/validation/ajax/ClipboardValidator.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/ajax/ClipboardManagerCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/ajax/action/ClipboardAction.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/validation/ajax/ClipboardValidator.java`
 
 #### Database Manager
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/ClipboardDatabaseManager.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/bibtex/get/GetBibtexFromClipboardForUser.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/GetClipboardPostsCount.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/GetClipboardPostsHistoryCount.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/ClipboardDatabaseManager.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/bibtex/get/GetBibtexFromClipboardForUser.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/GetClipboardPostsCount.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/GetClipboardPostsHistoryCount.java`
 
 **Plugin:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/plugin/plugins/ClipboardPlugin.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/plugin/plugins/ClipboardPlugin.java`
 
 **Params:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/params/ClipboardParam.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/params/ClipboardParam.java`
 
 **Tests:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/test/java/org/bibsonomy/database/managers/ClipboardDatabaseManagerTest.java`
+- `bibsonomy-database/src/test/java/org/bibsonomy/database/managers/ClipboardDatabaseManagerTest.java`
 
 #### Domain Model
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/Clipboard.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/Clipboard.java`
 
 ```java
 public class Clipboard implements Serializable {
@@ -400,10 +400,10 @@ public class Clipboard implements Serializable {
 ```
 
 #### REST API (Legacy v1)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/clipboard/GetClipboardStrategy.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/clipboard/PostClipboardStrategy.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/clipboard/DeleteClipboardStrategy.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-rest-client/src/main/java/org/bibsonomy/rest/client/queries/delete/UnpickClipboardQuery.java`
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/clipboard/GetClipboardStrategy.java`
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/clipboard/PostClipboardStrategy.java`
+- `bibsonomy-rest-server/src/main/java/org/bibsonomy/rest/strategy/clipboard/DeleteClipboardStrategy.java`
+- `bibsonomy-rest-client/src/main/java/org/bibsonomy/rest/client/queries/delete/UnpickClipboardQuery.java`
 
 **URL Patterns:**
 - `/clipboard` - View clipboard items
@@ -443,10 +443,10 @@ This was a visualization/exploration tool for a user's own bibliography.
 ### Codebase References
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/MySearchController.java` (283 lines)
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/MySearchController.java` (283 lines)
 
 #### Commands
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/MySearchCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/MySearchCommand.java`
 
 #### Implementation Details
 The controller builds several relation tables:
@@ -503,25 +503,25 @@ This used the `bibsonomy-wiki` module with WikiModel parsing.
 ### Codebase References
 
 #### Wiki Module
-**Module:** `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-wiki/`
+**Module:** `bibsonomy-wiki/`
 
 **Key class:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-wiki/src/main/java/org/bibsonomy/wiki/CVWikiModel.java`
+- `bibsonomy-wiki/src/main/java/org/bibsonomy/wiki/CVWikiModel.java`
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/WikiCvPageController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/WikiCvPageController.java`
 
 #### Database Manager
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/WikiDatabaseManager.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/params/WikiParam.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/util/WikiTemplateLoader.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/WikiDatabaseManager.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/params/WikiParam.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/util/WikiTemplateLoader.java`
 
 **Tests:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/test/java/org/bibsonomy/database/util/WikiTemplateLoaderTest.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/test/java/org/bibsonomy/database/managers/UserDatabaseManagerWikiTest.java`
+- `bibsonomy-database/src/test/java/org/bibsonomy/database/util/WikiTemplateLoaderTest.java`
+- `bibsonomy-database/src/test/java/org/bibsonomy/database/managers/UserDatabaseManagerWikiTest.java`
 
 #### Domain Model
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/Wiki.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/Wiki.java`
 
 ```java
 public class Wiki implements Serializable {
@@ -551,7 +551,7 @@ CREATE TABLE `log_wiki` (...); -- Audit log
 ```
 
 **Migration:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/resources/database/migrations/2.0.38/add_cvwiki.sql`
+- `bibsonomy-database/src/main/resources/database/migrations/2.0.38/add_cvwiki.sql`
 
 **URL Patterns:**
 - `/cv/USERNAME` - View user's wiki/CV page
@@ -596,43 +596,43 @@ This enabled peer review and collaborative annotation.
 ### Codebase References
 
 #### Controllers (Webapp)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/DiscussionItemAjaxController.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/CommentAjaxController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/DiscussionItemAjaxController.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/controller/ajax/CommentAjaxController.java`
 
 #### Commands & Validators
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/ajax/DiscussionItemAjaxCommand.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/validation/DiscussionItemValidator.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/validation/CommentValidator.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/command/ajax/DiscussionItemAjaxCommand.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/validation/DiscussionItemValidator.java`
+- `bibsonomy-webapp/src/main/java/org/bibsonomy/webapp/validation/CommentValidator.java`
 
 **Tests:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-webapp/src/test/java/org/bibsonomy/webapp/validation/CommentValidatorTest.java`
+- `bibsonomy-webapp/src/test/java/org/bibsonomy/webapp/validation/CommentValidatorTest.java`
 
 #### Database Managers
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/discussion/DiscussionDatabaseManager.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/discussion/DiscussionItemDatabaseManager.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/discussion/CommentDatabaseManager.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/discussion/DiscussionDatabaseManager.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/discussion/DiscussionItemDatabaseManager.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/discussion/CommentDatabaseManager.java`
 
 **Chain Elements:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/discussion/DiscussionChainElement.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/discussion/get/GetDiscussionSpaceByHash.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesWithDiscussions.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/get/GetResourcesWithDiscussionsCount.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/get/GetUserDiscussionsStatistics.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/discussion/DiscussionChainElement.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/discussion/get/GetDiscussionSpaceByHash.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/resource/get/GetResourcesWithDiscussions.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/get/GetResourcesWithDiscussionsCount.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/managers/chain/statistic/post/get/GetUserDiscussionsStatistics.java`
 
 **Plugin:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/plugin/plugins/DiscussionPlugin.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/plugin/plugins/DiscussionPlugin.java`
 
 **Params:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/params/discussion/DiscussionItemParam.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/main/java/org/bibsonomy/database/params/discussion/CommentParam.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/params/discussion/DiscussionItemParam.java`
+- `bibsonomy-database/src/main/java/org/bibsonomy/database/params/discussion/CommentParam.java`
 
 **Tests:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/test/java/org/bibsonomy/database/managers/discussion/DiscussionDatabaseManagerTest.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database/src/test/java/org/bibsonomy/database/managers/discussion/CommentDatabaseManagerTest.java`
+- `bibsonomy-database/src/test/java/org/bibsonomy/database/managers/discussion/DiscussionDatabaseManagerTest.java`
+- `bibsonomy-database/src/test/java/org/bibsonomy/database/managers/discussion/CommentDatabaseManagerTest.java`
 
 #### Domain Models
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/DiscussionItem.java` (138 lines)
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/Comment.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/DiscussionItem.java` (138 lines)
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/Comment.java`
 
 ```java
 public class DiscussionItem implements Serializable {
@@ -650,11 +650,11 @@ public class DiscussionItem implements Serializable {
 ```
 
 #### LogicInterface
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/logic/DiscussionLogicInterface.java` (sub-interface of LogicInterface)
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/logic/DiscussionLogicInterface.java` (sub-interface of LogicInterface)
 
 **Utilities:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/main/java/org/bibsonomy/model/util/DiscussionItemUtils.java`
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-model/src/test/java/org/bibsonomy/model/util/DiscussionItemUtilsTest.java`
+- `bibsonomy-model/src/main/java/org/bibsonomy/model/util/DiscussionItemUtils.java`
+- `bibsonomy-model/src/test/java/org/bibsonomy/model/util/DiscussionItemUtilsTest.java`
 
 #### Database Schema
 ```sql
@@ -668,7 +668,7 @@ CREATE TABLE `log_discussion` (...); -- Audit log
 ```
 
 **Enums:**
-- `/Users/tomvolker/localProjects/dsc/BibSonomy/bibsonomy-database-common/src/main/java/org/bibsonomy/database/common/enums/DiscussionItemType.java`
+- `bibsonomy-database-common/src/main/java/org/bibsonomy/database/common/enums/DiscussionItemType.java`
 
 **URL Patterns:**
 - AJAX endpoints for creating/viewing comments (no dedicated page URLs found)
