@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Home, Menu, X } from 'lucide-vue-next'
 import NavbarItem from './NavbarItem.vue'
@@ -48,10 +49,10 @@ const closeMobileMenu = () => {
 
       <!-- Mobile menu button and header -->
       <div class="md:hidden flex items-center justify-between py-3 px-4">
-        <a href="/" class="text-gray-100 font-medium flex items-center gap-2">
+        <RouterLink to="/" class="text-gray-100 font-medium flex items-center gap-2 no-underline">
           <Home :size="20" />
           <span>{{ t('nav.home') }}</span>
-        </a>
+        </RouterLink>
         <button
           @click="toggleMobileMenu"
           class="text-gray-100 p-2 hover:bg-primary-700 rounded transition-colors"

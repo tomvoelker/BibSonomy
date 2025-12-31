@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -54,10 +55,10 @@ const tagSizes = computed(() => {
         {{ t('tag.popular') }}
       </h3>
       <div class="flex flex-wrap gap-x-3 gap-y-2 items-center justify-center leading-relaxed">
-        <a
+        <RouterLink
           v-for="tag in tagSizes"
           :key="tag.name"
-          :href="`/error/not-implemented?feature=Tag+Page`"
+          :to="`/error/not-implemented?feature=Tag+Page`"
           class="text-primary-600 hover:text-primary-800 no-underline transition-all hover:scale-105"
           :style="{
             fontSize: tag.fontSize,
@@ -66,7 +67,7 @@ const tagSizes = computed(() => {
           }"
         >
           {{ tag.name }}
-        </a>
+        </RouterLink>
       </div>
     </div>
 

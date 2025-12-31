@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, type Component } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 interface Props {
   /** Link destination */
@@ -31,7 +31,7 @@ const linkClasses = computed(() => {
 
 <template>
   <li class="relative block">
-    <a :href="to" :class="linkClasses">
+    <RouterLink :to="to" :class="linkClasses">
       <component
         v-if="icon"
         :is="icon"
@@ -40,6 +40,6 @@ const linkClasses = computed(() => {
         aria-hidden="true"
       />
       <slot />
-    </a>
+    </RouterLink>
   </li>
 </template>
