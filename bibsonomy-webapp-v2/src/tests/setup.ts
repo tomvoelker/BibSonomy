@@ -39,7 +39,7 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock IntersectionObserver for components that use it
-;(globalThis as Record<string, unknown>).IntersectionObserver = class IntersectionObserver {
+;(globalThis as Record<string, unknown>)['IntersectionObserver'] = class IntersectionObserver {
   constructor() {}
   disconnect() {}
   observe() {}
@@ -50,7 +50,7 @@ Object.defineProperty(window, 'matchMedia', {
 }
 
 // Mock ResizeObserver for components that use it
-;(globalThis as Record<string, unknown>).ResizeObserver = class ResizeObserver {
+;(globalThis as Record<string, unknown>)['ResizeObserver'] = class ResizeObserver {
   constructor() {}
   disconnect() {}
   observe() {}

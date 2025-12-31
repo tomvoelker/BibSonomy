@@ -85,12 +85,12 @@ const themes: Record<string, BrandingConfig> = {
 export function getBrandingConfig(): BrandingConfig {
   // In development, always use BibLicious
   if (import.meta.env.DEV) {
-    return themes['biblicious'] ?? themes['bibsonomy']
+    return themes['biblicious']!
   }
 
   // In production, use configured theme
   const theme = (import.meta.env['VITE_PROJECT_THEME'] as string | undefined) ?? 'bibsonomy'
-  return themes[theme] ?? themes['bibsonomy']
+  return themes[theme] ?? themes['bibsonomy']!
 }
 
 /**
