@@ -29,7 +29,7 @@ const { branding } = useBranding()
         {{ t('home.register') }}
       </Button>
 
-      <Button variant="info" to="/error/not-implemented?feature=Getting+Started">
+      <Button variant="link" to="/error/not-implemented?feature=Getting+Started">
         {{ t('home.learnmore') }}
       </Button>
     </div>

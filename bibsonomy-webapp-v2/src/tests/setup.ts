@@ -3,8 +3,8 @@
  * Runs before each test file
  */
 
-import { afterEach, beforeAll, afterAll } from 'vitest'
-import { cleanup } from '@vue/test-utils'
+import { afterEach, beforeAll, afterAll, vi } from 'vitest'
+import { config } from '@vue/test-utils'
 import { server } from '../mocks/server'
 
 // Set up MSW server for tests
@@ -18,7 +18,6 @@ afterAll(() => {
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup()
   server.resetHandlers() // Reset MSW handlers between tests
 })
 
@@ -42,7 +41,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver for components that use it
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-global.IntersectionObserver = class IntersectionObserver {
+;(globalThis as Record<string, unknown>).IntersectionObserver = class IntersectionObserver {
   constructor() {}
   disconnect() {}
   observe() {}
@@ -50,13 +49,13 @@ global.IntersectionObserver = class IntersectionObserver {
     return []
   }
   unobserve() {}
-} as unknown as typeof global.IntersectionObserver
+}
 
 // Mock ResizeObserver for components that use it
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-global.ResizeObserver = class ResizeObserver {
+;(globalThis as Record<string, unknown>).ResizeObserver = class ResizeObserver {
   constructor() {}
   disconnect() {}
   observe() {}
   unobserve() {}
-} as unknown as typeof global.ResizeObserver
+}

@@ -8,9 +8,9 @@ import { useAuthStore } from '@/store/auth'
 export const apiClient = axios.create({
   // Use relative URL for MSW to work, or full URL in production
   baseURL:
-    import.meta.env.VITE_ENABLE_MOCKS === 'true'
+    import.meta.env['VITE_ENABLE_MOCKS'] === 'true'
       ? '/api/v2'
-      : import.meta.env.VITE_API_BASE_URL || '/api/v2',
+      : (import.meta.env['VITE_API_BASE_URL'] as string | undefined) ?? '/api/v2',
   headers: {
     'Content-Type': 'application/json',
   },

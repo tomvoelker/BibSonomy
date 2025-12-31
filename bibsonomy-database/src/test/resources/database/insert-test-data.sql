@@ -237,10 +237,11 @@ INSERT INTO `friends` VALUES
 (6, 'testuser2', 'testuser1', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00');
 
 
--- 
+--
 -- Data for table `groupids`
--- 
-INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
+-- Note: Using INSERT IGNORE because some groups are already created by bibsonomy-db-init.sql
+--
+INSERT IGNORE INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
 ('public',          -2147483648, NULL,  1, 0, NULL),
 ('private',         -2147483647, NULL,  1, 0, NULL),
 ('friends',         -2147483646, NULL,  1, 0, NULL),

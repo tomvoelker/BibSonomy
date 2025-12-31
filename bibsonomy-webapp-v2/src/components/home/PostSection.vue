@@ -34,7 +34,7 @@ const { t } = useI18n()
     <PostSectionHeader
       :title="title"
       :count="posts.length"
-      :icon="icon"
+      v-bind="icon ? { icon } : {}"
       @filter="emit('filter')"
       @sort="emit('sort')"
       @export="emit('export')"
