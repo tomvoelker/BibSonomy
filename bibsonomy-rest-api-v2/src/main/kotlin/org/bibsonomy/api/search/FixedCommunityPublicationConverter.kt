@@ -11,6 +11,9 @@ import java.net.URI
  * Replacement for the broken CommunityPublicationConverter bytecode in the
  * legacy search module. Minimal converter to keep the search wiring alive
  * without relying on legacy compiled classes.
+ *
+ * Note: This converter is currently not wired as a Spring bean and is only
+ * included for structural compatibility with legacy search configuration.
  */
 class FixedCommunityPublicationConverter(
     @Suppress("UNUSED_PARAMETER") systemURI: URI,
@@ -28,6 +31,7 @@ class FixedCommunityPublicationConverter(
 
     override fun convert(source: Map<String, Any>, @Suppress("UNUSED_PARAMETER") options: Set<String>): Post<BibTex> = Post<BibTex>().apply {
         resource = GoldStandardPublication().apply {
+            // BibTex.title and abstract are nullable in Java, safe to assign null
             title = source["title"] as? String
             abstract = source["abstract"] as? String
         }
