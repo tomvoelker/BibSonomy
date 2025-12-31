@@ -110,15 +110,18 @@ class SqlMapClientFactoryBean : FactoryBean<SqlMapClient>, InitializingBean {
         configLocations!!.forEach { configLocation ->
             try {
                 configLocation.inputStream.use { stream ->
-                    client = configParser.parse(stream, properties)
+                    val parsed = configParser.parse(stream, properties)
+                        ?: throw IOException("iBatis parser returned null for config: $configLocation")
+                    client = parsed
                 }
             } catch (ex: RuntimeException) {
                 val cause = ex.cause ?: ex
                 throw IOException("Failed to parse config resource: $configLocation", cause)
             }
         }
-        // Safe: assertion above guarantees at least one config, so client is assigned
-        return client!!
+        return checkNotNull(client) {
+            "SqlMapClient was not built from any of the provided config locations"
+        }
     }
 
     protected fun applyTransactionConfig(client: SqlMapClient, txConfig: TransactionConfig) {

@@ -13,15 +13,22 @@ import org.springframework.context.annotation.Primary
  * Overrides the legacy cris link manager to avoid circular dependencies that
  * block startup. This stub is sufficient for the REST API where CRIS links are
  * currently unused.
+ *
+ * Note: CRIS link methods (createCRISLink, updateCRISLink, deleteCRISLink) are invoked
+ * by DBLogic but these code paths are not exercised in the MVP REST API. If CRIS
+ * functionality is needed, this stub must be replaced with a proper implementation.
  */
 @Configuration(proxyBeanMethods = false)
 class LegacyCrisStubConfig {
-    @Bean(name = ["crisLinkDatabaseManager"])
-    @Primary
-    fun crisLinkDatabaseManagerStub(): CRISLinkDatabaseManager = object : CRISLinkDatabaseManager() {}
+    /**
+     * No-op stub for CRISLinkDatabaseManager. The post-processor below ensures
+     * this replaces any XML-defined bean early in the lifecycle.
+     */
+    private fun createStub(): CRISLinkDatabaseManager = object : CRISLinkDatabaseManager() {}
 
     /**
-     * Ensure the stub replaces the XML definition early in the lifecycle.
+     * Post-processor to replace the XML-defined crisLinkDatabaseManager with our stub.
+     * This runs before normal bean instantiation, ensuring the stub is used.
      */
     @Bean
     fun crisLinkBeanOverride(): BeanDefinitionRegistryPostProcessor =
@@ -31,7 +38,7 @@ class LegacyCrisStubConfig {
                     registry.removeBeanDefinition("crisLinkDatabaseManager")
                 }
                 val bd = RootBeanDefinition(CRISLinkDatabaseManager::class.java) {
-                    crisLinkDatabaseManagerStub()
+                    createStub()
                 }
                 bd.isPrimary = true
                 registry.registerBeanDefinition("crisLinkDatabaseManager", bd)
