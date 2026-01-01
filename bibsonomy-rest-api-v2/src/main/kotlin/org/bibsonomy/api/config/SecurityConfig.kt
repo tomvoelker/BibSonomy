@@ -34,7 +34,7 @@ class SecurityConfig(
      * Completely bypass security filter chain for Swagger/OpenAPI static resources.
      * These paths will not go through any security filters at all.
      *
-     * Swagger UI is served at standard /swagger-ui/** paths.
+     * Swagger UI is served at standard /swagger-ui paths.
      * API docs are served at /api/v2/api-docs (custom path for consistency with API).
      */
     @Bean
