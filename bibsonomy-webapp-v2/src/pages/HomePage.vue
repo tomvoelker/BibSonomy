@@ -19,12 +19,12 @@ const filters = ref({ limit: 10, offset: 0 })
 const { data, isLoading } = usePosts(filters)
 
 // Separate posts by type
-const bookmarks = computed(() =>
-  data.value?.posts.filter((p) => p.resourceType === 'bookmark') || []
+const bookmarks = computed(
+  () => data.value?.posts.filter((p) => p.resourceType === 'bookmark') || []
 )
 
-const publications = computed(() =>
-  data.value?.posts.filter((p) => p.resourceType === 'publication') || []
+const publications = computed(
+  () => data.value?.posts.filter((p) => p.resourceType === 'publication') || []
 )
 
 // View filter state
@@ -38,7 +38,9 @@ const viewOptions = computed(() => [
 
 // Show/hide based on view mode
 const showBookmarks = computed(() => viewMode.value === 'all' || viewMode.value === 'bookmarks')
-const showPublications = computed(() => viewMode.value === 'all' || viewMode.value === 'publications')
+const showPublications = computed(
+  () => viewMode.value === 'all' || viewMode.value === 'publications'
+)
 </script>
 
 <template>
@@ -61,7 +63,7 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
             class="flex flex-col -mx-4"
             :class="{
               'md:flex-row': viewMode === 'all',
-              'md:flex-col': viewMode !== 'all'
+              'md:flex-col': viewMode !== 'all',
             }"
           >
             <!-- Bookmarks Section (conditional) -->
@@ -70,17 +72,17 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
               class="w-full px-4 mb-6 md:mb-0"
               :class="{
                 'md:flex-1': viewMode === 'all',
-                'md:max-w-full': viewMode !== 'all'
+                'md:max-w-full': viewMode !== 'all',
               }"
             >
-            <PostSection
-              :title="t('post.bookmarks')"
-              :posts="bookmarks"
-              :loading="isLoading"
-              :icon="Bookmark"
-              :card-component="BookmarkCard"
-            />
-          </div>
+              <PostSection
+                :title="t('post.bookmarks')"
+                :posts="bookmarks"
+                :loading="isLoading"
+                :icon="Bookmark"
+                :card-component="BookmarkCard"
+              />
+            </div>
 
             <!-- Publications Section (conditional) -->
             <div
@@ -88,7 +90,7 @@ const showPublications = computed(() => viewMode.value === 'all' || viewMode.val
               class="w-full px-4 mb-6 md:mb-0"
               :class="{
                 'md:flex-1': viewMode === 'all',
-                'md:max-w-full': viewMode !== 'all'
+                'md:max-w-full': viewMode !== 'all',
               }"
             >
               <PostSection

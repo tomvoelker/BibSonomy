@@ -67,7 +67,6 @@ const themes: Record<string, BrandingConfig> = {
     tagline: 'Publications at University of Mannheim - Academic repository',
     primaryColor: '#c50e1f', // Red for PUMA
     faviconPath: '/favicon-puma.ico',
-    blogUrl: undefined,
     social: {},
     features: {
       groupsAndFriends: true,
@@ -86,12 +85,12 @@ const themes: Record<string, BrandingConfig> = {
 export function getBrandingConfig(): BrandingConfig {
   // In development, always use BibLicious
   if (import.meta.env.DEV) {
-    return themes.biblicious
+    return themes['biblicious']!
   }
 
   // In production, use configured theme
-  const theme = import.meta.env.VITE_PROJECT_THEME || 'bibsonomy'
-  return themes[theme] || themes.bibsonomy
+  const theme = (import.meta.env['VITE_PROJECT_THEME'] as string | undefined) ?? 'bibsonomy'
+  return themes[theme] ?? themes['bibsonomy']!
 }
 
 /**

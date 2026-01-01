@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bibsonomy-rest-api-v2
+spec:
+  selector:
+    preview.bibsonomy.org/branch: PREVIEW_BRANCH

@@ -47,13 +47,22 @@ class SecurityConfig(
             .authenticationManager(authenticationManager)
             .authorizeHttpRequests { authorize ->
                 authorize
+                    // Permit CORS preflight requests (OPTIONS) for all API endpoints
+                    .requestMatchers(HttpMethod.OPTIONS, "/api/v2/**").permitAll()
                     .requestMatchers(
                         "/api/v2/auth/**",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html"
                     ).permitAll()
+                    // Permit all GET requests to posts endpoints (list and single-post)
+                    .requestMatchers(HttpMethod.GET, "/api/v2/posts").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/posts/").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/posts/*").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts/**").permitAll()
+                    // Permit GET for tags endpoint too (public listing)
+                    .requestMatchers(HttpMethod.GET, "/api/v2/tags").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/tags/**").permitAll()
                     .anyRequest().authenticated()
             }
             .exceptionHandling { it.authenticationEntryPoint(legacyAuthenticationEntryPoint) }

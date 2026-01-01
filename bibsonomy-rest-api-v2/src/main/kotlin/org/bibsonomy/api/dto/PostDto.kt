@@ -18,9 +18,21 @@ import java.time.Instant
  * To retrieve a specific post: `GET /api/v2/posts/{id}?user={username}`
  * The hash alone may be ambiguous if multiple users have the same resource,
  * so the optional `user` parameter disambiguates.
+ *
+ * **Flattened Fields**: For frontend convenience, common fields are exposed both
+ * at the post level and within the resource object:
+ * - resourceType: "publication" or "bookmark"
+ * - title: extracted from resource
+ * - url: URL for bookmarks, null for publications
  */
 data class PostDto(
     val id: String,
+    /** Resource type at post level for frontend convenience */
+    val resourceType: String,
+    /** Title extracted from resource for frontend convenience */
+    val title: String,
+    /** URL for bookmarks, null for publications */
+    val url: String?,
     val user: UserRefDto,
     val resource: ResourceDto,
     val description: String?,
@@ -32,7 +44,7 @@ data class PostDto(
 )
 
 /**
- * Base interface for resource types (bookmark or bibtex).
+ * Base interface for resource types (bookmark or publication).
  */
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -41,7 +53,7 @@ data class PostDto(
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = BookmarkDto::class, name = "bookmark"),
-    JsonSubTypes.Type(value = BibTexDto::class, name = "bibtex")
+    JsonSubTypes.Type(value = BibTexDto::class, name = "publication")
 )
 sealed interface ResourceDto
 

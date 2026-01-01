@@ -22,8 +22,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.web.context.annotation.RequestScope
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import org.springframework.web.filter.OncePerRequestFilter
 import java.nio.charset.StandardCharsets
 import java.util.Base64
@@ -107,10 +105,14 @@ class LegacyBasicAuthenticationFilter(
             val authRequest = UsernamePasswordAuthenticationToken(username, apiKey)
             val authResult = authenticationManager.authenticate(authRequest)
             org.springframework.security.core.context.SecurityContextHolder.getContext().authentication = authResult
-            filterChain.doFilter(request, response)
         } catch (ex: AuthenticationException) {
-            entryPoint.commence(request, response, ex)
+            // Auth failed - continue without authentication context.
+            // Public endpoints (permitAll) should still be accessible even with bad
+            // credentials (e.g., browsers may send stale cached auth headers).
+            // Protected endpoints will be rejected by the authorization layer with 401.
+            org.springframework.security.core.context.SecurityContextHolder.clearContext()
         }
+        filterChain.doFilter(request, response)
     }
 }
 
@@ -130,7 +132,8 @@ class LegacyAuthenticationConfiguration {
 
     /**
      * Request-scoped LogicInterface derived from the authenticated SecurityContext.
-     * This replaces the dummy admin LogicInterface used for the MVP.
+     * If the filter successfully authenticated, returns the user's LogicInterface.
+     * Otherwise falls back to guest logic (public-only access).
      */
     @Bean
     @RequestScope(proxyMode = ScopedProxyMode.INTERFACES)
@@ -139,15 +142,8 @@ class LegacyAuthenticationConfiguration {
         val token = auth as? LogicAuthenticationToken
         if (token != null) return token.logic()
 
-        // Allow optional auth on public GET /posts: derive credentials from the Basic header if present.
-        val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
-        val header = request?.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header != null && header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
-            val (username, apiKey) = BasicAuthUtils.decode(header)
-            return logicInterfaceFactory.getLogicAccess(username, apiKey)
-        }
-
-        // Fallback to guest logic (public-only access).
+        // No authenticated token - use guest logic (public-only access).
+        // Don't re-attempt auth here; the filter already processed any credentials.
         return logicInterfaceFactory.getLogicAccess(null, null)
     }
 }

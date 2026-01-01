@@ -21,8 +21,8 @@ const props = withDefaults(defineProps<Props>(), {
   <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
     <!-- Icon -->
     <component
-      v-if="props.icon"
       :is="props.icon"
+      v-if="props.icon"
       :size="48"
       class="text-gray-400 mb-4"
       aria-hidden="true"
@@ -30,8 +30,8 @@ const props = withDefaults(defineProps<Props>(), {
 
     <!-- Title (semantic heading level configurable for accessibility) -->
     <component
-      v-if="props.title"
       :is="props.headingLevel"
+      v-if="props.title"
       class="text-lg font-medium text-gray-900 mb-2"
     >
       {{ props.title }}

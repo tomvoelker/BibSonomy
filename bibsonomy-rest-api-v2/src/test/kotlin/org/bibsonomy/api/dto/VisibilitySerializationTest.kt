@@ -1,6 +1,7 @@
 package org.bibsonomy.api.dto
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -11,7 +12,9 @@ import org.junit.jupiter.api.Test
  */
 class VisibilitySerializationTest {
 
-    private val objectMapper: ObjectMapper = jacksonObjectMapper()
+    private val objectMapper: ObjectMapper = jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+    }
 
     @Test
     fun `PUBLIC serializes to lowercase string`() {
@@ -53,6 +56,9 @@ class VisibilitySerializationTest {
     fun `PostDto with visibility serializes correctly`() {
         val postDto = PostDto(
             id = "hash123",
+            resourceType = "bookmark",
+            title = "Example",
+            url = "https://example.com",
             user = UserRefDto("testuser", "Test User"),
             resource = BookmarkDto("https://example.com", "Example", "hash123"),
             description = "Test post",

@@ -237,10 +237,11 @@ INSERT INTO `friends` VALUES
 (6, 'testuser2', 'testuser1', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00');
 
 
--- 
+--
 -- Data for table `groupids`
--- 
-INSERT INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
+-- Note: Using INSERT IGNORE because some groups are already created by bibsonomy-db-init.sql
+--
+INSERT IGNORE INTO `groupids` (`group_name`, `group`, `parent`, `privlevel`, `sharedDocuments`, `internal_id`) VALUES
 ('public',          -2147483648, NULL,  1, 0, NULL),
 ('private',         -2147483647, NULL,  1, 0, NULL),
 ('friends',         -2147483646, NULL,  1, 0, NULL),
@@ -305,11 +306,12 @@ INSERT INTO `group_preset_tags` VALUES
 ('testtag2', 'testgroup1', 3, null),
 ('testtag3', 'testgroup1', 3, 'Tag 3');
 
--- 
+--
 -- Data for table `ids`
--- 
+-- Note: Using REPLACE because init.sql creates these with value 0, but tests need specific values
+--
 
-INSERT INTO `ids` VALUES 
+REPLACE INTO `ids` VALUES
 (0,  1073741827, 'content_id'),
 (1,  1073741830, 'tas id'),
 (2,  21,  'relation id'),

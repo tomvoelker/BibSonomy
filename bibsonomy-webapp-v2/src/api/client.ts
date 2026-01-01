@@ -7,7 +7,10 @@ import { useAuthStore } from '@/store/auth'
 
 export const apiClient = axios.create({
   // Use relative URL for MSW to work, or full URL in production
-  baseURL: import.meta.env.VITE_ENABLE_MOCKS === 'true' ? '/api/v2' : (import.meta.env.VITE_API_BASE_URL || '/api/v2'),
+  baseURL:
+    import.meta.env['VITE_ENABLE_MOCKS'] === 'true'
+      ? '/api/v2'
+      : (import.meta.env['VITE_API_BASE_URL'] ?? '/api/v2'),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -22,12 +25,13 @@ apiClient.interceptors.request.use(
     const userJson = localStorage.getItem('auth_user')
     if (token && userJson) {
       try {
-        const user = JSON.parse(userJson) as { name: string }
+        const user = JSON.parse(userJson) as { username: string }
         // Backend expects Basic auth with username:apikey
-        const credentials = btoa(`${user.name}:${token}`)
+        const credentials = btoa(`${user.username}:${token}`)
         config.headers.Authorization = `Basic ${credentials}`
-      } catch {
+      } catch (e) {
         // Invalid stored user data, skip auth header
+        console.warn('Failed to parse stored auth user data, skipping auth header:', e)
       }
     }
     return config

@@ -89,12 +89,14 @@ GET /api/v2/tags?minFreq=10&maxCount=100
 ## URL Parameters & Query Strings
 
 API parameters (server-side):
+
 - `minFreq`: Minimum frequency (default: 1)
 - `maxCount`: Maximum tag count (default: 100)
 - `limit`: Maximum number of tags to return
 - `offset`: Pagination offset
 
 UI state parameters (client-side, persisted in URL):
+
 - `sort`: `frequency` | `alphabetical` (default: `frequency`) - client-side sorting
 
 Example: `/tags?minFreq=5&maxCount=200&sort=frequency`

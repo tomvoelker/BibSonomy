@@ -21,7 +21,9 @@ const goBack = () => {
 
 <template>
   <MainLayout>
-    <div class="bg-white border-l border-r border-gray-300 max-w-[1170px] mx-auto py-10 px-4 min-h-[500px]">
+    <div
+      class="bg-white border-l border-r border-gray-300 max-w-[1170px] mx-auto py-10 px-4 min-h-[500px]"
+    >
       <div class="max-w-[600px] mx-auto text-center">
         <!-- Construction Icon -->
         <div class="my-5">
@@ -33,7 +35,9 @@ const goBack = () => {
         </h1>
 
         <!-- Warning Alert -->
-        <div class="p-4 mb-5 border border-warning-200 rounded bg-warning-50 text-warning-800 text-left">
+        <div
+          class="p-4 mb-5 border border-warning-200 rounded bg-warning-50 text-warning-800 text-left"
+        >
           <strong class="block mb-2.5">{{ featureName }}</strong>
           {{ t('error.notImplementedMessage') }}
         </div>
@@ -54,17 +58,17 @@ const goBack = () => {
         <!-- Action Buttons -->
         <div class="mt-8">
           <button
-            @click="goBack"
             type="button"
             class="px-4 py-2.5 text-lg leading-normal rounded-md text-white bg-primary-600 border border-primary-700 cursor-pointer mr-2.5 hover:bg-primary-700 transition-colors"
+            @click="goBack"
           >
             {{ t('common.back') }}
           </button>
 
           <button
-            @click="goHome"
             type="button"
             class="px-4 py-2.5 text-lg leading-normal rounded-md text-gray-800 bg-white border border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors"
+            @click="goHome"
           >
             {{ t('error.goHome') }}
           </button>

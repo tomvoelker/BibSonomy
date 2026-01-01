@@ -235,7 +235,7 @@ class PostsControllerAuthIntegrationTest(
         )
 
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(2, response.body?.totalCount)
+        assertEquals(2, response.body?.pagination?.total)
     }
 
     @Test
@@ -250,17 +250,20 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assertTrue(body.contains("Public BibTex"))
-        assertTrue(body.contains("Private BibTex"))
-        assertTrue(body.contains("Public Bookmark"))
-        assertTrue(body.contains("Private Bookmark"))
+        assertTrue(body.contains("Public BibTex"), "Expected 'Public BibTex' in: $body")
+        assertTrue(body.contains("Private BibTex"), "Expected 'Private BibTex' in: $body")
+        assertTrue(body.contains("Public Bookmark"), "Expected 'Public Bookmark' in: $body")
+        assertTrue(body.contains("Private Bookmark"), "Expected 'Private Bookmark' in: $body")
     }
 }
 
 /**
  * Minimal app wiring the real PostsController + PostService with stubbed LogicInterfaceFactory.
+ * Uses @EnableAutoConfiguration instead of @SpringBootApplication to avoid component scanning
+ * that would pick up other controllers (TagsController) requiring their own dependencies.
  */
-@SpringBootApplication(exclude = [DataSourceAutoConfiguration::class])
+@org.springframework.boot.autoconfigure.EnableAutoConfiguration(exclude = [DataSourceAutoConfiguration::class])
+@Configuration
 @Import(
     SecurityConfig::class,
     LegacyAuthenticationConfiguration::class,
@@ -282,25 +285,41 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
         val publicBibPost = Post<BibTex>().apply {
             this.contentId = 1
             this.user = user
-            this.resource = BibTex().apply { title = "Public BibTex" }
+            this.resource = BibTex().apply {
+                title = "Public BibTex"
+                interHash = PUBLIC_HASH
+            }
             this.date = java.util.Date()
         }
         val privateBibPost = Post<BibTex>().apply {
             this.contentId = 2
             this.user = user
-            this.resource = BibTex().apply { title = "Private BibTex" }
+            this.resource = BibTex().apply {
+                title = "Private BibTex"
+                interHash = PRIVATE_HASH
+            }
             this.date = java.util.Date(System.currentTimeMillis() - 30_000)
         }
         val publicBookmarkPost = Post<org.bibsonomy.model.Bookmark>().apply {
             this.contentId = 3
             this.user = user
-            this.resource = org.bibsonomy.model.Bookmark().apply { title = "Public Bookmark" }
+            this.resource = org.bibsonomy.model.Bookmark().apply {
+                title = "Public Bookmark"
+                url = "https://example.com/public"
+                // Bookmark.getInterHash() returns intraHash (by design - same hash for both)
+                intraHash = "public-bookmark-hash"
+            }
             this.date = java.util.Date(System.currentTimeMillis() - 60_000)
         }
         val privateBookmarkPost = Post<org.bibsonomy.model.Bookmark>().apply {
             this.contentId = 4
             this.user = user
-            this.resource = org.bibsonomy.model.Bookmark().apply { title = "Private Bookmark" }
+            this.resource = org.bibsonomy.model.Bookmark().apply {
+                title = "Private Bookmark"
+                url = "https://example.com/private"
+                // Bookmark.getInterHash() returns intraHash (by design - same hash for both)
+                intraHash = "private-bookmark-hash"
+            }
             this.date = java.util.Date(System.currentTimeMillis() - 90_000)
         }
         Mockito.`when`(logic.getPosts(Mockito.any(PostQuery::class.java))).thenAnswer { invocation ->
@@ -350,10 +369,8 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
                 Mockito.anyInt(),
                 Mockito.anyInt()
             )
-        ).thenAnswer { invocation ->
-            val clazz = invocation.arguments[0] as Class<*>
-            val count = 2
-            org.bibsonomy.model.statistics.Statistics(count)
+        ).thenAnswer { _ ->
+            org.bibsonomy.model.statistics.Statistics(2)
         }
         return logic
     }
@@ -379,8 +396,4 @@ class StubPostsBeans {
     @Bean
     fun legacyBasicAuthenticationProvider(factory: LogicInterfaceFactory): LegacyBasicAuthenticationProvider =
         LegacyBasicAuthenticationProvider(factory)
-
-    @Bean
-    @Primary
-    fun logicInterface(factory: LogicInterfaceFactory): LogicInterface = factory.getLogicAccess(null, null)
 }

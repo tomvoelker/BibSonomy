@@ -138,7 +138,8 @@
     "networkError": "Netzwerkfehler",
     "unknownError": "Unbekannter Fehler",
     "tryAgain": "Erneut versuchen",
-    "goHome": "Zur Startseite"
+    "goHome": "Zur Startseite",
+    "loadFailed": "Laden fehlgeschlagen"
   },
   "pagination": {
     "previous": "Zurück",

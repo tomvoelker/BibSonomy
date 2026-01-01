@@ -11,13 +11,18 @@
          (iBatis mappings, Elasticsearch clients, etc.) and instead expose no-op
          search beans so the rest of the application can start. -->
 
+    <!-- Resource-based searches (bookmark, publication, gold standard variants) -->
     <bean id="noOpResourceSearch" class="org.bibsonomy.api.search.NoOpResourceSearch" />
-
     <alias name="noOpResourceSearch" alias="bookmarkSearch" />
     <alias name="noOpResourceSearch" alias="publicationSearch" />
     <alias name="noOpResourceSearch" alias="goldStandardPublicationSearch" />
     <alias name="noOpResourceSearch" alias="goldStandardBookmarkSearch" />
-    <alias name="noOpResourceSearch" alias="projectSearch" />
-    <alias name="noOpResourceSearch" alias="groupSearch" />
-    <alias name="noOpResourceSearch" alias="personSearch" />
+
+    <!-- Specialized searches with their own interfaces -->
+    <bean id="noOpPersonSearch" class="org.bibsonomy.api.search.NoOpPersonSearch" />
+    <bean id="noOpGroupSearch" class="org.bibsonomy.api.search.NoOpGroupSearch" />
+    <bean id="noOpProjectSearch" class="org.bibsonomy.api.search.NoOpProjectSearch" />
+    <alias name="noOpPersonSearch" alias="personSearch" />
+    <alias name="noOpGroupSearch" alias="groupSearch" />
+    <alias name="noOpProjectSearch" alias="projectSearch" />
 </beans>

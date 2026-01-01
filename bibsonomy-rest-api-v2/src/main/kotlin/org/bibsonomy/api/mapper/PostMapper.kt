@@ -58,8 +58,34 @@ fun Post<out Resource>.toDto(): PostDto {
     // Determine visibility based on groups
     val visibility = determineVisibility(this.groups)
 
+    // Extract flattened fields from resource for frontend convenience
+    val resourceType: String
+    val title: String
+    val url: String?
+
+    when (resource) {
+        is Bookmark -> {
+            resourceType = "bookmark"
+            title = resource.title ?: "Untitled"
+            url = resource.url
+        }
+        is BibTex -> {
+            resourceType = "publication"
+            title = resource.title ?: "Untitled"
+            url = null
+        }
+        else -> {
+            resourceType = "unknown"
+            title = "Untitled"
+            url = null
+        }
+    }
+
     return PostDto(
         id = resourceHash,
+        resourceType = resourceType,
+        title = title,
+        url = url,
         user = user.toRefDto(),
         resource = resource.toDto(),
         description = this.description?.takeIf { it.isNotBlank() },

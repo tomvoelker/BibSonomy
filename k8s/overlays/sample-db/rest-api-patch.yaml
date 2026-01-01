@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-rest-api-v2
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: wait-for-mariadb
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z mariadb 3306; do echo "waiting for mariadb"; sleep 2; done
+      containers:
+        - name: rest-api
+          env:
+            - name: SECURITY_PERMITDOCS
+              value: "true"
+            - name: DATABASE_MAIN_URL
+              value: jdbc:mysql://mariadb/main_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+            - name: DATABASE_MAIN_USERNAME
+              value: bibsonomy
+            - name: DATABASE_MAIN_PASSWORD
+              value: password
+            - name: DATABASE_MAIN_DRIVERCLASSNAME
+              value: com.mysql.jdbc.Driver
+            - name: DATABASE_RECOMMENDER_ITEM_URL
+              value: jdbc:mysql://mariadb/item_recommender_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+            - name: DATABASE_RECOMMENDER_ITEM_USERNAME
+              value: bibsonomy
+            - name: DATABASE_RECOMMENDER_ITEM_PASSWORD
+              value: password
+            - name: DATABASE_RECOMMENDER_TAG_URL
+              value: jdbc:mysql://mariadb/tag_recommender_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8&zeroDateTimeBehavior=convertToNull
+            - name: DATABASE_RECOMMENDER_TAG_USERNAME
+              value: bibsonomy
+            - name: DATABASE_RECOMMENDER_TAG_PASSWORD
+              value: password

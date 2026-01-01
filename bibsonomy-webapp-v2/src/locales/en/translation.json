@@ -138,7 +138,8 @@
     "networkError": "Network error",
     "unknownError": "Unknown error",
     "tryAgain": "Try again",
-    "goHome": "Go to Home"
+    "goHome": "Go to Home",
+    "loadFailed": "Failed to load data"
   },
   "pagination": {
     "previous": "Previous",

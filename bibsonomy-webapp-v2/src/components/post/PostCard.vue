@@ -29,10 +29,13 @@ const emit = defineEmits<{
 // Get post description
 const description = computed(() => {
   if (isPublication(props.post)) {
-    // For publications, show authors and year
-    const authors = formatAuthors(props.post.bibTexData?.author || '')
+    // For publications, show authors and year from resource
+    const resource = props.post.resource
+    const authorList = resource?.authors || []
+    const authorNames = authorList.map((a: { name?: string }) => a.name || '').join(' and ')
+    const authors = formatAuthors(authorNames)
     const year = getPublicationYear(props.post)
-    const journal = props.post.bibTexData?.journal
+    const journal = resource?.journal
 
     let desc = authors
     if (year) desc += ` (${year})`
@@ -46,7 +49,9 @@ const description = computed(() => {
 </script>
 
 <template>
-  <Card class="flex gap-3 md:gap-4 p-3 md:p-4 hover:shadow-md transition-shadow h-auto md:h-[180px]">
+  <Card
+    class="flex gap-3 md:gap-4 p-3 md:p-4 hover:shadow-md transition-shadow h-auto md:h-[180px]"
+  >
     <!-- Thumbnail (smaller on mobile) -->
     <div class="flex-shrink-0">
       <PostThumbnail :post="post" />
