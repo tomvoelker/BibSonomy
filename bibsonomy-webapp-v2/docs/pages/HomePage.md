@@ -158,15 +158,15 @@ page.home.quickStart.step3
 
 - Hero background: Gradient from `indigo-600` to `indigo-800`
 - Primary CTAs: `indigo-600` with `indigo-700` hover
-- Secondary CTAs: `gray-200` with `gray-300` hover
-- Statistics cards: `white` background with `gray-100` border
+- Secondary CTAs: `slate-200` with `slate-300` hover
+- Statistics cards: `white` background with `slate-100` border
 
 **Typography**:
 
 - Hero heading: Display font (text-5xl, font-bold)
-- Hero subheading: text-xl, font-normal, `gray-200`
-- Section headings: text-2xl, font-semibold, `gray-900`
-- Body text: text-base, `gray-700`
+- Hero subheading: text-xl, font-normal, `slate-200`
+- Section headings: text-2xl, font-semibold, `slate-900`
+- Body text: text-base, `slate-700`
 
 **Spacing**:
 
