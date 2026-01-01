@@ -179,7 +179,7 @@ class PostService(
             -1
         }
 
-        return PaginatedPostList(
+        return PaginatedPostList.of(
             items = postDtos,
             totalCount = totalCount,
             offset = offset,
