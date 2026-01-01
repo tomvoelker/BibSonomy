@@ -4,8 +4,12 @@ on:
   push:
     branches:
       - main
-      - ci/containerization
       - rewrite/master
+    paths:
+      - bibsonomy-rest-api-v2/**
+      - bibsonomy-webapp-v2/**
+      - docker/**
+      - .github/workflows/build-and-push-images.yml
   workflow_dispatch: {}
 
 permissions:

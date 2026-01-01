@@ -2,7 +2,10 @@ name: Deploy Preview
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    # Only trigger on label events to avoid automatic rebuilds on every push
+    # - 'preview-deploy': Initial deployment (builds images and deploys)
+    # - 'preview-rebuild': Force rebuild and redeploy (removes itself after)
+    types: [labeled]
 
 permissions:
   contents: read
@@ -21,6 +24,7 @@ jobs:
       db_mode: ${{ steps.vars.outputs.db_mode }}
       rest_image: ${{ steps.vars.outputs.rest_image }}
       web_image: ${{ steps.vars.outputs.web_image }}
+      remove_rebuild_label: ${{ steps.vars.outputs.remove_rebuild_label }}
     steps:
       - name: Compute preview settings
         id: vars
@@ -53,9 +57,18 @@ jobs:
               db_mode = label.split("=", 1)[1].strip() or "minimal"
               break
 
+          # Check which label triggered this event
+          triggered_label = event.get("label", {}).get("name", "")
+
           deploy_enabled = False
+          remove_rebuild_label = False
           if pr.get("head", {}).get("repo", {}).get("full_name") == os.environ.get("GITHUB_REPOSITORY"):
-              deploy_enabled = "preview-deploy" in labels
+              # Deploy if preview-deploy is added, or if preview-rebuild is added (and preview-deploy exists)
+              if triggered_label == "preview-deploy":
+                  deploy_enabled = True
+              elif triggered_label == "preview-rebuild" and "preview-deploy" in labels:
+                  deploy_enabled = True
+                  remove_rebuild_label = True
 
           sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
           sanitized = re.sub(r"-{2,}", "-", sanitized)
@@ -85,6 +98,7 @@ jobs:
               out.write(f"rest_image={rest_image}\n")
               out.write(f"web_image={web_image}\n")
               out.write(f"deploy_enabled={'true' if deploy_enabled else 'false'}\n")
+              out.write(f"remove_rebuild_label={'true' if remove_rebuild_label else 'false'}\n")
           PY
 
   build-images:
@@ -321,6 +335,8 @@ jobs:
           - REST API: ${API_URL}
           - DB mode: ${DB_MODE}
 
+          > **Note**: Preview does not auto-rebuild on push. Add the \`preview-rebuild\` label to trigger a rebuild.
+
           Debug:
           \`\`\`bash
           kubectl -n extsonomy get pods -l preview.bibsonomy.org/pr=${PR_NUMBER}
@@ -338,3 +354,11 @@ jobs:
           else
             gh pr comment "${PR_NUMBER}" --body-file /tmp/preview-comment.md
           fi
+
+      - name: Remove preview-rebuild label
+        if: ${{ needs.prepare.outputs.remove_rebuild_label == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+        run: |
+          gh pr edit "${PR_NUMBER}" --remove-label "preview-rebuild" || true

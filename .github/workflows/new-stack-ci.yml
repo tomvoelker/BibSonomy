@@ -3,7 +3,6 @@ name: New Stack CI
 on:
   push:
     branches:
-      - ci/containerization
       - rewrite/master
       - main
     paths:
@@ -11,6 +10,8 @@ on:
       - bibsonomy-webapp-v2/**
       - .github/workflows/new-stack-ci.yml
   pull_request:
+    # Only trigger on PR events, not on push to PR branches
+    # This avoids duplicate runs when pushing to a PR
     paths:
       - bibsonomy-rest-api-v2/**
       - bibsonomy-webapp-v2/**
