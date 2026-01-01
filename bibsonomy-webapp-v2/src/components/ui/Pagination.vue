@@ -23,29 +23,23 @@ const hasNext = computed(() => props.offset + props.limit < props.totalCount)
 </script>
 
 <template>
-  <div v-if="totalPages > 1" class="flex items-center justify-between py-4 border-t border-gray-200">
+  <div
+    v-if="totalPages > 1"
+    class="flex items-center justify-between py-4 border-t border-gray-200"
+  >
     <!-- Previous Button -->
-    <Button
-      variant="secondary"
-      :disabled="!hasPrev"
-      @click="emit('prev')"
-    >
+    <Button variant="secondary" :disabled="!hasPrev" @click="emit('prev')">
       <ChevronLeft :size="16" />
       Previous
     </Button>
 
     <!-- Page Info -->
     <span class="text-sm text-gray-600">
-      Page {{ currentPage }} of {{ totalPages }}
-      ({{ totalCount }} total)
+      Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} total)
     </span>
 
     <!-- Next Button -->
-    <Button
-      variant="secondary"
-      :disabled="!hasNext"
-      @click="emit('next')"
-    >
+    <Button variant="secondary" :disabled="!hasNext" @click="emit('next')">
       Next
       <ChevronRight :size="16" />
     </Button>
