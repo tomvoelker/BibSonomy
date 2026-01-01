@@ -29,8 +29,9 @@ apiClient.interceptors.request.use(
         // Backend expects Basic auth with username:apikey
         const credentials = btoa(`${user.name}:${token}`)
         config.headers.Authorization = `Basic ${credentials}`
-      } catch {
+      } catch (e) {
         // Invalid stored user data, skip auth header
+        console.warn('Failed to parse stored auth user data, skipping auth header:', e)
       }
     }
     return config
