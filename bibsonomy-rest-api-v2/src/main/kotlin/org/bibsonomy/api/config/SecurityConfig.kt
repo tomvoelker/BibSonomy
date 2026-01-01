@@ -29,13 +29,6 @@ class SecurityConfig(
     private val legacyAuthenticationEntryPoint: AuthenticationEntryPoint
 ) {
 
-    @Bean
-    fun authenticationManager(http: HttpSecurity): AuthenticationManager {
-        val builder = http.getSharedObject(AuthenticationManagerBuilder::class.java)
-        builder.authenticationProvider(legacyBasicAuthenticationProvider)
-        return builder.build()
-    }
-
     /**
      * Security filter chain for Swagger/OpenAPI paths.
      * Permits all requests without authentication.
@@ -62,10 +55,12 @@ class SecurityConfig(
      */
     @Bean
     @Order(2)
-    fun securityFilterChain(
-        http: HttpSecurity,
-        authenticationManager: AuthenticationManager
-    ): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        // Build authentication manager for this chain
+        val authBuilder = http.getSharedObject(AuthenticationManagerBuilder::class.java)
+        authBuilder.authenticationProvider(legacyBasicAuthenticationProvider)
+        val authenticationManager = authBuilder.build()
+
         http
             .cors(Customizer.withDefaults())
             .csrf { it.disable() }
