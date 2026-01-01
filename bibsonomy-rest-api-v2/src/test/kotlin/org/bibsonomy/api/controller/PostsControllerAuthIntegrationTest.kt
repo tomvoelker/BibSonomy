@@ -171,7 +171,6 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    @Disabled("TODO: Fix mock-based test - response doesn't contain expected content from StubPostsLogicFactory")
     fun `anonymous users only see public posts`() {
         val response: ResponseEntity<String> = restTemplate.getForEntity(
             "/api/v2/posts?resourceType=bibtex",
@@ -185,7 +184,6 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    @Disabled("TODO: Fix single-post endpoint security configuration in test context")
     fun `unauthenticated getPost returns only public`() {
         val response: ResponseEntity<String> = restTemplate.getForEntity(
             "/api/v2/posts/${StubPostsLogicFactory.PUBLIC_HASH}",
@@ -199,7 +197,6 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    @Disabled("TODO: Fix single-post endpoint security configuration in test context")
     fun `authenticated getPost can see private`() {
         val authed = restTemplate.withBasicAuth(StubPostsLogicFactory.VALID_USER, StubPostsLogicFactory.VALID_API_KEY)
         val response: ResponseEntity<String> = authed.getForEntity(
@@ -213,7 +210,6 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    @Disabled("TODO: Fix mock-based test - response doesn't contain expected content from StubPostsLogicFactory")
     fun `authenticated users see public and private posts they own`() {
         val authed = restTemplate.withBasicAuth(StubPostsLogicFactory.VALID_USER, StubPostsLogicFactory.VALID_API_KEY)
         val response: ResponseEntity<String> = authed.exchange(
@@ -244,7 +240,6 @@ class PostsControllerAuthIntegrationTest(
     }
 
     @Test
-    @Disabled("TODO: Fix mock-based test - response doesn't contain expected content from StubPostsLogicFactory")
     fun `resourceType all returns both bookmark and bibtex`() {
         val authed = restTemplate.withBasicAuth(StubPostsLogicFactory.VALID_USER, StubPostsLogicFactory.VALID_API_KEY)
         val response: ResponseEntity<String> = authed.exchange(
@@ -256,10 +251,10 @@ class PostsControllerAuthIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val body = response.body ?: ""
-        assertTrue(body.contains("Public BibTex"))
-        assertTrue(body.contains("Private BibTex"))
-        assertTrue(body.contains("Public Bookmark"))
-        assertTrue(body.contains("Private Bookmark"))
+        assertTrue(body.contains("Public BibTex"), "Expected 'Public BibTex' in: $body")
+        assertTrue(body.contains("Private BibTex"), "Expected 'Private BibTex' in: $body")
+        assertTrue(body.contains("Public Bookmark"), "Expected 'Public Bookmark' in: $body")
+        assertTrue(body.contains("Private Bookmark"), "Expected 'Private Bookmark' in: $body")
     }
 }
 
@@ -291,25 +286,41 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
         val publicBibPost = Post<BibTex>().apply {
             this.contentId = 1
             this.user = user
-            this.resource = BibTex().apply { title = "Public BibTex" }
+            this.resource = BibTex().apply {
+                title = "Public BibTex"
+                interHash = PUBLIC_HASH
+            }
             this.date = java.util.Date()
         }
         val privateBibPost = Post<BibTex>().apply {
             this.contentId = 2
             this.user = user
-            this.resource = BibTex().apply { title = "Private BibTex" }
+            this.resource = BibTex().apply {
+                title = "Private BibTex"
+                interHash = PRIVATE_HASH
+            }
             this.date = java.util.Date(System.currentTimeMillis() - 30_000)
         }
         val publicBookmarkPost = Post<org.bibsonomy.model.Bookmark>().apply {
             this.contentId = 3
             this.user = user
-            this.resource = org.bibsonomy.model.Bookmark().apply { title = "Public Bookmark" }
+            this.resource = org.bibsonomy.model.Bookmark().apply {
+                title = "Public Bookmark"
+                url = "https://example.com/public"
+                // Bookmark.getInterHash() returns intraHash (by design - same hash for both)
+                intraHash = "public-bookmark-hash"
+            }
             this.date = java.util.Date(System.currentTimeMillis() - 60_000)
         }
         val privateBookmarkPost = Post<org.bibsonomy.model.Bookmark>().apply {
             this.contentId = 4
             this.user = user
-            this.resource = org.bibsonomy.model.Bookmark().apply { title = "Private Bookmark" }
+            this.resource = org.bibsonomy.model.Bookmark().apply {
+                title = "Private Bookmark"
+                url = "https://example.com/private"
+                // Bookmark.getInterHash() returns intraHash (by design - same hash for both)
+                intraHash = "private-bookmark-hash"
+            }
             this.date = java.util.Date(System.currentTimeMillis() - 90_000)
         }
         Mockito.`when`(logic.getPosts(Mockito.any(PostQuery::class.java))).thenAnswer { invocation ->
@@ -359,10 +370,8 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
                 Mockito.anyInt(),
                 Mockito.anyInt()
             )
-        ).thenAnswer { invocation ->
-            val clazz = invocation.arguments[0] as Class<*>
-            val count = 2
-            org.bibsonomy.model.statistics.Statistics(count)
+        ).thenAnswer { _ ->
+            org.bibsonomy.model.statistics.Statistics(2)
         }
         return logic
     }
@@ -388,8 +397,4 @@ class StubPostsBeans {
     @Bean
     fun legacyBasicAuthenticationProvider(factory: LogicInterfaceFactory): LegacyBasicAuthenticationProvider =
         LegacyBasicAuthenticationProvider(factory)
-
-    @Bean
-    @Primary
-    fun logicInterface(factory: LogicInterfaceFactory): LogicInterface = factory.getLogicAccess(null, null)
 }
