@@ -47,6 +47,8 @@ class SecurityConfig(
             .authenticationManager(authenticationManager)
             .authorizeHttpRequests { authorize ->
                 authorize
+                    // Permit CORS preflight requests (OPTIONS) for all API endpoints
+                    .requestMatchers(HttpMethod.OPTIONS, "/api/v2/**").permitAll()
                     .requestMatchers(
                         "/api/v2/auth/**",
                         "/v3/api-docs/**",
