@@ -4,6 +4,7 @@ import org.bibsonomy.api.security.LegacyBasicAuthenticationFilter
 import org.bibsonomy.api.security.LegacyBasicAuthenticationProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -13,8 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.AuthenticationEntryPoint
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.http.HttpMethod
 
 /**
@@ -30,25 +29,6 @@ class SecurityConfig(
     private val legacyAuthenticationEntryPoint: AuthenticationEntryPoint
 ) {
 
-    /**
-     * Completely bypass security filter chain for Swagger/OpenAPI static resources.
-     * These paths will not go through any security filters at all.
-     *
-     * Uses standard SpringDoc paths: /swagger-ui, /v3/api-docs
-     */
-    @Bean
-    fun webSecurityCustomizer(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web ->
-            web.ignoring()
-                .requestMatchers(AntPathRequestMatcher("/swagger-ui/**"))
-                .requestMatchers(AntPathRequestMatcher("/swagger-ui.html"))
-                .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**"))
-                .requestMatchers(AntPathRequestMatcher("/v3/api-docs"))
-                .requestMatchers(AntPathRequestMatcher("/webjars/**"))
-                .requestMatchers(AntPathRequestMatcher("/swagger-resources/**"))
-        }
-    }
-
     @Bean
     fun authenticationManager(http: HttpSecurity): AuthenticationManager {
         val builder = http.getSharedObject(AuthenticationManagerBuilder::class.java)
@@ -56,7 +36,32 @@ class SecurityConfig(
         return builder.build()
     }
 
+    /**
+     * Security filter chain for Swagger/OpenAPI paths.
+     * Permits all requests without authentication.
+     */
     @Bean
+    @Order(1)
+    fun swaggerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http
+            .securityMatcher(
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**",
+                "/v3/api-docs",
+                "/webjars/**",
+                "/swagger-resources/**"
+            )
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
+            .csrf { it.disable() }
+        return http.build()
+    }
+
+    /**
+     * Main security filter chain for API endpoints.
+     */
+    @Bean
+    @Order(2)
     fun securityFilterChain(
         http: HttpSecurity,
         authenticationManager: AuthenticationManager
@@ -71,15 +76,7 @@ class SecurityConfig(
                     // Permit CORS preflight requests (OPTIONS) for all API endpoints
                     .requestMatchers(HttpMethod.OPTIONS, "/api/v2/**").permitAll()
                     // Permit API root paths (redirect to Swagger UI)
-                    .requestMatchers(AntPathRequestMatcher("/api/v2")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v2/")).permitAll()
-                    // Permit Swagger/OpenAPI paths (fallback - already bypassed by WebSecurityCustomizer)
-                    .requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/swagger-ui.html")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/v3/api-docs")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/webjars/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                    .requestMatchers("/api/v2", "/api/v2/").permitAll()
                     // Permit auth endpoints
                     .requestMatchers("/api/v2/auth/**").permitAll()
                     // Permit all GET requests to posts endpoints (list and single-post)
