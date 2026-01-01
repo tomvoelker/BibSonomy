@@ -80,7 +80,7 @@ GET /api/v2/posts?offset=0&limit=20&sortBy=date&order=desc
 // Tag cloud
 GET /api/v2/tags?maxCount=50&minFreq=5
 
-// Statistics (if endpoint exists, otherwise computed from other calls)
+// Statistics (see MVP_API_SWITCHOVER.md for implementation status)
 // GET /api/v2/stats/overview
 ```
 
