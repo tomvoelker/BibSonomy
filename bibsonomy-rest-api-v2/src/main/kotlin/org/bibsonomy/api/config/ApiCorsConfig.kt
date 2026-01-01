@@ -32,7 +32,7 @@ class ApiCorsConfig(
         // matches, that result is used. Only if no pattern matches does it fall back to
         // allowedOrigins. Both can be set safely - patterns take precedence.
         val config = CorsConfiguration().apply {
-            allowedOrigins = defaultOrigins + extraOrigins
+            allowedOrigins = (defaultOrigins + extraOrigins).distinct()
             if (originPatterns.isNotEmpty()) {
                 allowedOriginPatterns = originPatterns
             }

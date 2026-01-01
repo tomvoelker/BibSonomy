@@ -106,9 +106,12 @@ class LegacyBasicAuthenticationFilter(
             val authResult = authenticationManager.authenticate(authRequest)
             org.springframework.security.core.context.SecurityContextHolder.getContext().authentication = authResult
         } catch (ex: AuthenticationException) {
-            // Auth failed, but don't reject yet. Public endpoints (permitAll) should
-            // continue anonymously; protected endpoints will be rejected by the
-            // authorization layer with 401 via the entry point.
+            // Invalid credentials should return 401 immediately per RFC 7235.
+            // Providing credentials indicates intent to authenticate, not to access
+            // anonymously. Silent failure would be confusing and potentially insecure.
+            org.springframework.security.core.context.SecurityContextHolder.clearContext()
+            entryPoint.commence(request, response, ex)
+            return
         }
         filterChain.doFilter(request, response)
     }
