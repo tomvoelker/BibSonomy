@@ -36,6 +36,7 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 # Keep bun.lockb
+!bun.lockb
 
 # Editor directories and files
 .vscode/*
