@@ -80,7 +80,10 @@ const tagSizes = computed(() => {
       </div>
 
       <!-- Tags cloud -->
-      <div v-else class="flex flex-wrap gap-x-3 gap-y-2 items-center justify-center leading-relaxed">
+      <div
+        v-else
+        class="flex flex-wrap gap-x-3 gap-y-2 items-center justify-center leading-relaxed"
+      >
         <RouterLink
           v-for="tag in tagSizes"
           :key="tag.name"

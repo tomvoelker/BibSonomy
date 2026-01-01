@@ -184,7 +184,8 @@ export function formatAuthors(authorString: string | undefined): string {
  */
 export function getPostTitle(post: Post): string {
   if (post.title) return post.title
-  if (post.resource?.title) return post.resource.title
+  const resource = post.resource as { title?: string } | undefined
+  if (resource?.title) return resource.title
   if (post.url) return post.url
   return 'Untitled'
 }
@@ -193,7 +194,8 @@ export function getPostTitle(post: Post): string {
  * Get publication year from various sources
  */
 export function getPublicationYear(post: Post): string | null {
-  if (post.resource?.year) return String(post.resource.year)
+  const resource = post.resource as { year?: number | string } | undefined
+  if (resource?.year) return String(resource.year)
 
   // Fallback to createdAt year
   const createdYear = new Date(post.createdAt).getFullYear()
