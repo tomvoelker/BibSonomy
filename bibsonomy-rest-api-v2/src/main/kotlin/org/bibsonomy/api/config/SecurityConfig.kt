@@ -30,12 +30,12 @@ class SecurityConfig(
 ) {
 
     /**
-     * Security filter chain for Swagger/OpenAPI paths.
-     * Permits all requests without authentication.
+     * Security filter chain for public paths that don't require authentication.
+     * This includes Swagger UI, API docs, and API root redirect.
      */
     @Bean
     @Order(1)
-    fun swaggerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun publicSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .securityMatcher(
                 "/swagger-ui/**",
@@ -43,7 +43,9 @@ class SecurityConfig(
                 "/v3/api-docs/**",
                 "/v3/api-docs",
                 "/webjars/**",
-                "/swagger-resources/**"
+                "/swagger-resources/**",
+                "/api/v2",
+                "/api/v2/"
             )
             .authorizeHttpRequests { it.anyRequest().permitAll() }
             .csrf { it.disable() }
@@ -70,8 +72,6 @@ class SecurityConfig(
                 authorize
                     // Permit CORS preflight requests (OPTIONS) for all API endpoints
                     .requestMatchers(HttpMethod.OPTIONS, "/api/v2/**").permitAll()
-                    // Permit API root paths (redirect to Swagger UI)
-                    .requestMatchers("/api/v2", "/api/v2/").permitAll()
                     // Permit auth endpoints
                     .requestMatchers("/api/v2/auth/**").permitAll()
                     // Permit all GET requests to posts endpoints (list and single-post)
