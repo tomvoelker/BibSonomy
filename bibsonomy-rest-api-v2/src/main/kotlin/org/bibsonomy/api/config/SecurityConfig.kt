@@ -33,6 +33,9 @@ class SecurityConfig(
     /**
      * Completely bypass security filter chain for Swagger/OpenAPI static resources.
      * These paths will not go through any security filters at all.
+     *
+     * Swagger UI is served at standard /swagger-ui/** paths.
+     * API docs are served at /api/v2/api-docs (custom path for consistency with API).
      */
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
@@ -40,16 +43,12 @@ class SecurityConfig(
             web.ignoring()
                 .requestMatchers(AntPathRequestMatcher("/swagger-ui/**"))
                 .requestMatchers(AntPathRequestMatcher("/swagger-ui.html"))
-                .requestMatchers(AntPathRequestMatcher("/api/v2/swagger-ui/**"))
-                .requestMatchers(AntPathRequestMatcher("/api/v2/swagger-ui.html"))
                 .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**"))
                 .requestMatchers(AntPathRequestMatcher("/v3/api-docs"))
                 .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs/**"))
                 .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs"))
                 .requestMatchers(AntPathRequestMatcher("/webjars/**"))
                 .requestMatchers(AntPathRequestMatcher("/swagger-resources/**"))
-                .requestMatchers(AntPathRequestMatcher("/swagger-config/**"))
-                .requestMatchers(AntPathRequestMatcher("/api/v2/swagger-config/**"))
         }
     }
 
@@ -74,20 +73,17 @@ class SecurityConfig(
                 authorize
                     // Permit CORS preflight requests (OPTIONS) for all API endpoints
                     .requestMatchers(HttpMethod.OPTIONS, "/api/v2/**").permitAll()
-                    // Permit Swagger/OpenAPI paths - use AntPathRequestMatcher for static resources
+                    // Permit API root paths (redirect to Swagger UI)
                     .requestMatchers(AntPathRequestMatcher("/api/v2")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/api/v2/")).permitAll()
+                    // Permit Swagger/OpenAPI paths (fallback - already bypassed by WebSecurityCustomizer)
                     .requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/swagger-ui.html")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/v3/api-docs")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v2/swagger-ui/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v2/swagger-ui.html")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/webjars/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/swagger-config/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v2/swagger-config/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                     // Permit auth endpoints
                     .requestMatchers("/api/v2/auth/**").permitAll()
