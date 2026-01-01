@@ -96,7 +96,6 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               "
             >
               {{ link.text }}
-              <span v-if="link.external" class="sr-only">({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>
@@ -127,7 +126,6 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               "
             >
               {{ link.text }}
-              <span v-if="link.external" class="sr-only">({{ t('common.opensInNewTab') }})</span>
             </component>
           </li>
         </ul>
@@ -145,7 +143,6 @@ const socialMediaLinks = computed<FooterLink[]>(() => [
               :aria-label="`${link.text} (${t('common.opensInNewTab')})`"
             >
               {{ link.text }}
-              <span class="sr-only">({{ t('common.opensInNewTab') }})</span>
             </a>
           </li>
         </ul>

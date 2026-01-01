@@ -36,7 +36,6 @@ const { t } = useI18n()
           :aria-label="link.external ? `${link.text} (${t('common.opensInNewTab')})` : undefined"
         >
           {{ link.text }}
-          <span v-if="link.external" class="sr-only">({{ t('common.opensInNewTab') }})</span>
         </component>
       </li>
     </ul>
