@@ -44,7 +44,7 @@ data class PostDto(
 )
 
 /**
- * Base interface for resource types (bookmark or bibtex).
+ * Base interface for resource types (bookmark or publication).
  */
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
