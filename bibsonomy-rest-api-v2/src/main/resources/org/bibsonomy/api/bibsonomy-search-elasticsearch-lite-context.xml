@@ -12,6 +12,7 @@
          search beans so the rest of the application can start. -->
 
     <bean id="noOpResourceSearch" class="org.bibsonomy.api.search.NoOpResourceSearch" />
+    <bean id="noOpPersonSearch" class="org.bibsonomy.api.search.NoOpPersonSearch" />
 
     <alias name="noOpResourceSearch" alias="bookmarkSearch" />
     <alias name="noOpResourceSearch" alias="publicationSearch" />
@@ -19,5 +20,5 @@
     <alias name="noOpResourceSearch" alias="goldStandardBookmarkSearch" />
     <alias name="noOpResourceSearch" alias="projectSearch" />
     <alias name="noOpResourceSearch" alias="groupSearch" />
-    <alias name="noOpResourceSearch" alias="personSearch" />
+    <alias name="noOpPersonSearch" alias="personSearch" />
 </beans>
