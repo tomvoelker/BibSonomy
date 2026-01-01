@@ -41,7 +41,7 @@ data class PostDto(
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = BookmarkDto::class, name = "bookmark"),
-    JsonSubTypes.Type(value = BibTexDto::class, name = "bibtex")
+    JsonSubTypes.Type(value = BibTexDto::class, name = "publication")
 )
 sealed interface ResourceDto
 
