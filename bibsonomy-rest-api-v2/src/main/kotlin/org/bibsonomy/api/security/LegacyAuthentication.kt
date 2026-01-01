@@ -22,8 +22,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.web.context.annotation.RequestScope
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import org.springframework.web.filter.OncePerRequestFilter
 import java.nio.charset.StandardCharsets
 import java.util.Base64
@@ -132,7 +130,8 @@ class LegacyAuthenticationConfiguration {
 
     /**
      * Request-scoped LogicInterface derived from the authenticated SecurityContext.
-     * This replaces the dummy admin LogicInterface used for the MVP.
+     * If the filter successfully authenticated, returns the user's LogicInterface.
+     * Otherwise falls back to guest logic (public-only access).
      */
     @Bean
     @RequestScope(proxyMode = ScopedProxyMode.INTERFACES)
@@ -141,15 +140,8 @@ class LegacyAuthenticationConfiguration {
         val token = auth as? LogicAuthenticationToken
         if (token != null) return token.logic()
 
-        // Allow optional auth on public GET /posts: derive credentials from the Basic header if present.
-        val request = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request
-        val header = request?.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header != null && header.startsWith(BasicAuthUtils.BASIC_PREFIX)) {
-            val (username, apiKey) = BasicAuthUtils.decode(header)
-            return logicInterfaceFactory.getLogicAccess(username, apiKey)
-        }
-
-        // Fallback to guest logic (public-only access).
+        // No authenticated token - use guest logic (public-only access).
+        // Don't re-attempt auth here; the filter already processed any credentials.
         return logicInterfaceFactory.getLogicAccess(null, null)
     }
 }
