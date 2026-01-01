@@ -28,6 +28,9 @@ class ApiCorsConfig(
         val extraOrigins = extraOriginsConfig.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         val originPatterns = originPatternsConfig.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
+        // Spring CORS precedence: allowedOriginPatterns are checked first. If any pattern
+        // matches, that result is used. Only if no pattern matches does it fall back to
+        // allowedOrigins. Both can be set safely - patterns take precedence.
         val config = CorsConfiguration().apply {
             allowedOrigins = defaultOrigins + extraOrigins
             if (originPatterns.isNotEmpty()) {
