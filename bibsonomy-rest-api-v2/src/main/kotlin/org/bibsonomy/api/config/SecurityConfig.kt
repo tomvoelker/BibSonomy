@@ -34,8 +34,7 @@ class SecurityConfig(
      * Completely bypass security filter chain for Swagger/OpenAPI static resources.
      * These paths will not go through any security filters at all.
      *
-     * Swagger UI is served at standard /swagger-ui paths.
-     * API docs are served at /api/v2/api-docs (custom path for consistency with API).
+     * Uses standard SpringDoc paths: /swagger-ui, /v3/api-docs
      */
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
@@ -45,8 +44,6 @@ class SecurityConfig(
                 .requestMatchers(AntPathRequestMatcher("/swagger-ui.html"))
                 .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**"))
                 .requestMatchers(AntPathRequestMatcher("/v3/api-docs"))
-                .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs/**"))
-                .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs"))
                 .requestMatchers(AntPathRequestMatcher("/webjars/**"))
                 .requestMatchers(AntPathRequestMatcher("/swagger-resources/**"))
         }
@@ -81,8 +78,6 @@ class SecurityConfig(
                     .requestMatchers(AntPathRequestMatcher("/swagger-ui.html")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/v3/api-docs")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v2/api-docs")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/webjars/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                     // Permit auth endpoints
