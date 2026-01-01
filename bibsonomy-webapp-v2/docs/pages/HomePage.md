@@ -24,7 +24,7 @@ Landing page for BibSonomy. Introduces the platform to new visitors and provides
 **Design References**:
 
 - INFORMATION_ARCHITECTURE.md: Section 1.1 (Public Pages)
-- DESIGN_SYSTEM.md: Section 7 (Patterns - Landing Pages)
+- DESIGN_SYSTEM.md: Section 11 (Component Patterns)
 - COMPONENT_LIBRARY.md: Layout Components, Domain Components
 
 ## Layout Structure
