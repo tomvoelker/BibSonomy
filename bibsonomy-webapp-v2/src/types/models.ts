@@ -10,11 +10,8 @@ import { z } from 'zod'
 // =============================================================================
 
 export const UserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  email: z.string().email().optional(),
+  username: z.string(),
+  realName: z.string().optional(),
 })
 
 export type User = z.infer<typeof UserSchema>
@@ -24,8 +21,8 @@ export type User = z.infer<typeof UserSchema>
 // =============================================================================
 
 export const GroupSchema = z.object({
-  id: z.string(),
   name: z.string(),
+  displayName: z.string().optional(),
 })
 
 export type Group = z.infer<typeof GroupSchema>
@@ -36,7 +33,8 @@ export type Group = z.infer<typeof GroupSchema>
 
 export const TagSchema = z.object({
   name: z.string(),
-  globalCount: z.number().optional(),
+  count: z.number().optional(),
+  countPublic: z.number().optional(),
 })
 
 export type Tag = z.infer<typeof TagSchema>
@@ -72,14 +70,15 @@ export const PostSchema = z.object({
   id: z.string(),
   resourceType: z.enum(['publication', 'bookmark']),
   title: z.string(),
-  description: z.string().optional(),
-  url: z.string().url().nullable(),
-  bibTexData: BibTexDataSchema.nullable(),
+  description: z.string().nullable().optional(),
+  url: z.string().nullable().optional(),
   user: UserSchema,
+  resource: z.any().optional(), // Full resource details (bookmark or bibtex)
   groups: z.array(GroupSchema),
   tags: z.array(TagSchema),
-  createdAt: z.string().datetime(), // ISO 8601 datetime string
-  updatedAt: z.string().datetime(),
+  createdAt: z.string(), // ISO 8601 datetime string
+  updatedAt: z.string().nullable().optional(),
+  visibility: z.enum(['public', 'private', 'groups']).optional(),
 })
 
 export type Post = z.infer<typeof PostSchema>
@@ -185,7 +184,7 @@ export function formatAuthors(authorString: string | undefined): string {
  */
 export function getPostTitle(post: Post): string {
   if (post.title) return post.title
-  if (post.bibTexData?.title) return post.bibTexData.title
+  if (post.resource?.title) return post.resource.title
   if (post.url) return post.url
   return 'Untitled'
 }
@@ -194,7 +193,7 @@ export function getPostTitle(post: Post): string {
  * Get publication year from various sources
  */
 export function getPublicationYear(post: Post): string | null {
-  if (post.bibTexData?.year) return post.bibTexData.year
+  if (post.resource?.year) return String(post.resource.year)
 
   // Fallback to createdAt year
   const createdYear = new Date(post.createdAt).getFullYear()

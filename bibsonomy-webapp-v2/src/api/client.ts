@@ -25,9 +25,9 @@ apiClient.interceptors.request.use(
     const userJson = localStorage.getItem('auth_user')
     if (token && userJson) {
       try {
-        const user = JSON.parse(userJson) as { name: string }
+        const user = JSON.parse(userJson) as { username: string }
         // Backend expects Basic auth with username:apikey
-        const credentials = btoa(`${user.name}:${token}`)
+        const credentials = btoa(`${user.username}:${token}`)
         config.headers.Authorization = `Basic ${credentials}`
       } catch (e) {
         // Invalid stored user data, skip auth header

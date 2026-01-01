@@ -29,10 +29,13 @@ const emit = defineEmits<{
 // Get post description
 const description = computed(() => {
   if (isPublication(props.post)) {
-    // For publications, show authors and year
-    const authors = formatAuthors(props.post.bibTexData?.author || '')
+    // For publications, show authors and year from resource
+    const resource = props.post.resource
+    const authorList = resource?.authors || []
+    const authorNames = authorList.map((a: { name?: string }) => a.name || '').join(' and ')
+    const authors = formatAuthors(authorNames)
     const year = getPublicationYear(props.post)
-    const journal = props.post.bibTexData?.journal
+    const journal = resource?.journal
 
     let desc = authors
     if (year) desc += ` (${year})`
