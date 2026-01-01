@@ -108,16 +108,11 @@ class LegacyBasicAuthenticationFilter(
             val authResult = authenticationManager.authenticate(authRequest)
             org.springframework.security.core.context.SecurityContextHolder.getContext().authentication = authResult
         } catch (ex: AuthenticationException) {
-            // Store the auth failure for use by protected endpoints, but don't reject yet.
-            // Public endpoints (permitAll) should continue anonymously; protected endpoints
-            // will be rejected by the authorization layer with 401 via the entry point.
-            request.setAttribute(AUTH_FAILURE_ATTR, ex)
+            // Auth failed, but don't reject yet. Public endpoints (permitAll) should
+            // continue anonymously; protected endpoints will be rejected by the
+            // authorization layer with 401 via the entry point.
         }
         filterChain.doFilter(request, response)
-    }
-
-    companion object {
-        const val AUTH_FAILURE_ATTR = "org.bibsonomy.api.security.authFailure"
     }
 }
 
