@@ -236,7 +236,7 @@ class PostsControllerAuthIntegrationTest(
         )
 
         assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(2, response.body?.totalCount)
+        assertEquals(2, response.body?.pagination?.total)
     }
 
     @Test
