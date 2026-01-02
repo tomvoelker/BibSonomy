@@ -6,6 +6,12 @@ on:
     # - 'preview-deploy': Initial deployment (builds images and deploys)
     # - 'preview-rebuild': Force rebuild and redeploy (removes itself after)
     types: [labeled]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to deploy'
+        required: true
+        type: string
 
 permissions:
   contents: read
