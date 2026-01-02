@@ -1244,9 +1244,22 @@ paths:
   /api/v2/tags:
     get:
       tags: [Tags]
-      summary: List tags
-      description: Get tags with optional cloud data (frequencies)
+      summary: List popular tags
+      description: |
+        Get globally popular tags ordered by usage frequency (descending).
+
+        This endpoint returns platform-wide popular tags with their global usage counts,
+        suitable for rendering tag clouds on the homepage or sidebar. Tags are retrieved
+        from a pre-computed popularity index for optimal performance.
+
+        The response includes:
+        - `count`: Global usage count across all users (for sizing in tag clouds)
+        - `countPublic`: Public usage count (respecting visibility settings)
+
+        **Tag Cloud Usage**: Use `count` for visual sizing (font size, weight) in tag clouds.
       operationId: listTags
+      security:
+        - {}
       parameters:
         - $ref: '#/components/parameters/offsetParam'
         - $ref: '#/components/parameters/limitParam'
@@ -1255,13 +1268,13 @@ paths:
           schema:
             type: integer
             minimum: 1
-          description: Minimum frequency for tag cloud
+          description: Minimum frequency threshold - only return tags with count >= minFreq
         - name: maxCount
           in: query
           schema:
             type: integer
             minimum: 1
-          description: Maximum number of tags to return
+          description: Maximum number of tags to return (caps the limit)
       responses:
         '200':
           description: Successful response
