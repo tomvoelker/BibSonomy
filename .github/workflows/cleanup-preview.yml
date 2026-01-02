@@ -3,16 +3,31 @@ name: Cleanup Preview
 on:
   pull_request:
     types: [closed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to cleanup (for orphaned preview resources)'
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
   cleanup:
-    runs-on: self-hosted
+    runs-on: [self-hosted, preview-extsonomy]
     env:
       KUBECONFIG: /home/github-runner/.kube/config
     steps:
+      - name: Determine PR number
+        id: pr
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ inputs.pr_number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Ensure kubectl connectivity
         run: |
           for i in {1..10}; do
@@ -28,7 +43,11 @@ jobs:
 
       - name: Cleanup preview resources
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
+          echo "Cleaning up preview resources for PR #${PR_NUMBER}..."
+          kubectl -n extsonomy get deployment,service,configmap,secret \
+            -l preview.bibsonomy.org/pr="${PR_NUMBER}" 2>/dev/null || true
           kubectl -n extsonomy delete deployment,service,configmap,secret \
             -l preview.bibsonomy.org/pr="${PR_NUMBER}" --ignore-not-found
+          echo "Cleanup complete for PR #${PR_NUMBER}"
