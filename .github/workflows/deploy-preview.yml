@@ -58,8 +58,9 @@ jobs:
               db_mode = label.split("=", 1)[1].strip() or "minimal"
               break
 
-          # Check which label triggered this event
+          # Check which label triggered this event (only present for 'labeled' events)
           triggered_label = event.get("label", {}).get("name", "")
+          event_action = event.get("action", "")
 
           deploy_enabled = False
           remove_rebuild_label = False
@@ -70,6 +71,9 @@ jobs:
               elif triggered_label == "preview-rebuild" and "preview-deploy" in labels:
                   deploy_enabled = True
                   remove_rebuild_label = True
+              # Also deploy on synchronize (push) when preview-deploy label is present
+              elif event_action == "synchronize" and "preview-deploy" in labels:
+                  deploy_enabled = True
 
           sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
           sanitized = re.sub(r"-{2,}", "-", sanitized)
