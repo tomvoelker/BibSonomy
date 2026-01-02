@@ -2,16 +2,11 @@ name: Deploy Preview
 
 on:
   pull_request:
-    # Only trigger on label events to avoid automatic rebuilds on every push
+    # Trigger on label events and synchronize (push to PR branch)
     # - 'preview-deploy': Initial deployment (builds images and deploys)
     # - 'preview-rebuild': Force rebuild and redeploy (removes itself after)
-    types: [labeled]
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'PR number to deploy'
-        required: true
-        type: string
+    # - 'synchronize': Rebuild on every push when preview-deploy label is present
+    types: [labeled, synchronize]
 
 permissions:
   contents: read
