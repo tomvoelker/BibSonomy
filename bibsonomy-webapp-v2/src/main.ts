@@ -2,7 +2,7 @@
  * Application entry point
  */
 
-import { createApp, type Component } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
@@ -14,7 +14,7 @@ import { startMockWorker } from './mocks/browser'
 import './assets/main.css'
 
 // Start MSW if enabled
-if (String(import.meta.env['VITE_ENABLE_MOCKS']) === 'true') {
+if (import.meta.env['VITE_ENABLE_MOCKS'] === 'true') {
   void startMockWorker()
     .then(() => {
       initApp()
@@ -29,7 +29,7 @@ if (String(import.meta.env['VITE_ENABLE_MOCKS']) === 'true') {
 }
 
 function initApp() {
-  const app = createApp(App as Component)
+  const app = createApp(App)
 
   // Create Pinia instance
   const pinia = createPinia()
