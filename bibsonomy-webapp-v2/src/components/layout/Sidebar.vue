@@ -79,8 +79,9 @@ const tagSizes = computed(() => {
       </div>
 
       <!-- Tags cloud -->
-      <div
+      <nav
         v-else
+        aria-label="Popular tags"
         class="flex flex-wrap gap-x-3 gap-y-2 items-center justify-center leading-relaxed"
       >
         <RouterLink
@@ -93,16 +94,11 @@ const tagSizes = computed(() => {
             opacity: tag.opacity,
             fontWeight: tag.fontWeight,
           }"
+          :title="`${tag.count} ${tag.count === 1 ? t('post.post') : t('post.posts')}`"
         >
           {{ tag.name }}
         </RouterLink>
-      </div>
-    </div>
-
-    <!-- Recent Activity (placeholder) -->
-    <div class="pt-4 border-t border-gray-300">
-      <h3 class="text-sm font-bold text-gray-800 mb-3">Recent Activity</h3>
-      <p class="text-sm text-gray-600">Recent posts will appear here...</p>
+      </nav>
     </div>
   </aside>
 </template>

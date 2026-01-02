@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { Edit } from 'lucide-vue-next'
+import { Edit, LogIn } from 'lucide-vue-next'
 import { useBranding } from '@/composables/useBranding'
 import Button from '@/components/ui/Button.vue'
 
@@ -24,13 +24,17 @@ const { branding } = useBranding()
     <hr class="border-0 border-t border-gray-300 my-3 md:my-5" />
 
     <!-- CTA Buttons -->
-    <div class="flex flex-col sm:flex-row gap-2 mt-3 md:mt-5">
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3 md:mt-5">
       <Button variant="success" :icon="Edit" to="/error/not-implemented?feature=Register">
         {{ t('home.register') }}
       </Button>
 
-      <Button variant="link" to="/error/not-implemented?feature=Getting+Started">
+      <Button variant="primary" to="/error/not-implemented?feature=Getting+Started">
         {{ t('home.learnmore') }}
+      </Button>
+
+      <Button variant="primary" :icon="LogIn" to="/error/not-implemented?feature=Login">
+        {{ t('nav.login') }}
       </Button>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Bookmark, EyeOff } from 'lucide-vue-next'
+import { Bookmark, FileText, ExternalLink, EyeOff } from 'lucide-vue-next'
 import Badge from '@/components/ui/Badge.vue'
 import type { Post } from '@/types/models'
 
@@ -20,20 +20,28 @@ const thumbnailUrl = computed(() => {
   // TODO: implement based on actual post structure
   return undefined
 })
+
+// Use appropriate icon based on resource type
+const resourceIcon = computed(() => {
+  return props.post.resourceType === 'bookmark' ? ExternalLink : FileText
+})
 </script>
 
 <template>
   <div class="post-thumbnail">
-    <!-- Thumbnail image or placeholder -->
+    <!-- Thumbnail image or styled placeholder icon -->
     <img
       v-if="thumbnailUrl"
       :src="thumbnailUrl"
       :alt="`Thumbnail for ${post.resourceType}`"
       class="w-full h-full object-cover"
     />
-    <span v-else class="text-gray-400 text-xs">
-      {{ post.resourceType === 'bookmark' ? '🔖' : '📄' }}
-    </span>
+    <component
+      v-else
+      :is="resourceIcon"
+      :size="24"
+      class="text-gray-400"
+    />
 
     <!-- Overlay badges -->
     <div class="absolute top-1 right-1 flex gap-1">

@@ -40,7 +40,8 @@
   },
   "post": {
     "title": "Post",
-    "posts": "Posts",
+    "post": "post",
+    "posts": "posts",
     "allPosts": "all posts",
     "bookmarks": "bookmarks",
     "publications": "publications",
