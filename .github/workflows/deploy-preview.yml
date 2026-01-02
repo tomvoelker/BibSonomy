@@ -219,24 +219,24 @@ jobs:
           if [ "$DB_MODE" = "biblicious" ]; then
             SECRET_NAME="${NAME_PREFIX}bibsonomy-rest-api-db"
             export SECRET_NAME
-            kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json | \
-              python3 - <<'PY' | kubectl apply -f -
-          import json
-          import os
-          import sys
+            SECRET_JSON=$(kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json)
+            echo "$SECRET_JSON" | python3 -c '
+import json
+import os
+import sys
 
-          secret = json.load(sys.stdin)
-          secret["metadata"]["name"] = os.environ["SECRET_NAME"]
-          secret["metadata"]["namespace"] = "extsonomy"
-          secret["metadata"]["labels"] = secret["metadata"].get("labels", {})
-          secret["metadata"]["labels"]["app.kubernetes.io/component"] = "preview"
-          secret["metadata"]["labels"]["preview.bibsonomy.org/branch"] = os.environ["BRANCH"]
-          secret["metadata"]["labels"]["preview.bibsonomy.org/pr"] = os.environ["PR_NUMBER"]
-          secret["metadata"]["labels"]["preview.bibsonomy.org/db-mode"] = "biblicious"
-          for field in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]:
-              secret["metadata"].pop(field, None)
-          print(json.dumps(secret))
-          PY
+secret = json.load(sys.stdin)
+secret["metadata"]["name"] = os.environ["SECRET_NAME"]
+secret["metadata"]["namespace"] = "extsonomy"
+secret["metadata"]["labels"] = secret["metadata"].get("labels", {})
+secret["metadata"]["labels"]["app.kubernetes.io/component"] = "preview"
+secret["metadata"]["labels"]["preview.bibsonomy.org/branch"] = os.environ["BRANCH"]
+secret["metadata"]["labels"]["preview.bibsonomy.org/pr"] = os.environ["PR_NUMBER"]
+secret["metadata"]["labels"]["preview.bibsonomy.org/db-mode"] = "biblicious"
+for field in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]:
+    secret["metadata"].pop(field, None)
+print(json.dumps(secret))
+' | kubectl apply -f -
             sed -i "s/PREVIEW_DB_SECRET/${SECRET_NAME}/g" "$PREVIEW_DIR/rest-api-secret-patch.yaml"
           fi
 
