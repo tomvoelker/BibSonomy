@@ -7,7 +7,13 @@ import PostMeta from './PostMeta.vue'
 import PostTags from './PostTags.vue'
 import PostActions from './PostActions.vue'
 import type { Post } from '@/types/models'
-import { getPostTitle, formatAuthors, getPublicationYear, isPublication } from '@/types/models'
+import {
+  getPostTitle,
+  formatAuthors,
+  getPublicationYear,
+  isPublication,
+  isBookmark,
+} from '@/types/models'
 
 interface Props {
   post: Post
@@ -26,7 +32,7 @@ const emit = defineEmits<{
   export: []
 }>()
 
-// Get post description
+// Get post description (only for publications)
 const description = computed(() => {
   if (isPublication(props.post)) {
     // For publications, show authors and year from resource
@@ -41,9 +47,18 @@ const description = computed(() => {
     if (year) desc += ` (${year})`
     if (journal) desc += ` - ${journal}`
     return desc
-  } else {
-    // For bookmarks, show description or URL
-    return props.post.description || props.post.url || ''
+  }
+  return null
+})
+
+// Get display URL for bookmarks (show domain for cleaner display)
+const displayUrl = computed(() => {
+  if (!isBookmark(props.post) || !props.post.url) return null
+  try {
+    const url = new URL(props.post.url)
+    return url.hostname + (url.pathname !== '/' ? url.pathname : '')
+  } catch {
+    return props.post.url
   }
 })
 </script>
@@ -68,7 +83,19 @@ const description = computed(() => {
         {{ getPostTitle(post) }}
       </Link>
 
-      <!-- Description/Authors/URL -->
+      <!-- URL for bookmarks -->
+      <a
+        v-if="displayUrl && post.url"
+        :href="post.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs text-gray-500 hover:text-primary-600 truncate mb-1 block"
+        :title="post.url"
+      >
+        {{ displayUrl }}
+      </a>
+
+      <!-- Description/Authors for publications -->
       <div v-if="description" class="text-xs md:text-sm text-gray-700 mb-2 line-clamp-2">
         {{ description }}
       </div>
