@@ -2,15 +2,16 @@
  * Axios client configuration
  */
 
-import axios from 'axios'
+import axios, { type AxiosError } from 'axios'
 import { useAuthStore } from '@/store/auth'
+
+// Get environment variables with proper typing
+const enableMocks = String(import.meta.env['VITE_ENABLE_MOCKS']) === 'true'
+const apiBaseUrl = String(import.meta.env['VITE_API_BASE_URL'] || '/api/v2')
 
 export const apiClient = axios.create({
   // Use relative URL for MSW to work, or full URL in production
-  baseURL:
-    import.meta.env['VITE_ENABLE_MOCKS'] === 'true'
-      ? '/api/v2'
-      : (import.meta.env['VITE_API_BASE_URL'] ?? '/api/v2'),
+  baseURL: enableMocks ? '/api/v2' : apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -36,15 +37,16 @@ apiClient.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
+  (error: unknown) => {
+    const axiosError = error instanceof Error ? error : new Error('Request interceptor error')
+    return Promise.reject(axiosError)
   }
 )
 
 // Response interceptor (handle common errors)
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError) => {
     // Handle 401 Unauthorized
     if (error.response?.status === 401) {
       // Clear auth via store (centralizes state management)

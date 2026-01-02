@@ -66,7 +66,7 @@ class TagService(
                 0,
                 fetchEnd
             )
-            tags.filter { (it.globalcount ?: 0) >= minFreq }
+            tags.filter { it.globalcount >= minFreq }
                 .drop(requestedOffset)
                 .take(effectiveLimit)
                 .map { it.toDto() }

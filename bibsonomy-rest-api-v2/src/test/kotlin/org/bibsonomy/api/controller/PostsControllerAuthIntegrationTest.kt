@@ -273,6 +273,7 @@ class PostsControllerAuthIntegrationTest(
 )
 class PostsControllerTestApplication
 
+@Suppress("UNCHECKED_CAST")
 class StubPostsLogicFactory : LogicInterfaceFactory {
     override fun getLogicAccess(loginName: String?, apiKey: String?): LogicInterface {
         val logic = Mockito.mock(LogicInterface::class.java)

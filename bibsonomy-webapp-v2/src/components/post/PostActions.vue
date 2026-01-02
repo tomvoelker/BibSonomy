@@ -16,28 +16,28 @@ const emit = defineEmits<{
       :icon="Edit"
       variant="ghost"
       size="sm"
-      ariaLabel="Edit post"
+      aria-label="Edit post"
       @click="emit('edit')"
     />
     <IconButton
       :icon="Copy"
       variant="ghost"
       size="sm"
-      ariaLabel="Copy post"
+      aria-label="Copy post"
       @click="emit('copy')"
     />
     <IconButton
       :icon="History"
       variant="ghost"
       size="sm"
-      ariaLabel="View history"
+      aria-label="View history"
       @click="emit('history')"
     />
     <IconButton
       :icon="Share2"
       variant="ghost"
       size="sm"
-      ariaLabel="Export post"
+      aria-label="Export post"
       @click="emit('export')"
     />
   </div>

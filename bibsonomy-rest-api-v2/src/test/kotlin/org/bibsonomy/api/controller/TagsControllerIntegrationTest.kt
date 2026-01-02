@@ -162,7 +162,7 @@ class TagsControllerIntegrationTest(
     }
 
     @Test
-    fun `default limit returns 20 tags`() {
+    fun `default limit returns exactly 20 tags when more are available`() {
         val response = restTemplate.exchange(
             "/api/v2/tags",
             HttpMethod.GET,
@@ -172,8 +172,95 @@ class TagsControllerIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val tags = response.body ?: emptyList()
-        // Default limit is 20, but we might have fewer mock tags
-        assertTrue(tags.size <= 20, "Default should return at most 20 tags")
+        // We have 25 mock tags and default limit is 20, so should return exactly 20
+        assertEquals(20, tags.size, "Default limit of 20 should be enforced when more tags available")
+    }
+
+    @Test
+    fun `maxCount parameter limits tags by count ceiling`() {
+        val response = restTemplate.exchange(
+            "/api/v2/tags?maxCount=10",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<TagDto>>() {}
+        )
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        val tags = response.body ?: emptyList()
+        // maxCount=10 should cap the number of tags returned to 10
+        assertEquals(10, tags.size, "maxCount=10 should return exactly 10 tags")
+    }
+
+    @Test
+    fun `maxCount combined with limit uses the smaller value`() {
+        // maxCount=5 with default limit=20 should return 5
+        val response = restTemplate.exchange(
+            "/api/v2/tags?maxCount=5",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<TagDto>>() {}
+        )
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        val tags = response.body ?: emptyList()
+        assertEquals(5, tags.size, "maxCount=5 should limit to 5 tags")
+
+        // limit=3 with maxCount=10 should return 3
+        val response2 = restTemplate.exchange(
+            "/api/v2/tags?limit=3&maxCount=10",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<TagDto>>() {}
+        )
+
+        assertEquals(HttpStatus.OK, response2.statusCode)
+        val tags2 = response2.body ?: emptyList()
+        assertEquals(3, tags2.size, "limit=3 with maxCount=10 should return 3 tags")
+    }
+
+    @Test
+    fun `maxCount combined with offset works correctly`() {
+        val response = restTemplate.exchange(
+            "/api/v2/tags?offset=5&maxCount=3",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<TagDto>>() {}
+        )
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        val tags = response.body ?: emptyList()
+        assertEquals(3, tags.size, "offset=5 with maxCount=3 should return 3 tags")
+
+        // Verify the offset was applied by checking tag names
+        // With offset=5, the first tag should be "tensorflow" (6th in the list, 0-indexed position 5)
+        assertEquals("tensorflow", tags[0].name, "First tag with offset=5 should be 'tensorflow'")
+    }
+
+    @Test
+    fun `countPublic field is present and valid`() {
+        val response = restTemplate.exchange(
+            "/api/v2/tags",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<TagDto>>() {}
+        )
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        val tags = response.body ?: emptyList()
+
+        // All tags should have countPublic set and it should be >= 0
+        tags.forEach { tag ->
+            assertTrue(tag.countPublic != null, "Tag ${tag.name} should have countPublic")
+            assertTrue(tag.countPublic!! >= 0, "Tag ${tag.name} countPublic should be >= 0")
+
+            // countPublic should be <= count when count is present
+            if (tag.count != null) {
+                assertTrue(
+                    tag.countPublic!! <= tag.count!!,
+                    "Tag ${tag.name} countPublic (${tag.countPublic}) should be <= count (${tag.count})"
+                )
+            }
+        }
     }
 
     @Test

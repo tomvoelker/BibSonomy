@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (storedToken && storedUser) {
       try {
-        const parsedUser = JSON.parse(storedUser)
+        const parsedUser: unknown = JSON.parse(storedUser)
         // Validate user data with Zod schema
         const validatedUser = UserSchema.safeParse(parsedUser)
         if (validatedUser.success) {
