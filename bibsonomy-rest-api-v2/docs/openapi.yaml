@@ -1274,7 +1274,7 @@ paths:
           schema:
             type: integer
             minimum: 1
-          description: Maximum number of tags to return (caps the limit)
+          description: Maximum number of tags to return; effective limit is min(limit, maxCount)
       responses:
         '200':
           description: Successful response
