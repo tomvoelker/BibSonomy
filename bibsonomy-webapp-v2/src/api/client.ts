@@ -6,8 +6,8 @@ import axios, { type AxiosError } from 'axios'
 import { useAuthStore } from '@/store/auth'
 
 // Get environment variables with proper typing
-const enableMocks = String(import.meta.env['VITE_ENABLE_MOCKS']) === 'true'
-const apiBaseUrl = String(import.meta.env['VITE_API_BASE_URL'] || '/api/v2')
+const enableMocks = import.meta.env['VITE_ENABLE_MOCKS'] === 'true'
+const apiBaseUrl = import.meta.env['VITE_API_BASE_URL'] ?? '/api/v2'
 
 export const apiClient = axios.create({
   // Use relative URL for MSW to work, or full URL in production
@@ -38,8 +38,8 @@ apiClient.interceptors.request.use(
     return config
   },
   (error: unknown) => {
-    const axiosError = error instanceof Error ? error : new Error('Request interceptor error')
-    return Promise.reject(axiosError)
+    const normalizedError = error instanceof Error ? error : new Error('Request interceptor error')
+    return Promise.reject(normalizedError)
   }
 )
 
