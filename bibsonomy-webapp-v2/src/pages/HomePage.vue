@@ -58,21 +58,19 @@ const showPublications = computed(
             <SegmentedControl v-model="viewMode" :options="viewOptions" />
           </div>
 
-          <!-- Posts grid -->
+          <!-- Posts grid - side by side only on xl+ screens -->
           <div
-            class="flex flex-col -mx-4"
+            class="flex flex-col gap-6"
             :class="{
-              'md:flex-row': viewMode === 'all',
-              'md:flex-col': viewMode !== 'all',
+              'xl:flex-row xl:gap-4': viewMode === 'all',
             }"
           >
             <!-- Bookmarks Section (conditional) -->
             <div
               v-if="showBookmarks"
-              class="w-full px-4 mb-6 md:mb-0"
+              class="w-full min-w-0 overflow-hidden"
               :class="{
-                'md:flex-1': viewMode === 'all',
-                'md:max-w-full': viewMode !== 'all',
+                'xl:flex-1': viewMode === 'all',
               }"
             >
               <PostSection
@@ -87,10 +85,9 @@ const showPublications = computed(
             <!-- Publications Section (conditional) -->
             <div
               v-if="showPublications"
-              class="w-full px-4 mb-6 md:mb-0"
+              class="w-full min-w-0 overflow-hidden"
               :class="{
-                'md:flex-1': viewMode === 'all',
-                'md:max-w-full': viewMode !== 'all',
+                'xl:flex-1': viewMode === 'all',
               }"
             >
               <PostSection
