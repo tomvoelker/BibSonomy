@@ -50,7 +50,7 @@ const showPublications = computed(
       <Jumbotron />
 
       <!-- Responsive layout: 3 columns on desktop, stacked on mobile -->
-      <div class="flex flex-col lg:flex-row -mx-4">
+      <div class="flex flex-col lg:flex-row -mx-4 overflow-x-hidden">
         <!-- Main content area (75% on desktop) -->
         <div class="w-full lg:flex-[0_0_75%] lg:max-w-[75%] px-4">
           <!-- View mode filter -->
