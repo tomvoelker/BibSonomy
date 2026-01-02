@@ -2,7 +2,7 @@
  * Axios client configuration
  */
 
-import axios, { type AxiosError } from 'axios'
+import axios, { isAxiosError } from 'axios'
 import { useAuthStore } from '@/store/auth'
 
 // Get environment variables with proper typing
@@ -46,9 +46,9 @@ apiClient.interceptors.request.use(
 // Response interceptor (handle common errors)
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
+  (error: unknown) => {
     // Handle 401 Unauthorized
-    if (error.response?.status === 401) {
+    if (isAxiosError(error) && error.response?.status === 401) {
       // Clear auth via store (centralizes state management)
       const authStore = useAuthStore()
       authStore.clearAuth()
