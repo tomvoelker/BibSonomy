@@ -23,9 +23,11 @@ server:
     context-path: /
 
 # SpringDoc OpenAPI configuration
-# Uses standard paths: /swagger-ui.html, /v3/api-docs
+# API docs at /api/v2/api-docs, Swagger UI at /swagger-ui.html
 # /api/v2 redirects to /swagger-ui.html via ApiRootController
 springdoc:
+  api-docs:
+    path: /api/v2/api-docs
   swagger-ui:
     operationsSorter: alpha
     tagsSorter: alpha

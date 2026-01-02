@@ -42,6 +42,8 @@ class SecurityConfig(
                 "/swagger-ui.html",
                 "/v3/api-docs/**",
                 "/v3/api-docs",
+                "/api/v2/api-docs/**",
+                "/api/v2/api-docs",
                 "/webjars/**",
                 "/swagger-resources/**",
                 "/api/v2",
