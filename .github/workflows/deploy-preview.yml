@@ -2,10 +2,11 @@ name: Deploy Preview
 
 on:
   pull_request:
-    # Only trigger on label events to avoid automatic rebuilds on every push
+    # Trigger on label events and synchronize (push to PR branch)
     # - 'preview-deploy': Initial deployment (builds images and deploys)
     # - 'preview-rebuild': Force rebuild and redeploy (removes itself after)
-    types: [labeled]
+    # - 'synchronize': Rebuild on every push when preview-deploy label is present
+    types: [labeled, synchronize]
 
 permissions:
   contents: read
@@ -29,7 +30,7 @@ jobs:
       - name: Compute preview settings
         id: vars
         run: |
-          python - <<'PY'
+          python3 - <<'PY'
           import hashlib
           import json
           import os
@@ -57,8 +58,9 @@ jobs:
               db_mode = label.split("=", 1)[1].strip() or "minimal"
               break
 
-          # Check which label triggered this event
+          # Check which label triggered this event (only present for 'labeled' events)
           triggered_label = event.get("label", {}).get("name", "")
+          event_action = event.get("action", "")
 
           deploy_enabled = False
           remove_rebuild_label = False
@@ -69,6 +71,9 @@ jobs:
               elif triggered_label == "preview-rebuild" and "preview-deploy" in labels:
                   deploy_enabled = True
                   remove_rebuild_label = True
+              # Also deploy on synchronize (push) when preview-deploy label is present
+              elif event_action == "synchronize" and "preview-deploy" in labels:
+                  deploy_enabled = True
 
           sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
           sanitized = re.sub(r"-{2,}", "-", sanitized)
@@ -219,24 +224,8 @@ jobs:
           if [ "$DB_MODE" = "biblicious" ]; then
             SECRET_NAME="${NAME_PREFIX}bibsonomy-rest-api-db"
             export SECRET_NAME
-            kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json | \
-              python - <<'PY' | kubectl apply -f -
-          import json
-          import os
-          import sys
-
-          secret = json.load(sys.stdin)
-          secret["metadata"]["name"] = os.environ["SECRET_NAME"]
-          secret["metadata"]["namespace"] = "extsonomy"
-          secret["metadata"]["labels"] = secret["metadata"].get("labels", {})
-          secret["metadata"]["labels"]["app.kubernetes.io/component"] = "preview"
-          secret["metadata"]["labels"]["preview.bibsonomy.org/branch"] = os.environ["BRANCH"]
-          secret["metadata"]["labels"]["preview.bibsonomy.org/pr"] = os.environ["PR_NUMBER"]
-          secret["metadata"]["labels"]["preview.bibsonomy.org/db-mode"] = "biblicious"
-          for field in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]:
-              secret["metadata"].pop(field, None)
-          print(json.dumps(secret))
-          PY
+            SECRET_JSON=$(kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json)
+            echo "$SECRET_JSON" | python3 -c 'import json, os, sys; secret = json.load(sys.stdin); secret["metadata"]["name"] = os.environ["SECRET_NAME"]; secret["metadata"]["namespace"] = "extsonomy"; secret["metadata"]["labels"] = secret["metadata"].get("labels", {}); secret["metadata"]["labels"]["app.kubernetes.io/component"] = "preview"; secret["metadata"]["labels"]["preview.bibsonomy.org/branch"] = os.environ["BRANCH"]; secret["metadata"]["labels"]["preview.bibsonomy.org/pr"] = os.environ["PR_NUMBER"]; secret["metadata"]["labels"]["preview.bibsonomy.org/db-mode"] = "biblicious"; [secret["metadata"].pop(f, None) for f in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]]; print(json.dumps(secret))' | kubectl apply -f -
             sed -i "s/PREVIEW_DB_SECRET/${SECRET_NAME}/g" "$PREVIEW_DIR/rest-api-secret-patch.yaml"
           fi
 

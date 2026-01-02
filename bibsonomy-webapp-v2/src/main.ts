@@ -19,7 +19,7 @@ if (import.meta.env['VITE_ENABLE_MOCKS'] === 'true') {
     .then(() => {
       initApp()
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       console.error('[MSW] Failed to start mock worker:', error)
       console.warn('[MSW] Initializing app without mocks')
       initApp()

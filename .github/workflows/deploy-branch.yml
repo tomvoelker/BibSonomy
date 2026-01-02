@@ -28,7 +28,7 @@ jobs:
       - name: Compute deploy settings
         id: vars
         run: |
-          python - <<'PY'
+          python3 - <<'PY'
           import hashlib
           import os
           import re

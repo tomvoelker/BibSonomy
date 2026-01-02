@@ -327,10 +327,12 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
             val query = lastQuery
             val isGuest = user.name == "guest"
             val resourceClass = query?.resourceClass
+            @Suppress("UNCHECKED_CAST")
             val bibs = listOf(
                 publicBibPost as org.bibsonomy.model.Post<org.bibsonomy.model.Resource>,
                 privateBibPost as org.bibsonomy.model.Post<org.bibsonomy.model.Resource>
             )
+            @Suppress("UNCHECKED_CAST")
             val bookmarks = listOf(
                 publicBookmarkPost as org.bibsonomy.model.Post<org.bibsonomy.model.Resource>,
                 privateBookmarkPost as org.bibsonomy.model.Post<org.bibsonomy.model.Resource>
@@ -346,6 +348,7 @@ class StubPostsLogicFactory : LogicInterfaceFactory {
             val hash = invocation.arguments[0] as String
             val requestedUser = invocation.arguments[1] as String
             val isGuest = user.name == "guest"
+            @Suppress("UNCHECKED_CAST")
             return@thenAnswer when (hash) {
                 PUBLIC_HASH -> publicBibPost as org.bibsonomy.model.Post<out org.bibsonomy.model.Resource>
                 PRIVATE_HASH -> {

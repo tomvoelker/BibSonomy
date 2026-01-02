@@ -18,6 +18,13 @@ import org.springframework.web.context.request.ServletRequestAttributes
 
 /**
  * Service layer for tags API.
+ *
+ * Returns globally popular tags from the pre-computed popular_tags table,
+ * matching the legacy webapp's homepage tag cloud behavior.
+ *
+ * Note: SortKey.FREQUENCY (not POPULAR) is used intentionally because:
+ * - FREQUENCY → GetAllTags handler → queries popular_tags table (actual user-created popular tags)
+ * - POPULAR → GetPopularTags handler → queries tags table with show_tag=TRUE (curated category tags)
  */
 @Service
 class TagService(
@@ -60,13 +67,13 @@ class TagService(
                 QueryScope.LOCAL,
                 null,
                 null,
-                SortKey.POPULAR,
+                SortKey.FREQUENCY,  // Use FREQUENCY to query popular_tags table (legacy behavior)
                 null,
                 null,
                 0,
                 fetchEnd
             )
-            tags.filter { (it.globalcount ?: 0) >= minFreq }
+            tags.filter { it.globalcount >= minFreq }
                 .drop(requestedOffset)
                 .take(effectiveLimit)
                 .map { it.toDto() }
@@ -83,7 +90,7 @@ class TagService(
                 QueryScope.LOCAL,
                 null,
                 null,
-                SortKey.POPULAR,
+                SortKey.FREQUENCY,  // Use FREQUENCY to query popular_tags table (legacy behavior)
                 null,
                 null,
                 requestedOffset,
