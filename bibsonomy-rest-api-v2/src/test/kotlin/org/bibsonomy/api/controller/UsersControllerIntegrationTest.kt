@@ -297,7 +297,7 @@ class StubUsersLogicFactory : LogicInterfaceFactory {
                 anyInt()
             )
         ).thenAnswer { invocation ->
-            val end = invocation.arguments[13] as Int
+            val end = (invocation.arguments[13] as? Int) ?: MOCK_USER_TAGS.size
             MOCK_USER_TAGS.take(end.coerceAtMost(MOCK_USER_TAGS.size))
         }
 

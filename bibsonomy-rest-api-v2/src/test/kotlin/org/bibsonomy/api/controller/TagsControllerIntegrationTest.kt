@@ -315,6 +315,9 @@ class TagsControllerIntegrationTest(
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertNotNull(response.body?.relatedTags)
+        val relatedTags = response.body?.relatedTags ?: emptyList()
+        assertTrue(relatedTags.isNotEmpty(), "Related tags should not be empty")
+        assertTrue(relatedTags.size <= 5, "Related tags should respect the relatedLimit=5 parameter")
     }
 
     // Note: The 404 test for non-existing tags requires more sophisticated mocking

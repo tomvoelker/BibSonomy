@@ -75,7 +75,8 @@ class UserService(
         }
         val postCount = postStats?.count ?: 0
 
-        // Get tag count for this user
+        // Get tag count for this user (limit to reasonable max to avoid OOM)
+        val maxTagsToCount = 10000
         val userTags = try {
             logic.getTags(
                 Resource::class.java,
@@ -86,7 +87,7 @@ class UserService(
                 null, null,
                 SortKey.FREQUENCY,
                 null, null,
-                0, Int.MAX_VALUE
+                0, maxTagsToCount
             )
         } catch (e: Exception) {
             log.warn("Failed to get tags for user {}: {}", username, e.message)

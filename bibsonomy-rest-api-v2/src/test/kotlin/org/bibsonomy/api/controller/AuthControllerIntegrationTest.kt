@@ -170,7 +170,7 @@ class StubAuthLogicFactory : LogicInterfaceFactory {
         } else {
             // Guest/anonymous access
             val guestUser = User().apply {
-                name = null
+                name = ""
                 role = Role.NOBODY
             }
             Mockito.`when`(logic.authenticatedUser).thenReturn(guestUser)

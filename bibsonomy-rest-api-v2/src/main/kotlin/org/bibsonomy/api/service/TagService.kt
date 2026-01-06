@@ -164,7 +164,7 @@ class TagService(
                 ?.map { RelatedTagDto(name = it.name, count = it.globalcount ?: 0) }
                 ?: emptyList()
         } catch (e: Exception) {
-            logger.warn("Failed to get related tags for {}: {}", tagName, e.message)
+            logger.warn("Failed to get related tags for {}", tagName, e)
             emptyList()
         }
 
