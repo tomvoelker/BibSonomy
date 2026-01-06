@@ -1,0 +1,161 @@
+@import 'tailwindcss';
+
+/* Tailwind v4 theme configuration for BibSonomy */
+@theme {
+  /* Primary - BibSonomy Blue (#006699) */
+  --color-primary-50: #e6f2f7;
+  --color-primary-100: #cce5ef;
+  --color-primary-200: #99cbe0;
+  --color-primary-300: #66b1d0;
+  --color-primary-400: #3397c1;
+  --color-primary-500: #006699;
+  --color-primary-600: #00527a;
+  --color-primary-700: #003d5c;
+  --color-primary-800: #00293d;
+  --color-primary-900: #00141f;
+
+  /* Success - Green (#5cb85c) */
+  --color-success-50: #f0f9f0;
+  --color-success-100: #e1f3e1;
+  --color-success-200: #c3e7c3;
+  --color-success-300: #a5dba5;
+  --color-success-400: #87cf87;
+  --color-success-500: #5cb85c;
+  --color-success-600: #4a934a;
+  --color-success-700: #376e37;
+  --color-success-800: #254a25;
+  --color-success-900: #122512;
+
+  /* Info - Bootstrap Blue (#428bca) */
+  --color-info-50: #e9f3fb;
+  --color-info-100: #d3e7f7;
+  --color-info-200: #a7cfef;
+  --color-info-300: #7bb7e7;
+  --color-info-400: #4f9fdf;
+  --color-info-500: #428bca;
+  --color-info-600: #356fa2;
+  --color-info-700: #285379;
+  --color-info-800: #1a3751;
+  --color-info-900: #0d1c28;
+
+  /* Danger/Error - Red (#d9534f) */
+  --color-danger-50: #fbeae9;
+  --color-danger-100: #f7d5d3;
+  --color-danger-200: #efaba7;
+  --color-danger-300: #e7817b;
+  --color-danger-400: #df574f;
+  --color-danger-500: #d9534f;
+  --color-danger-600: #ae423f;
+  --color-danger-700: #82322f;
+  --color-danger-800: #572120;
+  --color-danger-900: #2b1110;
+
+  /* Warning - Orange */
+  --color-warning-50: #fef3e9;
+  --color-warning-100: #fde7d3;
+  --color-warning-200: #facfa7;
+  --color-warning-300: #f8b77b;
+  --color-warning-400: #f59f4f;
+  --color-warning-500: #f0ad4e;
+  --color-warning-600: #c08a3e;
+  --color-warning-700: #90672f;
+  --color-warning-800: #60451f;
+  --color-warning-900: #302210;
+
+  /* Legacy color aliases for backward compatibility */
+  --color-bibsonomy-blue: #006699;
+  --color-bootstrap-blue: #428bca;
+  --color-border-gray: #cbcbcb;
+  --color-bg-light: #ededed;
+
+  /* Spacing - Custom dimensions */
+  --spacing-thumbnail-width: 64px;
+  --spacing-thumbnail-height: 96px;
+
+  /* Layout */
+  --width-container: 1170px;
+
+  /* Focus shadow */
+  --shadow-focus: 0 0 0 3px rgb(0 102 153 / 0.2);
+}
+
+@layer base {
+  /* CSS Custom Properties for theming */
+  :root {
+    /* Colors */
+    --color-bg-primary: 255 255 255;
+    --color-text-primary: 71 85 105; /* slate-600 */
+
+    /* Spacing */
+    --spacing-unit: 0.25rem; /* 4px */
+
+    /* Shadows */
+    --shadow-default: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+
+    /* Borders */
+    --border-radius-default: 0.25rem;
+  }
+
+  .dark {
+    --color-bg-primary: 15 23 42; /* slate-900 */
+    --color-text-primary: 248 250 252; /* slate-50 */
+  }
+
+  /* Global focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+@layer components {
+  /* Skip to main content link */
+  .skip-to-main {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded;
+  }
+
+  /* Page container - standard content wrapper */
+  .page-container {
+    @apply bg-white border-x border-gray-300 max-w-[1170px] mx-auto px-8 py-5;
+  }
+
+  /* Post thumbnail - 64x96px container for post previews */
+  .post-thumbnail {
+    @apply w-16 h-24 bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-400 text-xs relative overflow-hidden rounded;
+  }
+}

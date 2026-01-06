@@ -1,0 +1,353 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    # Trigger on label events and synchronize (push to PR branch)
+    # - 'preview-deploy': Initial deployment (builds images and deploys)
+    # - 'preview-rebuild': Force rebuild and redeploy (removes itself after)
+    # - 'synchronize': Rebuild on every push when preview-deploy label is present
+    types: [labeled, synchronize]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_enabled: ${{ steps.vars.outputs.deploy_enabled }}
+      pr_number: ${{ steps.vars.outputs.pr_number }}
+      branch: ${{ steps.vars.outputs.branch }}
+      sanitized_branch: ${{ steps.vars.outputs.sanitized_branch }}
+      name_prefix: ${{ steps.vars.outputs.name_prefix }}
+      db_mode: ${{ steps.vars.outputs.db_mode }}
+      rest_image: ${{ steps.vars.outputs.rest_image }}
+      web_image: ${{ steps.vars.outputs.web_image }}
+      remove_rebuild_label: ${{ steps.vars.outputs.remove_rebuild_label }}
+    steps:
+      - name: Compute preview settings
+        id: vars
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          import sys
+
+          event_path = os.environ["GITHUB_EVENT_PATH"]
+          with open(event_path, "r", encoding="utf-8") as handle:
+              event = json.load(handle)
+
+          pr = event.get("pull_request")
+          if not pr:
+              print("pull_request event data missing", file=sys.stderr)
+              sys.exit(1)
+
+          pr_number = pr["number"]
+          branch = pr["head"]["ref"]
+          head_sha = pr["head"]["sha"]
+          owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "unknown")
+
+          labels = [label["name"] for label in pr.get("labels", [])]
+          db_mode = "minimal"
+          for label in labels:
+            if label.startswith("preview-db="):
+              db_mode = label.split("=", 1)[1].strip() or "minimal"
+              break
+
+          # Check which label triggered this event (only present for 'labeled' events)
+          triggered_label = event.get("label", {}).get("name", "")
+          event_action = event.get("action", "")
+
+          deploy_enabled = False
+          remove_rebuild_label = False
+          if pr.get("head", {}).get("repo", {}).get("full_name") == os.environ.get("GITHUB_REPOSITORY"):
+              # Deploy if preview-deploy is added, or if preview-rebuild is added (and preview-deploy exists)
+              if triggered_label == "preview-deploy":
+                  deploy_enabled = True
+              elif triggered_label == "preview-rebuild" and "preview-deploy" in labels:
+                  deploy_enabled = True
+                  remove_rebuild_label = True
+              # Also deploy on synchronize (push) when preview-deploy label is present
+              elif event_action == "synchronize" and "preview-deploy" in labels:
+                  deploy_enabled = True
+
+          sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
+          sanitized = re.sub(r"-{2,}", "-", sanitized)
+
+          base_name = "bibsonomy-webapp-v2"
+          max_prefix_len = 63 - len(base_name)
+          prefix_base = f"pr-{sanitized}"
+          if len(prefix_base) + 1 > max_prefix_len:
+              hash_suffix = hashlib.sha256(branch.encode("utf-8")).hexdigest()[:6]
+              trim_len = max_prefix_len - len("pr-") - len(hash_suffix) - 1
+              trimmed = sanitized[: max(trim_len, 1)].rstrip("-")
+              prefix_base = f"pr-{trimmed}-{hash_suffix}"
+
+          name_prefix = f"{prefix_base}-"
+
+          image_suffix = f"pr-{pr_number}-{head_sha[:7]}"
+          rest_image = f"ghcr.io/{owner}/bibsonomy-rest-api-v2:{image_suffix}"
+          web_image = f"ghcr.io/{owner}/bibsonomy-webapp-v2:{image_suffix}"
+
+          output_path = os.environ["GITHUB_OUTPUT"]
+          with open(output_path, "a", encoding="utf-8") as out:
+              out.write(f"pr_number={pr_number}\n")
+              out.write(f"branch={branch}\n")
+              out.write(f"sanitized_branch={sanitized}\n")
+              out.write(f"name_prefix={name_prefix}\n")
+              out.write(f"db_mode={db_mode}\n")
+              out.write(f"rest_image={rest_image}\n")
+              out.write(f"web_image={web_image}\n")
+              out.write(f"deploy_enabled={'true' if deploy_enabled else 'false'}\n")
+              out.write(f"remove_rebuild_label={'true' if remove_rebuild_label else 'false'}\n")
+          PY
+
+  build-images:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.deploy_enabled == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push REST API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.rest-api-v2
+          platforms: linux/amd64
+          push: true
+          tags: ${{ needs.prepare.outputs.rest_image }}
+
+      - name: Build and push Webapp image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.webapp-v2
+          platforms: linux/amd64
+          push: true
+          tags: ${{ needs.prepare.outputs.web_image }}
+          build-args: |
+            VITE_API_BASE_URL=/api/v2
+            VITE_PROJECT_THEME=bibsonomy
+            VITE_ENABLE_MOCKS=false
+
+  deploy:
+    needs: [prepare, build-images]
+    runs-on: [self-hosted, preview-extsonomy]
+    if: ${{ needs.prepare.outputs.deploy_enabled == 'true' }}
+    environment: preview-extsonomy
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      KUBECONFIG: /home/github-runner/.kube/config
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure kubectl connectivity
+        run: |
+          for i in {1..10}; do
+            if kubectl get nodes >/dev/null 2>&1; then
+              echo "kubectl connection ok"
+              exit 0
+            fi
+            echo "kubectl connection failed ($i/10), retrying..."
+            sleep 3
+          done
+          echo "kubectl connection failed after retries"
+          exit 1
+
+      - name: Prepare preview overlay
+        env:
+          DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+          BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+          REST_IMAGE: ${{ needs.prepare.outputs.rest_image }}
+          WEB_IMAGE: ${{ needs.prepare.outputs.web_image }}
+        run: |
+          set -euo pipefail
+          OVERLAY_BASE="k8s/overlays/preview-${DB_MODE}"
+          PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
+
+          rm -rf "$PREVIEW_DIR"
+          cp -R "$OVERLAY_BASE" "$PREVIEW_DIR"
+
+          if [ "$DB_MODE" = "minimal" ]; then
+            MARIADB_SERVICE="${NAME_PREFIX}mariadb"
+            sed -i "s/PREVIEW_MARIADB_HOST/${MARIADB_SERVICE}/g" "$PREVIEW_DIR/rest-api-db-patch.yaml"
+            SQL_DIR="$PREVIEW_DIR/sql"
+            mkdir -p "$SQL_DIR"
+            cp docker/mysql-init/00-create-dbs.sql "$SQL_DIR/00-create-dbs.sql"
+            cp bibsonomy-database/src/main/resources/database/bibsonomy-db-schema.sql "$SQL_DIR/01-schema.sql"
+            cp bibsonomy-database/src/main/resources/database/bibsonomy-db-init.sql "$SQL_DIR/02-init.sql"
+            cp bibsonomy-database/src/test/resources/database/insert-test-data.sql "$SQL_DIR/03-test-data.sql"
+            sed -i "s#PREVIEW_SQL_DIR#sql#g" "$PREVIEW_DIR/kustomization.yaml"
+          fi
+
+          sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/kustomization.yaml"
+          sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$PREVIEW_DIR/kustomization.yaml"
+          sed -i "s/PREVIEW_PR/${PR_NUMBER}/g" "$PREVIEW_DIR/kustomization.yaml"
+          sed -i "s#PREVIEW_REST_IMAGE#${REST_IMAGE}#g" "$PREVIEW_DIR/rest-api-image-patch.yaml"
+          sed -i "s#PREVIEW_WEB_IMAGE#${WEB_IMAGE}#g" "$PREVIEW_DIR/webapp-image-patch.yaml"
+          if [ -f "$PREVIEW_DIR/webapp-api-upstream-patch.yaml" ]; then
+            sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$PREVIEW_DIR/webapp-api-upstream-patch.yaml"
+          fi
+          for selector_patch in \
+            rest-api-selector-patch.yaml \
+            webapp-selector-patch.yaml \
+            rest-api-service-selector-patch.yaml \
+            webapp-service-selector-patch.yaml \
+            mariadb-selector-patch.yaml \
+            mariadb-service-selector-patch.yaml; do
+            if [ -f "$PREVIEW_DIR/${selector_patch}" ]; then
+              sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$PREVIEW_DIR/${selector_patch}"
+            fi
+          done
+
+          if [ "$DB_MODE" = "biblicious" ]; then
+            SECRET_NAME="${NAME_PREFIX}bibsonomy-rest-api-db"
+            export SECRET_NAME
+            SECRET_JSON=$(kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json)
+            echo "$SECRET_JSON" | python3 -c 'import json, os, sys; secret = json.load(sys.stdin); secret["metadata"]["name"] = os.environ["SECRET_NAME"]; secret["metadata"]["namespace"] = "extsonomy"; secret["metadata"]["labels"] = secret["metadata"].get("labels", {}); secret["metadata"]["labels"]["app.kubernetes.io/component"] = "preview"; secret["metadata"]["labels"]["preview.bibsonomy.org/branch"] = os.environ["BRANCH"]; secret["metadata"]["labels"]["preview.bibsonomy.org/pr"] = os.environ["PR_NUMBER"]; secret["metadata"]["labels"]["preview.bibsonomy.org/db-mode"] = "biblicious"; [secret["metadata"].pop(f, None) for f in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]]; print(json.dumps(secret))' | kubectl apply -f -
+            sed -i "s/PREVIEW_DB_SECRET/${SECRET_NAME}/g" "$PREVIEW_DIR/rest-api-secret-patch.yaml"
+          fi
+
+      - name: Apply preview resources
+        env:
+          BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+        run: |
+          PREVIEW_DIR="k8s/overlays/.preview-${BRANCH}"
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}bibsonomy-rest-api-v2" --ignore-not-found
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}bibsonomy-webapp-v2" --ignore-not-found
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}mariadb" --ignore-not-found
+          kubectl -n extsonomy delete configmap "${NAME_PREFIX}mariadb-init" --ignore-not-found
+          kubectl apply -k "$PREVIEW_DIR"
+
+      - name: Wait for preview deployments
+        env:
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+          DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+        run: |
+          wait_deploy() {
+            local name="$1"
+            local timeout_seconds="$2"
+            local start_ts
+            start_ts=$(date +%s)
+            while true; do
+              local ready replicas generation observed
+              ready=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.readyReplicas}')
+              replicas=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.replicas}')
+              generation=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.metadata.generation}')
+              observed=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.observedGeneration}')
+              ready=${ready:-0}
+              replicas=${replicas:-0}
+              if [ "$ready" = "$replicas" ] && [ -n "$replicas" ] && [ "$observed" = "$generation" ]; then
+                return 0
+              fi
+              if [ $(( $(date +%s) - start_ts )) -ge "$timeout_seconds" ]; then
+                echo "Timed out waiting for deployment ${name} to be ready" >&2
+                kubectl -n extsonomy get deployment "$name" -o wide || true
+                return 1
+              fi
+              sleep 5
+            done
+          }
+
+          wait_deploy "${NAME_PREFIX}bibsonomy-rest-api-v2" 600
+          wait_deploy "${NAME_PREFIX}bibsonomy-webapp-v2" 600
+          if [ "$DB_MODE" = "minimal" ]; then
+            wait_deploy "${NAME_PREFIX}mariadb" 600
+          fi
+
+      - name: Resolve preview NodePorts
+        id: ports
+        env:
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+        run: |
+          REST_SERVICE="${NAME_PREFIX}bibsonomy-rest-api-v2"
+          WEB_SERVICE="${NAME_PREFIX}bibsonomy-webapp-v2"
+          API_NODEPORT=$(kubectl -n extsonomy get svc "${REST_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
+          WEB_NODEPORT=$(kubectl -n extsonomy get svc "${WEB_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
+          echo "api_nodeport=${API_NODEPORT}" >> "$GITHUB_OUTPUT"
+          echo "web_nodeport=${WEB_NODEPORT}" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke check preview endpoints
+        env:
+          API_NODEPORT: ${{ steps.ports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.ports.outputs.web_nodeport }}
+        run: |
+          API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2/tags?limit=1&maxCount=1"
+          WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}/"
+          for i in {1..10}; do
+            if curl -fsS "$API_URL" >/dev/null && curl -fsS "$WEB_URL" >/dev/null; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Preview endpoints not reachable after retries" >&2
+          exit 1
+
+      - name: Post preview comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          DB_MODE: ${{ needs.prepare.outputs.db_mode }}
+          API_NODEPORT: ${{ steps.ports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.ports.outputs.web_nodeport }}
+        run: |
+          API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
+          WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
+          cat <<EOF > /tmp/preview-comment.md
+          <!-- bibsonomy-preview -->
+          ✅ Preview deployed for branch \`${BRANCH}\`
+
+          - Webapp: ${WEB_URL}
+          - REST API: ${API_URL}
+          - DB mode: ${DB_MODE}
+
+          > **Note**: Preview does not auto-rebuild on push. Add the \`preview-rebuild\` label to trigger a rebuild.
+
+          Debug:
+          \`\`\`bash
+          kubectl -n extsonomy get pods -l preview.bibsonomy.org/pr=${PR_NUMBER}
+          kubectl -n extsonomy get svc -l preview.bibsonomy.org/pr=${PR_NUMBER}
+          \`\`\`
+          EOF
+
+          EXISTING_COMMENT_ID=$(gh api repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments \
+            --jq '.[] | select(.body | contains("<!-- bibsonomy-preview -->")) | .id' | head -n 1)
+
+          if [ -n "$EXISTING_COMMENT_ID" ]; then
+            gh api repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_COMMENT_ID} \
+              --method PATCH \
+              --field body="$(cat /tmp/preview-comment.md)"
+          else
+            gh pr comment "${PR_NUMBER}" --body-file /tmp/preview-comment.md
+          fi
+
+      - name: Remove preview-rebuild label
+        if: ${{ needs.prepare.outputs.remove_rebuild_label == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.prepare.outputs.pr_number }}
+        run: |
+          gh pr edit "${PR_NUMBER}" --remove-label "preview-rebuild" || true

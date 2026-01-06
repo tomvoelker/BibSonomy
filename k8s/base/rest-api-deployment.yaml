@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibsonomy-rest-api-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bibsonomy-rest-api-v2
+  template:
+    metadata:
+      labels:
+        app: bibsonomy-rest-api-v2
+    spec:
+      containers:
+        - name: rest-api
+          image: ghcr.io/tomvoelker/bibsonomy-rest-api-v2:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local
+            - name: SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING
+              value: "true"
+          volumeMounts:
+            - name: bibsonomy-files
+              mountPath: /var/lib/bibsonomy
+      volumes:
+        - name: bibsonomy-files
+          emptyDir: {}

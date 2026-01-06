@@ -46,12 +46,11 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
-import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.query.ResourcePersonRelationQuery;
 import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.util.MailUtils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +61,11 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
     private static final boolean toHide = true;
     public static final String NAME = "rel";
 
-    private MailUtils mailUtils;
+    /**
+     * MailUtils instance from bibsonomy-web-common module.
+     * Uses Object type and reflection to avoid compile-time dependency on bibsonomy-web-common
+     */
+    private Object mailUtils;
     private boolean mailingEnabled;
     private String receiverMail;
 
@@ -115,8 +118,8 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
                 if (present(matchingAuthorPos)) {
                     if (matchingAuthorPos.size() > 1) {
                         log.debug("unable to automatically match person id to an author, notify by e-mail");
-                        if (this.mailingEnabled && present(this.receiverMail)) {
-                            mailUtils.sendUnableToMatchRelationMail(resource.getTitle(), resource.getInterHash(), personId, this.receiverMail);
+                        if (this.mailingEnabled && present(this.receiverMail) && this.mailUtils != null) {
+                            sendUnableToMatchRelationMailViaReflection(resource.getTitle(), resource.getInterHash(), personId, this.receiverMail);
                         }
                     } else {
                         // Set found relation person index
@@ -146,6 +149,20 @@ public class AddRelationTag extends AbstractSystemTagImpl implements ExecutableS
     public <T extends Resource> void performAfterUpdate(Post<T> newPost, Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
         // handle new updated post same way as create
         this.performAfterCreate(newPost, session);
+    }
+
+    /**
+     * Sends mail notification using reflection to avoid compile-time dependency on MailUtils.
+     * This allows bibsonomy-database to work without bibsonomy-web-common
+     */
+    private void sendUnableToMatchRelationMailViaReflection(String title, String interhash, String personId, String receiverMail) {
+        try {
+            Method method = this.mailUtils.getClass().getMethod("sendUnableToMatchRelationMail", 
+                    String.class, String.class, String.class, String.class);
+            method.invoke(this.mailUtils, title, interhash, personId, receiverMail);
+        } catch (Exception e) {
+            log.warn("Failed to send relation matching notification mail via reflection: " + e.getMessage(), e);
+        }
     }
 
     private boolean hasPermissions() {

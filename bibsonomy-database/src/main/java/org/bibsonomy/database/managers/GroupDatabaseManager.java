@@ -75,7 +75,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.GroupSearch;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.wiki.TemplateManager;
+import org.bibsonomy.database.util.WikiTemplateLoader;
 
 /**
  * Used to retrieve groups from the database.
@@ -844,6 +844,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 	/**
 	 * Inserts a default wiki for a newly created group.
 	 *
+	 * <p><strong>Note:</strong> This method previously used {@code org.bibsonomy.wiki.TemplateManager}
+	 * from the {@code bibsonomy-wiki} module. The dependency was removed to avoid transitive
+	 * Spring 3.2 dependencies that conflict with Spring Boot 3.x. Templates are now loaded
+	 * directly from this module's resources via {@link WikiTemplateLoader}.
+	 *
 	 * @param group
 	 * @param session
 	 */
@@ -852,7 +857,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager implements Lin
 		param.setUserName(group.getName());
 		param.setDate(new Date());
 
-		param.setWikiText(TemplateManager.getTemplate("group1en"));
+		// Note: Template loading moved from bibsonomy-wiki to avoid Spring 3.2 dependency conflicts
+		final String wikiText = WikiTemplateLoader.getTemplate("group1en");
+		if (wikiText == null) {
+			throw new IllegalStateException("Wiki template 'group1en' not found in resources");
+		}
+		param.setWikiText(wikiText);
 		this.update("updateWikiForUser", param, session);
 	}
 

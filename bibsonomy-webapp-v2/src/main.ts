@@ -1,0 +1,45 @@
+/**
+ * Application entry point
+ */
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import router from './router'
+import i18n from './plugins/i18n'
+import { installVueQuery } from './plugins/query'
+import { startMockWorker } from './mocks/browser'
+
+// Import global styles
+import './assets/main.css'
+
+// Start MSW if enabled
+if (import.meta.env['VITE_ENABLE_MOCKS'] === 'true') {
+  void startMockWorker()
+    .then(() => {
+      initApp()
+    })
+    .catch((error: unknown) => {
+      console.error('[MSW] Failed to start mock worker:', error)
+      console.warn('[MSW] Initializing app without mocks')
+      initApp()
+    })
+} else {
+  initApp()
+}
+
+function initApp() {
+  const app = createApp(App)
+
+  // Create Pinia instance
+  const pinia = createPinia()
+
+  // Install plugins
+  app.use(pinia)
+  app.use(router)
+  app.use(i18n)
+  installVueQuery(app)
+
+  // Mount app
+  app.mount('#app')
+}

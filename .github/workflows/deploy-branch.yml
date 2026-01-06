@@ -1,0 +1,300 @@
+name: Deploy Branch
+
+on:
+  push:
+    branches:
+      - rewrite/master
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'rewrite/master'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.vars.outputs.branch }}
+      sanitized_branch: ${{ steps.vars.outputs.sanitized_branch }}
+      name_prefix: ${{ steps.vars.outputs.name_prefix }}
+      rest_image: ${{ steps.vars.outputs.rest_image }}
+      web_image: ${{ steps.vars.outputs.web_image }}
+    steps:
+      - name: Compute deploy settings
+        id: vars
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import os
+          import re
+
+          # Determine branch from event
+          event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+          if event_name == "workflow_dispatch":
+              branch = "${{ github.event.inputs.branch }}"
+          else:
+              ref = os.environ.get("GITHUB_REF", "")
+              branch = ref.replace("refs/heads/", "")
+
+          sha = os.environ.get("GITHUB_SHA", "unknown")[:7]
+          owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "unknown").lower()
+
+          # Sanitize branch name for k8s resources
+          sanitized = re.sub(r"[^a-zA-Z0-9-]+", "-", branch).strip("-").lower()
+          sanitized = re.sub(r"-{2,}", "-", sanitized)
+
+          # For rewrite/master, use a short stable prefix
+          if branch == "rewrite/master":
+              name_prefix = "staging-"
+          else:
+              base_name = "bibsonomy-webapp-v2"
+              max_prefix_len = 63 - len(base_name)
+              prefix_base = f"br-{sanitized}"
+              if len(prefix_base) + 1 > max_prefix_len:
+                  hash_suffix = hashlib.sha256(branch.encode("utf-8")).hexdigest()[:6]
+                  trim_len = max_prefix_len - len("br-") - len(hash_suffix) - 1
+                  trimmed = sanitized[: max(trim_len, 1)].rstrip("-")
+                  prefix_base = f"br-{trimmed}-{hash_suffix}"
+              name_prefix = f"{prefix_base}-"
+
+          # Image tags include branch and sha for traceability
+          image_suffix = f"{sanitized}-{sha}"
+          rest_image = f"ghcr.io/{owner}/bibsonomy-rest-api-v2:{image_suffix}"
+          web_image = f"ghcr.io/{owner}/bibsonomy-webapp-v2:{image_suffix}"
+
+          output_path = os.environ["GITHUB_OUTPUT"]
+          with open(output_path, "a", encoding="utf-8") as out:
+              out.write(f"branch={branch}\n")
+              out.write(f"sanitized_branch={sanitized}\n")
+              out.write(f"name_prefix={name_prefix}\n")
+              out.write(f"rest_image={rest_image}\n")
+              out.write(f"web_image={web_image}\n")
+          PY
+
+  build-images:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push REST API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.rest-api-v2
+          platforms: linux/amd64
+          push: true
+          tags: ${{ needs.prepare.outputs.rest_image }}
+
+      - name: Build and push Webapp image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.webapp-v2
+          platforms: linux/amd64
+          push: true
+          tags: ${{ needs.prepare.outputs.web_image }}
+          build-args: |
+            VITE_API_BASE_URL=/api/v2
+            VITE_PROJECT_THEME=bibsonomy
+            VITE_ENABLE_MOCKS=false
+
+  deploy:
+    needs: [prepare, build-images]
+    runs-on: [self-hosted, preview-extsonomy]
+    environment: preview-extsonomy
+    env:
+      KUBECONFIG: /home/github-runner/.kube/config
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure kubectl connectivity
+        run: |
+          for i in {1..10}; do
+            if kubectl get nodes >/dev/null 2>&1; then
+              echo "kubectl connection ok"
+              exit 0
+            fi
+            echo "kubectl connection failed ($i/10), retrying..."
+            sleep 3
+          done
+          echo "kubectl connection failed after retries"
+          exit 1
+
+      - name: Prepare staging overlay
+        env:
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+          BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          REST_IMAGE: ${{ needs.prepare.outputs.rest_image }}
+          WEB_IMAGE: ${{ needs.prepare.outputs.web_image }}
+        run: |
+          set -euo pipefail
+          OVERLAY_BASE="k8s/overlays/preview-biblicious"
+          DEPLOY_DIR="k8s/overlays/.deploy-${BRANCH}"
+
+          rm -rf "$DEPLOY_DIR"
+          cp -R "$OVERLAY_BASE" "$DEPLOY_DIR"
+
+          # Set up the secret reference - for staging we use the shared biblicious secret
+          SECRET_NAME="${NAME_PREFIX}bibsonomy-rest-api-db"
+          export SECRET_NAME BRANCH
+
+          # First verify the source secret exists
+          echo "Looking for source secret bibsonomy-rest-api-db..."
+          if ! kubectl get secret bibsonomy-rest-api-db -n extsonomy >/dev/null 2>&1; then
+            echo "ERROR: Source secret 'bibsonomy-rest-api-db' not found in extsonomy namespace"
+            kubectl get secrets -n extsonomy | head -20 || true
+            exit 1
+          fi
+          echo "Source secret found, copying to ${SECRET_NAME}..."
+
+          # Get secret and transform it (using temp file to avoid pipe issues)
+          kubectl get secret bibsonomy-rest-api-db -n extsonomy -o json > /tmp/source-secret.json
+          python3 - <<'PY'
+          import json
+          import os
+
+          with open('/tmp/source-secret.json', 'r') as f:
+              secret = json.load(f)
+
+          secret["metadata"]["name"] = os.environ["SECRET_NAME"]
+          secret["metadata"]["namespace"] = "extsonomy"
+          secret["metadata"]["labels"] = secret["metadata"].get("labels", {})
+          secret["metadata"]["labels"]["app.kubernetes.io/component"] = "staging"
+          secret["metadata"]["labels"]["staging.bibsonomy.org/branch"] = os.environ["BRANCH"]
+          secret["metadata"]["labels"]["staging.bibsonomy.org/db-mode"] = "biblicious"
+          for field in ["creationTimestamp", "resourceVersion", "uid", "managedFields"]:
+              secret["metadata"].pop(field, None)
+
+          with open('/tmp/target-secret.json', 'w') as f:
+              json.dump(secret, f)
+          PY
+          kubectl apply -f /tmp/target-secret.json
+          rm -f /tmp/source-secret.json /tmp/target-secret.json
+
+          sed -i "s/PREVIEW_DB_SECRET/${SECRET_NAME}/g" "$DEPLOY_DIR/rest-api-secret-patch.yaml"
+          sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$DEPLOY_DIR/kustomization.yaml"
+          sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$DEPLOY_DIR/kustomization.yaml"
+          sed -i "s/PREVIEW_PR/0/g" "$DEPLOY_DIR/kustomization.yaml"
+          sed -i "s#PREVIEW_REST_IMAGE#${REST_IMAGE}#g" "$DEPLOY_DIR/rest-api-image-patch.yaml"
+          sed -i "s#PREVIEW_WEB_IMAGE#${WEB_IMAGE}#g" "$DEPLOY_DIR/webapp-image-patch.yaml"
+          if [ -f "$DEPLOY_DIR/webapp-api-upstream-patch.yaml" ]; then
+            sed -i "s/PREVIEW_NAME_PREFIX/${NAME_PREFIX}/g" "$DEPLOY_DIR/webapp-api-upstream-patch.yaml"
+          fi
+          for selector_patch in \
+            rest-api-selector-patch.yaml \
+            webapp-selector-patch.yaml \
+            rest-api-service-selector-patch.yaml \
+            webapp-service-selector-patch.yaml; do
+            if [ -f "$DEPLOY_DIR/${selector_patch}" ]; then
+              sed -i "s/PREVIEW_BRANCH/${BRANCH}/g" "$DEPLOY_DIR/${selector_patch}"
+            fi
+          done
+
+          # Update labels from preview to staging
+          sed -i "s/preview.bibsonomy.org/staging.bibsonomy.org/g" "$DEPLOY_DIR/kustomization.yaml"
+          sed -i "s/app.kubernetes.io\/component: preview/app.kubernetes.io\/component: staging/g" "$DEPLOY_DIR/kustomization.yaml"
+
+      - name: Apply staging resources
+        env:
+          BRANCH: ${{ needs.prepare.outputs.sanitized_branch }}
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+        run: |
+          DEPLOY_DIR="k8s/overlays/.deploy-${BRANCH}"
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}bibsonomy-rest-api-v2" --ignore-not-found
+          kubectl -n extsonomy delete deployment "${NAME_PREFIX}bibsonomy-webapp-v2" --ignore-not-found
+          kubectl apply -k "$DEPLOY_DIR"
+
+      - name: Wait for staging deployments
+        env:
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+        run: |
+          wait_deploy() {
+            local name="$1"
+            local timeout_seconds="$2"
+            local start_ts
+            start_ts=$(date +%s)
+            while true; do
+              local ready replicas generation observed
+              ready=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.readyReplicas}')
+              replicas=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.replicas}')
+              generation=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.metadata.generation}')
+              observed=$(kubectl -n extsonomy get deployment "$name" -o jsonpath='{.status.observedGeneration}')
+              ready=${ready:-0}
+              replicas=${replicas:-0}
+              if [ "$ready" = "$replicas" ] && [ -n "$replicas" ] && [ "$observed" = "$generation" ]; then
+                return 0
+              fi
+              if [ $(( $(date +%s) - start_ts )) -ge "$timeout_seconds" ]; then
+                echo "Timed out waiting for deployment ${name} to be ready" >&2
+                kubectl -n extsonomy get deployment "$name" -o wide || true
+                return 1
+              fi
+              sleep 5
+            done
+          }
+
+          wait_deploy "${NAME_PREFIX}bibsonomy-rest-api-v2" 600
+          wait_deploy "${NAME_PREFIX}bibsonomy-webapp-v2" 600
+
+      - name: Resolve staging NodePorts
+        id: ports
+        env:
+          NAME_PREFIX: ${{ needs.prepare.outputs.name_prefix }}
+        run: |
+          REST_SERVICE="${NAME_PREFIX}bibsonomy-rest-api-v2"
+          WEB_SERVICE="${NAME_PREFIX}bibsonomy-webapp-v2"
+          API_NODEPORT=$(kubectl -n extsonomy get svc "${REST_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
+          WEB_NODEPORT=$(kubectl -n extsonomy get svc "${WEB_SERVICE}" -o jsonpath='{.spec.ports[0].nodePort}')
+          echo "api_nodeport=${API_NODEPORT}" >> "$GITHUB_OUTPUT"
+          echo "web_nodeport=${WEB_NODEPORT}" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke check staging endpoints
+        env:
+          API_NODEPORT: ${{ steps.ports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.ports.outputs.web_nodeport }}
+        run: |
+          API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2/tags?limit=1&maxCount=1"
+          WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}/"
+          for i in {1..10}; do
+            if curl -fsS "$API_URL" >/dev/null && curl -fsS "$WEB_URL" >/dev/null; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Staging endpoints not reachable after retries" >&2
+          exit 1
+
+      - name: Print staging URLs
+        env:
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          API_NODEPORT: ${{ steps.ports.outputs.api_nodeport }}
+          WEB_NODEPORT: ${{ steps.ports.outputs.web_nodeport }}
+        run: |
+          API_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${API_NODEPORT}/api/v2"
+          WEB_URL="http://lsx-kubemaster-1.informatik.uni-wuerzburg.de:${WEB_NODEPORT}"
+          echo "=================================================="
+          echo "Staging deployed for branch: ${BRANCH}"
+          echo "=================================================="
+          echo "Webapp:   ${WEB_URL}"
+          echo "REST API: ${API_URL}"
+          echo "Swagger:  ${API_URL}/swagger-ui.html"
+          echo "DB mode:  biblicious"
+          echo "=================================================="

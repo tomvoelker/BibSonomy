@@ -32,3 +32,11 @@ Thumbs.db
 allure-results/*.json
 coverage/*
 src/main/webapp/WEB-INF/lib/
+
+# Local runtime config (per developer)
+bibsonomy-rest-api-v2/src/main/resources/application-local.yml
+.m2/
+bibsonomy-rest-api-v2/.m2/
+
+# Maven toolchains (developer-specific JDK paths)
+toolchains.xml

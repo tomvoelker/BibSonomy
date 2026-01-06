@@ -1,0 +1,10 @@
+dist
+node_modules
+coverage
+.vite
+*.d.ts
+pnpm-lock.yaml
+bun.lockb
+package-lock.json
+# MSW auto-generated file - do not format
+public/mockServiceWorker.js

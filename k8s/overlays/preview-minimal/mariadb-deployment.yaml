@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.3.39
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: root
+            - name: MARIADB_DATABASE
+              value: main_db
+            - name: MARIADB_USER
+              value: bibsonomy
+            - name: MARIADB_PASSWORD
+              value: password
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+            - name: mariadb-init
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mariadb-data
+          emptyDir: {}
+        - name: mariadb-init
+          configMap:
+            name: mariadb-init

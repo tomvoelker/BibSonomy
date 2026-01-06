@@ -38,7 +38,6 @@ import org.bibsonomy.model.logic.query.PersonQuery;
 import org.bibsonomy.model.logic.querybuilder.PersonQueryBuilder;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.junit.Test;
-import org.springframework.security.access.method.P;
 
 import java.util.List;
 

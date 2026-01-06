@@ -45,6 +45,14 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  * 
  * manager that hold all cv wiki templates
  * 
+ * <p><strong>Note:</strong> The {@code bibsonomy-database} module previously depended on
+ * this class to load default wiki templates. That dependency was removed to avoid transitive
+ * Spring 3.2 dependencies that conflict with Spring Boot 3.x. The templates are now loaded
+ * directly from {@code bibsonomy-database} module's resources.
+ * 
+ * <p>This class is still used by the web application and other modules that need access
+ * to wiki templates at runtime.
+ * 
  * @author tni
  */
 public class TemplateManager {

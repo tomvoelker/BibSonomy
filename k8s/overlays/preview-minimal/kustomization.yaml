@@ -1,0 +1,51 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: extsonomy
+namePrefix: PREVIEW_NAME_PREFIX
+
+resources:
+  - ../../base
+  - mariadb-deployment.yaml
+  - mariadb-service.yaml
+
+configMapGenerator:
+  - name: mariadb-init
+    files:
+      - 00-create-dbs.sql=PREVIEW_SQL_DIR/00-create-dbs.sql
+      - 01-schema.sql=PREVIEW_SQL_DIR/01-schema.sql
+      - 02-init.sql=PREVIEW_SQL_DIR/02-init.sql
+      - 03-test-data.sql=PREVIEW_SQL_DIR/03-test-data.sql
+    options:
+      disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      app.kubernetes.io/component: preview
+      preview.bibsonomy.org/branch: PREVIEW_BRANCH
+      preview.bibsonomy.org/pr: "PREVIEW_PR"
+      preview.bibsonomy.org/db-mode: minimal
+
+patches:
+  - path: rest-api-db-patch.yaml
+  - path: rest-api-cors-patch.yaml
+  - path: rest-api-image-patch.yaml
+  - path: webapp-image-patch.yaml
+  - path: webapp-api-upstream-patch.yaml
+  - path: rest-api-selector-patch.yaml
+  - path: webapp-selector-patch.yaml
+  - path: rest-api-service-selector-patch.yaml
+  - path: webapp-service-selector-patch.yaml
+  - path: mariadb-selector-patch.yaml
+  - path: mariadb-service-selector-patch.yaml
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Service
+      name: bibsonomy-rest-api-v2
+    path: rest-api-nodeport-remove.yaml
+  - target:
+      version: v1
+      kind: Service
+      name: bibsonomy-webapp-v2
+    path: webapp-nodeport-remove.yaml
