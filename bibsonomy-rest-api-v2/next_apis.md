@@ -6,302 +6,75 @@ This document tracks the REST API endpoints that need to be implemented to suppo
 
 | Endpoint | Description | Status |
 |----------|-------------|--------|
-| `GET /api/v2/posts` | List posts (bookmarks & publications) with filtering | Done |
-| `GET /api/v2/posts/{postId}` | Get post details by resource hash | Done |
-| `GET /api/v2/tags` | List tags with frequency data (tag cloud) | Done |
+| `GET /api/v2/posts` | List posts (bookmarks & publications) with filtering | ✅ Done |
+| `GET /api/v2/posts/{postId}` | Get post details by resource hash | ✅ Done |
+| `POST /api/v2/posts` | Create a new post (bookmark or publication) | ✅ Done |
+| `PUT /api/v2/posts/{postId}` | Update an existing post | ✅ Done |
+| `DELETE /api/v2/posts/{postId}` | Delete a post | ✅ Done |
+| `GET /api/v2/tags` | List tags with frequency data (tag cloud) | ✅ Done |
+| `GET /api/v2/tags/{tagName}` | Get tag details with related tags | ✅ Done |
+| `POST /api/v2/auth/login` | Authenticate user with username/API key | ✅ Done |
+| `POST /api/v2/auth/logout` | Invalidate session (no-op for stateless auth) | ✅ Done |
+| `GET /api/v2/auth/me` | Get currently authenticated user | ✅ Done |
+| `POST /api/v2/users` | Register a new user | ✅ Done |
+| `GET /api/v2/users/{username}` | Get user's public profile | ✅ Done |
+| `GET /api/v2/users/{username}/tags` | Get user's tags | ✅ Done |
+| `GET /api/v2/search` | Full-text search across posts, users, tags | ✅ Done |
+| `GET /api/v2/groups` | List authenticated user's groups | ✅ Done |
+| `GET /api/v2/groups/{groupName}` | Get group details | ✅ Done |
 
-## Priority 1: Authentication & User Session
+## API Details
 
-These are needed for the Login, Register, and Logout buttons in the Jumbotron and navigation.
-
-### `POST /api/v2/auth/login`
-**Purpose**: Authenticate user with username/password and return a session token.
-
-**Request Body**:
-```json
-{
-  "username": "string",
-  "password": "string"
-}
-```
-
-**Response** (200 OK):
-```json
-{
-  "token": "jwt-or-session-token",
-  "user": {
-    "name": "string",
-    "realName": "string",
-    "email": "string",
-    "groups": ["string"]
-  },
-  "expiresAt": "ISO-8601 timestamp"
-}
-```
-
-**Error Responses**:
-- 401 Unauthorized: Invalid credentials
-- 400 Bad Request: Missing required fields
+All endpoints listed above are now implemented. Below are the original specifications for reference.
 
 ---
 
-### `POST /api/v2/auth/logout`
-**Purpose**: Invalidate the current session/token.
+### Authentication Endpoints (Priority 1) ✅
 
-**Headers**:
-- `Authorization: Bearer <token>`
-
-**Response** (204 No Content): Success
-
----
-
-### `GET /api/v2/auth/me`
-**Purpose**: Get the currently authenticated user's details.
-
-**Headers**:
-- `Authorization: Bearer <token>`
-
-**Response** (200 OK):
-```json
-{
-  "name": "string",
-  "realName": "string",
-  "email": "string",
-  "groups": ["string"],
-  "apiKey": "string (optional, for API access)"
-}
-```
-
-**Error Responses**:
-- 401 Unauthorized: No valid session
+All authentication endpoints are implemented:
+- `POST /api/v2/auth/login` - Uses Basic Auth with username + API key
+- `POST /api/v2/auth/logout` - No-op for stateless auth
+- `GET /api/v2/auth/me` - Returns authenticated user details
+- `POST /api/v2/users` - Registers new user with password hashing
 
 ---
 
-### `POST /api/v2/users`
-**Purpose**: Register a new user account.
+### User Endpoints (Priority 2) ✅
 
-**Request Body**:
-```json
-{
-  "username": "string",
-  "password": "string",
-  "email": "string",
-  "realName": "string (optional)"
-}
-```
-
-**Response** (201 Created):
-```json
-{
-  "name": "string",
-  "email": "string",
-  "created": "ISO-8601 timestamp"
-}
-```
-
-**Error Responses**:
-- 400 Bad Request: Validation errors
-- 409 Conflict: Username or email already exists
+User profile and tag endpoints are implemented:
+- `GET /api/v2/users/{username}` - Returns profile with post/tag counts
+- `GET /api/v2/users/{username}/tags` - Returns user's tags sorted by frequency
 
 ---
 
-## Priority 2: User Profiles & Posts
+### Tag Endpoints (Priority 3) ✅
 
-These are needed for viewing user profile pages and their posts.
-
-### `GET /api/v2/users/{username}`
-**Purpose**: Get a user's public profile information.
-
-**Response** (200 OK):
-```json
-{
-  "name": "string",
-  "realName": "string (if public)",
-  "postCount": 123,
-  "tagCount": 456,
-  "groups": ["string"],
-  "registered": "ISO-8601 timestamp"
-}
-```
-
-**Error Responses**:
-- 404 Not Found: User doesn't exist
+Tag details endpoint implemented:
+- `GET /api/v2/tags/{tagName}` - Returns tag with related tags
 
 ---
 
-### `GET /api/v2/users/{username}/tags`
-**Purpose**: Get a user's tags (for user-specific tag cloud).
+### Post CRUD Endpoints (Priority 4) ✅
 
-**Query Parameters**:
-- `limit` (int, default: 50): Maximum tags to return
-- `minFreq` (int, optional): Minimum usage frequency
-
-**Response** (200 OK):
-```json
-[
-  {
-    "name": "string",
-    "count": 123
-  }
-]
-```
+Full CRUD operations for posts:
+- `POST /api/v2/posts` - Create bookmark or publication
+- `PUT /api/v2/posts/{postId}` - Update post (owner only)
+- `DELETE /api/v2/posts/{postId}` - Delete post (owner only)
 
 ---
 
-## Priority 3: Tag Pages
+### Search Endpoint (Priority 5) ✅
 
-These are needed when clicking on a tag in the tag cloud or on posts.
-
-### `GET /api/v2/tags/{tagName}`
-**Purpose**: Get details about a specific tag including related tags.
-
-**Response** (200 OK):
-```json
-{
-  "name": "string",
-  "count": 123,
-  "relatedTags": [
-    {
-      "name": "string",
-      "count": 45
-    }
-  ]
-}
-```
-
-Note: Posts with this tag can be fetched via `GET /api/v2/posts?tags={tagName}` (already implemented).
+Full-text search implemented:
+- `GET /api/v2/search?q=...` - Search across posts, users, and tags
 
 ---
 
-## Priority 4: Post Management (CRUD)
+### Group Endpoints (Priority 6) ✅
 
-These are needed for authenticated users to create, edit, and delete posts.
-
-### `POST /api/v2/posts`
-**Purpose**: Create a new post (bookmark or publication).
-
-**Headers**:
-- `Authorization: Bearer <token>`
-
-**Request Body** (Bookmark):
-```json
-{
-  "resourceType": "bookmark",
-  "url": "https://example.com",
-  "title": "string",
-  "description": "string (optional)",
-  "tags": ["tag1", "tag2"],
-  "visibility": "public|private|group",
-  "groups": ["group1 (if visibility=group)"]
-}
-```
-
-**Request Body** (Publication/BibTeX):
-```json
-{
-  "resourceType": "bibtex",
-  "bibtex": "@article{...}",
-  "tags": ["tag1", "tag2"],
-  "visibility": "public|private|group"
-}
-```
-
-**Response** (201 Created): PostDto
-
----
-
-### `PUT /api/v2/posts/{postId}`
-**Purpose**: Update an existing post.
-
-**Headers**:
-- `Authorization: Bearer <token>`
-
-**Request Body**: Same as POST, but partial updates allowed
-
-**Response** (200 OK): Updated PostDto
-
-**Error Responses**:
-- 403 Forbidden: Not the post owner
-- 404 Not Found: Post doesn't exist
-
----
-
-### `DELETE /api/v2/posts/{postId}`
-**Purpose**: Delete a post.
-
-**Headers**:
-- `Authorization: Bearer <token>`
-
-**Response** (204 No Content): Success
-
-**Error Responses**:
-- 403 Forbidden: Not the post owner
-- 404 Not Found: Post doesn't exist
-
----
-
-## Priority 5: Search
-
-### `GET /api/v2/search`
-**Purpose**: Full-text search across posts, users, and tags.
-
-**Query Parameters**:
-- `q` (string, required): Search query
-- `type` (string, default: "all"): "posts", "users", "tags", or "all"
-- `limit` (int, default: 20)
-- `offset` (int, default: 0)
-
-**Response** (200 OK):
-```json
-{
-  "posts": [PostDto],
-  "users": [UserDto],
-  "tags": [TagDto],
-  "totalPosts": 123,
-  "totalUsers": 45,
-  "totalTags": 67
-}
-```
-
-Note: Basic search is already supported via `GET /api/v2/posts?search=...` but a dedicated endpoint allows more flexibility.
-
----
-
-## Priority 6: Groups
-
-### `GET /api/v2/groups`
-**Purpose**: List groups the current user is a member of.
-
-**Headers**:
-- `Authorization: Bearer <token>`
-
-**Response** (200 OK):
-```json
-[
-  {
-    "name": "string",
-    "description": "string",
-    "memberCount": 12,
-    "isPrivate": false
-  }
-]
-```
-
----
-
-### `GET /api/v2/groups/{groupName}`
-**Purpose**: Get group details.
-
-**Response** (200 OK):
-```json
-{
-  "name": "string",
-  "description": "string",
-  "memberCount": 12,
-  "isPrivate": false,
-  "postCount": 456
-}
-```
+Group listing and details implemented:
+- `GET /api/v2/groups` - List authenticated user's groups
+- `GET /api/v2/groups/{groupName}` - Get group details with post count
 
 ---
 

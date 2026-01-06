@@ -26,3 +26,17 @@ data class PaginatedPostList(
         }
     }
 }
+
+/**
+ * Search result response.
+ *
+ * Returns results from across posts, users, and tags.
+ */
+data class SearchResultDto(
+    val posts: List<PostDto>,
+    val users: List<UserRefDto>,
+    val tags: List<TagDto>,
+    val totalPosts: Int,
+    val totalUsers: Int,
+    val totalTags: Int
+)
