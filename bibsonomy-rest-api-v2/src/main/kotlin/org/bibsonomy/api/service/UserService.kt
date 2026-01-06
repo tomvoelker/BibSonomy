@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.SortKey
 import org.bibsonomy.model.Resource
 import org.bibsonomy.model.User
 import org.bibsonomy.model.logic.LogicInterface
+import org.bibsonomy.model.util.UserUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -217,14 +218,15 @@ class UserService(
             throw ResponseStatusException(HttpStatus.CONFLICT, "Username already exists")
         }
 
-        // Create the user
+        // Create the user with properly hashed password
         val user = User().apply {
             name = request.username.lowercase()
-            password = request.password
             email = request.email
             realname = request.realName
             role = Role.DEFAULT
         }
+        // Hash the password with salt using legacy utility
+        UserUtils.setupPassword(user, request.password)
 
         try {
             logic.createUser(user)
