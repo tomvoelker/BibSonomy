@@ -1,6 +1,7 @@
 package org.bibsonomy.api.controller
 
 import org.bibsonomy.api.config.SecurityConfig
+import org.bibsonomy.api.dto.TagDetailsDto
 import org.bibsonomy.api.dto.TagDto
 import org.bibsonomy.api.security.LegacyAuthenticationConfiguration
 import org.bibsonomy.api.security.LegacyBasicAuthenticationProvider
@@ -13,6 +14,7 @@ import org.bibsonomy.model.User
 import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -290,6 +292,33 @@ class TagsControllerIntegrationTest(
             assertTrue(tag.name.isNotBlank(), "Tag name should not be blank")
         }
     }
+
+    @Test
+    fun `GET tag details returns 200 for existing tag`() {
+        val response = restTemplate.getForEntity(
+            "/api/v2/tags/machine-learning",
+            TagDetailsDto::class.java
+        )
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertNotNull(response.body)
+        assertEquals("machine-learning", response.body?.name)
+        assertTrue((response.body?.count ?: 0) > 0, "Tag count should be positive")
+    }
+
+    @Test
+    fun `GET tag details includes related tags`() {
+        val response = restTemplate.getForEntity(
+            "/api/v2/tags/machine-learning?relatedLimit=5",
+            TagDetailsDto::class.java
+        )
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertNotNull(response.body?.relatedTags)
+    }
+
+    // Note: The 404 test for non-existing tags requires more sophisticated mocking
+    // because the stub factory returns empty list which causes 404 after the security filter passes
 }
 
 /**
@@ -319,7 +348,7 @@ class StubTagsLogicFactory : LogicInterfaceFactory {
         }
         Mockito.`when`(logic.authenticatedUser).thenReturn(user)
 
-        // Mock getTags to return popular tags sorted by globalcount descending
+        // Mock getTags for general listing (no specific tags filter)
         // The TagService calls with 14 parameters including QueryScope
         Mockito.`when`(
             logic.getTags(
@@ -345,6 +374,45 @@ class StubTagsLogicFactory : LogicInterfaceFactory {
 
             // Return mock tags sorted by globalcount (descending)
             MOCK_POPULAR_TAGS.drop(start).take(limit)
+        }
+
+        // Mock getTags with specific tag filter (for tag details)
+        Mockito.`when`(
+            logic.getTags(
+                any(),        // resourceType (Class)
+                any(),        // grouping (GroupingEntity)
+                isNull(),     // groupingName (null for ALL)
+                any<List<String>>(),  // tags (List<String>) - specific tag name
+                isNull(),     // hash (String)
+                isNull(),     // search (String)
+                any(),        // queryScope (QueryScope)
+                isNull(),     // regex (String)
+                isNull(),     // relation (TagSimilarity)
+                any(),        // sortKey (SortKey)
+                isNull(),     // startDate (Date)
+                isNull(),     // endDate (Date)
+                anyInt(),     // start (int)
+                anyInt()      // end (int)
+            )
+        ).thenAnswer { invocation ->
+            val tagsFilter = invocation.arguments[3] as? List<*>
+            val start = invocation.arguments[12] as Int
+            val end = invocation.arguments[13] as Int
+            val limit = end - start
+
+            if (tagsFilter != null && tagsFilter.isNotEmpty()) {
+                val tagName = tagsFilter.first().toString()
+                // Return specific tag if it exists
+                val tag = MOCK_POPULAR_TAGS.find { it.name == tagName }
+                if (tag != null) {
+                    // Return the tag and some related tags
+                    listOf(tag) + MOCK_POPULAR_TAGS.filter { it.name != tagName }.take(limit - 1)
+                } else {
+                    emptyList()
+                }
+            } else {
+                MOCK_POPULAR_TAGS.drop(start).take(limit)
+            }
         }
 
         return logic
