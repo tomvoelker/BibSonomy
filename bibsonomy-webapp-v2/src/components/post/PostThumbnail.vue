@@ -36,12 +36,7 @@ const resourceIcon = computed(() => {
       :alt="`Thumbnail for ${post.resourceType}`"
       class="w-full h-full object-cover"
     />
-    <component
-      v-else
-      :is="resourceIcon"
-      :size="24"
-      class="text-gray-400"
-    />
+    <component :is="resourceIcon" v-else :size="24" class="text-gray-400" />
 
     <!-- Overlay badges -->
     <div class="absolute top-1 right-1 flex gap-1">
