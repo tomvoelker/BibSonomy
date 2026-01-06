@@ -351,35 +351,8 @@ class StubTagsLogicFactory : LogicInterfaceFactory {
         }
         Mockito.`when`(logic.authenticatedUser).thenReturn(user)
 
-        // Mock getTags for general listing (no specific tags filter)
-        // The TagService calls with 14 parameters including QueryScope
-        Mockito.`when`(
-            logic.getTags(
-                any(),        // resourceType (Class)
-                any(),        // grouping (GroupingEntity)
-                isNull(),     // groupingName (null for ALL)
-                isNull(),     // tags (List<String>)
-                isNull(),     // hash (String)
-                isNull(),     // search (String)
-                any(),        // queryScope (QueryScope)
-                isNull(),     // regex (String)
-                isNull(),     // relation (TagSimilarity)
-                any(),        // sortKey (SortKey)
-                isNull(),     // startDate (Date)
-                isNull(),     // endDate (Date)
-                anyInt(),     // start (int)
-                anyInt()      // end (int)
-            )
-        ).thenAnswer { invocation ->
-            val start = invocation.arguments[12] as Int
-            val end = invocation.arguments[13] as Int
-            val limit = end - start
-
-            // Return mock tags sorted by globalcount (descending)
-            MOCK_POPULAR_TAGS.drop(start).take(limit)
-        }
-
-        // Mock getTags with specific tag filter (for tag details)
+        // Mock getTags - handles both general listing and specific tag filter cases
+        // Uses any<List<String>>() which matches both null and non-empty tag lists
         Mockito.`when`(
             logic.getTags(
                 any(),        // resourceType (Class)
