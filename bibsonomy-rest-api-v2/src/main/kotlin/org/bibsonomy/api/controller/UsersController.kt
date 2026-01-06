@@ -1,5 +1,6 @@
 package org.bibsonomy.api.controller
 
+import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.bibsonomy.api.dto.TagDto
@@ -85,7 +86,7 @@ class UsersController(
         produces = [MediaType.APPLICATION_JSON_VALUE],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun registerUser(@RequestBody request: UserRegistrationRequest): ResponseEntity<UserRegistrationResponse> {
+    fun registerUser(@Valid @RequestBody request: UserRegistrationRequest): ResponseEntity<UserRegistrationResponse> {
         val response = userService.registerUser(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }

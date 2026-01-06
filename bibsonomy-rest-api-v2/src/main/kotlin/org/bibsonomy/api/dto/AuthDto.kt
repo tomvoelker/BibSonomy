@@ -1,12 +1,15 @@
 package org.bibsonomy.api.dto
 
+import jakarta.validation.constraints.NotBlank
 import java.time.Instant
 
 /**
  * Request body for login endpoint.
  */
 data class LoginRequest(
+    @field:NotBlank(message = "Username is required")
     val username: String,
+    @field:NotBlank(message = "Password is required")
     val password: String
 )
 

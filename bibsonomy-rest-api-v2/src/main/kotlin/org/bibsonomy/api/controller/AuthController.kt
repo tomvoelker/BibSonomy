@@ -1,5 +1,6 @@
 package org.bibsonomy.api.controller
 
+import jakarta.validation.Valid
 import org.bibsonomy.api.dto.CurrentUserDto
 import org.bibsonomy.api.dto.LoginRequest
 import org.bibsonomy.api.dto.LoginResponse
@@ -37,7 +38,7 @@ class AuthController(
      * @return LoginResponse with token and user details
      */
     @PostMapping("/login", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
+    fun login(@Valid @RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         val response = authService.login(request)
         return ResponseEntity.ok(response)
     }
