@@ -1,9 +1,9 @@
 package org.bibsonomy.api.controller
 
-import org.bibsonomy.api.dto.PaginatedPostList
-import org.bibsonomy.api.dto.PostDto
+import org.bibsonomy.api.dto.*
 import org.bibsonomy.api.service.PostService
 import org.bibsonomy.api.service.PostService.Companion.MERGED_PAGINATION_WARNING_THRESHOLD
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -96,5 +96,61 @@ class PostsController(
     ): ResponseEntity<PostDto> {
         val dto = postService.getPostByHash(postId, user)
         return ResponseEntity.ok(dto)
+    }
+
+    /**
+     * POST /api/v2/posts - Create a new post
+     *
+     * Creates a new bookmark or publication post.
+     * Requires authentication.
+     *
+     * @param request CreatePostRequest (CreateBookmarkRequest or CreateBibTexRequest)
+     * @return Created post DTO with 201 status
+     */
+    @PostMapping(
+        produces = [MediaType.APPLICATION_JSON_VALUE],
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun createPost(@RequestBody request: CreatePostRequest): ResponseEntity<PostDto> {
+        val dto = postService.createPost(request)
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto)
+    }
+
+    /**
+     * PUT /api/v2/posts/{postId} - Update an existing post
+     *
+     * Updates the specified post. Only the owner can update their posts.
+     * Requires authentication.
+     *
+     * @param postId Resource hash of the post to update
+     * @param request UpdatePostRequest with fields to update
+     * @return Updated post DTO
+     */
+    @PutMapping(
+        "/{postId}",
+        produces = [MediaType.APPLICATION_JSON_VALUE],
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun updatePost(
+        @PathVariable("postId") postId: String,
+        @RequestBody request: UpdatePostRequest
+    ): ResponseEntity<PostDto> {
+        val dto = postService.updatePost(postId, request)
+        return ResponseEntity.ok(dto)
+    }
+
+    /**
+     * DELETE /api/v2/posts/{postId} - Delete a post
+     *
+     * Deletes the specified post. Only the owner can delete their posts.
+     * Requires authentication.
+     *
+     * @param postId Resource hash of the post to delete
+     * @return 204 No Content on success
+     */
+    @DeleteMapping("/{postId}")
+    fun deletePost(@PathVariable("postId") postId: String): ResponseEntity<Void> {
+        postService.deletePost(postId)
+        return ResponseEntity.noContent().build()
     }
 }

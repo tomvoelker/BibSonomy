@@ -1,5 +1,7 @@
 package org.bibsonomy.api.service
 
+import org.bibsonomy.api.dto.RelatedTagDto
+import org.bibsonomy.api.dto.TagDetailsDto
 import org.bibsonomy.api.dto.TagDto
 import org.bibsonomy.api.mapper.toDto
 import org.bibsonomy.api.security.BasicAuthUtils
@@ -11,10 +13,12 @@ import org.bibsonomy.model.logic.LogicInterface
 import org.bibsonomy.model.logic.LogicInterfaceFactory
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.stereotype.Service
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import org.springframework.web.server.ResponseStatusException
 
 /**
  * Service layer for tags API.
@@ -97,6 +101,78 @@ class TagService(
                 end
             ).map { it.toDto() }
         }
+    }
+
+    /**
+     * Get details for a specific tag, including related tags.
+     *
+     * @param tagName The tag name to retrieve
+     * @param relatedLimit Maximum related tags to return (default: 20)
+     * @return TagDetailsDto with tag information and related tags
+     * @throws ResponseStatusException 404 if tag not found
+     */
+    fun getTagDetails(tagName: String, relatedLimit: Int = 20): TagDetailsDto {
+        val logic = resolveLogicFromRequest()
+
+        if (tagName.isBlank()) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Tag name is required")
+        }
+
+        // Query for the specific tag
+        val tags = logic.getTags(
+            Resource::class.java,
+            GroupingEntity.ALL,
+            null,
+            listOf(tagName),  // Filter by specific tag
+            null,
+            null,
+            QueryScope.LOCAL,
+            null,
+            null,
+            SortKey.FREQUENCY,
+            null,
+            null,
+            0,
+            1
+        )
+
+        val tag = tags?.firstOrNull()
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Tag not found: $tagName")
+
+        // Get related tags by finding tags that co-occur with this tag
+        // Related tags are tags that appear on posts that also have the target tag
+        val relatedTags = try {
+            val cooccurringTags = logic.getTags(
+                Resource::class.java,
+                GroupingEntity.ALL,
+                null,
+                listOf(tagName),  // Posts with this tag
+                null,
+                null,
+                QueryScope.LOCAL,
+                null,
+                null,
+                SortKey.FREQUENCY,
+                null,
+                null,
+                0,
+                relatedLimit + 1  // +1 to potentially filter out the target tag
+            )
+            cooccurringTags
+                ?.filter { it.name != tagName }  // Exclude the target tag itself
+                ?.take(relatedLimit)
+                ?.map { RelatedTagDto(name = it.name, count = it.globalcount ?: 0) }
+                ?: emptyList()
+        } catch (e: Exception) {
+            logger.warn("Failed to get related tags for {}", tagName, e)
+            emptyList()
+        }
+
+        return TagDetailsDto(
+            name = tag.name ?: tagName,
+            count = tag.globalcount ?: 0,
+            relatedTags = relatedTags
+        )
     }
 
     /**

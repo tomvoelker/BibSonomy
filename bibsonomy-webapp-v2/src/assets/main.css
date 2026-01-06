@@ -151,7 +151,7 @@
 
   /* Page container - standard content wrapper */
   .page-container {
-    @apply bg-white border-x border-gray-300 max-w-[1170px] mx-auto px-8 py-5;
+    @apply bg-white max-w-[1170px] mx-auto px-8 py-5;
   }
 
   /* Post thumbnail - 64x96px container for post previews */

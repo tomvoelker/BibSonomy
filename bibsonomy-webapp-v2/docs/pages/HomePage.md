@@ -217,3 +217,161 @@ page.home.quickStart.step3
 - Statistics update in real-time (WebSocket or polling) if feasible
 - Featured groups curated by admins (not just by post count)
 - Quick Start Guide personalized based on auth state
+
+---
+
+## Legacy Homepage Implementation Analysis
+
+This section documents the legacy bibsonomy-webapp homepage implementation for reference during modernization.
+
+### Legacy Files Structure
+
+| File | Purpose |
+|------|---------|
+| `bibsonomy-webapp/src/main/webapp/WEB-INF/jsp/home.jspx` | Main homepage JSP template |
+| `bibsonomy-webapp/src/main/webapp/WEB-INF/tags/home/bibhome.tagx` | "Simple" header variant (Jumbotron-style) |
+| `bibsonomy-webapp/src/main/webapp/WEB-INF/tags/home/pumahome.tagx` | "PUMA" header variant (with carousel) |
+| `bibsonomy-webapp/src/main/webapp/WEB-INF/tags/layout/resourceLayout.tagx` | Main layout wrapper with sidebar support |
+| `bibsonomy-webapp/src/main/webapp/WEB-INF/tags/layout/sidebar/sidebarTagCloudItem.tagx` | Tag cloud sidebar component |
+| `bibsonomy-webapp/src/main/webapp/WEB-INF/tags/tags/cloud.tagx` | Tag cloud rendering logic |
+
+### Legacy Layout Structure
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                    HEADER / NAVIGATION                      │
+├────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │   HERO SECTION (Jumbotron or Carousel)               │  │
+│  │   - Only shown for non-logged-in users               │  │
+│  │   - "Simple" variant: Jumbotron with headline/CTA    │  │
+│  │   - "PUMA" variant: Carousel with 3 slides           │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌─────────────────────────────────────┐ ┌──────────────┐  │
+│  │          MAIN CONTENT               │ │   SIDEBAR    │  │
+│  │                                     │ │              │  │
+│  │  ┌───────────────┬───────────────┐  │ │  Tag Cloud   │  │
+│  │  │  BOOKMARKS    │ PUBLICATIONS  │  │ │  "busytags"  │  │
+│  │  │  (col-md-6)   │  (col-md-6)   │  │ │              │  │
+│  │  │               │               │  │ │              │  │
+│  │  │  Post list    │  Post list    │  │ │              │  │
+│  │  │  with next/   │  with next/   │  │ │              │  │
+│  │  │  prev nav     │  prev nav     │  │ │              │  │
+│  │  └───────────────┴───────────────┘  │ │              │  │
+│  │                                     │ │              │  │
+│  └─────────────────────────────────────┘ └──────────────┘  │
+│                                                             │
+├────────────────────────────────────────────────────────────┤
+│                         FOOTER                              │
+└────────────────────────────────────────────────────────────┘
+```
+
+### Legacy Hero Section Variants
+
+#### 1. Simple (BibSonomy) - `bibhome.tagx`
+- Bootstrap Jumbotron container
+- Headline from `system.about.bs.headline`
+- Lead text with project name substitution
+- Optional logo image (theme-configurable)
+- CTA buttons:
+  - **Register** (green button, `btn-success`) - links to register URL
+  - **Learn More** (blue button, `btn-primary`) - links to `/gettingStarted`
+  - **Login** (blue button, `btn-primary`) - modal trigger or preferred login
+
+#### 2. PUMA Variant - `pumahome.tagx`
+- Bootstrap Carousel with 3 slides:
+  1. "Collect" - collecting publications/bookmarks
+  2. "Organize" - tagging and organizing
+  3. "Share" - sharing with community
+- Each slide has image + caption with title and description
+- Welcome headline and introduction text below carousel
+
+### Legacy Tag Cloud Features
+
+The tag cloud sidebar (`sidebarTagCloudItem.tagx` + `cloud.tagx`) implements:
+- **Minimum frequency filtering** (`minFreq` parameter)
+- **Font size scaling** based on tag frequency (`computeTagFontsize` function)
+- **Two display modes**:
+  - `user` mode: Uses user-specific tag counts
+  - `home` mode: Uses global tag counts
+- **Logarithmic font sizing**: Tags sized from ~100% to ~200% based on frequency
+- **Tag highlighting**: Ability to highlight specific tags (e.g., user's own tags)
+- **Tooltips**: Optional hover tooltips showing post count
+
+### Legacy Data Displayed
+
+1. **Bookmarks Section**:
+   - Recent bookmarks from public users
+   - Column layout (shares space with publications)
+   - Next/Previous pagination
+
+2. **Publications Section**:
+   - Recent BibTeX publications from public users
+   - Column layout (shares space with bookmarks)
+   - Next/Previous pagination
+
+3. **Tag Cloud (Sidebar)**:
+   - Called "busytags" - platform-wide popular tags
+   - Tags sorted alphabetically for display
+   - Font size indicates frequency
+   - Clicking tag navigates to `/tag/{tagname}`
+
+4. **News Bar (Optional)**:
+   - Latest blog posts/bookmarks from news group
+   - Shows as compact list if present
+
+### Legacy vs v2 Comparison
+
+| Feature | Legacy | v2 Current | v2 Needed |
+|---------|--------|------------|-----------|
+| Hero/Jumbotron | Yes (for guests) | Yes | - |
+| Carousel | PUMA variant only | No | Not required |
+| Bookmarks list | Yes | Yes | - |
+| Publications list | Yes | Yes | - |
+| Tag cloud | Yes (sidebar) | Yes (sidebar) | - |
+| Resource type toggle | URL-based | SegmentedControl | - |
+| Pagination | Next/Prev | Not implemented | Add |
+| News bar | Optional | No | Not required |
+| Login modal | Yes | Not implemented | Future |
+| Search bar | Header | Header | - |
+| User auth state detection | Yes | Not implemented | Future |
+
+### Legacy i18n Keys Used
+
+```
+system.about.bs.headline      - Hero headline
+system.about.bs.lead          - Hero lead text (with project name param)
+system.about.bs.register      - Register button text
+system.about.bs.learnmore     - Learn more button text
+navi.login                    - Login button text
+navi.search                   - Search placeholder
+busytags                      - Tag cloud section title
+navi.news                     - News section title
+posts / post                  - Plural/singular for tooltips
+```
+
+### Current v2 Implementation Status
+
+**Implemented**:
+- [x] Hero/Jumbotron section with CTA buttons
+- [x] Main layout with sidebar
+- [x] Bookmarks and Publications sections (separate cards)
+- [x] Tag cloud in sidebar (with logarithmic sizing)
+- [x] Resource type toggle (SegmentedControl)
+- [x] Responsive layout
+- [x] i18n support
+
+**Not Yet Implemented**:
+- [ ] Pagination for post lists
+- [ ] Tag page navigation (currently shows "not implemented")
+- [ ] Login button/modal in Jumbotron
+- [ ] User authentication state detection
+- [ ] News bar (optional feature)
+
+**Design Differences**:
+- v2 uses modern Tailwind CSS styling vs Bootstrap 3
+- v2 uses SegmentedControl for filtering vs URL-based
+- v2 has cleaner card-based post display
+- v2 sidebar is simpler (just tag cloud for now)

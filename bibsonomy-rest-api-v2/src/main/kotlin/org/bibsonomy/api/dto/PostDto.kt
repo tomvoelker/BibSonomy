@@ -109,3 +109,79 @@ data class PersonNameDto(
     val firstName: String?,
     val lastName: String?
 )
+
+// ============================================
+// Request DTOs for Create/Update operations
+// ============================================
+
+/**
+ * Request body for creating a new post.
+ *
+ * Two resource types supported:
+ * - bookmark: URL + title
+ * - bibtex: BibTeX entry (either raw bibtex string or structured fields)
+ */
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "resourceType"
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = CreateBookmarkRequest::class, name = "bookmark"),
+    JsonSubTypes.Type(value = CreateBibTexRequest::class, name = "bibtex"),
+    JsonSubTypes.Type(value = CreateBibTexRequest::class, name = "publication")
+)
+sealed interface CreatePostRequest {
+    val tags: List<String>
+    val visibility: Visibility
+    val groups: List<String>?
+    val description: String?
+}
+
+/**
+ * Request body for creating a bookmark post.
+ */
+data class CreateBookmarkRequest(
+    val url: String,
+    val title: String,
+    override val tags: List<String>,
+    override val visibility: Visibility = Visibility.PUBLIC,
+    override val groups: List<String>? = null,
+    override val description: String? = null
+) : CreatePostRequest
+
+/**
+ * Request body for creating a BibTeX/publication post.
+ *
+ * Supports either raw BibTeX string or structured fields.
+ * If both are provided, raw bibtex takes precedence.
+ */
+data class CreateBibTexRequest(
+    val bibtex: String? = null,
+    val entryType: String? = null,
+    val title: String? = null,
+    val authors: List<String>? = null,
+    val year: Int? = null,
+    val journal: String? = null,
+    val booktitle: String? = null,
+    val publisher: String? = null,
+    val doi: String? = null,
+    override val tags: List<String>,
+    override val visibility: Visibility = Visibility.PUBLIC,
+    override val groups: List<String>? = null,
+    override val description: String? = null
+) : CreatePostRequest
+
+/**
+ * Request body for updating an existing post.
+ *
+ * All fields are optional - only provided fields are updated.
+ */
+data class UpdatePostRequest(
+    val tags: List<String>? = null,
+    val visibility: Visibility? = null,
+    val groups: List<String>? = null,
+    val description: String? = null,
+    val title: String? = null,
+    val url: String? = null
+)

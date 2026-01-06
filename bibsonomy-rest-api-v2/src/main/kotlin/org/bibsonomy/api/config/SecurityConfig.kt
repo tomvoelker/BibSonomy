@@ -72,8 +72,13 @@ class SecurityConfig(
                 authorize
                     // Permit CORS preflight requests (OPTIONS) for all API endpoints
                     .requestMatchers(HttpMethod.OPTIONS, "/api/v2/**").permitAll()
-                    // Permit auth endpoints
-                    .requestMatchers("/api/v2/auth/**").permitAll()
+                    // Permit auth login/logout endpoints (but /me requires auth)
+                    .requestMatchers(HttpMethod.POST, "/api/v2/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v2/auth/logout").permitAll()
+                    // Permit public user endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/v2/users/*").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v2/users/*/tags").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v2/users").permitAll()
                     // Permit all GET requests to posts endpoints (list and single-post)
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v2/posts/").permitAll()

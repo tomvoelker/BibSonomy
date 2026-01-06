@@ -2,11 +2,14 @@ package org.bibsonomy.api.controller
 
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import org.bibsonomy.api.dto.TagDetailsDto
 import org.bibsonomy.api.dto.TagDto
 import org.bibsonomy.api.service.TagService
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -46,5 +49,23 @@ class TagsController(
             minFreq = minFreq,
             maxCount = maxCount
         )
+    }
+
+    /**
+     * GET /api/v2/tags/{tagName} - Get tag details
+     *
+     * Returns details about a specific tag including its count and related tags.
+     *
+     * @param tagName The tag name to retrieve
+     * @param relatedLimit Maximum related tags to return (default: 20, max: 100)
+     * @return TagDetailsDto with tag information and related tags
+     */
+    @GetMapping("/{tagName}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getTagDetails(
+        @PathVariable tagName: String,
+        @RequestParam(defaultValue = "20") @Min(1) @Max(100) relatedLimit: Int
+    ): ResponseEntity<TagDetailsDto> {
+        val details = tagService.getTagDetails(tagName, relatedLimit)
+        return ResponseEntity.ok(details)
     }
 }
