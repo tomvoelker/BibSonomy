@@ -53,7 +53,6 @@ import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -73,7 +72,7 @@ public class CSVView extends AbstractView {
 		/*
 		 * get the data
 		 */
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		if (object instanceof SimpleResourceViewCommand) {
 			/*
 			 * we can only handle SimpleResourceViewCommands ...

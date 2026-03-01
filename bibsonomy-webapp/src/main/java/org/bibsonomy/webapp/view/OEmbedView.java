@@ -48,7 +48,6 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 
@@ -71,7 +70,7 @@ public class OEmbedView extends AbstractView {
 		/*
 		 * get command
 		 */
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		if (object instanceof SimpleResourceViewCommand) {
 			final SimpleResourceViewCommand command = (SimpleResourceViewCommand)object;
 

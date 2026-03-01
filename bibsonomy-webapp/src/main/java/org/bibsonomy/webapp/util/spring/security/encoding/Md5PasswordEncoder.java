@@ -29,25 +29,37 @@
  */
 package org.bibsonomy.webapp.util.spring.security.encoding;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.bibsonomy.util.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 /**
- * this MD5Passwordencoder salts the hashed password
- * 
+ * MD5-based PasswordEncoder for Spring Security 5 compatibility.
+ *
+ * Stored passwords have the form MD5(password) + salt (where salt may be empty).
+ * encode() returns MD5(rawPassword) for new passwords.
+ * matches() checks whether the stored password starts with MD5(rawPassword),
+ * which handles both the salted legacy case and unsalted case.
+ *
  * @author dzo
  */
-public class Md5PasswordEncoder extends org.springframework.security.authentication.encoding.Md5PasswordEncoder {
-	
+public class Md5PasswordEncoder implements PasswordEncoder {
+
 	@Override
-	protected String mergePasswordAndSalt(String password, Object salt, boolean strict) {
-		final String md5Password = StringUtils.getMD5Hash(password);
-		if (present(salt) && present(salt.toString())) {
-			return md5Password + salt.toString();
+	public String encode(CharSequence rawPassword) {
+		return StringUtils.getMD5Hash(rawPassword.toString());
+	}
+
+	/**
+	 * Returns true when storedPassword equals MD5(rawPassword) or starts with MD5(rawPassword)
+	 * (the legacy salted format is MD5(rawPassword) + salt appended).
+	 */
+	@Override
+	public boolean matches(CharSequence rawPassword, String encodedPassword) {
+		if (encodedPassword == null || rawPassword == null) {
+			return false;
 		}
-		
-		return md5Password;
+		final String md5 = StringUtils.getMD5Hash(rawPassword.toString());
+		return encodedPassword.startsWith(md5);
 	}
 }

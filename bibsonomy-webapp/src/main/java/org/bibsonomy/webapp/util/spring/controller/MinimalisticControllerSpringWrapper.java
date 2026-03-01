@@ -75,9 +75,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.validation.Validator;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.BaseCommandController;
-import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
@@ -91,7 +91,11 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * @author Jens Illig
  */
 @SuppressWarnings("deprecation")
-public class MinimalisticControllerSpringWrapper<T extends ContextCommand> extends BaseCommandController {
+public class MinimalisticControllerSpringWrapper<T extends ContextCommand> extends AbstractController {
+
+	private static final String DEFAULT_COMMAND_NAME = "command";
+
+	private Validator validator;
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
@@ -120,6 +124,20 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private ConversionService conversionService;
 
 	private Condition presenceCondition;
+
+	public void setValidator(final Validator validator) {
+		this.validator = validator;
+	}
+
+	protected ServletRequestDataBinder bindAndValidate(final HttpServletRequest request, final Object command) throws Exception {
+		final ServletRequestDataBinder binder = new ServletRequestDataBinder(command, DEFAULT_COMMAND_NAME);
+		initBinder(request, binder);
+		binder.bind(request);
+		if (this.validator != null && !suppressValidation(request, command)) {
+			this.validator.validate(command, binder.getBindingResult());
+		}
+		return binder;
+	}
 
 	/**
 	 * @param conversionService the conversionService to set
@@ -172,7 +190,6 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	protected boolean suppressValidation(final HttpServletRequest request, final Object command) {
 		final MinimalisticController<T> controller = (MinimalisticController<T>) request.getAttribute(CONTROLLER_ATTR_NAME);
 
@@ -206,7 +223,8 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final String query = request.getQueryString();
 		log.debug("Processing " + requestURI + PATH_QUERY_SEPERATOR + query + " from " + requestLogic.getInetAddress());
 		if (this.presenceCondition != null && !this.presenceCondition.eval()) {
-			throw new NoSuchRequestHandlingMethodException(request);
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return null;
 		}
 
 		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(this.controllerBeanName);
@@ -405,7 +423,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		log.debug("Exception catching block passed, putting comand+errors into model.");
 
 		final Map<String, Object> model = new HashMap<String, Object>();
-		model.put(this.getCommandName(), command);
+		model.put(DEFAULT_COMMAND_NAME, command);
 
 		/*
 		 * put errors into model
@@ -445,10 +463,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		return "";
 	}
 
-	@Override
 	protected void initBinder(final HttpServletRequest request, final ServletRequestDataBinder binder) throws Exception {
-		super.initBinder(request, binder);
-
 		/*
 		 * set convertion service
 		 */

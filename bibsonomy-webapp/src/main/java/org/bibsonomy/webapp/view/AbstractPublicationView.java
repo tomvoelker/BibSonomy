@@ -47,7 +47,6 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.PublicationViewCommand;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -71,7 +70,7 @@ public abstract class AbstractPublicationView<CMD extends PublicationViewCommand
 		/*
 		 * get command
 		 */
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		final CMD command = castCmd(object);
 
 		if (command != null) {
