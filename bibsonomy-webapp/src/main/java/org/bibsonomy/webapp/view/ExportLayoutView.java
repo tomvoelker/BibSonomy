@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ExportPageCommand;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 /**
@@ -62,7 +61,7 @@ public class ExportLayoutView extends AbstractView {
 		/*
 		 * get the command data
 		 */
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		if (object instanceof ExportPageCommand) {
 		
 			/*

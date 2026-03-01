@@ -31,7 +31,7 @@ package org.bibsonomy.webapp.util.spring.security.web.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * {@link RequestMatcher} that checks if a certain request-parameter is set to a specific value

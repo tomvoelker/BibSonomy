@@ -45,7 +45,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.DownloadCommand;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 /**
@@ -61,7 +60,7 @@ public class DownloadView extends AbstractView {
 	@Override
 	protected void renderMergedOutputModel(final Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		
 		if (object instanceof DownloadCommand) {
 			

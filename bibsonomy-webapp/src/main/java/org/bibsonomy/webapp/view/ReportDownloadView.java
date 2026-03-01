@@ -42,7 +42,6 @@ import org.bibsonomy.webapp.command.reporting.PersonReportingCommand;
 import org.bibsonomy.webapp.command.reporting.ProjectReportingCommand;
 import org.bibsonomy.webapp.command.reporting.PublicationReportingCommand;
 import org.bibsonomy.webapp.command.reporting.ReportingCommand;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,7 +105,7 @@ public class ReportDownloadView extends AbstractView {
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 																				 HttpServletResponse response) throws Exception {
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		final CountingOutputStream output = new CountingOutputStream(new BufferedOutputStream(response.getOutputStream()));
 		if (!(object instanceof ReportingCommand)) {
 			return;

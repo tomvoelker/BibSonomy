@@ -48,7 +48,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
-import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 /**
@@ -63,7 +62,7 @@ public class CSLView extends AbstractView {
 		/*
 		 * get the data
 		 */
-		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
+		final Object object = model.get("command");
 		
 		final List<? extends Post<? extends BibTex>> publicationList = getPublicationList(object);
 		if (!present(publicationList)) {

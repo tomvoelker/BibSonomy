@@ -34,7 +34,6 @@ import javax.servlet.jsp.JspTagException;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.web.servlet.support.BindStatus;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
-import org.springframework.web.util.ExpressionEvaluationUtils;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -53,7 +52,7 @@ public class Exists extends RequestContextAwareTag {
 	@SuppressWarnings("unused")
 	@Override
 	protected int doStartTagInternal() throws Exception {
-		final String resolvedPath = ExpressionEvaluationUtils.evaluateString("path", this.path, pageContext);
+		final String resolvedPath = this.path;
 
 		try {
 			new BindStatus(getRequestContext(), resolvedPath, false);

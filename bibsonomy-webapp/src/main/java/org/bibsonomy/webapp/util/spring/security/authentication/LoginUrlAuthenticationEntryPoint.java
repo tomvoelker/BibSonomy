@@ -43,6 +43,10 @@ public class LoginUrlAuthenticationEntryPoint extends org.springframework.securi
 
 	private static final String NOTICE_PARAM_NAME = "notice";
 
+	public LoginUrlAuthenticationEntryPoint(final String loginFormUrl) {
+		super(loginFormUrl);
+	}
+
 	@Override
 	protected String determineUrlToUseForThisRequest(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) {
 		final String urlToUse = super.determineUrlToUseForThisRequest(request, response, exception);
