@@ -118,10 +118,11 @@ These are the core reasons the system can run/build on Java 21, but is not yet o
 
 Outcome target: "webapp actually runs with DB-backed behavior", not only startup/auth filter response.
 
-### Chunk 3: Replace Java-incompatible QR/PDF runtime
+### Chunk 3 (done): Replace Java-incompatible QR/PDF runtime
 
-- Replace jPod-based QR embedding path with a Java 21 compatible PDF library path.
-- Remove temporary test assumption skip once replacement is complete.
+- Replaced jPod-based QR embedding implementation with Apache PDFBox rendering/content-stream path.
+- Removed temporary JDK8-only `sun.misc.Service` test assumption; QR tests now execute on Java 21.
+- Verified QR module tests and full local CI baseline comparison (`New failures: 0`).
 
 Outcome target: QR functionality restored natively on Java 21.
 

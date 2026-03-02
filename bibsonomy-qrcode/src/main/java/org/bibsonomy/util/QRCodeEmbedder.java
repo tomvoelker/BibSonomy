@@ -29,29 +29,19 @@
  */
 package org.bibsonomy.util;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.concurrent.Callable;
 
-import de.intarsys.cwt.awt.environment.CwtAwtGraphicsContext;
-import de.intarsys.cwt.environment.IGraphicsContext;
-import de.intarsys.pdf.content.CSContent;
-import de.intarsys.pdf.content.CSException;
-import de.intarsys.pdf.content.common.CSCreator;
-import de.intarsys.pdf.cos.COSObject;
-import de.intarsys.pdf.pd.PDDocument;
-import de.intarsys.pdf.pd.PDForm;
-import de.intarsys.pdf.pd.PDImage;
-import de.intarsys.pdf.pd.PDPage;
-import de.intarsys.pdf.pd.PDResources;
-import de.intarsys.pdf.platform.cwt.image.awt.ImageConverterAwt2Pdf;
-import de.intarsys.pdf.platform.cwt.rendering.CSPlatformRenderer;
-import de.intarsys.pdf.tools.kernel.PDFGeometryTools;
-import de.intarsys.tools.locator.FileLocator;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 /**
  * class to embed qr code into existing pdf document.
@@ -128,113 +118,43 @@ public class QRCodeEmbedder implements Callable<String> {
 	public String call() throws Exception {
 		try {
 			/*
-			 * check if file already exists
+			 * avoid recalculation when the converted file already exists
 			 */
-			if (new File(this.outFile).createNewFile()) {
-				
-				/*
-				 * read input file and get first page
-				 */
-				final PDDocument createFromLocator = PDDocument.createFromLocator(new FileLocator(this.getInFile()));
-				final PDPage pageAt = createFromLocator.getPageTree().getFirstPage();
+			if (new File(this.outFile).exists()) {
+				return this.outFile;
+			}
 
-				/*
-				 * convert to image
-				 */
-				final BufferedImage renderPage = renderPage(pageAt, SCALE_FACTOR);
-				
-
-				if (renderPage != null) {
-
-					/*
-					 * find coordinates to put qr code to
-					 */
-					final Point freeSquare = SquareFinder.getFreeSquare(renderPage, SquareFinder.WHITE);
-
-					this.setX(freeSquare.getX());
-					this.setY((float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - freeSquare.getY());
-					this.setSize(freeSquare.getSize());
-					
-					if (this.getSize() > MINIMUM_SIZE) {
-						
-						/*
-						 * generate qr code
-						 */
-						final BufferedImage qrCode = QRCodeCreator.createQRCode(this.encodee, this.getSize());
-
-						/*
-						 * convert qr code image to internal pdf representation
-						 */
-						final ImageConverterAwt2Pdf converter2 = new ImageConverterAwt2Pdf(qrCode);
-						final PDImage pdImage = converter2.getPDImage();
-
-						/*
-						 * get pdf page coordinate system offset and correct it
-						 */
-						final AffineTransform pageTx = new AffineTransform();
-						PDFGeometryTools.adjustTransform(pageTx, pageAt);
-
-						/*
-						 * this is a workaround because the library is buggy.
-						 * one has to create a new overlay of the first page and
-						 * create a new contentstream on the existing page. this means
-						 * everything but links etc. are deleted from the first page
-						 * and added back via the overlay. finally the qr code is placed.
-						 * this is necessary because else image positioning and scaling 
-						 * is incorrect.
-						 */
-						final PDForm form = (PDForm) PDForm.META.createNew();
-						final CSContent content = pageAt.getContentStream();
-
-						if(pageAt.getResources() != null) {
-							final COSObject cosResourcesCopy = pageAt.getResources().cosGetObject().copyDeep();
-							final PDResources pdResourcesCopy = (PDResources) PDResources.META.createFromCos(cosResourcesCopy);
-							form.setResources(pdResourcesCopy);
-						}
-
-						form.setBytes(content.toByteArray());
-						form.setBoundingBox(pageAt.getCropBox().copy());
-
-						/*
-						 * open device to content stream
-						 */
-						final CSCreator creator = CSCreator.createNew(pageAt);
-
-						creator.saveState();
-
-						/*
-						 * apply form
-						 */
-						creator.doXObject(null, form);
-
-						final float newSize = this.getSize() - (float) pageTx.getScaleX();
-						final float newX = this.getX() - (float) pageTx.getTranslateX();
-						final float newY = this.getY() - (float) pageTx.getTranslateY();
-
-						/*
-						 * apply qr code image
-						 */
-						creator.transform(newSize, 0, 0, newSize, newX, newY);
-						creator.doXObject(null, pdImage);
-
-						/*
-						 * flush content
-						 */
-						creator.close();
-
-					} else {	
-						/*
-						 * if minimum requirements are not met throw exception
-						 */
-						throw new Exception();
-					}
+			try (final PDDocument document = PDDocument.load(new File(this.getInFile()))) {
+				if (document.getNumberOfPages() == 0) {
+					throw new Exception("PDF has no pages");
 				}
 
-				/*
-				 * save manipulated pdf to disk
-				 */
-				createFromLocator.save(new FileLocator(this.outFile));
-				createFromLocator.close();
+				final int firstPageIndex = 0;
+				final PDPage firstPage = document.getPage(firstPageIndex);
+				final BufferedImage renderedPage = renderPage(document, firstPageIndex, SCALE_FACTOR);
+				final Point freeSquare = SquareFinder.getFreeSquare(renderedPage, SquareFinder.WHITE);
+
+				final PDRectangle cropBox = firstPage.getCropBox();
+				final float imageToPdfScaleX = renderedPage.getWidth() / cropBox.getWidth();
+				final float imageToPdfScaleY = renderedPage.getHeight() / cropBox.getHeight();
+
+				this.setX(cropBox.getLowerLeftX() + (freeSquare.getX() / imageToPdfScaleX));
+				this.setY(cropBox.getLowerLeftY() + cropBox.getHeight() - (freeSquare.getY() / imageToPdfScaleY));
+				this.setSize(Math.round(freeSquare.getSize() / imageToPdfScaleX));
+
+				if (this.getSize() <= MINIMUM_SIZE) {
+					throw new Exception("Could not find enough white space for QR code");
+				}
+
+				final BufferedImage qrCode = QRCodeCreator.createQRCode(this.encodee, this.getSize());
+				final PDImageXObject pdImage = LosslessFactory.createFromImage(document, qrCode);
+
+				try (final PDPageContentStream contentStream =
+						new PDPageContentStream(document, firstPage, AppendMode.APPEND, true, true)) {
+					contentStream.drawImage(pdImage, this.getX(), this.getY(), this.getSize(), this.getSize());
+				}
+
+				document.save(this.outFile);
 			}
 
 			/*
@@ -256,76 +176,15 @@ public class QRCodeEmbedder implements Callable<String> {
 	/**
 	 * method to render pdf page to buffered image
 	 * 
-	 * @param page the page to render
+	 * @param document the owning document
+	 * @param pageIndex index of the page to render
 	 * @param scale scale factor of image
 	 * @return the converted image
-	 * @throws CSException if page could not be converted
+	 * @throws Exception if page could not be converted
 	 */
-	private BufferedImage renderPage(final PDPage page, final int scale) throws CSException {
-		
-		/*
-		 * get page dimensions
-		 */
-		final Rectangle2D rect = page.getCropBox().toNormalizedRectangle();
-		
-		BufferedImage image = null;
-		IGraphicsContext graphics = null;
-		
-		try {
-			
-			/*
-			 * create scaled buffered image with gray scale color space
-			 * this way we can eliminate searching failures
-			 */
-			image = new BufferedImage( (int) (rect.getWidth() * scale),
-									   (int) (rect.getHeight() * scale),
-									   BufferedImage.TYPE_BYTE_GRAY);
-			
-			/*
-			 * get graphics from scaled image
-			 */
-			final Graphics2D g2 = (Graphics2D) image.getGraphics();
-			
-			graphics = new CwtAwtGraphicsContext(g2);
-			
-			/*
-			 * setup affine transform and background color
-			 */
-			final AffineTransform imgTransform = graphics.getTransform();
-			imgTransform.scale(scale, -scale);
-			imgTransform.translate(-rect.getMinX(), -rect.getMaxY());
-			graphics.setTransform(imgTransform);
-			graphics.setBackgroundColor(Color.WHITE);
-			graphics.fill(rect);
-			
-			/*
-			 * get content stream of pdf page
-			 */
-			final CSContent content = page.getContentStream();
-			
-			if (content != null) {
-				
-				/*
-				 * render pdf page
-				 */
-				final CSPlatformRenderer renderer = new CSPlatformRenderer(null, graphics);
-				renderer.process(content, page.getResources());
-			}   
-			
-			/*
-			 * return rendered image
-			 */
-			return image;
-			
-		} finally {
-			
-			/*
-			 * close resources
-			 */
-			if (graphics != null) {
-				graphics.dispose();
-			}
-		}
+	private BufferedImage renderPage(final PDDocument document, final int pageIndex, final int scale) throws Exception {
+		final PDFRenderer renderer = new PDFRenderer(document);
+		return renderer.renderImage(pageIndex, scale, ImageType.GRAY);
 	}
 
 	/**

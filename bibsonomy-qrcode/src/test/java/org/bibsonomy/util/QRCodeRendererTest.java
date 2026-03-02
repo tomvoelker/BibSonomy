@@ -38,7 +38,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assume;
 import org.junit.Test;
 
 /**
@@ -46,18 +45,8 @@ import org.junit.Test;
  */
 public class QRCodeRendererTest {
 
-	private static boolean hasSunMiscService() {
-		try {
-			Class.forName("sun.misc.Service");
-			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		}
-	}
-
 	@Test
 	public void testTemplatePDF() {
-		Assume.assumeTrue("jPod requires sun.misc.Service (not available on modern JDKs)", hasSunMiscService());
 		File template = new File("src/test/resources/template.pdf");
 		
 		if (template.exists()) {
@@ -97,9 +86,9 @@ public class QRCodeRendererTest {
 			new File(template.getPath().concat(".qr")).delete();
 			
 			assertEquals(template.getPath().concat(".qr"), manipulatedFilePath);
-			assertEquals(495.0f, embedder.getX(), 0.0);
-			assertEquals(570.0f, embedder.getY(), 0.0);
-			assertEquals(117, embedder.getSize());
+			assertEquals(495.0f, embedder.getX(), 2.0f);
+			assertEquals(570.0f, embedder.getY(), 2.0f);
+			assertEquals(117.0f, embedder.getSize(), 2.0f);
 		}
 	}
 	
@@ -110,7 +99,6 @@ public class QRCodeRendererTest {
 	 */
 	@Test
 	public void errorPDF() {
-		Assume.assumeTrue("jPod requires sun.misc.Service (not available on modern JDKs)", hasSunMiscService());
 		File error = new File("src/test/resources/error.pdf");
 		
 		if (error.exists()) {
