@@ -39,6 +39,7 @@ Latest local reruns confirm the same:
 
 - 2026-03-02 17:35 CET (`misc/scripts/run_ci_tests_local.sh`)
 - 2026-03-02 19:34 CET (after bounded logging migration)
+- 2026-03-02 20:21 CET (after search MyBatis pilot: project information context)
   - Current failing tests: `12`
   - New failures introduced by Java 21 migration: `0`
 
@@ -92,6 +93,7 @@ Only newly introduced regressions were addressed:
 2. Legacy persistence stack:
    - iBATIS 2 (`ibatis-sqlmap`) is still foundational across database/search/recommender/opensocial modules.
    - One bounded island was removed: webapp click-logging no longer uses `SqlMapClientFactoryBean` / iBATIS XML mappings.
+   - Search project information context now uses MyBatis side-by-side mapper wiring (first bounded MyBatis pilot).
    - iBATIS CGLIB enhancement had to be disabled to avoid module-access failures.
 
 3. Aging PDF/document stack:
@@ -148,9 +150,14 @@ Outcome target: QR functionality restored natively on Java 21.
     - replaced iBATIS insert mapping with direct JDBC insert in `LoggingDatabaseManager`,
     - removed obsolete logging iBATIS XML mapping resources.
   - validated with Java 21 webapp smoke and full local CI baseline diff (`New failures: 0`).
+  - migrated `bibsonomy-search` project information state path to MyBatis side-by-side:
+    - `ProjectDatabaseInformationLogic` now uses MyBatis mapper (`ProjectIndexInformationMapper`),
+    - old iBATIS mapping/config for project information removed,
+    - search context wiring updated to `org.mybatis.spring.SqlSessionFactoryBean` + `MapperFactoryBean`.
+  - validated again with Java 21 smoke and full local CI baseline diff (`New failures: 0`).
 - Next:
   - introduce MyBatis 3 side-by-side track for remaining domains,
-  - migrate one bounded domain at a time (search/recommender slices before core database context),
+  - continue migrating one bounded domain at a time (remaining search slices, then recommender/opensocial before core database context),
   - keep SQL parity checks and query result snapshots during transitions.
   - use detailed footprint/sequencing doc: `src/documentation/java21-ibatis-footprint-and-sequencing.md`.
 

@@ -33,10 +33,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
 
-import org.bibsonomy.database.common.AbstractDatabaseManagerWithSessionManagement;
-import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.search.index.database.DatabaseInformationLogic;
+import org.bibsonomy.search.index.database.project.mybatis.ProjectIndexInformationMapper;
 import org.bibsonomy.search.model.SearchIndexState;
 
 /**
@@ -44,21 +43,31 @@ import org.bibsonomy.search.model.SearchIndexState;
  *
  * @author dzo
  */
-public class ProjectDatabaseInformationLogic extends AbstractDatabaseManagerWithSessionManagement implements DatabaseInformationLogic<SearchIndexState> {
+public class ProjectDatabaseInformationLogic implements DatabaseInformationLogic<SearchIndexState> {
+	private ProjectIndexInformationMapper projectIndexInformationMapper;
 
 	@Override
 	public SearchIndexState getDbState() {
-		try (final DBSession session = this.openSession()) {
-			final SearchIndexState searchIndexState = new SearchIndexState();
-			final Integer lastId = this.queryForObject("getLastProjectChangeId", ConstantID.PROJECT_ID.getId(), Integer.class, session);
-			searchIndexState.setEntityId(lastId);
-			Date logDate = this.queryForObject("getLastProjectChangeLogDate", Date.class, session);
-			// if there is no log entry return the current date time as last log date
-			if (!present(logDate)) {
-				logDate = new Date();
-			}
-			searchIndexState.setEntityLogDate(logDate);
-			return searchIndexState;
+		if (this.projectIndexInformationMapper == null) {
+			throw new IllegalStateException("No project information mapper configured");
 		}
+		final SearchIndexState searchIndexState = new SearchIndexState();
+		final Integer lastId = this.projectIndexInformationMapper.getLastProjectChangeId(ConstantID.PROJECT_ID.getId());
+		searchIndexState.setEntityId(lastId);
+		Date logDate = this.projectIndexInformationMapper.getLastProjectChangeLogDate();
+		// if there is no log entry return the current date time as last log date
+		if (!present(logDate)) {
+			logDate = new Date();
+		}
+		searchIndexState.setEntityLogDate(logDate);
+		return searchIndexState;
+	}
+
+	/**
+	 * @param projectIndexInformationMapper
+	 *            mapper used for project index state queries
+	 */
+	public void setProjectIndexInformationMapper(final ProjectIndexInformationMapper projectIndexInformationMapper) {
+		this.projectIndexInformationMapper = projectIndexInformationMapper;
 	}
 }

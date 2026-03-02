@@ -5,13 +5,21 @@ Branch: `codex/codex-vibes-a-migration`
 
 ## Snapshot
 
-This snapshot was collected from the current branch after the bounded logging migration.
+This snapshot was collected from the current branch after:
+
+1. bounded logging migration (iBATIS -> JDBC),
+2. first search-side MyBatis pilot (`ProjectDatabaseInformationLogic`).
 
 `bibsonomy-logging` has already been removed from iBATIS runtime wiring:
 
 - no `SqlMapClientFactoryBean` in webapp logging servlet config,
 - no `BibLog.xml` / `SqlMapConfigLogger.xml`,
 - JDBC insert via `LoggingDatabaseManager`.
+
+`bibsonomy-search` project information path now uses MyBatis mapper wiring:
+
+- `ProjectDatabaseInformationLogic` calls MyBatis mapper interface,
+- old iBATIS project-information XML config/mapping removed.
 
 ## Remaining iBATIS Surface (by module)
 
@@ -26,7 +34,7 @@ Counts are based on repository grep:
 | --- | ---: | ---: | ---: | ---: |
 | `bibsonomy-database-common` | 33 | 0 | 0 | 0 |
 | `bibsonomy-database` | 2 | 60 | 2 | 2 |
-| `bibsonomy-search` | 0 | 42 | 15 | 5 |
+| `bibsonomy-search` | 0 | 40 | 14 | 5 |
 | `bibsonomy-recommender` | 0 | 10 | 3 | 2 |
 | `bibsonomy-opensocial` | 2 | 2 | 1 | 0 |
 | `bibsonomy-webapp` | 0 | 0 | 0 | 2 |
@@ -61,16 +69,16 @@ Counts are based on repository grep:
   - Java 21 smoke passes,
   - full local CI baseline diff reports `New failures: 0`.
 
-### Chunk B: Add side-by-side MyBatis infrastructure
+### Chunk B (done): Add side-by-side MyBatis infrastructure
 
-- Add MyBatis 3 + mybatis-spring dependencies without removing iBATIS yet.
-- Introduce a parallel session factory path for one bounded domain only.
-- Keep existing iBATIS contexts untouched outside pilot scope.
+- Added MyBatis 3 + mybatis-spring dependencies in `bibsonomy-search`.
+- Introduced parallel MyBatis session factory + mapper path for one bounded context.
+- Kept iBATIS contexts untouched outside the pilot scope.
 - Validation gate:
-  - pilot context boots,
-  - no regression in baseline diff.
+  - pilot context boots: passed,
+  - no regression in baseline diff: passed (`New failures: 0`).
 
-### Chunk C: Migrate `bibsonomy-search` first
+### Chunk C (in progress): Migrate `bibsonomy-search` first
 
 Why first:
 
@@ -79,7 +87,7 @@ Why first:
 
 Plan:
 
-1. migrate one search context (e.g., project/crislink info) to MyBatis mapper XML,
+1. migrate one search context (e.g., project/crislink info) to MyBatis mapper XML, done for project info,
 2. keep read result parity checks against current SQL-map outputs,
 3. migrate remaining search contexts in sequence.
 

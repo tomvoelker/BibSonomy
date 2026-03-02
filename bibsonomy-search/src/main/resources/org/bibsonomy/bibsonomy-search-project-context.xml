@@ -39,18 +39,22 @@
 		<constructor-arg value="PERSON" />
 	</bean>
 
-	<bean id="projectSearchInformationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	<bean id="projectSearchInformationSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="searchDataSource" />
-		<property name="configLocation" value="classpath:information/project/ProjectIndexInformationSQLMapConfig.xml" />
-		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:information/project/mybatis/ProjectIndexInformationMapper.xml</value>
+			</list>
+		</property>
 	</bean>
 
-	<bean id="projectSearchInformationSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
-		<property name="client" ref="projectSearchInformationSqlMapClient"/>
+	<bean id="projectSearchInformationMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="org.bibsonomy.search.index.database.project.mybatis.ProjectIndexInformationMapper" />
+		<property name="sqlSessionFactory" ref="projectSearchInformationSqlSessionFactory" />
 	</bean>
 
 	<bean id="projectDatabaseInformationLogic" class="org.bibsonomy.search.index.database.project.ProjectDatabaseInformationLogic">
-		<property name="sessionFactory" ref="projectSearchInformationSessionFactory"/>
+		<property name="projectIndexInformationMapper" ref="projectSearchInformationMapper"/>
 	</bean>
 
 	<bean id="crisLinkSearchInformationSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
