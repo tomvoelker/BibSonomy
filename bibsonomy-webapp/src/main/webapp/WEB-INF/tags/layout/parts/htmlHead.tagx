@@ -1,6 +1,5 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -27,6 +26,9 @@
 		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp
 		|-->
 	<c:set var="locale" value="${pageContext.response.locale}" scope="request"/>
+	<c:if test="${empty locale}">
+		<c:set var="locale" value="${pageContext.request.locale}" scope="request"/>
+	</c:if>
 	<!--+
 		| At some places we need the complete path and query
 		+-->
@@ -35,23 +37,30 @@
 	<!-- prepare hidden system tags for handling in custom.js -->
 	<c:set var="hiddenSystemTags" value="" />
 	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTags}" varStatus="status">
-		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${markUpSystemTags.name}", toHide: ${markUpSystemTags.toHide}, hasArguments: ${markUpSystemTags.hasArguments()} },' />
+		<c:if test="${not empty hiddenSystemTags}">
+			<c:set var="hiddenSystemTags" value="${hiddenSystemTags}," />
+		</c:if>
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${markUpSystemTags.name}", toHide: ${markUpSystemTags.toHide}, hasArguments: ${markUpSystemTags.hasArguments()} }' />
 	</c:forEach>
 	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTags}">
-		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${executableSystemTags.name}", toHide: ${executableSystemTags.toHide}, hasArguments: ${executableSystemTags.hasArguments()} },' />
+		<c:if test="${not empty hiddenSystemTags}">
+			<c:set var="hiddenSystemTags" value="${hiddenSystemTags}," />
+		</c:if>
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${executableSystemTags.name}", toHide: ${executableSystemTags.toHide}, hasArguments: ${executableSystemTags.hasArguments()} }' />
 	</c:forEach>
-	<!--  remove last comma -->
-	<c:set var="hiddenSystemTags" value="${fn:substring(hiddenSystemTags, 0, fn:length(hiddenSystemTags) - 1 )}" />
 
 	<!-- FIXME: why do we need the groups string -->
 	<c:set var="groupsString" value="" />
 	<!-- groups of the logged in user -->
 	<c:forEach var="group" items="${loginUser.groups}">
-		<c:set var="groupsString" value='${groupsString} "${group.name}",'/>
+		<c:if test="${not empty groupsString}">
+			<c:set var="groupsString" value='${groupsString},' />
+		</c:if>
+		<c:set var="groupsString" value='${groupsString} "${group.name}"'/>
 	</c:forEach>
 	<c:choose>
-		<c:when test="groupsString != ''">
-			<c:set var="groupsString" value="[${fn:substring(groupsString, 0, fn:length(groupsString) - 1 )}]" />
+		<c:when test="${not empty groupsString}">
+			<c:set var="groupsString" value="[${groupsString}]" />
 		</c:when>
 		<c:otherwise>
 			<c:set var="groupsString" value="null" />
@@ -99,7 +108,7 @@
 
 		<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
 
-		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
+		<c:set var="requestedUserString" value='"${mtl:quoteJSON(requestedUser)}"' />
 		<script type="text/javascript">
 				<![CDATA[
 					var projectName = "${properties['project.name']}";

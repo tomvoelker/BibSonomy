@@ -47,7 +47,7 @@
 
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="showSortInfoHeadline" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
+		<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	<!--+
 		|
 		| variables & messages
@@ -55,14 +55,14 @@
 		+-->
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
 	
-	<!--+
-		| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
-		+ -->
-	<c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')) and empty command.goldStandardPublications.list }" />
-	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-	<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
-	<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
-	<c:set var="excapedRequestPath" value="${fn:escapeXml(requPath)}" />
+		<!--+
+			| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
+			+ -->
+		<c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')) and empty command.goldStandardPublications.list }" />
+		<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+		<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
+		<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
+		<c:set var="excapedRequestPath"><c:out value="${requPath}" /></c:set>
 	
 	<!--+
 		+ main layout
@@ -79,13 +79,13 @@
 			personalized="${command.personalized}"
 			breadcrumbs="${breadcrumbs}">
 			
-		<!--+
-			+ HTML header extension
-			+ -->
-		<jsp:attribute name="headerExt">
-			<c:if test="${showPublication}">
-				<publication:feeds path="/${fn:escapeXml(requPath)}" />
-			</c:if>
+			<!--+
+				+ HTML header extension
+				+ -->
+			<jsp:attribute name="headerExt">
+				<c:if test="${showPublication}">
+					<publication:feeds path="/${excapedRequestPath}" />
+				</c:if>
 			<c:if test="${showBookmark}">
 				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${excapedRequestPath}" href="/rss/${excapedRequestPath}" />
 			</c:if>

@@ -29,39 +29,70 @@
  */
 package org.bibsonomy.logging;
 
-import org.bibsonomy.database.common.AbstractDatabaseManager;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.DBSessionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
 
 /**
  * 
  * @author sst
  */
-public class LoggingDatabaseManager extends AbstractDatabaseManager {
-	
-	private DBSessionFactory sessionFactory;
-	
-	private DBSession openSession() {
-		return this.sessionFactory.getDatabaseSession();
-	}
+public class LoggingDatabaseManager {
+	private static final String INSERT_LOGDATA_SQL = "INSERT INTO clicklog ("
+			+ "logdate, dompath, dompathwclasses, type, pageurl, ahref, acontent, useragent, host, "
+			+ "completeheader, xforwardedfor, username, sessionid, listpos, clientwindowsize, "
+			+ "mouseclientpos, mousedocumentpos, anumofposts, abmown, referer"
+			+ ") VALUES ("
+			+ "NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LEFT(?, 250)"
+			+ ")";
+
+	private DataSource dataSource;
 	
 	/**
 	 * inserts the log data into the db
 	 * @param logdata
 	 */
 	public void insertLogdata(final LogData logdata) {
-		final DBSession session = this.openSession();
-		try {
-			this.insert("BibLog.insertLogdata", logdata, session);
-		} finally {
-			session.close();
+		if (this.dataSource == null) {
+			throw new IllegalStateException("No logging data source configured");
+		}
+		try (final Connection connection = this.dataSource.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(INSERT_LOGDATA_SQL)) {
+			statement.setString(1, logdata.getDompath());
+			statement.setString(2, logdata.getDompath2());
+			statement.setString(3, logdata.getType());
+			statement.setString(4, logdata.getPageurl());
+			statement.setString(5, logdata.getAhref());
+			statement.setString(6, logdata.getAcontent());
+			statement.setString(7, logdata.getUseragent());
+			statement.setString(8, logdata.getHost());
+			statement.setString(9, logdata.getCompleteheader());
+			statement.setString(10, logdata.getXforwardedfor());
+			statement.setString(11, logdata.getUsername());
+			statement.setString(12, logdata.getSessionid());
+			statement.setString(13, logdata.getListpos());
+			statement.setString(14, logdata.getWindowsize());
+			statement.setString(15, logdata.getMouseclientpos());
+			statement.setString(16, logdata.getMousedocumentpos());
+			statement.setString(17, logdata.getAnumberofposts());
+			statement.setString(18, logdata.getAbmown());
+			statement.setString(19, logdata.getReferer());
+			statement.executeUpdate();
+			if (!connection.getAutoCommit()) {
+				connection.commit();
+			}
+		} catch (final SQLException e) {
+			throw new IllegalStateException("Couldn't insert logging data", e);
 		}
 	}
 
 	/**
-	 * @param sessionFactory the sessionFactory to set
+	 * @param dataSource
+	 *            the datasource used for log inserts
 	 */
-	public void setSessionFactory(final DBSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+	public void setDataSource(final DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 }

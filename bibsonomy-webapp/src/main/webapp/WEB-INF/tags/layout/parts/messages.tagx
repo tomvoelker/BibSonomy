@@ -1,13 +1,23 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	
 	<jsp:directive.attribute name="locale" type="java.util.Locale" required="true"/>
 	
-	<mtl:messageSourceKeys locale="${locale}" var="messageKeys" />
+	<c:set var="messageLocale" value="${locale}" />
+	<c:if test="${empty messageLocale}">
+		<c:set var="messageLocale" value="${pageContext.request.locale}" />
+	</c:if>
+	<c:choose>
+		<c:when test="${not empty messageLocale}">
+			<mtl:messageSourceKeys locale="${messageLocale}" var="messageKeys" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="messageKeys" value="${null}" />
+		</c:otherwise>
+	</c:choose>
 	
 	<script type="text/javascript">
 		var LocalizedStrings = {

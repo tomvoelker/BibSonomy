@@ -1,6 +1,5 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
@@ -10,8 +9,9 @@
 	<jsp:directive.attribute name="subject" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="body" type="java.lang.String" required="false"/>
 		
-	<c:set var="username" value="${fn:split(address, '@')[0]}"/>
-	<c:set var="hostname" value="${fn:split(address, '@')[1]}"/>
+	<c:set var="addressParts" value="${mtl:split(address, '@')}"/>
+	<c:set var="username" value="${addressParts[0]}"/>
+	<c:set var="hostname" value="${addressParts[1]}"/>
 		
 	<script type="text/javascript">
 		<![CDATA[

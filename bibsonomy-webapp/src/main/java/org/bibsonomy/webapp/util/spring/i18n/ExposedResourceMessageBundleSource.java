@@ -47,6 +47,8 @@ public class ExposedResourceMessageBundleSource extends ReloadableResourceBundle
 	 * @return the message keys for the specified locale
 	 */
 	public Collection<Object> getAllMessageKeys(final Locale locale) {
-		return getMergedProperties(locale).getProperties().keySet();
+		// Embedded test startup can pass null here before request locale resolution.
+		final Locale effectiveLocale = (locale != null) ? locale : Locale.getDefault();
+		return getMergedProperties(effectiveLocale).getProperties().keySet();
 	}
 }

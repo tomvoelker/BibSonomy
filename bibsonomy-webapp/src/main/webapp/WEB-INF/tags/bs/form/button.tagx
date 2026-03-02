@@ -1,6 +1,5 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
@@ -48,7 +47,7 @@
 	</c:if>
 	
 	<c:if test="${not empty className}">
-		<c:set var="className" value="${fn:escapeXml(className)} " />
+		<c:set var="className" value="${className} " />
 	</c:if>
 	
 	<c:if test="${(not empty disabled and disabled) or (systemReadOnly and empty forceEnabled)}">
@@ -63,7 +62,7 @@
 		<c:set var="hideCaret" value="${false}" />
 	</c:if>
 	
-	<button title="${fn:escapeXml(title)}" id="${id}" type="${fn:escapeXml(type)}" class="${className}btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}" name="${name}" value="${value}">
+	<button title="${title}" id="${id}" type="${type}" class="${className}btn ${style.cssClassName} ${size.cssClassName} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${dataToggle}" data-target="${dataTarget}" data-dismiss="${dataDismiss}" onclick="${onclick}" name="${name}" value="${value}">
 		<c:if test="${not empty icon}">
 			<span class="fa fa-${icon}"><!-- keep me --></span><c:out value=" " />
 			<c:if test="${not empty srText}">

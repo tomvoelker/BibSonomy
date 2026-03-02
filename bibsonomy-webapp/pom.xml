@@ -679,9 +679,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jdt.core.compiler</groupId>
+			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>ecj</artifactId>
-			<version>3.7.2</version>
+			<version>3.39.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -774,7 +774,7 @@
 		</dependency>
 	</dependencies>
 	<properties>
-		<maven.compiler.release>21</maven.compiler.release>
+		<maven.compiler.release>8</maven.compiler.release>
 		<lombok.version>1.18.42</lombok.version>
 		<wtpversion>1.5</wtpversion>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>

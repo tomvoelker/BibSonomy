@@ -35,6 +35,13 @@ Generated diff artifacts:
 - `target/java21-baseline-diff.md`
 - `target/java21-baseline-diff.json`
 
+Latest local reruns confirm the same:
+
+- 2026-03-02 17:35 CET (`misc/scripts/run_ci_tests_local.sh`)
+- 2026-03-02 19:34 CET (after bounded logging migration)
+  - Current failing tests: `12`
+  - New failures introduced by Java 21 migration: `0`
+
 Comparison utility:
 
 - `misc/scripts/compare_failures_against_bertha.py`
@@ -65,6 +72,10 @@ Only newly introduced regressions were addressed:
 - Local smoke startup for webapp on Java 21 passes:
   - `misc/scripts/run_webapp_smoke_local.sh`
   - `org.bibsonomy.webapp.WebappStartupSmokeTest`
+- Smoke checks now include:
+  - rendered login page (`GET /login`) without JSP/Jasper errors,
+  - DB-backed internal login flow with seeded test user.
+- Click-logging write path no longer depends on iBATIS runtime wiring (`LoggingDatabaseManager` now uses JDBC `DataSource` directly).
 - GitHub workflow includes:
   - GitLab-style CI run,
   - Bertha baseline diff check (fails only on new regressions),
@@ -80,10 +91,11 @@ Only newly introduced regressions were addressed:
 
 2. Legacy persistence stack:
    - iBATIS 2 (`ibatis-sqlmap`) is still foundational across database/search/recommender/opensocial modules.
+   - One bounded island was removed: webapp click-logging no longer uses `SqlMapClientFactoryBean` / iBATIS XML mappings.
    - iBATIS CGLIB enhancement had to be disabled to avoid module-access failures.
 
-3. Legacy PDF/QR dependency:
-   - `jPodRenderer 5.3` path is not Java 21 compatible without internal JDK classes.
+3. Aging PDF/document stack:
+   - QR rendering is now Java 21 compatible (PDFBox-based), but surrounding PDF/document dependencies remain old and should be modernized in later hardening.
 
 4. Aging dependency surface:
    - log4j 1.x
@@ -98,7 +110,7 @@ These are the core reasons the system can run/build on Java 21, but is not yet o
 - Embedded Tomcat 7 shutdown on Java 21 triggers reflective cleanup warnings (`InaccessibleObjectException` in `java.lang` / `sun.rmi.transport` during stop).
 - Elasticsearch connection is attempted during startup and fails in local smoke when ES is unavailable (currently non-fatal for smoke success).
 - Recommender schema mismatch (`recommender_status.local` expected by recommender-core vs `type` in seeded schema) was observed; smoke DB setup now applies a compatibility `local` column so startup succeeds.
-- Full HTML page rendering checks against `/` currently fail under embedded Tomcat 7 + Java 21 due JSP/tagx function-prefix resolution (`fn` in tag files). This is now a tracked blocker for chunk 2.
+- JSP/tagx function-prefix rendering issues on the login path were resolved for smoke coverage.
 
 ## Iterative Plan (No `--add-opens`, realistic chunks)
 
@@ -108,16 +120,15 @@ These are the core reasons the system can run/build on Java 21, but is not yet o
 - Ensure only real regressions are fixed.
 - Keep local CI-style runner deterministic with fresh DB setup.
 
-### Chunk 2 (in progress): Runtime smoke for real webapp operation on Java 21
+### Chunk 2 (done): Runtime smoke for real webapp operation on Java 21
 
 - Done:
   - dedicated smoke path that starts embedded webapp on Java 21 with fresh MariaDB,
   - smoke wired into GitHub Actions as dedicated job,
   - recommender DB bootstrap compatibility fix for embedded startup (`local` column bridge in smoke DB setup).
-- Remaining in this chunk:
-  - replace current auth-level API check with a DB-backed functional login check (seeded test user),
-  - ensure smoke validates a page path that requires successful DB-backed rendering, not only auth handshake,
-  - resolve JSP/tagx `fn` function resolution failures in embedded Tomcat 7 on Java 21 so rendered pages can be used as stable smoke assertions.
+  - DB-backed functional internal login check with seeded test user,
+  - rendered login-page assertion path (`/login`) to validate JSP/tag rendering on Java 21,
+  - JSP/tagx `fn`-prefix incompatibilities along the login render path fixed for smoke stability.
 
 Outcome target: "webapp actually runs with DB-backed behavior", not only startup/auth filter response.
 
@@ -129,11 +140,19 @@ Outcome target: "webapp actually runs with DB-backed behavior", not only startup
 
 Outcome target: QR functionality restored natively on Java 21.
 
-### Chunk 4: iBATIS migration by bounded domains
+### Chunk 4 (in progress): iBATIS migration by bounded domains
 
-- Introduce MyBatis 3 side-by-side migration track.
-- Migrate one bounded domain at a time (start with search or a limited DB manager set).
-- Keep SQL parity checks and query result snapshots during transitions.
+- Done:
+  - migrated `bibsonomy-logging` write path off iBATIS:
+    - removed logging `SqlMapClientFactoryBean`/session-factory wiring from webapp context,
+    - replaced iBATIS insert mapping with direct JDBC insert in `LoggingDatabaseManager`,
+    - removed obsolete logging iBATIS XML mapping resources.
+  - validated with Java 21 webapp smoke and full local CI baseline diff (`New failures: 0`).
+- Next:
+  - introduce MyBatis 3 side-by-side track for remaining domains,
+  - migrate one bounded domain at a time (search/recommender slices before core database context),
+  - keep SQL parity checks and query result snapshots during transitions.
+  - use detailed footprint/sequencing doc: `src/documentation/java21-ibatis-footprint-and-sequencing.md`.
 
 Outcome target: remove iBATIS 2 and CGLIB enhancement reliance.
 

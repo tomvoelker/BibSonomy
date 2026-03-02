@@ -32,17 +32,7 @@
 	</bean>
 	
 	<bean id="loggingManager" class="org.bibsonomy.logging.LoggingDatabaseManager">
-		<property name="sessionFactory" ref="loggingSessionFactory" />
-	</bean>
-	
-	<bean id="loggingSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-		<property name="configLocation" value="classpath:SqlMapConfigLogger.xml" />
 		<property name="dataSource" ref="loggingDataSource" />
-		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
-	</bean>
-	
-	<bean id="loggingSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
-		<property name="client" ref="loggingSqlMapClient" />
 	</bean>
 	
 	<bean id="loggingDataSource" class="${database.datasource.class}" parent="basicDataSource">

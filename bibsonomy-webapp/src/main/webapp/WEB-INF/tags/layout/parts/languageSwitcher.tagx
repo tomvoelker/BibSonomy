@@ -1,19 +1,19 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true"/>
 
-	<c:set var="supportedLocales" value="${fn:split(properties['system.locales.supported'],',')}"/>
+	<c:set var="supportedLocales" value="${mtl:split(properties['system.locales.supported'],',')}"/>
 
 	<!-- only show language switcher, if there is more than 1 supported locale -->
-	<c:if test="${fn:length(supportedLocales) gt 1}">
+	<c:if test="${not empty supportedLocales[1]}">
 		<div id="lang-switcher" class="pull-right">
 			<span>(&amp;nbsp;</span>
 			<c:forEach var="lang" items="${supportedLocales}" varStatus="status">
-				<a href="/${fn:escapeXml(mtl:setParam(requPathAndQuery, 'lang', lang))}">${lang}</a>
+				<c:set var="langLink" value="${mtl:setParam(requPathAndQuery, 'lang', lang)}"/>
+				<a href="/${langLink}"><c:out value="${lang}"/></a>
 				<c:if test="${not status.last}">
 					<span>&amp;nbsp;|&amp;nbsp;</span>
 				</c:if>

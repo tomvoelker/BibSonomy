@@ -54,6 +54,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.junit.AfterClass;
@@ -149,6 +150,11 @@ public class WebappStartupSmokeTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	public void loginPageRendersWithoutJspErrors() throws IOException {
+		assertRenderedPage(BASE_URL + "login");
+	}
+
+	@Test
 	public void internalLoginWorksWithDatabaseBackedTestUser() throws IOException {
 		assertServerUsesTestDatabaseCredentials();
 		final BasicCookieStore cookieStore = new BasicCookieStore();
@@ -185,6 +191,24 @@ public class WebappStartupSmokeTest extends AbstractDatabaseManagerTest {
 			final int statusCode = response.getStatusLine().getStatusCode();
 			assertTrue("Expected status code " + expectedStatusCode + " for " + url + " but got " + statusCode,
 				statusCode == expectedStatusCode);
+		}
+	}
+
+	private static void assertRenderedPage(final String url) throws IOException {
+		try (final CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build();
+				final CloseableHttpResponse response = client.execute(new HttpGet(url))) {
+			final int statusCode = response.getStatusLine().getStatusCode();
+			assertTrue("Expected rendered page status 2xx/3xx for " + url + " but got " + statusCode,
+				statusCode >= 200 && statusCode < 400);
+			if (statusCode == 200) {
+				final String body = response.getEntity() == null
+					? ""
+					: EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+				assertTrue("Rendered page at " + url + " does not look like HTML",
+					body.toLowerCase().contains("<html"));
+				assertTrue("Rendered page at " + url + " contains Jasper/JSP exception output",
+					!body.contains("JasperException") && !body.contains("javax.servlet.jsp.JspException"));
+			}
 		}
 	}
 

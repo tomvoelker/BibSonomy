@@ -1,6 +1,5 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
@@ -116,7 +115,7 @@
 		<!--+
 			| followed by output label 
 			+-->
-		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
+		<label class="col-sm-${labelColSpan} control-label" for="${id}">
 			<c:out value="${labelText}" />
 		</label>
 		
@@ -129,7 +128,7 @@
 				<c:when test="${not empty inputGroup}">
 					<div class="input-group">
 						<c:out escapeXml="false" value="${inputGroup }" />
-						<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
+						<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${cssClass} form-control ${helpPopover}" 
 							path="${path}" 
 							placeholder="${placeholder}" 
 							autocomplete="${autocomplete}" 
@@ -137,7 +136,7 @@
 							onfocus="${onfocus}"
 							onblur="${onblur}"
 							tabindex="${tabindex}"
-							id="${fn:escapeXml(id)}"
+							id="${id}"
 							disabled="${ not empty disabled ? disabled : 'false' }"
 							readonly="${ not empty readonly ? readonly : 'false' }"
 							data-role="${ not empty tagsinput and tagsinput eq true ? 'tagsinput' : 'false'}"/>
@@ -149,7 +148,7 @@
 					</div>
 				</c:when>
 				<c:otherwise>
-					<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
+					<form:input cssClass="${small ? smallField : ''}${required ? ' reqinput' : ''} ${cssClass} form-control ${helpPopover}" 
                         path="${path}"
 						placeholder="${placeholder}" 
 						autocomplete="${autocomplete}" 
@@ -157,7 +156,7 @@
 						onfocus="${onfocus}"
 						onblur="${onblur}"
 						tabindex="${tabindex}"
-						id="${fn:escapeXml(id)}"
+						id="${id}"
 						disabled="${ not empty disabled ? disabled : 'false' }"
                         readonly="${ not empty readonly ? readonly : 'false' }"
 						data-role="${ not empty tagsinput and tagsinput eq true ? 'tagsinput' : 'false'}"/>
