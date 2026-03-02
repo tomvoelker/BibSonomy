@@ -19,8 +19,16 @@
 
 	<bean id="samlFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="samlActivatedCondition"/>
-		<lookup-method name="produceSucessBean" bean="realSamlFilter"/>
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realSamlFilter" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dummySamlEntryPoint" />
+			</bean>
+		</property>
 	</bean>
 	
 	<bean id="dummyFilter" class="org.bibsonomy.webapp.util.spring.filter.DummyFilter"/>
@@ -39,14 +47,30 @@
 	
 	<bean id="samlLoginFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="samlActivatedCondition"/>
-		<lookup-method name="produceSucessBean" bean="realSamlLoginFilter"/>
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realSamlLoginFilter" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dummySamlEntryPoint" />
+			</bean>
+		</property>
 	</bean>
 	
 	<bean id="samlAutoLoginFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="samlActivatedCondition"/>
-		<lookup-method name="produceSucessBean" bean="realSamlAutoLoginFilter"/>
-		<lookup-method name="produceFailureBean" bean="dummyFilter"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realSamlAutoLoginFilter" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dummyFilter" />
+			</bean>
+		</property>
 	</bean>
 	
 	<bean id="samlHttpsPretedingFilter" class="org.bibsonomy.webapp.filters.HttpsPretendingFilter">
@@ -122,8 +146,16 @@
 
 	<bean id="samlEntryPoint" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="samlActivatedCondition"/>
-		<lookup-method name="produceSucessBean" bean="realSamlEntryPoint"/>
-		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realSamlEntryPoint" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dummySamlEntryPoint" />
+			</bean>
+		</property>
 	</bean>
 
 	<bean id="realSamlEntryPoint" class="org.springframework.security.saml.SAMLEntryPoint">
@@ -145,8 +177,16 @@
 
 	<bean id="samlMetadataGeneratorFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="samlActivatedCondition"/>
-		<lookup-method name="produceSucessBean" bean="realSamlMetadataGeneratorFilter"/>
-		<lookup-method name="produceFailureBean" bean="dummyFilter"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realSamlMetadataGeneratorFilter" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dummyFilter" />
+			</bean>
+		</property>
 	</bean>
 
 	<!-- Filter automatically generates default SP metadata -->

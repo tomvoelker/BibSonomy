@@ -9,6 +9,9 @@
 	
 	<!-- we need the system tag utils class to remove system tags -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-systemtags-context.xml" />
+	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils">
+		<property name="mailHost" value="localhost" />
+	</bean>
 	<bean id="fileLogic" class="org.bibsonomy.testutil.DummyFileLogic" />
 	<bean id="dbSessionFactory" class="org.bibsonomy.testutil.DBSessionFactoryDummy"/>
 	<bean id="reportInformationService" class="org.bibsonomy.testutil.DummyInformationService" />

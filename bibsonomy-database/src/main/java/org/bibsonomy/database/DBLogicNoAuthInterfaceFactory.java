@@ -43,7 +43,7 @@ import org.bibsonomy.model.logic.LogicInterface;
  * 
  * @author Dominik Benz
  */
-public abstract class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFactory {
+public class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 	
 	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {

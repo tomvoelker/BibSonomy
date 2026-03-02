@@ -1,0 +1,48 @@
+<settings>
+    <profiles>
+        <profile>
+            <id>bibsonomy-test-settings</id>
+            <properties>
+                <database.main.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/main_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </database.main.url>
+                <database.main.username>${env.BIB_TEST_DB_USER}</database.main.username>
+                <database.main.password>${env.BIB_TEST_DB_PASSWORD}</database.main.password>
+
+                <database.recommender.item.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/item_recommender_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </database.recommender.item.url>
+                <database.recommender.item.username>${env.BIB_TEST_DB_USER}</database.recommender.item.username>
+                <database.recommender.item.password>${env.BIB_TEST_DB_PASSWORD}</database.recommender.item.password>
+
+                <database.recommender.tag.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/tag_recommender_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </database.recommender.tag.url>
+                <database.recommender.tag.username>${env.BIB_TEST_DB_USER}</database.recommender.tag.username>
+                <database.recommender.tag.password>${env.BIB_TEST_DB_PASSWORD}</database.recommender.tag.password>
+
+                <database.opensocial.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/main_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </database.opensocial.url>
+
+                <webapp-test.main.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/main_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </webapp-test.main.url>
+                <webapp-test.username>${env.BIB_TEST_DB_USER}</webapp-test.username>
+                <webapp-test.password>${env.BIB_TEST_DB_PASSWORD}</webapp-test.password>
+                <webapp-test.tagrecommender.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/tag_recommender_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </webapp-test.tagrecommender.url>
+                <webapp-test.itemrecommender.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/item_recommender_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </webapp-test.itemrecommender.url>
+                <webapp-test.opensocial.url>
+                    jdbc:mysql://${env.BIB_TEST_DB_HOST}:${env.BIB_TEST_DB_PORT}/main_db?useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8
+                </webapp-test.opensocial.url>
+            </properties>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>bibsonomy-test-settings</activeProfile>
+    </activeProfiles>
+</settings>

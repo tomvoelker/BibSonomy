@@ -43,7 +43,7 @@ import org.bibsonomy.model.logic.LogicInterface;
  *
  * @author Jens Illig
  */
-public abstract class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
+public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();

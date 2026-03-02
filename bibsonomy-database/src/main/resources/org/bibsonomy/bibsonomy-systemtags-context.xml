@@ -37,7 +37,11 @@
 	    +-->
 
 	<bean id="noAuthInterfaceFactory" class="org.bibsonomy.database.DBLogicNoAuthInterfaceFactory">
-		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+		<property name="dbLogicFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dbLogicPrototype" />
+			</bean>
+		</property>
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 

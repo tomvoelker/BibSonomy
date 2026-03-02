@@ -37,7 +37,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 /**
  * @author fmi
  */
-public abstract class ShindigDBLogicUserInterfaceFactory extends DBLogicNoAuthInterfaceFactory implements ShindigLogicInterfaceFactory {
+public class ShindigDBLogicUserInterfaceFactory extends DBLogicNoAuthInterfaceFactory implements ShindigLogicInterfaceFactory {
 	
 	@Override
 	public LogicInterface getLogicAccess(final SecurityToken st) {

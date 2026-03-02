@@ -32,6 +32,7 @@ package org.bibsonomy.database;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.springframework.beans.factory.ObjectFactory;
 
 /**
  * Provides access to BibTeXReader and FileLogic for DBLogic usages.
@@ -39,9 +40,15 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
  */
 public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceFactory {
 	protected DBSessionFactory dbSessionFactory;
+	private ObjectFactory<DBLogic> dbLogicFactory;
 
 	/** creates a configured dbLogic object */
-	protected abstract DBLogic buildLogic();
+	protected DBLogic buildLogic() {
+		if (this.dbLogicFactory == null) {
+			throw new IllegalStateException("dbLogicFactory must be configured");
+		}
+		return this.dbLogicFactory.getObject();
+	}
 
 	/**
 	 * @param dbSessionFactory
@@ -49,6 +56,14 @@ public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceF
 	 */
 	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
+	}
+
+	/**
+	 * @param dbLogicFactory
+	 *            factory for creating {@link DBLogic} prototype instances
+	 */
+	public void setDbLogicFactory(final ObjectFactory<DBLogic> dbLogicFactory) {
+		this.dbLogicFactory = dbLogicFactory;
 	}
 
 	/**

@@ -40,7 +40,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author jensi
  * @param <T>  type of the object to be instantiated
  */
-public abstract class ConditionedFactoryBean<T> extends ConditionedPropertyCreationBean<T> implements FactoryBean<T> {
+public class ConditionedFactoryBean<T> extends ConditionedPropertyCreationBean<T> implements FactoryBean<T> {
 	@Override
 	public Class<?> getObjectType() {
 		return null;
@@ -54,10 +54,5 @@ public abstract class ConditionedFactoryBean<T> extends ConditionedPropertyCreat
 	@Override
 	public boolean isSingleton() {
 		return true;
-	}
-
-	@Override
-	protected T produceFailureBean() {
-		return null;
 	}
 }

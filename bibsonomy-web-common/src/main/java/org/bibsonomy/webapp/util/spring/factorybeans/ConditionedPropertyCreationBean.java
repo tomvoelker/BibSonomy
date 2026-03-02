@@ -34,15 +34,18 @@ package org.bibsonomy.webapp.util.spring.factorybeans;
  */
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ObjectFactory;
 
 /**
  * @author jensi
  *
  * @param <T> type of the conditioned property
  */
-public abstract class ConditionedPropertyCreationBean<T> implements InitializingBean {
+public class ConditionedPropertyCreationBean<T> implements InitializingBean {
 
 	private Condition condition;
+	private ObjectFactory<T> successBeanFactory;
+	private ObjectFactory<T> failureBeanFactory;
 	private T obj;
 	
 	/**
@@ -52,8 +55,19 @@ public abstract class ConditionedPropertyCreationBean<T> implements Initializing
 		return obj;
 	}
 	
-	protected abstract T produceSucessBean();
-	protected abstract T produceFailureBean();
+	protected T produceSucessBean() {
+		if (this.successBeanFactory == null) {
+			throw new IllegalStateException("successBeanFactory must be configured");
+		}
+		return this.successBeanFactory.getObject();
+	}
+
+	protected T produceFailureBean() {
+		if (this.failureBeanFactory == null) {
+			return null;
+		}
+		return this.failureBeanFactory.getObject();
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -72,5 +86,19 @@ public abstract class ConditionedPropertyCreationBean<T> implements Initializing
 	 */
 	public void setCondition(Condition condition) {
 		this.condition = condition;
+	}
+
+	/**
+	 * @param successBeanFactory factory for creating the success bean
+	 */
+	public void setSuccessBeanFactory(final ObjectFactory<T> successBeanFactory) {
+		this.successBeanFactory = successBeanFactory;
+	}
+
+	/**
+	 * @param failureBeanFactory factory for creating the failure bean
+	 */
+	public void setFailureBeanFactory(final ObjectFactory<T> failureBeanFactory) {
+		this.failureBeanFactory = failureBeanFactory;
 	}
 }

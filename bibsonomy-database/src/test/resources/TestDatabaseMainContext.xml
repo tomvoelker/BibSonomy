@@ -38,7 +38,11 @@
 
 	<bean id="abstractInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
-		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+		<property name="dbLogicFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dbLogicPrototype" />
+			</bean>
+		</property>
 	</bean>
 
 	<!-- mock mail utils for database tests -->

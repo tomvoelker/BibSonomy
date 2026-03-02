@@ -185,6 +185,10 @@ public final class DepthEqualityTester  {
 							}
 						}
 					} catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+						if (ex instanceof IllegalAccessException) {
+							log.debug("skipping inaccessible property '" + propertyPath + "': " + ex.getMessage());
+							continue;
+						}
 						catched = ex;
 					}
 					if (catched != null) {

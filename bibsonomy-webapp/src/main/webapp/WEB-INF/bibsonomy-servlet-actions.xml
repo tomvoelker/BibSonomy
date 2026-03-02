@@ -1029,8 +1029,16 @@
 				</property>
 			</bean>
 		</property>
-		<lookup-method name="produceSucessBean" bean="realSwordService"/>
-		<lookup-method name="produceFailureBean" bean="swordServiceDisabled"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realSwordService" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="swordServiceDisabled" />
+			</bean>
+		</property>
 	</bean>
 	
 	<bean id="swordServiceDisabled" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>

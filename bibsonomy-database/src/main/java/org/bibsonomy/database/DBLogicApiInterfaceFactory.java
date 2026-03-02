@@ -37,7 +37,7 @@ import org.bibsonomy.model.User;
  * 
  * @author Jens Illig
  */
-public abstract class DBLogicApiInterfaceFactory extends DBLogicUserInterfaceFactory {
+public class DBLogicApiInterfaceFactory extends DBLogicUserInterfaceFactory {
 
 	@Override
 	protected User getLoggedInUserAccess(final String loginName, final String password, final DBSession session) {

@@ -257,8 +257,16 @@
 				<property name="value" value="${export.bibtex.vufind.marc.biburl}"/>
 			</bean>
 		</property>
-		<lookup-method name="produceSucessBean" bean="realVuFindUrlGenerator"/>
-		<lookup-method name="produceFailureBean" bean="absoluteUrlGenerator"/>
+		<property name="successBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="realVuFindUrlGenerator" />
+			</bean>
+		</property>
+		<property name="failureBeanFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="absoluteUrlGenerator" />
+			</bean>
+		</property>
 	</bean>
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
@@ -340,7 +348,11 @@
 	</bean>
 
 	<bean id="abstractLogicInterfaceFactory" class="org.bibsonomy.database.AbstractDBLogicInterfaceFactory" abstract="true">
-		<lookup-method name="buildLogic" bean="dbLogicPrototype" />
+		<property name="dbLogicFactory">
+			<bean class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+				<property name="targetBeanName" value="dbLogicPrototype" />
+			</bean>
+		</property>
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 
