@@ -53,11 +53,26 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>3.4.0</version>
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by our webresource-maven-plugin
 						are overwritten by this plugin -->
 					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<release>${maven.compiler.release}</release>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -750,9 +765,12 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
 		</dependency>
 	</dependencies>
 	<properties>
+		<maven.compiler.release>21</maven.compiler.release>
+		<lombok.version>1.18.42</lombok.version>
 		<wtpversion>1.5</wtpversion>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.source.webapp.resourcedir>${project.basedir}/src/main/webapp/resources</project.source.webapp.resourcedir>

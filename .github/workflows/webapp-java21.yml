@@ -1,0 +1,53 @@
+name: Webapp Java 21 CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "codex/**"
+      - "feature/**"
+  pull_request:
+
+jobs:
+  webapp-java21:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure Maven is available
+        run: |
+          if command -v mvn >/dev/null 2>&1; then
+            mvn -version
+            exit 0
+          fi
+
+          if command -v sudo >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y maven
+          else
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install -y maven
+          fi
+
+          mvn -version
+
+      - name: Set up Java 8 for dependency bootstrap
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+          cache: maven
+
+      - name: Build required reactor dependencies with Java 8
+        run: mvn -B -pl "!bibsonomy-webapp" -DskipTests install
+
+      - name: Set up Java 21 for webapp build
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build bibsonomy-webapp with Java 21
+        run: mvn -B -pl bibsonomy-webapp -DskipTests clean package
