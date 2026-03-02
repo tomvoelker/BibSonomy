@@ -97,7 +97,8 @@ These are the core reasons the system can run/build on Java 21, but is not yet o
 
 - Embedded Tomcat 7 shutdown on Java 21 triggers reflective cleanup warnings (`InaccessibleObjectException` in `java.lang` / `sun.rmi.transport` during stop).
 - Elasticsearch connection is attempted during startup and fails in local smoke when ES is unavailable (currently non-fatal for smoke success).
-- Recommender init emits SQL/runtime warnings against fresh local DB seed state in smoke; startup still completes.
+- Recommender schema mismatch (`recommender_status.local` expected by recommender-core vs `type` in seeded schema) was observed; smoke DB setup now applies a compatibility `local` column so startup succeeds.
+- Full HTML page rendering checks against `/` currently fail under embedded Tomcat 7 + Java 21 due JSP/tagx function-prefix resolution (`fn` in tag files). This is now a tracked blocker for chunk 2.
 
 ## Iterative Plan (No `--add-opens`, realistic chunks)
 
@@ -111,10 +112,12 @@ These are the core reasons the system can run/build on Java 21, but is not yet o
 
 - Done:
   - dedicated smoke path that starts embedded webapp on Java 21 with fresh MariaDB,
-  - smoke wired into GitHub Actions as dedicated job.
+  - smoke wired into GitHub Actions as dedicated job,
+  - recommender DB bootstrap compatibility fix for embedded startup (`local` column bridge in smoke DB setup).
 - Remaining in this chunk:
   - replace current auth-level API check with a DB-backed functional login check (seeded test user),
-  - ensure smoke validates a page path that requires successful DB-backed rendering, not only auth handshake.
+  - ensure smoke validates a page path that requires successful DB-backed rendering, not only auth handshake,
+  - resolve JSP/tagx `fn` function resolution failures in embedded Tomcat 7 on Java 21 so rendered pages can be used as stable smoke assertions.
 
 Outcome target: "webapp actually runs with DB-backed behavior", not only startup/auth filter response.
 

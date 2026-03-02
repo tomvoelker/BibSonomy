@@ -111,6 +111,12 @@ docker exec -i "${CONTAINER_NAME}" mysql -uroot "-p${DB_ROOT_PASSWORD}" item_rec
 docker exec -i "${CONTAINER_NAME}" mysql -uroot "-p${DB_ROOT_PASSWORD}" tag_recommender_db < "${ROOT_DIR}/bibsonomy-recommender/src/main/resources/database/recommender-db-schema.sql" \
   || docker exec -i "${CONTAINER_NAME}" mysql -uroot tag_recommender_db < "${ROOT_DIR}/bibsonomy-recommender/src/main/resources/database/recommender-db-schema.sql"
 
+echo "Applying recommender schema compatibility for embedded webapp startup..."
+mysql_exec_optional "ALTER TABLE item_recommender_db.recommender_status ADD COLUMN local INT(1) NOT NULL DEFAULT '0';"
+mysql_exec_optional "ALTER TABLE tag_recommender_db.recommender_status ADD COLUMN local INT(1) NOT NULL DEFAULT '0';"
+mysql_exec_optional "UPDATE item_recommender_db.recommender_status SET local = type;"
+mysql_exec_optional "UPDATE tag_recommender_db.recommender_status SET local = type;"
+
 export BIB_TEST_DB_HOST="${DB_HOST}"
 export BIB_TEST_DB_PORT="${DB_PORT}"
 export BIB_TEST_DB_USER="${DB_USER}"
