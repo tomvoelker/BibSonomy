@@ -87,32 +87,25 @@ public class ThreadedPingbackTest extends AbstractClientTest {
 
 	@Test
 	public void testBeanScheduling() throws InterruptedException {
-		final ApplicationContext ctx = new ClassPathXmlApplicationContext("testBeanConfig.xml", ThreadedPingbackTest.class);
-		final ThreadedPingbackImpl myPingback = ctx.getBean("pingback", ThreadedPingbackImpl.class);
+		final ClassPathXmlApplicationContext ctx =
+			new ClassPathXmlApplicationContext("testBeanConfig.xml", ThreadedPingbackTest.class);
+		try {
+			final ThreadedPingbackImpl myPingback = ctx.getBean("pingback", ThreadedPingbackImpl.class);
 
-		
-		myPingback.sendPingback(getPost("http://www.biblicious.org/0"));
-		myPingback.sendPingback(getPost("http://www.biblicious.org/1"));
-		myPingback.sendPingback(getPost("http://www.biblicious.org/2"));
-		myPingback.sendPingback(getPost("http://www.biblicious.org/3"));
-		myPingback.sendPingback(getPost("http://www.biblicious.org/4"));
-		myPingback.sendPingback(getPost("http://www.biblicious.org/5"));
-		
-		myPingback.sendPingback(getPost(baseUrl + "/pingback?body=true"));
-//		myPingback.sendPingback(getPost(baseUrl + "/pingback?body=true&header=true"));
-		
-		Collection<Post<? extends Resource>> queue = myPingback.getQueue();
+			for (int i = 0; i < 6; i++) {
+				myPingback.sendPingback(getPost(baseUrl + "/pingback?body=true&idx=" + i));
+			}
 
-		while (!queue.isEmpty()) {
-//			System.out.println("|queue| = " + queue.size());
-			Thread.sleep(100);
-			queue = myPingback.getQueue();
+			Collection<Post<? extends Resource>> queue = myPingback.getQueue();
+			final long timeoutAt = System.currentTimeMillis() + 30_000L;
+			while (!queue.isEmpty() && System.currentTimeMillis() < timeoutAt) {
+				Thread.sleep(100);
+				queue = myPingback.getQueue();
+			}
+			assertTrue("Expected pingback queue to drain within timeout", queue.isEmpty());
+		} finally {
+			ctx.close();
 		}
-		/*
-		 * wait a bit until the server has finished serving requests
-		 */
-		Thread.sleep(100);
-		assertTrue(queue.isEmpty());
 	}
 
 	private Post<Bookmark> getPost(final String url) {
