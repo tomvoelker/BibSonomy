@@ -36,6 +36,13 @@ jobs:
             --json-output target/java21-baseline-diff.json \
             --fail-on-new
 
+      - name: Report iBATIS footprint
+        run: |
+          chmod +x misc/scripts/report_ibatis_footprint.py
+          python3 misc/scripts/report_ibatis_footprint.py \
+            --markdown-output target/ibatis-footprint.md \
+            --json-output target/ibatis-footprint.json
+
       - name: Upload test and coverage artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -45,6 +52,8 @@ jobs:
             target/ci-test.log
             target/java21-baseline-diff.md
             target/java21-baseline-diff.json
+            target/ibatis-footprint.md
+            target/ibatis-footprint.json
             target/surefire-reports/**/*.xml
             bibsonomy-*/target/surefire-reports/**/*.xml
             coverage/target/site/**
