@@ -151,15 +151,15 @@ public class FunctionsTest {
 		/*
 		 * the same with another locale
 		 */
-		final Locale gbLocale = new Locale("gb");
-		assertEquals("Feb 15, 2010", Functions.getDate(" 15 ", "february", "2010", gbLocale));
-		assertEquals("Feb 15, 2010", Functions.getDate("15", "feb", "2010", gbLocale));
-		assertEquals("Feb 15, 2010", Functions.getDate("15", "FEB", "2010", gbLocale));
-		assertEquals("February 2010", Functions.getDate("", "feb", "2010", gbLocale));
-		assertEquals("March 2010", Functions.getDate("", "march", "2010", gbLocale));
-		assertEquals("2010", Functions.getDate("", "", "2010", gbLocale));
+		final Locale usLocale = Locale.US;
+		assertEquals("Feb 15, 2010", Functions.getDate(" 15 ", "february", "2010", usLocale));
+		assertEquals("Feb 15, 2010", Functions.getDate("15", "feb", "2010", usLocale));
+		assertEquals("Feb 15, 2010", Functions.getDate("15", "FEB", "2010", usLocale));
+		assertEquals("February 2010", Functions.getDate("", "feb", "2010", usLocale));
+		assertEquals("March 2010", Functions.getDate("", "march", "2010", usLocale));
+		assertEquals("2010", Functions.getDate("", "", "2010", usLocale));
 
-		assertEquals("January 2011", Functions.getDate("", "#jan#", "2011", gbLocale));
+		assertEquals("January 2011", Functions.getDate("", "#jan#", "2011", usLocale));
 		
 	}
 

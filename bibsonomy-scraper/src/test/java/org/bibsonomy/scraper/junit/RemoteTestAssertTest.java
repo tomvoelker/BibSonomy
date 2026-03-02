@@ -379,8 +379,8 @@ public class RemoteTestAssertTest {
 	@Test
 	public void compareDifferentBibtexStringUrlsButEqualRedirectedUrl() throws MalformedURLException {
 		BibtexFile bibtexFile = new BibtexFile();
-		BibtexString expected = bibtexFile.makeString("https://rb.gy/ra9zii");
-		BibtexString actual = bibtexFile.makeString("https://www.bibsonomy.org/");
+		BibtexString expected = bibtexFile.makeString("https://biblicious.org");
+		BibtexString actual = bibtexFile.makeString("https://www.biblicious.org/");
 		RemoteTestAssert.assertEqualsBibtexString("title", expected, actual);
 	}
 
@@ -495,5 +495,4 @@ public class RemoteTestAssertTest {
 	}
 
 }
-
 
