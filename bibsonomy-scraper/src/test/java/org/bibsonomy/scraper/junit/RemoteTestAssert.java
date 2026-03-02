@@ -234,6 +234,7 @@ public class RemoteTestAssert {
 
 	private static String normUrl(final String url){
 		return url.replaceAll("http://", "https://")
+						.replaceAll("://www\\.", "://")
 						.replaceAll("#\\S*$", "")
 						.replaceAll("/$", "");
 	}

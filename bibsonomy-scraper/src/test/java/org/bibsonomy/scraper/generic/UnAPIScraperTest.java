@@ -30,10 +30,17 @@
 package org.bibsonomy.scraper.generic;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -44,39 +51,47 @@ import org.junit.Test;
  */
 public class UnAPIScraperTest {
 
-	/* removed URLs:
-	 * 
-	 * "http://ebsees.staatsbibliothek-berlin.de/simple_search.php?title=%27Aleksej%20Tolstojs%20Erz%C3%A4hlung%20%C2%ABBrot%C2%BB.%20Der%20literarische%20Text%20als%20fiktive%20Dokumentation%27,%20in:%20Schriften%20-%20Dinge%20-%20Phantasmen:%20Literatur%20und%20Kultur%20der%20russischen%20Moderne%20I,%20Mirjam%20Goller,%20Susanne%20Str%C3%A4tling,%20Hrsg.&data=96527&hits=364&ds=1",
-	 * --> bieten kein BibTeX an (nur "mods"), siehe http://ebsees.staatsbibliothek-berlin.de/unapi.php
-	 *
-	 * 	"http://iwblog.vili.de/2008/06/05/vibi-mit-unapi-unterstutzung/"
-	 * --> bieten kein BibTeX an, siehe http://iwblog.vili.de/wp-content/plugins/unapi/server.php
-	 */
-
-	final String[] urls = new String[] {
-//			"http://canarydatabase.org/record/488",
-			"https://www.bibsonomy.org/"
-	};
-
 	@Test
 	public void testScrape() {
-		final UnAPIScraper scraper = new UnAPIScraper();
-		for (final String urlString: urls) {
-			try {
-				final URL url = new URL(urlString);
-				final ScrapingContext scrapingContext = new ScrapingContext(url);
+		HttpServer server = null;
+		try {
+			server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+			final int port = server.getAddress().getPort();
+			final String unapiUrl = "http://127.0.0.1:" + port + "/unapi";
+			server.createContext("/record", exchange -> {
+				final String body = "<html><head><link rel=\"unapi-server\" href=\"" + unapiUrl +
+					"\" /></head><body><abbr class=\"unapi-id\" title=\"record-1\"></abbr></body></html>";
+				send(exchange, 200, body, "text/html; charset=UTF-8");
+			});
+			server.createContext("/unapi", exchange -> send(exchange, 200,
+				"@article{test, title={Synthetic local unAPI record}}\n",
+				"text/plain; charset=UTF-8"));
+			server.start();
 
-				scraper.scrape(scrapingContext);
+			final UnAPIScraper scraper = new UnAPIScraper();
+			final URL url = new URL("http://127.0.0.1:" + port + "/record");
+			final ScrapingContext scrapingContext = new ScrapingContext(url);
+			scraper.scrape(scrapingContext);
 
-				final String bibtexResult = scrapingContext.getBibtexResult();
-
-				assertNotNull(bibtexResult);
-
-			} catch (ScrapingException ex) {
-				fail(ex.getMessage());
-			} catch (MalformedURLException ex) {
-				fail(ex.getMessage());
+			final String bibtexResult = scrapingContext.getBibtexResult();
+			assertNotNull(bibtexResult);
+			assertTrue(bibtexResult.contains("@article"));
+		} catch (final IOException | ScrapingException ex) {
+			fail(ex.getMessage());
+		} finally {
+			if (server != null) {
+				server.stop(0);
 			}
+		}
+	}
+
+	private static void send(final HttpExchange exchange, final int status, final String body, final String contentType)
+		throws IOException {
+		final byte[] payload = body.getBytes(StandardCharsets.UTF_8);
+		exchange.getResponseHeaders().set("Content-Type", contentType);
+		exchange.sendResponseHeaders(status, payload.length);
+		try (final OutputStream out = exchange.getResponseBody()) {
+			out.write(payload);
 		}
 	}
 

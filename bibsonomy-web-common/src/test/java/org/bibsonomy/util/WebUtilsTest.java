@@ -32,12 +32,19 @@ package org.bibsonomy.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -77,8 +84,26 @@ public class WebUtilsTest {
 	 * @throws MalformedURLException
 	 */
 	@Test
-	public void testRedirectUrl1() throws MalformedURLException {
-		assertEquals("https://www.bibsonomy.org/groups", WebUtils.getRedirectUrl(new URL("http://www.bibsonomy.org/group")).toString());
+	public void testRedirectUrl1() throws Exception {
+		HttpServer server = null;
+		try {
+			server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+			final int port = server.getAddress().getPort();
+			server.createContext("/group", exchange -> {
+				exchange.getResponseHeaders().set("Location", "http://127.0.0.1:" + port + "/groups");
+				exchange.sendResponseHeaders(302, -1);
+				exchange.close();
+			});
+			server.createContext("/groups", exchange -> send(exchange, 200, "ok", "text/plain; charset=UTF-8"));
+			server.start();
+
+			assertEquals("http://127.0.0.1:" + port + "/groups",
+				WebUtils.getRedirectUrl(new URL("http://127.0.0.1:" + port + "/group")).toString());
+		} finally {
+			if (server != null) {
+				server.stop(0);
+			}
+		}
 	}
 	
 	/**
@@ -124,16 +149,32 @@ public class WebUtilsTest {
 	 */
 	@Test
 	public void testGetContentAsString2() throws Exception {
-		/*
-		 * Just check, if we get some output from BibSonomy.
-		 */
-		final String s = WebUtils.getContentAsString(new URL("https://www.bibsonomy.org/tag/web?items=1000"), null);
-		assertTrue(s.length() > 0);
-		/*
-		 * We have a 3MB limit ...
-		 */
-		assertTrue(s.length() < 3 * 1024 * 1024);
+		HttpServer server = null;
+		try {
+			server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+			final int port = server.getAddress().getPort();
+			final String body = String.join("", Collections.nCopies(1024, "x"));
+			server.createContext("/page", exchange -> send(exchange, 200, body, "text/plain; charset=UTF-8"));
+			server.start();
+
+			final String s = WebUtils.getContentAsString(new URL("http://127.0.0.1:" + port + "/page"), null);
+			assertTrue(s.length() > 0);
+			assertTrue(s.length() < 3 * 1024 * 1024);
+		} finally {
+			if (server != null) {
+				server.stop(0);
+			}
+		}
 	}
-	
-	
+
+	private static void send(final HttpExchange exchange, final int status, final String body, final String contentType)
+		throws IOException {
+		final byte[] payload = body.getBytes(StandardCharsets.UTF_8);
+		exchange.getResponseHeaders().set("Content-Type", contentType);
+		exchange.sendResponseHeaders(status, payload.length);
+		try (final OutputStream out = exchange.getResponseBody()) {
+			out.write(payload);
+		}
+	}
+
 }

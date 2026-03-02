@@ -9,6 +9,7 @@ DB_PORT="${BIB_TEST_DB_PORT:-3307}"
 DB_ROOT_PASSWORD="${BIB_TEST_DB_ROOT_PASSWORD:-root}"
 DB_USER="${BIB_TEST_DB_USER:-bibsonomy}"
 DB_PASSWORD="${BIB_TEST_DB_PASSWORD:-password}"
+TEST_TIMEZONE="${BIB_TEST_TIMEZONE:-Europe/Berlin}"
 
 echo "Starting fresh MariaDB container '${CONTAINER_NAME}' on ${DB_HOST}:${DB_PORT}..."
 docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
@@ -116,6 +117,12 @@ export BIB_TEST_DB_HOST="${DB_HOST}"
 export BIB_TEST_DB_PORT="${DB_PORT}"
 export BIB_TEST_DB_USER="${DB_USER}"
 export BIB_TEST_DB_PASSWORD="${DB_PASSWORD}"
+export TZ="${TEST_TIMEZONE}"
+if [ -n "${MAVEN_OPTS:-}" ]; then
+  export MAVEN_OPTS="${MAVEN_OPTS} -Duser.timezone=${TEST_TIMEZONE}"
+else
+  export MAVEN_OPTS="-Duser.timezone=${TEST_TIMEZONE}"
+fi
 
 cd "${ROOT_DIR}"
 echo "Cleaning stale surefire/failsafe reports..."
