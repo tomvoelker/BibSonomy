@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-CONTAINER_NAME="${BIB_TEST_DB_CONTAINER:-bibsonomy-mariadb-test}"
+CONTAINER_NAME="${BIB_TEST_DB_CONTAINER:-bibsonomy-mariadb-webapp-smoke}"
 DB_HOST="${BIB_TEST_DB_HOST:-127.0.0.1}"
 DB_PORT="${BIB_TEST_DB_PORT:-3307}"
 DB_ROOT_PASSWORD="${BIB_TEST_DB_ROOT_PASSWORD:-root}"
@@ -79,7 +79,6 @@ mysql_exec_optional "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_DAT
 mysql_exec_optional "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_AUTO_CREATE_USER');"
 mysql_exec_optional "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ENGINE_SUBSTITUTION');"
 mysql_exec_optional "SET GLOBAL sql_mode=CONCAT(@@global.sql_mode, ',NO_ZERO_IN_DATE');"
-mysql_exec_optional "SELECT @@SQL_MODE, @@GLOBAL.SQL_MODE;"
 
 echo "Creating fresh test databases..."
 mysql_exec "DROP DATABASE IF EXISTS bibsonomy_unit_test;"
@@ -118,23 +117,24 @@ export BIB_TEST_DB_USER="${DB_USER}"
 export BIB_TEST_DB_PASSWORD="${DB_PASSWORD}"
 
 cd "${ROOT_DIR}"
-echo "Cleaning stale surefire/failsafe reports..."
-find "${ROOT_DIR}" -type d -name surefire-reports -prune -exec rm -rf {} + || true
-find "${ROOT_DIR}" -type d -name failsafe-reports -prune -exec rm -rf {} + || true
+echo "Cleaning stale webapp surefire/failsafe reports..."
+rm -rf "${ROOT_DIR}/bibsonomy-webapp/target/surefire-reports" "${ROOT_DIR}/bibsonomy-webapp/target/failsafe-reports"
 
-echo "Running Maven tests with GitLab-style command and settings profile..."
+echo "Building module graph for webapp smoke test..."
 mvn --file pom.xml \
-  test org.jacoco:jacoco-maven-plugin:report-aggregate \
-  --fail-never \
+  -B \
+  -pl bibsonomy-webapp -am \
+  -DskipTests \
+  install \
   -s misc/scripts/settings.xml \
   -P bibsonomy-test-settings
 
-if command -v python3 >/dev/null 2>&1; then
-  echo "Comparing current failures against Bertha Java 8 baseline..."
-  mkdir -p target
-  if ! python3 misc/scripts/compare_failures_against_bertha.py \
-    --markdown-output target/java21-baseline-diff.md \
-    --json-output target/java21-baseline-diff.json; then
-    echo "Warning: baseline comparison script failed."
-  fi
-fi
+echo "Running webapp startup smoke test on Java 21..."
+mvn --file pom.xml \
+  -B \
+  -pl bibsonomy-webapp \
+  -P webappTests \
+  -Dtest=org.bibsonomy.webapp.WebappStartupSmokeTest \
+  test \
+  -s misc/scripts/settings.xml \
+  -P bibsonomy-test-settings
