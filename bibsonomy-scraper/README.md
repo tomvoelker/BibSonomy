@@ -48,6 +48,35 @@ therefore receives all BibTeX entries. The single-publication edit flow keeps
 the existing parser behavior and uses the first parsed entry; it also records a
 warning that a chooser UI is still missing.
 
+Remote Zotero smoke tests are available with:
+
+```
+BIBSONOMY_SCRAPER_ZOTERO_URL=http://127.0.0.1:1969 mvn -pl bibsonomy-scraper -P zoteroRemoteTests test
+```
+
+Historic Zotero migration tests reuse the existing scraper test URLs/selections
+and expected BibTeX fixtures without modifying the old test classes. They scan
+`src/test/java` for `assertScraperResult(...)` calls, call only
+`ZoteroTranslationServerScraper`, and compare semantically: BibTeX keys are
+ignored, extra fields are allowed, DOI/ISBN are required when present in the
+fixture, and normalized title/year/first contributor are checked.
+
+Pilot run:
+
+```
+BIBSONOMY_SCRAPER_ZOTERO_URL=http://127.0.0.1:1969 mvn -pl bibsonomy-scraper -P zoteroHistoricRemoteTests -Dbibsonomy.scraper.zotero.historic.include='NatureArticleScraperTest|ISBNScraperTest|ArxivScraperTest' -Dbibsonomy.scraper.zotero.historic.limit=10 test
+```
+
+Full discovered historic run:
+
+```
+BIBSONOMY_SCRAPER_ZOTERO_URL=http://127.0.0.1:1969 mvn -pl bibsonomy-scraper -P zoteroHistoricRemoteTests test
+```
+
+During migration triage, use `-Dmaven.test.failure.ignore=true` or the existing
+GitLab report job style when you want a complete compatibility report instead
+of stopping on the first batch of strict semantic failures.
+
 Deletion candidates after a stable rollout:
 
 * URL-specific scraper packages currently collected by `KDEUrlCompositeScraper`
