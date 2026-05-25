@@ -42,6 +42,8 @@ import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
 import org.bibsonomy.scraper.id.kde.doi.HTMLMetaDataDOIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
+import org.bibsonomy.scraper.zotero.ZoteroFallbackScraper;
+import org.bibsonomy.scraper.zotero.ZoteroTranslationServerConfig;
 
 /**  
  * Configures the scrapers used by BibSonomy.
@@ -68,6 +70,21 @@ public class KDEScraperFactory {
 	 *  
 	 */
 	public CompositeScraper<Scraper> getScraperWithoutIE() {
+		final ZoteroTranslationServerConfig config = ZoteroTranslationServerConfig.fromEnvironment();
+		if (config.isZoteroEnabled()) {
+			final CompositeScraper<Scraper> scraper = new CompositeScraper<Scraper>();
+			scraper.addScraper(new ZoteroFallbackScraper(config, this.getLegacyScraperWithoutIE()));
+			return scraper;
+		}
+		return this.getLegacyScraperWithoutIE();
+	}
+
+	/**
+	 * @return The legacy BibSonomy scraper chain without the {@link IEScraper}.
+	 * @deprecated deletion candidate after the Zotero translation-server path has proven stable
+	 */
+	@Deprecated
+	public CompositeScraper<Scraper> getLegacyScraperWithoutIE() {
 		final CompositeScraper<Scraper> scraper = new CompositeScraper<Scraper>();
 
 		/*

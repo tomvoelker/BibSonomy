@@ -45,6 +45,7 @@ public class ScrapingContext {
 	
 	public static class TemporaryScraperMetadata {
 		private String id;
+		private int zoteroMultipleChoiceCount;
 
 		/**
 		 * @return the id
@@ -58,6 +59,20 @@ public class ScrapingContext {
 		 */
 		public void setId(String id) {
 			this.id = id;
+		}
+
+		/**
+		 * @return number of choices Zotero returned for a multiple-choice response
+		 */
+		public int getZoteroMultipleChoiceCount() {
+			return this.zoteroMultipleChoiceCount;
+		}
+
+		/**
+		 * @param zoteroMultipleChoiceCount number of choices Zotero returned
+		 */
+		public void setZoteroMultipleChoiceCount(final int zoteroMultipleChoiceCount) {
+			this.zoteroMultipleChoiceCount = zoteroMultipleChoiceCount;
 		}
 	}
 	

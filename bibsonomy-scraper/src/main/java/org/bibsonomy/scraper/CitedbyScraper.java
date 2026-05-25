@@ -35,7 +35,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * interface for scrapers that can scrape citedby data
  *
  * @author Haile
+ * @deprecated deletion candidate if no active consumer remains after the Zotero migration
  */
+@Deprecated
 public interface CitedbyScraper {
 
 	 /**
