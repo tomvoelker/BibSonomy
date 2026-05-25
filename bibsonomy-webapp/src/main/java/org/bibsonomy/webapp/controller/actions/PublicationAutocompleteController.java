@@ -52,8 +52,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
-import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.util.SortUtils;
@@ -93,28 +91,10 @@ public class PublicationAutocompleteController implements MinimalisticController
 	public View workOn(final PublicationAutocompleteCommand command) {
 		final String rawSearch = command.getSearch();
 		final List<Post<BibTex>> allPosts = new LinkedList<>();
-		final String isbn = ISBNUtils.extractISBN(rawSearch);
-		final String doi = DOIUtils.extractDOI(rawSearch);
-		final String arxiv = ArxivUtils.extractStrictArxivIdentifier(rawSearch);
+		final String scraperQuery = getScraperQuery(rawSearch);
 
-		// handle isbn, doi and arxiv number and get the publication from the source
-		if (present(isbn)) {
-			final Post<BibTex> post = callScraper(new ISBNScraper(), isbn);
-			if (present(post)) {
-				allPosts.add(post);
-			}
-		} else if (present(doi)) {
-			final Post<BibTex> post = callScraper(this.scrapers, doi);
-			if (present(post)) {
-				allPosts.add(post);
-			}
-		} else if (present(arxiv)) {
-			final Post<BibTex> post = callScraper(new ArxivScraper(), arxiv);
-			if (present(post)) {
-				allPosts.add(post);
-			}
-		} else if (UrlUtils.isUrl(rawSearch)) {
-			final Post<BibTex> post = callScraper(this.scrapers, rawSearch);
+		if (present(scraperQuery)) {
+			final Post<BibTex> post = callScraper(this.scrapers, scraperQuery);
 			if (present(post)) {
 				allPosts.add(post);
 			}
@@ -158,6 +138,27 @@ public class PublicationAutocompleteController implements MinimalisticController
 		command.getBibtex().setList(allPosts);
 		
 		return Views.getViewByFormat(command.getFormat());
+	}
+
+	private static String getScraperQuery(final String rawSearch) {
+		if (!present(rawSearch)) {
+			return null;
+		}
+		if (UrlUtils.isUrl(rawSearch)) {
+			return rawSearch;
+		}
+
+		final String isbn = ISBNUtils.extractISBN(rawSearch);
+		if (present(isbn)) {
+			return isbn;
+		}
+
+		final String doi = DOIUtils.extractDOI(rawSearch);
+		if (present(doi)) {
+			return doi;
+		}
+
+		return ArxivUtils.extractStrictArxivIdentifier(rawSearch);
 	}
 
 	/**
