@@ -113,6 +113,34 @@ public class ZoteroTranslationServerScraperTest {
 	 * @throws Exception
 	 */
 	@Test
+	public void testScrapeDoesNotInferBareArxivIdFromNonArxivUrl() throws Exception {
+		final StubClient client = StubClient.withWebResult(null, new ZoteroTranslationResult(BIBTEX, false, 0));
+		final ZoteroTranslationServerScraper scraper = new ZoteroTranslationServerScraper(client);
+		final ScrapingContext context = new ScrapingContext(new URL("https://example.org/papers/2024.12345"));
+
+		assertFalse(scraper.scrape(context));
+		assertEquals(1, client.webCalls);
+		assertNull(client.searchQuery);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testScrapeUsesArxivSearchFallbackForArxivUrl() throws Exception {
+		final StubClient client = StubClient.withWebResult(null, new ZoteroTranslationResult(BIBTEX, false, 0));
+		final ZoteroTranslationServerScraper scraper = new ZoteroTranslationServerScraper(client);
+		final ScrapingContext context = new ScrapingContext(new URL("https://arxiv.org/abs/2401.12345"));
+
+		assertTrue(scraper.scrape(context));
+		assertEquals("arXiv:2401.12345", client.searchQuery);
+		assertEquals(BIBTEX, context.getBibtexResult());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
 	public void testScrapeDoesNotRetryNonAclPdfAsAclLandingPage() throws Exception {
 		final StubClient client = StubClient.withWebResults(new ZoteroTranslationResult[] { null, new ZoteroTranslationResult(BIBTEX, false, 0) }, null);
 		final ZoteroTranslationServerScraper scraper = new ZoteroTranslationServerScraper(client);

@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.kde.arxiv.ArxivUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 
@@ -112,7 +113,7 @@ public class ZoteroTranslationServerScraper implements Scraper {
 		}
 
 		if (result == null && present(url)) {
-			final String query = this.extractSearchQuery(url.toString());
+			final String query = this.extractSearchQuery(url);
 			if (present(query)) {
 				result = this.client.translateSearch(query);
 			}
@@ -202,9 +203,33 @@ public class ZoteroTranslationServerScraper implements Scraper {
 
 		String query = this.extractSearchQuery(scrapingContext.getSelectedText());
 		if (!present(query) && present(scrapingContext.getUrl())) {
-			query = this.extractSearchQuery(scrapingContext.getUrl().toString());
+			query = this.extractSearchQuery(scrapingContext.getUrl());
 		}
 		return query;
+	}
+
+	private String extractSearchQuery(final URL url) {
+		if (!present(url)) {
+			return null;
+		}
+
+		final String text = url.toString();
+		final String doi = DOIUtils.extractDOI(text);
+		if (present(doi)) {
+			return doi;
+		}
+
+		final String isbn = ISBNUtils.extractISBN(text);
+		if (present(isbn)) {
+			return isbn;
+		}
+
+		final String arxivIdentifier = ArxivUtils.extractStrictArxivIdentifier(text);
+		if (present(arxivIdentifier)) {
+			return normalizeArxivQuery(arxivIdentifier);
+		}
+
+		return null;
 	}
 
 	private String extractSearchQuery(final String text) {
@@ -233,5 +258,15 @@ public class ZoteroTranslationServerScraper implements Scraper {
 		}
 
 		return null;
+	}
+
+	private static String normalizeArxivQuery(final String arxivIdentifier) {
+		if (!present(arxivIdentifier)) {
+			return null;
+		}
+		if (arxivIdentifier.regionMatches(true, 0, "arxiv:", 0, "arxiv:".length())) {
+			return "arXiv:" + arxivIdentifier.substring("arxiv:".length());
+		}
+		return "arXiv:" + arxivIdentifier;
 	}
 }
