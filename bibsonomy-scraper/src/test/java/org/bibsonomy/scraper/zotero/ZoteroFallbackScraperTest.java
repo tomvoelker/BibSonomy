@@ -30,7 +30,9 @@
 package org.bibsonomy.scraper.zotero;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URL;
 import java.util.Collection;
@@ -67,10 +69,49 @@ public class ZoteroFallbackScraperTest {
 	@Test
 	public void testGetScraperRespectsDisabledLegacyFallback() {
 		final RecordingScraper legacyScraper = new RecordingScraper(true, true);
-		final ZoteroFallbackScraper scraper = new ZoteroFallbackScraper(new ZoteroTranslationServerConfig(null, true, false, 1, 1), legacyScraper);
+		final ZoteroFallbackScraper scraper = new ZoteroFallbackScraper(new ZoteroTranslationServerConfig("http://zotero.example", true, false, 1, 1), legacyScraper);
 		final Collection<Scraper> scrapers = scraper.getScraper();
 
 		assertFalse(scrapers.contains(legacyScraper));
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testRethrowsZoteroFailureWhenLegacyFallbackDoesNotRun() throws Exception {
+		final ScrapingException failure = new ScrapingException("zotero failed");
+		final RecordingScraper legacyScraper = new RecordingScraper(false, true);
+		final ZoteroTranslationServerConfig config = new ZoteroTranslationServerConfig("http://zotero.example", true, true, 1, 1);
+		final ZoteroFallbackScraper scraper = new ZoteroFallbackScraper(config, new FailingZoteroScraper(failure), legacyScraper);
+
+		try {
+			scraper.scrape(new ScrapingContext(new URL("https://example.org/article")));
+			fail("expected ScrapingException");
+		} catch (final ScrapingException ex) {
+			assertSame(failure, ex);
+		}
+		assertTrue(legacyScraper.supportsCalled);
+		assertFalse(legacyScraper.scrapeCalled);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testRethrowsZoteroFailureWhenLegacyFallbackReturnsNoResult() throws Exception {
+		final ScrapingException failure = new ScrapingException("zotero failed");
+		final RecordingScraper legacyScraper = new RecordingScraper(true, false);
+		final ZoteroTranslationServerConfig config = new ZoteroTranslationServerConfig("http://zotero.example", true, true, 1, 1);
+		final ZoteroFallbackScraper scraper = new ZoteroFallbackScraper(config, new FailingZoteroScraper(failure), legacyScraper);
+
+		try {
+			scraper.scrape(new ScrapingContext(new URL("https://example.org/article")));
+			fail("expected ScrapingException");
+		} catch (final ScrapingException ex) {
+			assertSame(failure, ex);
+		}
+		assertTrue(legacyScraper.scrapeCalled);
 	}
 
 	private static class RecordingScraper implements Scraper {
@@ -104,6 +145,25 @@ public class ZoteroFallbackScraperTest {
 		public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
 			this.supportsCalled = true;
 			return this.supports;
+		}
+	}
+
+	private static class FailingZoteroScraper extends ZoteroTranslationServerScraper {
+		private final ScrapingException failure;
+
+		private FailingZoteroScraper(final ScrapingException failure) {
+			super(new ZoteroTranslationServerConfig("http://zotero.example", true, false, 1, 1));
+			this.failure = failure;
+		}
+
+		@Override
+		public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
+			throw this.failure;
+		}
+
+		@Override
+		public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
+			return true;
 		}
 	}
 }

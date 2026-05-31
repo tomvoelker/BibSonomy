@@ -39,7 +39,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
- * Runs Zotero first and falls back to the existing scraper chain during rollout.
+ * Runs Zotero first and optionally falls back to the existing scraper chain during rollout.
  *
  * @author tvolker
  */
@@ -73,6 +73,7 @@ public class ZoteroFallbackScraper implements Scraper {
 	@Override
 	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
 		boolean zoteroAttempted = false;
+		boolean legacyAttempted = false;
 		ScrapingException zoteroException = null;
 
 		if (this.config.isZoteroEnabled() && this.zoteroScraper.supportsScrapingContext(scrapingContext)) {
@@ -90,15 +91,20 @@ public class ZoteroFallbackScraper implements Scraper {
 		}
 
 		if (this.config.isLegacyFallbackEnabled()
-						&& this.legacyScraper.supportsScrapingContext(scrapingContext)
-						&& this.legacyScraper.scrape(scrapingContext)) {
-			if (zoteroAttempted) {
-				log.info("Legacy scraper fallback succeeded after Zotero attempt for " + scrapingContext.getUrl());
+						&& this.legacyScraper.supportsScrapingContext(scrapingContext)) {
+			legacyAttempted = true;
+			if (this.legacyScraper.scrape(scrapingContext)) {
+				if (zoteroAttempted) {
+					log.info("Legacy scraper fallback succeeded after Zotero attempt for " + scrapingContext.getUrl());
+				}
+				return true;
 			}
-			return true;
 		}
 
-		if (zoteroException != null && !this.config.isLegacyFallbackEnabled()) {
+		if (zoteroException != null) {
+			if (legacyAttempted) {
+				log.info("Legacy scraper fallback returned no result after Zotero failure for " + scrapingContext.getUrl());
+			}
 			throw zoteroException;
 		}
 
@@ -107,7 +113,7 @@ public class ZoteroFallbackScraper implements Scraper {
 
 	@Override
 	public String getInfo() {
-		return "Zotero translation-server scraper with legacy scraper fallback.";
+		return "Zotero translation-server scraper with optional legacy scraper fallback.";
 	}
 
 	@Override

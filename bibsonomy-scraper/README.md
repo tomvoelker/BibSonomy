@@ -38,8 +38,10 @@ as the primary URL and identifier scraper. Configure it with:
 
 The production service URL is expected to be
 `http://bibsonomy-zotero-translation-server.extsonomy.svc.cluster.local:1969`.
-Zotero is enabled by default when the URL is set. Legacy fallback remains
-enabled by default during rollout.
+Zotero is enabled by default when the URL is set. Legacy fallback is disabled
+by default in Zotero mode; enable `bibsonomy.scraper.legacyFallback.enabled`
+or `BIBSONOMY_SCRAPER_LEGACY_FALLBACK_ENABLED` explicitly for rollout or
+emergency fallback.
 
 The Zotero scraper calls `/web`, `/search`, and `/export?format=bibtex`.
 For HTTP 300 multiple-choice responses from `/web`, it posts the complete

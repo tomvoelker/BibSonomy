@@ -94,7 +94,7 @@ public class ZoteroTranslationServerConfig {
 	public static ZoteroTranslationServerConfig fromEnvironment() {
 		final String baseUrl = getSetting(PROPERTY_URL, ENV_URL);
 		final boolean zoteroEnabled = getBooleanSetting(PROPERTY_ENABLED, ENV_ENABLED, present(baseUrl));
-		final boolean legacyFallbackEnabled = getBooleanSetting(PROPERTY_LEGACY_FALLBACK_ENABLED, ENV_LEGACY_FALLBACK_ENABLED, true);
+		final boolean legacyFallbackEnabled = getBooleanSetting(PROPERTY_LEGACY_FALLBACK_ENABLED, ENV_LEGACY_FALLBACK_ENABLED, !zoteroEnabled);
 		final int connectTimeout = getIntegerSetting(PROPERTY_CONNECT_TIMEOUT, ENV_CONNECT_TIMEOUT, DEFAULT_CONNECT_TIMEOUT);
 		final int socketTimeout = getIntegerSetting(PROPERTY_SOCKET_TIMEOUT, ENV_SOCKET_TIMEOUT, DEFAULT_SOCKET_TIMEOUT);
 		return new ZoteroTranslationServerConfig(baseUrl, zoteroEnabled, legacyFallbackEnabled, connectTimeout, socketTimeout);
