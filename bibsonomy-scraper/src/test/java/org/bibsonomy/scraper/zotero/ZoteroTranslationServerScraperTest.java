@@ -127,6 +127,23 @@ public class ZoteroTranslationServerScraperTest {
 	 * @throws Exception
 	 */
 	@Test
+	public void testScrapeDoesNotInferBareArxivIdFromSelectedNonArxivUrl() throws Exception {
+		final String url = "https://example.org/papers/2024.12345";
+		final StubClient client = StubClient.withWebResult(new ZoteroTranslationResult(BIBTEX, false, 0), new ZoteroTranslationResult("@misc{wrong}\n", false, 0));
+		final ZoteroTranslationServerScraper scraper = new ZoteroTranslationServerScraper(client);
+		final ScrapingContext context = new ScrapingContext(new URL(url), url);
+
+		assertTrue(scraper.scrape(context));
+		assertEquals(1, client.webCalls);
+		assertEquals(url, client.webUrl);
+		assertNull(client.searchQuery);
+		assertEquals(BIBTEX, context.getBibtexResult());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
 	public void testScrapeUsesArxivSearchFallbackForArxivUrl() throws Exception {
 		final StubClient client = StubClient.withWebResult(null, new ZoteroTranslationResult(BIBTEX, false, 0));
 		final ZoteroTranslationServerScraper scraper = new ZoteroTranslationServerScraper(client);
@@ -134,6 +151,21 @@ public class ZoteroTranslationServerScraperTest {
 
 		assertTrue(scraper.scrape(context));
 		assertEquals("arXiv:2401.12345", client.searchQuery);
+		assertEquals(BIBTEX, context.getBibtexResult());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testScrapeUsesNormalizedArxivSearchForSelectedArxivPdfUrl() throws Exception {
+		final StubClient client = StubClient.withWebResult(null, new ZoteroTranslationResult(BIBTEX, false, 0));
+		final ZoteroTranslationServerScraper scraper = new ZoteroTranslationServerScraper(client);
+		final ScrapingContext context = new ScrapingContext(null, "https://arxiv.org/pdf/2401.12345v2.pdf?download=1");
+
+		assertTrue(scraper.scrape(context));
+		assertEquals("arXiv:2401.12345", client.searchQuery);
+		assertEquals(0, client.webCalls);
 		assertEquals(BIBTEX, context.getBibtexResult());
 	}
 

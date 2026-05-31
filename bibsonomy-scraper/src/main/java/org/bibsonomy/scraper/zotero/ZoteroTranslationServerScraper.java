@@ -245,6 +245,11 @@ public class ZoteroTranslationServerScraper implements Scraper {
 			return null;
 		}
 
+		final URL selectedUrl = parseUrl(text);
+		if (present(selectedUrl)) {
+			return this.extractSearchQuery(selectedUrl);
+		}
+
 		final String doi = DOIUtils.extractDOI(text);
 		if (present(doi)) {
 			return doi;
@@ -266,6 +271,18 @@ public class ZoteroTranslationServerScraper implements Scraper {
 		}
 
 		return null;
+	}
+
+	private static URL parseUrl(final String text) {
+		if (!present(text)) {
+			return null;
+		}
+
+		try {
+			return new URL(text.trim());
+		} catch (final MalformedURLException ex) {
+			return null;
+		}
 	}
 
 	private static String urlWithoutQuery(final URL url) {
