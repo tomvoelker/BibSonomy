@@ -148,7 +148,12 @@ public class ZoteroTranslationServerClient {
 			return null;
 		}
 
-		final ZoteroHttpResponse selected = this.post(WEB_ENDPOINT, choicesJson, CONTENT_TYPE_JSON);
+		final String selectedChoiceJson = this.selectFirstWebChoice(choicesJson);
+		if (!present(selectedChoiceJson)) {
+			return null;
+		}
+
+		final ZoteroHttpResponse selected = this.post(WEB_ENDPOINT, selectedChoiceJson, CONTENT_TYPE_JSON);
 		if (selected.isOk()) {
 			return this.export(selected.getBody(), true, choiceCount);
 		}
@@ -158,6 +163,47 @@ public class ZoteroTranslationServerClient {
 		}
 
 		throw new ScrapingException("Zotero multiple-choice selection failed with HTTP " + selected.getStatusCode() + ": " + truncate(selected.getBody()));
+	}
+
+	@SuppressWarnings("unchecked")
+	private String selectFirstWebChoice(final String choicesJson) throws ScrapingException {
+		final Map<?, ?> choices = this.parseJsonObjectPreservingOrder(choicesJson);
+		if (choices == null) {
+			return null;
+		}
+
+		final Object items = choices.get("items");
+		final Object selectedItems;
+		if (items instanceof Map) {
+			final Map<?, ?> itemMap = (Map<?, ?>) items;
+			if (itemMap.isEmpty()) {
+				return null;
+			}
+			final Map<Object, Object> selectedItemMap = new LinkedHashMap<Object, Object>();
+			final Object firstKey = itemMap.keySet().iterator().next();
+			selectedItemMap.put(firstKey, itemMap.get(firstKey));
+			selectedItems = selectedItemMap;
+		} else if (items instanceof List) {
+			final List<?> itemList = (List<?>) items;
+			if (itemList.isEmpty()) {
+				return null;
+			}
+			final List<Object> selectedItemList = new LinkedList<Object>();
+			selectedItemList.add(itemList.get(0));
+			selectedItems = selectedItemList;
+		} else {
+			return null;
+		}
+
+		final Map<Object, Object> selectedChoice = new LinkedHashMap<Object, Object>();
+		for (final Map.Entry<?, ?> entry : choices.entrySet()) {
+			if ("items".equals(entry.getKey())) {
+				selectedChoice.put(entry.getKey(), selectedItems);
+			} else {
+				selectedChoice.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return JSONObject.toJSONString(selectedChoice);
 	}
 
 	private ZoteroTranslationResult translateSearchChoices(final String choicesJson, final int choiceCount) throws ScrapingException {

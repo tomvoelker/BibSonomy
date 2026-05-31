@@ -224,6 +224,14 @@ public class ZoteroTranslationServerScraper implements Scraper {
 			return isbn;
 		}
 
+		if (ArxivUtils.isArxivUrl(url)) {
+			final String arxivIdentifier = ArxivUtils.extractArxivIdentifier(urlWithoutQuery(url));
+			if (present(arxivIdentifier)) {
+				return normalizeArxivQuery(arxivIdentifier);
+			}
+			return null;
+		}
+
 		final String arxivIdentifier = ArxivUtils.extractStrictArxivIdentifier(text);
 		if (present(arxivIdentifier)) {
 			return normalizeArxivQuery(arxivIdentifier);
@@ -258,6 +266,16 @@ public class ZoteroTranslationServerScraper implements Scraper {
 		}
 
 		return null;
+	}
+
+	private static String urlWithoutQuery(final URL url) {
+		final StringBuilder builder = new StringBuilder();
+		builder.append(url.getProtocol()).append("://").append(url.getHost());
+		if (url.getPort() >= 0) {
+			builder.append(":").append(url.getPort());
+		}
+		builder.append(url.getPath());
+		return builder.toString();
 	}
 
 	private static String normalizeArxivQuery(final String arxivIdentifier) {

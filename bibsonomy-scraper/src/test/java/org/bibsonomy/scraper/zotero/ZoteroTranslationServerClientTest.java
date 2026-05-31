@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +62,7 @@ public class ZoteroTranslationServerClientTest {
 
 	private static final String ITEM_JSON = "[{\"itemType\":\"journalArticle\",\"title\":\"Title\"}]";
 	private static final String WEB_CHOICES_JSON = "{\"url\":\"https://example.org/search\",\"session\":\"abc\",\"items\":{\"0\":\"A\",\"1\":\"B\"}}";
-	private static final String WEB_SELECTED_JSON = "[{\"itemType\":\"journalArticle\",\"title\":\"A\"},{\"itemType\":\"journalArticle\",\"title\":\"B\"}]";
+	private static final String WEB_SELECTED_JSON = "[{\"itemType\":\"journalArticle\",\"title\":\"A\"}]";
 	private static final String SEARCH_CHOICES_JSON = "{\"10.1234/example-a\":{\"title\":\"A\"},\"10.1234/example-b\":{\"title\":\"B\"}}";
 	private static final String BIBTEX_ONE = "@article{key,\n  title = {Title}\n}\n";
 	private static final String BIBTEX_TWO = "@article{a,\n  title = {A}\n}\n\n@article{b,\n  title = {B}\n}\n";
@@ -140,21 +142,20 @@ public class ZoteroTranslationServerClientTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testTranslateWebPageSelectsAllMultipleChoices() throws Exception {
+	public void testTranslateWebPageSelectsFirstMultipleChoice() throws Exception {
 		this.webStatus = 300;
 		this.webBody = WEB_CHOICES_JSON;
-		this.exportBody = BIBTEX_TWO;
 		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl, 1000, 1000);
 
 		final ZoteroTranslationResult result = client.translateWebPage("https://example.org/search");
 
 		assertNotNull(result);
-		assertEquals(BIBTEX_TWO, result.getBibTeX());
+		assertEquals(BIBTEX_ONE, result.getBibTeX());
 		assertTrue(result.isMultipleChoice());
 		assertEquals(2, result.getChoiceCount());
 		assertEquals("/web", this.requests.get(1).path);
 		assertTrue(this.requests.get(1).contentType.startsWith("application/json"));
-		assertEquals(WEB_CHOICES_JSON, this.requests.get(1).body);
+		assertFirstWebChoiceSelected(this.requests.get(1).body);
 		assertEquals(WEB_SELECTED_JSON, this.requests.get(2).body);
 	}
 
@@ -301,6 +302,19 @@ public class ZoteroTranslationServerClientTest {
 		exchange.sendResponseHeaders(status, bytes.length);
 		exchange.getResponseBody().write(bytes);
 		exchange.close();
+	}
+
+	private static void assertFirstWebChoiceSelected(final String json) throws Exception {
+		final JSONObject postedChoice = (JSONObject) new JSONParser().parse(json);
+		assertEquals("https://example.org/search", postedChoice.get("url"));
+		assertEquals("abc", postedChoice.get("session"));
+
+		final Object items = postedChoice.get("items");
+		assertTrue(items instanceof JSONObject);
+		final JSONObject itemMap = (JSONObject) items;
+		assertEquals(1, itemMap.size());
+		assertEquals("A", itemMap.get("0"));
+		assertFalse(itemMap.containsKey("1"));
 	}
 
 	private static class RecordedRequest {

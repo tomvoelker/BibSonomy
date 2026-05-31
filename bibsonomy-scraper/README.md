@@ -44,11 +44,10 @@ or `BIBSONOMY_SCRAPER_LEGACY_FALLBACK_ENABLED` explicitly for rollout or
 emergency fallback.
 
 The Zotero scraper calls `/web`, `/search`, and `/export?format=bibtex`.
-For HTTP 300 multiple-choice responses from `/web`, it posts the complete
-choice response back to Zotero and exports all returned items. Bulk import
-therefore receives all BibTeX entries. The single-publication edit flow keeps
-the existing parser behavior and uses the first parsed entry; it also records a
-warning that a chooser UI is still missing.
+For HTTP 300 multiple-choice responses from `/web`, it posts only Zotero's first
+returned choice back to Zotero and records the original choice count. This keeps
+the current single-publication flows deterministic while still surfacing a
+warning that a chooser UI is missing.
 
 Remote Zotero smoke tests are available with:
 
