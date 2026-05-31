@@ -52,8 +52,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
-import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivUtils;
 import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.util.SortUtils;
@@ -93,28 +91,10 @@ public class PublicationAutocompleteController implements MinimalisticController
 	public View workOn(final PublicationAutocompleteCommand command) {
 		final String rawSearch = command.getSearch();
 		final List<Post<BibTex>> allPosts = new LinkedList<>();
-		final String isbn = ISBNUtils.extractISBN(rawSearch);
-		final String doi = DOIUtils.extractDOI(rawSearch);
-		final String arxiv = ArxivUtils.extractStrictArxivIdentifier(rawSearch);
+		final String scraperQuery = getScraperQuery(rawSearch);
 
-		// handle isbn, doi and arxiv number and get the publication from the source
-		if (present(isbn)) {
-			final Post<BibTex> post = callScraper(new ISBNScraper(), isbn);
-			if (present(post)) {
-				allPosts.add(post);
-			}
-		} else if (present(doi)) {
-			final Post<BibTex> post = callScraper(this.scrapers, doi);
-			if (present(post)) {
-				allPosts.add(post);
-			}
-		} else if (present(arxiv)) {
-			final Post<BibTex> post = callScraper(new ArxivScraper(), arxiv);
-			if (present(post)) {
-				allPosts.add(post);
-			}
-		} else if (UrlUtils.isUrl(rawSearch)) {
-			final Post<BibTex> post = callScraper(this.scrapers, rawSearch);
+		if (present(scraperQuery)) {
+			final Post<BibTex> post = callScraper(this.scrapers, scraperQuery);
 			if (present(post)) {
 				allPosts.add(post);
 			}
@@ -160,6 +140,27 @@ public class PublicationAutocompleteController implements MinimalisticController
 		return Views.getViewByFormat(command.getFormat());
 	}
 
+	private static String getScraperQuery(final String rawSearch) {
+		if (!present(rawSearch)) {
+			return null;
+		}
+		if (UrlUtils.isUrl(rawSearch)) {
+			return rawSearch;
+		}
+
+		final String isbn = ISBNUtils.extractISBN(rawSearch);
+		if (present(isbn)) {
+			return isbn;
+		}
+
+		final String doi = DOIUtils.extractDOI(rawSearch);
+		if (present(doi)) {
+			return doi;
+		}
+
+		return ArxivUtils.extractStrictArxivIdentifier(rawSearch);
+	}
+
 	/**
 	 * @param scraper
 	 * @param text
@@ -169,7 +170,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 		try {
 			final URL url = UrlUtils.isUrl(text) ? new URL(text) : null;
 			final ScrapingContext context = new ScrapingContext(url, text);
-			final boolean scrape = scraper.scrape(context);
+			final boolean scrape = scrape(scraper, context);
 			if (scrape) {
 				final String result = context.getBibtexResult();
 				final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -183,8 +184,32 @@ public class PublicationAutocompleteController implements MinimalisticController
 		} catch (final IOException | ScrapingException | ParseException e) {
 			log.info("exception while scraping", e);
 		}
-		
+
 		return null;
+	}
+
+	private static boolean scrape(final Scraper scraper, final ScrapingContext context) throws ScrapingException {
+		if (present(context.getUrl())) {
+			return scraper.scrape(context);
+		}
+
+		ScrapingException scrapingException = null;
+		for (final Scraper supportedScraper : scraper.getScraper()) {
+			if (supportedScraper.supportsScrapingContext(context)) {
+				try {
+					if (supportedScraper.scrape(context)) {
+						return true;
+					}
+				} catch (final ScrapingException ex) {
+					scrapingException = ex;
+					log.info("exception while scraping with " + supportedScraper.getInfo(), ex);
+				}
+			}
+		}
+		if (scrapingException != null) {
+			throw scrapingException;
+		}
+		return false;
 	}
 
 	/**

@@ -164,7 +164,9 @@ import org.bibsonomy.scraper.url.researchgate.ResearchGateScraper;
  *
  * @author rja
  *
+ * @deprecated deletion candidate after the Zotero translation-server path has proven stable
  */
+@Deprecated
 public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 
 	/**

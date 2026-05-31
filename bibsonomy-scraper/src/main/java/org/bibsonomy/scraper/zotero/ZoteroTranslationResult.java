@@ -27,26 +27,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper;
-
-import org.bibsonomy.scraper.exceptions.ScrapingException;
+package org.bibsonomy.scraper.zotero;
 
 /**
- * interface for scrapers that can scrape reference data
+ * Result returned by the Zotero translation server client.
  *
- * @author Haile
- * @deprecated deletion candidate if no active consumer remains after the Zotero migration
+ * @author tvolker
  */
-@Deprecated
-public interface ReferencesScraper {
+public class ZoteroTranslationResult {
 
-	 /**
-	  * Tries to scrape the references (the publications cited by the given publication). 
-	  * Note that this method should only be called <em>after</em> {@link Scraper#scrape(ScrapingContext)}. 
-	  * 
-	 * @param scrapingContext
-	 * @return <code>true</code>, if the cited papers were successfully be scraped
-	 * @throws ScrapingException
+	private final String bibTeX;
+	private final boolean multipleChoice;
+	private final int choiceCount;
+
+	/**
+	 * @param bibTeX the exported BibTeX
+	 * @param multipleChoice <code>true</code> if Zotero returned multiple choices
+	 * @param choiceCount number of returned choices
 	 */
-	public boolean scrapeReferences(final ScrapingContext scrapingContext) throws ScrapingException;
+	public ZoteroTranslationResult(final String bibTeX, final boolean multipleChoice, final int choiceCount) {
+		this.bibTeX = bibTeX;
+		this.multipleChoice = multipleChoice;
+		this.choiceCount = choiceCount;
+	}
+
+	/**
+	 * @return the exported BibTeX
+	 */
+	public String getBibTeX() {
+		return this.bibTeX;
+	}
+
+	/**
+	 * @return <code>true</code> if Zotero returned multiple choices
+	 */
+	public boolean isMultipleChoice() {
+		return this.multipleChoice;
+	}
+
+	/**
+	 * @return number of returned choices
+	 */
+	public int getChoiceCount() {
+		return this.choiceCount;
+	}
 }

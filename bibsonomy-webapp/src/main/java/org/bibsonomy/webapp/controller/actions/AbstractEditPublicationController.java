@@ -257,6 +257,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 					 * store scraping context and scraping metadata
 					 */
 					this.handleScraperMetadata(command, scrapingContext);
+					this.handleZoteroMultipleChoiceWarning(scrapingContext);
 				} else {
 					/*
 					 * the parser did not return any result ...
@@ -303,6 +304,13 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			if (!errorHandled) {
 				this.getErrors().reject("error.scrape.nothing", new Object[] { scrapingContext.getUrl() }, "The URL {0} is not supported by one of our scrapers.");
 			}
+		}
+	}
+
+	private void handleZoteroMultipleChoiceWarning(final ScrapingContext scrapingContext) {
+		final int zoteroMultipleChoiceCount = scrapingContext.getTmpMetadata().getZoteroMultipleChoiceCount();
+		if (zoteroMultipleChoiceCount > 1) {
+			this.warnings.reject("warning.scrape.zotero.multiple", new Object[] { zoteroMultipleChoiceCount }, "Zotero returned {0} possible publications. The first one was selected automatically.");
 		}
 	}
 
