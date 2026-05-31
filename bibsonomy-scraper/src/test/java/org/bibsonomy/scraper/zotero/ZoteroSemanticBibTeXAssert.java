@@ -79,6 +79,9 @@ final class ZoteroSemanticBibTeXAssert {
 		final List<BibtexEntry> actualEntries = parse(actualBibTeX);
 		assertFalse(label + ": expected fixture has no BibTeX entries", expectedEntries.isEmpty());
 		assertFalse(label + ": Zotero did not return any BibTeX entries", actualEntries.isEmpty());
+		assertTrue(label + ": fewer actual BibTeX entries than expected; expected "
+						+ expectedEntries.size() + " but got " + actualEntries.size(),
+				actualEntries.size() >= expectedEntries.size());
 
 		final List<BibtexEntry> remainingActualEntries = new ArrayList<BibtexEntry>(actualEntries);
 		for (final BibtexEntry expected : expectedEntries) {
