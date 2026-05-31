@@ -32,6 +32,9 @@ package org.bibsonomy.scraper.zotero;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -48,6 +51,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -83,7 +87,7 @@ public class ZoteroTranslationServerClient {
 	 * @param socketTimeout socket timeout in milliseconds
 	 */
 	public ZoteroTranslationServerClient(final String baseUrl, final int connectTimeout, final int socketTimeout) {
-		this.baseUrl = baseUrl;
+		this.baseUrl = normalizeBaseUrl(baseUrl);
 		final RequestConfig requestConfig = WebUtils.getDefaultRequestConfig()
 						.setConnectTimeout(connectTimeout)
 						.setSocketTimeout(socketTimeout)
@@ -132,7 +136,7 @@ public class ZoteroTranslationServerClient {
 			return this.translateSearchChoices(response.getBody(), choiceCount);
 		}
 
-		if (isNoResultStatus(response.getStatusCode())) {
+		if (isRecoverableTranslationStatus(response.getStatusCode())) {
 			return null;
 		}
 
@@ -145,7 +149,7 @@ public class ZoteroTranslationServerClient {
 			return this.export(selected.getBody(), true, choiceCount);
 		}
 
-		if (isNoResultStatus(selected.getStatusCode())) {
+		if (isRecoverableTranslationStatus(selected.getStatusCode())) {
 			return null;
 		}
 
@@ -153,13 +157,12 @@ public class ZoteroTranslationServerClient {
 	}
 
 	private ZoteroTranslationResult translateSearchChoices(final String choicesJson, final int choiceCount) throws ScrapingException {
-		final Object parsed = this.parseJson(choicesJson);
-		if (!(parsed instanceof JSONObject)) {
+		final Map<?, ?> choices = this.parseJsonObjectPreservingOrder(choicesJson);
+		if (choices == null) {
 			return null;
 		}
 
 		final JSONArray selectedItems = new JSONArray();
-		final JSONObject choices = (JSONObject) parsed;
 		for (final Object key : choices.keySet()) {
 			if (key == null) {
 				continue;
@@ -215,9 +218,42 @@ public class ZoteroTranslationServerClient {
 	}
 
 	private Object parseJson(final String json) throws ScrapingException {
+		if (!present(json)) {
+			throw new ScrapingException("Empty JSON response from Zotero translation-server");
+		}
 		try {
 			return new JSONParser().parse(json);
 		} catch (final ParseException ex) {
+			throw new ScrapingException(ex);
+		} catch (final RuntimeException ex) {
+			throw new ScrapingException(ex);
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Map<?, ?> parseJsonObjectPreservingOrder(final String json) throws ScrapingException {
+		if (!present(json)) {
+			throw new ScrapingException("Empty JSON response from Zotero translation-server");
+		}
+		try {
+			final Object parsed = new JSONParser().parse(json, new ContainerFactory() {
+				@Override
+				public Map createObjectContainer() {
+					return new LinkedHashMap();
+				}
+
+				@Override
+				public List creatArrayContainer() {
+					return new LinkedList();
+				}
+			});
+			if (parsed instanceof Map) {
+				return (Map<?, ?>) parsed;
+			}
+			return null;
+		} catch (final ParseException ex) {
+			throw new ScrapingException(ex);
+		} catch (final RuntimeException ex) {
 			throw new ScrapingException(ex);
 		}
 	}
@@ -232,6 +268,9 @@ public class ZoteroTranslationServerClient {
 	}
 
 	private int countChoices(final String json) {
+		if (!present(json)) {
+			return 0;
+		}
 		try {
 			final Object parsed = new JSONParser().parse(json);
 			if (parsed instanceof JSONArray) {
@@ -250,8 +289,21 @@ public class ZoteroTranslationServerClient {
 			}
 		} catch (final ParseException ex) {
 			log.warn("Could not parse Zotero multiple-choice response", ex);
+		} catch (final RuntimeException ex) {
+			log.warn("Could not parse Zotero multiple-choice response", ex);
 		}
 		return 0;
+	}
+
+	private static String normalizeBaseUrl(final String baseUrl) {
+		if (!present(baseUrl)) {
+			return baseUrl;
+		}
+		String normalized = baseUrl.trim();
+		while (normalized.endsWith("/")) {
+			normalized = normalized.substring(0, normalized.length() - 1);
+		}
+		return normalized;
 	}
 
 	private static boolean isNoResultStatus(final int statusCode) {
@@ -259,6 +311,10 @@ public class ZoteroTranslationServerClient {
 						|| statusCode == HttpStatus.SC_NOT_FOUND
 						|| statusCode == HttpStatus.SC_NOT_IMPLEMENTED
 						|| statusCode == HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE;
+	}
+
+	private static boolean isRecoverableTranslationStatus(final int statusCode) {
+		return isNoResultStatus(statusCode) || statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR;
 	}
 
 	private static String truncate(final String body) {

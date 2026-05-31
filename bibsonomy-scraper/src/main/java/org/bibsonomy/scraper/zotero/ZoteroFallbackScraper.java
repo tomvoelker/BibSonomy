@@ -89,7 +89,9 @@ public class ZoteroFallbackScraper implements Scraper {
 			}
 		}
 
-		if (this.config.isLegacyFallbackEnabled() && this.legacyScraper.scrape(scrapingContext)) {
+		if (this.config.isLegacyFallbackEnabled()
+						&& this.legacyScraper.supportsScrapingContext(scrapingContext)
+						&& this.legacyScraper.scrape(scrapingContext)) {
 			if (zoteroAttempted) {
 				log.info("Legacy scraper fallback succeeded after Zotero attempt for " + scrapingContext.getUrl());
 			}

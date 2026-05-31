@@ -31,6 +31,7 @@ package org.bibsonomy.scraper.zotero;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +55,7 @@ public class ZoteroTranslationServerScraper implements Scraper {
 	private static final int MAX_SELECTION_LENGTH = 1024;
 	private static final Pattern PMID_PATTERN = Pattern.compile("^\\s*(?:pmid:?\\s*)?(\\d{6,9})\\s*$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern ARXIV_PATTERN = Pattern.compile("(?i)(?:arxiv:?\\s*)?\\b([0-9]{4}\\.[0-9]{4,5}(?:v[0-9]+)?|[a-z\\-]+(?:\\.[a-z]{2})?/[0-9]{7}(?:v[0-9]+)?)\\b");
+	private static final Pattern ACL_PDF_PATTERN = Pattern.compile("(?i)^https?://(?:www\\.aclweb\\.org/anthology|aclanthology\\.org)/([^?#]+)\\.pdf(?:[?#].*)?$");
 
 	private final ZoteroTranslationServerConfig config;
 	private final ZoteroTranslationServerClient client;
@@ -92,13 +94,25 @@ public class ZoteroTranslationServerScraper implements Scraper {
 
 		scrapingContext.getTmpMetadata().setZoteroMultipleChoiceCount(0);
 		ZoteroTranslationResult result = null;
+		final String selectedQuery = this.extractSearchQuery(scrapingContext.getSelectedText());
+		if (present(selectedQuery)) {
+			result = this.client.translateSearch(selectedQuery);
+		}
+
 		final URL url = scrapingContext.getUrl();
-		if (present(url)) {
+		if (result == null && present(url)) {
 			result = this.client.translateWebPage(url.toString());
 		}
 
-		if (result == null) {
-			final String query = this.extractSearchQuery(scrapingContext);
+		if (result == null && present(url)) {
+			final String normalizedUrl = normalizeUrl(url.toString());
+			if (present(normalizedUrl) && !url.toString().equals(normalizedUrl)) {
+				result = this.client.translateWebPage(normalizedUrl);
+			}
+		}
+
+		if (result == null && present(url)) {
+			final String query = this.extractSearchQuery(url.toString());
 			if (present(query)) {
 				result = this.client.translateSearch(query);
 			}
@@ -135,6 +149,50 @@ public class ZoteroTranslationServerScraper implements Scraper {
 			return false;
 		}
 		return present(scrapingContext.getUrl()) || present(this.extractSearchQuery(scrapingContext));
+	}
+
+	private static String normalizeUrl(final String url) {
+		if (!present(url)) {
+			return null;
+		}
+
+		final Matcher aclPdfMatcher = ACL_PDF_PATTERN.matcher(url);
+		if (aclPdfMatcher.matches()) {
+			return "https://aclanthology.org/" + aclPdfMatcher.group(1) + "/";
+		}
+
+		return normalizeDblpUrl(url);
+	}
+
+	private static String normalizeDblpUrl(final String url) {
+		try {
+			final URL parsedUrl = new URL(url);
+			if (!isDblpHost(parsedUrl.getHost())) {
+				return url;
+			}
+
+			final String path = parsedUrl.getPath();
+			if (!present(path) || !path.startsWith("/rec/")) {
+				return url;
+			}
+
+			String recordPath = path.substring("/rec/".length());
+			recordPath = recordPath.replaceFirst("^(?:bibtex|bib1|bib2|rdf|ris)/", "");
+			recordPath = recordPath.replaceFirst("\\.(?:html|xml|rdf|ris|bib)$", "");
+			if (!present(recordPath)) {
+				return url;
+			}
+			return "https://dblp.org/rec/" + recordPath + ".html?view=bibtex";
+		} catch (final MalformedURLException ex) {
+			return url;
+		}
+	}
+
+	private static boolean isDblpHost(final String host) {
+		return "dblp.org".equals(host)
+						|| "dblp.uni-trier.de".equals(host)
+						|| "dblp2.uni-trier.de".equals(host)
+						|| "dblp.dagstuhl.de".equals(host);
 	}
 
 	private String extractSearchQuery(final ScrapingContext scrapingContext) {

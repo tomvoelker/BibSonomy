@@ -50,7 +50,7 @@ warning that a chooser UI is still missing.
 
 Remote Zotero smoke tests are available with:
 
-```
+```bash
 BIBSONOMY_SCRAPER_ZOTERO_URL=http://127.0.0.1:1969 mvn -pl bibsonomy-scraper -P zoteroRemoteTests test
 ```
 
@@ -63,13 +63,13 @@ fixture, and normalized title/year/first contributor are checked.
 
 Pilot run:
 
-```
+```bash
 BIBSONOMY_SCRAPER_ZOTERO_URL=http://127.0.0.1:1969 mvn -pl bibsonomy-scraper -P zoteroHistoricRemoteTests -Dbibsonomy.scraper.zotero.historic.include='NatureArticleScraperTest|ISBNScraperTest|ArxivScraperTest' -Dbibsonomy.scraper.zotero.historic.limit=10 test
 ```
 
 Full discovered historic run:
 
-```
+```bash
 BIBSONOMY_SCRAPER_ZOTERO_URL=http://127.0.0.1:1969 mvn -pl bibsonomy-scraper -P zoteroHistoricRemoteTests test
 ```
 

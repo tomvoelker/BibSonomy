@@ -80,8 +80,11 @@ final class ZoteroSemanticBibTeXAssert {
 		assertFalse(label + ": expected fixture has no BibTeX entries", expectedEntries.isEmpty());
 		assertFalse(label + ": Zotero did not return any BibTeX entries", actualEntries.isEmpty());
 
+		final List<BibtexEntry> remainingActualEntries = new ArrayList<BibtexEntry>(actualEntries);
 		for (final BibtexEntry expected : expectedEntries) {
-			assertSemanticEntryMatch(expected, findBestMatchingEntry(expected, actualEntries), label);
+			final BibtexEntry matchingEntry = findBestMatchingEntry(expected, remainingActualEntries);
+			assertSemanticEntryMatch(expected, matchingEntry, label);
+			remainingActualEntries.remove(matchingEntry);
 		}
 	}
 

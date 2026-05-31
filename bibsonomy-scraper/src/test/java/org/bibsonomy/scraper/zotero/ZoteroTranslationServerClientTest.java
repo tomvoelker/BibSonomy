@@ -32,17 +32,18 @@ package org.bibsonomy.scraper.zotero;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +73,7 @@ public class ZoteroTranslationServerClientTest {
 	private String webSelectedBody;
 	private int searchStatus;
 	private String searchBody;
+	private int exportStatus;
 	private String exportBody;
 
 	/**
@@ -85,6 +87,7 @@ public class ZoteroTranslationServerClientTest {
 		this.webSelectedBody = WEB_SELECTED_JSON;
 		this.searchStatus = 200;
 		this.searchBody = ITEM_JSON;
+		this.exportStatus = 200;
 		this.exportBody = BIBTEX_ONE;
 		this.server = HttpServer.create(new InetSocketAddress(0), 0);
 		this.server.createContext("/", exchange -> this.handle(exchange));
@@ -117,6 +120,20 @@ public class ZoteroTranslationServerClientTest {
 		assertEquals("https://example.org/article", this.requests.get(0).body);
 		assertEquals("/export", this.requests.get(1).path);
 		assertEquals(ITEM_JSON, this.requests.get(1).body);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testTranslateWebPageNormalizesTrailingSlashBaseUrl() throws Exception {
+		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl + "/", 1000, 1000);
+
+		final ZoteroTranslationResult result = client.translateWebPage("https://example.org/article");
+
+		assertNotNull(result);
+		assertEquals("/web", this.requests.get(0).path);
+		assertEquals("/export", this.requests.get(1).path);
 	}
 
 	/**
@@ -157,11 +174,70 @@ public class ZoteroTranslationServerClientTest {
 		assertEquals(BIBTEX_TWO, result.getBibTeX());
 		assertTrue(result.isMultipleChoice());
 		assertEquals(2, result.getChoiceCount());
-		final Set<String> retriedIdentifiers = new HashSet<String>();
-		retriedIdentifiers.add(this.requests.get(1).body);
-		retriedIdentifiers.add(this.requests.get(2).body);
-		assertTrue(retriedIdentifiers.contains("10.1234/example-a"));
-		assertTrue(retriedIdentifiers.contains("10.1234/example-b"));
+		assertEquals("10.1234/example-a", this.requests.get(1).body);
+		assertEquals("10.1234/example-b", this.requests.get(2).body);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testTranslateSearchChoicesRejectsEmptyJsonBody() throws Exception {
+		this.searchStatus = 300;
+		this.searchBody = "";
+		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl, 1000, 1000);
+
+		try {
+			client.translateSearch("query without direct identifier");
+			fail("expected ScrapingException");
+		} catch (final ScrapingException ex) {
+			assertTrue(ex.getMessage().contains("Empty JSON response from Zotero translation-server"));
+		}
+		assertEquals(1, this.requests.size());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testTranslateWebPageTreatsServerErrorAsNoResult() throws Exception {
+		this.webStatus = 500;
+		this.webBody = "Internal Server Error";
+		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl, 1000, 1000);
+
+		assertNull(client.translateWebPage("https://example.org/article"));
+		assertEquals(1, this.requests.size());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testTranslateSearchTreatsServerErrorAsNoResult() throws Exception {
+		this.searchStatus = 500;
+		this.searchBody = "Internal Server Error";
+		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl, 1000, 1000);
+
+		assertNull(client.translateSearch("10.1234/example"));
+		assertEquals(1, this.requests.size());
+		assertEquals("/search", this.requests.get(0).path);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testTranslateWebPageThrowsOnExportServerError() throws Exception {
+		this.exportStatus = 500;
+		this.exportBody = "Internal Server Error";
+		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl, 1000, 1000);
+
+		try {
+			client.translateWebPage("https://example.org/article");
+			fail("expected ScrapingException");
+		} catch (final ScrapingException ex) {
+			assertTrue(ex.getMessage().contains("Zotero BibTeX export failed with HTTP 500"));
+		}
 	}
 
 	private void handle(final HttpExchange exchange) throws IOException {
@@ -189,7 +265,7 @@ public class ZoteroTranslationServerClientTest {
 		}
 
 		if ("/export".equals(path)) {
-			write(exchange, 200, "text/plain", this.exportBody);
+			write(exchange, this.exportStatus, "text/plain", this.exportBody);
 			return;
 		}
 
