@@ -61,6 +61,18 @@ public class ZoteroFallbackScraperTest {
 		assertFalse(legacyScraper.scrapeCalled);
 	}
 
+	/**
+	 *
+	 */
+	@Test
+	public void testGetScraperRespectsDisabledLegacyFallback() {
+		final RecordingScraper legacyScraper = new RecordingScraper(true, true);
+		final ZoteroFallbackScraper scraper = new ZoteroFallbackScraper(new ZoteroTranslationServerConfig(null, true, false, 1, 1), legacyScraper);
+		final Collection<Scraper> scrapers = scraper.getScraper();
+
+		assertFalse(scrapers.contains(legacyScraper));
+	}
+
 	private static class RecordingScraper implements Scraper {
 		private final boolean supports;
 		private final boolean scrapeResult;

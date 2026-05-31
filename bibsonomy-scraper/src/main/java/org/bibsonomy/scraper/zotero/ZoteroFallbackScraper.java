@@ -113,8 +113,12 @@ public class ZoteroFallbackScraper implements Scraper {
 	@Override
 	public Collection<Scraper> getScraper() {
 		final Collection<Scraper> scrapers = new LinkedList<Scraper>();
-		scrapers.addAll(this.zoteroScraper.getScraper());
-		scrapers.addAll(this.legacyScraper.getScraper());
+		if (this.config.isZoteroEnabled()) {
+			scrapers.addAll(this.zoteroScraper.getScraper());
+		}
+		if (this.config.isLegacyFallbackEnabled()) {
+			scrapers.addAll(this.legacyScraper.getScraper());
+		}
 		return scrapers;
 	}
 
