@@ -114,6 +114,24 @@ public class PublicationAutocompleteControllerTest {
 	 *
 	 */
 	@Test
+	public void testIsbnFallsBackAfterSupportedScraperFailure() {
+		final FailingScraper failing = new FailingScraper();
+		final RecordingScraper supported = new RecordingScraper(true, true);
+		final CompositeScraper<Scraper> scraper = new CompositeScraper<Scraper>();
+		scraper.addScraper(failing);
+		scraper.addScraper(supported);
+
+		runAutocomplete("9780262033848", scraper);
+
+		assertEquals(1, failing.calls);
+		assertEquals(1, supported.calls);
+		assertEquals("9780262033848", supported.lastContext.getSelectedText());
+	}
+
+	/**
+	 *
+	 */
+	@Test
 	public void testDoiUsesInjectedScraperChain() {
 		final RecordingScraper scraper = runAutocomplete("10.1038/nature12373");
 
@@ -178,6 +196,31 @@ public class PublicationAutocompleteControllerTest {
 		@Override
 		public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
 			return this.supports;
+		}
+	}
+
+	private static final class FailingScraper implements Scraper {
+		private int calls;
+
+		@Override
+		public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
+			this.calls++;
+			throw new ScrapingException("simulated scraper failure");
+		}
+
+		@Override
+		public String getInfo() {
+			return "failing scraper";
+		}
+
+		@Override
+		public Collection<Scraper> getScraper() {
+			return Collections.<Scraper> singleton(this);
+		}
+
+		@Override
+		public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
+			return true;
 		}
 	}
 }

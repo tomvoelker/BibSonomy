@@ -193,10 +193,21 @@ public class PublicationAutocompleteController implements MinimalisticController
 			return scraper.scrape(context);
 		}
 
+		ScrapingException scrapingException = null;
 		for (final Scraper supportedScraper : scraper.getScraper()) {
-			if (supportedScraper.supportsScrapingContext(context) && supportedScraper.scrape(context)) {
-				return true;
+			if (supportedScraper.supportsScrapingContext(context)) {
+				try {
+					if (supportedScraper.scrape(context)) {
+						return true;
+					}
+				} catch (final ScrapingException ex) {
+					scrapingException = ex;
+					log.info("exception while scraping with " + supportedScraper.getInfo(), ex);
+				}
 			}
+		}
+		if (scrapingException != null) {
+			throw scrapingException;
 		}
 		return false;
 	}
