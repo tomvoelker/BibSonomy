@@ -35,6 +35,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.bibsonomy.scraper.CompositeScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -95,6 +96,24 @@ public class PublicationAutocompleteControllerTest {
 	 *
 	 */
 	@Test
+	public void testIsbnSkipsUnsupportedScraperLeaves() {
+		final RecordingScraper unsupported = new RecordingScraper(false, true);
+		final RecordingScraper supported = new RecordingScraper(true, true);
+		final CompositeScraper<Scraper> scraper = new CompositeScraper<Scraper>();
+		scraper.addScraper(unsupported);
+		scraper.addScraper(supported);
+
+		runAutocomplete("9780262033848", scraper);
+
+		assertEquals(0, unsupported.calls);
+		assertEquals(1, supported.calls);
+		assertEquals("9780262033848", supported.lastContext.getSelectedText());
+	}
+
+	/**
+	 *
+	 */
+	@Test
 	public void testDoiUsesInjectedScraperChain() {
 		final RecordingScraper scraper = runAutocomplete("10.1038/nature12373");
 
@@ -105,6 +124,11 @@ public class PublicationAutocompleteControllerTest {
 
 	private static RecordingScraper runAutocomplete(final String search) {
 		final RecordingScraper scraper = new RecordingScraper();
+		runAutocomplete(search, scraper);
+		return scraper;
+	}
+
+	private static void runAutocomplete(final String search, final Scraper scraper) {
 		final PublicationAutocompleteController controller = new PublicationAutocompleteController();
 		controller.setScrapers(scraper);
 
@@ -115,12 +139,22 @@ public class PublicationAutocompleteControllerTest {
 		assertEquals(Views.BIBTEX, controller.workOn(command));
 		assertEquals(1, command.getBibtex().getList().size());
 		assertEquals("Scraped Publication", command.getBibtex().getList().get(0).getResource().getTitle());
-		return scraper;
 	}
 
 	private static final class RecordingScraper implements Scraper {
+		private final boolean supports;
+		private final boolean scrapeResult;
 		private int calls;
 		private ScrapingContext lastContext;
+
+		private RecordingScraper() {
+			this(true, true);
+		}
+
+		private RecordingScraper(final boolean supports, final boolean scrapeResult) {
+			this.supports = supports;
+			this.scrapeResult = scrapeResult;
+		}
 
 		@Override
 		public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
@@ -128,7 +162,7 @@ public class PublicationAutocompleteControllerTest {
 			this.lastContext = scrapingContext;
 			scrapingContext.setBibtexResult(BIBTEX);
 			scrapingContext.setScraper(this);
-			return true;
+			return this.scrapeResult;
 		}
 
 		@Override
@@ -143,7 +177,7 @@ public class PublicationAutocompleteControllerTest {
 
 		@Override
 		public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
-			return true;
+			return this.supports;
 		}
 	}
 }

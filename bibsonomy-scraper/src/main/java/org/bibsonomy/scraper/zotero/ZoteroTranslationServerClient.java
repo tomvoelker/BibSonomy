@@ -144,6 +144,10 @@ public class ZoteroTranslationServerClient {
 	}
 
 	private ZoteroTranslationResult translateWebChoices(final String choicesJson, final int choiceCount) throws ScrapingException {
+		if (!present(choicesJson)) {
+			return null;
+		}
+
 		final ZoteroHttpResponse selected = this.post(WEB_ENDPOINT, choicesJson, CONTENT_TYPE_JSON);
 		if (selected.isOk()) {
 			return this.export(selected.getBody(), true, choiceCount);

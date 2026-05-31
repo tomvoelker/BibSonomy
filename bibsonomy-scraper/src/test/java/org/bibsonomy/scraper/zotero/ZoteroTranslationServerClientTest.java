@@ -162,6 +162,19 @@ public class ZoteroTranslationServerClientTest {
 	 * @throws Exception
 	 */
 	@Test
+	public void testTranslateWebPageChoicesWithEmptyBodyReturnsNoResult() throws Exception {
+		this.webStatus = 300;
+		this.webBody = "";
+		final ZoteroTranslationServerClient client = new ZoteroTranslationServerClient(this.baseUrl, 1000, 1000);
+
+		assertNull(client.translateWebPage("https://example.org/search"));
+		assertEquals(1, this.requests.size());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
 	public void testTranslateSearchChoicesUsesReturnedIdentifiers() throws Exception {
 		this.searchStatus = 300;
 		this.searchBody = SEARCH_CHOICES_JSON;

@@ -170,7 +170,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 		try {
 			final URL url = UrlUtils.isUrl(text) ? new URL(text) : null;
 			final ScrapingContext context = new ScrapingContext(url, text);
-			final boolean scrape = scraper.scrape(context);
+			final boolean scrape = scrape(scraper, context);
 			if (scrape) {
 				final String result = context.getBibtexResult();
 				final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -184,8 +184,21 @@ public class PublicationAutocompleteController implements MinimalisticController
 		} catch (final IOException | ScrapingException | ParseException e) {
 			log.info("exception while scraping", e);
 		}
-		
+
 		return null;
+	}
+
+	private static boolean scrape(final Scraper scraper, final ScrapingContext context) throws ScrapingException {
+		if (present(context.getUrl())) {
+			return scraper.scrape(context);
+		}
+
+		for (final Scraper supportedScraper : scraper.getScraper()) {
+			if (supportedScraper.supportsScrapingContext(context) && supportedScraper.scrape(context)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
